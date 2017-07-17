@@ -1,0 +1,53 @@
+<?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
+// @codingStandardsIgnoreFile
+
+/** @var $block Aheadworks\Giftcard\Block\Customer\Giftcard\Codes */
+$giftcardCodes = $block->getCustomerGiftcardCodes();
+?>
+<?php if (count($giftcardCodes)): ?>
+    <div class="aw-giftcard-codes-block">
+        <div class="block-title">
+            <span><?php echo $block->escapeHtml(__('Your Gift Card codes')) ?></span>
+        </div>
+        <div class="block-content">
+            <div class="box">
+                <div class="box-content">
+                    <table class="data table-giftcard-codes">
+                        <?php foreach ($giftcardCodes as $giftcardCode): ?>
+                            <tr>
+                                <td class="code">
+                                    <?php if ($this->isAccountPage()): ?>
+                                        <a href="#"
+                                           data-mage-init='{"awGiftCardCheckCode":{
+                                               "url": "<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getCheckCodeUrl($giftcardCode->getCode())) ?>"
+                                           }}'>
+                                            <?php echo $block->escapeHtml($giftcardCode->getCode()) ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <?php echo $block->escapeHtml($giftcardCode->getCode()) ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="balance">
+                                    <?php /* @noEscape */ echo $block->formatPrice($giftcardCode->getBalance()) ?>
+                                </td>
+                                <?php if (!$this->isAccountPage()): ?>
+                                    <td class="action-apply">
+                                        <a href="<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getApplyUrl($giftcardCode->getCode())) ?>">
+                                            <?php echo $block->escapeHtml(__('Apply')) ?>
+                                        </a>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+

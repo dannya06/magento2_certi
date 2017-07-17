@@ -1,0 +1,24 @@
+/* Gift Card Product edit page */
+.aw_gc_template_image .image-placeholder input[type="file"] {
+    border: 1px;
+    font-size: 1em;
+}
+.aw_gc_template_image .image {
+    margin: 0px
+}
+
+/* Gift Card Product grid */
+.aw-gc-product-grid-cell.templates ul {
+    list-style: none;
+}
+.aw-gc-product-grid-cell.templates ul li {
+    margin-bottom: 5px;
+}
+
+/* Gift Card code form */
+.aw-giftcard-admin-giftcard-edit .aw-giftcard-admin-bold-label-control .admin__field-control .aw-giftcard-admin-control-label {
+    font-weight: 600;
+}
+.aw-giftcard-admin-giftcard-edit .admin__field-control .aw-giftcard-admin-control-label {
+    line-height: 3.2rem;
+}
