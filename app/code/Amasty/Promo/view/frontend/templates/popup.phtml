@@ -1,0 +1,22 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @package Amasty_Promo
+ */
+?>
+<?php
+/** @var \Amasty\Promo\Block\Popup $block */
+?>
+
+<?= $block->getChildHtml('html_calendar') ?>
+<div class="ampromo-overlay" data-role="ampromo-overlay">
+    <div class="ampromo-items">
+        <div class="close" data-role="ampromo-popup-hide"></div>
+        <h2><?=__('Free Items')?></h2>
+
+        <div data-role="ampromo-items-container">
+            <?= $block->getChildHtml('items') ?>
+        </div>
+    </div>
+</div>
