@@ -47,6 +47,8 @@ atlassian*
 
 !/pub/media/weltpixel/
 !/pub/media/wysiwyg/pearl_theme/
+!/pub/media/ves/
+!/pub/media/wysiwyg/megamenu/
 
 /var/*
 !/var/.htaccess
