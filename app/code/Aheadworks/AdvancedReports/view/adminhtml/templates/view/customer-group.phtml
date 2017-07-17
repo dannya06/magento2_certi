@@ -1,0 +1,36 @@
+<?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
+// @codingStandardsIgnoreFile
+
+/** @var \Aheadworks\AdvancedReports\Block\Adminhtml\View\CustomerGroup $block */
+?>
+<div class="aw-arep-customer-group aw-menu">
+    <span><?php echo $block->escapeHtml(__('Filter Data:')) ?></span>
+    <div class="actions dropdown closable">
+        <button type="button"
+                class="admin__action-dropdown"
+                data-mage-init='{"dropdown":{}}'
+                data-toggle="dropdown"
+                aria-haspopup="true">
+            <span class="admin__action-dropdown-text">
+                <?php echo $block->escapeHtml(__($block->getCurrentItemTitle())) ?>
+            </span>
+        </button>
+        <ul class="dropdown-menu">
+            <?php foreach($block->getItems() as $key => $item): ?>
+                <?php $class = 'aw-arep-customer-group__dropdown-menu-action' .
+                    ($key == $block->getCurrentItemKey() ? ' current' : '')
+                ?>
+                <li class="<?php /* @noEscape */ echo $class ?>">
+                    <a href="<?php /* @noEscape */ echo $block->escapeXssInUrl($item['url']) ?>">
+                        <?php echo $block->escapeHtml($item['title']) ?>
+                    </a>
+                </li>
+            <?php endforeach;?>
+        </ul>
+    </div>
+</div>
