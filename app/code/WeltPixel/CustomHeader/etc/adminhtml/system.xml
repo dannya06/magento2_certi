@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="weltpixel_custom_header" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Custom Header</label>
+            <tab>weltpixel</tab>
+            <resource>WeltPixel_CustomHeader::CustomHeaderSettings</resource>
+            <group id="notification" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Important / Recommended:</label>
+                <fieldset_css>weltpixel-recommended-header active</fieldset_css>
+                <field id="notification_msg" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>WeltPixel\Backend\Block\Adminhtml\System\Config\Notification</frontend_model>
+                </field>
+            </group>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <field id="header_style" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Header Style</label>
+                    <source_model>WeltPixel\CustomHeader\Model\Config\Source\Headerstyles</source_model>
+                </field>
+            </group>
+            <group id="top_header" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Top Header</label>
+                <field id="width" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Width</label>
+                </field>
+
+                <field id="link_color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Link Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="hover_link_color" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hover Link Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="active_link_color" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Active Link Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="submenu_link_color" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Submenu Link Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="submenu_hover_link_color" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Submenu Hover Link Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="text_color" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="background_color" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="border_bottom_color" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Border Bottom Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+            </group>
+            <group id="middle_header" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Middle Header</label>
+                <field id="width" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Width</label>
+                </field>
+                <field id="background" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Background</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+            </group>
+            <group id="bottom_header" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Header Navigation</label>
+                <field id="width" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Width</label>
+                </field>
+                <field id="background" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Background</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="link_color" translate="label" type="text" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Link Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="hover_link_color" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hover Link Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="shadow" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Navigation Shadow</label>
+                    <comment>Add shadow Ex.: 0px 10px 30px 0px rgba(0,0,0,0.05)</comment>
+                </field>
+            </group>
+            <group id="search_options" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Search Options</label>
+                <field id="width" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Field Width</label>
+                </field>
+                <field id="height" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Field Height</label>
+                </field>
+                <field id="border_width" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Field Border Width</label>
+                    <frontend_model>WeltPixel\CustomHeader\Table\Block\System\Config\Field\BorderWidth</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+                <field id="border_style" translate="label" type="text" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Field Border Style</label>
+                    <source_model>WeltPixel\CustomHeader\Model\Config\Source\SearchBorderStyle</source_model>
+                </field>
+                <field id="border_color" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Field Border Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="background" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Field Background color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="color" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Font color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="font_size" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Font size</label>
+                </field>
+            </group>
+            <group id="icons" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Header Icons</label>
+                <field id="icon_size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Icon Size</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

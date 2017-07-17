@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+	<system>
+		<section id="weltpixel_smartproducttabs" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
+			<label>SmartProductTabs</label>
+			<tab>weltpixel</tab>
+			<resource>WeltPixel_SmartProductTabs::weltpixel_smartproducttabs</resource>
+			<group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>General</label>
+				<field id="enable_smartproducttabs" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable SmartProductTabs</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="attribute_smartproducttabs_1" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Attributes for SmartProductTabs Tab 1</label>
+					<source_model>WeltPixel\SmartProductTabs\Model\Config\Source\AttributeCollection</source_model>
+					<depends>
+						<field id="enable_smartproducttabs">1</field>
+					</depends>
+				</field>
+				<field id="attribute_smartproducttabs_tab_1" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Tab Name for Tab 1</label>
+					<depends>
+						<field id="enable_smartproducttabs">1</field>
+					</depends>
+				</field>
+				<field id="attribute_smartproducttabs_2" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Attributes for SmartProductTabs Tab 2</label>
+					<source_model>WeltPixel\SmartProductTabs\Model\Config\Source\AttributeCollection</source_model>
+					<depends>
+						<field id="enable_smartproducttabs">1</field>
+					</depends>
+				</field>
+				<field id="attribute_smartproducttabs_tab_2" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Tab Name for Tab 2</label>
+					<depends>
+						<field id="enable_smartproducttabs">1</field>
+					</depends>
+				</field>
+				<field id="attribute_smartproducttabs_3" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Attributes for SmartProductTabs Tab 3</label>
+					<source_model>WeltPixel\SmartProductTabs\Model\Config\Source\AttributeCollection</source_model>
+					<depends>
+						<field id="enable_smartproducttabs">1</field>
+					</depends>
+				</field>
+				<field id="attribute_smartproducttabs_tab_3" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Tab Name for Tab 3</label>
+					<depends>
+						<field id="enable_smartproducttabs">1</field>
+					</depends>
+				</field>
+			</group>
+		</section>
+	</system>
+</config>

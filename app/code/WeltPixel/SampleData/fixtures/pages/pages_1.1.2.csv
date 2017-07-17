@@ -1,0 +1,38 @@
+title,page_layout,meta_keywords,meta_description,identifier,content_heading,content,is_active,sort_order,layout_update_xml,custom_theme,custom_root_template,custom_layout_update_xml,custom_theme_from,custom_theme_to,css_global,css_desktop
+"Home Page V8",1column,,,home-page-v8,"","
+<div class=""container-fluid content-v8 nopadding"">
+<div class=""wrapper-top-slider "">
+<div class=""row"">{{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Products"" products_type=""new_products""}}</div>
+</div>
+<div class=""slider-custom-1 "">{{widget_nr_1}}</div>
+<!--
+""Featured product category can be changed by inserting another widget: Insert Widget -> Catalog Product List -> (Weltpixel Homepage V8 Product Grid) / Conditions - Category is [number] where 'number' is the id of the category you want to advertise on homepage.""
+-->
+<h3 class=""title-v8"">Lastest Product</h3>
+<div class=""catalog-product-v8"">{{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" products_count=""8"" template=""product/widget/content/grid_v8.phtml"" conditions_encoded=""a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`2`;]]""}}</div>
+<div class=""row brands-slider"">{{widget_nr_2}}</div>
+<div class=""grey-background"">
+<div class=""row"">
+<div class=""col-xs-10 col-xs-offset-1 col-md-offset-0 col-md-6 col-sm-offset-3 col-sm-6"">
+<div class=""flip-box"">
+<div class=""flip-box-before"">free shipping</div>
+<div class=""flip-box-after"">on all orders over $100</div>
+</div>
+</div>
+<div class=""col-xs-10 col-xs-offset-1 col-md-offset-0 col-md-6 col-sm-offset-3 col-sm-6"">
+<div class=""flip-box"">
+<div class=""flip-box-before"">free return</div>
+<div class=""flip-box-after"">free 90 days return</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+",1,,,,,,,,"
+.theme-pearl .page-wrapper .columns, .page.messages {width: 100% !important; max-width: 100% !important}
+.theme-pearl .page-main {padding: 0px;width: 100% !important; max-width: 100% !important;}
+.page-wrapper .breadcrumbs {display: none;}
+
+#maincontent .column.main {
+  padding-bottom: 0px;
+}",

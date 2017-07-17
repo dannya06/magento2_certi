@@ -1,0 +1,66 @@
+title,page_layout,meta_keywords,meta_description,identifier,content_heading,content,is_active,sort_order,layout_update_xml,custom_theme,custom_root_template,custom_layout_update_xml,custom_theme_from,custom_theme_to,css_global,css_phone_small,css_phone,css_tablet_small,css_tablet,css_desktop,css_desktop_large,custom_js
+"Home Page V6",1column,,,home-page-v6,"","
+<div class=""content-v6"">
+    {{block class=""WeltPixel\FullPageScroll\Block\FullPageScroll"" name=""fullpagescroll"" template=""WeltPixel_FullPageScroll::fullpagescroll.phtml""}}
+</div>
+",1,,,,,,,,"
+.breadcrumbs{display:none;}
+.block-minicart {color: #000;}
+.block-search .control {background-color: transparent !important}
+.fullpagescroll header {
+    background-color: transparent;
+    color: #fff;
+}
+
+a, .alink {
+    color: #fff;
+}
+
+.nav-sections.fps {
+    background-color: transparent!important;
+}
+
+.navigation .level0 > .level-top {
+    color: #fff;
+}
+
+.page-header .header.content .block-search input {
+    border-width: 0;
+    color: #fff;
+
+}
+","
+.nav-sections .navigation ul li a ,
+.section-item-title a{
+  color:#000!important;
+}
+
+ .nav-sections .navigation ul li.level1  a{
+  color:#000!important;
+}
+","
+.block-search .action.search:before{
+ color: #fff;
+}
+.page-wrapper .page-header .header.content .block-search input, .page-wrapper .page-header .header_right .block-search input {
+color: #FFF;
+border-color: #fff;
+}
+",,,"
+ .nav-sections .navigation ul li a{
+  color:#fff !important;
+}
+ .nav-sections .navigation ul li.level1  a{
+  color:#000!important;
+}
+","
+.nav-sections.fps {
+    background-color: transparent!important;
+}
+","
+require(['jquery'],
+	function ($) {
+		$('header .logo img').attr('src','/pub/media/wysiwyg/pearl_theme/logo_white.png');
+	}
+);
+"

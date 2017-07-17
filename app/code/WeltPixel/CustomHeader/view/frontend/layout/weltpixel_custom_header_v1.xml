@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="page.wrapper">
+            <container name="header.container.v1" as="header_container_v1" label="Page Header Container V1" htmlTag="div" htmlClass="page-header page-header-v1" before="-"/>
+        </referenceContainer>
+        <move element="header.container" destination="header.container.v1"/>
+    </body>
+</page>

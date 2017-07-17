@@ -1,0 +1,135 @@
+title,identifier,content,is_active
+"WeltPixel Footer Container",weltpixel_footer_container,"{{block class=""Magento\\Cms\\Block\\Block"" block_id=""weltpixel_pre-footer""}}{{block class=""Magento\\Cms\\Block\\Block"" block_id=""weltpixel_footer_v1""}}
+{{block class=""Magento\\Cms\\Block\\Block"" block_id=""weltpixel_footer_v2""}}
+",1
+"WeltPixel Pre-Footer",weltpixel_pre-footer,"
+<div class=""pre-footer hidden-xs"">
+<div class=""pre-footer-content"">
+<div class=""col-sm-3 col-xs-6"">
+<i class=""footer-icon icon-line-clock""></i>
+<p class=""pre-footer-subtitle"">Fast & Free</p>
+<p class=""pre-footer-title"">Delivery</p>
+</div>
+
+<div class=""col-sm-3 col-xs-6"">
+<i class=""footer-icon icon-line-clock""></i>
+<p class=""pre-footer-subtitle"">24/7 Support</p>
+<p class=""pre-footer-title"">1-800-000-0000</p>
+</div>
+
+<div class=""col-sm-3 col-xs-6"">
+<i class=""footer-icon icon-tags""></i>
+<p class=""pre-footer-subtitle"">Best Price</p>
+<p class=""pre-footer-title"">Guaranteed</p>
+</div>
+
+<div class=""col-sm-3 col-xs-6"">
+<i class=""footer-icon icon-reply-all""></i>
+<p class=""pre-footer-subtitle"">30 Days</p>
+<p class=""pre-footer-title"">Return Policy</p>
+</div>
+</div>
+</div>",1
+"WeltPixel Footer V1",weltpixel_footer_v1,"
+<div class=""footer-v1"">
+<div class=""footer-v1-content row"">
+
+<div class=""col-sm-3 col-xs-12"">
+<p class=""footer-title"">About us</p>
+<ul class=""footer links"">
+<li class=""nav item""><a href=""{{store url=""privacy-policy-cookie-restriction-mode/""}}"">Privacy and Cookie Policy</a></li>
+<li class=""nav item""><a href=""{{store url=""search/term/popular/""}}"">Search Terms</a></li>
+<li class=""nav item""><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
+<li class=""nav item""><a href=""{{store url=""catalogsearch/advanced/""}}"" data-action=""advanced-search"">Advanced Search</a></li>
+<li class=""nav item""><a href=""{{store url=""sales/guest/form/""}}"">Orders and Returns</a></li>
+</ul>
+</div>
+
+<div class=""col-sm-3 col-xs-12"">
+<p class=""footer-title"">About us</p>
+<ul class=""footer links"">
+<li class=""nav item""><a href=""{{store url=""privacy-policy-cookie-restriction-mode/""}}"">Privacy and Cookie Policy</a></li>
+<li class=""nav item""><a href=""{{store url=""search/term/popular/""}}"">Search Terms</a></li>
+<li class=""nav item""><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
+<li class=""nav item""><a href=""{{store url=""catalogsearch/advanced/""}}"" data-action=""advanced-search"">Advanced Search</a></li>
+<li class=""nav item""><a href=""{{store url=""sales/guest/form/""}}"">Orders and Returns</a></li>
+</ul>
+</div>
+
+<div class=""col-sm-3 col-xs-12"">
+<p class=""footer-title"">About us</p>
+<ul class=""footer links"">
+<li class=""nav item""><a href=""{{store url=""privacy-policy-cookie-restriction-mode/""}}"">Privacy and Cookie Policy</a></li>
+<li class=""nav item""><a href=""{{store url=""search/term/popular/""}}"">Search Terms</a></li>
+<li class=""nav item""><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
+<li class=""nav item""><a href=""{{store url=""catalogsearch/advanced/""}}"" data-action=""advanced-search"">Advanced Search</a></li>
+<li class=""nav item""><a href=""{{store url=""sales/guest/form/""}}"">Orders and Returns</a></li>
+</ul>
+</div>
+
+<div class=""col-sm-3 col-xs-12"">
+<p class=""footer-title"">About us</p>
+<ul class=""footer links"">
+<li class=""nav item"">Lorem Ipsum 2598</li>
+<li class=""nav item"">New York, NY, 00841</li>
+<li class=""nav item"">1-800-000-0000</li>
+<li class=""nav item"">support@weltpixel.com</li>
+</ul>
+</div>
+
+</div>
+</div>
+",0
+"WeltPixel Footer V2",weltpixel_footer_v2,"
+<div class=""footer-v2"">
+<div class=""center"">
+<a href=""#"" class=""social-icons si-borderless si-facebook"">
+    <i class=""icon-facebook""></i>
+    <i class=""icon-facebook""></i>
+</a>
+
+<a href=""#"" class=""social-icons si-borderless si-twitter"">
+    <i class=""icon-twitter""></i>
+    <i class=""icon-twitter""></i>
+</a>
+
+<a href=""#"" class=""social-icons si-borderless si-youtube"">
+    <i class=""icon-youtube""></i>
+    <i class=""icon-youtube""></i>
+</a>
+
+<div class=""clearfix""></div>
+
+<div class=""footer-nav"">
+<a href="""">FAQ</a>
+<a href="""" >Privacy</a>
+<a href="""" >Terms of Use</a>
+<a href="""" >Contact</a></div>
+</div>
+
+<div class=""clearfix""></div>
+<div class=""toggle center"">
+<div class=""togglet toggleta newsletter"" style=""text-decoration: underline;""> Subscribe to the Newsletter</div>
+<div class=""togglec"">
+
+<div class=""block newsletter"">
+    <div class=""title""><strong>Newsletter</strong></div>
+    <div class=""content"">
+        <form class=""form subscribe hp-newsletter-v1"" novalidate=""novalidate"" action=""{{store url=""newsletter/subscriber/new/""}}"" method=""post"" data-mage-init='{""validation"": {""errorClass"": ""mage-error""}}' id=""newsletter-validate-detail"">
+            <div class=""field newsletter"">
+                <div class=""control"">
+                    <input name=""email"" type=""email"" id=""newsletter"" placeholder=""Enter your email address"" data-validate=""{required:true, 'validate-email':true}"">
+                </div>
+            </div>
+            <div class=""actions"">
+                <button class=""action subscribe primary"" title=""Subscribe"" type=""submit"">
+                    <span>Subscribe</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+</div>
+",1

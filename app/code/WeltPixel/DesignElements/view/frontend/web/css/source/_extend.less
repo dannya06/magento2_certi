@@ -1,0 +1,37 @@
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    .page-layout-fullscreen {
+        .navigation,
+        .breadcrumbs,
+        .columns,
+        .page-header .header.panel,
+        .header.content,
+        .footer.content
+        .page.messages,
+        .page-wrapper > .widget,
+        .page-wrapper > .page-bottom,
+        .block.category.event,
+        .top-container,
+        .page-title-wrapper,
+        .page-main {
+            padding-left: 0px;
+            padding-right: 0px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .product-info-main {
+            .product-info-price {width: 99%;}
+        }
+
+        .page-header {
+            .switcher {
+                margin-right: 10px;
+            }
+        }
+    }
+}
+button:not(.primary) {
+    box-shadow: none;
+}

@@ -1,0 +1,47 @@
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+@storeViewClass {
+	&.catalog-product-view {
+		.product.info.detailed {
+			.product.data.items {
+				border-bottom: 1px solid #cccccc;
+				.lib-data-accordion();
+				.item.title {
+					&.active {
+						content: "cucu";
+						a:after {
+							position: absolute;
+							bottom: -1px;
+							left: 1px;
+							width: calc(~"100% - 2px");
+							height: 1px;
+							background-color: white;
+							content: "";
+							z-index: 1;
+							display: block !important;
+						}
+					}
+					a:after {
+						display: block;
+						content: '';
+					}
+					.switch {
+						border-left: none;
+						border-right: none;
+					}
+				}
+				.review-ratings {
+					float: none;
+					max-width: 100%;
+				}
+				.item.content {
+					display: block !important;
+				}
+			}
+
+			.review-ratings ~ .review-content, .review-ratings ~ .review-details {
+				margin-left: 0px;
+			}
+		}
+	}
+}
+}

@@ -1,0 +1,574 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="weltpixel_frontend_options" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Frontend Options</label>
+            <tab>weltpixel</tab>
+            <resource>WeltPixel_FrontendOptions::FrontendOptionsSettings</resource>
+            <group id="notification" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Important / Recommended:</label>
+                <fieldset_css>weltpixel-recommended-header active</fieldset_css>
+                <field id="notification_msg" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>WeltPixel\Backend\Block\Adminhtml\System\Config\Notification</frontend_model>
+                </field>
+            </group>
+            <group id="breakpoints" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Breakpoints</label>
+                <field id="screen__xxs" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Screen xxs</label>
+                    <validate>required</validate>
+                </field>
+                <field id="screen__xs" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Screen xs</label>
+                    <validate>required</validate>
+                </field>
+                <field id="screen__s" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Screen s</label>
+                    <validate>required</validate>
+                </field>
+                <field id="screen__m" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Screen m</label>
+                    <validate>required</validate>
+                </field>
+                <field id="screen__l" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Screen l</label>
+                    <validate>required</validate>
+                </field>
+                <field id="screen__xl" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Screen xl</label>
+                    <validate>required</validate>
+                </field>
+            </group>
+            <group id="section_width" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Section Width</label>
+                <field id="page_main" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Page Main</label>
+                    <validate>required</validate>
+                </field>
+                <field id="page_main_padding" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Page Main Padding</label>
+                    <validate>required</validate>
+                </field>
+                <field id="footer" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Footer</label>
+                    <validate>required</validate>
+                </field>
+                <field id="row" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Row</label>
+                    <validate>required</validate>
+                </field>
+                <field id="default_page" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Page</label>
+                    <validate>required</validate>
+                </field>
+                <field id="cms_page" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cms Page</label>
+                    <validate>required</validate>
+                </field>
+                <field id="category_page" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Category Page</label>
+                    <validate>required</validate>
+                </field>
+                <field id="product_page" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Page</label>
+                    <validate>required</validate>
+                </field>
+            </group>
+            <group id="main_options" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Main Options</label>
+                <field id="primary__color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Primary color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="secondary__color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Secondary color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field> 
+                <field id="page__background____color" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Page Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="active__color" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Active Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="error__color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Error Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+            </group>
+            <group id="h1" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>H1</label>
+                <field id="h1__font____color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="h1__font____family" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="h1__font____family_characterset" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="h1__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="h1__font____size" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Size</label>
+                </field>
+                <field id="h1__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Style</label>
+                </field>
+                <field id="h1__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field>               
+            </group>
+            <group id="h2" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>H2</label>
+                <field id="h2__font____color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="h2__font____family" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="h2__font____family_characterset" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="h2__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="h2__font____size" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Size</label>
+                </field>
+                <field id="h2__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Style</label>
+                </field>
+                <field id="h2__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field>               
+            </group>
+            <group id="h3" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>H3</label>
+                <field id="h3__font____color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="h3__font____family" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="h3__font____family_characterset" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="h3__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="h3__font____size" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Size</label>
+                </field>
+                <field id="h3__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Style</label>
+                </field>
+                <field id="h3__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field>               
+            </group>
+            <group id="h4" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>H4</label>
+                <field id="h4__font____color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="h4__font____family" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="h4__font____family_characterset" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="h4__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="h4__font____size" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Size</label>
+                </field>
+                <field id="h4__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Style</label>
+                </field>
+                <field id="h4__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field>               
+            </group>
+            <group id="h5" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>H5</label>
+                <field id="h5__font____color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="h5__font____family" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="h5__font____family_characterset" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="h5__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="h5__font____size" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Size</label>
+                </field>
+                <field id="h5__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Style</label>
+                </field>
+                <field id="h5__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field>               
+            </group>
+            <group id="h6" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>H6</label>
+                <field id="h6__font____color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="h6__font____family" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="h6__font____family_characterset" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="h6__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="h6__font____size" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Size</label>
+                </field>
+                <field id="h6__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Style</label>
+                </field>
+                <field id="h6__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field>               
+            </group>
+            <group id="default" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Default</label>
+                <field id="text__color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="font____family__base" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="font____family__base_characterset" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="font____weight__regular" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="font____size__base" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Size</label>
+                </field>
+                <field id="font____style__base" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Style</label>
+                </field>
+                <field id="line____height__computed" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field>           
+            </group>   
+            <group id="links" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Links</label>
+                <field id="link__color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Link Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="link__hover__color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Link Hover Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="link__text____decoration" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Decoration</label>
+                </field> 
+                <field id="link__hover__text____decoration" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Decoration Hover</label>
+                </field>
+            </group>
+            <group id="default_buttons" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Default Buttons</label>
+                <field id="button__color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button__hover__color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Hover Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button__background" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button__hover__background" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Hover Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button__border" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Border Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button__hover__border" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Hover Border Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button__border____radius" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Border Radius</label>
+                </field>
+                <field id="button__font____family" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="button__font____family_characterset" translate="label" type="multiselect" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="button__font____weight" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="button__font____size" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Font Size</label>
+                </field>               
+                <field id="button__line____height" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field>    
+            </group>
+            <group id="primary_buttons" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Primary Buttons</label>
+                <field id="button____primary__color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button____primary__hover__color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Hover Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button____primary__background" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button____primary__hover__background" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Hover Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button____primary__border" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Border Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button____primary__hover__border" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Hover Border Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="button____primary__line____height" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Line Height(px)</label>
+                </field> 
+            </group> 
+            <group id="ratings" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Ratings</label>
+                <field id="rating____icon__active__color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Rating Active Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field> 
+                <field id="rating____icon__color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Rating Inactive Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="rating____icon__font____size" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Rating Icon Size</label>
+                </field>
+            </group>
+            <group id="form_inputs" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Form Inputs [input-text|select|textarea|input-radio|input-checkbox]</label>
+                <field id="form____element____input__background" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Background</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="form____element____input__border____color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Border Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="form____element____input__border" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Border Thickness</label>
+                    <comment>Ex: 1px solid @form-element-input__border-color;</comment>
+                </field>
+                <field id="form____element____input__border____radius" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Border Radius</label>
+                </field>
+                <field id="form____element____input__height" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Height</label>
+                </field>
+                <field id="form____element____input__font____size" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Font Size</label>
+                </field>
+                <field id="form____element____input__color" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Font Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>                                
+                <field id="form____element____input__font____family" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Input Font Family</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Googlefonts</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts]]>
+                    </comment>
+                </field>
+                <field id="form____element____input__font____family_characterset" translate="label" type="multiselect" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Google Input Font Character Set</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\Characterset</source_model>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
+                    </comment>                    
+                </field>
+                <field id="form____element____input__font____weight" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Font Weight</label>
+                    <comment><![CDATA[ Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
+                    </comment>
+                </field>
+                <field id="form____element____input__line____height" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Line Height</label>
+                </field>
+                <field id="form____element____input__font____style" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Font Style</label>
+                </field>
+                <field id="form____element____input____placeholder__color" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Input Placeholder Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+            </group>
+            <group id="dropdown" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Dropdown</label>
+                <field id="dropdown____list__background" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Dropdown Background</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="dropdown____list__border" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Dropdown Border Colors</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="dropdown____list__shadow" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Dropdown Shadow</label>
+                    <comment><![CDATA[0 3px 3px rgba(0,0,0,.15); // [''|none|value] ]]></comment>                 
+                </field>
+                <field id="dropdown____list____pointer__border" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Dropdown Pointer Border Color</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+                <field id="dropdown____list____item__hover" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Dropdown List Item Hover</label>
+                    <validate>color {required:false, hash:true}</validate>                    
+                </field>
+            </group>
+            <group id="breadcrumbs" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Breadcrumbs</label>
+                <field id="breadcrumbs__font____size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Breadcrumbs Font Size</label>
+                </field>
+                <field id="breadcrumbs__font____style" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Breadcrumbs Font Style</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="breadcrumbs__separator____color" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Breadcrumbs Separator Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="breadcrumbs____current__color" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Breadcrumbs Current Page Color</label>
+                    <validate>color {required:false, hash:true}</validate> 
+                </field>
+                <field id="breadcrumbs____link__color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Breadcrumbs Color</label>
+                    <validate>color {required:false, hash:true}</validate> 
+                </field>
+                <field id="breadcrumbs____link__hover__text____decoration" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Breadcrumbs Link Hover Text Decoration</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="breadcrumbs____background" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Breadcrumbs Background</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+            </group>
+            <group id="icons" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Icons</label>
+                <field id="icon__font____size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Icon Font Size</label>
+                    <validate>required</validate>
+                    <comment>Applicable for add to wishlist, add to compare , email icon</comment>
+                </field>
+                <field id="icon_label__font____size" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Icon Label Font Size</label>
+                    <validate>required</validate>
+                </field>
+            </group>
+            <group id="price" translate="label" type="text" sortOrder="170" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Price Options</label>
+                <field id="old_price__line____through" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Old Price Line Trough</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

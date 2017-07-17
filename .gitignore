@@ -45,6 +45,9 @@ atlassian*
 /pub/static/*
 !/pub/static/.htaccess
 
+!/pub/media/weltpixel/
+!/pub/media/wysiwyg/pearl_theme/
+
 /var/*
 !/var/.htaccess
 /vendor/*
