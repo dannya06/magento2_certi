@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "380828f3bd4e654666b1fa3fb0d90f80",
+    "content-hash": "9c594f618c96b3d60c319da8ec026d1a",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -399,6 +399,40 @@
                 "validator"
             ],
             "time": "2017-04-03T19:08:52+00:00"
+        },
+        {
+            "name": "icubeus/magento2-citykecamatan",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-citykecamatan.git",
+                "reference": "b23b884b8a08b9ffbb3186276c4d2481273e64eb"
+            },
+            "require": {
+                "magento/framework": "100.0.*|100.1.*",
+                "magento/module-backend": "100.0.*|100.1.*",
+                "php": "~5.6.0|7.0.2|~7.0.6"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\City\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "City kecamatan for indonesia client",
+            "keywords": [
+                "city",
+                "kecamatan",
+                "magento 2"
+            ],
+            "time": "2017-07-13 04:05:48"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -9180,6 +9214,7 @@
     "minimum-stability": "alpha",
     "stability-flags": {
         "composer/composer": 15,
+        "icubeus/magento2-citykecamatan": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,

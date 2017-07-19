@@ -9,7 +9,8 @@
     ],
     "require": {
         "magento/product-community-edition": "2.1.7",
-        "composer/composer": "@alpha"
+        "composer/composer": "@alpha",
+        "icubeus/magento2-citykecamatan": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.0",
@@ -47,12 +48,16 @@
     },
     "minimum-stability": "alpha",
     "prefer-stable": true,
-    "repositories": [
-        {
+    "repositories": {
+        "0": {
             "type": "composer",
             "url": "https://repo.magento.com/"
+        },
+        "icubeus-citykecamatan": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-citykecamatan.git"
         }
-    ],
+    },
     "extra": {
         "magento-force": "override"
     }
