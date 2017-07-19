@@ -1,0 +1,31 @@
+<?php
+$helper         = $this->helper('\Lof\LazyLoad\Helper\Data');
+$threshold      = (int)$helper->getConfig('general/threshold');
+$delay          = (int)$helper->getConfig('general/delay');
+$combined       = $helper->getConfig('general/combined');
+$effect         = $helper->getConfig('general/effect');
+$effectTime     = (int)$helper->getConfig('general/effectTime');
+$enableThrottle = $helper->getConfig('general/enableThrottle');
+$throttle       = (int)$helper->getConfig('general/throttle');
+?>
+
+<?php if ($helper->isEnable()) { ?>
+<script>
+	require(['jquery', 'jquery.LazyLoad'], function($) {
+		$(function() {
+			$('.lof-lazy').lazy({
+				effect: "<?php echo $effect ?>",
+				effectTime: <?php echo $effectTime ?>,
+				threshold: <?php echo $threshold; ?>,
+				combined: <?php echo $combined?'true':'false'; ?>,
+				delay: <?php echo $delay; ?>,
+				enableThrottle: <?php echo $enableThrottle?'true':'false' ?>,
+				throttle : <?php echo $throttle; ?>,
+				afterLoad: function(e) {
+					e.removeClass('lof-lazy');
+				}
+			});
+		});
+	});
+</script>
+<?php } ?>
