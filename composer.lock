@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "28168540b0daebf9d9925a92039a273a",
+    "content-hash": "ace19eaab35d976bae09ebc3f761eb1e",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -703,6 +703,32 @@
                 "payment"
             ],
             "time": "2017-06-14 07:09:39"
+        },
+        {
+            "name": "icubeus/magento2-indonesianlanguage",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-indonesianlanguage.git",
+                "reference": "2803c76ec73ae8810fbb01c51c8109c5e03ba37c"
+            },
+            "type": "magento2-language",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Icubeus team",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Indonesian language package for Magento 2",
+            "time": "2017-07-20 09:38:57"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -9730,6 +9756,7 @@
         "icubeus/magento2-confirmpayment": 20,
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-checkout": 20,
+        "icubeus/magento2-indonesianlanguage": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,
