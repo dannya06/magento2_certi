@@ -5,6 +5,7 @@
         <referenceBlock name="top.search" remove="true"/>
         <referenceBlock name="header-wrapper" remove="false"/>
         <referenceBlock name="logo" remove="false"/>
-        <move element="logo" destination="header-wrapper"/>
+        <!-- Comment out in purpose to show Site Logo on OneStepCheckout with Weltpixel theme -->
+        <!-- <move element="logo" destination="header-wrapper"/> -->
     </body>
 </page>
