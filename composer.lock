@@ -561,7 +561,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "d478b9bcb1acbf19dc1516d92cb7881d5010e79e"
+                "reference": "4b27b8641301dfc538daaa38d1f5e23f8047bc77"
             },
             "require": {
                 "magento/framework": "100.0.*|100.1.*",
@@ -586,7 +586,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2017-05-24 09:36:57"
+            "time": "2017-07-25 01:43:11"
         },
         {
             "name": "icubeus/magento2-checkout",
