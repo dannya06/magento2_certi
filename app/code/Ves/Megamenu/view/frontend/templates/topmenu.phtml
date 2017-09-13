@@ -289,20 +289,20 @@ if ($menu = $this->getMenu()) {
 											if ($(parent).data('caret') && $(parent).data('hovercaret')) {
 												$(this).removeClass($(parent).data('caret')).addClass($(parent).data('hovercaret'));
 											}
-						//parent.addClass('current');
-						$(this).addClass('item-active');
-						subMenu.stop().slideToggle();
-						setTimeout(function(){
-							subMenu.css({'height':''});
-						}, 200);
-					} else {
-						subMenu.stop().slideToggle();
-						//parent.removeClass('current');
-						$(this).removeClass('item-active');
-						$(this).removeClass($(parent).data('hovercaret')).addClass($(parent).data('caret'));
-					}
-					return false;
-				});
+												//parent.addClass('current');
+												$(this).addClass('item-active');
+												subMenu.stop().slideToggle();
+												setTimeout(function(){
+													subMenu.css({'height':''});
+												}, 200);
+											} else {
+												subMenu.stop().slideToggle();
+												//parent.removeClass('current');
+												$(this).removeClass('item-active');
+												$(this).removeClass($(parent).data('hovercaret')).addClass($(parent).data('caret'));
+											}
+											return false;
+										});
 									<?php } ?>
 
 									/* OPENER */

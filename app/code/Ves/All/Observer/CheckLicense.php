@@ -76,8 +76,9 @@ class CheckLicense implements ObserverInterface
 		$moduleName = $observer->getEx();
 		$license    = $this->licenseHelper->getLicense($moduleName);
 
-		if ($license && $license->getStatus()) {
+		if (($license && is_bool($license)) || ($license && $license->getStatus())) {
 			$obj->setData('is_valid', 1);
+			
 		} else {
 			$obj->setData('is_valid',0);
 			if ($ip == '127.0.0.1') {

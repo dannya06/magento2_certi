@@ -119,13 +119,17 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getLicense($module_name) {
         $ip          = $this->_remoteAddress->getRemoteAddress();
         $file        = $this->_moduleReader->getModuleDir(Dir::MODULE_ETC_DIR, $module_name) . '/license.xml';
-        $xmlObj      = new \Magento\Framework\Simplexml\Config($file);
-        $xmlData     = $xmlObj->getNode();
-        if ($xmlData) {
-            $code = $xmlData->code;
-            $license = $this->_license->load($code);
-            return $license;
+        if(file_exists($file)) {
+            $xmlObj      = new \Magento\Framework\Simplexml\Config($file);
+            $xmlData     = $xmlObj->getNode();
+            if ($xmlData) {
+                $code = $xmlData->code;
+                $license = $this->_license->load($code);
+                return $license;
+            }
+            return false;
+        }else{
+            return true;
         }
-        return false;
     }
 }
