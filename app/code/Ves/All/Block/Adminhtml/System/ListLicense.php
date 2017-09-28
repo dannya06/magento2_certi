@@ -64,6 +64,30 @@ class ListLicense extends \Magento\Config\Block\System\Config\Form\Field
     public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         if (!extension_loaded('soap')) {
+            $path = $this->_filesystem->getDirectoryRead(DirectoryList::APP)->getAbsolutePath('code/Ves/');
+            $files = glob($path . '*/*/license.xml');
+            $extensions = [];
+            foreach ($files as $file) {
+                $xmlObj = new \Magento\Framework\Simplexml\Config($file);
+                $xmlData = $xmlObj->getNode();
+                $sku = $xmlData->code;
+                $name = $xmlData->name;
+
+                $licenseCollection = $this->_license->getCollection();
+                foreach ($licenseCollection as $klience => $vlience) {
+                    if($vlience->getData('extension_code') == $sku){
+                        $vlience->delete();
+                    }
+                }
+                
+                $licenseData = [];
+                $licenseData['extension_code'] = $sku;
+                $licenseData['extension_name'] = $name;
+                $licenseData['status'] = 2;
+                $this->_license->setData($licenseData)->save();
+            }
+            
+
             echo __('Please enable the SOAP extension on server, it\'s required in Magento2, check more details at <a href="http://devdocs.magento.com/guides/v2.1/install-gde/system-requirements-tech.html#required-php-extensions" target="_blank">here</a>. If you can not enable the SOAP, please skip the license message, you can active in the future. We are sorry for any inconvenience. ');
             return;
         }

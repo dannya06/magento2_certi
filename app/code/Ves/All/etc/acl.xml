@@ -24,7 +24,7 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Magento_Backend::all_elements" title="Ves ALl">
+                <resource id="Magento_Backend::ves_all_elements" title="Ves ALl">
                     <resource id="Ves_All::ves_all" title="Ves All" sortOrder="10">
                     </resource>
                 </resource>

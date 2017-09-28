@@ -87,14 +87,14 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
         $isElementDisabled = false;
 
         $model = $this->_coreRegistry->registry('megamenu_menu');
-
+        /*
         $this->_eventManager->dispatch(
         'ves_check_license',
         ['obj' => $this,'ex'=>'Ves_Megamenu']
         );
-        if(!$this->getData('is_valid') && !$this->getData('local_valid')){
+       if (($this->hasData('is_valid') && $this->hasData('local_valid')) && !$this->getData('is_valid') && !$this->getData('local_valid')) {
             $isElementDisabled = true;
-        }
+        }*/
 
 
         $menus = $this->listMenu->toOptionArray();

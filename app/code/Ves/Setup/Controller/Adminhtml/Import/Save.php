@@ -144,7 +144,13 @@ class Save extends \Magento\Backend\App\Action
                         foreach ($tables as $tablename => $rows) {
                             $table_name = $this->_resource->getTableName($tablename);
                             $connection->query("SET FOREIGN_KEY_CHECKS=0;");
-                            if(!$overwrite) {
+                            $exist = false;
+                            $check_query = "SHOW TABLES LIKE '".$table_name."'";
+                            $total = $connection->fetchAll($check_query);
+                            if(count($total) > 0) {
+                                $exist = true;
+                            }
+                            if(!$overwrite && $exist) {
                                 $connection->query("TRUNCATE `".$table_name."`");
                             }
                             if($overwrite) {
@@ -157,9 +163,11 @@ class Save extends \Magento\Backend\App\Action
                                 }
                             }
                             foreach ($rows as $row) {
-                                $where = '';
-                                $query_data = $this->_vesImport->buildQueryImport($row, $table_name, $overwrite, $data['store_id']); 
-                                $connection->query($query_data[0].$where, $query_data[1]);
+                                if($exist) {
+                                    $where = '';
+                                    $query_data = $this->_vesImport->buildQueryImport($row, $table_name, $overwrite, $data['store_id']); 
+                                    $connection->query($query_data[0].$where, $query_data[1]);
+                                }
                             }
                         }
                         $connection->query("SET FOREIGN_KEY_CHECKS=1;");
