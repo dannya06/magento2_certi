@@ -240,6 +240,7 @@
     line-height: 32px;
     padding: 0 14px;
     background: #f0f0f0;
+    width: 100%;
 }
 .aw-blog-post__related-posts {
     margin-bottom: 50px;
