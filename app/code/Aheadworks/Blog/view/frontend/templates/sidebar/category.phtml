@@ -1,0 +1,22 @@
+<?php
+   $categories = $block->getCategoryAllCollection();
+?>
+<div class="aw-blog-sidebar__block aw-blog-sidebar-block">
+    <h3 class="aw-blog-sidebar-block__title">Category</h3>
+    <div class="aw-blog-sidebar-block__content">
+        <div class="aw-blog-tags aw-blog-tags--cloud">
+        <ul>
+        	<?php $categoryLinks = [];
+                foreach ($categories as $category):
+                	echo "<li>";
+	                	echo "<a href='".$block->getCategoryLinkHtml($category)."'>";
+	                	echo $category->getName();
+	                	echo "</a>";
+                	echo "</li>";
+                endforeach;
+                $countLinks = count($categoryLinks);
+            ?> 
+        </ul>
+        </div>
+    </div>
+</div>

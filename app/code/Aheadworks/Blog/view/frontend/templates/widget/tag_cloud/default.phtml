@@ -1,0 +1,25 @@
+<?php
+/* @var $block \Aheadworks\Blog\Block\Widget\TagCloud */
+
+// @codingStandardsIgnoreFile
+?>
+<?php
+    $tags = $block->getTags();
+    $title = $this->getTitle() ? : 'Tags';
+?>
+<?php if (count($tags)): ?>
+    <div class="block widget block-aw-blog-tag-cloud">
+        <div class="block-title">
+            <strong><?php echo __($title) ?></strong>
+        </div>
+        <div class="block-content">
+            <div class="aw-blog-tags aw-blog-tags--<?php if ($block->isCloud()): ?>cloud<?php else: ?>plain<?php endif; ?>">
+                <?php foreach ($tags as $tag): ?>
+                    <a href="<?php echo $block->getSearchByTagUrl($tag) ?>" <?php if ($block->isCloud()): ?>style="font-size: <?php echo $block->getTagWeight($tag) ?>%;"<?php endif; ?> class="aw-blog-tags__tag">
+                        <?php echo $tag->getName() ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

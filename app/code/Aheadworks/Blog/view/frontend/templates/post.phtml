@@ -1,0 +1,80 @@
+<?php
+/* @var $block \Aheadworks\Blog\Block\Post */
+?>
+<?php
+    $post = $block->getPostModel();
+    $categories = $block->getCategoryCollection();
+?>
+<?php if ($post): ?>
+    <article class="aw-blog-posts__post aw-blog-post">
+        <header class="aw-blog-post__header">
+            <h2 class="aw-blog-post__title">
+                <a href="<?php echo $block->getPostUrl($post) ?>" class="aw-blog-post__title-link"><?php echo $post->getTitle() ?></a>
+            </h2>
+            <ul class="aw-blog-post__info">
+                <li class="aw-blog-post__info-item"><?php echo $block->formatDate($post->getPublishDate(), \IntlDateFormatter::MEDIUM) ?></li>
+                <?php if ($block->commentsEnabled()): ?>
+                    <li class="aw-blog-post__info-item">
+                        <a href="#" data-url="<?php echo $block->getPostUrl($post) ?>#disqus_thread" data-mage-init='{"awBlogCommentsLink": {}}' class="aw-blog-post__info-comments">
+                            <span class="aw-blog-post__info-comments-icon"></span>
+                            <span class="disqus-comment-count" data-disqus-identifier="<?php echo $post->getId() ?>"></span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if ($block->showSharing()): ?>
+                    <li class="aw-blog-post__info-item">
+                        <?php echo $block->getSharethisEmbedHtml() ?>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </header>
+        <div class="aw-blog-post__content">
+            <?php echo $block->getContent($post) ?>
+        </div>
+        <?php if ($block->showReadMoreButton($post)): ?>
+            <p class="aw-blog-post__read-more-wrapper">
+                <a href="<?php echo $block->getPostUrl($post) ?>" class="aw-blog-post__read-more action primary"><?php echo __('Read more') ?></a>
+            </p>
+        <?php endif; ?>
+        <?php if ($block->isViewMode()): ?>
+            <div class="aw-blog-post__tags">
+                <div class="aw-blog-tags aw-blog-tags--plain">
+                    <?php foreach ($post->getTags() as $tagName): ?>
+                        <a href="<?php echo $block->getSearchByTagUrl($tagName) ?>" class="aw-blog-tags__tag"><?php echo $tagName ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php if ($block->showSharing()): ?>
+                <div class="aw-blog-post__share">
+                    <p class="aw-blog-post__share-title"><?php echo __('Share') ?>:</p>
+                    <div class="aw-blog-post__share-content">
+                        <div class="container">
+                            <?php echo $block->getSharethisEmbedHtml() ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
+        <?php if ($categories->getSize()): ?>
+            <p class="aw-blog-post__author">
+                <?php echo __('Posted in') ?>
+                <?php $categoryLinks = [];
+                    foreach ($categories as $category):
+                        $categoryLinks[] = $block->getCategoryLinkHtml($category);
+                    endforeach;
+                    $countLinks = count($categoryLinks);
+                ?>
+                <?php echo implode(
+                    $countLinks > 2 ? ', ' : '',
+                    [
+                        implode(', ', array_slice($categoryLinks, 0, $countLinks > 2 ? $countLinks - 2 : 0)),
+                        implode(' ' . __('and') . ' ', array_slice($categoryLinks, -2, 2))
+                    ]
+                ) ?>
+            </p>
+        <?php endif; ?>
+        <?php if ($block->isViewMode() && $block->commentsEnabled()): ?>
+            <?php echo $block->getDisqusEmbedHtml() ?>
+        <?php endif; ?>
+    </article>
+<?php endif; ?>
