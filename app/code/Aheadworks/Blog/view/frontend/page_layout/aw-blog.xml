@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_layout.xsd">
+    <update handle="1column"/>
+    <referenceContainer name="main">
+        <container name="aw-blog" htmlTag="div" htmlClass="aw-blog">
+            <container name="aw-blog.sidebar" htmlTag="div" htmlClass="aw-blog__sidebar aw-blog-sidebar" />
+            <container name="aw-blog.main" htmlTag="div" htmlClass="aw-blog__main" />
+        </container>
+    </referenceContainer>
+</layout>
