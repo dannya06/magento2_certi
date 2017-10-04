@@ -3,6 +3,7 @@ This is SWIFT code base using Magento CE 2.1.8
 
 
 Instalation:
+============================================================
 
     git clone https://github.com/icubeus/swift.git
     
@@ -25,6 +26,33 @@ Instalation:
     php bin/magento cache:flush
 
 
+How to update project that base from SWIFT
+=============================================================
+
+    git remote add swift https://github.com/icubeus/swift.git
+
+    git fetch swift --tags
+
+    git merge 2.0.1
+
+    full deploy : setup upgrade, compile, deploy
+
+    DO SOME TESTING
+
+    git push origin <your branch>
+
+
+How to update project that clone from SWIFT
+=============================================================
+
+    git fetch swift --tags
+
+    git checkout tags/2.0.1 -b _2.0.1<branch_name>
+
+    full deploy : setup upgrade, compile, deploy
+
+
+
 Additional extension that excluded from SWIFT:
 
-1. Rapidflow. Can install using composer https://github.com/icubeus/magento2-rapidflow
+- Rapidflow. Can install using composer https://github.com/icubeus/magento2-rapidflow
