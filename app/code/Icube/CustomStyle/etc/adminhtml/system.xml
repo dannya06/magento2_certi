@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="icube" translate="label" sortOrder="1000">
+            <label>Icube Extension</label>
+        </tab>
+        <section id="icube_customstyle" translate="label" type="text" sortOrder="101" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Custom Style</label>
+            <tab>icube</tab>
+            <resource>Icube_CustomStyle::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="general_css" translate="label" type="textarea" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" row="20">
+                    <label>General CSS</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

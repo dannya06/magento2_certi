@@ -1,0 +1,13 @@
+.accordion #icube_customstyle_general #row_icube_customstyle_general_general_css .label {
+	width: 10% !important;
+}
+.accordion #icube_customstyle_general #row_icube_customstyle_general_general_css .value {
+	width: 90% !important;
+}
+.accordion #icube_customstyle_general #row_icube_customstyle_general_general_css .value + td {
+	display: none;
+}
+#icube_customstyle_general_general_css {
+	min-height: 400px;
+	height: 650px;
+}
