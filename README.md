@@ -12,7 +12,7 @@ Instalation:
 
     install site using wizard from browser
 
-    git checkout 2.0.0
+    git checkout 2.0.1
 
     composer update
 
