@@ -23,3 +23,8 @@ Instalation:
     php bin/magento setup:static-content:deploy
 
     php bin/magento cache:flush
+
+
+Additional extension that excluded from SWIFT:
+
+1. Rapidflow. Can install using composer https://github.com/icubeus/magento2-rapidflow
