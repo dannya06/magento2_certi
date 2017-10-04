@@ -45,9 +45,9 @@ How to update project that base from SWIFT
 How to update project that clone from SWIFT
 =============================================================
 
-    git fetch swift --tags
+    git fetch origin --tags
 
-    git checkout tags/2.0.1 -b _2.0.1<branch_name>
+    git checkout tags/2.0.1 -b <branch_name>_2.0.1
 
     full deploy : setup upgrade, compile, deploy
 
