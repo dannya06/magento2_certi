@@ -1,0 +1,12 @@
+<?php 
+$general_css = $block->getGeneralCss();
+?>
+
+<?php if ($general_css && !empty($general_css)): ?>
+	<!-- ICUBE general css-->
+	<style type="text/css">
+<?php endif ?>
+<?php echo $general_css ?>
+<?php if ($general_css && !empty($general_css)): ?>
+	</style>
+<?php endif ?>
