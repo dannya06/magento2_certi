@@ -1,72 +1,79 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Post;
 
-use Magento\Backend\App\Action;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
 
-class Edit extends \Aheadworks\Blog\Controller\Adminhtml\Post
+/**
+ * Class Edit
+ * @package Aheadworks\Blog\Controller\Adminhtml\Post
+ */
+class Edit extends \Magento\Backend\App\Action
 {
     /**
-     * Core registry
+     * Authorization level of a basic admin session
      *
-     * @var \Magento\Framework\Registry
+     * @see _isAllowed()
      */
-    protected $coreRegistry = null;
+    const ADMIN_RESOURCE = 'Aheadworks_Blog::posts';
 
     /**
-     * @var \Aheadworks\Blog\Model\PostFactory
+     * @var PostRepositoryInterface
      */
-    protected $postFactory;
+    private $postRepository;
 
     /**
-     * @param Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Aheadworks\Blog\Model\PostFactory $postFactory
-     * @param \Magento\Framework\Registry $registry
+     * @var PageFactory
+     */
+    private $resultPageFactory;
+
+    /**
+     * @param Context $context
+     * @param PostRepositoryInterface $postRepository
+     * @param PageFactory $resultPageFactory
      */
     public function __construct(
-        Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Aheadworks\Blog\Model\PostFactory $postFactory,
-        \Magento\Framework\Registry $registry
+        Context $context,
+        PostRepositoryInterface $postRepository,
+        PageFactory $resultPageFactory
     ) {
-        $this->postFactory = $postFactory;
-        $this->coreRegistry = $registry;
-        parent::__construct($context, $resultPageFactory);
+        parent::__construct($context);
+        $this->postRepository = $postRepository;
+        $this->resultPageFactory = $resultPageFactory;
     }
 
     /**
-     * Edit action
+     * Post edit action
      *
      * @return \Magento\Backend\Model\View\Result\Page
      */
     public function execute()
     {
-        /** @var $post \Aheadworks\Blog\Model\Post */
-        $post = $this->postFactory->create();
-        $postId = $this->getRequest()->getParam('post_id');
+        $postId = (int)$this->getRequest()->getParam('id');
         if ($postId) {
-            $post->load($postId);
-            if (!$post->getId()) {
-                $this->messageManager->addError(__('This post no longer exists.'));
-                /** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+            try {
+                $this->postRepository->get($postId);
+            } catch (NoSuchEntityException $exception) {
+                $this->messageManager->addException($exception, __('Something went wrong while editing the post.'));
                 $resultRedirect = $this->resultRedirectFactory->create();
-
-                return $resultRedirect->setPath('*/*/*');
+                $resultRedirect->setPath('*/*/');
+                return $resultRedirect;
             }
         }
-        $data = $this->_getSession()->getFormData(true);
-        if (!empty($data)) {
-            $post->addData($data);
-        }
-
-        $this->coreRegistry->register('aw_blog_post', $post);
-
-        $resultPage = $this->_getResultPage();
-        $resultPage->setActiveMenu('Aheadworks_Blog::posts');
-        $resultPage->getConfig()->getTitle()->prepend(
-            $post->getId() ?  __('Edit Post') : __('New Post')
-        );
-
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage
+            ->setActiveMenu('Aheadworks_Blog::posts')
+            ->getConfig()->getTitle()->prepend(
+                $postId ? __('Edit Post') : __('New Post')
+            );
         return $resultPage;
     }
 }

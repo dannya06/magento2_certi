@@ -1,4 +1,9 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Source\Post\SharingButtons;
 
 /**
@@ -7,53 +12,38 @@ namespace Aheadworks\Blog\Model\Source\Post\SharingButtons;
  */
 class DisplayAt implements \Magento\Framework\Option\ArrayInterface
 {
-    const POST  = 1;
+    /**
+     * 'Post' option
+     */
+    const POST = 1;
+
+    /**
+     * 'List of Posts' option
+     */
     const POST_LIST = 2;
 
-    const POST_LABEL = 'Post';
-    const POST_LIST_LABEL = 'List of Posts';
-
-
     /**
-     * @var null|array
+     * @var array
      */
-    protected $optionArray = null;
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            self::POST => __(self::POST_LABEL),
-            self::POST_LIST => __(self::POST_LIST_LABEL)
-        ];
-    }
+    private $options;
 
     /**
      * @return array
      */
     public function toOptionArray()
     {
-        if ($this->optionArray === null) {
-            $this->optionArray = [];
-            foreach ($this->getOptions() as $value => $label) {
-                $this->optionArray[] = ['value' => $value, 'label' => $label];
-            }
+        if (!$this->options) {
+            $this->options = [
+                [
+                    'value' => self::POST,
+                    'label' => __('Post')
+                ],
+                [
+                    'value' => self::POST_LIST,
+                    'label' => __('List of Posts')
+                ]
+            ];
         }
-        return $this->optionArray;
-    }
-
-    /**
-     * @param int $value
-     * @return null|\Magento\Framework\Phrase
-     */
-    public function getOptionLabelByValue($value)
-    {
-        $options = $this->getOptions();
-        if (array_key_exists($value, $options)) {
-            return $options[$value];
-        }
-        return null;
+        return $this->options;
     }
 }

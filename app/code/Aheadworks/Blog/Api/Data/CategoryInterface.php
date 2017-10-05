@@ -1,8 +1,13 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api\Data;
 
 /**
- * Category interface.
+ * Category interface
  * @api
  */
 interface CategoryInterface extends \Magento\Framework\Api\ExtensibleDataInterface
@@ -16,6 +21,8 @@ interface CategoryInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
     const NAME = 'name';
     const STATUS = 'status';
     const SORT_ORDER = 'sort_order';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
     const STORE_IDS = 'store_ids';
     const META_TITLE = 'meta_title';
     const META_DESCRIPTION = 'meta_description';
@@ -97,6 +104,36 @@ interface CategoryInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
     public function setSortOrder($sortOrder);
 
     /**
+     * Get creation time
+     *
+     * @return string|null
+     */
+    public function getCreatedAt();
+
+    /**
+     * Set creation time
+     *
+     * @param string $createdAt
+     * @return $this
+     */
+    public function setCreatedAt($createdAt);
+
+    /**
+     * Get update time
+     *
+     * @return string|null
+     */
+    public function getUpdatedAt();
+
+    /**
+     * Set update time
+     *
+     * @param string $updatedAt
+     * @return $this
+     */
+    public function setUpdatedAt($updatedAt);
+
+    /**
      * Get store IDs
      *
      * @return int[]
@@ -142,14 +179,14 @@ interface CategoryInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
     public function setMetaDescription($metaDescription);
 
     /**
-     * Retrieve existing extension attributes object or create a new one.
+     * Retrieve existing extension attributes object or create a new one
      *
      * @return \Aheadworks\Blog\Api\Data\CategoryExtensionInterface|null
      */
     public function getExtensionAttributes();
 
     /**
-     * Set an extension attributes object.
+     * Set an extension attributes object
      *
      * @param \Aheadworks\Blog\Api\Data\CategoryExtensionInterface $extensionAttributes
      * @return $this

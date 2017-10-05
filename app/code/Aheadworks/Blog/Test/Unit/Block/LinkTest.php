@@ -1,38 +1,55 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Block\Link;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template\Context;
 
 /**
  * Test for \Aheadworks\Blog\Block\Link
  */
 class LinkTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Link constants defined for test
+     */
     const LINK_URL = 'http://localhost';
     const LINK_TITLE = 'Link';
     const LINK_LABEL = 'Link';
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Block\Link
+     * @var Link
      */
     private $block;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $escaperStub = $this->getMock('Magento\Framework\Escaper', ['escapeHtml'], [], '', false);
-        $escaperStub->expects($this->any())
+        $escaperMock = $this->getMock(Escaper::class, ['escapeHtml'], [], '', false);
+        $escaperMock->expects($this->any())
             ->method('escapeHtml')
             ->will($this->returnArgument(0));
-        $contextStub = $objectManager->getObject(
-            'Magento\Framework\View\Element\Template\Context',
-            ['escaper' => $escaperStub]
+        $contextMock = $objectManager->getObject(
+            Context::class,
+            ['escaper' => $escaperMock]
         );
 
         $this->block = $objectManager->getObject(
-            'Aheadworks\Blog\Block\Link',
-            ['context' => $contextStub]
+            Link::class,
+            ['context' => $contextMock]
         );
     }
 

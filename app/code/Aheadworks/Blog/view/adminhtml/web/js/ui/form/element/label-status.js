@@ -1,3 +1,8 @@
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'ko',
     'Magento_Ui/js/form/element/abstract'
@@ -10,11 +15,17 @@ define([
             value: 'draft',
             template: 'Aheadworks_Blog/ui/form/element/label-status'
         },
-        initObservable: function() {
+
+        /**
+         * Initialize observable properties
+         */
+        initObservable: function () {
             this._super();
-            this.statusLabel = ko.computed(function() {
+            this.statusLabel = ko.computed(function () {
+
                 return this.statusOptions[this.value()];
             }, this);
+
             return this;
         }
     });

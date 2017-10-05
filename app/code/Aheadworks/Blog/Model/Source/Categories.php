@@ -1,4 +1,9 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
@@ -8,7 +13,7 @@ use Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory as CategoryCo
  * Class Categories
  * @package Aheadworks\Blog\Model\Source
  */
-class Categories extends \Magento\Framework\DataObject implements OptionSourceInterface
+class Categories implements OptionSourceInterface
 {
     /**
      * @var \Aheadworks\Blog\Model\ResourceModel\Category\Collection
@@ -16,17 +21,16 @@ class Categories extends \Magento\Framework\DataObject implements OptionSourceIn
     private $categoryCollection;
 
     /**
-     * Categories constructor.
-     *
-     * @param CategoryCollectionFactory $categoryCollectionFactory
-     * @param array $data
+     * @var array
      */
-    public function __construct(
-        CategoryCollectionFactory $categoryCollectionFactory,
-        array $data = []
-    ) {
+    private $options;
+
+    /**
+     * @param CategoryCollectionFactory $categoryCollectionFactory
+     */
+    public function __construct(CategoryCollectionFactory $categoryCollectionFactory)
+    {
         $this->categoryCollection = $categoryCollectionFactory->create();
-        parent::__construct($data);
     }
 
     /**
@@ -34,6 +38,9 @@ class Categories extends \Magento\Framework\DataObject implements OptionSourceIn
      */
     public function toOptionArray()
     {
-        return $this->categoryCollection->toOptionArray();
+        if (!$this->options) {
+            $this->options = $this->categoryCollection->toOptionArray();
+        }
+        return $this->options;
     }
 }

@@ -1,67 +1,66 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Comment;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Controller\Adminhtml\Comment\Index;
+use Aheadworks\Blog\Model\DisqusCommentsService;
+use Magento\Backend\Model\View\Result\RedirectFactory;
+use Magento\Backend\Model\View\Result\Redirect as ResultRedirect;
+use Magento\Backend\App\Action\Context;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Comment\Index
  */
 class IndexTest extends \PHPUnit_Framework_TestCase
 {
-    const DISQUS_ADMIN_URL = 'https://forum_code.disqus.com/admin/';
-
     /**
-     * @var \Aheadworks\Blog\Controller\Adminhtml\Comment\Index
+     * @var Index
      */
     private $action;
 
     /**
-     * @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
+     * @var DisqusCommentsService|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultRedirect;
+    private $disqusCommentsServiceMock;
 
+    /**
+     * @var RedirectFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $resultRedirectFactoryMock;
+
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-
-        $this->resultRedirect = $this->getMock(
-            'Magento\Framework\Controller\Result\Redirect',
-            ['setUrl'],
+        $this->disqusCommentsServiceMock = $this->getMock(
+            DisqusCommentsService::class,
+            ['getModerateUrl'],
             [],
             '',
             false
         );
-        $this->resultRedirect->expects($this->any())
-            ->method('setUrl')
-            ->will($this->returnSelf());
-        $resultRedirectFactoryStub = $this->getMock(
-            'Magento\Backend\Model\View\Result\RedirectFactory',
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $resultRedirectFactoryStub->expects($this->any())
-            ->method('create')
-            ->will($this->returnValue($this->resultRedirect));
-
-        $disqusStub = $this->getMock('Aheadworks\Blog\Model\Disqus', ['getAdminUrl'], [], '', false);
-        $disqusStub->expects($this->any())
-            ->method('getAdminUrl')
-            ->will($this->returnValue(self::DISQUS_ADMIN_URL));
+        $this->resultRedirectFactoryMock = $this->getMock(RedirectFactory::class, ['create'], [], '', false);
 
         $context = $objectManager->getObject(
-            'Magento\Backend\App\Action\Context',
+            Context::class,
             [
-                'resultRedirectFactory' => $resultRedirectFactoryStub
+                'resultRedirectFactory' => $this->resultRedirectFactoryMock
             ]
         );
-
         $this->action = $objectManager->getObject(
-            'Aheadworks\Blog\Controller\Adminhtml\Comment\Index',
+            Index::class,
             [
                 'context' => $context,
-                'disqus' => $disqusStub
+                'disqusCommentsService' => $this->disqusCommentsServiceMock
             ]
         );
     }
@@ -71,9 +70,20 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteResult()
     {
-        $this->resultRedirect->expects($this->atLeastOnce())
+        $url = 'https://disqus.com/admin/moderate';
+
+        $this->disqusCommentsServiceMock->expects($this->once())
+            ->method('getModerateUrl')
+            ->willReturn($url);
+        $resultRedirectMock = $this->getMock(ResultRedirect::class, ['setUrl'], [], '', false);
+        $resultRedirectMock->expects($this->once())
             ->method('setUrl')
-            ->with($this->equalTo(self::DISQUS_ADMIN_URL));
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+            ->with($url)
+            ->willReturnSelf();
+        $this->resultRedirectFactoryMock->expects($this->once())
+            ->method('create')
+            ->willReturn($resultRedirectMock);
+
+        $this->assertSame($resultRedirectMock, $this->action->execute());
     }
 }

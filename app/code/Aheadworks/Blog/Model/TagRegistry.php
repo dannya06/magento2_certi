@@ -1,125 +1,94 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model;
 
+use Aheadworks\Blog\Api\Data\TagInterface;
+use Aheadworks\Blog\Api\Data\TagInterfaceFactory;
+use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
- * Registry for \Aheadworks\Blog\Model\Tag
+ * Registry for \Aheadworks\Blog\Api\Data\TagInterface
  */
 class TagRegistry
 {
     /**
-     * @var TagFactory
+     * @var EntityManager
      */
-    private $tagFactory;
+    private $entityManager;
+
+    /**
+     * @var TagInterfaceFactory
+     */
+    private $tagDataFactory;
 
     /**
      * @var array
      */
-    private $tagRegistryById = [];
+    private $tagRegistry = [];
 
     /**
-     * @var array
+     * @param EntityManager $entityManager
+     * @param TagInterfaceFactory $tagDataFactory
      */
-    private $tagRegistryByName = [];
-
-    /**
-     * TagRegistry constructor.
-     * @param TagFactory $tagFactory
-     */
-    public function __construct(TagFactory $tagFactory)
-    {
-        $this->tagFactory = $tagFactory;
+    public function __construct(
+        EntityManager $entityManager,
+        TagInterfaceFactory $tagDataFactory
+    ) {
+        $this->entityManager = $entityManager;
+        $this->tagDataFactory = $tagDataFactory;
     }
 
     /**
-     * Retrieve Tag Model from registry by ID
+     * Retrieve Tag from registry
      *
      * @param int $tagId
-     * @return Tag
+     * @return TagInterface
      * @throws NoSuchEntityException
      */
     public function retrieve($tagId)
     {
-        if (!isset($this->tagRegistryById[$tagId])) {
-            /** @var Tag $tag */
-            $tag = $this->tagFactory->create();
-            $tag->load($tagId);
+        if (!isset($this->tagRegistry[$tagId])) {
+            /** @var TagInterface $tag */
+            $tag = $this->tagDataFactory->create();
+            $this->entityManager->load($tag, $tagId);
             if (!$tag->getId()) {
                 throw NoSuchEntityException::singleField('tagId', $tagId);
             } else {
-                $this->tagRegistryById[$tagId] = $tag;
-                $this->tagRegistryByName[$tag->getName()] = $tag;
+                $this->tagRegistry[$tagId] = $tag;
             }
         }
-        return $this->tagRegistryById[$tagId];
+        return $this->tagRegistry[$tagId];
     }
 
     /**
-     * Retrieve Tag Model from registry by name
-     *
-     * @param string $name name
-     * @return Tag
-     * @throws NoSuchEntityException
-     */
-    public function retrieveByName($name)
-    {
-        if (!isset($this->tagRegistryByName[$name])) {
-            /** @var Tag $tag */
-            $tag = $this->tagFactory->create();
-            $tag->loadByName($name);
-            if (!$tag->getId()) {
-                throw NoSuchEntityException::singleField('name', $name);
-            } else {
-                $this->tagRegistryById[$tag->getId()] = $tag;
-                $this->tagRegistryByName[$name] = $tag;
-            }
-        }
-        return $this->tagRegistryByName[$name];
-    }
-
-    /**
-     * Remove instance of the Tag Model from registry by ID
+     * Remove instance of the Tag from registry
      *
      * @param int $tagId
      * @return void
      */
     public function remove($tagId)
     {
-        if (isset($this->tagRegistryById[$tagId])) {
-            /** @var Tag $tag */
-            $tag = $this->tagRegistryById[$tagId];
-            unset($this->tagRegistryById[$tagId]);
-            unset($this->tagRegistryByName[$tag->getName()]);
+        if (isset($this->tagRegistry[$tagId])) {
+            unset($this->tagRegistry[$tagId]);
         }
     }
 
     /**
-     * Remove instance of the Tag Model from registry by name
+     * Replace existing Tag with a new one
      *
-     * @param string $name name
-     * @return void
-     */
-    public function removeByName($name)
-    {
-        if (isset($this->tagRegistryByName[$name])) {
-            /** @var Tag $tag */
-            $tag = $this->tagRegistryByName[$name];
-            unset($this->tagRegistryById[$tag->getId()]);
-            unset($this->tagRegistryByName[$name]);
-        }
-    }
-
-    /**
-     * Replace existing Tag Model with a new one.
-     *
-     * @param Tag $tag
+     * @param TagInterface $tag
      * @return $this
      */
-    public function push(Tag $tag)
+    public function push(TagInterface $tag)
     {
-        $this->tagRegistryById[$tag->getId()] = $tag;
-        $this->tagRegistryByName[$tag->getName()] = $tag;
+        if ($tagId = $tag->getId()) {
+            $this->tagRegistry[$tagId] = $tag;
+        }
         return $this;
     }
 }

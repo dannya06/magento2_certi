@@ -1,15 +1,26 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller;
 
-use Aheadworks\Blog\Helper\Config;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Api\TagRepositoryInterface;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Url;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\ForwardFactory;
 use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Registry;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class Action
  * @package Aheadworks\Blog\Controller
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class Action extends \Magento\Framework\App\Action\Action
 {
@@ -29,69 +40,70 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     protected $storeManager;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var Registry
      */
     protected $coreRegistry;
 
     /**
-     * @var \Aheadworks\Blog\Helper\Config
+     * @var CategoryRepositoryInterface
      */
-    protected $configHelper;
+    protected $categoryRepository;
 
     /**
-     * @var \Aheadworks\Blog\Helper\Url
+     * @var PostRepositoryInterface
      */
-    protected $urlHelper;
+    protected $postRepository;
 
     /**
-     * @var \Aheadworks\Blog\Model\CategoryFactory
+     * @var TagRepositoryInterface
      */
-    protected $categoryFactory;
+    protected $tagRepository;
 
     /**
-     * @var \Aheadworks\Blog\Model\PostFactory
+     * @var Config
      */
-    protected $postFactory;
+    protected $config;
 
     /**
-     * @var \Aheadworks\Blog\Model\TagFactory
+     * @var Url
      */
-    protected $tagFactory;
+    protected $url;
 
     /**
      * @param Context $context
      * @param PageFactory $resultPageFactory
      * @param ForwardFactory $resultForwardFactory
      * @param StoreManagerInterface $storeManager
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param Config $configHelper
-     * @param \Aheadworks\Blog\Helper\Url $urlHelper
-     * @param \Aheadworks\Blog\Model\CategoryFactory $categoryFactory
-     * @param \Aheadworks\Blog\Model\PostFactory $postFactory
-     * @param \Aheadworks\Blog\Model\TagFactory $tagFactory
+     * @param Registry $coreRegistry
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param PostRepositoryInterface $postRepository
+     * @param TagRepositoryInterface $tagRepository
+     * @param Config $config
+     * @param Url $url
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
         PageFactory $resultPageFactory,
         ForwardFactory $resultForwardFactory,
         StoreManagerInterface $storeManager,
-        \Magento\Framework\Registry $coreRegistry,
-        \Aheadworks\Blog\Helper\Config $configHelper,
-        \Aheadworks\Blog\Helper\Url $urlHelper,
-        \Aheadworks\Blog\Model\CategoryFactory $categoryFactory,
-        \Aheadworks\Blog\Model\PostFactory $postFactory,
-        \Aheadworks\Blog\Model\TagFactory $tagFactory
+        Registry $coreRegistry,
+        CategoryRepositoryInterface $categoryRepository,
+        PostRepositoryInterface $postRepository,
+        TagRepositoryInterface $tagRepository,
+        Config $config,
+        Url $url
     ) {
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
         $this->resultForwardFactory = $resultForwardFactory;
         $this->storeManager = $storeManager;
         $this->coreRegistry = $coreRegistry;
-        $this->configHelper = $configHelper;
-        $this->urlHelper = $urlHelper;
-        $this->categoryFactory = $categoryFactory;
-        $this->postFactory = $postFactory;
-        $this->tagFactory = $tagFactory;
+        $this->categoryRepository = $categoryRepository;
+        $this->postRepository = $postRepository;
+        $this->tagRepository = $tagRepository;
+        $this->config = $config;
+        $this->url = $url;
     }
 
     /**
@@ -102,7 +114,12 @@ abstract class Action extends \Magento\Framework\App\Action\Action
      */
     public function dispatch(\Magento\Framework\App\RequestInterface $request)
     {
-        $this->coreRegistry->register('aw_blog_action', true, true);
+        if (!$this->config->isBlogEnabled()) {
+            /**  @var \Magento\Framework\Controller\Result\Forward $forward */
+            $forward = $this->resultForwardFactory->create();
+            return $forward->forward('noroute');
+        }
+        $this->coreRegistry->register('blog_action', true, true);
         return parent::dispatch($request);
     }
 
@@ -113,53 +130,27 @@ abstract class Action extends \Magento\Framework\App\Action\Action
      */
     protected function getBlogTitle()
     {
-        return $this->configHelper->getValue(Config::XML_GENERAL_BLOG_TITLE);
+        return $this->config->getBlogTitle();
     }
 
     /**
-     * Get prepared result page
+     * Retrieves blog meta description
      *
-     * @param array $params
-     * @return \Magento\Framework\View\Result\Page
+     * @return mixed
      */
-    protected function getResultPage($params = [])
+    protected function getBlogMetaDescription()
     {
-        /** $resultPage @var \Magento\Framework\View\Result\Page */
-        $resultPage = $this->resultPageFactory->create();
-        if (isset($params['title'])) {
-            $resultPage->getConfig()->getTitle()->set($params['title']);
-        }
-        if (isset($params['meta'])) {
-            foreach ($params['meta'] as $name => $content) {
-                $resultPage->getConfig()->setMetadata($name, $content);
-            }
-        }
-        /** @var \Magento\Theme\Block\Html\Breadcrumbs $breadcrumbs */
-        $breadcrumbs = $resultPage->getLayout()->getBlock('breadcrumbs');
-        if ($breadcrumbs) {
-            $breadcrumbs->addCrumb(
-                'home',
-                [
-                    'label' => __('Home'),
-                    'link' => $this->storeManager->getStore()->getBaseUrl()
-                ]
-            );
-            if (isset($params['crumbs']) && !empty($params['crumbs'])) {
-                $breadcrumbs->addCrumb(
-                    'blog_home',
-                    [
-                        'label' => $this->getBlogTitle(),
-                        'link' => $this->urlHelper->getBlogHomeUrl()
-                    ]
-                );
-                foreach ($params['crumbs'] as $crumb) {
-                    $breadcrumbs->addCrumb($crumb['name'], $crumb['info']);
-                }
-            } else {
-                $breadcrumbs->addCrumb('blog_home', ['label' => $this->getBlogTitle()]);
-            }
-        }
-        return $resultPage;
+        return $this->config->getBlogMetaDescription();
+    }
+
+    /**
+     * Get current store ID
+     *
+     * @return int
+     */
+    protected function getStoreId()
+    {
+        return $this->storeManager->getStore()->getId();
     }
 
     /**

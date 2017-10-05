@@ -1,8 +1,18 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block;
 
 /**
  * Link to blog page
+ *
+ * @method Link setHref(string $href)
+ * @method Link setTitle(string $title)
+ * @method Link setLabel(string $label)
+ *
  * @package Aheadworks\Blog\Block
  */
 class Link extends \Magento\Framework\View\Element\Html\Link
@@ -24,6 +34,7 @@ class Link extends \Magento\Framework\View\Element\Html\Link
      */
     protected function _toHtml()
     {
-        return '<a ' . $this->getLinkAttributes() . ' >' . $this->escapeHtml($this->getLabel()) . '</a>';
+        return '<a ' . $this->getLinkAttributes() . ' >'
+            . $this->escapeHtml($this->getLabel()) . '</a>';
     }
 }

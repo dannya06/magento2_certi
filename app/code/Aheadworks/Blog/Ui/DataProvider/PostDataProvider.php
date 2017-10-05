@@ -1,42 +1,39 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Ui\DataProvider;
 
-use \Aheadworks\Blog\Model\ResourceModel\Post\CollectionFactory;
-use \Aheadworks\Blog\Model\Source\Post\Status;
+use Aheadworks\Blog\Model\ResourceModel\Post\Grid\CollectionFactory;
+use Aheadworks\Blog\Model\Source\Post\Status;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Aheadworks\Blog\Model\ResourceModel\Post\Collection;
 
 /**
- * Class BlogDataProvider
+ * Post data provider
  */
 class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
     /**
-     * @var \Aheadworks\Blog\Helper\Disqus
+     * @var RequestInterface
      */
-    protected $disqusHelper;
+    private $request;
 
     /**
-     * @var array|null
+     * @var DataPersistorInterface
      */
-    protected $commentsDataSort = null;
+    private $dataPersistor;
 
     /**
-     * @var array|null
-     */
-    protected $commentsDataFilters = null;
-
-    /**
-     * @var string|null
-     */
-    protected $virtualStatusSort = null;
-
-    /**
-     * Construct
-     *
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
      * @param CollectionFactory $collectionFactory
-     * @param \Aheadworks\Blog\Helper\Disqus $disqusHelper
+     * @param RequestInterface $request
+     * @param DataPersistorInterface $dataPersistor
      * @param array $meta
      * @param array $data
      */
@@ -45,169 +42,61 @@ class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $primaryFieldName,
         $requestFieldName,
         CollectionFactory $collectionFactory,
-        \Aheadworks\Blog\Helper\Disqus $disqusHelper,
+        RequestInterface $request,
+        DataPersistorInterface $dataPersistor,
         array $meta = [],
         array $data = []
     ) {
-        parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
-        $this->disqusHelper = $disqusHelper;
-        $this->collection = $collectionFactory->create();
-        $this->addOrder('post_id', 'DESC');
+        parent::__construct(
+            $name,
+            $primaryFieldName,
+            $requestFieldName,
+            $meta,
+            $data
+        );
+        $this->collection = $collectionFactory->create()
+            ->setFlag(Collection::IS_NEED_TO_ATTACH_RELATED_PRODUCT_IDS, false)
+        ;
+        $this->request = $request;
+        $this->dataPersistor = $dataPersistor;
     }
 
     /**
-     * @param string $field
-     * @param string $direction
-     */
-    public function addOrder($field, $direction)
-    {
-        $select = $this->getCollection()->getSelect();
-        $select->reset(\Magento\Framework\DB\Select::ORDER);
-        $this->commentsDataSort = null;
-        if (in_array($field, ['published_comments', 'new_comments'])) {
-            $this->commentsDataSort = ['field' => $field, 'dir' => $direction];
-        } elseif ($field == 'status') {
-            $this->virtualStatusSort = $direction;
-        } else {
-            $select->order(new \Zend_Db_Expr($field . ' ' . $direction));
-        }
-    }
-
-    /**
-     * Get data
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getData()
     {
-        if (!$this->getCollection()->isLoaded()) {
-            $this->getCollection()->load();
-            $this->attachCommentsData();
-            $this->attachVirtualStatuses();
-        }
-        $data = parent::getData();
-        if (is_array($this->commentsDataSort)) {
-            usort($data['items'], [$this, 'sortByCommentsData']);
-        }
-        if ($this->virtualStatusSort !== null) {
-            usort($data['items'], [$this, 'sortByVirtualStatus']);
-        }
-        if ($this->commentsDataFilters !== null) {
-            $data['items'] = array_values(
-                array_filter($data['items'], [$this, 'filterCommentsData'])
-            );
+        $data = [];
+        $dataFromForm = $this->dataPersistor->get('aw_blog_post');
+        if (!empty($dataFromForm)) {
+            $object = $this->collection->getNewEmptyItem();
+            $object->setData($dataFromForm);
+            $data[$object->getId()] = $object->getData();
+            $this->dataPersistor->clear('aw_blog_post');
+        } else {
+            $id = $this->request->getParam($this->getRequestFieldName());
+            /** @var \Aheadworks\Blog\Model\Post $post */
+            foreach ($this->getCollection()->getItems() as $post) {
+                if ($id == $post->getId()) {
+                    $data[$id] = $this->prepareFormData($post->getData());
+                }
+            }
         }
         return $data;
     }
 
     /**
-     * @return void
-     */
-    protected function attachCommentsData()
-    {
-        foreach ($this->getCollection() as $item) {
-            $item->setNewComments($this->disqusHelper->getNewCommentsNum($item->getId()));
-            $item->setPublishedComments($this->disqusHelper->getPublishedCommentsNum($item->getId()));
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function attachVirtualStatuses()
-    {
-        $now = date(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT, time());
-        foreach ($this->getCollection() as $item) {
-            if ($item->getStatus() != Status::DRAFT) {
-                if ($item->getPublishDate() > $now) {
-                    $item->setStatus(Status::PUBLICATION_SCHEDULED);
-                } else {
-                    $item->setStatus(Status::PUBLICATION_PUBLISHED);
-                }
-            }
-        }
-    }
-
-    /**
-     * Sort data by published or new comments
+     * Prepare form data
      *
-     * @param array $item1
-     * @param array $item2
-     * @return int
+     * @param array $itemData
+     * @return array
      */
-    protected function sortByCommentsData(array $item1, array $item2)
+    private function prepareFormData(array $itemData)
     {
-        $result = 0;
-        $field = $this->commentsDataSort['field'];
-        $direction = $this->commentsDataSort['dir'];
-
-        if (!isset($item1[$field])) {
-            $result = isset($item2[$field]) ? -1 : 0;
-        } else {
-            if (!isset($item2[$field])) {
-                $result = 1;
-            } else {
-                if ($item1[$field] == $item2[$field]) {
-                    $result = 0;
-                } else {
-                    $result = $item1[$field] < $item2[$field] ? -1 : 1;
-                }
-            }
-
-        }
-
-        return strtolower($direction) == 'asc' ? $result : -$result;
-    }
-
-    /**
-     * Sort data by virtual status
-     *
-     * @param array $item1
-     * @param array $item2
-     * @return int
-     */
-    protected function sortByVirtualStatus(array $item1, array $item2)
-    {
-        $result = strnatcasecmp($item1['status'], $item2['status']);
-        return strtolower($this->virtualStatusSort) == 'asc' ? $result : -$result;
-    }
-
-    /**
-     * @param array $item
-     * @return bool
-     */
-    protected function filterCommentsData(array $item)
-    {
-        foreach ($this->commentsDataFilters as $field => $filters) {
-            /** @var \Magento\Framework\Api\Filter $filter */
-            foreach ($filters as $condition => $filter) {
-                $value = $filter->getValue();
-                if ($condition == 'gteq' && $item[$field] < $value
-                    || $condition == 'lteq' && $item[$field] > $value
-                ) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function addFilter(\Magento\Framework\Api\Filter $filter)
-    {
-        $field = $filter->getField();
-        if (in_array($field, ['published_comments', 'new_comments'])) {
-            if ($this->commentsDataFilters === null) {
-                $this->commentsDataFilters = [];
-            }
-            $this->commentsDataFilters[$field][$filter->getConditionType()] = $filter;
-        } elseif ($field == 'status') {
-            $allowedStatuses = $filter->getValue();
-            $this->getCollection()->addStatusFilter($allowedStatuses);
-        } else {
-            parent::addFilter($filter);
-        }
+        $itemData['is_published'] = $itemData['status'] == Status::PUBLICATION ? 1 : 0;
+        $itemData['is_scheduled'] = $itemData['status'] == Status::SCHEDULED ? 1 : 0;
+        $itemData['has_short_content'] = !empty($itemData['short_content']);
+        $itemData['tag_names'] = array_values($itemData['tag_names']);
+        return $itemData;
     }
 }

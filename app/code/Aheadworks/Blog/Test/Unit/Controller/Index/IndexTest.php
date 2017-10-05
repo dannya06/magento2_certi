@@ -1,158 +1,163 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Controller\Index;
 
-use Aheadworks\Blog\Model\Config;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Controller\Index\Index;
+use Magento\Framework\View\Result\Page;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\View\Page\Config;
+use Magento\Framework\View\Page\Title;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\View\Result\PageFactory;
+use Aheadworks\Blog\Model\Config as BlogConfig;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\App\Response\RedirectInterface;
+use Magento\Framework\App\Action\Context;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Index\Index
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class IndexTest extends \PHPUnit_Framework_TestCase
 {
-    const TAG_NAME = 'tag';
+    /**#@+
+     * Constants defined for test
+     */
     const BLOG_TITLE_CONFIG_VALUE = 'Blog';
     const META_DESCRIPTION_CONFIG_VALUE = 'Meta description';
-    const ERROR_MESSAGE = 'Not found.';
     const REFERER_URL = 'http://localhost';
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Controller\Index\Index
+     * @var Index
      */
     private $action;
 
     /**
-     * @var \Magento\Framework\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
+     * @var Page|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultPage;
+    private $resultPageMock;
 
     /**
-     * @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
+     * @var Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultRedirect;
+    private $resultRedirectMock;
 
     /**
-     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $pageConfig;
+    private $pageConfigMock;
 
     /**
-     * @var \Magento\Framework\View\Page\Title|\PHPUnit_Framework_MockObject_MockObject
+     * @var Title|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $title;
+    private $titleMock;
 
     /**
-     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $messageManager;
+    private $messageManagerMock;
 
     /**
-     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $request;
+    private $requestMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\TagRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * Init mocks for tests
+     *
+     * @return void
      */
-    private $tagRepository;
-
-    /**
-     * @var \Aheadworks\Blog\Api\Data\TagInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $tag;
-
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->title = $this->getMock('Magento\Framework\View\Page\Title', ['set'], [], '', false);
-        $this->pageConfig = $this->getMock(
-            'Magento\Framework\View\Page\Config',
+        $this->titleMock = $this->getMock(Title::class, ['set'], [], '', false);
+        $this->pageConfigMock = $this->getMock(
+            Config::class,
             ['getTitle', 'setMetadata'],
             [],
             '',
             false
         );
-        $this->pageConfig->expects($this->any())
+        $this->pageConfigMock->expects($this->any())
             ->method('getTitle')
-            ->will($this->returnValue($this->title));
-        $this->resultPage = $this->getMock('Magento\Framework\View\Result\Page', ['getConfig'], [], '', false);
-        $this->resultPage->expects($this->any())
+            ->will($this->returnValue($this->titleMock));
+        $this->resultPageMock = $this->getMock(Page::class, ['getConfig'], [], '', false);
+        $this->resultPageMock->expects($this->any())
             ->method('getConfig')
-            ->will($this->returnValue($this->pageConfig));
-        $resultPageFactoryStub = $this->getMock(
-            'Magento\Framework\View\Result\PageFactory',
+            ->will($this->returnValue($this->pageConfigMock));
+        $resultPageFactoryMock = $this->getMock(
+            PageFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $resultPageFactoryStub->expects($this->any())
+        $resultPageFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultPage));
+            ->will($this->returnValue($this->resultPageMock));
 
-        $configStub = $this->getMock('Aheadworks\Blog\Model\Config', ['getValue'], [], '', false);
-        $configStub->expects($this->any())
-            ->method('getValue')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        [Config::XML_GENERAL_BLOG_TITLE, null, null, self::BLOG_TITLE_CONFIG_VALUE],
-                        [Config::XML_SEO_META_DESCRIPTION, null, null, self::META_DESCRIPTION_CONFIG_VALUE]
-                    ]
-                )
-            );
+        $configMock = $this->getMock(
+            BlogConfig::class,
+            ['getBlogTitle', 'getBlogMetaDescription'],
+            [],
+            '',
+            false
+        );
+        $configMock->expects($this->any())
+            ->method('getBlogTitle')
+            ->will($this->returnValue(self::BLOG_TITLE_CONFIG_VALUE));
+        $configMock->expects($this->any())
+            ->method('getBlogMetaDescription')
+            ->will($this->returnValue(self::META_DESCRIPTION_CONFIG_VALUE));
 
-        $this->tag = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\TagInterface');
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::TAG_NAME));
-        $this->tagRepository = $this->getMockForAbstractClass('Aheadworks\Blog\Api\TagRepositoryInterface');
-        $this->tagRepository->expects($this->any())
-            ->method('getByName')
-            ->with($this->equalTo(self::TAG_NAME))
-            ->will($this->returnValue($this->tag));
-
-        $this->resultRedirect = $this->getMock(
-            'Magento\Framework\Controller\Result\Redirect',
+        $this->resultRedirectMock = $this->getMock(
+            Redirect::class,
             ['setUrl'],
             [],
             '',
             false
         );
-        $resultRedirectFactoryStub = $this->getMock(
-            'Magento\Framework\Controller\Result\RedirectFactory',
+        $resultRedirectFactoryMock = $this->getMock(
+            RedirectFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $resultRedirectFactoryStub->expects($this->any())
+        $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultRedirect));
+            ->will($this->returnValue($this->resultRedirectMock));
 
-        $this->request = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $redirectStub = $this->getMockForAbstractClass('Magento\Framework\App\Response\RedirectInterface');
-        $redirectStub->expects($this->any())
+        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $redirectMock = $this->getMockForAbstractClass(RedirectInterface::class);
+        $redirectMock->expects($this->any())
             ->method('getRefererUrl')
             ->will($this->returnValue(self::REFERER_URL));
-        $this->messageManager = $this->getMockForAbstractClass('Magento\Framework\Message\ManagerInterface');
+        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
         $context = $objectManager->getObject(
-            'Magento\Framework\App\Action\Context',
+            Context::class,
             [
-                'request' => $this->request,
-                'redirect' => $redirectStub,
-                'messageManager' => $this->messageManager,
-                'resultRedirectFactory' => $resultRedirectFactoryStub
+                'request' => $this->requestMock,
+                'redirect' => $redirectMock,
+                'messageManager' => $this->messageManagerMock,
+                'resultRedirectFactory' => $resultRedirectFactoryMock
             ]
         );
 
         $this->action = $objectManager->getObject(
-            'Aheadworks\Blog\Controller\Index\Index',
+            Index::class,
             [
                 'context' => $context,
-                'resultPageFactory' => $resultPageFactoryStub,
-                'tagRepository' => $this->tagRepository,
-                'config' => $configStub
+                'resultPageFactory' => $resultPageFactoryMock,
+                'config' => $configMock
             ]
         );
     }
@@ -162,56 +167,7 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteResult()
     {
-        $this->assertSame($this->resultPage, $this->action->execute());
-    }
-
-    /**
-     * Testing return value of execute method if tag request param is set
-     */
-    public function testExecuteWithTagParamResult()
-    {
-        $this->request->expects($this->any())
-            ->method('getParam')
-            ->with($this->equalTo('tag'))
-            ->willReturn(self::TAG_NAME);
-        $this->assertSame($this->resultPage, $this->action->execute());
-    }
-
-    /**
-     * Testing redirect if error is occur
-     */
-    public function testExecuteErrorRedirect()
-    {
-        $this->request->expects($this->any())
-            ->method('getParam')
-            ->with($this->equalTo('tag'))
-            ->willReturn(self::TAG_NAME);
-        $this->tagRepository->expects($this->any())
-            ->method('getByName')
-            ->willThrowException(
-                new \Magento\Framework\Exception\LocalizedException(__(self::ERROR_MESSAGE))
-            );
-        $this->assertSame($this->resultRedirect, $this->action->execute());
-    }
-
-    /**
-     * Testing that error message is added if error is occur
-     */
-    public function testExecuteErrorMessage()
-    {
-        $this->request->expects($this->any())
-            ->method('getParam')
-            ->with($this->equalTo('tag'))
-            ->willReturn(self::TAG_NAME);
-        $this->tagRepository->expects($this->any())
-            ->method('getByName')
-            ->willThrowException(
-                new \Magento\Framework\Exception\LocalizedException(__(self::ERROR_MESSAGE))
-            );
-        $this->messageManager->expects($this->once())
-            ->method('addError')
-            ->with($this->equalTo(self::ERROR_MESSAGE));
-        $this->action->execute();
+        $this->assertSame($this->resultPageMock, $this->action->execute());
     }
 
     /**
@@ -219,34 +175,10 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecutePageConfig()
     {
-        $this->title->expects($this->atLeastOnce())
+        $this->titleMock->expects($this->atLeastOnce())
             ->method('set')
             ->with($this->equalTo(self::BLOG_TITLE_CONFIG_VALUE));
-        $this->pageConfig->expects($this->atLeastOnce())
-            ->method('setMetadata')
-            ->with(
-                $this->equalTo('description'),
-                $this->equalTo(self::META_DESCRIPTION_CONFIG_VALUE)
-            );
-        $this->action->execute();
-    }
-
-    /**
-     * Testing that page config values is set if tag request param is set
-     */
-    public function testExecutePageConfigWithTagParam()
-    {
-        $this->request->expects($this->any())
-            ->method('getParam')
-            ->with($this->equalTo('tag'))
-            ->willReturn(self::TAG_NAME);
-        $this->title->expects($this->exactly(2))
-            ->method('set')
-            ->withConsecutive(
-                $this->anything(),
-                $this->equalTo('Tagged with \'' . self::TAG_NAME . '\'')
-            );
-        $this->pageConfig->expects($this->atLeastOnce())
+        $this->pageConfigMock->expects($this->atLeastOnce())
             ->method('setMetadata')
             ->with(
                 $this->equalTo('description'),

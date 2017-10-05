@@ -1,9 +1,15 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Post;
 
 use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Model\ResourceModel\Post\Collection;
+use Aheadworks\Blog\Model\ResourceModel\Post\CollectionFactory;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Ui\Component\MassAction\Filter;
 
@@ -19,24 +25,30 @@ abstract class AbstractMassAction extends \Magento\Backend\App\Action
     private $filter;
 
     /**
+     * @var CollectionFactory
+     */
+    private $collectionFactory;
+
+    /**
      * @var PostRepositoryInterface
      */
     protected $postRepository;
 
     /**
-     * AbstractMassAction constructor.
-     *
      * @param Context $context
      * @param Filter $filter
+     * @param CollectionFactory $collectionFactory
      * @param PostRepositoryInterface $postRepository
      */
     public function __construct(
         Context $context,
         Filter $filter,
+        CollectionFactory $collectionFactory,
         PostRepositoryInterface $postRepository
     ) {
         parent::__construct($context);
         $this->filter = $filter;
+        $this->collectionFactory = $collectionFactory;
         $this->postRepository = $postRepository;
     }
 
@@ -46,13 +58,11 @@ abstract class AbstractMassAction extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
-            $component = $this->filter->getComponent();
-            $this->filter->prepareComponent($component);
-            $this->filter->applySelectionOnTargetProvider();
-            $searchResult = $component->getContext()->getDataProvider()->getSearchResult();
-            return $this->massAction($searchResult);
+            /** @var Collection $collection */
+            $collection = $this->filter->getCollection($this->collectionFactory->create());
+            return $this->massAction($collection);
         } catch (\Exception $e) {
-            $this->messageManager->addError($e->getMessage());
+            $this->messageManager->addErrorMessage($e->getMessage());
             $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
             return $resultRedirect->setPath('*/*/index');
         }
@@ -61,8 +71,8 @@ abstract class AbstractMassAction extends \Magento\Backend\App\Action
     /**
      * Performs mass action
      *
-     * @param SearchResultsInterface $searchResults
+     * @param Collection $collection
      * @return \Magento\Framework\Controller\ResultInterface|\Magento\Framework\App\ResponseInterface
      */
-    abstract protected function massAction(SearchResultsInterface $searchResults);
+    abstract protected function massAction(Collection $collection);
 }

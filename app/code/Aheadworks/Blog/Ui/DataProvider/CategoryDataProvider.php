@@ -1,47 +1,47 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Ui\DataProvider;
 
-use Aheadworks\Blog\Api\Data\CategoryInterface;
-use Aheadworks\Blog\Api\CategoryRepositoryInterface;
-use Magento\Framework\Api\FilterBuilder;
+use Aheadworks\Blog\Model\ResourceModel\Category\Grid\CollectionFactory;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Reflection\DataObjectProcessor;
+use Magento\Framework\App\Request\DataPersistorInterface;
 
 /**
  * Category data provider
  */
-class CategoryDataProvider extends AbstractDataProvider
+class CategoryDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
     /**
-     * @var CategoryRepositoryInterface
+     * @var RequestInterface
      */
-    private $repository;
+    private $request;
 
     /**
-     * CategoryDataProvider constructor.
-     *
+     * @var DataPersistorInterface
+     */
+    private $dataPersistor;
+
+    /**
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
-     * @param CategoryRepositoryInterface $repository
-     * @param FilterBuilder $filterBuilder
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param DataObjectProcessor $dataObjectProcessor
+     * @param CollectionFactory $collectionFactory
      * @param RequestInterface $request
+     * @param DataPersistorInterface $dataPersistor
      * @param array $meta
      * @param array $data
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         $name,
         $primaryFieldName,
         $requestFieldName,
-        CategoryRepositoryInterface $repository,
-        FilterBuilder $filterBuilder,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        DataObjectProcessor $dataObjectProcessor,
+        CollectionFactory $collectionFactory,
         RequestInterface $request,
+        DataPersistorInterface $dataPersistor,
         array $meta = [],
         array $data = []
     ) {
@@ -49,41 +49,35 @@ class CategoryDataProvider extends AbstractDataProvider
             $name,
             $primaryFieldName,
             $requestFieldName,
-            $filterBuilder,
-            $searchCriteriaBuilder,
-            $dataObjectProcessor,
-            $request,
             $meta,
             $data
         );
-        $this->repository = $repository;
+        $this->collection = $collectionFactory->create();
+        $this->request = $request;
+        $this->dataPersistor = $dataPersistor;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getData()
     {
-        $searchResult = $this->getSearchResult();
         $data = [];
-        $data['totalRecords'] = $searchResult->getTotalCount();
-        $data['items'] = [];
-        foreach ($searchResult->getItems() as $item) {
-            $itemData = $this->dataObjectProcessor->buildOutputDataArray(
-                $item,
-                'Aheadworks\Blog\Api\Data\CategoryInterface'
-            );
-            $itemData['store_id'] = $itemData[CategoryInterface::STORE_IDS];
-            $data['items'][] = $itemData;
+        $dataFromForm = $this->dataPersistor->get('aw_blog_category');
+        if (!empty($dataFromForm)) {
+            $object = $this->collection->getNewEmptyItem();
+            $object->setData($dataFromForm);
+            $data[$object->getId()] = $object->getData();
+            $this->dataPersistor->clear('aw_blog_category');
+        } else {
+            $id = $this->request->getParam($this->getRequestFieldName());
+            /** @var \Aheadworks\Blog\Model\Category $category */
+            foreach ($this->getCollection()->getItems() as $category) {
+                if ($id == $category->getId()) {
+                    $data[$id] = $category->getData();
+                }
+            }
         }
         return $data;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSearchResult()
-    {
-        return $this->repository->getList($this->getSearchCriteria());
     }
 }

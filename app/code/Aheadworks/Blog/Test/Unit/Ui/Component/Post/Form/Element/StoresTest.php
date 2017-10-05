@@ -1,7 +1,17 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Form\Element;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Ui\Component\Post\Form\Element\Stores;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\View\Element\UiComponent\Processor;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Store\Model\System\Store;
 
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Form\Element\Stores
@@ -9,45 +19,50 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class StoresTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Ui\Component\Post\Form\Element\Stores
+     * @var Stores
      */
     private $stores;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $storeManager;
+    private $storeManagerMock;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $processorStub = $this->getMock(
-            'Magento\Framework\View\Element\UiComponent\Processor',
+        $processorMock = $this->getMock(
+            Processor::class,
             ['register'],
             [],
             '',
             false
         );
-        $contextStub = $this->getMockForAbstractClass('Magento\Framework\View\Element\UiComponent\ContextInterface');
-        $contextStub->expects($this->any())
+        $contextMock = $this->getMockForAbstractClass(ContextInterface::class);
+        $contextMock->expects($this->exactly(2))
             ->method('getProcessor')
-            ->will($this->returnValue($processorStub));
+            ->will($this->returnValue($processorMock));
 
-        $this->storeManager = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $storeOptionsStub = $this->getMock('Magento\Store\Model\System\Store', ['toOptionArray'], [], '', false);
-        $storeOptionsStub->expects($this->any())
+        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $storeOptionsMock = $this->getMock(Store::class, ['toOptionArray'], [], '', false);
+        $storeOptionsMock->expects($this->any())
             ->method('toOptionArray')
             ->will(
                 $this->returnValue([['value' => 'optionValue', 'label' => 'optionLabel']])
             );
 
         $this->stores = $objectManager->getObject(
-            'Aheadworks\Blog\Ui\Component\Post\Form\Element\Stores',
+            Stores::class,
             [
-                'context' => $contextStub,
-                'storeManager' => $this->storeManager,
-                'storeOptions' => $storeOptionsStub,
+                'context' => $contextMock,
+                'storeManager' => $this->storeManagerMock,
+                'storeOptions' => $storeOptionsMock,
                 'data' => ['config' => []]
             ]
         );
@@ -58,7 +73,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrepareSingleStore()
     {
-        $this->storeManager->expects($this->any())
+        $this->storeManagerMock->expects($this->once())
             ->method('hasSingleStore')
             ->willReturn(true);
         $this->stores->prepare();
@@ -72,7 +87,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrepareMultiStore()
     {
-        $this->storeManager->expects($this->any())
+        $this->storeManagerMock->expects($this->once())
             ->method('hasSingleStore')
             ->willReturn(false);
         $this->stores->prepare();

@@ -1,30 +1,48 @@
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'ko',
-    'Magento_Ui/js/form/element/abstract'
-], function (ko, Abstract) {
+    'Magento_Ui/js/form/element/abstract',
+    'mage/translate'
+], function (ko, Abstract, $t) {
     'use strict';
 
     return Abstract.extend({
         defaults: {
             warningLevel: 60,
-            hintText: 'characters used. Recommended max length is 50-60 characters',
+            hintText: $t('{count} characters used. Recommended max length is 50-60 characters'),
             template: 'Aheadworks_Blog/ui/form/element/input-charcount'
         },
-        initObservable: function() {
+
+        /**
+         * Initialize observable properties
+         */
+        initObservable: function () {
             this._super();
-            this.charCount = ko.computed(function() {
+            this.charCount = ko.computed(function () {
                 var value = this.value();
+
                 return value ? value.length : 0;
             }, this);
-            this.hint = ko.computed(function() {
-                return this.charCount() + " " + this.hintText;
+            this.hint = ko.computed(function () {
+                return this.hintText.replace('{count}', this.charCount());
             }, this);
-            this.warning = ko.computed(function() {
+            this.warning = ko.computed(function () {
                 return this.charCount() > this.warningLevel;
             }, this);
+
             return this;
         },
-        onKeyUp: function(data, event) {
+
+        /**
+         * On key up event handler.
+         * @param {Object} data
+         * @param {Event} event
+         */
+        onKeyUp: function (data, event) {
             this.value(event.target.value);
         }
     });

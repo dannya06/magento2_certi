@@ -1,86 +1,105 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\ResourceModel;
 
 use Aheadworks\Blog\Api\Data\PostInterface;
-use Aheadworks\Blog\Model\Disqus;
+use Aheadworks\Blog\Api\Data\PostInterfaceFactory;
+use Aheadworks\Blog\Api\Data\PostSearchResultsInterfaceFactory;
+use Aheadworks\Blog\Model\PostFactory;
+use Aheadworks\Blog\Model\PostRegistry;
+use Aheadworks\Blog\Model\Source\Post\Status as PostStatus;
+use Magento\Framework\Reflection\DataObjectProcessor;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
+use Magento\Framework\EntityManager\EntityManager;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Aheadworks\Blog\Model\Converter\Condition as ConditionConverter;
+use Aheadworks\Blog\Model\Indexer\ProductPost\Processor;
 
 /**
- * Post repository.
+ * Post repository
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
 {
     /**
-     * @var \Aheadworks\Blog\Model\PostFactory
+     * @var PostFactory
      */
     private $postFactory;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\PostInterfaceFactory
+     * @var PostInterfaceFactory
      */
     private $postDataFactory;
 
     /**
-     * @var \Aheadworks\Blog\Model\PostRegistry
+     * @var PostRegistry
      */
     private $postRegistry;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\PostSearchResultsInterfaceFactory
+     * @var PostSearchResultsInterfaceFactory
      */
     private $searchResultsFactory;
 
     /**
-     * @var \Magento\Framework\Api\DataObjectHelper
+     * @var DataObjectHelper
      */
     private $dataObjectHelper;
 
     /**
-     * @var \Magento\Framework\Reflection\DataObjectProcessor
+     * @var DataObjectProcessor
      */
     private $dataObjectProcessor;
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface
+     * @var JoinProcessorInterface
      */
     private $extensionAttributesJoinProcessor;
 
     /**
-     * @var Disqus
+     * @var EntityManager
      */
-    private $disqus;
+    private $entityManager;
 
     /**
-     * @var \Magento\Framework\Api\SortOrder
+     * @var ConditionConverter
      */
-    private $additionalFieldSortOrder;
+    private $conditionConverter;
 
     /**
-     * @var \Magento\Framework\Api\Filter[]
+     * @var Processor
      */
-    private $additionalFieldFilters;
+    private $indexProcessor;
 
     /**
-     * PostRepository constructor.
-     *
-     * @param \Aheadworks\Blog\Model\PostFactory $postFactory
-     * @param \Aheadworks\Blog\Api\Data\PostInterfaceFactory $postDataFactory
-     * @param \Aheadworks\Blog\Model\PostRegistry $postRegistry
-     * @param \Aheadworks\Blog\Api\Data\PostSearchResultsInterfaceFactory $searchResultsFactory
-     * @param \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
-     * @param \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor
-     * @param \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface $extensionAttributesJoinProcessor
-     * @param Disqus $disqus
+     * @param PostFactory $postFactory
+     * @param PostInterfaceFactory $postDataFactory
+     * @param PostRegistry $postRegistry
+     * @param PostSearchResultsInterfaceFactory $searchResultsFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param DataObjectProcessor $dataObjectProcessor
+     * @param JoinProcessorInterface $extensionAttributesJoinProcessor
+     * @param EntityManager $entityManager
+     * @param ConditionConverter $conditionConverter
+     * @param Processor $indexProcessor
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Aheadworks\Blog\Model\PostFactory $postFactory,
-        \Aheadworks\Blog\Api\Data\PostInterfaceFactory $postDataFactory,
-        \Aheadworks\Blog\Model\PostRegistry $postRegistry,
-        \Aheadworks\Blog\Api\Data\PostSearchResultsInterfaceFactory $searchResultsFactory,
-        \Magento\Framework\Api\DataObjectHelper $dataObjectHelper,
-        \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor,
-        \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface $extensionAttributesJoinProcessor,
-        Disqus $disqus
+        PostFactory $postFactory,
+        PostInterfaceFactory $postDataFactory,
+        PostRegistry $postRegistry,
+        PostSearchResultsInterfaceFactory $searchResultsFactory,
+        DataObjectHelper $dataObjectHelper,
+        DataObjectProcessor $dataObjectProcessor,
+        JoinProcessorInterface $extensionAttributesJoinProcessor,
+        EntityManager $entityManager,
+        ConditionConverter $conditionConverter,
+        Processor $indexProcessor
     ) {
         $this->postFactory = $postFactory;
         $this->postDataFactory = $postDataFactory;
@@ -89,7 +108,9 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
         $this->dataObjectHelper = $dataObjectHelper;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
-        $this->disqus = $disqus;
+        $this->entityManager = $entityManager;
+        $this->conditionConverter = $conditionConverter;
+        $this->indexProcessor = $indexProcessor;
     }
 
     /**
@@ -97,21 +118,34 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
      */
     public function save(PostInterface $post)
     {
+        $origPostData = null;
         /** @var \Aheadworks\Blog\Model\Post $postModel */
         $postModel = $this->postFactory->create();
-        if ($post->getId()) {
-            $postModel->load($post->getId());
+        if ($postId = $post->getId()) {
+            $this->entityManager->load($postModel, $postId);
+            $origPostData = $postModel->getData();
         }
-        $postModel
-            ->addData(
-                $this->dataObjectProcessor->buildOutputDataArray(
-                    $post,
-                    'Aheadworks\Blog\Api\Data\PostInterface'
-                )
-            )
-            ->save();
-        $this->postRegistry->push($postModel);
-        return $this->get($postModel->getId());
+        $postModel->addData(
+            $this->dataObjectProcessor->buildOutputDataArray($post, PostInterface::class)
+        );
+        if ($postModel->getStatus() == PostStatus::DRAFT) {
+            $postModel->setPublishDate(null);
+        }
+        if (is_array($postModel->getProductCondition())) {
+            $postModel->setProductCondition(serialize($postModel->getProductCondition()));
+        }
+        $this->entityManager->save($postModel);
+        $post = $this->convertPostConditionsToDataModel($postModel);
+        $this->postRegistry->push($post);
+        if ($this->isPostParamsChanged($post, $origPostData)) {
+            if ($this->indexProcessor->isIndexerScheduled()) {
+                $this->indexProcessor->markIndexerAsInvalid();
+            } else {
+                $this->indexProcessor->reindexRow($post->getId());
+            }
+        }
+
+        return $post;
     }
 
     /**
@@ -119,17 +153,34 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
      */
     public function get($postId)
     {
-        $postModel = $this->postRegistry->retrieve($postId);
-        return $this->getPostDataObject($postModel);
+        if (null === $this->postRegistry->retrieve($postId)) {
+            /** @var PostInterface $postModel */
+            $postModel = $this->postDataFactory->create();
+            $this->entityManager->load($postModel, $postId);
+            if (!$postModel->getId()) {
+                throw NoSuchEntityException::singleField('postId', $postId);
+            } else {
+                $postModel = $this->convertPostConditionsToDataModel($postModel);
+                $this->postRegistry->push($postModel);
+            }
+        }
+        return $this->postRegistry->retrieve($postId);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getByUrlKey($urlKey)
+    public function getByUrlKey($postUrlKey)
     {
-        $postModel = $this->postRegistry->retrieveByUrlKey($urlKey);
-        return $this->getPostDataObject($postModel);
+        $postModel = $this->postFactory->create();
+        $postModel->loadByUrlKey($postUrlKey);
+        if (!$postModel->getId()) {
+            throw NoSuchEntityException::singleField('urlKey', $postUrlKey);
+        } else {
+            $postModel = $this->convertPostConditionsToDataModel($postModel);
+        }
+
+        return $postModel;
     }
 
     /**
@@ -137,31 +188,26 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    public function getList(
-        \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria,
-        array $additionalFields = []
-    ) {
+    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria)
+    {
         /** @var \Aheadworks\Blog\Api\Data\PostSearchResultsInterface $searchResults */
         $searchResults = $this->searchResultsFactory->create()
             ->setSearchCriteria($searchCriteria);
         /** @var \Aheadworks\Blog\Model\ResourceModel\Post\Collection $collection */
         $collection = $this->postFactory->create()->getCollection();
-        $this->extensionAttributesJoinProcessor->process($collection, 'Aheadworks\Blog\Api\Data\PostInterface');
-        $this->additionalFieldFilters = [];
+        $this->extensionAttributesJoinProcessor->process($collection, PostInterface::class);
         foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             $fields = [];
             $conditions = [];
             foreach ($filterGroup->getFilters() as $filter) {
-                if ($filter->getField() === PostInterface::STORE_IDS) {
+                if ($filter->getField() == PostInterface::STORE_IDS) {
                     $collection->addStoreFilter($filter->getValue());
-                } elseif ($filter->getField() === PostInterface::CATEGORY_IDS) {
+                } elseif ($filter->getField() == PostInterface::CATEGORY_IDS) {
                     $collection->addCategoryFilter($filter->getValue());
-                } elseif ($filter->getField() === 'tag_id') {
+                } elseif ($filter->getField() == 'tag_id') {
                     $collection->addTagFilter($filter->getValue());
-                } elseif ($filter->getField() === PostInterface::VIRTUAL_STATUS) {
-                    $collection->addVirtualStatusFilter($filter->getValue());
-                } elseif (in_array($filter->getField(), $additionalFields)) {
-                    $this->additionalFieldFilters[] = $filter;
+                } elseif ($filter->getField() == 'product_id') {
+                    $collection->addRelatedProductFilter($filter->getValue());
                 } else {
                     $condition = $filter->getConditionType() ? $filter->getConditionType() : 'eq';
                     $fields[] = $filter->getField();
@@ -173,18 +219,10 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
             }
         }
         $searchResults->setTotalCount($collection->getSize());
-        $additionalFieldSortOrders = [];
         if ($sortOrders = $searchCriteria->getSortOrders()) {
             /** @var \Magento\Framework\Api\SortOrder $sortOrder */
             foreach ($sortOrders as $sortOrder) {
-                if (in_array($sortOrder->getField(), $additionalFields)) {
-                    $additionalFieldSortOrders[] = $sortOrder;
-                } elseif ($sortOrder->getField() == PostInterface::VIRTUAL_STATUS) {
-                    $collection->addOrder('status', $sortOrder->getDirection());
-                    $collection->addOrder('publish_date', $sortOrder->getDirection());
-                } else {
-                    $collection->addOrder($sortOrder->getField(), $sortOrder->getDirection());
-                }
+                $collection->addOrder($sortOrder->getField(), $sortOrder->getDirection());
             }
         }
         $collection
@@ -192,97 +230,13 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
             ->setPageSize($searchCriteria->getPageSize());
 
         $posts = [];
-        $collectionItems = $collection->getItems();
-        if (!empty($additionalFields)) {
-            /** @var \Aheadworks\Blog\Model\Post $item */
-            foreach ($collectionItems as $item) {
-                if (in_array('published_comments', $additionalFields)) {
-                    $item->setPublishedComments(
-                        $this->disqus->getPublishedCommentsNum($item->getId())
-                    );
-                }
-                if (in_array('new_comments', $additionalFields)) {
-                    $item->setNewComments($this->disqus->getNewCommentsNum($item->getId()));
-                }
-            }
-            foreach ($additionalFieldSortOrders as $sortOrder) {
-                $this->additionalFieldSortOrder = $sortOrder;
-                usort($collectionItems, [$this, 'sortByAdditionalField']);
-            }
-            if (!empty($this->additionalFieldFilters)) {
-                $collectionItems = array_filter($collectionItems, [$this, 'filterByAdditionalFields']);
-            }
-        }
-        foreach ($collectionItems as $item) {
-            $posts[] = $this->getPostDataObject($item);
+        /** @var \Aheadworks\Blog\Model\Post $postModel */
+        foreach ($collection as $postModel) {
+            $posts[] = $this->convertPostConditionsToDataModel($postModel);
         }
 
         $searchResults->setItems($posts);
         return $searchResults;
-    }
-
-    /**
-     * Sort posts by additional field
-     *
-     * @param \Aheadworks\Blog\Model\Post $item1
-     * @param \Aheadworks\Blog\Model\Post $item2
-     * @return int
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
-    private function sortByAdditionalField(\Aheadworks\Blog\Model\Post $item1, \Aheadworks\Blog\Model\Post $item2)
-    {
-        $result = 0;
-        $field = $this->additionalFieldSortOrder->getField();
-        $direction = $this->additionalFieldSortOrder->getDirection();
-
-        $item1Data = $item1->getData();
-        $item2Data = $item2->getData();
-
-        if (!isset($item1Data[$field])) {
-            $result = isset($item1Data[$field]) ? -1 : 0;
-        } else {
-            if (!isset($item2Data[$field])) {
-                $result = 1;
-            } else {
-                if (is_string($item1Data[$field])) {
-                    $result = strnatcmp($item1Data[$field], $item2Data[$field]);
-                } elseif (is_numeric($item1Data[$field])) {
-                    if ($item1Data[$field] == $item2Data[$field]) {
-                        $result = 0;
-                    } else {
-                        $result = $item1Data[$field] < $item2Data[$field] ? -1 : 1;
-                    }
-                }
-            }
-        }
-
-        return strtolower($direction) == 'asc' ? $result : -$result;
-    }
-
-    /**
-     * Filtering of posts by additional fields
-     *
-     * @param \Aheadworks\Blog\Model\Post $item
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
-    private function filterByAdditionalFields(\Aheadworks\Blog\Model\Post $item)
-    {
-        $itemData = $item->getData();
-        /** @var \Magento\Framework\Api\Filter $filter */
-        foreach ($this->additionalFieldFilters as $filter) {
-            $field = $filter->getField();
-            $condition = $filter->getConditionType();
-            $value = $filter->getValue();
-            if (is_numeric($value)) {
-                if ($condition == 'gteq' && $itemData[$field] < $value
-                    || $condition == 'lteq' && $itemData[$field] > $value
-                ) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**
@@ -298,30 +252,62 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
      */
     public function deleteById($postId)
     {
-        $post = $this->postRegistry->retrieve($postId);
-        $post->delete();
+        /** @var \Aheadworks\Blog\Model\Post $postModel */
+        $postModel = $this->postFactory->create();
+        $this->entityManager->load($postModel, $postId);
+        if (!$postModel->getId()) {
+            throw NoSuchEntityException::singleField('postId', $postId);
+        }
+        $this->entityManager->delete($postModel);
         $this->postRegistry->remove($postId);
         return true;
     }
 
     /**
-     * Retrieves post data object using Post Model
+     * Convert post conditions from array to data model
      *
-     * @param \Aheadworks\Blog\Model\Post $post
+     * @param PostInterface $post
      * @return PostInterface
      */
-    private function getPostDataObject(\Aheadworks\Blog\Model\Post $post)
+    private function convertPostConditionsToDataModel(PostInterface $post)
     {
-        /** @var PostInterface $postDataObject */
-        $postDataObject = $this->postDataFactory->create();
-        $this->dataObjectHelper->populateWithArray(
-            $postDataObject,
-            $post->getData(),
-            'Aheadworks\Blog\Api\Data\PostInterface'
-        );
-        $postDataObject->setId($post->getId());
-        $postDataObject->setVirtualStatus($post->getVirtualStatus());
+        if ($post->getProductCondition()) {
+            $conditionArray = unserialize($post->getProductCondition());
+            $conditionDataModel = $this->conditionConverter
+                ->arrayToDataModel($conditionArray);
+            $post->setProductCondition($conditionDataModel);
+        } else {
+            $post->setProductCondition('');
+        }
 
-        return $postDataObject;
+        return $post;
+    }
+
+    /**
+     * If the necessary post parameters have been changed
+     *
+     * @param PostInterface $post
+     * @param array $origPostData
+     * @return bool
+     */
+    private function isPostParamsChanged($post, $origPostData)
+    {
+        if (!$origPostData) {
+            return true;
+        }
+        $origPost = $this->postDataFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $origPost,
+            $origPostData,
+            PostInterface::class
+        );
+        $origPost = $this->convertPostConditionsToDataModel($origPost);
+        if ($post->getProductCondition() != $origPost->getProductCondition()) {
+            return true;
+        }
+        if ($post->getStoreIds() != $origPost->getStoreIds()) {
+            return true;
+        }
+        return false;
     }
 }

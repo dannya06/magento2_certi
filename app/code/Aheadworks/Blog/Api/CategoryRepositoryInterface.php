@@ -1,16 +1,21 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
 
 /**
- * Category CRUD interface.
+ * Category CRUD interface
  * @api
  */
 interface CategoryRepositoryInterface
 {
     /**
-     * Save category.
+     * Save category
      *
      * @param \Aheadworks\Blog\Api\Data\CategoryInterface $category
      * @return \Aheadworks\Blog\Api\Data\CategoryInterface
@@ -19,7 +24,7 @@ interface CategoryRepositoryInterface
     public function save(\Aheadworks\Blog\Api\Data\CategoryInterface $category);
 
     /**
-     * Retrieve category.
+     * Retrieve category
      *
      * @param int $categoryId
      * @return \Aheadworks\Blog\Api\Data\CategoryInterface
@@ -28,16 +33,16 @@ interface CategoryRepositoryInterface
     public function get($categoryId);
 
     /**
-     * Retrieve category by URL-Key.
+     * Retrieve category by url key
      *
-     * @param string $urlKey
+     * @param string $categoryUrlKey
      * @return \Aheadworks\Blog\Api\Data\CategoryInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getByUrlKey($urlKey);
+    public function getByUrlKey($categoryUrlKey);
 
     /**
-     * Retrieve categories matching the specified criteria.
+     * Retrieve categories matching the specified criteria
      *
      * @param SearchCriteriaInterface $searchCriteria
      * @return \Aheadworks\Blog\Api\Data\CategorySearchResultsInterface
@@ -46,7 +51,7 @@ interface CategoryRepositoryInterface
     public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
-     * Delete category.
+     * Delete category
      *
      * @param \Aheadworks\Blog\Api\Data\CategoryInterface $category
      * @return bool true on success
@@ -55,7 +60,7 @@ interface CategoryRepositoryInterface
     public function delete(\Aheadworks\Blog\Api\Data\CategoryInterface $category);
 
     /**
-     * Delete category by ID.
+     * Delete category by ID
      *
      * @param int $categoryId
      * @return bool true on success

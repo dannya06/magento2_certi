@@ -1,15 +1,21 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
 
 /**
- * Tag CRUD interface.
+ * Tag CRUD interface
+ * @api
  */
 interface TagRepositoryInterface
 {
     /**
-     * Save tag.
+     * Save tag
      *
      * @param \Aheadworks\Blog\Api\Data\TagInterface $tag
      * @return \Aheadworks\Blog\Api\Data\TagInterface
@@ -18,7 +24,7 @@ interface TagRepositoryInterface
     public function save(\Aheadworks\Blog\Api\Data\TagInterface $tag);
 
     /**
-     * Retrieve tag.
+     * Retrieve tag
      *
      * @param int $tagId
      * @return \Aheadworks\Blog\Api\Data\TagInterface
@@ -27,16 +33,7 @@ interface TagRepositoryInterface
     public function get($tagId);
 
     /**
-     * Retrieve tag by name.
-     *
-     * @param string $name
-     * @return \Aheadworks\Blog\Api\Data\TagInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function getByName($name);
-
-    /**
-     * Retrieve tags matching the specified criteria.
+     * Retrieve tags matching the specified criteria
      *
      * @param SearchCriteriaInterface $searchCriteria
      * @return \Aheadworks\Blog\Api\Data\TagSearchResultsInterface
@@ -45,7 +42,7 @@ interface TagRepositoryInterface
     public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
-     * Delete tag.
+     * Delete tag
      *
      * @param \Aheadworks\Blog\Api\Data\TagInterface $tag
      * @return bool true on success
@@ -54,7 +51,7 @@ interface TagRepositoryInterface
     public function delete(\Aheadworks\Blog\Api\Data\TagInterface $tag);
 
     /**
-     * Delete tag by ID.
+     * Delete tag by ID
      *
      * @param int $tagId
      * @return bool true on success

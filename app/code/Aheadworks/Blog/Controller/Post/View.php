@@ -1,6 +1,12 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Post;
 
+use Aheadworks\Blog\Api\Data\PostInterface;
 use Aheadworks\Blog\Model\Source\Post\Status;
 use Magento\Framework\Exception\LocalizedException;
 
@@ -15,62 +21,69 @@ class View extends \Aheadworks\Blog\Controller\Action
      */
     public function execute()
     {
-        $postId = $this->getRequest()->getParam('id');
-        $categoryId = $this->getRequest()->getParam('category_id');
         try {
-            /** @var \Aheadworks\Blog\Model\Post $postModel */
-            $postModel = $this->postFactory->create()->load($postId);
-            if (!$postModel->getId()
-                || $postModel->getVirtualStatus() != Status::PUBLICATION_PUBLISHED
-                || (!in_array($this->storeManager->getStore()->getId(), $postModel->getStores())
-                    && !in_array(0, $postModel->getStores())
-                )
+            $post = $this->postRepository->get(
+                $this->getRequest()->getParam('post_id')
+            );
+            if ($post->getStatus() != Status::PUBLICATION
+                || strtotime($post->getPublishDate()) > time()
+                || (!in_array($this->getStoreId(), $post->getStoreIds())
+                    && !in_array(0, $post->getStoreIds()))
             ) {
-                /** @var \Magento\Framework\Controller\Result\Forward $forward */
+                /**  @var \Magento\Framework\Controller\Result\Forward $forward */
                 $forward = $this->resultForwardFactory->create();
                 return $forward
                     ->setModule('cms')
                     ->setController('noroute')
                     ->forward('index');
             }
-
-            $this->coreRegistry->register('aw_blog_post', $postModel);
-        } catch (LocalizedException $e) {
-            $this->messageManager->addError($e->getMessage());
-            return $this->goBack();
-        }
-        $crumbs = [];
-        if ($categoryId) {
-            if (in_array($categoryId, $postModel->getCategories())) {
-                /** @var \Aheadworks\Blog\Model\Category $categoryModel */
-                $categoryModel = $this->categoryFactory->create()->load($categoryId);
-                if ($categoryModel->getId()) {
-                    $crumbs[] = [
-                        'name' => 'category_view',
-                        'info' => [
-                            'label' => $categoryModel->getName(),
-                            'link' => $this->urlHelper->getCategoryUrl($categoryModel)
-                        ]
-                    ];
-                }
-            } else {
+            if ($this->getRequest()->getParam('blog_category_id')) {
+                // Forced redirect to post url without category id
                 $resultRedirect = $this->resultRedirectFactory->create();
-                $resultRedirect->setUrl($this->urlHelper->getPostUrl($postModel));
+                $resultRedirect->setUrl($this->url->getPostUrl($post));
                 return $resultRedirect;
             }
+
+            $resultPage = $this->resultPageFactory->create();
+            $pageConfig = $resultPage->getConfig();
+            $pageConfig->getTitle()->set($post->getTitle());
+            $pageConfig->setMetadata('description', $post->getMetaDescription());
+            $pageConfig->setMetadata('og:description', $this->getMetaOgDescription($post));
+            return $resultPage;
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+            return $this->goBack();
         }
-        $crumbs[] = [
-            'name' => 'post_view',
-            'info' => ['label' => $postModel->getTitle()]
-        ];
-        return $this->getResultPage(
-            [
-                'title' => $postModel->getTitle(),
-                'meta' => [
-                    'description' => $postModel->getMetaDescription()
-                ],
-                'crumbs' => $crumbs
-            ]
-        );
+    }
+
+    /**
+     * Retrieve og:description meta tag from post
+     *
+     * @param PostInterface $post
+     * @return string
+     */
+    private function getMetaOgDescription($post)
+    {
+        $content = $this->getClearContent($post->getShortContent());
+        if (strlen($content) == 0) {
+            $content = $this->getClearContent($post->getContent());
+        }
+        return $content;
+    }
+
+    /**
+     * Retrieve clear content
+     *
+     * @param string $content
+     * @return string
+     */
+    private function getClearContent($content)
+    {
+        $lenContent = 256;
+        $content = trim(strip_tags($content));
+
+        return strlen($content) > $lenContent
+            ? substr($content, 0, $lenContent)
+            : $content;
     }
 }

@@ -1,99 +1,106 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block;
 
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Aheadworks\Blog\Block\PostList;
+use Aheadworks\Blog\Block\Post\Listing;
+use Aheadworks\Blog\Block\Post\ListingFactory;
+use Aheadworks\Blog\Model\Config;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\View\LayoutInterface;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Test for \Aheadworks\Blog\Block\PostList
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PostListTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Post list constants defined for test
+     */
     const POST_ID = 1;
     const STORE_ID = 1;
+    const BLOG_TITLE_CONFIG_VALUE = 'Blog';
+    const POSTS_PER_PAGE_CONFIG_VALUE = 5;
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Block\PostList
+     * @var PostList
      */
     private $block;
 
     /**
-     * @var \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $layout;
+    private $layoutMock;
 
     /**
-     * @var \Magento\Framework\View\Element\Template|\PHPUnit_Framework_MockObject_MockObject
+     * @var Template|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $childBlock;
+    private $childBlockMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\PostInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var Listing|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $post;
+    private $postListingMock;
 
     /**
+     * @var PostInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $postMock;
+
+    /**
+     * Init mocks for tests
+     *
+     * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $searchCriteriaStub = $this->getMock('Magento\Framework\Api\SearchCriteria', [], [], '', false);
-        $searchCriteriaBuilderStub = $this->getMock(
-            'Magento\Framework\Api\SearchCriteriaBuilder',
-            ['getData', 'addFilter', 'addSortOrder', 'create'],
+        $this->postMock = $this->getMockForAbstractClass(PostInterface::class);
+        $this->postListingMock = $this->getMock(
+            Listing::class,
+            ['getPosts', 'applyPagination'],
             [],
             '',
             false
         );
-        $searchCriteriaBuilderStub->expects($this->any())
-            ->method('getData')
-            ->will($this->returnValue([]));
-        $searchCriteriaBuilderStub->expects($this->any())
-            ->method('addFilter')
-            ->will($this->returnSelf());
-        $searchCriteriaBuilderStub->expects($this->any())
-            ->method('addSortOrder')
-            ->will($this->returnSelf());
-        $searchCriteriaBuilderStub->expects($this->any())
+        $this->postListingMock->expects($this->any())
+            ->method('getPosts')
+            ->will($this->returnValue([$this->postMock]));
+        $postListingFactoryMock = $this->getMock(ListingFactory::class, ['create'], [], '', false);
+        $postListingFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($searchCriteriaStub));
+            ->will($this->returnValue($this->postListingMock));
 
-        $sortOrderStub = $this->getMock('Magento\Framework\Api\SortOrder');
-        $sortOrderBuilderStub = $this->getMock(
-            'Magento\Framework\Api\SortOrderBuilder',
-            ['setField', 'setDescendingDirection', 'create'],
+        $configMock = $this->getMock(
+            Config::class,
+            ['getBlogTitle', 'getNumPostsPerPage'],
             [],
             '',
             false
         );
-        $sortOrderBuilderStub->expects($this->any())
-            ->method('setField')
-            ->will($this->returnSelf());
-        $sortOrderBuilderStub->expects($this->any())
-            ->method('setDescendingDirection')
-            ->will($this->returnSelf());
-        $sortOrderBuilderStub->expects($this->any())
-            ->method('create')
-            ->will($this->returnValue($sortOrderStub));
+        $configMock->expects($this->any())
+            ->method('getBlogTitle')
+            ->will($this->returnValue(self::BLOG_TITLE_CONFIG_VALUE));
+        $configMock->expects($this->any())
+            ->method('getNumPostsPerPage')
+            ->will($this->returnValue(self::POSTS_PER_PAGE_CONFIG_VALUE));
 
-        $this->post = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostInterface');
-        $searchResultsStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostSearchResultsInterface');
-        $searchResultsStub->expects($this->any())
-            ->method('getItems')
-            ->will($this->returnValue([$this->post]));
-        $postRepositoryStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\PostRepositoryInterface');
-        $postRepositoryStub->expects($this->any())
-            ->method('get')
-            ->with($this->equalTo(self::POST_ID))
-            ->will($this->returnValue($this->post));
-        $postRepositoryStub->expects($this->any())
-            ->method('getList')
-            ->with($this->equalTo($searchCriteriaStub))
-            ->will($this->returnValue($searchResultsStub));
-
-        $requestStub = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $requestStub->expects($this->any())
+        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock->expects($this->any())
             ->method('getParam')
             ->will(
                 $this->returnValueMap(
@@ -105,36 +112,48 @@ class PostListTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
-        $this->childBlock = $this->getMock('Magento\Framework\View\Element\Template', ['toHtml'], [], '', false);
-        $this->layout = $this->getMockForAbstractClass('Magento\Framework\View\LayoutInterface');
-        $this->layout->expects($this->any())
+        $this->childBlockMock = $this->getMock(
+            Template::class,
+            ['toHtml', 'setPath', 'setLimit'],
+            [],
+            '',
+            false
+        );
+        $this->childBlockMock->expects($this->any())
+            ->method('setPath')
+            ->will($this->returnSelf());
+        $this->childBlockMock->expects($this->any())
+            ->method('setLimit')
+            ->will($this->returnSelf());
+
+        $this->layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
+        $this->layoutMock->expects($this->any())
             ->method('getBlock')
-            ->will($this->returnValue($this->childBlock));
-        $storeStub = $this->getMockForAbstractClass('Magento\Store\Api\Data\StoreInterface');
-        $storeStub->expects($this->any())
+            ->will($this->returnValue($this->childBlockMock));
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::STORE_ID));
-        $storeManagerStub = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $storeManagerStub->expects($this->any())
+        $storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeStub));
+            ->will($this->returnValue($storeMock));
 
         $context = $objectManager->getObject(
-            'Magento\Framework\View\Element\Template\Context',
+            Context::class,
             [
-                'request' => $requestStub,
-                'layout' => $this->layout,
-                'storeManager' => $storeManagerStub
+                'request' => $requestMock,
+                'layout' => $this->layoutMock,
+                'storeManager' => $storeManagerMock
             ]
         );
 
         $this->block = $objectManager->getObject(
-            'Aheadworks\Blog\Block\PostList',
+            PostList::class,
             [
                 'context' => $context,
-                'postRepository' => $postRepositoryStub,
-                'searchCriteriaBuilder' => $searchCriteriaBuilderStub,
-                'sortOrderBuilder' => $sortOrderBuilderStub
+                'postListingFactory' => $postListingFactoryMock,
+                'config' => $configMock
             ]
         );
     }
@@ -144,47 +163,22 @@ class PostListTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPosts()
     {
-        $this->assertEquals([$this->post], $this->block->getPosts());
+        $this->assertEquals([$this->postMock], $this->block->getPosts());
     }
 
     /**
-     * testing of getItemHtml method
+     * Testing of getItemHtml method
      */
     public function testGetItemHtml()
     {
         $itemHtml = 'item html';
-        $this->layout->expects($this->once())
+        $this->layoutMock->expects($this->once())
             ->method('createBlock')
-            ->with(
-                $this->equalTo('Aheadworks\Blog\Block\Post'),
-                $this->anything(),
-                $this->contains(['post' => $this->post, 'mode' => \Aheadworks\Blog\Block\Post::MODE_LIST_ITEM])
-            )
-            ->willReturn($this->childBlock);
-        $this->childBlock->expects($this->any())
+            ->with($this->equalTo(\Aheadworks\Blog\Block\Post::class))
+            ->willReturn($this->childBlockMock);
+        $this->childBlockMock->expects($this->any())
             ->method('toHtml')
             ->willReturn($itemHtml);
-        $this->assertEquals($itemHtml, $this->block->getItemHtml($this->post));
-    }
-
-    /**
-     * testing of getPagerHtml method
-     */
-    public function testGetPagerHtml()
-    {
-        $pagerAlias = 'pager';
-        $pagerHtml = 'pager html';
-        $this->layout->expects($this->any())
-            ->method('getChildName')
-            ->with(
-                $this->anything(),
-                $this->equalTo($pagerAlias)
-            )
-            ->willReturn($pagerAlias);
-        $this->layout->expects($this->any())
-            ->method('renderElement')
-            ->with($this->equalTo($pagerAlias))
-            ->willReturn($pagerHtml);
-        $this->assertEquals($pagerHtml, $this->block->getPagerHtml());
+        $this->assertEquals($itemHtml, $this->block->getItemHtml($this->postMock));
     }
 }

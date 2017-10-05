@@ -1,5 +1,13 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Template;
+
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Cms\Model\Template\Filter;
 
 /**
  * Template filter provider
@@ -7,7 +15,7 @@ namespace Aheadworks\Blog\Model\Template;
 class FilterProvider
 {
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
+     * @var ObjectManagerInterface
      */
     private $objectManager;
 
@@ -22,14 +30,12 @@ class FilterProvider
     private $filterInstance = null;
 
     /**
-     * FilterProvider constructor.
-     *
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param ObjectManagerInterface $objectManager
      * @param string $filterClassName
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        $filterClassName = 'Magento\Cms\Model\Template\Filter'
+        ObjectManagerInterface $objectManager,
+        $filterClassName = Filter::class
     ) {
         $this->objectManager = $objectManager;
         $this->filterClassName = $filterClassName;

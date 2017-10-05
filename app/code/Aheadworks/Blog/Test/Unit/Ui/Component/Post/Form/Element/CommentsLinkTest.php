@@ -1,54 +1,72 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Form\Element;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Ui\Component\Post\Form\Element\CommentsLink;
+use Magento\Backend\Model\Auth\Session;
+use Magento\Framework\View\Element\UiComponent\Processor;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Aheadworks\Blog\Api\CommentsServiceInterface;
 
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Form\Element\CommentsLink
  */
 class CommentsLinkTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var string
+     */
     const DISQUS_ADMIN_URL = 'https://forum_code.disqus.com/admin/';
 
     /**
-     * @var \Aheadworks\Blog\Ui\Component\Post\Form\Element\CommentsLink
+     * @var CommentsLink
      */
     private $commentsLink;
 
     /**
-     * @var \Magento\Backend\Model\Auth\Session|\PHPUnit_Framework_MockObject_MockObject
+     * @var Session|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $authSession;
+    private $sessionMock;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $processorStub = $this->getMock(
-            'Magento\Framework\View\Element\UiComponent\Processor',
+        $processorMock = $this->getMock(
+            Processor::class,
             ['register'],
             [],
             '',
             false
         );
-        $contextStub = $this->getMockForAbstractClass('Magento\Framework\View\Element\UiComponent\ContextInterface');
-        $contextStub->expects($this->any())
+        $contextMock = $this->getMockForAbstractClass(ContextInterface::class);
+        $contextMock->expects($this->exactly(2))
             ->method('getProcessor')
-            ->will($this->returnValue($processorStub));
+            ->will($this->returnValue($processorMock));
 
-        $disqusStub = $this->getMock('Aheadworks\Blog\Model\Disqus', ['getAdminUrl'], [], '', false);
-        $disqusStub->expects($this->any())
-            ->method('getAdminUrl')
+        $commentsServiceMock = $this->getMockForAbstractClass(CommentsServiceInterface::class);
+        $commentsServiceMock->expects($this->any())
+            ->method('getModerateUrl')
             ->will($this->returnValue(self::DISQUS_ADMIN_URL));
 
-        $this->authSession = $this->getMock('Magento\Backend\Model\Auth\Session', ['isAllowed'], [], '', false);
+        $this->sessionMock = $this->getMock(Session::class, ['isAllowed'], [], '', false);
 
         $this->commentsLink = $objectManager->getObject(
-            'Aheadworks\Blog\Ui\Component\Post\Form\Element\CommentsLink',
+            CommentsLink::class,
             [
-                'context' => $contextStub,
-                'disqus' => $disqusStub,
-                'authSession' => $this->authSession,
+                'context' => $contextMock,
+                'commentsService' => $commentsServiceMock,
+                'authSession' => $this->sessionMock,
                 'data' => ['config' => []]
             ]
         );
@@ -59,7 +77,7 @@ class CommentsLinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrepareCommentsAllowed()
     {
-        $this->authSession->expects($this->any())
+        $this->sessionMock->expects($this->once())
             ->method('isAllowed')
             ->with($this->equalTo('Aheadworks_Blog::comments'))
             ->willReturn(true);
@@ -75,7 +93,7 @@ class CommentsLinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrepareCommentsIsNotAllowed()
     {
-        $this->authSession->expects($this->any())
+        $this->sessionMock->expects($this->once())
             ->method('isAllowed')
             ->with($this->equalTo('Aheadworks_Blog::comments'))
             ->willReturn(false);

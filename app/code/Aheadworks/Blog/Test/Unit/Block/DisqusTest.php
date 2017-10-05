@@ -1,67 +1,88 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block;
 
-use Aheadworks\Blog\Model\Config;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Block\Disqus;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\DisqusConfig;
 
 /**
  * Test for \Aheadworks\Blog\Block\Disqus
  */
 class DisqusTest extends \PHPUnit_Framework_TestCase
 {
-    const FORUM_CODE = 'disqus_forum_code';
-
     /**
-     * @var \Aheadworks\Blog\Block\Disqus
+     * @var Disqus
      */
     private $block;
 
     /**
-     * @var \Aheadworks\Blog\Model\Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $config;
+    private $configMock;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->config = $this->getMock('Aheadworks\Blog\Model\Config', ['getValue'], [], '', false);
-        $this->block = $objectManager->getObject('Aheadworks\Blog\Block\Disqus', ['config' => $this->config]);
+        $this->configMock = $this->getMock(
+            Config::class,
+            ['isCommentsEnabled'],
+            [],
+            '',
+            false
+        );
+        $disqusConfigMock = $this->getMock(
+            DisqusConfig::class,
+            ['getForumCode'],
+            [],
+            '',
+            false
+        );
+        $disqusConfigMock->expects($this->any())
+            ->method('getForumCode')
+            ->will($this->returnValue('forum_code'));
+
+        $this->block = $objectManager->getObject(
+            Disqus::class,
+            ['config' => $this->configMock]
+        );
     }
 
     /**
-     * Testing of commentsEnabled method
-     *
-     * @dataProvider commentsEnabledDataProvider
+     * Testing of isCommentsEnabled method
      */
-    public function testCommentsEnabled($forumCode, $expectedResult)
+    public function testIsCommentsEnabled()
     {
-        $this->config->expects($this->any())
-            ->method('getValue')
-            ->with($this->equalTo(Config::XML_GENERAL_DISQUS_FORUM_CODE))
-            ->will($this->returnValue($forumCode));
-        $this->assertEquals($expectedResult, $this->block->commentsEnabled());
+        $isCommentsEnabled = true;
+        $this->configMock->expects($this->any())
+            ->method('isCommentsEnabled')
+            ->will($this->returnValue($isCommentsEnabled));
+        $this->assertEquals($isCommentsEnabled, $this->block->isCommentsEnabled());
     }
 
     /**
-     * Testing of retrieving the value of Disqus forum code
+     * Testing of retrieving of count script url
      */
-    public function testGetDisqusForumCode()
+    public function testGetCountScriptUrl()
     {
-        $this->config->expects($this->any())
-            ->method('getValue')
-            ->with($this->equalTo(Config::XML_GENERAL_DISQUS_FORUM_CODE))
-            ->will($this->returnValue(self::FORUM_CODE));
-        $this->assertEquals(self::FORUM_CODE, $this->block->getDisqusForumCode());
+        $this->assertTrue(is_string($this->block->getCountScriptUrl()));
     }
 
     /**
-     * @return array
+     * Testing of retrieving of embed script url
      */
-    public function commentsEnabledDataProvider()
+    public function testGetEmbedScriptUrl()
     {
-        return [
-            'forum code is set' => [self::FORUM_CODE, true],
-            'forum code is not set' => [null, false]
-        ];
+        $this->assertTrue(is_string($this->block->getEmbedScriptUrl()));
     }
 }

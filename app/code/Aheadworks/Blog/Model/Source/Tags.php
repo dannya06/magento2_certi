@@ -1,4 +1,9 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
@@ -8,7 +13,7 @@ use Aheadworks\Blog\Model\ResourceModel\Tag\CollectionFactory as TagCollectionFa
  * Class Tags
  * @package Aheadworks\Blog\Model\Source
  */
-class Tags extends \Magento\Framework\DataObject implements OptionSourceInterface
+class Tags implements OptionSourceInterface
 {
     /**
      * @var \Aheadworks\Blog\Model\ResourceModel\Tag\Collection
@@ -16,17 +21,16 @@ class Tags extends \Magento\Framework\DataObject implements OptionSourceInterfac
     private $tagCollection;
 
     /**
-     * Tags constructor.
-     *
-     * @param TagCollectionFactory $tagCollectionFactory
-     * @param array $data
+     * @var array
      */
-    public function __construct(
-        TagCollectionFactory $tagCollectionFactory,
-        array $data = []
-    ) {
+    private $options;
+
+    /**
+     * @param TagCollectionFactory $tagCollectionFactory
+     */
+    public function __construct(TagCollectionFactory $tagCollectionFactory)
+    {
         $this->tagCollection = $tagCollectionFactory->create();
-        parent::__construct($data);
     }
 
     /**
@@ -34,6 +38,9 @@ class Tags extends \Magento\Framework\DataObject implements OptionSourceInterfac
      */
     public function toOptionArray()
     {
-        return $this->tagCollection->toOptionArray();
+        if (!$this->options) {
+            $this->options = $this->tagCollection->toOptionArray();
+        }
+        return $this->options;
     }
 }

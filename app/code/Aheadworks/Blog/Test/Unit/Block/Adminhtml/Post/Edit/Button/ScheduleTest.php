@@ -1,7 +1,13 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block\Adminhtml\Post\Edit\Button;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Schedule;
 
 /**
  * Test for \Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Schedule
@@ -9,14 +15,14 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class ScheduleTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Schedule
+     * @var Schedule
      */
     private $button;
 
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->button = $objectManager->getObject('Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Schedule');
+        $this->button = $objectManager->getObject(Schedule::class);
     }
 
     /**

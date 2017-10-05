@@ -1,97 +1,118 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block\Sidebar;
 
-use Aheadworks\Blog\Model\Config;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Block\Sidebar\Cms;
+use Aheadworks\Blog\Model\Config;
+use Magento\Cms\Model\Block as CmsBlock;
+use Magento\Framework\Filter\Template;
+use Magento\Cms\Model\BlockFactory as CmsBlockFactory;
+use Magento\Cms\Model\Template\FilterProvider;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\View\Element\Template\Context;
 
 /**
  * Test for \Aheadworks\Blog\Block\Sidebar\Cms
  */
 class CmsTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Pager constants defined for test
+     */
     const CMS_BLOCK_ID = 1;
     const CMS_BLOCK_CONTENT = '<p>Cms block content.</p>';
     const STORE_ID = 1;
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Block\Sidebar\Cms
+     * @var Cms
      */
     private $block;
 
     /**
-     * @var \Aheadworks\Blog\Model\Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $config;
+    private $configMock;
 
     /**
-     * @var \Magento\Cms\Model\Block|\PHPUnit_Framework_MockObject_MockObject
+     * @var CmsBlock|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $cmsBlock;
+    private $cmsBlockMock;
 
     /**
-     * @var \Magento\Framework\Filter\Template|\PHPUnit_Framework_MockObject_MockObject
+     * @var Template|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $filter;
+    private $filterMock;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->config = $this->getMock('Aheadworks\Blog\Model\Config', ['getValue'], [], '', false);
-
-        $this->cmsBlock = $this->getMock(
-            'Magento\Cms\Model\Block',
+        $this->configMock = $this->getMock(Config::class, ['getSidebarCmsBlockId'], [], '', false);
+        $this->cmsBlockMock = $this->getMock(
+            CmsBlock::class,
             ['setStoreId', 'load', 'getContent'],
             [],
             '',
             false
         );
-        $this->cmsBlock->expects($this->any())
+        $this->cmsBlockMock->expects($this->any())
             ->method('setStoreId')
             ->will($this->returnSelf());
-        $this->cmsBlock->expects($this->any())
+        $this->cmsBlockMock->expects($this->any())
             ->method('load')
             ->will($this->returnSelf());
-        $cmsBlockFactoryStub = $this->getMock('Magento\Cms\Model\BlockFactory', ['create'], [], '', false);
-        $cmsBlockFactoryStub->expects($this->any())
+        $cmsBlockFactoryMock = $this->getMock(CmsBlockFactory::class, ['create'], [], '', false);
+        $cmsBlockFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->cmsBlock));
+            ->will($this->returnValue($this->cmsBlockMock));
 
-        $this->filter = $this->getMock('Magento\Framework\Filter\Template', ['setStoreId', 'filter'], [], '', false);
-        $this->filter->expects($this->any())
+        $this->filterMock = $this->getMock(Template::class, ['setStoreId', 'filter'], [], '', false);
+        $this->filterMock->expects($this->any())
             ->method('setStoreId')
             ->will($this->returnSelf());
-        $cmsFilterProviderStub = $this->getMock(
-            'Magento\Cms\Model\Template\FilterProvider',
+        $cmsFilterProviderMock = $this->getMock(
+            FilterProvider::class,
             ['getBlockFilter'],
             [],
             '',
             false
         );
-        $cmsFilterProviderStub->expects($this->any())
+        $cmsFilterProviderMock->expects($this->any())
             ->method('getBlockFilter')
-            ->will($this->returnValue($this->filter));
+            ->will($this->returnValue($this->filterMock));
 
-        $storeStub = $this->getMockForAbstractClass('Magento\Store\Api\Data\StoreInterface');
-        $storeStub->expects($this->any())
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::STORE_ID));
-        $storeManagerStub = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $storeManagerStub->expects($this->any())
+        $storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeStub));
+            ->will($this->returnValue($storeMock));
         $context = $objectManager->getObject(
-            'Magento\Framework\View\Element\Template\Context',
-            ['storeManager' => $storeManagerStub]
+            Context::class,
+            ['storeManager' => $storeManagerMock]
         );
 
         $this->block = $objectManager->getObject(
-            'Aheadworks\Blog\Block\Sidebar\Cms',
+            Cms::class,
             [
                 'context' => $context,
-                'config' => $this->config,
-                'cmsBlockFactory' => $cmsBlockFactoryStub,
-                'cmsFilterProvider' => $cmsFilterProviderStub
+                'config' => $this->configMock,
+                'cmsBlockFactory' => $cmsBlockFactoryMock,
+                'cmsFilterProvider' => $cmsFilterProviderMock
             ]
         );
     }
@@ -101,11 +122,10 @@ class CmsTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCmsBlock()
     {
-        $this->config->expects($this->any())
-            ->method('getValue')
-            ->with($this->equalTo(Config::XML_SIDEBAR_CMS_BLOCK))
+        $this->configMock->expects($this->any())
+            ->method('getSidebarCmsBlockId')
             ->willReturn(self::CMS_BLOCK_ID);
-        $this->assertEquals($this->cmsBlock, $this->block->getCmsBlock());
+        $this->assertEquals($this->cmsBlockMock, $this->block->getCmsBlock());
     }
 
     /**
@@ -113,13 +133,13 @@ class CmsTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCmsBlockHtml()
     {
-        $this->cmsBlock->expects($this->any())
+        $this->cmsBlockMock->expects($this->any())
             ->method('getContent')
             ->willReturn(self::CMS_BLOCK_CONTENT);
-        $this->filter->expects($this->atLeastOnce())
+        $this->filterMock->expects($this->atLeastOnce())
             ->method('filter')
             ->with($this->equalTo(self::CMS_BLOCK_CONTENT))
             ->willReturn(self::CMS_BLOCK_CONTENT);
-        $this->assertEquals(self::CMS_BLOCK_CONTENT, $this->block->getCmsBlockHtml($this->cmsBlock));
+        $this->assertEquals(self::CMS_BLOCK_CONTENT, $this->block->getCmsBlockHtml($this->cmsBlockMock));
     }
 }

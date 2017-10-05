@@ -1,8 +1,13 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api\Data;
 
 /**
- * Post interface.
+ * Post interface
  * @api
  */
 interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
@@ -17,8 +22,6 @@ interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
     const SHORT_CONTENT = 'short_content';
     const CONTENT = 'content';
     const STATUS = 'status';
-    const VIRTUAL_STATUS = 'virtual_status';
-    const AUTHOR_ID = 'author_id';
     const AUTHOR_NAME = 'author_name';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -26,11 +29,11 @@ interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
     const IS_ALLOW_COMMENTS = 'is_allow_comments';
     const STORE_IDS = 'store_ids';
     const CATEGORY_IDS = 'category_ids';
-    const TAGS = 'tags';
+    const TAG_NAMES = 'tag_names';
     const META_TITLE = 'meta_title';
     const META_DESCRIPTION = 'meta_description';
-    const PUBLISHED_COMMENTS = 'published_comments';
-    const NEW_COMMENTS = 'new_comments';
+    const PRODUCT_CONDITION = 'product_condition';
+    const RELATED_PRODUCT_IDS = 'related_product_ids';
     /**#@-*/
 
     /**
@@ -122,36 +125,6 @@ interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
      * @return $this
      */
     public function setStatus($status);
-
-    /**
-     * Get virtual status
-     *
-     * @return string|null
-     */
-    public function getVirtualStatus();
-
-    /**
-     * Set virtual status
-     *
-     * @param string $virtualStatus
-     * @return string
-     */
-    public function setVirtualStatus($virtualStatus);
-
-    /**
-     * Get author ID
-     *
-     * @return int|null
-     */
-    public function getAuthorId();
-
-    /**
-     * Set author ID
-     *
-     * @param int $authorId
-     * @return $this
-     */
-    public function setAuthorId($authorId);
 
     /**
      * Get author name
@@ -264,15 +237,15 @@ interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
      *
      * @return string[]|null
      */
-    public function getTags();
+    public function getTagNames();
 
     /**
      * Set tag names
      *
-     * @param string[] $tags
+     * @param string[] $tagNames
      * @return $this
      */
-    public function setTags($tags);
+    public function setTagNames($tagNames);
 
     /**
      * Get meta title
@@ -305,44 +278,44 @@ interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
     public function setMetaDescription($metaDescription);
 
     /**
-     * Get published comments count
+     * Get product condition
      *
-     * @return int|null
+     * @return \Aheadworks\Blog\Api\Data\ConditionInterface
      */
-    public function getPublishedComments();
+    public function getProductCondition();
 
     /**
-     * Set published comments count
+     * Set product condition
      *
-     * @param int $publishedComments
+     * @param \Aheadworks\Blog\Api\Data\ConditionInterface $productCondition
      * @return $this
      */
-    public function setPublishedComments($publishedComments);
+    public function setProductCondition($productCondition);
 
     /**
-     * Get new comments count
+     * Get related product ids
      *
-     * @return int|null
+     * @return int[]|null
      */
-    public function getNewComments();
+    public function getRelatedProductIds();
 
     /**
-     * Set new comments count
+     * Set related product ids
      *
-     * @param int $newComments
+     * @param int[] $relatedProductIds
      * @return $this
      */
-    public function setNewComments($newComments);
+    public function setRelatedProductIds($relatedProductIds);
 
     /**
-     * Retrieve existing extension attributes object or create a new one.
+     * Retrieve existing extension attributes object or create a new one
      *
      * @return \Aheadworks\Blog\Api\Data\PostExtensionInterface|null
      */
     public function getExtensionAttributes();
 
     /**
-     * Set an extension attributes object.
+     * Set an extension attributes object
      *
      * @param \Aheadworks\Blog\Api\Data\PostExtensionInterface $extensionAttributes
      * @return $this

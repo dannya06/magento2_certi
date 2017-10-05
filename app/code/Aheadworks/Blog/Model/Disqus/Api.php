@@ -1,7 +1,13 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Disqus;
 
-use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\DisqusConfig;
+use Magento\Framework\HTTP\Adapter\CurlFactory;
 
 /**
  * Disqus Api
@@ -10,47 +16,69 @@ use Aheadworks\Blog\Model\Config;
 class Api
 {
     /**
+     * Api resources
+     */
+    const RES_FORUMS_LIST_THREADS = 'forums/listThreads';
+    const RES_POSTS_LIST = 'posts/list';
+    const RES_THREADS_DETAILS = 'threads/details';
+
+    /**
+     * Thread statuses
+     */
+    const THREAD_STATUS_OPEN = 'open';
+    const THREAD_STATUS_CLOSED = 'closed';
+    const THREAD_STATUS_KILLED = 'killed';
+
+    /**
+     * Post statuses
+     */
+    const POST_STATUS_UNAPPROVED = 'unapproved';
+    const POST_STATUS_APPROVED = 'approved';
+    const POST_STATUS_SPAM = 'spam';
+    const POST_STATUS_DELETED = 'deleted';
+    const POST_STATUS_FLAGGED = 'flagged';
+    const POST_STATUS_HIGHLIGHTED = 'highlighted';
+
+    /**
+     * Response relations
+     */
+    const RELATION_FORUM = 'forum';
+    const RELATION_THREAD = 'thread';
+    const RELATION_AUTHOR = 'author';
+
+    /**
      * API version
-     *
-     * @var string
      */
-    protected $version = '3.0';
+    const VERSION = '3.0';
 
     /**
-     * Default request method
-     *
-     * @var string
+     * Request method
      */
-    protected $method = \Zend_Http_Client::GET;
+    const METHOD = \Zend_Http_Client::GET;
 
     /**
-     * Default output type
-     *
-     * @var string
+     * Output type
      */
-    protected $outputType = 'json';
+    const OUTPUT_TYPE = 'json';
 
     /**
-     * @var \Magento\Framework\HTTP\Adapter\CurlFactory
+     * @var CurlFactory
      */
-    protected $curlFactory;
+    private $curlFactory;
 
     /**
-     * @var Config
+     * @var DisqusConfig
      */
-    protected $config;
+    private $disqusConfig;
 
     /**
-     * Api constructor.
-     * @param \Magento\Framework\HTTP\Adapter\CurlFactory $curlFactory
-     * @param Config $config
+     * @param CurlFactory $curlFactory
+     * @param DisqusConfig $disqusConfig
      */
-    public function __construct(
-        \Magento\Framework\HTTP\Adapter\CurlFactory $curlFactory,
-        Config $config
-    ) {
+    public function __construct(CurlFactory $curlFactory, DisqusConfig $disqusConfig)
+    {
         $this->curlFactory = $curlFactory;
-        $this->config = $config;
+        $this->disqusConfig = $disqusConfig;
     }
 
     /**
@@ -65,10 +93,10 @@ class Api
         /** @var \Magento\Framework\HTTP\Adapter\Curl $curl */
         $curl = $this->curlFactory->create();
         $curl->setConfig(['timeout' => 60, 'header' => false]);
-        $curl->write($this->method, $this->getEndpoint($resource, $args));
+        $curl->write(self::METHOD, $this->getEndpoint($resource, $args));
         try {
             $response = \Zend_Json::decode($curl->read());
-            $response = isset($response['response']) ? $response['response'] : false;
+            $response = $response['code'] != 0 ? false : $response['response'];
         } catch (\Exception $e) {
             $response = false;
         }
@@ -85,10 +113,10 @@ class Api
      */
     protected function getEndpoint($resource, $args = [])
     {
-        $endpoint = 'https://disqus.com/api/' . $this->version . '/' .
-            $resource . '.' . $this->outputType;
+        $endpoint = 'https://disqus.com/api/' . self::VERSION . '/' .
+            $resource . '.' . self::OUTPUT_TYPE;
         $rawParams = array_merge(
-            ['api_secret' => $this->config->getValue(Config::XML_GENERAL_DISQUS_SECRET_KEY)],
+            ['api_secret' => $this->disqusConfig->getSecretKey(null)],
             $args
         ); // todo: store ID
 

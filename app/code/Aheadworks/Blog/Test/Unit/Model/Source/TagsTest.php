@@ -1,7 +1,15 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model\Source;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Model\Source\Tags;
+use Aheadworks\Blog\Model\ResourceModel\Tag\Collection;
+use Aheadworks\Blog\Model\ResourceModel\Tag\CollectionFactory;
 
 /**
  * Test for \Aheadworks\Blog\Model\Source\Tags
@@ -9,32 +17,37 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class TagsTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Model\Source\Tags
+     * @var Tags
      */
     private $tagsSourceModel;
 
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Tag\Collection|\PHPUnit_Framework_MockObject_MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $tagsCollection;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->tagsCollection = $this->getMockBuilder('Aheadworks\Blog\Model\ResourceModel\Tag\Collection')
+        $this->tagsCollection = $this->getMockBuilder(Collection::class)
             ->setMethods(['toOptionArray'])
             ->disableOriginalConstructor()
             ->getMock();
-        $tagsCollectionFactoryStub = $this->getMockBuilder('Aheadworks\Blog\Model\ResourceModel\Tag\CollectionFactory')
+        $tagsCollectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $tagsCollectionFactoryStub->expects($this->any())
+        $tagsCollectionFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->tagsCollection));
         $this->tagsSourceModel = $objectManager->getObject(
-            'Aheadworks\Blog\Model\Source\Tags',
-            ['tagCollectionFactory' => $tagsCollectionFactoryStub]
+            Tags::class,
+            ['tagCollectionFactory' => $tagsCollectionFactoryMock]
         );
     }
 
