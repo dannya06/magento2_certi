@@ -1,7 +1,16 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Form\Element;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Ui\Component\Post\Form\Element\StatusLabel;
+use Magento\Framework\View\Element\UiComponent\Processor;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Aheadworks\Blog\Model\Source\Post\Status;
 
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Form\Element\StatusLabel
@@ -9,7 +18,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class StatusLabelTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Ui\Component\Post\Form\Element\StatusLabel
+     * @var StatusLabel
      */
     private $statusLabel;
 
@@ -18,32 +27,37 @@ class StatusLabelTest extends \PHPUnit_Framework_TestCase
      */
     private $sourceArray = ['optionName' => 'optionValue'];
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $processorStub = $this->getMock(
-            'Magento\Framework\View\Element\UiComponent\Processor',
+        $processorMock = $this->getMock(
+            Processor::class,
             ['register'],
             [],
             '',
             false
         );
-        $contextStub = $this->getMockForAbstractClass('Magento\Framework\View\Element\UiComponent\ContextInterface');
-        $contextStub->expects($this->any())
+        $contextMock = $this->getMockForAbstractClass(ContextInterface::class);
+        $contextMock->expects($this->exactly(2))
             ->method('getProcessor')
-            ->will($this->returnValue($processorStub));
+            ->will($this->returnValue($processorMock));
 
-        $statusSourceStub = $this->getMock('Aheadworks\Blog\Model\Source\Post\Status', ['getOptions'], [], '', false);
-        $statusSourceStub->expects($this->any())
+        $statusSourceMock = $this->getMock(Status::class, ['getOptions'], [], '', false);
+        $statusSourceMock->expects($this->any())
             ->method('getOptions')
             ->will($this->returnValue($this->sourceArray));
 
         $this->statusLabel = $objectManager->getObject(
-            'Aheadworks\Blog\Ui\Component\Post\Form\Element\StatusLabel',
+            StatusLabel::class,
             [
-                'context' => $contextStub,
-                'statusSource' => $statusSourceStub,
+                'context' => $contextMock,
+                'statusSource' => $statusSourceMock,
                 'data' => ['config' => []]
             ]
         );

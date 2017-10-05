@@ -1,91 +1,81 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Post;
 
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Magento\Framework\Message\Error;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Backend\App\Action;
 
+/**
+ * Class Save
+ * @package Aheadworks\Blog\Controller\Adminhtml\Post
+ */
 class Save extends \Aheadworks\Blog\Controller\Adminhtml\Post
 {
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\DateTime
-     */
-    protected $dateTime;
-
-    /**
-     * @var \Aheadworks\Blog\Model\PostFactory
-     */
-    protected $postFactory;
-
-    /**
-     * @param Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
-     * @param \Aheadworks\Blog\Model\PostFactory $postFactory
-     * @param \Magento\Framework\Registry $registry
-     */
-    public function __construct(
-        Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
-        \Aheadworks\Blog\Model\PostFactory $postFactory,
-        \Magento\Framework\Registry $registry
-    ) {
-        $this->dateTime = $dateTime;
-        $this->postFactory = $postFactory;
-        parent::__construct($context, $resultPageFactory);
-    }
-
-    /**
-     * Edit action
+     * Save post action
      *
      * @return \Magento\Backend\Model\View\Result\Page
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function execute()
     {
-        /** @var $post \Aheadworks\Blog\Model\Post */
-        $data = $this->getRequest()->getPostValue();
         $resultRedirect = $this->resultRedirectFactory->create();
-        if ($data) {
-            /** @var $post \Aheadworks\Blog\Model\Post */
-            $post = $this->postFactory->create();
-            $postId = $this->getRequest()->getParam('post_id');
-            if (!$postId) {
-                $data['author_id'] = $this->_auth->getUser()->getId();
-                $data['author_name'] = $this->_auth->getUser()->getName();
-            }
-            if (!isset($data['short_content'])) {
-                $data['short_content'] = "";
-            }
-            if (isset($data['publish_date'])) {
-                // converting date from local to gmt to store in db. Is there a better solution?
-                $gmtTimestamp = strtotime($data['publish_date']) - $this->dateTime->getGmtOffset();
-                $data['publish_date'] = date('Y-m-d H:i:s', $gmtTimestamp);
-            }
-            if ($this->getRequest()->getParam('save_as_draft')) {
-                $data['save_as_draft'] = true;
-            }
-            $post
-                ->load($postId)
-                ->addData($data)
-            ;
-            $back = $this->getRequest()->getParam('back');
+        if ($postData = $this->getRequest()->getPostValue()) {
+            $postData = $this->preparePostData($postData);
+            $postId = isset($postData['id']) ? $postData['id'] : false;
             try {
-                $post->save();
-                $this->messageManager->addSuccess(__('Blog post was successfully saved.'));
-                $this->_getSession()->setFormData(false);
+                $postDataObject = $postId
+                    ? $this->postRepository->get($postId)
+                    : $this->postDataFactory->create();
+                $this->dataObjectHelper->populateWithArray(
+                    $postDataObject,
+                    $postData,
+                    PostInterface::class
+                );
+                $post = $this->postRepository->save($postDataObject);
+                $this->dataPersistor->clear('aw_blog_post');
+                $this->messageManager->addSuccessMessage(__('The post was successfully saved.'));
+                $back = $this->getRequest()->getParam('back');
                 if ($back == 'edit') {
-                    return $resultRedirect->setPath('*/*/' . $back, ['post_id' => $post->getPostId(), '_current' => true]);
+                    return $resultRedirect->setPath(
+                        '*/*/' . $back,
+                        [
+                            'id' => $post->getId(),
+                            '_current' => true
+                        ]
+                    );
                 }
                 return $resultRedirect->setPath('*/*/');
-            } catch (LocalizedException $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\RuntimeException $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the post.'));
+            } catch (\Magento\Framework\Validator\Exception $exception) {
+                $messages = $exception->getMessages();
+                if (empty($messages)) {
+                    $messages = [$exception->getMessage()];
+                }
+                foreach ($messages as $message) {
+                    if (!$message instanceof Error) {
+                        $message = new Error($message);
+                    }
+                    $this->messageManager->addMessage($message);
+                }
+            } catch (LocalizedException $exception) {
+                $this->messageManager->addErrorMessage($exception->getMessage());
+            } catch (\Exception $exception) {
+                $this->messageManager->addExceptionMessage(
+                    $exception,
+                    __('Something went wrong while saving the post.')
+                );
             }
-            $this->_getSession()->setFormData($data);
-            return $resultRedirect->setPath('*/*/edit', ['post_id' => $postId]);
+            $this->dataPersistor->set('aw_blog_post', $postData);
+            if ($postId) {
+                return $resultRedirect->setPath('*/*/edit', ['id' => $postId, '_current' => true]);
+            }
+            return $resultRedirect->setPath('*/*/new', ['_current' => true]);
         }
         return $resultRedirect->setPath('*/*/');
     }

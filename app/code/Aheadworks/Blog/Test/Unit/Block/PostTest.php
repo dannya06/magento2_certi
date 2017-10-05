@@ -1,28 +1,55 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block;
 
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Aheadworks\Blog\Api\Data\CategorySearchResultsInterface;
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Block\Link;
+use Aheadworks\Blog\Block\LinkFactory;
 use Aheadworks\Blog\Block\Post;
 use Aheadworks\Blog\Model\Config;
-use Aheadworks\Blog\Model\Source\Post\SharingButtons\DisplayAt;
+use Aheadworks\Blog\Model\Source\Config\Related\BlockPosition;
+use Aheadworks\Blog\Model\Template\FilterProvider;
+use Aheadworks\Blog\Model\Source\Post\SharingButtons\DisplayAt as DisplaySharingAt;
+use Aheadworks\Blog\Model\Url;
+use Magento\Framework\Api\SearchCriteria;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Filter\Template as FilterTemplate;
+use Magento\Framework\View\Element\Template as ElementTemplate;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\View\LayoutInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Test for \Aheadworks\Blog\Block\Post
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PostTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Post constants defined for test
+     */
     const POST_ID = 1;
     const POST_TITLE = 'Post';
     const CATEGORY_NAME = 'Category';
-
     const DISCUS_FORUM_CODE = 'disqus_forum_code';
-
     const POST_URL = 'http://localhost/post';
     const CATEGORY_URL = 'http://localhost/cat';
-
     const CATEGORY_LINK_HTML = '<a href="http://localhost/cat">Category</a>';
-
+    const SOCIAL_ICONS_HTML = 'social icons html';
     const STORE_ID = 1;
+    /**#@-*/
 
     /**
      * @var array
@@ -30,98 +57,105 @@ class PostTest extends \PHPUnit_Framework_TestCase
     private $postCategoryIds = [1, 2];
 
     /**
-     * @var \Aheadworks\Blog\Block\Post
+     * @var Post
      */
     private $block;
 
     /**
-     * @var \Aheadworks\Blog\Model\Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $config;
+    private $configMock;
 
     /**
-     * @var \Magento\Framework\Filter\Template|\PHPUnit_Framework_MockObject_MockObject
+     * @var FilterTemplate|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $filter;
+    private $filterMock;
 
     /**
-     * @var \Magento\Framework\View\Element\Template|\PHPUnit_Framework_MockObject_MockObject
+     * @var ElementTemplate|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $childBlock;
+    private $childBlockMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\PostInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var PostInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $post;
+    private $postMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $category;
+    private $categoryMock;
 
     /**
+     * Init mocks for tests
+     *
+     * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->post = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostInterface');
-        $this->post->expects($this->any())
+        $this->postMock = $this->getMockForAbstractClass(PostInterface::class);
+        $this->postMock->expects($this->any())
             ->method('getTitle')
             ->will($this->returnValue(self::POST_TITLE));
-        $this->post->expects($this->any())
+        $this->postMock->expects($this->any())
             ->method('getCategoryIds')
             ->will($this->returnValue($this->postCategoryIds));
-        $postRepositoryStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\PostRepositoryInterface');
-        $postRepositoryStub->expects($this->any())
+        $postRepositoryMock = $this->getMockForAbstractClass(PostRepositoryInterface::class);
+        $postRepositoryMock->expects($this->any())
             ->method('get')
             ->with($this->equalTo(self::POST_ID))
-            ->will($this->returnValue($this->post));
+            ->will($this->returnValue($this->postMock));
 
-        $searchCriteriaStub = $this->getMock('Magento\Framework\Api\SearchCriteria', [], [], '', false);
-        $searchCriteriaBuilderStub = $this->getMock(
-            'Magento\Framework\Api\SearchCriteriaBuilder',
+        $searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
+        $searchCriteriaBuilderMock = $this->getMock(
+            SearchCriteriaBuilder::class,
             ['addFilter', 'create'],
             [],
             '',
             false
         );
-        $searchCriteriaBuilderStub->expects($this->any())
+        $searchCriteriaBuilderMock->expects($this->any())
             ->method('addFilter')
             ->will($this->returnSelf());
-        $searchCriteriaBuilderStub->expects($this->any())
+        $searchCriteriaBuilderMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($searchCriteriaStub));
+            ->will($this->returnValue($searchCriteriaMock));
 
-        $this->category = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\CategoryInterface');
-        $this->category->expects($this->any())
+        $this->categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $this->categoryMock->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(self::CATEGORY_NAME));
-        $categorySearchResultsStub = $this->getMockForAbstractClass(
-            'Aheadworks\Blog\Api\Data\CategorySearchResultsInterface'
-        );
-        $categorySearchResultsStub->expects($this->any())
+        $categorySearchResultsMock = $this->getMockForAbstractClass(CategorySearchResultsInterface::class);
+        $categorySearchResultsMock->expects($this->any())
             ->method('getItems')
-            ->will($this->returnValue([$this->category]));
-        $categoryRepositoryStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\CategoryRepositoryInterface');
-        $categoryRepositoryStub->expects($this->any())
+            ->will($this->returnValue([$this->categoryMock]));
+        $categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
+        $categoryRepositoryMock->expects($this->any())
             ->method('getList')
-            ->with($this->equalTo($searchCriteriaStub))
-            ->will($this->returnValue($categorySearchResultsStub));
+            ->with($this->equalTo($searchCriteriaMock))
+            ->will($this->returnValue($categorySearchResultsMock));
 
-        $this->config = $this->getMock('Aheadworks\Blog\Model\Config', ['getValue'], [], '', false);
+        $this->configMock = $this->getMock(
+            Config::class,
+            ['isCommentsEnabled', 'getDisplaySharingAt', 'getRelatedBlockPosition'],
+            [],
+            '',
+            false
+        );
 
-        $urlStub = $this->getMock('Aheadworks\Blog\Model\Url', ['getPostUrl', 'getCategoryUrl'], [], '', false);
-        $urlStub->expects($this->any())->method('getPostUrl')
-            ->with($this->equalTo($this->post))
+        $urlMock = $this->getMock(Url::class, ['getPostUrl', 'getCategoryUrl'], [], '', false);
+        $urlMock->expects($this->any())->method('getPostUrl')
+            ->with($this->equalTo($this->postMock))
             ->will($this->returnValue(self::POST_URL));
-        $urlStub->expects($this->any())->method('getCategoryUrl')
-            ->with($this->equalTo($this->category))
+        $urlMock->expects($this->any())->method('getCategoryUrl')
+            ->with($this->equalTo($this->categoryMock))
             ->will($this->returnValue(self::CATEGORY_URL));
 
-        $linkStub = $this->getMock(
-            'Aheadworks\Blog\Block\Link',
+        $linkMock = $this->getMock(
+            Link::class,
             [
                 'setHref',
                 'setTitle',
@@ -132,33 +166,27 @@ class PostTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $linkStub->expects($this->any())->method('setHref')->will($this->returnSelf());
-        $linkStub->expects($this->any())->method('setTitle')->will($this->returnSelf());
-        $linkStub->expects($this->any())->method('setLabel')->will($this->returnSelf());
-        $linkStub->expects($this->any())
+        $linkMock->expects($this->any())->method('setHref')->will($this->returnSelf());
+        $linkMock->expects($this->any())->method('setTitle')->will($this->returnSelf());
+        $linkMock->expects($this->any())->method('setLabel')->will($this->returnSelf());
+        $linkMock->expects($this->any())
             ->method('toHtml')
             ->will($this->returnValue(self::CATEGORY_LINK_HTML));
-        $linkFactoryStub = $this->getMock('Aheadworks\Blog\Block\LinkFactory', ['create'], [], '', false);
-        $linkFactoryStub->expects($this->any())
+        $linkFactoryMock = $this->getMock(LinkFactory::class, ['create'], [], '', false);
+        $linkFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($linkStub));
+            ->will($this->returnValue($linkMock));
 
-        $this->filter = $this->getMock('Magento\Framework\Filter\Template', ['setStoreId', 'filter'], [], '', false);
-        $this->filter->expects($this->any())
+        $this->filterMock = $this->getMock(FilterTemplate::class, ['setStoreId', 'filter'], [], '', false);
+        $this->filterMock->expects($this->any())
             ->method('setStoreId')
             ->will($this->returnSelf());
-        $templateFilterProviderStub = $this->getMock(
-            'Aheadworks\Blog\Model\Template\FilterProvider',
-            ['getFilter'],
-            [],
-            '',
-            false
-        );
-        $templateFilterProviderStub->expects($this->any())
+        $templateFilterProviderMock = $this->getMock(FilterProvider::class, ['getFilter'], [], '', false);
+        $templateFilterProviderMock->expects($this->any())
             ->method('getFilter')
-            ->will($this->returnValue($this->filter));
-        $requestStub = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $requestStub->expects($this->any())
+            ->will($this->returnValue($this->filterMock));
+        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock->expects($this->any())
             ->method('getParam')
             ->will(
                 $this->returnValueMap(
@@ -169,8 +197,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
-        $this->childBlock = $this->getMock(
-            'Magento\Framework\View\Element\Template',
+        $this->childBlockMock = $this->getMock(
+            ElementTemplate::class,
             [
                 'setTemplate',
                 'setShareUrl',
@@ -184,53 +212,53 @@ class PostTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->childBlock->expects($this->any())->method('setTemplate')->will($this->returnSelf());
-        $this->childBlock->expects($this->any())->method('setShareUrl')->will($this->returnSelf());
-        $this->childBlock->expects($this->any())->method('setSharingText')->will($this->returnSelf());
-        $this->childBlock->expects($this->any())->method('setPageIdentifier')->will($this->returnSelf());
-        $this->childBlock->expects($this->any())->method('setPageUrl')->will($this->returnSelf());
-        $this->childBlock->expects($this->any())->method('setPageTitle')->will($this->returnSelf());
+        $this->childBlockMock->expects($this->any())->method('setTemplate')->will($this->returnSelf());
+        $this->childBlockMock->expects($this->any())->method('setShareUrl')->will($this->returnSelf());
+        $this->childBlockMock->expects($this->any())->method('setSharingText')->will($this->returnSelf());
+        $this->childBlockMock->expects($this->any())->method('setPageIdentifier')->will($this->returnSelf());
+        $this->childBlockMock->expects($this->any())->method('setPageUrl')->will($this->returnSelf());
+        $this->childBlockMock->expects($this->any())->method('setPageTitle')->will($this->returnSelf());
 
-        $layoutStub = $this->getMockForAbstractClass('Magento\Framework\View\LayoutInterface');
-        $layoutStub->expects($this->any())
+        $layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
+        $layoutMock->expects($this->any())
             ->method('getChildName')
             ->will($this->returnValue('child.name'));
-        $layoutStub->expects($this->any())
+        $layoutMock->expects($this->any())
             ->method('getBlock')
-            ->will($this->returnValue($this->childBlock));
-        $layoutStub->expects($this->any())
+            ->will($this->returnValue($this->childBlockMock));
+        $layoutMock->expects($this->any())
             ->method('createBlock')
-            ->will($this->returnValue($this->childBlock));
+            ->will($this->returnValue($this->childBlockMock));
 
-        $storeStub = $this->getMockForAbstractClass('Magento\Store\Api\Data\StoreInterface');
-        $storeStub->expects($this->any())
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::STORE_ID));
-        $storeManagerStub = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $storeManagerStub->expects($this->any())
+        $storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeStub));
+            ->will($this->returnValue($storeMock));
 
         $context = $objectManager->getObject(
-            'Magento\Framework\View\Element\Template\Context',
+            Context::class,
             [
-                'request' => $requestStub,
-                'layout' => $layoutStub,
-                'storeManager' => $storeManagerStub
+                'request' => $requestMock,
+                'layout' => $layoutMock,
+                'storeManager' => $storeManagerMock
             ]
         );
 
         $this->block = $objectManager->getObject(
-            'Aheadworks\Blog\Block\Post',
+            Post::class,
             [
                 'context' => $context,
-                'categoryRepository' => $categoryRepositoryStub,
-                'postRepository' => $postRepositoryStub,
-                'searchCriteriaBuilder' => $searchCriteriaBuilderStub,
-                'url' => $urlStub,
-                'config' => $this->config,
-                'templateFilterProvider' => $templateFilterProviderStub,
-                'linkFactory' => $linkFactoryStub
+                'categoryRepository' => $categoryRepositoryMock,
+                'postRepository' => $postRepositoryMock,
+                'searchCriteriaBuilder' => $searchCriteriaBuilderMock,
+                'url' => $urlMock,
+                'config' => $this->configMock,
+                'templateFilterProvider' => $templateFilterProviderMock,
+                'linkFactory' => $linkFactoryMock
             ]
         );
     }
@@ -239,6 +267,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
      * Testing that a list item mode is checked correctly
      *
      * @dataProvider isListItemModeDataProvider
+     * @param string $mode
+     * @param bool $expectedResult
      */
     public function testIsListItemMode($mode, $expectedResult)
     {
@@ -250,6 +280,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
      * Testing that a view mode is checked correctly
      *
      * @dataProvider isViewModeDataProvider
+     * @param string $mode
+     * @param bool $expectedResult
      */
     public function testIsViewMode($mode, $expectedResult)
     {
@@ -262,73 +294,74 @@ class PostTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCategories()
     {
-        $this->assertEquals([$this->category], $this->block->getCategories());
+        $class = new \ReflectionClass($this->block);
+        $method = $class->getMethod('getCategories');
+        $method->setAccessible(true);
+        $this->assertEquals([$this->categoryMock], $method->invoke($this->block));
     }
 
     /**
      * Testing of commentsEnabled method
      *
      * @dataProvider commentsEnabledDataProvider
+     * @param bool $isCommentsEnabled
+     * @param bool $isAllowComments
+     * @param bool $expectedResult
      */
-    public function testCommentsEnabled($disqusForumCode, $isAllowComments, $expectedResult)
+    public function testCommentsEnabled($isCommentsEnabled, $isAllowComments, $expectedResult)
     {
-        $this->config->expects($this->any())
-            ->method('getValue')
-            ->with($this->equalTo(Config::XML_GENERAL_DISQUS_FORUM_CODE))
-            ->willReturn($disqusForumCode);
-        $this->post->expects($this->any())
+        $this->configMock->expects($this->any())
+            ->method('isCommentsEnabled')
+            ->willReturn($isCommentsEnabled);
+        $this->postMock->expects($this->any())
             ->method('getIsAllowComments')
             ->willReturn($isAllowComments);
         $this->assertEquals($expectedResult, $this->block->commentsEnabled());
     }
 
     /**
-     * Testing of showSharing method
-     *
-     * @dataProvider showSharingDataProvider
-     */
-    public function testShowSharing($displaySharingAt, $mode, $expectedResult)
-    {
-        $this->config->expects($this->any())
-            ->method('getValue')
-            ->with($this->equalTo(Config::XML_GENERAL_DISPLAY_SHARING_AT))
-            ->will($this->returnValue($displaySharingAt));
-        $this->block->setMode($mode);
-        $this->assertEquals($expectedResult, $this->block->showSharing());
-    }
-
-    /**
      * Testing of showReadMoreButton method
      *
      * @dataProvider showReadMoreButtonDataProvider
+     * @param string $mode
+     * @param string $shortContent
+     * @param bool $expectedResult
      */
     public function testShowReadMoreButton($mode, $shortContent, $expectedResult)
     {
         $this->block->setMode($mode);
-        $this->post->expects($this->any())
+        $this->postMock->expects($this->any())
             ->method('getShortContent')
             ->will($this->returnValue($shortContent));
-        $this->assertEquals($expectedResult, $this->block->showReadMoreButton($this->post));
+        $this->assertEquals($expectedResult, $this->block->showReadMoreButton($this->postMock));
     }
 
     /**
-     * Testing of retrieving of sharethis embed html
+     * Testing of retrieving of social icons html
+     *
+     * @dataProvider getSocialIconsHtmlDataProvider
+     * @param int[] $displayAt
+     * @param string $mode
+     * @param string $expected
      */
-    public function testGetSharethisEmbedHtml()
+    public function testGetSocialIconsHtml($displayAt, $mode, $expected)
     {
-        $shareThisHtml = 'sharethis html';
-        $this->childBlock->expects($this->any())
+        $this->configMock->expects($this->any())
+            ->method('getDisplaySharingAt')
+            ->willReturn($displayAt);
+        $this->block->setMode($mode);
+        $this->childBlockMock->expects($this->any())
             ->method('toHtml')
-            ->willReturn($shareThisHtml);
-        $this->assertEquals($shareThisHtml, $this->block->getSharethisEmbedHtml());
+            ->willReturn(self::SOCIAL_ICONS_HTML);
+        $this->assertEquals($expected, $this->block->getSocialIconsHtml());
     }
 
     /**
-     * Testing of retrieving of category link html
+     * Testing of retrieving array of category links html
      */
-    public function testGetCategoryLinkHtml()
+    public function testGetCategoryLinks()
     {
-        $this->assertEquals(self::CATEGORY_LINK_HTML, $this->block->getCategoryLinkHtml($this->category));
+        $this->assertEquals([self::CATEGORY_LINK_HTML], $this->block->getCategoryLinks());
     }
 
     /**
@@ -337,34 +370,72 @@ class PostTest extends \PHPUnit_Framework_TestCase
     public function testGetDisqusEmbedHtml()
     {
         $disqusEmbedHtml = 'disqus html';
-        $this->childBlock->expects($this->any())
+        $this->childBlockMock->expects($this->any())
             ->method('toHtml')
             ->willReturn($disqusEmbedHtml);
-        $this->assertEquals($disqusEmbedHtml, $this->block->getSharethisEmbedHtml());
+        $this->assertEquals($disqusEmbedHtml, $this->block->getDisqusEmbedHtml());
+    }
+
+    /**
+     * Testing of retrieving of related product html
+     *
+     * @param bool $expected
+     * @param bool $viewMode
+     * @param string $position
+     * @dataProvider getRelatedProductHtmlDataProvider
+     */
+    public function testGetRelatedProductHtml($expected, $viewMode, $position)
+    {
+        $this->childBlockMock->expects($this->once())
+            ->method('toHtml')
+            ->willReturn($expected);
+        $this->configMock->expects($this->once())
+            ->method('getRelatedBlockPosition')
+            ->willReturn($position);
+        $this->assertEquals($expected, $this->block->getRelatedProductHtml($viewMode, $position));
+    }
+
+    /**
+     * Data provider for testGetRelatedProductHtml method
+     *
+     * @return array
+     */
+    public function getRelatedProductHtmlDataProvider()
+    {
+        return [
+            ['related product html', true, BlockPosition::AFTER_POST],
+            ['', true, BlockPosition::AFTER_COMMENTS]
+        ];
     }
 
     /**
      * Testing of getContent method
      *
      * @dataProvider getContentDataProvider
+     * @param string $content
+     * @param string $shortContent
+     * @param string $mode
+     * @param string $expectedResult
      */
     public function testGetContent($content, $shortContent, $mode, $expectedResult)
     {
-        $this->post->expects($this->any())
+        $this->postMock->expects($this->any())
             ->method('getContent')
             ->willReturn($content);
-        $this->post->expects($this->any())
+        $this->postMock->expects($this->any())
             ->method('getShortContent')
             ->willReturn($shortContent);
         $this->block->setMode($mode);
-        $this->filter->expects($this->atLeastOnce())
+        $this->filterMock->expects($this->atLeastOnce())
             ->method('filter')
             ->with($this->equalTo($expectedResult))
             ->willReturn($expectedResult);
-        $this->assertEquals($expectedResult, $this->block->getContent($this->post));
+        $this->assertEquals($expectedResult, $this->block->getContent($this->postMock));
     }
 
     /**
+     * Data provider for testIsListItemMode method
+     *
      * @return array
      */
     public function isListItemModeDataProvider()
@@ -376,6 +447,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Data provider for testIsViewMode method
+     *
      * @return array
      */
     public function isViewModeDataProvider()
@@ -387,32 +460,23 @@ class PostTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Data provider for testCommentsEnabled method
+     *
      * @return array
      */
     public function commentsEnabledDataProvider()
     {
         return [
-            'forum code is set, commenting is allowed' => [self::DISCUS_FORUM_CODE, true, true],
-            'forum code is not set, commenting is allowed' => [null, true, false],
-            'forum code is set, commenting is not allowed' => [self::DISCUS_FORUM_CODE, false, false],
-            'forum code is not set, commenting is not allowed' => [null, false, false]
+            'comments enabled, commenting is allowed for post' => [true, true, true],
+            'comments disabled, commenting is allowed for post' => [false, true, false],
+            'comments enabled, commenting is not allowed for post' => [true, false, false],
+            'comments disabled, commenting is not allowed for post' => [false, false, false]
         ];
     }
 
     /**
-     * @return array
-     */
-    public function showSharingDataProvider()
-    {
-        return [
-            'display at post, view mode' => [DisplayAt::POST, Post::MODE_VIEW, true],
-            'display at post, list item mode' => [DisplayAt::POST, Post::MODE_LIST_ITEM, false],
-            'display at post list, list item mode' => [DisplayAt::POST_LIST, Post::MODE_LIST_ITEM, true],
-            'display at post list, view mode' => [DisplayAt::POST_LIST, Post::MODE_VIEW, false]
-        ];
-    }
-
-    /**
+     * Data provider for testShowReadMoreButton method
+     *
      * @return array
      */
     public function showReadMoreButtonDataProvider()
@@ -425,6 +489,23 @@ class PostTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Data provider for testGetSocialIconsHtml method
+     *
+     * @return array
+     */
+    public function getSocialIconsHtmlDataProvider()
+    {
+        return [
+            [[DisplaySharingAt::POST], Post::MODE_VIEW, self::SOCIAL_ICONS_HTML],
+            [[DisplaySharingAt::POST], Post::MODE_LIST_ITEM, ''],
+            [[DisplaySharingAt::POST_LIST], Post::MODE_LIST_ITEM, self::SOCIAL_ICONS_HTML],
+            [[DisplaySharingAt::POST_LIST], Post::MODE_VIEW, '']
+        ];
+    }
+
+    /**
+     * Data provider for testGetContent method
+     *
      * @return array
      */
     public function getContentDataProvider()

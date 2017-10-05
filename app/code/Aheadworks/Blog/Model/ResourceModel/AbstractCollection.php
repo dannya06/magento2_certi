@@ -1,4 +1,9 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\ResourceModel;
 
 /**
@@ -8,56 +13,92 @@ namespace Aheadworks\Blog\Model\ResourceModel;
 abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
     /**
-     * @param int|array $id
-     * @param string $linkageTable
-     * @param string $idFieldName
-     * @param string $idLinkageFieldName
+     * {@inheritdoc}
+     */
+    public function addFieldToFilter($field, $condition = null)
+    {
+        if ($field === 'store_id') {
+            return $this->addStoreFilter($condition, false);
+        }
+        return parent::addFieldToFilter($field, $condition);
+    }
+
+    /**
+     * Add store filter
+     *
+     * @param int|array $store
+     * @param bool $withAdmin
      * @return $this
      */
-    protected function addLinkageInstanceFilter(
-        $id,
-        $linkageTable,
-        $idFieldName,
-        $idLinkageFieldName
-    ) {
-        $select = $this->getSelect();
-        $select->joinLeft(
-            $linkageTable,
-            'main_table.' . $idFieldName . ' = ' . $linkageTable . '.' . $idFieldName,
-            []
-        );
-        if (is_array($id)) {
-            $select->where($linkageTable . '.' . $idLinkageFieldName . ' IN(?)', $id);
-        } else {
-            $select->where($linkageTable . '.' . $idLinkageFieldName . '  = ?', $id);
+    public function addStoreFilter($store, $withAdmin = true)
+    {
+        if (!is_array($store)) {
+            $store = [$store];
         }
+        if ($withAdmin) {
+            $store[] = \Magento\Store\Model\Store::DEFAULT_STORE_ID;
+        }
+        $this->addFilter('store_linkage_table.store_id', ['in' => $store], 'public');
         return $this;
     }
 
     /**
-     * @param string $to
-     * @return string
+     * Join to store linkage table if store filter is applied
+     *
+     * @param string $tableName
+     * @param string $columnName
+     * @param string $linkageColumnName
+     * @return void
      */
-    public function getLinkageTable($to)
+    protected function joinStoreLinkageTable($tableName, $columnName, $linkageColumnName)
     {
-        return $this->getResource()->getMainTable() . '_' . $to;
+        if ($this->getFilter('store_linkage_table.store_id')) {
+            $select = $this->getSelect();
+            $select->joinLeft(
+                ['store_linkage_table' => $this->getTable($tableName)],
+                'main_table.' . $columnName . ' = store_linkage_table.' . $linkageColumnName,
+                []
+            )
+            ->group('main_table.' . $columnName);
+        }
     }
 
     /**
-     * @return \Magento\Framework\DB\Select
+     * Attach stores data to collection items
+     *
+     * @param string $tableName
+     * @param string $columnName
+     * @param string $linkageColumnName
+     * @return void
+     */
+    protected function attachStores($tableName, $columnName, $linkageColumnName)
+    {
+        $ids = $this->getColumnValues($columnName);
+        if (count($ids)) {
+            $connection = $this->getConnection();
+            $select = $connection->select()
+                ->from(['store_linkage_table' => $this->getTable($tableName)])
+                ->where('store_linkage_table.' . $linkageColumnName . ' IN (?)', $ids);
+            /** @var \Magento\Framework\DataObject $item */
+            foreach ($this as $item) {
+                $storeIds = [];
+                $id = $item->getData($columnName);
+                foreach ($connection->fetchAll($select) as $data) {
+                    if ($data[$linkageColumnName] == $id) {
+                        $storeIds[] = $data['store_id'];
+                    }
+                }
+                $item->setData('store_ids', $storeIds);
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getSelectCountSql()
     {
-        $this->_renderFilters();
-
-        $countSelect = clone $this->getSelect();
-        $countSelect->reset(\Magento\Framework\DB\Select::ORDER)
-            ->reset(\Magento\Framework\DB\Select::LIMIT_COUNT)
-            ->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET)
-            ->reset(\Magento\Framework\DB\Select::COLUMNS)
+        return parent::getSelectCountSql()
             ->reset(\Magento\Framework\DB\Select::GROUP);
-        $countSelect->columns('COUNT(*)');
-
-        return $countSelect;
     }
 }

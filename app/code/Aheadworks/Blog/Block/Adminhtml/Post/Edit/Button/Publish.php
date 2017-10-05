@@ -1,30 +1,24 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button;
 
-use Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button;
-use Aheadworks\Blog\Model\Source\Post\Status;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 
 /**
  * Class Publish
  * @package Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button
  */
-class Publish extends Button implements ButtonProviderInterface
+class Publish implements ButtonProviderInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getButtonData()
     {
-        $hidden = true;
-        if ($postId = $this->getPostId()) {
-            $post = $this->postRepository->get($postId);
-            if ($post->getStatus() !== Status::PUBLICATION) {
-                $hidden = false;
-            }
-        } else {
-            $hidden = false;
-        }
         return [
             'label' => __('Publish Post'),
             'class' => 'save primary',
@@ -34,7 +28,7 @@ class Publish extends Button implements ButtonProviderInterface
                 ],
                 'form-role' => 'save',
             ],
-            'style' => $hidden ? 'display:none;' : '',
+            'style' => 'width:150px;',
             'sort_order' => 50,
         ];
     }

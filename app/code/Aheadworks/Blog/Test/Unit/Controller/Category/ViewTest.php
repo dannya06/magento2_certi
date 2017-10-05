@@ -1,101 +1,129 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Controller\Category;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Controller\Category\View;
+use Magento\Framework\View\Result\Page;
+use Magento\Framework\Controller\Result\Forward;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\View\Page\Config;
+use Magento\Framework\View\Page\Title;
+use Magento\Framework\Message\ManagerInterface;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Controller\Result\ForwardFactory;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Response\RedirectInterface;
+use Magento\Framework\App\Action\Context;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Category\View
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ViewTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Constants defined for test
+     */
     const CATEGORY_ID = 1;
     const CATEGORY_STATUS = 1;
     const CATEGORY_NAME = 'Category';
     const CATEGORY_META_DESCRIPTION = 'Meta description';
-
     const STORE_ID = 1;
-    const ERROR_MESSAGE = 'Not found.';
     const REFERER_URL = 'http://localhost';
+    /**#@-*/
 
     /**
      * @var array
      */
-    private $categoryStoreIds = [self::STORE_ID, 2];
+    private $categoryStoreId = [self::STORE_ID, 2];
 
     /**
-     * @var \Aheadworks\Blog\Controller\Category\View
+     * @var View
      */
     private $action;
 
     /**
-     * @var \Magento\Framework\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
+     * @var Page|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultPage;
+    private $resultPageMock;
 
     /**
-     * @var \Magento\Framework\Controller\Result\Forward|\PHPUnit_Framework_MockObject_MockObject
+     * @var Forward|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $forward;
+    private $forwardMock;
 
     /**
-     * @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
+     * @var Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultRedirect;
+    private $resultRedirectMock;
 
     /**
-     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $pageConfig;
+    private $pageConfigMock;
 
     /**
-     * @var \Magento\Framework\View\Page\Title|\PHPUnit_Framework_MockObject_MockObject
+     * @var Title|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $title;
+    private $titleMock;
 
     /**
-     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $messageManager;
+    private $messageManagerMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $categoryRepository;
+    private $categoryRepositoryMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $category;
+    private $categoryMock;
 
     /**
+     * Init mocks for tests
+     *
+     * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->title = $this->getMock('Magento\Framework\View\Page\Title', ['set'], [], '', false);
-        $this->pageConfig = $this->getMock(
-            'Magento\Framework\View\Page\Config',
+        $this->titleMock = $this->getMock(Title::class, ['set'], [], '', false);
+        $this->pageConfigMock = $this->getMock(
+            Config::class,
             ['getTitle', 'setMetadata'],
             [],
             '',
             false
         );
-        $this->pageConfig->expects($this->any())
+        $this->pageConfigMock->expects($this->any())
             ->method('getTitle')
-            ->will($this->returnValue($this->title));
-        $this->resultPage = $this->getMock('Magento\Framework\View\Result\Page', ['getConfig'], [], '', false);
-        $this->resultPage->expects($this->any())
+            ->will($this->returnValue($this->titleMock));
+        $this->resultPageMock = $this->getMock(Page::class, ['getConfig'], [], '', false);
+        $this->resultPageMock->expects($this->any())
             ->method('getConfig')
-            ->will($this->returnValue($this->pageConfig));
-        $resultPageFactoryStub = $this->getMock('Magento\Framework\View\Result\PageFactory', ['create'], [], '', false);
-        $resultPageFactoryStub->expects($this->any())
+            ->will($this->returnValue($this->pageConfigMock));
+        $resultPageFactoryMock = $this->getMock(PageFactory::class, ['create'], [], '', false);
+        $resultPageFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultPage));
+            ->will($this->returnValue($this->resultPageMock));
 
-        $this->forward = $this->getMock(
-            'Magento\Framework\Controller\Result\Forward',
+        $this->forwardMock = $this->getMock(
+            Forward::class,
             [
                 'setModule',
                 'setController',
@@ -105,88 +133,88 @@ class ViewTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->forward->expects($this->any())
+        $this->forwardMock->expects($this->any())
             ->method('setModule')
             ->will($this->returnSelf());
-        $this->forward->expects($this->any())
+        $this->forwardMock->expects($this->any())
             ->method('setController')
             ->will($this->returnSelf());
-        $this->forward->expects($this->any())
+        $this->forwardMock->expects($this->any())
             ->method('forward')
             ->will($this->returnSelf());
-        $resultForwardFactoryStub = $this->getMock(
-            'Magento\Framework\Controller\Result\ForwardFactory',
+        $resultForwardFactoryMock = $this->getMock(
+            ForwardFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $resultForwardFactoryStub->expects($this->any())
+        $resultForwardFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->forward));
+            ->will($this->returnValue($this->forwardMock));
 
-        $storeStub = $this->getMockForAbstractClass('Magento\Store\Api\Data\StoreInterface');
-        $storeStub->expects($this->any())
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::STORE_ID));
-        $storeManagerStub = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $storeManagerStub->expects($this->any())
+        $storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeStub));
+            ->will($this->returnValue($storeMock));
 
-        $this->category = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\CategoryInterface');
-        $this->categoryRepository = $this->getMockForAbstractClass('Aheadworks\Blog\Api\CategoryRepositoryInterface');
-        $this->categoryRepository->expects($this->any())
+        $this->categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $this->categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
+        $this->categoryRepositoryMock->expects($this->any())
             ->method('get')
             ->with($this->equalTo(self::CATEGORY_ID))
-            ->will($this->returnValue($this->category));
+            ->will($this->returnValue($this->categoryMock));
 
-        $this->resultRedirect = $this->getMock(
-            'Magento\Framework\Controller\Result\Redirect',
+        $this->resultRedirectMock = $this->getMock(
+            Redirect::class,
             ['setUrl'],
             [],
             '',
             false
         );
-        $resultRedirectFactoryStub = $this->getMock(
-            'Magento\Framework\Controller\Result\RedirectFactory',
+        $resultRedirectFactoryMock = $this->getMock(
+            RedirectFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $resultRedirectFactoryStub->expects($this->any())
+        $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultRedirect));
+            ->will($this->returnValue($this->resultRedirectMock));
 
-        $requestStub = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $requestStub->expects($this->any())
+        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock->expects($this->any())
             ->method('getParam')
             ->with($this->equalTo('blog_category_id'))
             ->will($this->returnValue(self::CATEGORY_ID));
-        $redirectStub = $this->getMockForAbstractClass('Magento\Framework\App\Response\RedirectInterface');
-        $redirectStub->expects($this->any())
+        $redirectMock = $this->getMockForAbstractClass(RedirectInterface::class);
+        $redirectMock->expects($this->any())
             ->method('getRefererUrl')
             ->will($this->returnValue(self::REFERER_URL));
-        $this->messageManager = $this->getMockForAbstractClass('Magento\Framework\Message\ManagerInterface');
+        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
         $context = $objectManager->getObject(
-            'Magento\Framework\App\Action\Context',
+            Context::class,
             [
-                'request' => $requestStub,
-                'redirect' => $redirectStub,
-                'messageManager' => $this->messageManager,
-                'resultRedirectFactory' => $resultRedirectFactoryStub
+                'request' => $requestMock,
+                'redirect' => $redirectMock,
+                'messageManager' => $this->messageManagerMock,
+                'resultRedirectFactory' => $resultRedirectFactoryMock
             ]
         );
 
         $this->action = $objectManager->getObject(
-            'Aheadworks\Blog\Controller\Category\View',
+            View::class,
             [
                 'context' => $context,
-                'resultPageFactory' => $resultPageFactoryStub,
-                'resultForwardFactory' => $resultForwardFactoryStub,
-                'storeManager' => $storeManagerStub,
-                'categoryRepository' => $this->categoryRepository
+                'resultPageFactory' => $resultPageFactoryMock,
+                'resultForwardFactory' => $resultForwardFactoryMock,
+                'storeManager' => $storeManagerMock,
+                'categoryRepository' => $this->categoryRepositoryMock
             ]
         );
     }
@@ -195,28 +223,28 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      * Prepare category mock
      *
      * @param int $status
-     * @param array|null $storeIds
+     * @param array|null $storeId
      */
-    private function prepareCategoryMock($status = self::CATEGORY_STATUS, $storeIds = null)
+    private function prepareCategoryMock($status = self::CATEGORY_STATUS, $storeId = null)
     {
-        if (!$storeIds) {
-            $storeIds = $this->categoryStoreIds;
+        if (!$storeId) {
+            $storeId = $this->categoryStoreId;
         }
-        $this->category->expects($this->any())
+        $this->categoryMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::CATEGORY_ID));
-        $this->category->expects($this->any())
+        $this->categoryMock->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(self::CATEGORY_NAME));
-        $this->category->expects($this->any())
+        $this->categoryMock->expects($this->any())
             ->method('getMetaDescription')
             ->will($this->returnValue(self::CATEGORY_META_DESCRIPTION));
-        $this->category->expects($this->any())
+        $this->categoryMock->expects($this->any())
             ->method('getStatus')
             ->will($this->returnValue($status));
-        $this->category->expects($this->any())
+        $this->categoryMock->expects($this->any())
             ->method('getStoreIds')
-            ->will($this->returnValue($storeIds));
+            ->will($this->returnValue($storeId));
     }
 
     /**
@@ -225,7 +253,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     public function testExecuteResult()
     {
         $this->prepareCategoryMock();
-        $this->assertSame($this->resultPage, $this->action->execute());
+        $this->assertSame($this->resultPageMock, $this->action->execute());
     }
 
     /**
@@ -234,12 +262,12 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     public function testExecuteErrorRedirect()
     {
         $this->prepareCategoryMock();
-        $this->categoryRepository->expects($this->any())
+        $this->categoryRepositoryMock->expects($this->any())
             ->method('get')
             ->willThrowException(
-                new \Magento\Framework\Exception\LocalizedException(__(self::ERROR_MESSAGE))
+                new \Magento\Framework\Exception\LocalizedException(__('Not found.'))
             );
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+        $this->assertSame($this->resultRedirectMock, $this->action->execute());
     }
 
     /**
@@ -248,14 +276,14 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     public function testExecuteErrorMessage()
     {
         $this->prepareCategoryMock();
-        $this->categoryRepository->expects($this->any())
+        $this->categoryRepositoryMock->expects($this->any())
             ->method('get')
             ->willThrowException(
-                new \Magento\Framework\Exception\LocalizedException(__(self::ERROR_MESSAGE))
+                new \Magento\Framework\Exception\LocalizedException(__('Not found.'))
             );
-        $this->messageManager->expects($this->once())
-            ->method('addError')
-            ->with($this->equalTo(self::ERROR_MESSAGE));
+        $this->messageManagerMock->expects($this->once())
+            ->method('addErrorMessage')
+            ->with($this->equalTo('Not found.'));
         $this->action->execute();
     }
 
@@ -265,10 +293,10 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     public function testExecutePageConfig()
     {
         $this->prepareCategoryMock();
-        $this->title->expects($this->atLeastOnce())
+        $this->titleMock->expects($this->atLeastOnce())
             ->method('set')
             ->with($this->equalTo(self::CATEGORY_NAME));
-        $this->pageConfig->expects($this->atLeastOnce())
+        $this->pageConfigMock->expects($this->atLeastOnce())
             ->method('setMetadata')
             ->with(
                 $this->equalTo('description'),
@@ -282,22 +310,24 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider executeForwardDataProvider
      */
-    public function testExecuteForward($status, $storeIds)
+    public function testExecuteForward($status, $storeId)
     {
-        $this->prepareCategoryMock($status, $storeIds);
-        $this->forward->expects($this->atLeastOnce())
+        $this->prepareCategoryMock($status, $storeId);
+        $this->forwardMock->expects($this->atLeastOnce())
             ->method('setModule')
             ->with($this->equalTo('cms'));
-        $this->forward->expects($this->atLeastOnce())
+        $this->forwardMock->expects($this->atLeastOnce())
             ->method('setController')
             ->with($this->equalTo('noroute'));
-        $this->forward->expects($this->once())
+        $this->forwardMock->expects($this->once())
             ->method('forward')
             ->with($this->equalTo('index'));
         $this->action->execute();
     }
 
     /**
+     * Data provider for testExecuteForward method
+     *
      * @return array
      */
     public function executeForwardDataProvider()

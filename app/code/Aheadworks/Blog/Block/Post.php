@@ -1,23 +1,43 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block;
 
-use Aheadworks\Blog\Helper\Config;
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Aheadworks\Blog\Api\Data\TagInterface;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Api\TagRepositoryInterface;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Source\Category\Status as CategoryStatus;
+use Aheadworks\Blog\Model\Source\Config\Related\BlockPosition;
 use Aheadworks\Blog\Model\Source\Post\SharingButtons\DisplayAt as DisplaySharingAt;
+use Aheadworks\Blog\Model\Template\FilterProvider;
+use Aheadworks\Blog\Model\Url;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\View\Element\Template\Context;
 
 /**
  * Post view/list item block
  *
- * @method bool hasPostModel()
+ * @method bool hasPost()
  * @method bool hasMode()
- * @method \Aheadworks\Blog\Model\Post getPostModel()
+ * @method PostInterface getPost()
  * @method string getMode()
+ * @method string getSocialIconsBlock()
  *
- * @method Post setPostModel(\Aheadworks\Blog\Model\Post $post)
- * @method Post setMode(string)
+ * @method Post setPost(PostInterface $post)
+ * @method Post setMode(string $mode)
  *
  * @package Aheadworks\Blog\Block
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Post extends \Aheadworks\Blog\Block\PostAbstract
+class Post extends \Magento\Framework\View\Element\Template implements IdentityInterface
 {
     const MODE_LIST_ITEM = 'list_item';
     const MODE_VIEW = 'view';
@@ -28,61 +48,90 @@ class Post extends \Aheadworks\Blog\Block\PostAbstract
     protected $_template = 'post.phtml';
 
     /**
-     * @var \Magento\Cms\Model\Template\Filter
+     * @var PostRepositoryInterface
      */
-    protected $templateFilter;
+    private $postRepository;
 
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory
+     * @var CategoryRepositoryInterface
      */
-    protected $categoryCollectionFactory;
+    private $categoryRepository;
 
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Category\Collection|null
+     * @var TagRepositoryInterface
      */
-    protected $categoryCollection = null;
+    private $tagRepository;
+
+    /**
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
+
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
      * @var LinkFactory
      */
-    protected $linkFactory;
+    private $linkFactory;
 
     /**
-     * Post constructor.
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Cms\Model\Template\Filter $templateFilter
+     * @var Url
+     */
+    private $url;
+
+    /**
+     * @var FilterProvider
+     */
+    private $templateFilterProvider;
+
+    /**
+     * @param Context $context
+     * @param PostRepositoryInterface $postRepository
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param TagRepositoryInterface $tagRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param Config $config
      * @param LinkFactory $linkFactory
-     * @param \Aheadworks\Blog\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory
-     * @param \Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
-     * @param \Aheadworks\Blog\Helper\Url $urlHelper
-     * @param Config $configHelper
+     * @param Url $url
+     * @param FilterProvider $templateFilterProvider
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Cms\Model\Template\Filter $templateFilter,
+        Context $context,
+        PostRepositoryInterface $postRepository,
+        CategoryRepositoryInterface $categoryRepository,
+        TagRepositoryInterface $tagRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        Config $config,
         LinkFactory $linkFactory,
-        \Aheadworks\Blog\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
-        \Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
-        \Aheadworks\Blog\Helper\Url $urlHelper,
-        \Aheadworks\Blog\Helper\Config $configHelper,
+        Url $url,
+        FilterProvider $templateFilterProvider,
         array $data = []
     ) {
-        parent::__construct(
-            $context,
-            $coreRegistry,
-            $postCollectionFactory,
-            $urlHelper,
-            $configHelper,
-            $data
-        );
-        $this->templateFilter = $templateFilter; // todo: filter provider - better solution
-        $this->categoryCollectionFactory = $categoryCollectionFactory;
+        $this->postRepository = $postRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->tagRepository = $tagRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->config = $config;
         $this->linkFactory = $linkFactory;
-        if (!$this->hasPostModel()) {
-            $this->setPostModel($this->getCurrentPostModel());
+        $this->url = $url;
+        $this->templateFilterProvider = $templateFilterProvider;
+        parent::__construct($context, $data);
+    }
+
+    /**
+     * @return void
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+        $postId = $this->getRequest()->getParam('post_id');
+        if (!$this->hasPost() && $postId) {
+            $this->setPost($this->postRepository->get($postId));
         }
         if (!$this->hasMode()) {
             $this->setMode(self::MODE_VIEW);
@@ -110,49 +159,135 @@ class Post extends \Aheadworks\Blog\Block\PostAbstract
     }
 
     /**
-     * @param \Aheadworks\Blog\Model\Post $post
-     * @return string
+     * {@inheritdoc}
      */
-    public function getContent(\Aheadworks\Blog\Model\Post $post)
+    protected function _prepareLayout()
     {
-        $content = $post->getContent();
-        if ($this->isListItemMode() && $post->getShortContent()) {
-            $content = $post->getShortContent();
+        parent::_prepareLayout();
+        if ($this->isViewMode()) {
+            /** @var \Magento\Theme\Block\Html\Breadcrumbs $breadcrumbs */
+            $breadcrumbs = $this->getLayout()->getBlock('breadcrumbs');
+            if ($breadcrumbs) {
+                $breadcrumbs->addCrumb(
+                    'home',
+                    [
+                        'label' => __('Home'),
+                        'link' => $this->_storeManager->getStore()->getBaseUrl()
+                    ]
+                );
+                $breadcrumbs->addCrumb(
+                    'blog_home',
+                    [
+                        'label' => $this->config->getBlogTitle(),
+                        'link' => $this->url->getBlogHomeUrl(),
+                    ]
+                );
+                if ($categoryId = $this->getRequest()->getParam('blog_category_id')) {
+                    $category = $this->categoryRepository->get($categoryId);
+                    $breadcrumbs->addCrumb(
+                        'category_view',
+                        [
+                            'label' => $category->getName(),
+                            'link' => $this->url->getCategoryUrl($category)
+                        ]
+                    );
+                }
+                $post = $this->postRepository->get($this->getRequest()->getParam('post_id'));
+                $breadcrumbs->addCrumb('post_view', ['label' => $post->getTitle()]);
+            }
         }
-        return $this->templateFilter
-            ->setStoreId($this->_storeManager->getStore()->getId())
-            ->filter($content);
+        return $this;
+    }
+
+    /**
+     * Get post categories
+     *
+     * @return CategoryInterface[]
+     */
+    private function getCategories()
+    {
+        $this->searchCriteriaBuilder
+            ->addFilter(CategoryInterface::STATUS, CategoryStatus::ENABLED)
+            ->addFilter(CategoryInterface::STORE_IDS, $this->_storeManager->getStore()->getId())
+            ->addFilter(CategoryInterface::ID, $this->getPost()->getCategoryIds(), 'in');
+        return $this->categoryRepository
+            ->getList($this->searchCriteriaBuilder->create())
+            ->getItems();
+    }
+
+    /**
+     * Get post tags
+     *
+     * @return TagInterface[]
+     */
+    private function getTags()
+    {
+        $this->searchCriteriaBuilder->addFilter(TagInterface::NAME, $this->getPost()->getTagNames(), 'in');
+        return $this->tagRepository
+            ->getList($this->searchCriteriaBuilder->create())
+            ->getItems();
     }
 
     /**
      * @return bool
      */
-    public function showSharing()
+    public function commentsEnabled()
     {
-        $config = explode(
-            ',',
-            $this->configHelper->getValue(Config::XML_GENERAL_DISPLAY_SHARING_AT)
-        );
-        return (
-            $this->isListItemMode() && in_array(DisplaySharingAt::POST_LIST, $config) ||
-            $this->isViewMode() && in_array(DisplaySharingAt::POST, $config)
-        );
+        return $this->config->isCommentsEnabled() &&
+            $this->getPost()->getIsAllowComments();
     }
 
     /**
-     * Retrieves Sharethis embed code html
-     *
-     * @return string
+     * @param PostInterface $post
+     * @return bool
      */
-    public function getSharethisEmbedHtml()
+    public function showReadMoreButton(PostInterface $post)
     {
-        $post = $this->getPostModel();
-        $sharethisEmbed = $this->getLayout()
-            ->createBlock('Magento\Framework\View\Element\Template')
-            ->setTemplate('Aheadworks_Blog::sharethis/buttons.phtml')
-            ->setShareUrl($this->getPostUrl($post))
-            ->setSharingText($post->getTitle());
-        return $sharethisEmbed->toHtml();
+        return $this->isListItemMode() && $post->getShortContent();
+    }
+
+    /**
+     * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getSocialIconsHtml()
+    {
+        $displayAt = $this->config->getDisplaySharingAt();
+        if ($this->isListItemMode() && in_array(DisplaySharingAt::POST_LIST, $displayAt)
+            || $this->isViewMode() && in_array(DisplaySharingAt::POST, $displayAt)
+        ) {
+            $block = $this->getLayout()->createBlock(
+                $this->getSocialIconsBlock(),
+                '',
+                [
+                    'data' => [
+                        'post' => $this->getPost()
+                    ]
+                ]
+            );
+            return $block->toHtml();
+        }
+        return '';
+    }
+
+    /**
+     * Retrieves array of category links html
+     *
+     * @return string[]
+     */
+    public function getCategoryLinks()
+    {
+        $categoryLinks = [];
+        foreach ($this->getCategories() as $category) {
+            /** @var Link $link */
+            $link = $this->linkFactory->create();
+            $categoryLinks[] = $link
+                ->setHref($this->url->getCategoryUrl($category))
+                ->setTitle($category->getName())
+                ->setLabel($category->getName())
+                ->toHtml();
+        }
+        return $categoryLinks;
     }
 
     /**
@@ -166,7 +301,7 @@ class Post extends \Aheadworks\Blog\Block\PostAbstract
         /** @var \Aheadworks\Blog\Block\Disqus $disqusEmbed */
         $disqusEmbed = $this->getChildBlock('disqus_embed');
         if ($disqusEmbed) {
-            $post = $this->getPostModel();
+            $post = $this->getPost();
             $html = $disqusEmbed
                 ->setPageIdentifier($post->getId())
                 ->setPageUrl($this->getPostUrl($post))
@@ -177,58 +312,91 @@ class Post extends \Aheadworks\Blog\Block\PostAbstract
     }
 
     /**
-     * @return \Aheadworks\Blog\Model\ResourceModel\Category\Collection
-     */
-    public function getCategoryCollection()
-    {
-        if ($this->categoryCollection === null) {
-            $this->categoryCollection = $this->categoryCollectionFactory->create()
-                ->addEnabledFilter()
-                ->addStoreFilter($this->_storeManager->getStore()->getId())
-                ->addFieldToFilter('cat_id', ['in' => $this->getPostModel()->getCategories()]);
-        }
-        return $this->categoryCollection;
-    }
-
-    /**
-     * @param \Aheadworks\Blog\Model\Category $category
+     * @param PostInterface $post
      * @return string
      */
-    public function getCategoryLinkHtml($category)
+    public function getContent(PostInterface $post)
     {
-        /** @var Link $link */
-        $link = $this->linkFactory->create();
-        return $link
-            ->setHref($this->urlHelper->getCategoryUrl($category))
-            ->setTitle($category->getName())
-            ->setLabel($category->getName())
-            ->toHtml();
+        $content = $post->getContent();
+        if ($this->isListItemMode() && $post->getShortContent()) {
+            $content = $post->getShortContent();
+        }
+        return $this->templateFilterProvider->getFilter()
+            ->setStoreId($this->_storeManager->getStore()->getId())
+            ->filter($content);
     }
 
     /**
-     * @return bool
+     * @param PostInterface $post
+     * @return string
      */
-    public function commentsEnabled()
+    public function getPostUrl(PostInterface $post)
     {
-        return $this->configHelper->getValue(Config::XML_GENERAL_DISQUS_FORUM_CODE) &&
-            $this->getPostModel()->getIsAllowComments();
+        return $this->url->getPostUrl($post);
     }
 
     /**
-     * @param \Aheadworks\Blog\Model\Post $post
-     * @return bool
-     */
-    public function showReadMoreButton(\Aheadworks\Blog\Model\Post $post)
-    {
-        return $this->isListItemMode() && $post->getShortContent();
-    }
-
-    /**
-     * @param string $tag
+     * @param TagInterface|string $tag
      * @return string
      */
     public function getSearchByTagUrl($tag)
     {
-        return $this->urlHelper->getSearchByTagUrl($tag);
+        return $this->url->getSearchByTagUrl($tag);
+    }
+
+    /**
+     * Retrieves Related product block code html
+     *
+     * @param bool $viewMode
+     * @param string $blockPosition
+     * @return string
+     */
+    public function getRelatedProductHtml($viewMode, $blockPosition)
+    {
+        $html = '';
+        /** @var \Aheadworks\Blog\Block\RelatedProduct $postRelatedProduct */
+        $postRelatedProduct = $this->getChildBlock('post_related_product');
+        if ($viewMode && $postRelatedProduct && $this->config->getRelatedBlockPosition() == $blockPosition) {
+            $post = $this->getPost();
+            $html = $postRelatedProduct
+                ->setPost($post)
+                ->toHtml();
+        }
+        return $html;
+    }
+
+    /**
+     * Retrieve after post position
+     *
+     * @return string
+     */
+    public function getPositionAfterPost()
+    {
+        return BlockPosition::AFTER_POST;
+    }
+
+    /**
+     * Retrieve after comments position
+     *
+     * @return string
+     */
+    public function getPositionAfterComments()
+    {
+        return BlockPosition::AFTER_COMMENTS;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIdentities()
+    {
+        $identities = [\Aheadworks\Blog\Model\Post::CACHE_TAG . '_' . $this->getPost()->getId()];
+        foreach ($this->getPost()->getCategoryIds() as $categoryId) {
+            $identities[] = \Aheadworks\Blog\Model\Category::CACHE_TAG . '_' . $categoryId;
+        }
+        foreach ($this->getTags() as $tag) {
+            $identities[] = \Aheadworks\Blog\Model\Tag::CACHE_TAG . '_' . $tag->getId();
+        }
+        return $identities;
     }
 }

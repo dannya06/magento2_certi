@@ -1,7 +1,14 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block;
 
-use Aheadworks\Blog\Helper\Config;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\DisqusConfig;
+use Magento\Framework\View\Element\Template\Context;
 
 /**
  * Disqus integration block
@@ -10,46 +17,62 @@ use Aheadworks\Blog\Helper\Config;
  * @method string getPageUrl()
  * @method string getPageTitle()
  *
- * @method Disqus setPageIdentifier(int)
- * @method Disqus setPageUrl(string)
- * @method Disqus setPageTitle(string)
+ * @method $this setPageIdentifier(int)
+ * @method $this setPageUrl(string)
+ * @method $this setPageTitle(string)
  *
  * @package Aheadworks\Blog\Block
  */
 class Disqus extends \Magento\Framework\View\Element\Template
 {
     /**
-     * @var \Aheadworks\Blog\Helper\Config
+     * @var Config
      */
-    protected $configHelper;
+    private $config;
 
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Aheadworks\Blog\Helper\Config $configHelper
+     * @var DisqusConfig
+     */
+    private $disqusConfig;
+
+    /**
+     * @param Context $context
+     * @param Config $config
+     * @param DisqusConfig $disqusConfig
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Aheadworks\Blog\Helper\Config $configHelper,
+        Context $context,
+        Config $config,
+        DisqusConfig $disqusConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->configHelper = $configHelper;
+        $this->config = $config;
+        $this->disqusConfig = $disqusConfig;
     }
 
     /**
      * @return bool
      */
-    public function commentsEnabled()
+    public function isCommentsEnabled()
     {
-        return (bool)$this->getDisqusForumCode();
+        return $this->config->isCommentsEnabled();
     }
 
     /**
      * @return string
      */
-    public function getDisqusForumCode()
+    public function getCountScriptUrl()
     {
-        return $this->configHelper->getValue(Config::XML_GENERAL_DISQUS_FORUM_CODE);
+        return '\/\/' . $this->stripTags($this->disqusConfig->getForumCode()) . '.disqus.com/count.js';
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmbedScriptUrl()
+    {
+        return '\/\/' . $this->stripTags($this->disqusConfig->getForumCode()) . '.disqus.com/embed.js';
     }
 }

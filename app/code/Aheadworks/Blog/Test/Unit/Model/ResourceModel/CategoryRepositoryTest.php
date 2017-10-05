@@ -1,8 +1,28 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model\ResourceModel;
 
 use Aheadworks\Blog\Api\Data\CategoryInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Model\ResourceModel\CategoryRepository;
+use Magento\Framework\EntityManager\EntityManager;
+use Aheadworks\Blog\Model\Category;
+use Aheadworks\Blog\Model\CategoryRegistry;
+use Aheadworks\Blog\Api\Data\CategorySearchResultsInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\Filter;
+use Magento\Framework\Api\SortOrder;
+use Aheadworks\Blog\Model\ResourceModel\Category\Collection;
+use Aheadworks\Blog\Model\CategoryFactory;
+use Aheadworks\Blog\Api\Data\CategoryInterfaceFactory;
+use Aheadworks\Blog\Api\Data\CategorySearchResultsInterfaceFactory;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Reflection\DataObjectProcessor;
+use Magento\Framework\Api\Search\FilterGroup;
 
 /**
  * Test for \Aheadworks\Blog\Model\ResourceModel\CategoryRepository
@@ -11,426 +31,379 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  */
 class CategoryRepositoryTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\CategoryRepository
+    /**#@+
+     * Constants defined for test
      */
-    private $categoryRepository;
+    const CATEGORY_ID = 1;
+    const FILTER_FIELD = 'name';
+    const FILTER_VALUE = 'category';
+    const SORT_ORDER_FIELD = 'url_key';
+    const SORT_ORDER_DIRECTION = 'asc';
+    const PAGE_SIZE = 5;
+    const CURRENT_PAGE = 1;
+    const COLLECTION_SIZE = 10;
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Model\CategoryRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryRepository
      */
-    private $categoryRegistry;
+    private $categoryRepositoryMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategorySearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var EntityManager|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchResults;
+    private $entityManagerMock;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var Category|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchCriteria;
+    private $categoryModelMock;
 
     /**
-     * @var \Magento\Framework\Api\Search\FilterGroup|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $filterGroup;
+    private $categoryMock;
 
     /**
-     * @var \Magento\Framework\Api\Filter|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $filter;
+    private $categoryRegistryMock;
 
     /**
-     * @var \Magento\Framework\Api\DataObjectHelper|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategorySearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $dataObjectHelper;
+    private $searchResultsMock;
 
     /**
-     * @var \Magento\Framework\Reflection\DataObjectProcessor|\PHPUnit_Framework_MockObject_MockObject
+     * @var SearchCriteriaInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $dataObjectProcessorStub;
+    private $searchCriteriaMock;
 
     /**
-     * @var \Aheadworks\Blog\Model\Category|\PHPUnit_Framework_MockObject_MockObject
+     * @var Filter|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $categoryModel;
+    private $filterMock;
 
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Category\Collection|\PHPUnit_Framework_MockObject_MockObject
+     * @var SortOrder|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $categoryCollection;
+    private $sortOrderMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $category;
+    private $collectionMock;
 
     /**
-     * @var int
+     * Dummy data of category instance
+     *
+     * @var array
      */
-    private $collectionSize = 10;
+    private $categoryData = [
+        'name' => 'category',
+        'url_key' => 'cat',
+        'sort_order' => 0,
+        'store_ids' => [1, 2]
+    ];
 
     /**
+     * Init mocks for tests
+     *
+     * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->categoryModel = $this->getMockBuilder('Aheadworks\Blog\Model\Category')
-            ->setMethods(['addData', 'save', 'load', 'delete', 'getCollection'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->categoryModel->expects($this->any())
-            ->method('addData')
-            ->will($this->returnSelf());
-        $this->categoryModel->expects($this->any())
-            ->method('delete')
-            ->will($this->returnSelf());
-        $categoryFactoryStab = $this->getMockBuilder('Aheadworks\Blog\Model\CategoryFactory')
-            ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $categoryFactoryStab->expects($this->any())
-            ->method('create')
-            ->will($this->returnValue($this->categoryModel));
+        $this->entityManagerMock = $this->getMock(
+            EntityManager::class,
+            ['load', 'save', 'delete'],
+            [],
+            '',
+            false
+        );
 
-        $this->categoryCollection = $this->getMockBuilder('Aheadworks\Blog\Model\ResourceModel\Category\Collection')
-            ->setMethods(['addFieldToFilter', 'addOrder', 'getSize', 'setCurPage', 'setPageSize', 'getIterator'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->categoryCollection->expects($this->any())
-            ->method('addFieldToFilter')
-            ->will($this->returnSelf());
-        $this->categoryCollection->expects($this->any())
-            ->method('addOrder')
-            ->will($this->returnSelf());
-        $this->categoryCollection->expects($this->any())
+        $this->categoryModelMock = $this->getMock(
+            Category::class,
+            ['getId', 'addData', 'getCollection'],
+            [],
+            '',
+            false
+        );
+        $this->categoryModelMock->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(self::CATEGORY_ID));
+
+        $this->collectionMock = $this->getMock(
+            Collection::class,
+            [
+                'addFieldToFilter',
+                'addStoreFilter',
+                'getSize',
+                'addOrder',
+                'setCurPage',
+                'setPageSize',
+                'getIterator'
+            ],
+            [],
+            '',
+            false
+        );
+        $this->collectionMock->expects($this->any())
             ->method('getSize')
-            ->will($this->returnValue($this->collectionSize));
-        $this->categoryCollection->expects($this->any())
-            ->method('setCurPage')
-            ->will($this->returnSelf());
-        $this->categoryCollection->expects($this->any())
-            ->method('setPageSize')
-            ->will($this->returnSelf());
-        $this->categoryCollection->expects($this->any())
+            ->will($this->returnValue(self::COLLECTION_SIZE));
+        $this->collectionMock->expects($this->any())
             ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator([$this->categoryModel])));
-        $this->categoryModel->expects($this->any())
+            ->will($this->returnValue(new \ArrayIterator([$this->categoryModelMock])));
+        $this->categoryModelMock->expects($this->any())
             ->method('getCollection')
-            ->will($this->returnValue($this->categoryCollection));
+            ->will($this->returnValue($this->collectionMock));
 
-        $this->category = $this->getMockBuilder('Aheadworks\Blog\Api\Data\CategoryInterface')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $categoryDataFactoryStab = $this->getMockBuilder('Aheadworks\Blog\Api\Data\CategoryInterfaceFactory')
-            ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $categoryDataFactoryStab->expects($this->any())
+        $categoryFactoryMock = $this->getMock(CategoryFactory::class, ['create'], [], '', false);
+        $categoryFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->category));
+            ->will($this->returnValue($this->categoryModelMock));
 
-        $this->categoryRegistry = $this->getMockBuilder('Aheadworks\Blog\Model\CategoryRegistry')
-            ->setMethods(['retrieve', 'retrieveByUrlKey', 'remove'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->categoryRegistry->expects($this->any())
-            ->method('retrieve')
-            ->will($this->returnValue($this->categoryModel));
-        $this->categoryRegistry->expects($this->any())
-            ->method('retrieveByUrlKey')
-            ->will($this->returnValue($this->categoryModel));
-
-        $this->searchResults = $this->getMockBuilder('Aheadworks\Blog\Api\Data\CategorySearchResultsInterface')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $searchResultsFactoryStub = $this->getMockBuilder(
-            'Aheadworks\Blog\Api\Data\CategorySearchResultsInterfaceFactory'
-        )
-            ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $searchResultsFactoryStub->expects($this->any())
+        $this->categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $categoryDataFactoryMock = $this->getMock(
+            CategoryInterfaceFactory::class,
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $categoryDataFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->searchResults));
+            ->will($this->returnValue($this->categoryMock));
 
-        $this->searchCriteria = $this->getMockBuilder('Magento\Framework\Api\SearchCriteriaInterface')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->searchResults->expects($this->any())
+        $this->categoryRegistryMock = $this->getMock(
+            CategoryRegistry::class,
+            ['retrieve', 'get', 'push', 'remove'],
+            [],
+            '',
+            false
+        );
+
+        $this->searchResultsMock = $this->getMockForAbstractClass(CategorySearchResultsInterface::class);
+        $this->searchResultsMock->expects($this->any())
             ->method('setSearchCriteria')
             ->will($this->returnSelf());
+        $searchResultsFactoryMock = $this->getMock(
+            CategorySearchResultsInterfaceFactory::class,
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $searchResultsFactoryMock->expects($this->any())
+            ->method('create')
+            ->will($this->returnValue($this->searchResultsMock));
 
-        $this->filterGroup = $this->getMockBuilder('Magento\Framework\Api\Search\FilterGroup')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->searchCriteria->expects($this->any())
-            ->method('getFilterGroups')
-            ->will($this->returnValue([$this->filterGroup]));
-
-        $this->filter = $this->getMockBuilder('Magento\Framework\Api\Filter')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->filterGroup->expects($this->any())
-            ->method('getFilters')
-            ->will($this->returnValue([$this->filter]));
-
-        $this->dataObjectHelper = $this->getMockBuilder('Magento\Framework\Api\DataObjectHelper')
-            ->setMethods(['populateWithArray'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->dataObjectProcessorStub = $this->getMockBuilder('Magento\Framework\Reflection\DataObjectProcessor')
-            ->setMethods(['buildOutputDataArray'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->dataObjectProcessorStub->expects($this->any())
+        $dataObjectHelperMock = $this->getMock(
+            DataObjectHelper::class,
+            ['populateWithArray'],
+            [],
+            '',
+            false
+        );
+        $dataObjectProcessorMock = $this->getMock(
+            DataObjectProcessor::class,
+            ['buildOutputDataArray'],
+            [],
+            '',
+            false
+        );
+        $dataObjectProcessorMock->expects($this->any())
             ->method('buildOutputDataArray')
-            ->will($this->returnValue($this->categoryModel->getData()));
+            ->with($this->categoryMock, CategoryInterface::class)
+            ->will($this->returnValue($this->categoryData));
 
-        $this->categoryRepository = $objectManager->getObject(
-            'Aheadworks\Blog\Model\ResourceModel\CategoryRepository',
+        $this->filterMock = $this->getMock(
+            Filter::class,
+            ['getField', 'getValue', 'getConditionType'],
+            [],
+            '',
+            false
+        );
+        $this->filterMock->expects($this->any())
+            ->method('getField')
+            ->will($this->returnValue(self::FILTER_FIELD));
+        $this->filterMock->expects($this->any())
+            ->method('getValue')
+            ->will($this->returnValue(self::FILTER_VALUE));
+        $this->filterMock->expects($this->any())
+            ->method('getConditionType')
+            ->will($this->returnValue('eq'));
+        $filterGroupMock = $this->getMock(
+            FilterGroup::class,
+            ['getFilters'],
+            [],
+            '',
+            false
+        );
+        $filterGroupMock->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue([$this->filterMock]));
+
+        $this->sortOrderMock = $this->getMock(
+            SortOrder::class,
+            ['getField', 'getDirection'],
+            [],
+            '',
+            false
+        );
+        $this->sortOrderMock->expects($this->any())
+            ->method('getField')
+            ->will($this->returnValue(self::SORT_ORDER_FIELD));
+        $this->sortOrderMock->expects($this->any())
+            ->method('getDirection')
+            ->will($this->returnValue(self::SORT_ORDER_DIRECTION));
+
+        $this->searchCriteriaMock = $this->getMockForAbstractClass(SearchCriteriaInterface::class);
+        $this->searchCriteriaMock->expects($this->any())
+            ->method('getSortOrders')
+            ->will($this->returnValue([$this->sortOrderMock]));
+        $this->searchCriteriaMock->expects($this->any())
+            ->method('getFilterGroups')
+            ->will($this->returnValue([$filterGroupMock]));
+        $this->searchCriteriaMock->expects($this->any())
+            ->method('getCurrentPage')
+            ->will($this->returnValue(self::CURRENT_PAGE));
+        $this->searchCriteriaMock->expects($this->any())
+            ->method('getPageSize')
+            ->will($this->returnValue(self::PAGE_SIZE));
+
+        $this->categoryRepositoryMock = $objectManager->getObject(
+            CategoryRepository::class,
             [
-                'categoryFactory' => $categoryFactoryStab,
-                'categoryDataFactory' => $categoryDataFactoryStab,
-                'categoryRegistry' => $this->categoryRegistry,
-                'searchResultsFactory' => $searchResultsFactoryStub,
-                'dataObjectHelper' => $this->dataObjectHelper,
-                'dataObjectProcessor' => $this->dataObjectProcessorStub
+                'entityManager' => $this->entityManagerMock,
+                'categoryFactory' => $categoryFactoryMock,
+                'categoryDataFactory' => $categoryDataFactoryMock,
+                'categoryRegistry' => $this->categoryRegistryMock,
+                'searchResultsFactory' => $searchResultsFactoryMock,
+                'dataObjectHelper' => $dataObjectHelperMock,
+                'dataObjectProcessor' => $dataObjectProcessorMock
             ]
         );
     }
 
     /**
-     * Testing that the Category Model instance is saved during save method call
+     * Test of saving of an instance
+     *
+     * @dataProvider saveDataProvider
      */
-    public function testSaveModel()
+    public function testSave($categoryId)
     {
-        $this->categoryModel->expects($this->once())->method('save');
-        $this->categoryRepository->save($this->category);
-    }
-
-    /**
-     * Testing that Category data is set
-     */
-    public function testSaveSetData()
-    {
-        $this->categoryModel->expects($this->atLeastOnce())
-            ->method('addData')
-            ->with($this->equalTo($this->categoryModel->getData()));
-        $this->categoryRepository->save($this->category);
-    }
-
-    /**
-     * Testing that Category data is set before saving the model
-     */
-    public function testSaveSetDataBeforeSaving()
-    {
-        $this->categoryModel->expects($this->at(0))
-            ->method('addData')
-            ->with($this->equalTo($this->categoryModel->getData()));
-        $this->categoryModel->expects($this->at(1))
-            ->method('save');
-        $this->categoryRepository->save($this->category);
-    }
-
-    /**
-     * Testing load Category Model if category exists during save method call
-     */
-    public function testSaveLoadExistent()
-    {
-        $categoryId = 1;
-        $this->category->expects($this->any())
+        $this->categoryMock->expects($this->any())
             ->method('getId')
             ->willReturn($categoryId);
-        $this->categoryModel->expects($this->once())
-            ->method('load')
-            ->with($this->equalTo($categoryId))
-            ->willReturn($this->returnSelf());
-        $this->categoryRepository->save($this->category);
+        if ($categoryId) {
+            $this->entityManagerMock->expects($this->once())
+                ->method('load')
+                ->with($this->categoryModelMock, $categoryId);
+        } else {
+            $this->entityManagerMock->expects($this->never())
+                ->method('load')
+                ->with($this->categoryModelMock);
+        }
+        $this->categoryModelMock->expects($this->once())
+            ->method('addData')
+            ->with($this->categoryData);
+        $this->entityManagerMock->expects($this->once())
+            ->method('save')
+            ->with($this->categoryModelMock);
+        $this->categoryRegistryMock->expects($this->once())
+            ->method('push')
+            ->with($this->categoryMock);
+
+        $this->assertSame($this->categoryMock, $this->categoryRepositoryMock->save($this->categoryMock));
     }
 
     /**
-     * Testing result of save method
+     * Test of retrieving an instance
      */
-    public function testSaveResult()
+    public function testGet()
     {
-        $this->assertSame($this->category, $this->categoryRepository->save($this->category));
-    }
-
-    /**
-     * Testing retrieve Category from registry during get method call
-     */
-    public function testGetRetrieve()
-    {
-        $categoryId = 1;
-        $this->categoryRegistry->expects($this->once())
+        $this->categoryRegistryMock->expects($this->once())
             ->method('retrieve')
-            ->with($this->equalTo($categoryId));
-        $this->categoryRepository->get($categoryId);
+            ->with(self::CATEGORY_ID)
+            ->willReturn($this->categoryMock);
+        $this->assertSame($this->categoryMock, $this->categoryRepositoryMock->get(self::CATEGORY_ID));
     }
 
     /**
-     * Testing result of get method
+     * Test of retrieving category list
      */
-    public function testGetResult()
+    public function testGetList()
     {
-        $categoryId = 1;
-        $this->assertSame($this->category, $this->categoryRepository->get($categoryId));
-    }
-
-    /**
-     * Testing retrieve Category from registry during getByUrlKey method call
-     */
-    public function testGetByUrlKeyRetrieve()
-    {
-        $urlKey = 'category';
-        $this->categoryRegistry->expects($this->once())
-            ->method('retrieveByUrlKey')
-            ->with($this->equalTo($urlKey));
-        $this->categoryRepository->getByUrlKey($urlKey);
-    }
-
-    /**
-     * Testing result of getByUrlKey method
-     */
-    public function testGetByUrlKeyResult()
-    {
-        $urlKey = 'category';
-        $this->assertSame($this->category, $this->categoryRepository->getByUrlKey($urlKey));
-    }
-
-    /**
-     * Testing that filter added to Category Collection
-     */
-    public function testGetListAddFilterToCollection()
-    {
-        $field = CategoryInterface::NAME;
-        $value = 'Category';
-        $conditionType = 'eq';
-        $this->filter->expects($this->any())
-            ->method('getField')
-            ->willReturn($field);
-        $this->filter->expects($this->any())
-            ->method('getValue')
-            ->willReturn($value);
-        $this->filter->expects($this->any())
-            ->method('getConditionType')
-            ->willReturn($conditionType);
-        $this->categoryCollection->expects($this->atLeastOnce())
+        $this->collectionMock->expects($this->once())
             ->method('addFieldToFilter')
-            ->with($this->equalTo([$field]), $this->equalTo([[$conditionType => $value]]));
-        $this->categoryRepository->getList($this->searchCriteria);
-    }
-
-    /**
-     * Testing that order added to Category Collection
-     */
-    public function testGetListAddOrderToCollection()
-    {
-        $field = CategoryInterface::NAME;
-        $direction = 'ASC';
-        $sortOrder = $this->getMockBuilder('Magento\Framework\Api\SortOrder')
-            ->setMethods(['getField', 'getDirection'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $sortOrder->expects($this->any())
-            ->method('getField')
-            ->willReturn($field);
-        $sortOrder->expects($this->any())
-            ->method('getDirection')
-            ->willReturn($direction);
-        $this->searchCriteria->expects($this->any())
-            ->method('getSortOrders')
-            ->willReturn([$sortOrder]);
-        $this->categoryCollection->expects($this->atLeastOnce())
+            ->with([self::FILTER_FIELD], [['eq' => self::FILTER_VALUE]]);
+        $this->collectionMock->expects($this->exactly(1))
             ->method('addOrder')
-            ->with($this->equalTo($field), $this->equalTo($direction));
-        $this->categoryRepository->getList($this->searchCriteria);
-    }
-
-    /**
-     * Testing that current page is set to Category Collection
-     */
-    public function testGetListSetCurrPageToCollection()
-    {
-        $currentPage = 1;
-        $this->searchCriteria->expects($this->any())
-            ->method('getCurrentPage')
-            ->willReturn($currentPage);
-        $this->categoryCollection->expects($this->atLeastOnce())
-            ->method('setCurPage')
-            ->with($this->equalTo($currentPage));
-        $this->categoryRepository->getList($this->searchCriteria);
-    }
-
-    /**
-     * Testing that page size is set to Category Collection
-     */
-    public function testGetListSetPageSizeToCollection()
-    {
-        $pageSize = 5;
-        $this->searchCriteria->expects($this->any())
-            ->method('getPageSize')
-            ->willReturn($pageSize);
-        $this->categoryCollection->expects($this->atLeastOnce())
+            ->with(self::SORT_ORDER_FIELD, self::SORT_ORDER_DIRECTION);
+        $this->collectionMock->expects($this->once())
             ->method('setPageSize')
-            ->with($this->equalTo($pageSize));
-        $this->categoryRepository->getList($this->searchCriteria);
-    }
-
-    /**
-     * Testing that total items count is sets to result
-     */
-    public function testGetListSetTotalCountToResult()
-    {
-        $this->searchResults->expects($this->atLeastOnce())
+            ->with(self::PAGE_SIZE)
+            ->will($this->returnSelf());
+        $this->collectionMock->expects($this->once())
+            ->method('setCurPage')
+            ->with(self::CURRENT_PAGE)
+            ->will($this->returnSelf());
+        $this->searchResultsMock->expects($this->once())
             ->method('setTotalCount')
-            ->with($this->equalTo($this->collectionSize));
-        $this->categoryRepository->getList($this->searchCriteria);
-    }
-
-    /**
-     * Testing that items is sets to result
-     */
-    public function testGetListSetItemsToResult()
-    {
-        $this->searchResults->expects($this->atLeastOnce())
+            ->with(self::COLLECTION_SIZE);
+        $this->searchResultsMock->expects($this->once())
             ->method('setItems')
-            ->with($this->equalTo([$this->category]));
-        $this->categoryRepository->getList($this->searchCriteria);
+            ->with([$this->categoryMock]);
+        $this->assertSame($this->searchResultsMock, $this->categoryRepositoryMock->getList($this->searchCriteriaMock));
     }
 
     /**
-     * Testing result of getList method
+     * Test of delete instance
      */
-    public function testGetListResult()
+    public function testDelete()
     {
-        $this->assertSame($this->searchResults, $this->categoryRepository->getList($this->searchCriteria));
-    }
-
-    /**
-     * Testing that the Category Model instance is deleted during deleteById method call
-     */
-    public function testDeleteByIdModelDelete()
-    {
-        $categoryId = 1;
-        $this->categoryModel->expects($this->atLeastOnce())->method('delete');
-        $this->categoryRepository->deleteById($categoryId);
-    }
-
-    /**
-     * Testing remove Category from registry during deleteById method call
-     */
-    public function testDeleteByIdRemoveFromRegistry()
-    {
-        $categoryId = 1;
-        $this->categoryRegistry->expects($this->atLeastOnce())
+        $this->entityManagerMock->expects($this->once())
+            ->method('load')
+            ->with($this->categoryModelMock, self::CATEGORY_ID);
+        $this->entityManagerMock->expects($this->once())
+            ->method('delete')
+            ->with($this->categoryModelMock);
+        $this->categoryRegistryMock->expects($this->once())
             ->method('remove')
-            ->with($this->equalTo($categoryId));
-        $this->categoryRepository->deleteById($categoryId);
+            ->with(self::CATEGORY_ID);
+        $this->categoryMock->expects($this->once())
+            ->method('getId')
+            ->willReturn(self::CATEGORY_ID);
+        $this->categoryRepositoryMock->delete($this->categoryMock);
+    }
+
+    /**
+     * Test of delete instance by ID
+     */
+    public function testDeleteById()
+    {
+        $this->entityManagerMock->expects($this->once())
+            ->method('load')
+            ->with($this->categoryModelMock, self::CATEGORY_ID);
+        $this->entityManagerMock->expects($this->once())
+            ->method('delete')
+            ->with($this->categoryModelMock);
+        $this->categoryRegistryMock->expects($this->once())
+            ->method('remove')
+            ->with(self::CATEGORY_ID);
+        $this->categoryRepositoryMock->deleteById(self::CATEGORY_ID);
+    }
+
+    /**
+     * Data provider for testSave method
+     *
+     * @return array
+     */
+    public function saveDataProvider()
+    {
+        return [[null], [self::CATEGORY_ID]];
     }
 }

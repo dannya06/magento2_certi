@@ -1,12 +1,19 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Data;
 
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Magento\Framework\Api\AbstractExtensibleObject;
+
 /**
- * Category data model.
+ * Category data model
  * @codeCoverageIgnore
  */
-class Category extends \Magento\Framework\Api\AbstractExtensibleObject implements
-    \Aheadworks\Blog\Api\Data\CategoryInterface
+class Category extends AbstractExtensibleObject implements CategoryInterface
 {
     /**
      * {@inheritdoc}
@@ -86,6 +93,38 @@ class Category extends \Magento\Framework\Api\AbstractExtensibleObject implement
     public function setSortOrder($sortOrder)
     {
         return $this->setData(self::SORT_ORDER, $sortOrder);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCreatedAt()
+    {
+        return $this->_get(self::CREATED_AT);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCreatedAt($createdAt)
+    {
+        return $this->setData(self::CREATED_AT, $createdAt);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUpdatedAt()
+    {
+        return $this->_get(self::UPDATED_AT);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        return $this->setData(self::UPDATED_AT, $updatedAt);
     }
 
     /**

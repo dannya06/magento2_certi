@@ -1,17 +1,32 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Listing;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark;
+use Magento\Ui\Api\Data\BookmarkInterface;
+use Magento\Ui\Api\BookmarkRepositoryInterface;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Framework\View\Element\UiComponent\Processor;
+use Magento\Ui\Api\Data\BookmarkInterfaceFactory;
+use Magento\Authorization\Model\UserContextInterface;
 
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark
  */
 class BookmarkTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Bookmarks constants defined for test
+     */
     const VIEW_INDEX = 'view_index';
     const VIEW_TITLE = 'View';
-
     const USER_ID = 1;
+    /**#@-*/
 
     /**
      * @var array
@@ -24,90 +39,93 @@ class BookmarkTest extends \PHPUnit_Framework_TestCase
     private $filters = ['title' => ['like' => 'Vi']];
 
     /**
-     * @var \Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark
+     * @var Bookmark
      */
     private $bookmarkComponent;
 
     /**
-     * @var \Magento\Ui\Api\Data\BookmarkInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var BookmarkInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $bookmark;
+    private $bookmarkMock;
 
     /**
-     * @var \Magento\Ui\Api\BookmarkRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var BookmarkRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $bookmarkRepository;
+    private $bookmarkRepositoryMock;
 
     /**
-     * @var \Magento\Framework\View\Element\UiComponent\ContextInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $contextStub;
+    private $contextMock;
 
     /**
      * @var ObjectManager
      */
     private $objectManager;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
-        $processorStub = $this->getMock(
-            'Magento\Framework\View\Element\UiComponent\Processor',
+        $processorMock = $this->getMock(
+            Processor::class,
             ['register'],
             [],
             '',
             false
         );
-        $this->contextStub = $this->getMockForAbstractClass(
-            'Magento\Framework\View\Element\UiComponent\ContextInterface'
-        );
-        $this->contextStub->expects($this->any())
+        $this->contextMock = $this->getMockForAbstractClass(ContextInterface::class);
+        $this->contextMock->expects($this->any())
             ->method('getProcessor')
-            ->will($this->returnValue($processorStub));
+            ->will($this->returnValue($processorMock));
 
-        $this->bookmark = $this->getMockForAbstractClass('Magento\Ui\Api\Data\BookmarkInterface');
-        $this->bookmark->expects($this->any())
+        $this->bookmarkMock = $this->getMockForAbstractClass(BookmarkInterface::class);
+        $this->bookmarkMock->expects($this->any())
             ->method('setUserId')
             ->will($this->returnSelf());
-        $this->bookmark->expects($this->any())
+        $this->bookmarkMock->expects($this->any())
             ->method('setNamespace')
             ->will($this->returnSelf());
-        $this->bookmark->expects($this->any())
+        $this->bookmarkMock->expects($this->any())
             ->method('setIdentifier')
             ->will($this->returnSelf());
-        $this->bookmark->expects($this->any())
+        $this->bookmarkMock->expects($this->any())
             ->method('setTitle')
             ->will($this->returnSelf());
-        $this->bookmark->expects($this->any())
+        $this->bookmarkMock->expects($this->any())
             ->method('setConfig')
             ->will($this->returnSelf());
 
-        $bookmarkFactoryStub = $this->getMock(
-            'Magento\Ui\Api\Data\BookmarkInterfaceFactory',
+        $bookmarkFactoryMock = $this->getMock(
+            BookmarkInterfaceFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $bookmarkFactoryStub->expects($this->any())
+        $bookmarkFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->bookmark));
+            ->will($this->returnValue($this->bookmarkMock));
 
-        $userContextStub = $this->getMockForAbstractClass('Magento\Authorization\Model\UserContextInterface');
-        $userContextStub->expects($this->any())
+        $userContextMock = $this->getMockForAbstractClass(UserContextInterface::class);
+        $userContextMock->expects($this->any())
             ->method('getUserId')
             ->will($this->returnValue(self::USER_ID));
 
-        $this->bookmarkRepository = $this->getMockForAbstractClass('Magento\Ui\Api\BookmarkRepositoryInterface');
+        $this->bookmarkRepositoryMock = $this->getMockForAbstractClass(BookmarkRepositoryInterface::class);
 
         $this->bookmarkComponent = $this->objectManager->getObject(
-            'Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark',
+            Bookmark::class,
             [
-                'bookmarkFactory' => $bookmarkFactoryStub,
-                'userContext' => $userContextStub,
-                'context' => $this->contextStub,
-                'bookmarkRepository' => $this->bookmarkRepository,
+                'bookmarkFactory' => $bookmarkFactoryMock,
+                'userContext' => $userContextMock,
+                'context' => $this->contextMock,
+                'bookmarkRepository' => $this->bookmarkRepositoryMock,
                 'data' => ['config' => []]
             ]
         );
@@ -119,22 +137,21 @@ class BookmarkTest extends \PHPUnit_Framework_TestCase
     public function testPrepare()
     {
         $bookmarkMock = $this->getMock(
-            'Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark',
+            Bookmark::class,
             ['addView'],
             $this->objectManager->getConstructArguments(
-                'Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark',
-                ['context' => $this->contextStub]
+                Bookmark::class,
+                ['context' => $this->contextMock]
             ),
             '',
             true
         );
-        $bookmarkMock->expects($this->exactly(4))
+        $bookmarkMock->expects($this->exactly(3))
             ->method('addView')
             ->withConsecutive(
                 [$this->equalTo('default')],
                 [$this->equalTo('drafts')],
-                [$this->equalTo('scheduled')],
-                [$this->equalTo('new_comments')]
+                [$this->equalTo('scheduled')]
             );
         $bookmarkMock->prepare();
     }
@@ -176,18 +193,18 @@ class BookmarkTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddViewSave()
     {
-        $this->bookmark->expects($this->atLeastOnce())
+        $this->bookmarkMock->expects($this->atLeastOnce())
             ->method('setUserId')
             ->with($this->equalTo(self::USER_ID));
-        $this->bookmark->expects($this->atLeastOnce())
+        $this->bookmarkMock->expects($this->atLeastOnce())
             ->method('setIdentifier')
             ->with($this->equalTo(self::VIEW_INDEX));
-        $this->bookmark->expects($this->atLeastOnce())
+        $this->bookmarkMock->expects($this->atLeastOnce())
             ->method('setTitle')
             ->with($this->equalTo(self::VIEW_TITLE));
-        $this->bookmarkRepository->expects($this->once())
+        $this->bookmarkRepositoryMock->expects($this->once())
             ->method('save')
-            ->with($this->equalTo($this->bookmark));
+            ->with($this->equalTo($this->bookmarkMock));
         $this->bookmarkComponent->addView(
             self::VIEW_INDEX,
             self::VIEW_TITLE,

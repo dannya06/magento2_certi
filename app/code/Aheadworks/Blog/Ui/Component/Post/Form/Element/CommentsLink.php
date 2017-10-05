@@ -1,6 +1,13 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Ui\Component\Post\Form\Element;
 
+use Magento\Backend\Model\Auth\Session as AuthSession;
+use Aheadworks\Blog\Api\CommentsServiceInterface;
 use Magento\Ui\Component\Form\Element\Input;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 
@@ -11,33 +18,31 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 class CommentsLink extends Input
 {
     /**
-     * @var \Aheadworks\Blog\Model\Disqus
+     * @var CommentsServiceInterface
      */
-    private $disqus;
+    private $commentsService;
 
     /**
-     * @var \Magento\Backend\Model\Auth\Session
+     * @var AuthSession
      */
     private $authSession;
 
     /**
-     * CommentsLink constructor.
-     *
      * @param ContextInterface $context
-     * @param \Aheadworks\Blog\Model\Disqus $disqus
-     * @param \Magento\Backend\Model\Auth\Session $authSession
+     * @param CommentsServiceInterface $commentsService
+     * @param AuthSession $authSession
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
-        \Aheadworks\Blog\Model\Disqus $disqus,
-        \Magento\Backend\Model\Auth\Session $authSession,
+        CommentsServiceInterface $commentsService,
+        AuthSession $authSession,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $components, $data);
-        $this->disqus = $disqus;
+        $this->commentsService = $commentsService;
         $this->authSession = $authSession;
     }
 
@@ -50,7 +55,7 @@ class CommentsLink extends Input
         if (!isset($config['url'])
             && $this->authSession->isAllowed('Aheadworks_Blog::comments')
         ) {
-            $config['url'] = $this->disqus->getAdminUrl();
+            $config['url'] = $this->commentsService->getModerateUrl();
             $config['linkLabel'] = __('Go To Comments');
             $this->setData('config', $config);
         }

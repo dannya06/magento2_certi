@@ -1,84 +1,178 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block\Widget;
 
-use Aheadworks\Blog\Model\Config;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Block\Widget\TagCloud;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Aheadworks\Blog\Api\TagCloudItemRepositoryInterface;
+use Aheadworks\Blog\Api\Data\TagCloudItemSearchResultsInterface;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Url;
+use Aheadworks\Blog\Api\Data\TagCloudItemInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Aheadworks\Blog\Api\Data\TagInterface;
+use Magento\Framework\Api\SortOrderBuilder;
+use Magento\Framework\Api\SortOrder;
 
 /**
  * Test for \Aheadworks\Blog\Block\Widget\TagCloud
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class TagCloudTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Pager constants defined for test
+     */
+    const STORE_ID = 1;
+    const CATEGORY_ID = 2;
     const MAX_WEIGHT = 1.5;
     const MIN_WEIGHT = 0.5;
     const SLOPE = 0.1;
-
-    const SEARCH_BY_TAG_URL = 'http://localhost/blog/tag/tag';
-
-    const STORE_ID = 1;
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Block\Widget\TagCloud
+     * @var TagCloud
      */
     private $block;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\TagSearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var SearchCriteriaInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchResults;
+    private $searchCriteriaMock;
 
     /**
-     * @var \Aheadworks\Blog\Model\Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var TagCloudItemRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $config;
+    private $tagCloudItemRepositoryMock;
 
     /**
-     * @var \Aheadworks\Blog\Model\Url|\PHPUnit_Framework_MockObject_MockObject
+     * @var TagCloudItemSearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $url;
+    private $searchResultsMock;
 
+    /**
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $configMock;
+
+    /**
+     * @var Url|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $urlMock;
+
+    /**
+     * @var TagCloudItemInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $tagCloudItemMock;
+
+    /**
+     * @var SortOrderBuilder|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $sortOrderBuilderMock;
+
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->searchResults = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\TagSearchResultsInterface');
-        $tagManagementStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\TagManagementInterface');
-        $tagManagementStub->expects($this->any())
-            ->method('getCloudTags')
-            ->with($this->equalTo(self::STORE_ID))
-            ->will($this->returnValue($this->searchResults));
-
-        $this->config = $this->getMock('Aheadworks\Blog\Model\Config', ['getValue'], [], '', false);
-        $this->url = $this->getMock('Aheadworks\Blog\Model\Url', ['getSearchByTagUrl'], [], '', false);
-
-        $requestStub = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $requestStub->expects($this->any())
+        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock->expects($this->any())
             ->method('getParam')
             ->with($this->equalTo('blog_category_id'))
-            ->will($this->returnValue(null));
-        $storeStub = $this->getMockForAbstractClass('Magento\Store\Api\Data\StoreInterface');
-        $storeStub->expects($this->any())
+            ->will($this->returnValue(self::CATEGORY_ID));
+
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::STORE_ID));
-        $storeManagerStub = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $storeManagerStub->expects($this->any())
+        $storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeStub));
+            ->will($this->returnValue($storeMock));
+
         $context = $objectManager->getObject(
-            'Magento\Framework\View\Element\Template\Context',
+            Context::class,
             [
-                'request' => $requestStub,
-                'storeManager' => $storeManagerStub
+                'request' => $requestMock,
+                'storeManager' => $storeManagerMock
             ]
         );
 
+        $this->tagCloudItemRepositoryMock = $this->getMockForAbstractClass(TagCloudItemRepositoryInterface::class);
+        $this->searchResultsMock = $this->getMockForAbstractClass(TagCloudItemSearchResultsInterface::class);
+
+        $this->sortOrderBuilderMock = $this->getMock(
+            SortOrderBuilder::class,
+            ['setField', 'setDirection', 'create'],
+            [],
+            '',
+            false
+        );
+        $this->searchCriteriaMock = $this->getMockForAbstractClass(SearchCriteriaInterface::class);
+
+        $sortOrderMock = $this->getMock(SortOrder::class, [], [], '', false);
+        $this->sortOrderBuilderMock->expects($this->any())
+            ->method('setField')
+            ->with('post_count')
+            ->willReturnSelf();
+        $this->sortOrderBuilderMock->expects($this->any())
+            ->method('setDirection')
+            ->with(SortOrder::SORT_DESC)
+            ->willReturnSelf();
+        $this->sortOrderBuilderMock->expects($this->any())
+            ->method('create')
+            ->willReturn($sortOrderMock);
+        $searchCriteriaBuilderMock = $this->getMock(
+            SearchCriteriaBuilder::class,
+            ['setPageSize', 'addFilter', 'create', 'addSortOrder'],
+            [],
+            '',
+            false
+        );
+        $searchCriteriaBuilderMock->expects($this->any())
+            ->method('addSortOrder')
+            ->with($sortOrderMock)
+            ->willReturnSelf();
+        $searchCriteriaBuilderMock->expects($this->any())
+            ->method('create')
+            ->will($this->returnValue($this->searchCriteriaMock));
+
+        $this->configMock = $this->getMock(
+            Config::class,
+            ['getNumPopularTags', 'isBlogEnabled', 'isHighlightTags'],
+            [],
+            '',
+            false
+        );
+        $this->configMock->expects($this->any())
+            ->method('getNumPopularTags')
+            ->will($this->returnValue(10));
+
+        $this->urlMock = $this->getMock(Url::class, ['getSearchByTagUrl'], [], '', false);
+        $this->tagCloudItemMock = $this->getMockForAbstractClass(TagCloudItemInterface::class);
+
         $this->block = $objectManager->getObject(
-            'Aheadworks\Blog\Block\Widget\TagCloud',
+            TagCloud::class,
             [
                 'context' => $context,
-                'tagManagement' => $tagManagementStub,
-                'config' => $this->config,
-                'url' => $this->url,
+                'tagCloudItemRepository' => $this->tagCloudItemRepositoryMock,
+                'searchCriteriaBuilder' => $searchCriteriaBuilderMock,
+                'config' => $this->configMock,
+                'url' => $this->urlMock,
+                'sortOrderBuilder' => $this->sortOrderBuilderMock,
                 'data' => [
                     'max_weight' => self::MAX_WEIGHT,
                     'min_weight' => self::MIN_WEIGHT,
@@ -89,64 +183,76 @@ class TagCloudTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Testing of retrieving of tags
+     * Testing of retrieving of tag cloud items
      */
-    public function testGetTags()
+    public function testGetItems()
     {
-        $count = 1;
-        $tag1 = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\TagInterface');
-        $tag1->expects($this->any())
-            ->method('getCount')
-            ->will($this->returnValue($count));
-        $tag2 = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\TagInterface');
-        $tag2->expects($this->any())
-            ->method('getCount')
-            ->will($this->returnValue($count));
-        $this->searchResults->expects($this->atLeastOnce())
+        $items = [$this->tagCloudItemMock];
+        $this->searchResultsMock->expects($this->any())
             ->method('getItems')
-            ->willReturn([$tag1, $tag2]);
-        $this->assertEquals([$tag1, $tag2], $this->block->getTags());
+            ->willReturn($items);
+        $this->tagCloudItemRepositoryMock->expects($this->once())
+            ->method('getList')
+            ->with($this->searchCriteriaMock, self::STORE_ID)
+            ->willReturn($this->searchResultsMock);
+        $this->assertEquals($items, $this->block->getItems());
+        $this->block->getItems();
     }
 
     /**
-     * testing of isCloud method
+     * Testing of isEnabled method
      *
-     * @dataProvider isCloudDataProvider
+     * @dataProvider isEnabledDataProvider
+     * @param bool $value
      */
-    public function testIsCloud($configValue, $expectedResult)
+    public function testIsEnabled($value)
     {
-        $this->config->expects($this->any())
-            ->method('getValue')
-            ->with($this->equalTo(Config::XML_SIDEBAR_HIGHLIGHT_TAGS))
+        $this->configMock->expects($this->any())
+            ->method('isBlogEnabled')
+            ->willReturn($value);
+        $this->assertEquals($value, $this->block->isEnabled());
+    }
+
+    /**
+     * Testing of isCloudMode method
+     *
+     * @dataProvider isCloudModeDataProvider
+     * @param int $configValue
+     * @param bool $expectedResult
+     */
+    public function testIsCloudMode($configValue, $expectedResult)
+    {
+        $this->configMock->expects($this->any())
+            ->method('isHighlightTags')
             ->willReturn($configValue);
-        $this->assertEquals($expectedResult, $this->block->isCloud());
+        $this->assertEquals($expectedResult, $this->block->isCloudMode());
     }
 
     /**
      * Testing of tag weight calculation
      *
-     * @dataProvider getTagWeightDataProvider
+     * @dataProvider getWeightDataProvider
+     * @param int $postNum
+     * @param int $maxPostNum
+     * @param int $minPostNum
+     * @param int $weight
      */
-    public function testGetTagWeight($count, $countsAll, $weight)
+    public function testGetWeight($postNum, $maxPostNum, $minPostNum, $weight)
     {
-        $tagsAll = [];
-        foreach ($countsAll as $postCounts) {
-            $tag = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\TagInterface');
-            $tag->expects($this->any())
-                ->method('getCount')
-                ->willReturn($postCounts);
-            $tagsAll[] = $tag;
-        }
-        $this->searchResults->expects($this->any())
-            ->method('getItems')
-            ->willReturn($tagsAll);
-        $this->block->getTags();
-        /** @var \Aheadworks\Blog\Api\Data\TagInterface|\PHPUnit_Framework_MockObject_MockObject $tag */
-        $tag = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\TagInterface');
-        $tag->expects($this->any())
-            ->method('getCount')
-            ->willReturn($count);
-        $this->assertEquals($weight, $this->block->getTagWeight($tag));
+        $this->tagCloudItemMock->expects($this->any())
+            ->method('getPostCount')
+            ->willReturn($postNum);
+        $this->searchResultsMock->expects($this->any())
+            ->method('getMaxPostCount')
+            ->willReturn($maxPostNum);
+        $this->searchResultsMock->expects($this->any())
+            ->method('getMinPostCount')
+            ->willReturn($minPostNum);
+        $this->tagCloudItemRepositoryMock->expects($this->any())
+            ->method('getList')
+            ->with($this->searchCriteriaMock, self::STORE_ID)
+            ->willReturn($this->searchResultsMock);
+        $this->assertEquals($weight, $this->block->getWeight($this->tagCloudItemMock));
     }
 
     /**
@@ -154,30 +260,50 @@ class TagCloudTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSearchByTagUrl()
     {
-        $tag = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\TagInterface');
-        $this->url->expects($this->atLeastOnce())
+        $url = 'http://localhost/blog/tag/tag';
+        /** @var \Aheadworks\Blog\Api\Data\TagInterface|\PHPUnit_Framework_MockObject_MockObject $tag */
+        $tag = $this->getMockForAbstractClass(TagInterface::class);
+        $this->tagCloudItemMock->expects($this->any())
+            ->method('getTag')
+            ->willReturn($tag);
+        $this->urlMock->expects($this->once())
             ->method('getSearchByTagUrl')
-            ->with($this->equalTo($tag))->willReturn(self::SEARCH_BY_TAG_URL);
-        $this->assertEquals(self::SEARCH_BY_TAG_URL, $this->block->getSearchByTagUrl($tag));
+            ->with($tag)
+            ->willReturn($url);
+        $this->assertEquals($url, $this->block->getSearchByTagUrl($this->tagCloudItemMock));
     }
 
     /**
+     * Data provider for testIsCloudMode method
+     *
      * @return array
      */
-    public function isCloudDataProvider()
+    public function isCloudModeDataProvider()
     {
         return [[1, true], [0, false]];
     }
 
     /**
+     * Data provider for testIsEnabled method
+     *
      * @return array
      */
-    public function getTagWeightDataProvider()
+    public function isEnabledDataProvider()
+    {
+        return [[true], [false]];
+    }
+
+    /**
+     * Data provider for testGetWeight method
+     *
+     * @return array
+     */
+    public function getWeightDataProvider()
     {
         return [
-            [5, [5, 10, 15], 52.0],
-            [10, [5, 10, 15], 100.0],
-            [15, [5, 10, 15], 148.0]
+            [5, 15, 5, 52.0],
+            [10, 15, 5, 100.0],
+            [15, 15, 5, 148.0]
         ];
     }
 }

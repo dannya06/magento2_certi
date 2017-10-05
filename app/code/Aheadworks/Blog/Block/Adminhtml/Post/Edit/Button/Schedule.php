@@ -1,14 +1,18 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button;
 
-use Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 
 /**
  * Class Schedule
  * @package Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button
  */
-class Schedule extends Button implements ButtonProviderInterface
+class Schedule implements ButtonProviderInterface
 {
     /**
      * {@inheritdoc}
@@ -24,7 +28,7 @@ class Schedule extends Button implements ButtonProviderInterface
                 ],
                 'form-role' => 'save',
             ],
-            'style' => 'display:none;',
+            'style' => 'width:150px;',
             'sort_order' => 50,
         ];
     }

@@ -1,66 +1,88 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\ResourceModel;
 
+use Aheadworks\Blog\Api\Data\TagInterface;
+use Aheadworks\Blog\Api\Data\TagInterfaceFactory;
+use Aheadworks\Blog\Api\Data\TagSearchResultsInterfaceFactory;
+use Aheadworks\Blog\Model\TagFactory;
+use Aheadworks\Blog\Model\TagRegistry;
+use Magento\Framework\Reflection\DataObjectProcessor;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
+use Magento\Framework\EntityManager\EntityManager;
+
 /**
- * Tag repository.
+ * Tag repository
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class TagRepository implements \Aheadworks\Blog\Api\TagRepositoryInterface
 {
     /**
-     * @var \Aheadworks\Blog\Model\TagFactory
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * @var TagFactory
      */
     private $tagFactory;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\TagInterfaceFactory
+     * @var TagInterfaceFactory
      */
     private $tagDataFactory;
 
     /**
-     * @var \Aheadworks\Blog\Model\TagRegistry
+     * @var TagRegistry
      */
     private $tagRegistry;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\TagSearchResultsInterfaceFactory
+     * @var TagSearchResultsInterfaceFactory
      */
     private $searchResultsFactory;
 
     /**
-     * @var \Magento\Framework\Api\DataObjectHelper
+     * @var DataObjectHelper
      */
     private $dataObjectHelper;
 
     /**
-     * @var \Magento\Framework\Reflection\DataObjectProcessor
+     * @var DataObjectProcessor
      */
     private $dataObjectProcessor;
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface
+     * @var JoinProcessorInterface
      */
     private $extensionAttributesJoinProcessor;
 
     /**
-     * TagRepository constructor.
-     *
-     * @param \Aheadworks\Blog\Model\TagFactory $tagFactory
-     * @param \Aheadworks\Blog\Api\Data\TagInterfaceFactory $tagDataFactory
-     * @param \Aheadworks\Blog\Model\TagRegistry $tagRegistry
-     * @param \Aheadworks\Blog\Api\Data\TagSearchResultsInterfaceFactory $searchResultsFactory
-     * @param \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
-     * @param \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor
-     * @param \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface $extensionAttributesJoinProcessor
+     * @param EntityManager $entityManager
+     * @param TagFactory $tagFactory
+     * @param TagInterfaceFactory $tagDataFactory
+     * @param TagRegistry $tagRegistry
+     * @param TagSearchResultsInterfaceFactory $searchResultsFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param DataObjectProcessor $dataObjectProcessor
+     * @param JoinProcessorInterface $extensionAttributesJoinProcessor
      */
     public function __construct(
-        \Aheadworks\Blog\Model\TagFactory $tagFactory,
-        \Aheadworks\Blog\Api\Data\TagInterfaceFactory $tagDataFactory,
-        \Aheadworks\Blog\Model\TagRegistry $tagRegistry,
-        \Aheadworks\Blog\Api\Data\TagSearchResultsInterfaceFactory $searchResultsFactory,
-        \Magento\Framework\Api\DataObjectHelper $dataObjectHelper,
-        \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor,
-        \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface $extensionAttributesJoinProcessor
+        EntityManager $entityManager,
+        TagFactory $tagFactory,
+        TagInterfaceFactory $tagDataFactory,
+        TagRegistry $tagRegistry,
+        TagSearchResultsInterfaceFactory $searchResultsFactory,
+        DataObjectHelper $dataObjectHelper,
+        DataObjectProcessor $dataObjectProcessor,
+        JoinProcessorInterface $extensionAttributesJoinProcessor
     ) {
+        $this->entityManager = $entityManager;
         $this->tagFactory = $tagFactory;
         $this->tagDataFactory = $tagDataFactory;
         $this->tagRegistry = $tagRegistry;
@@ -73,23 +95,20 @@ class TagRepository implements \Aheadworks\Blog\Api\TagRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function save(\Aheadworks\Blog\Api\Data\TagInterface $tag)
+    public function save(TagInterface $tag)
     {
         /** @var \Aheadworks\Blog\Model\Tag $tagModel */
         $tagModel = $this->tagFactory->create();
-        if ($tag->getId()) {
-            $tagModel->load($tag->getId());
+        if ($tagId = $tag->getId()) {
+            $this->entityManager->load($tagModel, $tagId);
         }
-        $tagModel
-            ->addData(
-                $this->dataObjectProcessor->buildOutputDataArray(
-                    $tag,
-                    'Aheadworks\Blog\Api\Data\TagInterface'
-                )
-            )
-            ->save();
-        $this->tagRegistry->push($tagModel);
-        return $this->get($tagModel->getId());
+        $tagModel->addData(
+            $this->dataObjectProcessor->buildOutputDataArray($tag, TagInterface::class)
+        );
+        $this->entityManager->save($tagModel);
+        $tag = $this->getTagDataObject($tagModel);
+        $this->tagRegistry->push($tag);
+        return $tag;
     }
 
     /**
@@ -97,17 +116,7 @@ class TagRepository implements \Aheadworks\Blog\Api\TagRepositoryInterface
      */
     public function get($tagId)
     {
-        $tagModel = $this->tagRegistry->retrieve($tagId);
-        return $this->getTagDataObject($tagModel);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getByName($name)
-    {
-        $tagModel = $this->tagRegistry->retrieveByName($name);
-        return $this->getTagDataObject($tagModel);
+        return $this->tagRegistry->retrieve($tagId);
     }
 
     /**
@@ -120,7 +129,7 @@ class TagRepository implements \Aheadworks\Blog\Api\TagRepositoryInterface
             ->setSearchCriteria($searchCriteria);
         /** @var \Aheadworks\Blog\Model\ResourceModel\Tag\Collection $collection */
         $collection = $this->tagFactory->create()->getCollection();
-        $this->extensionAttributesJoinProcessor->process($collection, 'Aheadworks\Blog\Api\Data\TagInterface');
+        $this->extensionAttributesJoinProcessor->process($collection, TagInterface::class);
         foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             $fields = [];
             $conditions = [];
@@ -166,8 +175,8 @@ class TagRepository implements \Aheadworks\Blog\Api\TagRepositoryInterface
      */
     public function deleteById($tagId)
     {
-        $post = $this->tagRegistry->retrieve($tagId);
-        $post->delete();
+        $tag = $this->tagRegistry->retrieve($tagId);
+        $this->entityManager->delete($tag);
         $this->tagRegistry->remove($tagId);
         return true;
     }
@@ -176,19 +185,17 @@ class TagRepository implements \Aheadworks\Blog\Api\TagRepositoryInterface
      * Retrieves tag data object using Tag Model
      *
      * @param \Aheadworks\Blog\Model\Tag $tag
-     * @return \Aheadworks\Blog\Api\Data\TagInterface
+     * @return TagInterface
      */
     private function getTagDataObject(\Aheadworks\Blog\Model\Tag $tag)
     {
-        /** @var \Aheadworks\Blog\Api\Data\TagInterface $tagDataObject */
+        /** @var TagInterface $tagDataObject */
         $tagDataObject = $this->tagDataFactory->create();
         $this->dataObjectHelper->populateWithArray(
             $tagDataObject,
             $tag->getData(),
-            'Aheadworks\Blog\Api\Data\TagInterface'
+            TagInterface::class
         );
-        $tagDataObject->setId($tag->getId());
-
         return $tagDataObject;
     }
 }

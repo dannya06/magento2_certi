@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Ui/etc/ui_configuration.xsd">
+<!--
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+-->
+
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">aw_blog_post_listing.aw_blog_post_listing_data_source</item>
@@ -9,7 +16,7 @@
         <item name="buttons" xsi:type="array">
             <item name="add" xsi:type="array">
                 <item name="name" xsi:type="string">add</item>
-                <item name="label" xsi:type="string" translate="true">Create Post</item>
+                <item name="label" xsi:type="string" translate="true">Create New Post</item>
                 <item name="class" xsi:type="string">primary</item>
                 <item name="url" xsi:type="string">*/*/new</item>
             </item>
@@ -17,29 +24,28 @@
     </argument>
     <dataSource name="aw_blog_post_listing_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">\Aheadworks\Blog\Ui\DataProvider\PostDataProvider</argument>
+            <argument name="class" xsi:type="string">BlogPostGridDataProvider</argument>
             <argument name="name" xsi:type="string">aw_blog_post_listing_data_source</argument>
-            <argument name="primaryFieldName" xsi:type="string">post_id</argument>
-            <argument name="requestFieldName" xsi:type="string">post_id</argument>
+            <argument name="primaryFieldName" xsi:type="string">id</argument>
+            <argument name="requestFieldName" xsi:type="string">id</argument>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">id</item>
+                    </item>
                 </item>
             </argument>
         </argument>
-        <argument name="data" xsi:type="array">
-            <item name="js_config" xsi:type="array">
-                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
-            </item>
-        </argument>
     </dataSource>
-    <container name="listing_top">
+    <listingToolbar name="listing_top">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
-                <item name="template" xsi:type="string">ui/grid/toolbar</item>
+                <item name="sticky" xsi:type="boolean">true</item>
             </item>
         </argument>
-        <bookmark name="bookmarks" class="Aheadworks\Blog\Ui\Component\Listing\Bookmark">
+        <bookmark name="bookmarks" class="Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/controls/bookmarks/bookmarks</item>
@@ -52,25 +58,10 @@
                 </item>
             </argument>
         </bookmark>
-        <container name="columns_controls">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="columnsData" xsi:type="array">
-                        <item name="provider" xsi:type="string">aw_blog_post_listing.aw_blog_post_listing.aw_blog_post_columns</item>
-                    </item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/controls/columns</item>
-                    <item name="displayArea" xsi:type="string">dataGridActions</item>
-                </item>
-            </argument>
-        </container>
+        <columnsControls name="columns_controls"/>
         <filters name="listing_filters">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="columnsProvider" xsi:type="string">aw_blog_post_listing.aw_blog_post_listing.aw_blog_post_columns</item>
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">aw_blog_post_listing.aw_blog_post_listing.listing_top.bookmarks</item>
-                        <item name="namespace" xsi:type="string">current.filters</item>
-                    </item>
                     <item name="templates" xsi:type="array">
                         <item name="filters" xsi:type="array">
                             <item name="select" xsi:type="array">
@@ -82,60 +73,75 @@
                 </item>
             </argument>
         </filters>
-        <paging name="listing_paging">
+        <massaction name="listing_massaction">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">aw_blog_post_listing.aw_blog_post_listing.listing_top.bookmarks</item>
-                        <item name="namespace" xsi:type="string">current.paging</item>
-                    </item>
-                    <item name="selectProvider" xsi:type="string">aw_blog_post_listing.aw_blog_post_listing.aw_blog_post_columns.id</item>
-                    <item name="displayArea" xsi:type="string">bottom</item>
-                    <item name="options" xsi:type="array">
-                        <item name="20" xsi:type="array">
-                            <item name="value" xsi:type="number">20</item>
-                            <item name="label" xsi:type="string">20</item>
-                        </item>
-                        <item name="50" xsi:type="array">
-                            <item name="value" xsi:type="number">50</item>
-                            <item name="label" xsi:type="string">50</item>
-                        </item>
-                        <item name="100" xsi:type="array">
-                            <item name="value" xsi:type="number">100</item>
-                            <item name="label" xsi:type="string">100</item>
-                        </item>
-                        <item name="200" xsi:type="array">
-                            <item name="value" xsi:type="number">200</item>
-                            <item name="label" xsi:type="string">200</item>
-                        </item>
-                    </item>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/tree-massactions</item>
                 </item>
             </argument>
-        </paging>
-    </container>
-    <columns name="aw_blog_post_columns">
-        <argument name="data" xsi:type="array">
-            <item name="config" xsi:type="array">
-                <item name="storageConfig" xsi:type="array">
-                    <item name="provider" xsi:type="string">aw_blog_post_listing.aw_blog_post_listing.listing_top.bookmarks</item>
-                    <item name="namespace" xsi:type="string">current</item>
-                </item>
-                <item name="childDefaults" xsi:type="array">
-                    <item name="controlVisibility" xsi:type="boolean">true</item>
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">aw_blog_post_listing.aw_blog_post_listing.listing_top.bookmarks</item>
-                        <item name="root" xsi:type="string">columns.${ $.index }</item>
-                        <item name="namespace" xsi:type="string">current.${ $.storageConfig.root}</item>
+            <action name="delete">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">delete</item>
+                        <item name="label" xsi:type="string" translate="true">Delete</item>
+                        <item name="url" xsi:type="url" path="aw_blog_admin/post/massDelete"/>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Delete items</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you want to delete selected items?</item>
+                        </item>
                     </item>
-                </item>
-            </item>
-        </argument>
-        <column name="title" class="Aheadworks\Blog\Ui\Component\Listing\Column\Title">
+                </argument>
+            </action>
+            <action name="status">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">status</item>
+                        <item name="label" xsi:type="string" translate="true">Change Status</item>
+                    </item>
+                </argument>
+                <argument name="actions" xsi:type="array">
+                    <item name="0" xsi:type="array">
+                        <item name="type" xsi:type="string">draft</item>
+                        <item name="label" xsi:type="string" translate="true">Draft</item>
+                        <item name="url" xsi:type="url" path="aw_blog_admin/post/massStatus">
+                            <param name="status">draft</param>
+                        </item>
+                    </item>
+                    <item name="1" xsi:type="array">
+                        <item name="type" xsi:type="string">publication</item>
+                        <item name="label" xsi:type="string" translate="true">Published</item>
+                        <item name="url" xsi:type="url" path="aw_blog_admin/post/massStatus">
+                            <param name="status">publication</param>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="aw_blog_post_columns">
+        <selectionsColumn name="ids">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="component" xsi:type="string">Aheadworks_Blog/js/ui/grid/columns/link</item>
-                    <item name="fieldClass" xsi:type="string">post-title</item>
+                    <item name="indexField" xsi:type="string">id</item>
+                </item>
+            </argument>
+        </selectionsColumn>
+        <column name="id">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">ID</item>
+                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="sorting" xsi:type="string">desc</item>
+                </item>
+            </argument>
+        </column>
+        <column name="title" class="Aheadworks\Blog\Ui\Component\Post\Listing\Column\Name">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_Blog/js/ui/listing/columns/name</item>
                     <item name="label" xsi:type="string" translate="true">Title</item>
+                    <item name="filter" xsi:type="string">text</item>
                 </item>
             </argument>
         </column>
@@ -145,9 +151,9 @@
                 <item name="config" xsi:type="array">
                     <item name="dataType" xsi:type="string">select</item>
                     <item name="filter" xsi:type="string">select</item>
-                    <item name="component" xsi:type="string">Aheadworks_Blog/js/ui/grid/columns/status</item>
-                    <item name="fieldClass" xsi:type="string">post-status</item>
                     <item name="label" xsi:type="string" translate="true">Status</item>
+                    <item name="component" xsi:type="string">Aheadworks_Blog/js/ui/listing/columns/status</item>
+                    <item name="fieldClass" xsi:type="string">post-status</item>
                 </item>
             </argument>
         </column>
@@ -156,8 +162,7 @@
                 <item name="config" xsi:type="array">
                     <item name="dataType" xsi:type="string">date</item>
                     <item name="filter" xsi:type="string">dateRange</item>
-                    <item name="component" xsi:type="string">Aheadworks_Blog/js/ui/grid/columns/publish_date</item>
-                    <item name="fieldClass" xsi:type="string">post-publish_date</item>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
                     <item name="label" xsi:type="string" translate="true">Publish Date</item>
                 </item>
             </argument>
@@ -166,6 +171,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">Published Comments</item>
+                    <item name="sortable" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -173,11 +179,11 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="label" xsi:type="string" translate="true">New Comments</item>
-                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="sortable" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
-        <column name="categories" class="Aheadworks\Blog\Ui\Component\Listing\Column\Categories">
+        <column name="categories" class="Aheadworks\Blog\Ui\Component\Post\Listing\Column\Categories">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="sortable" xsi:type="boolean">false</item>
@@ -185,7 +191,7 @@
                 </item>
             </argument>
         </column>
-        <column name="tags" class="Aheadworks\Blog\Ui\Component\Listing\Column\Tags">
+        <column name="tag_names" class="Aheadworks\Blog\Ui\Component\Post\Listing\Column\Tags">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="sortable" xsi:type="boolean">false</item>
@@ -201,6 +207,7 @@
                     <item name="label" xsi:type="string" translate="true">Store View</item>
                 </item>
             </argument>
+            <argument name="storeKey" xsi:type="string">store_ids</argument>
         </column>
         <column name="author_name">
             <argument name="data" xsi:type="array">
@@ -215,7 +222,7 @@
                     <item name="dataType" xsi:type="string">date</item>
                     <item name="filter" xsi:type="string">dateRange</item>
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
-                    <item name="label" xsi:type="string" translate="true">Last Modified</item>
+                    <item name="label" xsi:type="string" translate="true">Modified</item>
                     <item name="visible" xsi:type="boolean">false</item>
                 </item>
             </argument>
@@ -226,8 +233,7 @@
                     <item name="dataType" xsi:type="string">date</item>
                     <item name="filter" xsi:type="string">dateRange</item>
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
-                    <item name="label" xsi:type="string" translate="true">Created At</item>
-                    <item name="sorting" xsi:type="string">desc</item>
+                    <item name="label" xsi:type="string" translate="true">Created</item>
                     <item name="visible" xsi:type="boolean">false</item>
                 </item>
             </argument>

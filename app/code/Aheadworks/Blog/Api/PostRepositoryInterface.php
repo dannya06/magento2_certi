@@ -1,16 +1,21 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
 
 /**
- * Post CRUD interface.
+ * Post CRUD interface
  * @api
  */
 interface PostRepositoryInterface
 {
     /**
-     * Save post.
+     * Save post
      *
      * @param \Aheadworks\Blog\Api\Data\PostInterface $post
      * @return \Aheadworks\Blog\Api\Data\PostInterface
@@ -19,7 +24,7 @@ interface PostRepositoryInterface
     public function save(\Aheadworks\Blog\Api\Data\PostInterface $post);
 
     /**
-     * Retrieve post.
+     * Retrieve post
      *
      * @param int $postId
      * @return \Aheadworks\Blog\Api\Data\PostInterface
@@ -28,26 +33,25 @@ interface PostRepositoryInterface
     public function get($postId);
 
     /**
-     * Retrieve post by URL-Key.
+     * Retrieve post by url key
      *
-     * @param string $urlKey
+     * @param string $postUrlKey
      * @return \Aheadworks\Blog\Api\Data\PostInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getByUrlKey($urlKey);
+    public function getByUrlKey($postUrlKey);
 
     /**
-     * Retrieve posts matching the specified criteria.
+     * Retrieve posts matching the specified criteria
      *
      * @param SearchCriteriaInterface $searchCriteria
-     * @param string[] $additionalFields
      * @return \Aheadworks\Blog\Api\Data\PostSearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getList(SearchCriteriaInterface $searchCriteria, array $additionalFields = []);
+    public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
-     * Delete post.
+     * Delete post
      *
      * @param \Aheadworks\Blog\Api\Data\PostInterface $post
      * @return bool true on success
@@ -56,7 +60,7 @@ interface PostRepositoryInterface
     public function delete(\Aheadworks\Blog\Api\Data\PostInterface $post);
 
     /**
-     * Delete post by ID.
+     * Delete post by ID
      *
      * @param int $postId
      * @return bool true on success

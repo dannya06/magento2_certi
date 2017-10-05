@@ -1,7 +1,17 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Category;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Backend\Model\View\Result\Page;
+use Magento\Framework\View\Page\Title;
+use Magento\Framework\View\Page\Config;
+use Magento\Framework\View\Result\PageFactory;
+use Aheadworks\Blog\Controller\Adminhtml\Category\Index;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Category\Index
@@ -9,42 +19,47 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class IndexTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Controller\Adminhtml\Category\Index
+     * @var Index
      */
     private $action;
 
     /**
-     * @var \Magento\Backend\Model\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
+     * @var Page|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultPage;
+    private $resultPageMock;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $titleStub = $this->getMock('Magento\Framework\View\Page\Title', ['prepend'], [], '', false);
-        $pageConfigStub = $this->getMock('Magento\Framework\View\Page\Config', ['getTitle'], [], '', false);
-        $pageConfigStub->expects($this->any())
+        $titleMock = $this->getMock(Title::class, ['prepend'], [], '', false);
+        $pageConfigMock = $this->getMock(Config::class, ['getTitle'], [], '', false);
+        $pageConfigMock->expects($this->any())
             ->method('getTitle')
-            ->will($this->returnValue($titleStub));
-        $this->resultPage = $this->getMock(
-            'Magento\Backend\Model\View\Result\Page',
+            ->will($this->returnValue($titleMock));
+        $this->resultPageMock = $this->getMock(
+            Page::class,
             ['setActiveMenu', 'getConfig'],
             [],
             '',
             false
         );
-        $this->resultPage->expects($this->any())
+        $this->resultPageMock->expects($this->any())
             ->method('getConfig')
-            ->will($this->returnValue($pageConfigStub));
-        $resultPageFactoryStub = $this->getMock('Magento\Framework\View\Result\PageFactory', ['create'], [], '', false);
-        $resultPageFactoryStub->expects($this->any())
+            ->will($this->returnValue($pageConfigMock));
+        $resultPageFactoryMock = $this->getMock(PageFactory::class, ['create'], [], '', false);
+        $resultPageFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultPage));
+            ->will($this->returnValue($this->resultPageMock));
 
         $this->action = $objectManager->getObject(
-            'Aheadworks\Blog\Controller\Adminhtml\Category\Index',
-            ['resultPageFactory' => $resultPageFactoryStub]
+            Index::class,
+            ['resultPageFactory' => $resultPageFactoryMock]
         );
     }
 
@@ -53,6 +68,6 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteResult()
     {
-        $this->assertSame($this->resultPage, $this->action->execute());
+        $this->assertSame($this->resultPageMock, $this->action->execute());
     }
 }

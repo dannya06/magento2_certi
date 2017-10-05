@@ -1,55 +1,50 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\ResourceModel;
+
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 /**
  * Category resource model
  * @package Aheadworks\Blog\Model\ResourceModel
  */
-class Category extends AbstractResource
+class Category extends AbstractDb
 {
     /**
      * @return void
      */
     protected function _construct()
     {
-        $this->_init('aw_blog_cat', 'cat_id');
+        $this->_init('aw_blog_category', 'id');
     }
 
     /**
-     * @param \Magento\Framework\Model\AbstractModel $object
+     * Load category by url key
+     *
+     * @param \Aheadworks\Blog\Model\Category $category
+     * @param string $urlKey
      * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function _afterLoad(\Magento\Framework\Model\AbstractModel $object)
+    public function loadByUrlKey(\Aheadworks\Blog\Model\Category $category, $urlKey)
     {
-        $this->attachStores($object);
-        return parent::_afterLoad($object);
-    }
+        $connection = $this->getConnection();
+        $bind = ['url_key' => $urlKey];
+        $select = $connection->select()
+            ->from($this->getMainTable(), $this->getIdFieldName())
+            ->where('url_key = :url_key');
 
-    /**
-     * @param \Magento\Framework\Model\AbstractModel $object
-     * @return $this
-     */
-    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
-    {
-        $this->updateStores($object);
-        return parent::_afterSave($object);
-    }
+        $categoryId = $connection->fetchOne($select, $bind);
+        if ($categoryId) {
+            $this->load($category, $categoryId);
+        } else {
+            $category->setData([]);
+        }
 
-    /**
-     * @return \Magento\Framework\Validator\DataObject|null
-     */
-    public function getValidationRulesBeforeSave()
-    {
-        $validator = new \Magento\Framework\Validator\DataObject();
-
-        $nameNotEmpty = new \Zend_Validate_NotEmpty();
-        $nameNotEmpty->setMessage(__('Name is required.'), \Zend_Validate_NotEmpty::IS_EMPTY);
-        $validator->addRule($nameNotEmpty, 'name');
-
-        $this
-            ->addUrlKeyValidateRules($validator)
-            ->addStoresValidateRules($validator);
-
-        return $validator;
+        return $this;
     }
 }

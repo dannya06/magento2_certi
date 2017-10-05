@@ -1,4 +1,9 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Source\Category;
 
 /**
@@ -7,34 +12,38 @@ namespace Aheadworks\Blog\Model\Source\Category;
  */
 class Status implements \Magento\Framework\Option\ArrayInterface
 {
+    /**
+     * 'Enabled' status
+     */
     const ENABLED = 1;
-    const DISABLED = 0;
-
-    const ENABLED_LABEL = 'Enabled';
-    const DISABLED_LABEL = 'Disabled';
 
     /**
-     * @var null|array
+     * 'Disabled' status
      */
-    protected $optionArray = null;
+    const DISABLED = 0;
+
+    /**
+     * @var array
+     */
+    private $options;
 
     /**
      * @return array
      */
     public function toOptionArray()
     {
-        if ($this->optionArray === null) {
-            $this->optionArray = [
+        if (!$this->options) {
+            $this->options = [
                 [
                     'value' => self::DISABLED,
-                    'label' => __(self::DISABLED_LABEL)
+                    'label' => __('Disabled')
                 ],
                 [
                     'value' => self::ENABLED,
-                    'label' => __(self::ENABLED_LABEL)
+                    'label' => __('Enabled')
                 ]
             ];
         }
-        return $this->optionArray;
+        return $this->options;
     }
 }

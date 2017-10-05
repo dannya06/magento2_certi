@@ -1,31 +1,48 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Listing\Column;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Ui\Component\Post\Listing\Column\Categories;
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Magento\Framework\View\Element\UiComponent\Processor;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Framework\Api\SearchCriteria;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Aheadworks\Blog\Api\Data\CategorySearchResultsInterface;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
 
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Listing\Column\Categories
  */
 class CategoriesTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Category constants defined for test
+     */
     const CATEGORY1_NAME = 'Category 1';
     const CATEGORY2_NAME = 'Category 2';
     const POST_CATEGORY_IDS = [1, 2];
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Ui\Component\Post\Listing\Column\Categories
+     * @var Categories
      */
     private $column;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $category1;
+    private $category1Mock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $category2;
+    private $category2Mock;
 
     /**
      * @var array
@@ -34,63 +51,65 @@ class CategoriesTest extends \PHPUnit_Framework_TestCase
         'category_ids' => self::POST_CATEGORY_IDS
     ];
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $processorStub = $this->getMock(
-            'Magento\Framework\View\Element\UiComponent\Processor',
-            ['register'],
-            [],
-            '',
-            false
-        );
-        $contextStub = $this->getMockForAbstractClass('Magento\Framework\View\Element\UiComponent\ContextInterface');
-        $contextStub->expects($this->any())
+        $processorMock = $this->getMock(Processor::class, [], [], '', false);
+        $processorMock->expects($this->any())
+            ->method('register');
+        $contextMock = $this->getMockBuilder(ContextInterface::class)
+            ->getMockForAbstractClass();
+        $contextMock->expects($this->any())
             ->method('getProcessor')
-            ->will($this->returnValue($processorStub));
+            ->willReturn($processorMock);
 
-        $this->category1 = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\CategoryInterface');
-        $this->category1->expects($this->any())
+        $this->category1Mock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $this->category1Mock->expects($this->once())
             ->method('getName')
             ->will($this->returnValue(self::CATEGORY1_NAME));
-        $this->category2 = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\CategoryInterface');
-        $this->category2->expects($this->any())
+        $this->category2Mock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $this->category2Mock->expects($this->once())
             ->method('getName')
             ->will($this->returnValue(self::CATEGORY2_NAME));
 
-        $searchCriteriaStub = $this->getMock('Magento\Framework\Api\SearchCriteria', [], [], '', false);
-        $searchCriteriaBuilderStub = $this->getMock(
-            'Magento\Framework\Api\SearchCriteriaBuilder',
+        $searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
+        $searchCriteriaBuilderMock = $this->getMock(
+            SearchCriteriaBuilder::class,
             ['addFilter', 'create'],
             [],
             '',
             false
         );
-        $searchCriteriaBuilderStub->expects($this->any())
+        $searchCriteriaBuilderMock->expects($this->once())
             ->method('addFilter')
             ->will($this->returnSelf());
-        $searchCriteriaBuilderStub->expects($this->any())
+        $searchCriteriaBuilderMock->expects($this->once())
             ->method('create')
-            ->will($this->returnValue($searchCriteriaStub));
+            ->will($this->returnValue($searchCriteriaMock));
 
-        $searchResultsStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\CategorySearchResultsInterface');
-        $searchResultsStub->expects($this->any())
+        $searchResultsMock = $this->getMockForAbstractClass(CategorySearchResultsInterface::class);
+        $searchResultsMock->expects($this->once())
             ->method('getItems')
-            ->will($this->returnValue([$this->category1, $this->category2]));
+            ->will($this->returnValue([$this->category1Mock, $this->category2Mock]));
 
-        $categoryRepositoryStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\CategoryRepositoryInterface');
-        $categoryRepositoryStub->expects($this->any())
+        $categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
+        $categoryRepositoryMock->expects($this->once())
             ->method('getList')
-            ->with($this->equalTo($searchCriteriaStub))
-            ->will($this->returnValue($searchResultsStub));
+            ->with($this->equalTo($searchCriteriaMock))
+            ->will($this->returnValue($searchResultsMock));
 
         $this->column = $objectManager->getObject(
-            'Aheadworks\Blog\Ui\Component\Post\Listing\Column\Categories',
+            Categories::class,
             [
-                'context' => $contextStub,
-                'categoryRepository' => $categoryRepositoryStub,
-                'searchCriteriaBuilder' => $searchCriteriaBuilderStub
+                'context' => $contextMock,
+                'categoryRepository' => $categoryRepositoryMock,
+                'searchCriteriaBuilder' => $searchCriteriaBuilderMock
             ]
         );
     }

@@ -1,69 +1,109 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block\Adminhtml\Post\Edit\Button;
 
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Delete as DeleteButton;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\UrlInterface;
 
 /**
  * Test for \Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Delete
  */
 class DeleteTest extends \PHPUnit_Framework_TestCase
 {
-    const DELETE_URL = 'http://localhost/blog_admin/post/delete/post_id/1';
+    /**#@+
+     * Button constants defined for test
+     */
+    const DELETE_URL = 'http://localhost/blog/post/delete/post_id/1';
     const POST_ID = 1;
+    /**#@-*/
 
     /**
      * @var \Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Delete
      */
     private $button;
 
+    /**
+     * @var DeleteButton|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $requestMock;
+
+    /**
+     * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $urlBuilderMock;
+
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $requestStub = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $requestStub->expects($this->any())
-            ->method('getParam')
-            ->with($this->equalTo('post_id'))
-            ->will($this->returnValue(self::POST_ID));
-        $urlBuilderStub = $this->getMockForAbstractClass('Magento\Framework\UrlInterface');
-        $urlBuilderStub->expects($this->any())
-            ->method('getUrl')
-            ->with(
-                $this->equalTo('*/*/delete'),
-                $this->equalTo(['post_id' => self::POST_ID])
-            )
-            ->will($this->returnValue(self::DELETE_URL));
+        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
 
-        $postStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostInterface');
-        $postRepositoryStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\PostRepositoryInterface');
-        $postRepositoryStub->expects($this->any())
+        $postRepositoryMock = $this->getMockForAbstractClass(PostRepositoryInterface::class);
+        $postRepositoryMock->expects($this->any())
             ->method('get')
             ->with($this->equalTo(self::POST_ID))
-            ->will($this->returnValue($postStub));
+            ->will($this->returnValue($this->getMockForAbstractClass(PostInterface::class)));
 
         $this->button = $objectManager->getObject(
-            'Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Delete',
+            DeleteButton::class,
             [
-                'request' => $requestStub,
-                'urlBuilder' => $urlBuilderStub,
-                'postRepository' => $postRepositoryStub
+                'request' => $this->requestMock,
+                'urlBuilder' => $this->urlBuilderMock,
+                'postRepository' => $postRepositoryMock
             ]
         );
     }
 
     /**
      * Testing of return value of getButtonData method
+     *
+     * @dataProvider getButtonDataDataProvider
+     * @param int|null $postId
      */
-    public function testGetButtonData()
+    public function testGetButtonData($postId)
     {
-        $this->assertTrue(is_array($this->button->getButtonData()));
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with($this->equalTo('id'))
+            ->willReturn($postId);
+        if ($postId) {
+            $this->urlBuilderMock->expects($this->once())
+                ->method('getUrl')
+                ->with(
+                    $this->equalTo('*/*/delete'),
+                    $this->equalTo(['id' => self::POST_ID])
+                )
+                ->will($this->returnValue(self::DELETE_URL));
+            $this->assertNotEmpty($this->button->getButtonData());
+        } else {
+            $this->assertEmpty($this->button->getButtonData());
+        }
     }
 
     /**
-     * Testing of retrieving of delete url
+     * Data provider for testGetButtonData method
+     *
+     * @return array
      */
-    public function testGetDeleteUrl()
+    public function getButtonDataDataProvider()
     {
-        $this->assertEquals(self::DELETE_URL, $this->button->getDeleteUrl());
+        return [
+            'post id specified' => [self::POST_ID],
+            'post id not specified' => [null]
+        ];
     }
 }

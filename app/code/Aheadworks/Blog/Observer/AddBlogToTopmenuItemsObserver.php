@@ -1,140 +1,185 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Observer;
 
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
 use Aheadworks\Blog\Model\Category;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Source\Category\Status as CategoryStatus;
+use Aheadworks\Blog\Model\Url;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Api\SortOrder;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Data\Tree\NodeFactory;
+use Magento\Framework\Registry;
 
 /**
  * Class AddBlogToTopmenuItemsObserver
  * @package Aheadworks\Blog\Observer
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class AddBlogToTopmenuItemsObserver implements ObserverInterface
 {
-    const NODE_ID_PREFIX = 'aw-blog-menu-item-node';
-
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory
+     * @var string
      */
-    protected $categoryCollectionFactory;
+    const NODE_ID_PREFIX = 'blog-menu-item-node';
 
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Category\Collection|null
+     * @var CategoryRepositoryInterface
      */
-    protected $categoryCollection = null;
+    private $categoryRepository;
 
     /**
-     * @var \Aheadworks\Blog\Helper\Config
+     * @var SearchCriteriaBuilder
      */
-    protected $configHelper;
+    private $searchCriteriaBuilder;
 
     /**
-     * @var \Aheadworks\Blog\Helper\Url
+     * @var Url
      */
-    protected $urlHelper;
+    private $url;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var Config
      */
-    protected $coreRegistry;
+    private $config;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var Registry
      */
-    protected $storeManager;
+    private $coreRegistry;
 
     /**
-     * @var \Magento\Framework\App\RequestInterface
+     * @var StoreManagerInterface
      */
-    protected $request;
+    private $storeManager;
 
     /**
-     * @param \Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
-     * @param \Aheadworks\Blog\Helper\Config $configHelper
-     * @param \Aheadworks\Blog\Helper\Url $urlHelper
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\App\RequestInterface $request
+     * @var RequestInterface
+     */
+    private $request;
+
+    /**
+     * @var NodeFactory
+     */
+    private $nodeFactory;
+
+    /**
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param Url $url
+     * @param Config $config
+     * @param Registry $coreRegistry
+     * @param StoreManagerInterface $storeManager
+     * @param RequestInterface $request
+     * @param NodeFactory $nodeFactory
      */
     public function __construct(
-        \Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
-        \Aheadworks\Blog\Helper\Config $configHelper,
-        \Aheadworks\Blog\Helper\Url $urlHelper,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\App\RequestInterface $request
+        CategoryRepositoryInterface $categoryRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        Url $url,
+        Config $config,
+        Registry $coreRegistry,
+        StoreManagerInterface $storeManager,
+        RequestInterface $request,
+        NodeFactory $nodeFactory
     ) {
-        $this->categoryCollectionFactory = $categoryCollectionFactory;
-        $this->configHelper = $configHelper;
-        $this->urlHelper = $urlHelper;
+        $this->categoryRepository = $categoryRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->url = $url;
+        $this->config = $config;
         $this->coreRegistry = $coreRegistry;
         $this->storeManager = $storeManager;
         $this->request = $request;
+        $this->nodeFactory = $nodeFactory;
     }
 
     /**
-     * @return \Aheadworks\Blog\Model\ResourceModel\Category\Collection|null
+     * Retrieve categories
+     *
+     * @return CategoryInterface[]
      */
-    protected function getCategoryCollection()
+    private function getCategories()
     {
-        if ($this->categoryCollection === null) {
-            $this->categoryCollection = $this->categoryCollectionFactory->create()
-                ->addEnabledFilter()
-                ->addStoreFilter($this->storeManager->getStore()->getId())
-                ->setOrder('sort_order', \Magento\Framework\Data\Collection::SORT_ORDER_ASC);
-        }
-        return $this->categoryCollection;
+        $this->searchCriteriaBuilder
+            ->addFilter(CategoryInterface::STATUS, CategoryStatus::ENABLED)
+            ->addFilter(CategoryInterface::STORE_IDS, $this->storeManager->getStore()->getId())
+            ->addSortOrder(
+                new SortOrder(
+                    [
+                        SortOrder::FIELD => CategoryInterface::SORT_ORDER,
+                        SortOrder::DIRECTION => SortOrder::SORT_ASC
+                    ]
+                )
+            );
+        return $this->categoryRepository->getList($this->searchCriteriaBuilder->create())->getItems();
     }
 
     /**
-     * @param \Magento\Framework\Event\Observer $observer
+     * {@inheritdoc}
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        $menuBlock = $observer->getEvent()->getBlock();
-        $menuBlock->addIdentity(Category::CACHE_TAG);
+        if ($this->config->isBlogEnabled()) {
+            /** @var \Magento\Theme\Block\Html\Topmenu $menuBlock */
+            $menuBlock = $observer->getEvent()->getBlock();
+            $menuBlock->addIdentity(Category::CACHE_TAG);
 
-        $blogHomeItem = $this->addItem($this->getMenuItemData(), $observer->getMenu(), $menuBlock);
-
-        foreach ($this->getCategoryCollection() as $category) {
-            $this->addItem($this->getMenuItemData($category), $blogHomeItem, $menuBlock);
+            $blogHomeItem = $this->addItem($this->getMenuItemData(), $menuBlock->getMenu());
+            foreach ($this->getCategories() as $category) {
+                $this->addItem($this->getMenuItemData($category), $blogHomeItem);
+                $menuBlock->addIdentity(Category::CACHE_TAG . '_' . $category->getId());
+            }
         }
     }
 
     /**
+     * Add item
+     *
      * @param array $itemData
      * @param \Magento\Framework\Data\Tree\Node $parentNode
-     * @param \Magento\Theme\Block\Html\Topmenu $menuBlock
      * @return \Magento\Framework\Data\Tree\Node
      */
-    protected function addItem($itemData, $parentNode, $menuBlock)
+    private function addItem($itemData, $parentNode)
     {
-        $menuBlock->addIdentity(Category::CACHE_TAG . '_' . $itemData['id']);
-        $menuNode = new \Magento\Framework\Data\Tree\Node(
-            $itemData,
-            'id',
-            $parentNode->getTree(),
-            $parentNode
+        $menuNode = $this->nodeFactory->create(
+            [
+                'data' => $itemData,
+                'idField' => 'id',
+                'tree' => $parentNode->getTree(),
+                'parent' => $parentNode
+            ]
         );
         $parentNode->addChild($menuNode);
         return $menuNode;
     }
 
     /**
-     * @param Category|null $category
+     * Retrieve data for menu item
+     *
+     * @param CategoryInterface|null $category
      * @return array
      */
-    protected function getMenuItemData($category = null)
+    private function getMenuItemData(CategoryInterface $category = null)
     {
-        if ($category instanceof Category) {
+        if ($category instanceof CategoryInterface) {
             $nodeId = self::NODE_ID_PREFIX . '-' . $category->getId();
             $name = $category->getName();
-            $url = $this->urlHelper->getCategoryUrl($category);
+            $url = $this->url->getCategoryUrl($category);
             $hasActive = false;
             $isActive = $this->isCategoryActive($category);
         } else {
             $nodeId = self::NODE_ID_PREFIX;
-            $name = $this->configHelper->getValue('aw_blog/general/blog_title');
-            $url = $this->urlHelper->getBlogHomeUrl();
+            $name = $this->config->getBlogTitle();
+            $url = $this->url->getBlogHomeUrl();
             $hasActive = $this->isBlogCategoryActive();
             $isActive = $this->isBlogHomeActive();
         }
@@ -153,9 +198,9 @@ class AddBlogToTopmenuItemsObserver implements ObserverInterface
      *
      * @return bool
      */
-    protected function isBlogHomeActive()
+    private function isBlogHomeActive()
     {
-        return (bool)$this->coreRegistry->registry('aw_blog_action', true);
+        return (bool)$this->coreRegistry->registry('blog_action');
     }
 
     /**
@@ -163,9 +208,9 @@ class AddBlogToTopmenuItemsObserver implements ObserverInterface
      *
      * @return bool
      */
-    protected function isBlogCategoryActive()
+    private function isBlogCategoryActive()
     {
-        foreach ($this->getCategoryCollection() as $category) {
+        foreach ($this->getCategories() as $category) {
             if ($this->isCategoryActive($category)) {
                 return true;
             }
@@ -176,14 +221,11 @@ class AddBlogToTopmenuItemsObserver implements ObserverInterface
     /**
      * Checks whether the given category is active
      *
-     * @param Category $category
+     * @param CategoryInterface $category
      * @return bool
      */
-    protected function isCategoryActive($category)
+    private function isCategoryActive(CategoryInterface $category)
     {
-        $currentViewCategory = $this->coreRegistry->registry('aw_blog_category');
-        $currentPostCategoryId = $this->request->getParam('category_id');
-        return ($currentViewCategory instanceof Category && $currentViewCategory->getId() == $category->getId()) ||
-                ($currentPostCategoryId == $category->getId());
+        return $this->request->getParam('blog_category_id') == $category->getId();
     }
 }

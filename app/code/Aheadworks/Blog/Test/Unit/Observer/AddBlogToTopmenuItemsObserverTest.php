@@ -1,420 +1,379 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Observer;
 
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Aheadworks\Blog\Api\Data\CategorySearchResultsInterface;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
 use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Url;
+use Aheadworks\Blog\Observer\AddBlogToTopmenuItemsObserver;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Theme\Block\Html\Topmenu;
+use Magento\Framework\Api\SearchCriteria;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Data\Tree;
+use Magento\Framework\Data\Tree\Node;
+use Magento\Framework\Data\Tree\NodeFactory;
+use Magento\Framework\Event;
+use Magento\Framework\Event\Observer;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
  * Test for \Aheadworks\Blog\Observer\AddBlogToTopmenuItemsObserver
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class AddBlogToTopmenuItemsObserverTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Observer constants defined for test
+     */
     const BLOG_TITLE_CONFIG_VALUE = 'blog';
-    const STORE_ID = 1;
-
     const CATEGORY_ID = 1;
-    const CATEGORY_ID_NOT_MATCH = 2;
     const CATEGORY_NAME = 'category';
-
+    const STORE_ID = 1;
     const BLOG_HOME_URL = 'http://localhost/blog';
     const CATEGORY_URL = 'http://localhost/blog/cat';
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Observer\AddBlogToTopmenuItemsObserver
+     * @var AddBlogToTopmenuItemsObserver
      */
     private $observer;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchCriteriaBuilder;
+    private $configMock;
+
+    /**
+     * @var NodeFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $nodeFactoryMock;
+
+    /**
+     * @var SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $searchCriteriaBuilderMock;
+
+    /**
+     * @var CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $categoryRepositoryMock;
 
     /**
      * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $coreRegistry;
+    private $coreRegistryMock;
 
     /**
-     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $request;
+    private $requestMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategorySearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchResult;
+    private $storeManagerMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $category;
-
-    /**
-     * @var \Magento\Framework\Data\Tree\Node|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $menu;
-
-    /**
-     * @var \Magento\Framework\Data\Tree\NodeFactory|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $nodeFactory;
-
-    /**
-     * @var \Magento\Framework\Data\Tree\Node|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $blogHomeNode;
-
-    /**
-     * @var \Magento\Framework\Data\Tree\Node|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $categoryNode;
-
-    /**
-     * @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $observerMock;
-
-    /**
+     * Init mocks for tests
+     *
+     * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $searchCriteriaStub = $this->getMockBuilder('Magento\Framework\Api\SearchCriteria')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->searchCriteriaBuilder = $this->getMockBuilder('Magento\Framework\Api\SearchCriteriaBuilder')
-            ->setMethods(['addFilter', 'addSortOrder', 'create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->searchCriteriaBuilder->expects($this->any())
-            ->method('addFilter')
-            ->will($this->returnSelf());
-        $this->searchCriteriaBuilder->expects($this->any())
-            ->method('addSortOrder')
-            ->will($this->returnSelf());
-        $this->searchCriteriaBuilder->expects($this->any())
-            ->method('create')
-            ->will($this->returnValue($searchCriteriaStub));
+        $this->configMock = $this->getMock(Config::class, ['isBlogEnabled', 'getBlogTitle'], [], '', false);
+        $this->nodeFactoryMock = $this->getMock(NodeFactory::class, ['create'], [], '', false);
+        $this->searchCriteriaBuilderMock = $this->getMock(
+            SearchCriteriaBuilder::class,
+            ['addFilter', 'addSortOrder', 'create'],
+            [],
+            '',
+            false
+        );
+        $this->categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
+        $this->coreRegistryMock = $this->getMock(\Magento\Framework\Registry::class, ['registry'], [], '', false);
+        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
 
-        $configStub = $this->getMockBuilder('Aheadworks\Blog\Model\Config')
-            ->setMethods(['getValue'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $configStub->expects($this->any())
-            ->method('getValue')
-            ->with($this->equalTo(Config::XML_GENERAL_BLOG_TITLE))
-            ->will($this->returnValue(self::BLOG_TITLE_CONFIG_VALUE));
-
-        $this->coreRegistry = $this->getMockBuilder('Magento\Framework\Registry')
-            ->setMethods(['registry'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $storeStub = $this->getMockForAbstractClass('Magento\Store\Api\Data\StoreInterface');
-        $storeStub->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::STORE_ID));
-        $storeManagerStub = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $storeManagerStub->expects($this->any())
-            ->method('getStore')
-            ->will($this->returnValue($storeStub));
-
-        $this->request = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $this->category = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\CategoryInterface');
-        $this->category->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::CATEGORY_ID));
-        $this->category->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::CATEGORY_NAME));
-
-        $urlStub = $this->getMockBuilder('Aheadworks\Blog\Model\Url')
-            ->setMethods(['getCategoryUrl', 'getBlogHomeUrl'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $urlStub->expects($this->any())
+        $urlMock = $this->getMock(Url::class, ['getCategoryUrl', 'getBlogHomeUrl'], [], '', false);
+        $urlMock->expects($this->any())
             ->method('getCategoryUrl')
-            ->with($this->equalTo($this->category))
             ->will($this->returnValue(self::CATEGORY_URL));
-        $urlStub->expects($this->any())
+        $urlMock->expects($this->any())
             ->method('getBlogHomeUrl')
             ->will($this->returnValue(self::BLOG_HOME_URL));
 
-        $this->searchResult = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\CategorySearchResultsInterface');
-        $categoryRepositoryStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\CategoryRepositoryInterface');
-        $categoryRepositoryStub->expects($this->any())
-            ->method('getList')
-            ->will($this->returnValue($this->searchResult));
-
-        $tree = $this->getMockBuilder('Magento\Framework\Data\Tree')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->nodeFactory = $this->getMockBuilder('Magento\Framework\Data\Tree\NodeFactory')
-            ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->blogHomeNode = $this->getMockBuilder('Magento\Framework\Data\Tree\Node')
-            ->setMethods(['getTree', 'addChild'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->blogHomeNode->expects($this->any())
-            ->method('getTree')
-            ->will($this->returnValue($tree));
-        $this->categoryNode = $this->getMockBuilder('Magento\Framework\Data\Tree\Node')
-            ->setMethods(['getTree', 'addChild'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->categoryNode->expects($this->any())
-            ->method('getTree')
-            ->will($this->returnValue($tree));
-
-        $menuBlockStub = $this->getMockBuilder('Magento\Theme\Block\Html\Topmenu')
-            ->setMethods(['addIdentity'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $eventStub = $this->getMockBuilder('Magento\Framework\Event')
-            ->setMethods(['getBlock'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $eventStub->expects($this->any())
-            ->method('getBlock')
-            ->will($this->returnValue($menuBlockStub));
-
-        $this->menu = $this->getMockBuilder('Magento\Framework\Data\Tree\Node')
-            ->setMethods(['getTree', 'addChild'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->menu->expects($this->any())
-            ->method('getTree')
-            ->will($this->returnValue($tree));
-
-        $this->observerMock = $this->getMockBuilder('Magento\Framework\Event\Observer')
-            ->setMethods(['getEvent', 'getMenu'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->observerMock->expects($this->any())
-            ->method('getEvent')
-            ->will($this->returnValue($eventStub));
-        $this->observerMock->expects($this->any())
-            ->method('getMenu')
-            ->will($this->returnValue($this->menu));
-
         $this->observer = $objectManager->getObject(
-            'Aheadworks\Blog\Observer\AddBlogToTopmenuItemsObserver',
+            AddBlogToTopmenuItemsObserver::class,
             [
-                'categoryRepository' => $categoryRepositoryStub,
-                'searchCriteriaBuilder' => $this->searchCriteriaBuilder,
-                'url' => $urlStub,
-                'config' => $configStub,
-                'coreRegistry' => $this->coreRegistry,
-                'storeManager' => $storeManagerStub,
-                'request' => $this->request,
-                'nodeFactory' => $this->nodeFactory
+                'categoryRepository' => $this->categoryRepositoryMock,
+                'searchCriteriaBuilder' => $this->searchCriteriaBuilderMock,
+                'url' => $urlMock,
+                'config' => $this->configMock,
+                'coreRegistry' => $this->coreRegistryMock,
+                'storeManager' => $this->storeManagerMock,
+                'request' => $this->requestMock,
+                'nodeFactory' => $this->nodeFactoryMock
             ]
         );
     }
 
     /**
-     * Testing that arguments of node factory 'create' method are correct
+     * Testing of getCategories method
      */
-    public function testNewNodeCreateArguments()
+    public function testGetCategories()
     {
-        $this->searchResult->expects($this->any())
-            ->method('getItems')
-            ->will($this->returnValue([]));
-        $this->nodeFactory->expects($this->any())
-            ->method('create')
-            ->with(
-                $this->logicalAnd(
-                    $this->arrayHasKey('data'),
-                    $this->arrayHasKey('idField'),
-                    $this->arrayHasKey('tree'),
-                    $this->arrayHasKey('parent')
-                )
-            );
-        $this->observer->execute($this->observerMock);
+        $categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $this->prepareCategoryRepositoryMock([$categoryMock]);
+
+        $class = new \ReflectionClass($this->observer);
+        $method = $class->getMethod('getCategories');
+        $method->setAccessible(true);
+        $this->assertEquals([$categoryMock], $method->invoke($this->observer));
     }
 
     /**
-     * Testing that the blog home item is added to menu
-     */
-    public function testBlogHomeItemIsAdded()
-    {
-        $this->searchResult->expects($this->any())
-            ->method('getItems')
-            ->will($this->returnValue([]));
-        $this->nodeFactory->expects($this->once())
-            ->method('create')
-            ->with(
-                $this->callback(
-                    function ($args) {
-                        $data = $args['data'];
-                        return isset($data['name']) && $data['name'] == self::BLOG_TITLE_CONFIG_VALUE
-                            && isset($data['url']) && $data['url'] == self::BLOG_HOME_URL;
-                    }
-                )
-            )
-            ->willReturn($this->blogHomeNode);
-        $this->menu->expects($this->once())
-            ->method('addChild')
-            ->with($this->equalTo($this->blogHomeNode));
-        $this->observer->execute($this->observerMock);
-    }
-
-    /**
-     * Testing that the category item is added to menu
-     */
-    public function testCategoryItemIsAdded()
-    {
-        $this->searchResult->expects($this->any())
-            ->method('getItems')
-            ->will($this->returnValue([$this->category]));
-        $this->nodeFactory->expects($this->exactly(2))
-            ->method('create')
-            ->withConsecutive(
-                [$this->anything()],
-                [
-                    $this->callback(
-                        function ($args) {
-                            $data = $args['data'];
-                            return isset($data['name']) && $data['name'] == self::CATEGORY_NAME
-                            && isset($data['url']) && $data['url'] == self::CATEGORY_URL;
-                        }
-                    )
-                ]
-            )
-            ->will($this->onConsecutiveCalls($this->blogHomeNode, $this->categoryNode));
-        $this->blogHomeNode->expects($this->once())
-            ->method('addChild')
-            ->with($this->equalTo($this->categoryNode));
-        $this->observer->execute($this->observerMock);
-    }
-
-    /**
-     * Testing that the blog home item is not active in the all pages except blog
-     */
-    public function testBlogHomeItemIsNotActive()
-    {
-        $this->searchResult->expects($this->any())
-            ->method('getItems')
-            ->will($this->returnValue([]));
-        $this->coreRegistry->expects($this->any())
-            ->method('registry')
-            ->with($this->equalTo('aw_blog_action'))
-            ->willReturn(null);
-        $this->nodeFactory->expects($this->any())
-            ->method('create')
-            ->with(
-                $this->callback(
-                    function ($args) {
-                        $data = $args['data'];
-                        return $data['is_active'] == false;
-                    }
-                )
-            );
-        $this->observer->execute($this->observerMock);
-    }
-
-    /**
-     * Testing that the blog home item is active in the blog pages
-     */
-    public function testBlogHomeItemIsActive()
-    {
-        $this->searchResult->expects($this->any())
-            ->method('getItems')
-            ->will($this->returnValue([]));
-        $this->coreRegistry->expects($this->any())
-            ->method('registry')
-            ->with($this->equalTo('aw_blog_action'))
-            ->willReturn(1);
-        $this->nodeFactory->expects($this->any())
-            ->method('create')
-            ->with(
-                $this->callback(
-                    function ($args) {
-                        $data = $args['data'];
-                        return $data['is_active'] == true;
-                    }
-                )
-            );
-        $this->observer->execute($this->observerMock);
-    }
-
-    /**
-     * Testing that the category item is not active in the all pages except blog category with matching ID
+     * Testing of execute method
      *
-     * @dataProvider categoryItemIsNotActiveDataProvider
+     * @dataProvider executeDataProvider
+     * @param bool $isBlogEnabled
+     * @param CategoryInterface|\PHPUnit_Framework_MockObject_MockObject $category
      */
-    public function testCategoryItemIsNotActive($blogAction, $categoryId)
+    public function testExecute($isBlogEnabled, $category = null)
     {
-        $this->searchResult->expects($this->any())
+        $treeMock = $this->getMock(Tree::class, [], [], '', false);
+        $blogNodeMock = $this->getMock(Node::class, ['getTree', 'addChild'], [], '', false);
+        $blogNodeMock->expects($this->any())
+            ->method('getTree')
+            ->will($this->returnValue($treeMock));
+        $categoryNodeMock = $this->getMock(Node::class, [], [], '', false);
+        $categoryNodeMock->expects($this->any())
+            ->method('getTree')
+            ->will($this->returnValue($treeMock));
+        $parentNodeMock = $this->getMock(Node::class, ['getTree', 'addChild'], [], '', false);
+        $parentNodeMock->expects($this->any())
+            ->method('getTree')
+            ->will($this->returnValue($treeMock));
+        $menuBlockMock = $this->getMock(Topmenu::class, ['addIdentity', 'getMenu'], [], '', false);
+        $menuBlockMock->expects($this->any())
+            ->method('getMenu')
+            ->will($this->returnValue($parentNodeMock));
+        $eventMock = $this->getMock(Event::class, ['getBlock'], [], '', false);
+        $eventMock->expects($this->any())
+            ->method('getBlock')
+            ->will($this->returnValue($menuBlockMock));
+
+        /** @var Observer|\PHPUnit_Framework_MockObject_MockObject $observerMock */
+        $observerMock = $this->getMock(Observer::class, ['getEvent'], [], '', false);
+        $observerMock->expects($isBlogEnabled ? $this->once() : $this->never())
+            ->method('getEvent')
+            ->will($this->returnValue($eventMock));
+
+        $this->configMock->expects($this->any())
+            ->method('getBlogTitle')
+            ->will($this->returnValue(self::BLOG_TITLE_CONFIG_VALUE));
+        $this->configMock->expects($this->once())
+            ->method('isBlogEnabled')
+            ->willReturn($isBlogEnabled);
+
+        if (!$isBlogEnabled) {
+            $this->nodeFactoryMock->expects($this->never())
+                ->method('create');
+            $parentNodeMock->expects($this->never())
+                ->method('addChild');
+        } else {
+            $parentNodeMock->expects($this->once())
+                ->method('addChild')
+                ->with($blogNodeMock);
+            if ($category) {
+                $this->prepareCategoryRepositoryMock([$category], 2);
+                $this->nodeFactoryMock->expects($this->exactly(2))
+                    ->method('create')
+                    ->willReturnOnConsecutiveCalls($blogNodeMock, $categoryNodeMock);
+                $menuBlockMock->expects($this->exactly(2))
+                    ->method('addIdentity')
+                    ->withConsecutive(['aw_blog_category'], ['aw_blog_category_' . self::CATEGORY_ID]);
+                $blogNodeMock->expects($this->once())
+                    ->method('addChild')
+                    ->with($categoryNodeMock);
+            } else {
+                $this->prepareCategoryRepositoryMock([], 2);
+                $this->nodeFactoryMock->expects($this->once())
+                    ->method('create')
+                    ->willReturn($blogNodeMock);
+                $menuBlockMock->expects($this->once())
+                    ->method('addIdentity')
+                    ->with('aw_blog_category');
+            }
+        }
+
+        $this->observer->execute($observerMock);
+    }
+
+    /**
+     * Prepare $this->categoryRepositoryMock for retrieve a given items by getList call
+     *
+     * @param array $items Return items
+     * @param int $calls Number of getList method calls
+     * @return void
+     */
+    private function prepareCategoryRepositoryMock($items = [], $calls = 1)
+    {
+        $searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
+        $searchResultMock = $this->getMockForAbstractClass(CategorySearchResultsInterface::class);
+        $searchResultMock->expects($this->exactly($calls))
             ->method('getItems')
-            ->will($this->returnValue([$this->category]));
-        $this->coreRegistry->expects($this->any())
+            ->willReturn($items);
+
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(self::STORE_ID));
+        $this->storeManagerMock->expects($this->any())
+            ->method('getStore')
+            ->will($this->returnValue($storeMock));
+
+        $this->searchCriteriaBuilderMock->expects($this->exactly(2 * $calls))
+            ->method('addFilter')
+            ->withConsecutive(['status', 1, 'eq'], ['store_ids', self::STORE_ID, 'eq'])
+            ->willReturnSelf();
+        $this->searchCriteriaBuilderMock->expects($this->exactly($calls))
+            ->method('addSortOrder')
+            ->willReturnSelf();
+        $this->searchCriteriaBuilderMock->expects($this->exactly($calls))
+            ->method('create')
+            ->will($this->returnValue($searchCriteriaMock));
+        $this->categoryRepositoryMock->expects($this->exactly($calls))
+            ->method('getList')
+            ->with($searchCriteriaMock)
+            ->will($this->returnValue($searchResultMock));
+    }
+
+    /**
+     * Testing of addItem method
+     */
+    public function testAddItem()
+    {
+        $itemData = ['fieldName' => 'fieldValue'];
+        $treeMock = $this->getMock(Tree::class, [], [], '', false);
+        $nodeMock = $this->getMock(Node::class, ['getTree', 'addChild'], [], '', false);
+        $nodeMock->expects($this->any())
+            ->method('getTree')
+            ->will($this->returnValue($treeMock));
+        $newNodeMock = $this->getMock(Node::class, [], [], '', false);
+        $this->nodeFactoryMock->expects($this->once())
+            ->method('create')
+            ->with(
+                [
+                    'data' => $itemData,
+                    'idField' => 'id',
+                    'tree' => $treeMock,
+                    'parent' => $nodeMock
+                ]
+            )
+            ->willReturn($newNodeMock);
+
+        $class = new \ReflectionClass($this->observer);
+        $method = $class->getMethod('addItem');
+        $method->setAccessible(true);
+        $this->assertSame($newNodeMock, $method->invokeArgs($this->observer, [$itemData, $nodeMock]));
+    }
+
+    /**
+     * Testing of isBlogHomeActive method
+     *
+     * @dataProvider isBlogHomeActiveDataProvider
+     * @param bool $isBlogAction
+     */
+    public function testIsBlogHomeActive($isBlogAction)
+    {
+        $this->coreRegistryMock->expects($this->once())
             ->method('registry')
-            ->with($this->equalTo('aw_blog_action'))
-            ->willReturn($blogAction);
-        $this->request->expects($this->any())
-            ->method('getParam')
-            ->with('blog_category_id')
-            ->willReturn($categoryId);
-        $this->nodeFactory->expects($this->exactly(2))
-            ->method('create')
-            ->withConsecutive(
-                [$this->anything()],
-                [
-                    $this->callback(
-                        function ($args) {
-                            $data = $args['data'];
-                            return $data['is_active'] == false;
-                        }
-                    )
-                ]
-            )
-            ->will($this->onConsecutiveCalls($this->blogHomeNode, $this->categoryNode));
-        $this->observer->execute($this->observerMock);
+            ->with('blog_action')
+            ->willReturn($isBlogAction);
+
+        $class = new \ReflectionClass($this->observer);
+        $method = $class->getMethod('isBlogHomeActive');
+        $method->setAccessible(true);
+        $this->assertEquals($isBlogAction, $method->invoke($this->observer));
     }
 
     /**
-     * Testing that the category item is active in the blog category page
+     * Testing of isCategoryActive method
+     *
+     * @dataProvider isCategoryActiveDataProvider
+     * @param int $blogCategoryId
+     * @param bool $expected
      */
-    public function testCategoryItemIsActive()
+    public function testIsCategoryActive($blogCategoryId, $expected)
     {
-        $this->searchResult->expects($this->any())
-            ->method('getItems')
-            ->will($this->returnValue([$this->category]));
-        $this->request->expects($this->any())
+        $categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $categoryMock->expects($this->any())
+            ->method('getId')
+            ->willReturn(self::CATEGORY_ID);
+        $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with('blog_category_id')
-            ->willReturn(self::CATEGORY_ID);
-        $this->nodeFactory->expects($this->exactly(2))
-            ->method('create')
-            ->withConsecutive(
-                [$this->anything()],
-                [
-                    $this->callback(
-                        function ($args) {
-                            $data = $args['data'];
-                            return $data['is_active'] == true;
-                        }
-                    )
-                ]
-            )
-            ->will($this->onConsecutiveCalls($this->blogHomeNode, $this->categoryNode));
-        $this->observer->execute($this->observerMock);
+            ->willReturn($blogCategoryId);
+
+        $class = new \ReflectionClass($this->observer);
+        $method = $class->getMethod('isCategoryActive');
+        $method->setAccessible(true);
+        $this->assertEquals($expected, $method->invokeArgs($this->observer, [$categoryMock]));
     }
 
     /**
+     * Data provider for testExecute method
+     *
      * @return array
      */
-    public function categoryItemIsNotActiveDataProvider()
+    public function executeDataProvider()
+    {
+        $categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $categoryMock->expects($this->any())
+            ->method('getId')
+            ->willReturn(self::CATEGORY_ID);
+        $categoryMock->expects($this->any())
+            ->method('getName')
+            ->willReturn(self::CATEGORY_NAME);
+        return [
+            'blog enabled, no categories' => [true, null],
+            'blog enabled, one category' => [true, $categoryMock],
+            'blog disabled' => [false]
+        ];
+    }
+
+    /**
+     * Data provider for testIsBlogHomeActive method
+     *
+     * @return array
+     */
+    public function isBlogHomeActiveDataProvider()
+    {
+        return ['blog home active' => [true], 'blog home not active' => [false]];
+    }
+
+    /**
+     * Data provider for testIsCategoryActive method
+     *
+     * @return array
+     */
+    public function isCategoryActiveDataProvider()
     {
         return [
-            'non blog actions' => [null, null],
-            'blog home action' => [1, null],
-            'blog category action, IDs is not matched' => [null, self::CATEGORY_ID_NOT_MATCH]
+            'category active' => [self::CATEGORY_ID, true],
+            'category not active' => [self::CATEGORY_ID + 1, false]
         ];
     }
 }

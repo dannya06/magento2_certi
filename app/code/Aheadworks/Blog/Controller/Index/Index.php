@@ -1,4 +1,9 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Index;
 
 /**
@@ -12,8 +17,17 @@ class Index extends \Aheadworks\Blog\Controller\Action
      */
     public function execute()
     {
-        /** @var \Magento\Framework\Controller\Result\Forward $forward */
-        $forward = $this->resultForwardFactory->create();
-        return $forward->forward('list');
+        $resultPage = $this->resultPageFactory->create();
+        $pageConfig = $resultPage->getConfig();
+
+        if ($tagId = $this->getRequest()->getParam('tag_id')) {
+            $tag = $this->tagRepository->get($tagId);
+            $pageConfig->getTitle()->set(__("Tagged with '%1'", $tag->getName()));
+        } else {
+            $pageConfig->getTitle()->set($this->getBlogTitle());
+        }
+        $pageConfig->setMetadata('description', $this->getBlogMetaDescription());
+
+        return $resultPage;
     }
 }

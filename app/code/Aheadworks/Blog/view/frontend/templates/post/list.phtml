@@ -1,20 +1,25 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 /* @var $block \Aheadworks\Blog\Block\PostList */
+
+// @codingStandardsIgnoreFile
 ?>
 <?php
-    $posts = $block->getPostCollection();
+    $posts = $block->getPosts();
 ?>
-<?php if ($posts->getSize()): ?>
-    <div class="aw-blog-posts">
+<?php if (count($posts)): ?>
+    <div class="blog-posts">
         <?php foreach ($posts as $post): ?>
-            <?php echo $block->getItemHtml($post) ?>
+            <?php /* @noEscape */ echo $block->getItemHtml($post) ?>
         <?php endforeach; ?>
     </div>
-    <?php if ($block->getPagerHtml()): ?>
-        <div class="aw-blog-pagination"><?php echo $block->getPagerHtml(); ?></div>
-    <?php endif ?>
+    <?php echo $block->getChildHtml('pager'); ?>
 <?php else: ?>
     <div class="message info empty">
-        <div><?php  echo __('No posts.') ?></div>
+        <div><?php echo $block->escapeHtml(__('No posts.')) ?></div>
     </div>
 <?php endif; ?>

@@ -1,6 +1,12 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Ui\Component\Post\Listing\Column;
 
+use Aheadworks\Blog\Api\Data\CategoryInterface;
 use Aheadworks\Blog\Api\Data\PostInterface;
 use Aheadworks\Blog\Api\CategoryRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -24,8 +30,6 @@ class Categories extends \Magento\Ui\Component\Listing\Columns\Column
     private $searchCriteriaBuilder;
 
     /**
-     * Categories constructor.
-     *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param CategoryRepositoryInterface $categoryRepository
@@ -80,7 +84,7 @@ class Categories extends \Magento\Ui\Component\Listing\Columns\Column
     private function getSearchCriteria(array $categoryIds)
     {
         return $this->searchCriteriaBuilder
-            ->addFilter('cat_id', $categoryIds, 'in')
+            ->addFilter(CategoryInterface::ID, $categoryIds, 'in')
             ->create();
     }
 }

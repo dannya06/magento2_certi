@@ -1,68 +1,159 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Category;
 
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Magento\Framework\Message\Error;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Backend\App\Action;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Aheadworks\Blog\Api\Data\CategoryInterfaceFactory;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Request\DataPersistorInterface;
 
 /**
  * Class Save
  * @package Aheadworks\Blog\Controller\Adminhtml\Category
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Save extends \Aheadworks\Blog\Controller\Adminhtml\Category
+class Save extends \Magento\Backend\App\Action
 {
     /**
-     * @var \Aheadworks\Blog\Model\CategoryFactory
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
      */
-    protected $categoryFactory;
+    const ADMIN_RESOURCE = 'Aheadworks_Blog::categories';
 
     /**
-     * @param Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Aheadworks\Blog\Model\CategoryFactory $categoryFactory
+     * @var CategoryRepositoryInterface
+     */
+    private $categoryRepository;
+
+    /**
+     * @var CategoryInterfaceFactory
+     */
+    private $categoryDataFactory;
+
+    /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
+     * @var DataPersistorInterface
+     */
+    private $dataPersistor;
+
+    /**
+     * @param Context $context
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param CategoryInterfaceFactory $categoryDataFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param StoreManagerInterface $storeManager
+     * @param DataPersistorInterface $dataPersistor
      */
     public function __construct(
-        Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Aheadworks\Blog\Model\CategoryFactory $categoryFactory
+        Context $context,
+        CategoryRepositoryInterface $categoryRepository,
+        CategoryInterfaceFactory $categoryDataFactory,
+        DataObjectHelper $dataObjectHelper,
+        StoreManagerInterface $storeManager,
+        DataPersistorInterface $dataPersistor
     ) {
-        $this->categoryFactory = $categoryFactory;
-        parent::__construct($context, $resultPageFactory);
+        parent::__construct($context);
+        $this->categoryRepository = $categoryRepository;
+        $this->categoryDataFactory = $categoryDataFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->storeManager = $storeManager;
+        $this->dataPersistor = $dataPersistor;
     }
 
     /**
-     * Save action
+     * Save category action
      *
      * @return \Magento\Backend\Model\View\Result\Page
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function execute()
     {
-        $data = $this->getRequest()->getPostValue();
         $resultRedirect = $this->resultRedirectFactory->create();
-        if ($data) {
-            $catId = $this->getRequest()->getParam('cat_id');
-            /** @var $category \Aheadworks\Blog\Model\Category */
-            $category = $this->categoryFactory->create()->load($catId);
-            $category->setData($data);
-            $back = $this->getRequest()->getParam('back');
+        if ($categoryData = $this->getRequest()->getPostValue()) {
+            $categoryData = $this->prepareCategoryData($categoryData);
+            $categoryId = isset($categoryData['id']) ? $categoryData['id'] : false;
             try {
-                $category->save();
-                $this->messageManager->addSuccess(__('Category was successfully saved.'));
-                $this->_getSession()->setFormData(false);
+                $categoryDataObject = $categoryId
+                    ? $this->categoryRepository->get($categoryId)
+                    : $this->categoryDataFactory->create();
+                $this->dataObjectHelper->populateWithArray(
+                    $categoryDataObject,
+                    $categoryData,
+                    CategoryInterface::class
+                );
+                $category = $this->categoryRepository->save($categoryDataObject);
+                $this->dataPersistor->clear('aw_blog_category');
+                $this->messageManager->addSuccessMessage(__('The category was successfully saved.'));
+                $back = $this->getRequest()->getParam('back');
                 if ($back == 'edit') {
-                    return $resultRedirect->setPath('*/*/' . $back, ['cat_id' => $category->getCatId(), '_current' => true]);
+                    return $resultRedirect->setPath(
+                        '*/*/' . $back,
+                        [
+                            'id' => $category->getId(),
+                            '_current' => true
+                        ]
+                    );
                 }
                 return $resultRedirect->setPath('*/*/');
-            } catch (LocalizedException $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\RuntimeException $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the category.'));
+            } catch (\Magento\Framework\Validator\Exception $exception) {
+                $messages = $exception->getMessages();
+                if (empty($messages)) {
+                    $messages = [$exception->getMessage()];
+                }
+                foreach ($messages as $message) {
+                    if (!$message instanceof Error) {
+                        $message = new Error($message);
+                    }
+                    $this->messageManager->addMessage($message);
+                }
+            } catch (LocalizedException $exception) {
+                $this->messageManager->addErrorMessage($exception->getMessage());
+            } catch (\Exception $exception) {
+                $this->messageManager->addExceptionMessage(
+                    $exception,
+                    __('Something went wrong while saving the category.')
+                );
             }
-            $this->_getSession()->setFormData($data);
-            return $resultRedirect->setPath('*/*/edit', ['cat_id' => $catId]);
+            $this->dataPersistor->set('aw_blog_category', $categoryData);
+            if ($categoryId) {
+                return $resultRedirect->setPath('*/*/edit', ['id' => $categoryId, '_current' => true]);
+            }
+            return $resultRedirect->setPath('*/*/new', ['_current' => true]);
         }
-        $this->messageManager->addError(__('Something went wrong while saving the category.'));
         return $resultRedirect->setPath('*/*/');
+    }
+
+    /**
+     * Prepare category data for save
+     *
+     * @param array $categoryData
+     * @return array
+     */
+    protected function prepareCategoryData(array $categoryData)
+    {
+        if ($this->storeManager->hasSingleStore()) {
+            $categoryData['store_ids'] = [$this->storeManager->getStore(true)->getId()];
+        }
+        return $categoryData;
     }
 }

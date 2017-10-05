@@ -1,8 +1,15 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Ui\Component\Post\Listing;
 
+use Magento\Authorization\Model\UserContextInterface;
 use Aheadworks\Blog\Model\Source\Post\Status;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Ui\Api\Data\BookmarkInterfaceFactory;
 use Magento\Ui\Api\BookmarkManagementInterface;
 use Magento\Ui\Api\BookmarkRepositoryInterface;
 
@@ -15,30 +22,30 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
     const BLOG_LISTING_NAMESPACE = 'aw_blog_post_listing';
 
     /**
-     * @var \Magento\Ui\Api\Data\BookmarkInterfaceFactory
+     * @var BookmarkInterfaceFactory
      */
     protected $bookmarkFactory;
 
     /**
-     * @var \Magento\Authorization\Model\UserContextInterface
+     * @var UserContextInterface
      */
     protected $userContext;
 
     /**
-     * @param \Magento\Ui\Api\Data\BookmarkInterfaceFactory $bookmarkFactory
-     * @param \Magento\Authorization\Model\UserContextInterface $userContext
      * @param ContextInterface $context
      * @param BookmarkRepositoryInterface $bookmarkRepository
      * @param BookmarkManagementInterface $bookmarkManagement
+     * @param BookmarkInterfaceFactory $bookmarkFactory
+     * @param UserContextInterface $userContext
      * @param array $components
      * @param array $data
      */
     public function __construct(
-        \Magento\Ui\Api\Data\BookmarkInterfaceFactory $bookmarkFactory,
-        \Magento\Authorization\Model\UserContextInterface $userContext,
         ContextInterface $context,
         BookmarkRepositoryInterface $bookmarkRepository,
         BookmarkManagementInterface $bookmarkManagement,
+        BookmarkInterfaceFactory $bookmarkFactory,
+        UserContextInterface $userContext,
         array $components = [],
         array $data = []
     ) {
@@ -67,7 +74,7 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
                     'updated_at' =>         ['visible' => true],
                     'created_at' =>         ['visible' => true]
                 ],
-                ['virtual_status' => [Status::DRAFT]]
+                ['status' => [Status::DRAFT]]
             );
             $this->addView(
                 'scheduled',
@@ -78,9 +85,10 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
                     'updated_at' =>         ['visible' => true],
                     'created_at' =>         ['visible' => true]
                 ],
-                ['virtual_status' => [Status::PUBLICATION_SCHEDULED]]
+                ['status' => [Status::SCHEDULED]]
             );
-            $this->addView(
+            // disabled temporary
+            /*$this->addView(
                 'new_comments',
                 __('New Comments'),
                 [
@@ -90,7 +98,7 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
                     'created_at' =>         ['visible' => true]
                 ],
                 ['new_comments' => ['from' => 1]]
-            );
+            );*/
         }
     }
 
@@ -165,7 +173,7 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
         $config['data']['filters']['applied']['placeholder'] = true;
         $config['data']['columns'] = [
             'title'             => ['sorting' => false, 'visible' => true],
-            'virtual_status'    => ['sorting' => false, 'visible' => true],
+            'status'            => ['sorting' => false, 'visible' => true],
             'publish_date'      => ['sorting' => false, 'visible' => true],
             'published_comments'=> ['sorting' => false, 'visible' => true],
             'new_comments'      => ['sorting' => false, 'visible' => true],
@@ -176,7 +184,7 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
             'updated_at'        => ['sorting' => false, 'visible' => false],
             'created_at'        => ['sorting' => 'desc', 'visible' => false]
         ];
-
+        $config['data']['displayMode'] = 'grid';
         $position = 0;
         foreach (array_keys($config['data']['columns']) as $colName) {
             $config['data']['positions'][$colName] = $position;

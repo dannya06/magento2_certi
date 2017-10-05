@@ -1,42 +1,59 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block\Adminhtml\Post\Edit\Button;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\App\RequestInterface;
+use Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\SaveAndContinue;
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
 
 /**
  * Test for \Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\SaveAndContinue
  */
 class SaveAndContinueTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var string
+     */
     const POST_ID = 1;
 
     /**
-     * @var \Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\SaveAndContinue
+     * @var SaveAndContinue
      */
     private $button;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $requestStub = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $requestStub->expects($this->any())
+        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock->expects($this->any())
             ->method('getParam')
-            ->with($this->equalTo('post_id'))
+            ->with($this->equalTo('id'))
             ->will($this->returnValue(self::POST_ID));
 
-        $postStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostInterface');
-        $postRepositoryStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\PostRepositoryInterface');
-        $postRepositoryStub->expects($this->any())
+        $postMock = $this->getMockForAbstractClass(PostInterface::class);
+        $postRepositoryMock = $this->getMockForAbstractClass(PostRepositoryInterface::class);
+        $postRepositoryMock->expects($this->any())
             ->method('get')
             ->with($this->equalTo(self::POST_ID))
-            ->will($this->returnValue($postStub));
+            ->will($this->returnValue($postMock));
 
         $this->button = $objectManager->getObject(
-            'Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\SaveAndContinue',
+            SaveAndContinue::class,
             [
-                'request' => $requestStub,
-                'postRepository' => $postRepositoryStub
+                'request' => $requestMock,
+                'postRepository' => $postRepositoryMock
             ]
         );
     }

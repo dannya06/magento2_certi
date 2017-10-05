@@ -1,7 +1,12 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Post;
 
-use Magento\Framework\Api\SearchResultsInterface;
+use Aheadworks\Blog\Model\ResourceModel\Post\Collection;
 use Magento\Framework\Controller\ResultFactory;
 
 /**
@@ -13,19 +18,21 @@ class MassDelete extends AbstractMassAction
     /**
      * @inheritdoc
      */
-    protected function massAction(SearchResultsInterface $searchResults)
+    protected function massAction(Collection $collection)
     {
         $deletedRecords = 0;
-        foreach ($searchResults->getItems() as $post) {
-            $this->postRepository->delete($post);
+        foreach ($collection->getAllIds() as $postId) {
+            $this->postRepository->deleteById($postId);
             $deletedRecords++;
         }
         if ($deletedRecords) {
-            $this->messageManager->addSuccess(__('A total of %1 record(s) were deleted.', $deletedRecords));
+            $this->messageManager->addSuccessMessage(__('A total of %1 record(s) were deleted.', $deletedRecords));
+        } else {
+            $this->messageManager->addSuccessMessage(__('No records were deleted.'));
         }
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setPath('*/*/index');
+        $resultRedirect->setPath('*/*/');
         return $resultRedirect;
     }
 }

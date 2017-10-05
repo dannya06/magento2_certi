@@ -1,19 +1,53 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block\Widget;
 
-use Aheadworks\Blog\Api\Data\TagInterface;
-use Aheadworks\Blog\Api\TagManagementInterface;
+use Aheadworks\Blog\Api\Data\TagCloudItemInterface;
+use Aheadworks\Blog\Api\Data\TagCloudItemSearchResultsInterface;
+use Aheadworks\Blog\Api\TagCloudItemRepositoryInterface;
 use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Url;
+use Magento\Widget\Block\BlockInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\Api\SortOrderBuilder;
+use Magento\Framework\Api\SortOrder;
 
 /**
  * Tag Cloud Widget
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TagCloud extends \Magento\Framework\View\Element\Template implements \Magento\Widget\Block\BlockInterface
+class TagCloud extends \Magento\Framework\View\Element\Template implements BlockInterface, IdentityInterface
 {
     /**
-     * @var TagManagementInterface
+     * Default value of lower tag weight offset
      */
-    private $tagManagement;
+    const DEFAULT_MIN_WEIGHT = 0.72;
+
+    /**
+     * Default value of upper tag weight offset
+     */
+    const DEFAULT_MAX_WEIGHT = 1.28;
+
+    /**
+     * Default value of slope tag weight curve
+     */
+    const DEFAULT_SLOPE = 0.1;
+
+    /**
+     * @var TagCloudItemRepositoryInterface
+     */
+    private $tagCloudItemRepository;
+
+    /**
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
 
     /**
      * @var Config
@@ -21,82 +55,76 @@ class TagCloud extends \Magento\Framework\View\Element\Template implements \Mage
     private $config;
 
     /**
-     * @var \Aheadworks\Blog\Model\Url
+     * @var Url
      */
     private $url;
 
     /**
-     * @var int
+     * @var SortOrderBuilder
      */
-    private $minCount = 0;
+    private $sortOrderBuilder;
 
     /**
-     * @var int
+     * @var int|null
      */
-    private $maxCount = 0;
+    private $minPostCount = null;
 
     /**
-     * @var float
+     * @var int|null
      */
-    private $minWeightDefault = 0.72;
+    private $maxPostCount = null;
 
     /**
-     * @var float
-     */
-    private $maxWeightDefault = 1.28;
-
-    /**
-     * @var float
-     */
-    private $slopeDefault = 0.1;
-
-    /**
-     * Tags cache
+     * Tag cloud items search results cache
      *
-     * @var TagInterface[]|null
+     * @var TagCloudItemSearchResultsInterface|null
      */
-    private $tags = null;
+    private $searchResults = null;
 
     /**
-     * TagCloud constructor.
-     *
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param TagManagementInterface $tagManagement
+     * @param Context $context
+     * @param TagCloudItemRepositoryInterface $tagCloudItemRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param Config $config
-     * @param \Aheadworks\Blog\Model\Url $url
+     * @param Url $url
+     * @param SortOrderBuilder $sortOrderBuilder
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        TagManagementInterface $tagManagement,
+        Context $context,
+        TagCloudItemRepositoryInterface $tagCloudItemRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
         Config $config,
-        \Aheadworks\Blog\Model\Url $url,
+        Url $url,
+        SortOrderBuilder $sortOrderBuilder,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->tagManagement = $tagManagement;
+        $this->tagCloudItemRepository = $tagCloudItemRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->config = $config;
         $this->url = $url;
+        $this->sortOrderBuilder = $sortOrderBuilder;
     }
 
     /**
-     * Retrieves max weight
+     * Retrieves maximal weight
      *
      * @return float
      */
     private function getMaxWeight()
     {
-        return $this->getData('max_weight') ? : $this->maxWeightDefault;
+        return $this->getData('max_weight') ?: self::DEFAULT_MAX_WEIGHT;
     }
 
     /**
-     * Retrieves min weight
+     * Retrieves minimal weight
      *
      * @return float
      */
     private function getMinWeight()
     {
-        return $this->getData('min_weight') ? : $this->minWeightDefault;
+        return $this->getData('min_weight') ?: self::DEFAULT_MIN_WEIGHT;
     }
 
     /**
@@ -106,45 +134,97 @@ class TagCloud extends \Magento\Framework\View\Element\Template implements \Mage
      */
     private function getSlope()
     {
-        return $this->getData('slope') ? : $this->slopeDefault;
+        return $this->getData('slope') ?: self::DEFAULT_SLOPE;
     }
 
     /**
-     * @return TagInterface[]
+     * Retrieves minimal number of posts
+     *
+     * @return int|null
      */
-    public function getTags()
+    private function getMinPostCount()
     {
-        if ($this->tags === null) {
-            $this->tags = $this->tagManagement
-                ->getCloudTags(
-                    $this->_storeManager->getStore()->getId(),
-                    $this->getRequest()->getParam('blog_category_id')
-                )
-                ->getItems();
-            if (count($this->tags)) {
-                $this->minCount = $this->tags[0]->getCount();
-                $this->maxCount = $this->tags[count($this->tags) - 1]->getCount();
-            }
+        if (!$this->minPostCount) {
+            $this->minPostCount = $this->getSearchResults()->getMinPostCount();
         }
-        return $this->tags;
+        return $this->minPostCount;
+    }
+
+    /**
+     * Retrieves maximal number of posts
+     *
+     * @return int|null
+     */
+    private function getMaxPostCount()
+    {
+        if (!$this->maxPostCount) {
+            $this->maxPostCount = $this->getSearchResults()->getMaxPostCount();
+        }
+        return $this->maxPostCount;
+    }
+
+    /**
+     * Get tag cloud items search results
+     *
+     * @return TagCloudItemSearchResultsInterface|null
+     */
+    private function getSearchResults()
+    {
+        if (!$this->searchResults) {
+            $sortOrder = $this->sortOrderBuilder
+                ->setField('post_count')
+                ->setDirection(SortOrder::SORT_DESC)
+                ->create();
+            $this->searchCriteriaBuilder
+                ->addSortOrder($sortOrder)
+                ->setPageSize($this->config->getNumPopularTags());
+
+            if ($categoryId = $this->getRequest()->getParam('blog_category_id')) {
+                $this->searchCriteriaBuilder->addFilter('category_id', $categoryId);
+            }
+            $this->searchResults = $this->tagCloudItemRepository->getList(
+                $this->searchCriteriaBuilder->create(),
+                $this->_storeManager->getStore()->getId()
+            );
+        }
+        return $this->searchResults;
+    }
+
+    /**
+     * @return TagCloudItemInterface[]
+     */
+    public function getItems()
+    {
+        return $this->getSearchResults()->getItems();
+    }
+
+    /**
+     * Checks whether Tag Cloud widget is enabled or not
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->config->isBlogEnabled();
     }
 
     /**
      * @return bool
      */
-    public function isCloud()
+    public function isCloudMode()
     {
-        return (bool)$this->config->getValue(Config::XML_SIDEBAR_HIGHLIGHT_TAGS);
+        return $this->config->isHighlightTags();
     }
 
     /**
-     * @param TagInterface $tag
+     * Get tag weight
+     *
+     * @param TagCloudItemInterface $tagCloudItem
      * @return int
      */
-    public function getTagWeight(TagInterface $tag)
+    public function getWeight(TagCloudItemInterface $tagCloudItem)
     {
-        $count = $tag->getCount();
-        $averageCount = (int)($this->maxCount + $this->minCount) / 2;
+        $count = $tagCloudItem->getPostCount();
+        $averageCount = (int)($this->getMaxPostCount() + $this->getMinPostCount()) / 2;
 
         $weightOffset = $count >= $averageCount ? $this->getMaxWeight() : $this->getMinWeight();
         $countOffset = $averageCount - $this->getSlope() / ($weightOffset - 1);
@@ -154,11 +234,23 @@ class TagCloud extends \Magento\Framework\View\Element\Template implements \Mage
     }
 
     /**
-     * @param TagInterface|string $tag
+     * @param TagCloudItemInterface|string $tagCloudItem
      * @return string
      */
-    public function getSearchByTagUrl($tag)
+    public function getSearchByTagUrl($tagCloudItem)
     {
-        return $this->url->getSearchByTagUrl($tag);
+        return $this->url->getSearchByTagUrl($tagCloudItem->getTag());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIdentities()
+    {
+        $identities = [\Aheadworks\Blog\Model\Post::CACHE_TAG];
+        foreach ($this->getItems() as $tagCloudItem) {
+            $identities[] = \Aheadworks\Blog\Model\Tag::CACHE_TAG . '_' . $tagCloudItem->getTag()->getId();
+        }
+        return $identities;
     }
 }

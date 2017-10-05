@@ -1,101 +1,97 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block\Sidebar;
 
-use Aheadworks\Blog\Model\Config;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Block\Sidebar\Recent;
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Aheadworks\Blog\Block\Post\Listing;
+use Aheadworks\Blog\Block\Post\ListingFactory;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Model\Config;
+use Magento\Framework\App\RequestInterface;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\View\Element\Template\Context;
 
 /**
  * Test for \Aheadworks\Blog\Block\Sidebar\Recent
  */
 class RecentTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Recent constants defined for test
+     */
     const STORE_ID = 1;
     const RECENT_POSTS_CONFIG_VALUE = 5;
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Block\Sidebar\Recent
+     * @var Recent
      */
     private $block;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\PostInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var PostInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $post;
+    private $postMock;
 
     /**
+     * Init mocks for tests
+     *
+     * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $searchCriteriaStub = $this->getMock('Magento\Framework\Api\SearchCriteria', [], [], '', false);
-        $searchCriteriaBuilderStub = $this->getMock(
-            'Magento\Framework\Api\SearchCriteriaBuilder',
-            [
-                'getData',
-                'addFilter',
-                'addSortOrder',
-                'setPageSize',
-                'create'
-            ],
+        $searchCriteriaBuilderMock = $this->getMock(
+            SearchCriteriaBuilder::class,
+            ['setPageSize'],
             [],
             '',
             false
         );
-        $searchCriteriaBuilderStub->expects($this->any())
-            ->method('getData')
-            ->will($this->returnValue([]));
-        $searchCriteriaBuilderStub->expects($this->any())
-            ->method('addFilter')
-            ->will($this->returnSelf());
-        $searchCriteriaBuilderStub->expects($this->any())
-            ->method('addSortOrder')
-            ->will($this->returnSelf());
-        $searchCriteriaBuilderStub->expects($this->any())
-            ->method('setPageSize')
-            ->will($this->returnSelf());
-        $searchCriteriaBuilderStub->expects($this->any())
-            ->method('create')
-            ->will($this->returnValue($searchCriteriaStub));
-
-        $sortOrderStub = $this->getMock('Magento\Framework\Api\SortOrder');
-        $sortOrderBuilderStub = $this->getMock(
-            'Magento\Framework\Api\SortOrderBuilder',
-            ['setField', 'setDescendingDirection', 'create'],
+        $this->postMock = $this->getMockForAbstractClass(PostInterface::class);
+        $postListingMock = $this->getMock(
+            Listing::class,
+            ['getPosts', 'getSearchCriteriaBuilder'],
             [],
             '',
             false
         );
-        $sortOrderBuilderStub->expects($this->any())
-            ->method('setField')
-            ->will($this->returnSelf());
-        $sortOrderBuilderStub->expects($this->any())
-            ->method('setDescendingDirection')
-            ->will($this->returnSelf());
-        $sortOrderBuilderStub->expects($this->any())
+        $postListingMock->expects($this->any())
+            ->method('getPosts')
+            ->will($this->returnValue([$this->postMock]));
+        $postListingMock->expects($this->any())
+            ->method('getSearchCriteriaBuilder')
+            ->will($this->returnValue($searchCriteriaBuilderMock));
+        $postListingFactoryMock = $this->getMock(
+            ListingFactory::class,
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $postListingFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($sortOrderStub));
+            ->will($this->returnValue($postListingMock));
 
-        $this->post = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostInterface');
-        $searchResultsStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostSearchResultsInterface');
-        $searchResultsStub->expects($this->any())
-            ->method('getItems')
-            ->will($this->returnValue([$this->post]));
-        $postRepositoryStub = $this->getMockForAbstractClass('Aheadworks\Blog\Api\PostRepositoryInterface');
-        $postRepositoryStub->expects($this->any())
-            ->method('getList')
-            ->with($this->equalTo($searchCriteriaStub))
-            ->will($this->returnValue($searchResultsStub));
+        $postRepositoryMock = $this->getMockForAbstractClass(PostRepositoryInterface::class);
 
-        $configStub = $this->getMock('Aheadworks\Blog\Model\Config', ['getValue'], [], '', false);
-        $configStub->expects($this->any())
-            ->method('getValue')
-            ->with(Config::XML_SIDEBAR_RECENT_POSTS)
+        $configMock = $this->getMock(Config::class, ['getNumRecentPosts'], [], '', false);
+        $configMock->expects($this->any())
+            ->method('getNumRecentPosts')
             ->will($this->returnValue(self::RECENT_POSTS_CONFIG_VALUE));
 
-        $requestStub = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $requestStub->expects($this->any())
+        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock->expects($this->any())
             ->method('getParam')
             ->will(
                 $this->returnValueMap(
@@ -106,31 +102,30 @@ class RecentTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
-        $storeStub = $this->getMockForAbstractClass('Magento\Store\Api\Data\StoreInterface');
-        $storeStub->expects($this->any())
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::STORE_ID));
-        $storeManagerStub = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $storeManagerStub->expects($this->any())
+        $storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeStub));
+            ->will($this->returnValue($storeMock));
 
         $context = $objectManager->getObject(
-            'Magento\Framework\View\Element\Template\Context',
+            Context::class,
             [
-                'request' => $requestStub,
-                'storeManager' => $storeManagerStub
+                'request' => $requestMock,
+                'storeManager' => $storeManagerMock
             ]
         );
 
         $this->block = $objectManager->getObject(
-            'Aheadworks\Blog\Block\Sidebar\Recent',
+            Recent::class,
             [
                 'context' => $context,
-                'postRepository' => $postRepositoryStub,
-                'searchCriteriaBuilder' => $searchCriteriaBuilderStub,
-                'sortOrderBuilder' => $sortOrderBuilderStub,
-                'config' => $configStub
+                'postRepository' => $postRepositoryMock,
+                'postListingFactory' => $postListingFactoryMock,
+                'config' => $configMock
             ]
         );
     }
@@ -140,6 +135,6 @@ class RecentTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPosts()
     {
-        $this->assertEquals([$this->post], $this->block->getPosts());
+        $this->assertEquals([$this->postMock], $this->block->getPosts());
     }
 }
