@@ -6441,16 +6441,16 @@
         },
         {
             "name": "smile/elasticsuite",
-            "version": "2.3.6",
+            "version": "2.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Smile-SA/elasticsuite.git",
-                "reference": "0db64b8a801b2c5c72f81a1e3e8ee32731a063b9"
+                "reference": "804c57fa276fa89e5f185f8ef54041331888ee2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Smile-SA/elasticsuite/zipball/0db64b8a801b2c5c72f81a1e3e8ee32731a063b9",
-                "reference": "0db64b8a801b2c5c72f81a1e3e8ee32731a063b9",
+                "url": "https://api.github.com/repos/Smile-SA/elasticsuite/zipball/804c57fa276fa89e5f185f8ef54041331888ee2b",
+                "reference": "804c57fa276fa89e5f185f8ef54041331888ee2b",
                 "shasum": ""
             },
             "require": {
@@ -6533,7 +6533,7 @@
                 "search",
                 "setup"
             ],
-            "time": "2017-06-23T13:45:18+00:00"
+            "time": "2017-09-29T08:16:39+00:00"
         },
         {
             "name": "symfony/console",
