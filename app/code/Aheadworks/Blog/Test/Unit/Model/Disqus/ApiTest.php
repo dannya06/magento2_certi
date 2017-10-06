@@ -1,7 +1,14 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model\Disqus;
 
-use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\DisqusConfig;
+use Magento\Framework\HTTP\Adapter\Curl;
+use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
@@ -9,8 +16,12 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  */
 class ApiTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Constants defined for test
+     */
     const DISQUS_SECRET_KEY = 'disqus_secret_key';
     const RESOURCE_NAME = 'disqus_api_resource';
+    /**#@-*/
 
     /**
      * @var \Aheadworks\Blog\Model\Disqus\Api
@@ -18,48 +29,46 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     private $disqusApiModel;
 
     /**
-     * @var \Magento\Framework\HTTP\Adapter\Curl|\PHPUnit_Framework_MockObject_MockObject
+     * @var Curl|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $curl;
+    private $curlMock;
 
     /**
      * @var array
      */
     private $args = ['arg_name' => 'arg_value'];
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->curl = $this->getMockBuilder('Magento\Framework\HTTP\Adapter\Curl')
-            ->setMethods(['setConfig', 'write', 'read', 'close'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->curl->expects($this->any())
+        $this->curlMock = $this->getMock(Curl::class, ['setConfig', 'write', 'read', 'close'], [], '', false);
+        $this->curlMock->expects($this->any())
             ->method('write')
             ->will($this->returnValue(''));
 
-        $curlFactoryStub = $this->getMockBuilder('Magento\Framework\HTTP\Adapter\CurlFactory')
-            ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $curlFactoryStub->expects($this->any())
+        $curlFactoryMock = $this->getMock(CurlFactory::class, ['create'], [], '', false);
+        $curlFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->curl));
+            ->will($this->returnValue($this->curlMock));
 
-        $configStub = $this->getMockBuilder('Aheadworks\Blog\Model\Config')
-            ->setMethods(['getValue'])
+        $disqusConfigMock = $this->getMockBuilder(DisqusConfig::class)
+            ->setMethods(['getSecretKey'])
             ->disableOriginalConstructor()
             ->getMock();
-        $configStub->expects($this->any())->method('getValue')
-            ->with($this->equalTo(Config::XML_GENERAL_DISQUS_SECRET_KEY))
+        $disqusConfigMock->expects($this->any())->method('getSecretKey')
             ->will($this->returnValue(self::DISQUS_SECRET_KEY));
 
         $this->disqusApiModel = $objectManager->getObject(
-            'Aheadworks\Blog\Model\Disqus\Api',
+            \Aheadworks\Blog\Model\Disqus\Api::class,
             [
-                'curlFactory' => $curlFactoryStub,
-                'config' => $configStub
+                'curlFactory' => $curlFactoryMock,
+                'disqusConfig' => $disqusConfigMock
             ]
         );
     }
@@ -69,7 +78,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendRequestWrite()
     {
-        $this->curl->expects($this->once())
+        $this->curlMock->expects($this->once())
             ->method('write')
             ->with(
                 $this->anything(),
@@ -88,7 +97,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendRequestRead()
     {
-        $this->curl->expects($this->once())->method('read');
+        $this->curlMock->expects($this->once())->method('read');
         $this->disqusApiModel->sendRequest(self::RESOURCE_NAME, $this->args);
     }
 
@@ -97,21 +106,22 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendRequestClose()
     {
-        $this->curl->expects($this->once())->method('close');
+        $this->curlMock->expects($this->once())->method('close');
         $this->disqusApiModel->sendRequest(self::RESOURCE_NAME, $this->args);
     }
 
     /**
      * Testing response from the server
+     *
+     * @dataProvider sendRequestResponseDataProvider
      */
-    public function testSendRequestResponse()
+    public function testSendRequestResponse($response, $expected)
     {
-        $response = '{"response":[{"fieldName": "fieldValue"}]}';
-        $this->curl->expects($this->any())
+        $this->curlMock->expects($this->any())
             ->method('read')
             ->willReturn($response);
         $this->assertEquals(
-            [['fieldName' => 'fieldValue']],
+            $expected,
             $this->disqusApiModel->sendRequest(self::RESOURCE_NAME, $this->args)
         );
     }
@@ -121,9 +131,22 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendRequestReadException()
     {
-        $this->curl->expects($this->any())
+        $this->curlMock->expects($this->any())
             ->method('read')
             ->willThrowException(new \Exception());
         $this->assertFalse($this->disqusApiModel->sendRequest(self::RESOURCE_NAME, $this->args));
+    }
+
+    /**
+     * Data provider for testSendRequestResponse method
+     *
+     * @return array
+     */
+    public function sendRequestResponseDataProvider()
+    {
+        return [
+            ['{"code": 0, "response":[{"fieldName": "fieldValue"}]}', [['fieldName' => 'fieldValue']]],
+            ['{"code": 5, "response":"Invalid API key', false]
+        ];
     }
 }

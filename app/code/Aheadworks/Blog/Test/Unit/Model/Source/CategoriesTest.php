@@ -1,7 +1,15 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model\Source;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Model\ResourceModel\Category\Collection;
+use Aheadworks\Blog\Model\Source\Categories;
+use Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory;
 
 /**
  * Test for \Aheadworks\Blog\Model\Source\Categories
@@ -9,34 +17,37 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class CategoriesTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Model\Source\Categories
+     * @var Categories
      */
     private $categoriesSourceModel;
 
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Category\Collection|\PHPUnit_Framework_MockObject_MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryCollection;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->categoryCollection = $this->getMockBuilder('Aheadworks\Blog\Model\ResourceModel\Category\Collection')
+        $this->categoryCollection = $this->getMockBuilder(Collection::class)
             ->setMethods(['toOptionArray'])
             ->disableOriginalConstructor()
             ->getMock();
-        $categoryCollectionFactoryStub = $this->getMockBuilder(
-            'Aheadworks\Blog\Model\ResourceModel\Category\CollectionFactory'
-        )
+        $categoryCollectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $categoryCollectionFactoryStub->expects($this->any())
+        $categoryCollectionFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->categoryCollection));
         $this->categoriesSourceModel = $objectManager->getObject(
-            'Aheadworks\Blog\Model\Source\Categories',
-            ['categoryCollectionFactory' => $categoryCollectionFactoryStub]
+            Categories::class,
+            ['categoryCollectionFactory' => $categoryCollectionFactoryMock]
         );
     }
 

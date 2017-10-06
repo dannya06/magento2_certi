@@ -1,23 +1,28 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api\Data;
 
 use Magento\Framework\Api\SearchResultsInterface;
 
 /**
- * Interface for post search results.
+ * Interface for post search results
  * @api
  */
 interface PostSearchResultsInterface extends SearchResultsInterface
 {
     /**
-     * Get posts list.
+     * Get posts list
      *
      * @return \Aheadworks\Blog\Api\Data\PostInterface[]
      */
     public function getItems();
 
     /**
-     * Set posts list.
+     * Set posts list
      *
      * @param \Aheadworks\Blog\Api\Data\PostInterface[] $items
      * @return $this

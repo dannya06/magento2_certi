@@ -1,8 +1,14 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api\Data;
 
 /**
- * Tag interface.
+ * Tag interface
+ * @api
  */
 interface TagInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
@@ -12,8 +18,8 @@ interface TagInterface extends \Magento\Framework\Api\ExtensibleDataInterface
      */
     const ID = 'id';
     const NAME = 'name';
-    const COUNT = 'count';
-    const POST_IDS = 'post_ids';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
     /**#@-*/
 
     /**
@@ -47,44 +53,44 @@ interface TagInterface extends \Magento\Framework\Api\ExtensibleDataInterface
     public function setName($name);
 
     /**
-     * Get count
+     * Get creation time
      *
-     * @return int|null
+     * @return string|null
      */
-    public function getCount();
+    public function getCreatedAt();
 
     /**
-     * Set count
+     * Set creation time
      *
-     * @param int $count
+     * @param string $createdAt
      * @return $this
      */
-    public function setCount($count);
+    public function setCreatedAt($createdAt);
 
     /**
-     * Get post IDs
+     * Get update time
      *
-     * @return int[]
+     * @return string|null
      */
-    public function getPostIds();
+    public function getUpdatedAt();
 
     /**
-     * Set post IDs
+     * Set update time
      *
-     * @param int[] $postIds
+     * @param string $updatedAt
      * @return $this
      */
-    public function setPostIds($postIds);
+    public function setUpdatedAt($updatedAt);
 
     /**
-     * Retrieve existing extension attributes object or create a new one.
+     * Retrieve existing extension attributes object or create a new one
      *
      * @return \Aheadworks\Blog\Api\Data\TagExtensionInterface|null
      */
     public function getExtensionAttributes();
 
     /**
-     * Set an extension attributes object.
+     * Set an extension attributes object
      *
      * @param \Aheadworks\Blog\Api\Data\TagExtensionInterface $extensionAttributes
      * @return $this

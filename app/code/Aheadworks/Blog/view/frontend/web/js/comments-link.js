@@ -1,15 +1,33 @@
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery'
-], function($) {
+], function ($) {
     'use strict';
 
-    $.widget("awblog.awBlogCommentsLink", {
-        _create: function() {
+    $.widget('blog.blogCommentsLink', {
+
+        /**
+         * Initialize widget
+         */
+        _create: function () {
             this._bind();
         },
-        _bind: function() {
+
+        /**
+         * Event binding
+         */
+        _bind: function () {
             this._on({
-                'click': function(event) {
+
+                /**
+                 * Calls callback when event is triggered
+                 * @param  {Event} event
+                 */
+                'click': function (event) {
                     $(location).attr('href', this.element.data('url'));
                     event.preventDefault();
                 }
@@ -17,5 +35,5 @@ define([
         }
     });
 
-    return $.awblog.awBlogCommentsLink;
+    return $.blog.blogCommentsLink;
 });

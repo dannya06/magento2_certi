@@ -1,6 +1,12 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Post;
 
+use Aheadworks\Blog\Api\Data\PostInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\Error;
 use Magento\Framework\Message\MessageInterface;
@@ -16,44 +22,30 @@ class Validate extends \Aheadworks\Blog\Controller\Adminhtml\Post
      *
      * @param array $response
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     private function validate($response)
     {
         $errors = [];
-        $requestData = $this->getRequest()->getPostValue();
-        if ($postData = $requestData['post']) {
-            $postId = isset($postData['id']) && $postData['id']
-                ? $postData['id']
-                : false;
+        if ($postData = $this->getRequest()->getPostValue()) {
             try {
-                /** @var \Aheadworks\Blog\Api\Data\PostInterface $postDataObject */
+                /** @var PostInterface $postDataObject */
                 $postDataObject = $this->postDataFactory->create();
                 $this->dataObjectHelper->populateWithArray(
                     $postDataObject,
                     $this->preparePostData($postData),
-                    'Aheadworks\Blog\Api\Data\PostInterface'
+                    PostInterface::class
                 );
                 /** @var \Aheadworks\Blog\Model\Post $postModel */
                 $postModel = $this->postFactory->create();
                 $postModel->setData(
                     $this->dataObjectProcessor->buildOutputDataArray(
                         $postDataObject,
-                        'Aheadworks\Blog\Api\Data\PostInterface'
+                        PostInterface::class
                     )
                 );
-                if ($postId) {
-                    $postModel->setPostId($postId);
-                }
                 $postModel->validateBeforeSave();
-
-                if ($saveAction = $this->getRequest()->getParam('action')) {
-                    if (in_array($saveAction, ['schedule', 'save', 'save_and_continue'])
-                        && $this->booleanUtils->toBoolean($postData['is_scheduled'])
-                        && strtotime($postModel->getPublishDate()) <= time()
-                    ) {
-                        throw new LocalizedException(__("Publish date must be in future for scheduled posts"));
-                    }
-                }
             } catch (\Magento\Framework\Validator\Exception $exception) {
                 /* @var $error Error */
                 foreach ($exception->getMessages(MessageInterface::TYPE_ERROR) as $error) {

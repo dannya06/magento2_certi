@@ -1,29 +1,46 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Post;
 
-class NewAction extends \Aheadworks\Blog\Controller\Adminhtml\Post
+use Magento\Backend\Model\View\Result\ForwardFactory;
+use Magento\Backend\App\Action\Context;
+
+/**
+ * Class NewAction
+ * @package Aheadworks\Blog\Controller\Adminhtml\Post
+ */
+class NewAction extends \Magento\Backend\App\Action
 {
     /**
-     * @var \Magento\Backend\Model\View\Result\ForwardFactory
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
      */
-    protected $resultForwardFactory;
+    const ADMIN_RESOURCE = 'Aheadworks_Blog::posts';
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
+     * @var ForwardFactory
+     */
+    private $resultForwardFactory;
+
+    /**
+     * @param Context $context
+     * @param ForwardFactory $resultForwardFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
+        Context $context,
+        ForwardFactory $resultForwardFactory
     ) {
+        parent::__construct($context);
         $this->resultForwardFactory = $resultForwardFactory;
-        parent::__construct($context, $resultPageFactory);
     }
 
     /**
-     * Create new post
+     * Create new post action
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */

@@ -1,23 +1,28 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api\Data;
 
 use Magento\Framework\Api\SearchResultsInterface;
 
 /**
- * Interface for category search results.
+ * Interface for category search results
  * @api
  */
 interface CategorySearchResultsInterface extends SearchResultsInterface
 {
     /**
-     * Get categories list.
+     * Get categories list
      *
      * @return \Aheadworks\Blog\Api\Data\CategoryInterface[]
      */
     public function getItems();
 
     /**
-     * Set categories list.
+     * Set categories list
      *
      * @param \Aheadworks\Blog\Api\Data\CategoryInterface[] $items
      * @return $this

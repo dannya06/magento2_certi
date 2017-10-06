@@ -1,13 +1,34 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Category;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Controller\Adminhtml\Category\Save;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Message\ManagerInterface;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Aheadworks\Blog\Api\Data\CategoryInterfaceFactory;
+use Magento\Backend\Model\View\Result\RedirectFactory;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\App\Request\Http;
+use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\Session;
+use Magento\Framework\App\Request\DataPersistorInterface;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Category\Save
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class SaveTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var int
+     */
     const CATEGORY_ID = 1;
 
     /**
@@ -16,111 +37,123 @@ class SaveTest extends \PHPUnit_Framework_TestCase
     private $formData = ['id' => self::CATEGORY_ID, 'name' => 'Category'];
 
     /**
-     * @var \Aheadworks\Blog\Controller\Adminhtml\Category\Save
+     * @var Save
      */
     private $action;
 
     /**
-     * @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
+     * @var Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultRedirect;
+    private $resultRedirectMock;
 
     /**
-     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $messageManager;
+    private $messageManagerMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $categoryRepository;
+    private $categoryRepositoryMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $category;
+    private $categoryMock;
 
+    /**
+     * @var DataPersistorInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $dataPersistorMock;
+
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->category = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\CategoryInterface');
-        $this->category->expects($this->any())
+        $this->categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
+        $this->categoryMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::CATEGORY_ID));
 
-        $this->categoryRepository = $this->getMockForAbstractClass('Aheadworks\Blog\Api\CategoryRepositoryInterface');
-        $this->categoryRepository->expects($this->any())
+        $this->categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
+        $this->categoryRepositoryMock->expects($this->any())
             ->method('get')
             ->with($this->equalTo(self::CATEGORY_ID))
-            ->will($this->returnValue($this->category));
-        $this->categoryRepository->expects($this->any())
+            ->will($this->returnValue($this->categoryMock));
+        $this->categoryRepositoryMock->expects($this->any())
             ->method('save')
-            ->with($this->equalTo($this->category))
-            ->will($this->returnValue($this->category));
-        $categoryDataFactoryStub = $this->getMock(
-            'Aheadworks\Blog\Api\Data\CategoryInterfaceFactory',
+            ->with($this->equalTo($this->categoryMock))
+            ->will($this->returnValue($this->categoryMock));
+        $categoryDataFactoryMock = $this->getMock(
+            CategoryInterfaceFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $categoryDataFactoryStub->expects($this->any())
+        $categoryDataFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->category));
+            ->will($this->returnValue($this->categoryMock));
 
-        $this->resultRedirect = $this->getMock(
-            'Magento\Framework\Controller\Result\Redirect',
+        $this->resultRedirectMock = $this->getMock(
+            Redirect::class,
             ['setPath'],
             [],
             '',
             false
         );
-        $this->resultRedirect->expects($this->any())
+        $this->resultRedirectMock->expects($this->any())
             ->method('setPath')
             ->will($this->returnSelf());
-        $resultRedirectFactoryStub = $this->getMock(
-            'Magento\Backend\Model\View\Result\RedirectFactory',
+        $resultRedirectFactoryMock = $this->getMock(
+            RedirectFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $resultRedirectFactoryStub->expects($this->any())
+        $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultRedirect));
+            ->will($this->returnValue($this->resultRedirectMock));
 
-        $dataObjectHelperStub = $this->getMock(
-            'Magento\Framework\Api\DataObjectHelper',
+        $dataObjectHelperMock = $this->getMock(
+            DataObjectHelper::class,
             ['populateWithArray'],
             [],
             '',
             false
         );
 
-        $requestStub = $this->getMock('Magento\Framework\App\Request\Http', ['getPostValue'], [], '', false);
-        $requestStub->expects($this->any())
+        $requestMock = $this->getMock(Http::class, ['getPostValue'], [], '', false);
+        $requestMock->expects($this->any())
             ->method('getPostValue')
             ->will($this->returnValue($this->formData));
-        $this->messageManager = $this->getMockForAbstractClass('Magento\Framework\Message\ManagerInterface');
-        $sessionStub = $this->getMock('Magento\Backend\Model\Session', ['unsFormData', 'setFormData'], [], '', false);
+        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $sessionMock = $this->getMock(Session::class, ['unsFormData', 'setFormData'], [], '', false);
+        $this->dataPersistorMock = $this->getMockForAbstractClass(DataPersistorInterface::class);
         $context = $objectManager->getObject(
-            'Magento\Backend\App\Action\Context',
+            Context::class,
             [
-                'request' => $requestStub,
-                'messageManager' => $this->messageManager,
-                'resultRedirectFactory' => $resultRedirectFactoryStub,
-                'session' => $sessionStub
+                'request' => $requestMock,
+                'messageManager' => $this->messageManagerMock,
+                'resultRedirectFactory' => $resultRedirectFactoryMock,
+                'session' => $sessionMock
             ]
         );
 
         $this->action = $objectManager->getObject(
-            'Aheadworks\Blog\Controller\Adminhtml\Category\Save',
+            Save::class,
             [
                 'context' => $context,
-                'categoryRepository' => $this->categoryRepository,
-                'categoryDataFactory' => $categoryDataFactoryStub,
-                'dataObjectHelper' => $dataObjectHelperStub
+                'categoryRepository' => $this->categoryRepositoryMock,
+                'categoryDataFactory' => $categoryDataFactoryMock,
+                'dataObjectHelper' => $dataObjectHelperMock,
+                'dataPersistor' => $this->dataPersistorMock
             ]
         );
     }
@@ -130,10 +163,10 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteRedirect()
     {
-        $this->resultRedirect->expects($this->atLeastOnce())
+        $this->resultRedirectMock->expects($this->atLeastOnce())
             ->method('setPath')
             ->with($this->equalTo('*/*/'));
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+        $this->assertSame($this->resultRedirectMock, $this->action->execute());
     }
 
     /**
@@ -141,15 +174,18 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteRedirectError()
     {
-        $this->categoryRepository->expects($this->any())
+        $this->categoryRepositoryMock->expects($this->any())
             ->method('save')
             ->willThrowException(
                 new \Magento\Framework\Validator\Exception()
             );
-        $this->resultRedirect->expects($this->atLeastOnce())
+        $this->dataPersistorMock->expects($this->once())
+            ->method('set')
+            ->with('aw_blog_category', $this->formData);
+        $this->resultRedirectMock->expects($this->atLeastOnce())
             ->method('setPath')
             ->with($this->equalTo('*/*/edit'));
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+        $this->assertSame($this->resultRedirectMock, $this->action->execute());
     }
 
     /**
@@ -157,9 +193,12 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteCategorySave()
     {
-        $this->categoryRepository->expects($this->atLeastOnce())
+        $this->categoryRepositoryMock->expects($this->atLeastOnce())
             ->method('save')
-            ->with($this->equalTo($this->category));
+            ->with($this->equalTo($this->categoryMock));
+        $this->dataPersistorMock->expects($this->once())
+            ->method('clear')
+            ->with('aw_blog_category');
         $this->action->execute();
     }
 
@@ -168,7 +207,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteSuccessMessage()
     {
-        $this->messageManager->expects($this->once())->method('addSuccess');
+        $this->messageManagerMock->expects($this->once())->method('addSuccessMessage');
         $this->action->execute();
     }
 }

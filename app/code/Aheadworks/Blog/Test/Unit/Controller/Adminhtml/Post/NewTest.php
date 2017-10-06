@@ -1,7 +1,15 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Post;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Controller\Adminhtml\Post\NewAction;
+use Magento\Framework\Controller\Result\Forward;
+use Magento\Backend\Model\View\Result\ForwardFactory;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Post\NewAction
@@ -9,43 +17,48 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class NewTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Controller\Adminhtml\Post\NewAction
+     * @var NewAction
      */
     private $action;
 
     /**
-     * @var \Magento\Framework\Controller\Result\Forward|\PHPUnit_Framework_MockObject_MockObject
+     * @var Forward|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultForward;
+    private $resultForwardMock;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->resultForward = $this->getMock(
-            'Magento\Framework\Controller\Result\Forward',
+        $this->resultForwardMock = $this->getMock(
+            Forward::class,
             ['forward'],
             [],
             '',
             false
         );
-        $this->resultForward->expects($this->any())
+        $this->resultForwardMock->expects($this->any())
             ->method('forward')
             ->will($this->returnSelf());
-        $resultForwardFactoryStub = $this->getMock(
-            'Magento\Backend\Model\View\Result\ForwardFactory',
+        $resultForwardFactoryMock = $this->getMock(
+            ForwardFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $resultForwardFactoryStub->expects($this->any())
+        $resultForwardFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultForward));
+            ->will($this->returnValue($this->resultForwardMock));
 
         $this->action = $objectManager->getObject(
-            'Aheadworks\Blog\Controller\Adminhtml\Post\NewAction',
-            ['resultForwardFactory' => $resultForwardFactoryStub]
+            NewAction::class,
+            ['resultForwardFactory' => $resultForwardFactoryMock]
         );
     }
 
@@ -54,6 +67,6 @@ class NewTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteResult()
     {
-        $this->assertSame($this->resultForward, $this->action->execute());
+        $this->assertSame($this->resultForwardMock, $this->action->execute());
     }
 }

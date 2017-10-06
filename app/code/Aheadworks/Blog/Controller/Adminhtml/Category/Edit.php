@@ -1,72 +1,79 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Category;
 
-use Magento\Backend\App\Action;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\View\Result\PageFactory;
 
-class Edit extends \Aheadworks\Blog\Controller\Adminhtml\Category
+/**
+ * Class Edit
+ * @package Aheadworks\Blog\Controller\Adminhtml\Category
+ */
+class Edit extends \Magento\Backend\App\Action
 {
     /**
-     * Core registry
+     * Authorization level of a basic admin session
      *
-     * @var \Magento\Framework\Registry
+     * @see _isAllowed()
      */
-    protected $coreRegistry = null;
+    const ADMIN_RESOURCE = 'Aheadworks_Blog::categories';
 
     /**
-     * @var \Aheadworks\Blog\Model\CategoryFactory
+     * @var PageFactory
      */
-    protected $categoryFactory;
+    private $resultPageFactory;
 
     /**
-     * @param Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Aheadworks\Blog\Model\CategoryFactory $categoryFactory
-     * @param \Magento\Framework\Registry $registry
+     * @var CategoryRepositoryInterface
+     */
+    private $categoryRepository;
+
+    /**
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     * @param CategoryRepositoryInterface $categoryRepository
      */
     public function __construct(
-        Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Aheadworks\Blog\Model\CategoryFactory $categoryFactory,
-        \Magento\Framework\Registry $registry
+        Context $context,
+        PageFactory $resultPageFactory,
+        CategoryRepositoryInterface $categoryRepository
     ) {
-        $this->categoryFactory = $categoryFactory;
-        $this->coreRegistry = $registry;
-        parent::__construct($context, $resultPageFactory);
+        parent::__construct($context);
+        $this->resultPageFactory = $resultPageFactory;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
-     * Edit action
+     * Category edit action
      *
      * @return \Magento\Backend\Model\View\Result\Page
      */
     public function execute()
     {
-        /** @var $category \Aheadworks\Blog\Model\Category */
-        $category = $this->categoryFactory->create();
-        $catId = $this->getRequest()->getParam('cat_id');
-        if ($catId) {
-            $category->load($catId);
-            if (!$category->getId()) {
-                $this->messageManager->addError(__('This category no longer exists.'));
-                /** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        $categoryId = (int)$this->getRequest()->getParam('id');
+        if ($categoryId) {
+            try {
+                $this->categoryRepository->get($categoryId);
+            } catch (NoSuchEntityException $exception) {
+                $this->messageManager->addException($exception, __('Something went wrong while editing the category.'));
                 $resultRedirect = $this->resultRedirectFactory->create();
-
-                return $resultRedirect->setPath('*/*/*');
+                $resultRedirect->setPath('*/*/');
+                return $resultRedirect;
             }
         }
-        $data = $this->_getSession()->getFormData(true);
-        if (!empty($data)) {
-            $category->addData($data);
-        }
-
-        $this->coreRegistry->register('aw_blog_category', $category);
-
-        $resultPage = $this->_getResultPage();
-        $resultPage->setActiveMenu('Aheadworks_Blog::categories');
-        $resultPage->getConfig()->getTitle()->prepend(
-            $category->getId() ?  __('Edit Category') : __('New Category')
-        );
-
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage
+            ->setActiveMenu('Aheadworks_Blog::categories')
+            ->getConfig()->getTitle()->prepend(
+                $categoryId ?  __('Edit Category') : __('New Category')
+            );
         return $resultPage;
     }
 }

@@ -1,41 +1,57 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model\Template;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Cms\Model\Template\Filter;
+use Aheadworks\Blog\Model\Template\FilterProvider;
+use Magento\Framework\ObjectManagerInterface;
 
 /**
  * Test for \Aheadworks\Blog\Model\Template\FilterProvider
  */
 class FilterProviderTest extends \PHPUnit_Framework_TestCase
 {
-    const FILTER_CLASS_NAME = 'Magento\Cms\Model\Template\Filter';
+    /**
+     * @var string
+     */
+    const FILTER_CLASS_NAME = Filter::class;
 
     /**
-     * @var \Aheadworks\Blog\Model\Template\FilterProvider
+     * @var FilterProvider
      */
     private $filterProvider;
 
     /**
-     * @var \Magento\Cms\Model\Template\Filter|\PHPUnit_Framework_MockObject_MockObject
+     * @var Filter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filter;
 
     /**
-     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManager;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->filter = $this->getMockBuilder(self::FILTER_CLASS_NAME)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->objectManager = $this->getMockBuilder('Magento\Framework\ObjectManagerInterface')
+        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->filterProvider = $objectManager->getObject(
-            'Aheadworks\Blog\Model\Template\FilterProvider',
+            FilterProvider::class,
             [
                 'objectManager' => $this->objectManager,
                 'filterClassName' => self::FILTER_CLASS_NAME
@@ -95,7 +111,7 @@ class FilterProviderTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getMock($wrongFilterClassName)));
         $objectManager = new ObjectManager($this);
         $filterProvider = $objectManager->getObject(
-            'Aheadworks\Blog\Model\Template\FilterProvider',
+            FilterProvider::class,
             [
                 'objectManager' => $this->objectManager,
                 'filterClassName' => $wrongFilterClassName

@@ -1,12 +1,19 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Data;
 
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Magento\Framework\Api\AbstractExtensibleObject;
+
 /**
- * Post data model.
+ * Post data model
  * @codeCoverageIgnore
  */
-class Post extends \Magento\Framework\Api\AbstractExtensibleObject implements
-    \Aheadworks\Blog\Api\Data\PostInterface
+class Post extends AbstractExtensibleObject implements PostInterface
 {
     /**
      * {@inheritdoc}
@@ -102,38 +109,6 @@ class Post extends \Magento\Framework\Api\AbstractExtensibleObject implements
     public function setStatus($status)
     {
         return $this->setData(self::STATUS, $status);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getVirtualStatus()
-    {
-        return $this->_get(self::VIRTUAL_STATUS);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setVirtualStatus($virtualStatus)
-    {
-        return $this->setData(self::VIRTUAL_STATUS, $virtualStatus);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthorId()
-    {
-        return $this->_get(self::AUTHOR_ID);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setAuthorId($authorId)
-    {
-        return $this->setData(self::AUTHOR_ID, $authorId);
     }
 
     /**
@@ -251,17 +226,17 @@ class Post extends \Magento\Framework\Api\AbstractExtensibleObject implements
     /**
      * {@inheritdoc}
      */
-    public function getTags()
+    public function getTagNames()
     {
-        return $this->_get(self::TAGS);
+        return $this->_get(self::TAG_NAMES);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setTags($tags)
+    public function setTagNames($tagNames)
     {
-        return $this->setData(self::TAGS, $tags);
+        return $this->setData(self::TAG_NAMES, $tagNames);
     }
 
     /**
@@ -299,33 +274,35 @@ class Post extends \Magento\Framework\Api\AbstractExtensibleObject implements
     /**
      * {@inheritdoc}
      */
-    public function getPublishedComments()
+    public function getProductCondition()
     {
-        return $this->_get(self::PUBLISHED_COMMENTS);
+        return $this->_get(self::PRODUCT_CONDITION);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setPublishedComments($publishedComments)
+    public function setProductCondition($productCondition)
     {
-        return $this->setData(self::PUBLISHED_COMMENTS, $publishedComments);
+        return $this->setData(self::PRODUCT_CONDITION, $productCondition);
+    }
+
+    /**
+     * Get related product ids
+     *
+     * @return int[]|null
+     */
+    public function getRelatedProductIds()
+    {
+        return $this->_get(self::RELATED_PRODUCT_IDS);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNewComments()
+    public function setRelatedProductIds($relatedProductIds)
     {
-        return $this->_get(self::NEW_COMMENTS);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setNewComments($newComments)
-    {
-        return $this->setData(self::NEW_COMMENTS, $newComments);
+        return $this->setData(self::RELATED_PRODUCT_IDS, $relatedProductIds);
     }
 
     /**

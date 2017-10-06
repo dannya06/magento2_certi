@@ -1,12 +1,19 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Data;
 
+use Aheadworks\Blog\Api\Data\TagInterface;
+use Magento\Framework\Api\AbstractExtensibleObject;
+
 /**
- * Tag data model.
+ * Tag data model
  * @codeCoverageIgnore
  */
-class Tag extends \Magento\Framework\Api\AbstractExtensibleObject implements
-    \Aheadworks\Blog\Api\Data\TagInterface
+class Tag extends AbstractExtensibleObject implements TagInterface
 {
     /**
      * {@inheritdoc}
@@ -43,33 +50,33 @@ class Tag extends \Magento\Framework\Api\AbstractExtensibleObject implements
     /**
      * {@inheritdoc}
      */
-    public function getCount()
+    public function getCreatedAt()
     {
-        return (int)$this->_get(self::COUNT);
+        return $this->_get(self::CREATED_AT);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setCount($count)
+    public function setCreatedAt($createdAt)
     {
-        return $this->setData(self::COUNT, $count);
+        return $this->setData(self::CREATED_AT, $createdAt);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getPostIds()
+    public function getUpdatedAt()
     {
-        return $this->_get(self::POST_IDS);
+        return $this->_get(self::UPDATED_AT);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setPostIds($postIds)
+    public function setUpdatedAt($updatedAt)
     {
-        return $this->setData(self::POST_IDS, $postIds);
+        return $this->setData(self::UPDATED_AT, $updatedAt);
     }
 
     /**

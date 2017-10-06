@@ -1,167 +1,230 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Post;
 
+use Aheadworks\Blog\Api\Data\ConditionInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Controller\Adminhtml\Post\Save;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Aheadworks\Blog\Api\Data\PostInterfaceFactory;
+use Magento\Backend\Model\View\Result\RedirectFactory;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\App\Request\Http;
+use Magento\Backend\Model\Session;
+use Magento\User\Model\User;
+use Magento\Backend\Model\Auth;
+use Magento\Backend\App\Action\Context;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Aheadworks\Blog\Model\Converter\Condition as ConditionConverter;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Post\Save
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class SaveTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Constants defined for test
+     */
     const POST_ID = 1;
     const USER_ID = 1;
     const USER_NAME = 'Admin Admin';
     const STORE_ID = 1;
+    /**#@-*/
 
     /**
      * @var array
      */
     private $formData = [
-        'post' => [
-            'id' => self::POST_ID,
-            'title' => 'Post',
-            'has_short_content' => 'true'
-        ]
+        'id' => self::POST_ID,
+        'title' => 'Post',
+        'has_short_content' => 'true',
+        'status' => 'publication',
+        'category_ids' => [],
+        'tag_names' => [],
+        'rule' => [
+            'conditions' => [
+                '1' => [
+                    'type' => Aheadworks\Blog\Model\Rule\Condition\Combine::class,
+                    'aggregator' => 'all',
+                    'value' => '1',
+                    'new_child' => ''
+                ],
+                '1--1' => [
+                    'type' => Aheadworks\Blog\Model\Rule\Condition\Product\Attributes::class,
+                    'attribute' => 'category_ids',
+                    'operator' => '==',
+                    'value' => '23'
+                ]
+            ]
+        ],
+        'product_condition' => ''
     ];
 
     /**
-     * @var \Aheadworks\Blog\Controller\Adminhtml\Post\Save
+     * @var Save
      */
     private $action;
 
     /**
-     * @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
+     * @var Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultRedirect;
+    private $resultRedirectMock;
 
     /**
-     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $messageManager;
+    private $messageManagerMock;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $storeManager;
+    private $storeManagerMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\PostRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var PostRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $postRepository;
+    private $postRepositoryMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\PostInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var PostInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $post;
+    private $postMock;
 
     /**
+     * @var DataPersistorInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $dataPersistorMock;
+
+    /**
+     * @var ConditionConverter|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $conditionConverterMock;
+
+    /**
+     * Init mocks for tests
+     *
+     * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->post = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostInterface');
-        $this->post->expects($this->any())
+        $this->postMock = $this->getMockForAbstractClass(PostInterface::class);
+        $this->postMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::POST_ID));
 
-        $this->postRepository = $this->getMockForAbstractClass('Aheadworks\Blog\Api\PostRepositoryInterface');
-        $this->postRepository->expects($this->any())
+        $this->postRepositoryMock = $this->getMockForAbstractClass(PostRepositoryInterface::class);
+        $this->postRepositoryMock->expects($this->any())
             ->method('get')
             ->with($this->equalTo(self::POST_ID))
-            ->will($this->returnValue($this->post));
-        $this->postRepository->expects($this->any())
+            ->will($this->returnValue($this->postMock));
+        $this->postRepositoryMock->expects($this->any())
             ->method('save')
-            ->with($this->equalTo($this->post))
-            ->will($this->returnValue($this->post));
-        $postDataFactoryStub = $this->getMock(
-            'Aheadworks\Blog\Api\Data\PostInterfaceFactory',
+            ->with($this->equalTo($this->postMock))
+            ->will($this->returnValue($this->postMock));
+        $postDataFactoryMock = $this->getMock(
+            PostInterfaceFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $postDataFactoryStub->expects($this->any())
+        $postDataFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->post));
+            ->will($this->returnValue($this->postMock));
 
-        $this->resultRedirect = $this->getMock(
-            'Magento\Framework\Controller\Result\Redirect',
+        $this->resultRedirectMock = $this->getMock(
+            Redirect::class,
             ['setPath'],
             [],
             '',
             false
         );
-        $this->resultRedirect->expects($this->any())
+        $this->resultRedirectMock->expects($this->any())
             ->method('setPath')
             ->will($this->returnSelf());
-        $resultRedirectFactoryStub = $this->getMock(
-            'Magento\Backend\Model\View\Result\RedirectFactory',
+        $resultRedirectFactoryMock = $this->getMock(
+            RedirectFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $resultRedirectFactoryStub->expects($this->any())
+        $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultRedirect));
+            ->will($this->returnValue($this->resultRedirectMock));
 
-        $dataObjectHelperStub = $this->getMock(
-            'Magento\Framework\Api\DataObjectHelper',
+        $dataObjectHelperMock = $this->getMock(
+            DataObjectHelper::class,
             ['populateWithArray'],
             [],
             '',
             false
         );
-        $storeStub = $this->getMockForAbstractClass('Magento\Store\Api\Data\StoreInterface');
-        $storeStub->expects($this->any())
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::STORE_ID));
-        $this->storeManager = $this->getMockForAbstractClass('Magento\Store\Model\StoreManagerInterface');
-        $this->storeManager->expects($this->any())
+        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeStub));
-        $this->storeManager->expects($this->any())
+            ->will($this->returnValue($storeMock));
+        $this->storeManagerMock->expects($this->any())
             ->method('hasSingleStore')
             ->will($this->returnValue(false));
 
-        $requestStub = $this->getMock('Magento\Framework\App\Request\Http', ['getPostValue'], [], '', false);
-        $requestStub->expects($this->any())
+        $requestMock = $this->getMock(Http::class, ['getPostValue'], [], '', false);
+        $requestMock->expects($this->any())
             ->method('getPostValue')
             ->will($this->returnValue($this->formData));
-        $this->messageManager = $this->getMockForAbstractClass('Magento\Framework\Message\ManagerInterface');
-        $sessionStub = $this->getMock('Magento\Backend\Model\Session', ['unsFormData', 'setFormData'], [], '', false);
+        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $sessionMock = $this->getMock(Session::class, ['unsFormData', 'setFormData'], [], '', false);
 
-        $userStub = $this->getMock('Magento\User\Model\User', ['getId', 'getName'], [], '', false);
-        $userStub->expects($this->any())
+        $userMock = $this->getMock(User::class, ['getId', 'getName'], [], '', false);
+        $userMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::USER_ID));
-        $userStub->expects($this->any())
+        $userMock->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(self::USER_NAME));
-        $authStub = $this->getMock('Magento\Backend\Model\Auth', ['getUser'], [], '', false);
-        $authStub->expects($this->any())->method('getUser')->will($this->returnValue($userStub));
+        $authMock = $this->getMock(Auth::class, ['getUser'], [], '', false);
+        $authMock->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
+        $this->dataPersistorMock = $this->getMockForAbstractClass(DataPersistorInterface::class);
+        $this->conditionConverterMock = $this->getMock(ConditionConverter::class, ['arrayToDataModel'], [], '', false);
 
         $context = $objectManager->getObject(
-            'Magento\Backend\App\Action\Context',
+            Context::class,
             [
-                'request' => $requestStub,
-                'messageManager' => $this->messageManager,
-                'resultRedirectFactory' => $resultRedirectFactoryStub,
-                'session' => $sessionStub,
-                'auth' => $authStub
+                'request' => $requestMock,
+                'messageManager' => $this->messageManagerMock,
+                'resultRedirectFactory' => $resultRedirectFactoryMock,
+                'session' => $sessionMock,
+                'auth' => $authMock
             ]
         );
 
         $this->action = $objectManager->getObject(
-            'Aheadworks\Blog\Controller\Adminhtml\Post\Save',
+            Save::class,
             [
                 'context' => $context,
-                'postRepository' => $this->postRepository,
-                'postDataFactory' => $postDataFactoryStub,
-                'dataObjectHelper' => $dataObjectHelperStub,
-                'storeManager' => $this->storeManager
+                'postRepository' => $this->postRepositoryMock,
+                'postDataFactory' => $postDataFactoryMock,
+                'dataObjectHelper' => $dataObjectHelperMock,
+                'storeManager' => $this->storeManagerMock,
+                'dataPersistor' => $this->dataPersistorMock,
+                'conditionConverter' => $this->conditionConverterMock
             ]
         );
     }
@@ -171,10 +234,10 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteRedirect()
     {
-        $this->resultRedirect->expects($this->atLeastOnce())
+        $this->resultRedirectMock->expects($this->atLeastOnce())
             ->method('setPath')
             ->with($this->equalTo('*/*/'));
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+        $this->assertSame($this->resultRedirectMock, $this->action->execute());
     }
 
     /**
@@ -182,15 +245,18 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteRedirectError()
     {
-        $this->postRepository->expects($this->any())
+        $this->postRepositoryMock->expects($this->any())
             ->method('save')
             ->willThrowException(
                 new \Magento\Framework\Validator\Exception()
             );
-        $this->resultRedirect->expects($this->atLeastOnce())
+        $this->dataPersistorMock->expects($this->once())
+            ->method('set')
+            ->with('aw_blog_post', $this->formData);
+        $this->resultRedirectMock->expects($this->atLeastOnce())
             ->method('setPath')
             ->with($this->equalTo('*/*/edit'));
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+        $this->assertSame($this->resultRedirectMock, $this->action->execute());
     }
 
     /**
@@ -198,9 +264,16 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecutePostSave()
     {
-        $this->postRepository->expects($this->atLeastOnce())
+        $this->postRepositoryMock->expects($this->atLeastOnce())
             ->method('save')
-            ->with($this->equalTo($this->post));
+            ->with($this->equalTo($this->postMock));
+        $this->dataPersistorMock->expects($this->once())
+            ->method('clear')
+            ->with('aw_blog_post');
+        $conditionMock = $this->getMockForAbstractClass(ConditionInterface::class);
+        $this->conditionConverterMock->expects($this->once())
+            ->method('arrayToDataModel')
+            ->willReturn($conditionMock);
         $this->action->execute();
     }
 
@@ -209,7 +282,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteSuccessMessage()
     {
-        $this->messageManager->expects($this->once())->method('addSuccess');
+        $this->messageManagerMock->expects($this->once())->method('addSuccessMessage');
         $this->action->execute();
     }
 }

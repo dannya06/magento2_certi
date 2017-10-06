@@ -1,22 +1,28 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Api\Data;
 
 use Magento\Framework\Api\SearchResultsInterface;
 
 /**
- * Interface for tag search results.
+ * Interface for tag search results
+ * @api
  */
 interface TagSearchResultsInterface extends SearchResultsInterface
 {
     /**
-     * Get tags list.
+     * Get tags list
      *
      * @return \Aheadworks\Blog\Api\Data\TagInterface[]
      */
     public function getItems();
 
     /**
-     * Set tags list.
+     * Set tags list
      *
      * @param \Aheadworks\Blog\Api\Data\TagInterface[] $items
      * @return $this

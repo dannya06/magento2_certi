@@ -1,6 +1,12 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Ui\Component\Post\Form\Element;
 
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\Component\Form\Element\MultiSelect;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 
@@ -11,27 +17,25 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 class Stores extends MultiSelect
 {
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
     private $storeManager;
 
     /**
-     * Stores constructor.
-     *
      * @param ContextInterface $context
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Store\Model\System\Store $storeOptions
+     * @param StoreManagerInterface $storeManager
+     * @param array|null $options
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Store\Model\System\Store $storeOptions,
+        StoreManagerInterface $storeManager,
+        $options = null,
         array $components = [],
         array $data = []
     ) {
-        parent::__construct($context, $storeOptions, $components, $data);
+        parent::__construct($context, $options, $components, $data);
         $this->storeManager = $storeManager;
     }
 

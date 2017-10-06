@@ -1,7 +1,13 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model\Source\Post;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Model\Source\Post\Status;
 
 /**
  * Test for \Aheadworks\Blog\Model\Source\Post\Status
@@ -9,14 +15,19 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class StatusTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Model\Source\Post\Status
+     * @var Status
      */
     private $sourceModel;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->sourceModel = $objectManager->getObject('Aheadworks\Blog\Model\Source\Post\Status');
+        $this->sourceModel = $objectManager->getObject(Status::class);
     }
 
     /**

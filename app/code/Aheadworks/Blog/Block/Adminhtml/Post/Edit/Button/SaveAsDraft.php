@@ -1,14 +1,18 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button;
 
-use Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 
 /**
  * Class SaveAsDraft
  * @package Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button
  */
-class SaveAsDraft extends Button implements ButtonProviderInterface
+class SaveAsDraft implements ButtonProviderInterface
 {
     /**
      * {@inheritdoc}

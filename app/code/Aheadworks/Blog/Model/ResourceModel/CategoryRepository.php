@@ -1,68 +1,89 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\ResourceModel;
 
 use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Aheadworks\Blog\Api\Data\CategoryInterfaceFactory;
+use Aheadworks\Blog\Api\Data\CategorySearchResultsInterfaceFactory;
+use Aheadworks\Blog\Model\CategoryFactory;
+use Aheadworks\Blog\Model\CategoryRegistry;
+use Magento\Framework\Reflection\DataObjectProcessor;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
+use Magento\Framework\EntityManager\EntityManager;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
- * Category repository.
+ * Category repository
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class CategoryRepository implements \Aheadworks\Blog\Api\CategoryRepositoryInterface
 {
     /**
-     * @var \Aheadworks\Blog\Model\CategoryFactory
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * @var CategoryFactory
      */
     private $categoryFactory;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategoryInterfaceFactory
+     * @var CategoryInterfaceFactory
      */
     private $categoryDataFactory;
 
     /**
-     * @var \Aheadworks\Blog\Model\CategoryRegistry
+     * @var CategoryRegistry
      */
     private $categoryRegistry;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\CategorySearchResultsInterfaceFactory
+     * @var CategorySearchResultsInterfaceFactory
      */
     private $searchResultsFactory;
 
     /**
-     * @var \Magento\Framework\Api\DataObjectHelper
+     * @var DataObjectHelper
      */
     private $dataObjectHelper;
 
     /**
-     * @var \Magento\Framework\Reflection\DataObjectProcessor
+     * @var DataObjectProcessor
      */
     private $dataObjectProcessor;
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface
+     * @var JoinProcessorInterface
      */
     private $extensionAttributesJoinProcessor;
 
     /**
-     * CategoryRepository constructor.
-     *
-     * @param \Aheadworks\Blog\Model\CategoryFactory $categoryFactory
-     * @param \Aheadworks\Blog\Api\Data\CategoryInterfaceFactory $categoryDataFactory
-     * @param \Aheadworks\Blog\Model\CategoryRegistry $categoryRegistry
-     * @param \Aheadworks\Blog\Api\Data\CategorySearchResultsInterfaceFactory $searchResultsFactory
-     * @param \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
-     * @param \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor
-     * @param \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface $extensionAttributesJoinProcessor
+     * @param EntityManager $entityManager
+     * @param CategoryFactory $categoryFactory
+     * @param CategoryInterfaceFactory $categoryDataFactory
+     * @param CategoryRegistry $categoryRegistry
+     * @param CategorySearchResultsInterfaceFactory $searchResultsFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param DataObjectProcessor $dataObjectProcessor
+     * @param JoinProcessorInterface $extensionAttributesJoinProcessor
      */
     public function __construct(
-        \Aheadworks\Blog\Model\CategoryFactory $categoryFactory,
-        \Aheadworks\Blog\Api\Data\CategoryInterfaceFactory $categoryDataFactory,
-        \Aheadworks\Blog\Model\CategoryRegistry $categoryRegistry,
-        \Aheadworks\Blog\Api\Data\CategorySearchResultsInterfaceFactory $searchResultsFactory,
-        \Magento\Framework\Api\DataObjectHelper $dataObjectHelper,
-        \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor,
-        \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface $extensionAttributesJoinProcessor
+        EntityManager $entityManager,
+        CategoryFactory $categoryFactory,
+        CategoryInterfaceFactory $categoryDataFactory,
+        CategoryRegistry $categoryRegistry,
+        CategorySearchResultsInterfaceFactory $searchResultsFactory,
+        DataObjectHelper $dataObjectHelper,
+        DataObjectProcessor $dataObjectProcessor,
+        JoinProcessorInterface $extensionAttributesJoinProcessor
     ) {
+        $this->entityManager = $entityManager;
         $this->categoryFactory = $categoryFactory;
         $this->categoryDataFactory = $categoryDataFactory;
         $this->categoryRegistry = $categoryRegistry;
@@ -75,23 +96,20 @@ class CategoryRepository implements \Aheadworks\Blog\Api\CategoryRepositoryInter
     /**
      * {@inheritdoc}
      */
-    public function save(\Aheadworks\Blog\Api\Data\CategoryInterface $category)
+    public function save(CategoryInterface $category)
     {
         /** @var \Aheadworks\Blog\Model\Category $categoryModel */
         $categoryModel = $this->categoryFactory->create();
-        if ($category->getId()) {
-            $categoryModel->load($category->getId());
+        if ($categoryId = $category->getId()) {
+            $this->entityManager->load($categoryModel, $categoryId);
         }
-        $categoryModel
-            ->addData(
-                $this->dataObjectProcessor->buildOutputDataArray(
-                    $category,
-                    'Aheadworks\Blog\Api\Data\CategoryInterface'
-                )
-            )
-            ->save();
-        $this->categoryRegistry->push($categoryModel);
-        return $this->get($categoryModel->getId());
+        $categoryModel->addData(
+            $this->dataObjectProcessor->buildOutputDataArray($category, CategoryInterface::class)
+        );
+        $this->entityManager->save($categoryModel);
+        $category = $this->getCategoryDataObject($categoryModel);
+        $this->categoryRegistry->push($category);
+        return $category;
     }
 
     /**
@@ -99,17 +117,15 @@ class CategoryRepository implements \Aheadworks\Blog\Api\CategoryRepositoryInter
      */
     public function get($categoryId)
     {
-        $categoryModel = $this->categoryRegistry->retrieve($categoryId);
-        return $this->getCategoryDataObject($categoryModel);
+        return $this->categoryRegistry->retrieve($categoryId);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getByUrlKey($urlKey)
+    public function getByUrlKey($categoryUrlKey)
     {
-        $categoryModel = $this->categoryRegistry->retrieveByUrlKey($urlKey);
-        return $this->getCategoryDataObject($categoryModel);
+        return $this->categoryRegistry->retrieveByUrl($categoryUrlKey);
     }
 
     /**
@@ -122,12 +138,12 @@ class CategoryRepository implements \Aheadworks\Blog\Api\CategoryRepositoryInter
             ->setSearchCriteria($searchCriteria);
         /** @var \Aheadworks\Blog\Model\ResourceModel\Category\Collection $collection */
         $collection = $this->categoryFactory->create()->getCollection();
-        $this->extensionAttributesJoinProcessor->process($collection, 'Aheadworks\Blog\Api\Data\CategoryInterface');
+        $this->extensionAttributesJoinProcessor->process($collection, CategoryInterface::class);
         foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             $fields = [];
             $conditions = [];
             foreach ($filterGroup->getFilters() as $filter) {
-                if ($filter->getField() === CategoryInterface::STORE_IDS) {
+                if ($filter->getField() == CategoryInterface::STORE_IDS) {
                     $collection->addStoreFilter($filter->getValue());
                 } else {
                     $condition = $filter->getConditionType() ? $filter->getConditionType() : 'eq';
@@ -163,7 +179,7 @@ class CategoryRepository implements \Aheadworks\Blog\Api\CategoryRepositoryInter
     /**
      * {@inheritdoc}
      */
-    public function delete(\Aheadworks\Blog\Api\Data\CategoryInterface $category)
+    public function delete(CategoryInterface $category)
     {
         return $this->deleteById($category->getId());
     }
@@ -173,29 +189,32 @@ class CategoryRepository implements \Aheadworks\Blog\Api\CategoryRepositoryInter
      */
     public function deleteById($categoryId)
     {
-        $category = $this->categoryRegistry->retrieve($categoryId);
-        $category->delete();
+        /** @var \Aheadworks\Blog\Model\Category $categoryModel */
+        $categoryModel = $this->categoryFactory->create();
+        $this->entityManager->load($categoryModel, $categoryId);
+        if (!$categoryModel->getId()) {
+            throw NoSuchEntityException::singleField('categoryId', $categoryId);
+        }
+        $this->entityManager->delete($categoryModel);
         $this->categoryRegistry->remove($categoryId);
         return true;
     }
 
     /**
-     * Retrieves category data object using Category Model
+     * Creates category data object using Category Model
      *
      * @param \Aheadworks\Blog\Model\Category $category
-     * @return \Aheadworks\Blog\Api\Data\CategoryInterface
+     * @return CategoryInterface
      */
     private function getCategoryDataObject(\Aheadworks\Blog\Model\Category $category)
     {
-        /** @var \Aheadworks\Blog\Api\Data\CategoryInterface $categoryDataObject */
+        /** @var CategoryInterface $categoryDataObject */
         $categoryDataObject = $this->categoryDataFactory->create();
         $this->dataObjectHelper->populateWithArray(
             $categoryDataObject,
             $category->getData(),
-            'Aheadworks\Blog\Api\Data\CategoryInterface'
+            CategoryInterface::class
         );
-        $categoryDataObject->setId($category->getId());
-
         return $categoryDataObject;
     }
 }

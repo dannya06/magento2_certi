@@ -1,23 +1,35 @@
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery',
     'underscore'
-], function($, _) {
+], function ($, _) {
     'use strict';
 
     var buttons = {
         'reset': '#reset',
-        'save': "#save",
-        'schedule': "#schedule",
-        'publish': "#publish",
-        'saveAsDraft': "#save_as_draft",
+        'save': '#save',
+        'update': '#update',
+        'schedule': '#schedule',
+        'publish': '#publish',
+        'saveAsDraft': '#save_as_draft',
         'saveAndContinue': '#save_and_continue'
     };
 
-    function initListener(callback, action){
-        var selector = buttons[action];
-        var element = $(selector)[0];
+    /**
+     * Initialize listener
+     * @param {Function} callback
+     * @param {String} action
+     */
+    function initListener(callback, action) {
+        var selector = buttons[action],
+            element = $(selector)[0];
+
         if (element) {
-            if (element.onclick){
+            if (element.onclick) {
                 element.onclick = null;
             }
             $(element).off().on('click', callback);
@@ -25,8 +37,12 @@ define([
     }
 
     return {
-        on: function(handlers){
+        /**
+         * Calls callback when name event is triggered
+         * @param  {Object} handlers
+         */
+        on: function (handlers) {
             _.each(handlers, initListener);
         }
-    }
+    };
 });

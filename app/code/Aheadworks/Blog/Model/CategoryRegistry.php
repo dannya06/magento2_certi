@@ -1,13 +1,32 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model;
 
+use Aheadworks\Blog\Api\Data\CategoryInterface;
+use Aheadworks\Blog\Api\Data\CategoryInterfaceFactory;
+use Aheadworks\Blog\Model\CategoryFactory;
+use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
- * Registry for \Aheadworks\Blog\Model\Category
+ * Registry for \Aheadworks\Blog\Api\Data\CategoryInterface
  */
 class CategoryRegistry
 {
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * @var CategoryInterfaceFactory
+     */
+    private $categoryDataFactory;
+
     /**
      * @var CategoryFactory
      */
@@ -16,7 +35,7 @@ class CategoryRegistry
     /**
      * @var array
      */
-    private $categoryRegistryById = [];
+    private $categoryRegistry = [];
 
     /**
      * @var array
@@ -24,102 +43,88 @@ class CategoryRegistry
     private $categoryRegistryByUrlKey = [];
 
     /**
-     * CategoryRegistry constructor.
+     * @param EntityManager $entityManager
+     * @param CategoryInterfaceFactory $categoryDataFactory
      * @param CategoryFactory $categoryFactory
      */
-    public function __construct(CategoryFactory $categoryFactory)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        CategoryInterfaceFactory $categoryDataFactory,
+        CategoryFactory $categoryFactory
+    ) {
+        $this->entityManager = $entityManager;
+        $this->categoryDataFactory = $categoryDataFactory;
         $this->categoryFactory = $categoryFactory;
     }
 
     /**
-     * Retrieve Category Model from registry by ID
+     * Retrieve Category from registry
      *
      * @param int $categoryId
-     * @return Category
+     * @return CategoryInterface
      * @throws NoSuchEntityException
      */
     public function retrieve($categoryId)
     {
-        if (!isset($this->categoryRegistryById[$categoryId])) {
+        if (!isset($this->categoryRegistry[$categoryId])) {
             /** @var Category $category */
-            $category = $this->categoryFactory->create();
-            $category->load($categoryId);
+            $category = $this->categoryDataFactory->create();
+            $this->entityManager->load($category, $categoryId);
             if (!$category->getId()) {
                 throw NoSuchEntityException::singleField('categoryId', $categoryId);
             } else {
-                $this->categoryRegistryById[$categoryId] = $category;
-                $this->categoryRegistryByUrlKey[$category->getUrlKey()] = $category;
+                $this->categoryRegistry[$categoryId] = $category;
             }
         }
-        return $this->categoryRegistryById[$categoryId];
+        return $this->categoryRegistry[$categoryId];
     }
 
     /**
-     * Retrieve Category Model from registry by URL-Key
+     * Retrieve Category from registry by url key
      *
-     * @param string $urlKey URL-Key
-     * @return Category
+     * @param string $categoryUrlKey
+     * @return CategoryInterface
      * @throws NoSuchEntityException
      */
-    public function retrieveByUrlKey($urlKey)
+    public function retrieveByUrl($categoryUrlKey)
     {
-        if (!isset($this->categoryRegistryByUrlKey[$urlKey])) {
+        if (!isset($this->categoryRegistryByUrlKey[$categoryUrlKey])) {
             /** @var Category $category */
             $category = $this->categoryFactory->create();
-            $category->loadByUrlKey($urlKey);
+            $category->loadByUrlKey($categoryUrlKey);
             if (!$category->getId()) {
-                throw NoSuchEntityException::singleField('urlKey', $urlKey);
+                throw NoSuchEntityException::singleField('categoryUrl', $categoryUrlKey);
             } else {
-                $this->categoryRegistryById[$category->getId()] = $category;
-                $this->categoryRegistryByUrlKey[$urlKey] = $category;
+                $this->categoryRegistryByUrlKey[$categoryUrlKey] = $category;
             }
         }
-        return $this->categoryRegistryByUrlKey[$urlKey];
+        return $this->categoryRegistryByUrlKey[$categoryUrlKey];
     }
 
     /**
-     * Remove instance of the Category Model from registry by ID
+     * Remove instance of the Category from registry
      *
      * @param int $categoryId
      * @return void
      */
     public function remove($categoryId)
     {
-        if (isset($this->categoryRegistryById[$categoryId])) {
-            /** @var Category $category */
-            $category = $this->categoryRegistryById[$categoryId];
-            unset($this->categoryRegistryById[$categoryId]);
-            unset($this->categoryRegistryByUrlKey[$category->getUrlKey()]);
+        if (isset($this->categoryRegistry[$categoryId])) {
+            unset($this->categoryRegistry[$categoryId]);
         }
     }
 
     /**
-     * Remove instance of the Category Model from registry by URL-Key
+     * Replace existing Category with a new one
      *
-     * @param string $urlKey URL-Key
-     * @return void
-     */
-    public function removeByUrlKey($urlKey)
-    {
-        if (isset($this->categoryRegistryByUrlKey[$urlKey])) {
-            /** @var Category $category */
-            $category = $this->categoryRegistryByUrlKey[$urlKey];
-            unset($this->categoryRegistryById[$category->getId()]);
-            unset($this->categoryRegistryByUrlKey[$urlKey]);
-        }
-    }
-
-    /**
-     * Replace existing Category Model with a new one.
-     *
-     * @param Category $category
+     * @param CategoryInterface $category
      * @return $this
      */
-    public function push(Category $category)
+    public function push(CategoryInterface $category)
     {
-        $this->categoryRegistryById[$category->getId()] = $category;
-        $this->categoryRegistryByUrlKey[$category->getUrlKey()] = $category;
+        if ($categoryId = $category->getId()) {
+            $this->categoryRegistry[$categoryId] = $category;
+        }
         return $this;
     }
 }

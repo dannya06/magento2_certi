@@ -1,6 +1,12 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Category;
 
+use Aheadworks\Blog\Model\Source\Category\Status as CategoryStatus;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
@@ -14,15 +20,13 @@ class View extends \Aheadworks\Blog\Controller\Action
      */
     public function execute()
     {
-        $categoryId = $this->getRequest()->getParam('id');
         try {
-            /** @var \Aheadworks\Blog\Model\Category $categoryModel */
-            $categoryModel = $this->categoryFactory->create()->load($categoryId);
-            if (!$categoryModel->getId()
-                || !$categoryModel->getStatus()
-                || (!in_array($this->storeManager->getStore()->getId(), $categoryModel->getStores())
-                    && !in_array(0, $categoryModel->getStores())
-                )
+            $category = $this->categoryRepository->get(
+                $this->getRequest()->getParam('blog_category_id')
+            );
+            if ($category->getStatus() == CategoryStatus::DISABLED
+                || (!in_array($this->getStoreId(), $category->getStoreIds())
+                    && !in_array(0, $category->getStoreIds()))
             ) {
                 /** @var \Magento\Framework\Controller\Result\Forward $forward */
                 $forward = $this->resultForwardFactory->create();
@@ -31,19 +35,15 @@ class View extends \Aheadworks\Blog\Controller\Action
                     ->setController('noroute')
                     ->forward('index');
             }
-            $this->coreRegistry->register('aw_blog_category', $categoryModel);
+
+            $resultPage = $this->resultPageFactory->create();
+            $pageConfig = $resultPage->getConfig();
+            $pageConfig->getTitle()->set($category->getName());
+            $pageConfig->setMetadata('description', $category->getMetaDescription());
+            return $resultPage;
         } catch (LocalizedException $e) {
-            $this->messageManager->addError($e->getMessage());
+            $this->messageManager->addErrorMessage($e->getMessage());
             return $this->goBack();
         }
-        return $this->getResultPage(
-            [
-                'title' => $categoryModel->getName(),
-                'meta' => [
-                    'description' => $categoryModel->getMetaDescription()
-                ],
-                'crumbs' => [['name' => 'category_view', 'info' => ['label' => $categoryModel->getName()]]]
-            ]
-        );
     }
 }

@@ -1,100 +1,121 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Block\PostList;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Block\PostList\Pager;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Api\SearchCriteria;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Api\Data\PostSearchResultsInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\View\Element\Template\Context;
 
 /**
  * Test for \Aheadworks\Blog\Block\PostList\Pager
  */
 class PagerTest extends \PHPUnit_Framework_TestCase
 {
+    /**#@+
+     * Pager constants defined for test
+     */
     const PAGE_VAR_NAME = 'p';
     const LIMIT_VAR_NAME = 'limit';
     const PAGE = 2;
     const LIMIT = 10;
-
     const TOTAL_COUNT = 30;
+    /**#@-*/
 
     /**
-     * @var \Aheadworks\Blog\Block\PostList\Pager
+     * @var Pager
      */
     private $pager;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
+     * @var SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchCriteriaBuilder;
+    private $searchCriteriaBuilderMock;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteria|\PHPUnit_Framework_MockObject_MockObject
+     * @var SearchCriteria|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchCriteria;
+    private $searchCriteriaMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\PostRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var PostRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $repository;
+    private $repositoryMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\Data\PostSearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var PostSearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchResults;
+    private $searchResultsMock;
 
     /**
-     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $request;
+    private $requestMock;
 
     /**
-     * @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $urlBuilder;
+    private $urlBuilderMock;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->searchCriteria = $this->getMock('Magento\Framework\Api\SearchCriteria', [], [], '', false);
-        $this->searchCriteriaBuilder = $this->getMock(
-            'Magento\Framework\Api\SearchCriteriaBuilder',
+        $this->searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
+        $this->searchCriteriaBuilderMock = $this->getMock(
+            SearchCriteriaBuilder::class,
             ['setCurrentPage', 'setPageSize', 'create'],
             [],
             '',
             false,
             false
         );
-        $this->searchCriteriaBuilder->expects($this->any())
+        $this->searchCriteriaBuilderMock->expects($this->any())
             ->method('setCurrentPage')
             ->will($this->returnSelf());
-        $this->searchCriteriaBuilder->expects($this->any())
+        $this->searchCriteriaBuilderMock->expects($this->any())
             ->method('setPageSize')
             ->will($this->returnSelf());
-        $this->searchCriteriaBuilder->expects($this->any())
+        $this->searchCriteriaBuilderMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->searchCriteria));
+            ->will($this->returnValue($this->searchCriteriaMock));
 
-        $this->searchResults = $this->getMockForAbstractClass('Aheadworks\Blog\Api\Data\PostSearchResultsInterface');
-        $this->searchResults->expects($this->any())
+        $this->searchResultsMock = $this->getMockForAbstractClass(PostSearchResultsInterface::class);
+        $this->searchResultsMock->expects($this->any())
             ->method('getTotalCount')
             ->will($this->returnValue(self::TOTAL_COUNT));
-        $this->repository = $this->getMockForAbstractClass('Aheadworks\Blog\Api\PostRepositoryInterface');
-        $this->repository->expects($this->any())
+        $this->repositoryMock = $this->getMockForAbstractClass(PostRepositoryInterface::class);
+        $this->repositoryMock->expects($this->any())
             ->method('getList')
-            ->with($this->equalTo($this->searchCriteria))
-            ->will($this->returnValue($this->searchResults));
+            ->with($this->equalTo($this->searchCriteriaMock))
+            ->will($this->returnValue($this->searchResultsMock));
 
-        $this->request = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $this->urlBuilder = $this->getMockForAbstractClass('Magento\Framework\UrlInterface');
+        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
         $context = $objectManager->getObject(
-            'Magento\Framework\View\Element\Template\Context',
+            Context::class,
             [
-                'request' => $this->request,
-                'urlBuilder' => $this->urlBuilder
+                'request' => $this->requestMock,
+                'urlBuilder' => $this->urlBuilderMock
             ]
         );
 
         $this->pager = $objectManager->getObject(
-            'Aheadworks\Blog\Block\PostList\Pager',
+            Pager::class,
             ['context' => $context]
         );
         $this->pager->setPageVarName(self::PAGE_VAR_NAME);
@@ -110,7 +131,7 @@ class PagerTest extends \PHPUnit_Framework_TestCase
      */
     private function prepareRequestMock($currentPage = self::PAGE, $limit = self::LIMIT)
     {
-        $this->request->expects($this->any())
+        $this->requestMock->expects($this->any())
             ->method('getParam')
             ->will(
                 $this->returnValueMap(
@@ -128,14 +149,14 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     public function testApplyPagination()
     {
         $this->prepareRequestMock();
-        $this->searchCriteriaBuilder->expects($this->once())
+        $this->searchCriteriaBuilderMock->expects($this->once())
             ->method('setCurrentPage')
             ->with($this->equalTo(self::PAGE));
-        $this->searchCriteriaBuilder->expects($this->once())
+        $this->searchCriteriaBuilderMock->expects($this->once())
             ->method('setPageSize')
             ->with($this->equalTo(self::LIMIT));
-        $this->pager->applyPagination($this->searchCriteriaBuilder, $this->repository);
-        $this->assertSame($this->searchResults, $this->pager->getResultItems());
+        $this->pager->applyPagination($this->searchCriteriaBuilderMock, $this->repositoryMock);
+        $this->assertSame($this->searchResultsMock, $this->pager->getResultItems());
     }
 
     /**
@@ -163,7 +184,7 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     public function testGetCurPageWithDisplacement($displacement, $expectedResult)
     {
         $this->prepareRequestMock();
-        $this->pager->applyPagination($this->searchCriteriaBuilder, $this->repository);
+        $this->pager->applyPagination($this->searchCriteriaBuilderMock, $this->repositoryMock);
         $this->assertEquals($expectedResult, $this->pager->getCurPageWithDisplacement($displacement));
     }
 
@@ -186,7 +207,7 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     public function testIsLastPage($page, $expectedResult)
     {
         $this->prepareRequestMock($page);
-        $this->pager->applyPagination($this->searchCriteriaBuilder, $this->repository);
+        $this->pager->applyPagination($this->searchCriteriaBuilderMock, $this->repositoryMock);
         $this->assertEquals($expectedResult, $this->pager->isLastPage());
     }
 
@@ -196,7 +217,7 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     public function testGetLastPageNum()
     {
         $this->prepareRequestMock();
-        $this->pager->applyPagination($this->searchCriteriaBuilder, $this->repository);
+        $this->pager->applyPagination($this->searchCriteriaBuilderMock, $this->repositoryMock);
         $this->assertEquals(3, $this->pager->getLastPageNum());
     }
 
@@ -206,7 +227,7 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     public function testGetFirstPageUrl()
     {
         $firstPageUrl = 'http://localhost/blog?p=1';
-        $this->urlBuilder->expects($this->atLeastOnce())
+        $this->urlBuilderMock->expects($this->atLeastOnce())
             ->method('getUrl')
             ->with(
                 $this->anything(),
@@ -227,8 +248,8 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     {
         $previousPageUrl = 'http://localhost/blog?p=1';
         $this->prepareRequestMock();
-        $this->pager->applyPagination($this->searchCriteriaBuilder, $this->repository);
-        $this->urlBuilder->expects($this->atLeastOnce())
+        $this->pager->applyPagination($this->searchCriteriaBuilderMock, $this->repositoryMock);
+        $this->urlBuilderMock->expects($this->atLeastOnce())
             ->method('getUrl')
             ->with(
                 $this->anything(),
@@ -249,8 +270,8 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     {
         $nextPageUrl = 'http://localhost/blog?p=3';
         $this->prepareRequestMock();
-        $this->pager->applyPagination($this->searchCriteriaBuilder, $this->repository);
-        $this->urlBuilder->expects($this->atLeastOnce())
+        $this->pager->applyPagination($this->searchCriteriaBuilderMock, $this->repositoryMock);
+        $this->urlBuilderMock->expects($this->atLeastOnce())
             ->method('getUrl')
             ->with(
                 $this->anything(),
@@ -271,8 +292,8 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     {
         $lastPageUrl = 'http://localhost/blog?p=3';
         $this->prepareRequestMock();
-        $this->pager->applyPagination($this->searchCriteriaBuilder, $this->repository);
-        $this->urlBuilder->expects($this->atLeastOnce())
+        $this->pager->applyPagination($this->searchCriteriaBuilderMock, $this->repositoryMock);
+        $this->urlBuilderMock->expects($this->atLeastOnce())
             ->method('getUrl')
             ->with(
                 $this->anything(),
@@ -294,7 +315,7 @@ class PagerTest extends \PHPUnit_Framework_TestCase
         $path = '*/*/*';
         $query = ['paramName' => 'paramValue'];
         $pageUrl = 'http://localhost/blog?paramName=paramValue';
-        $this->urlBuilder->expects($this->atLeastOnce())
+        $this->urlBuilderMock->expects($this->atLeastOnce())
             ->method('getUrl')
             ->with(
                 $this->equalTo(null),

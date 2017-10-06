@@ -1,84 +1,102 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Post;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Aheadworks\Blog\Controller\Adminhtml\Post\Delete;
+use Magento\Backend\Model\View\Result\RedirectFactory;
+use Magento\Backend\App\Action\Context;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Post\Delete
  */
 class DeleteTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var int
+     */
     const POST_ID = 1;
-    const ERROR_MESSAGE = 'Cannot delete.';
 
     /**
-     * @var \Aheadworks\Blog\Controller\Adminhtml\Post\Delete
+     * @var Delete
      */
     private $action;
 
     /**
-     * @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
+     * @var Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultRedirect;
+    private $resultRedirectMock;
 
     /**
-     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $request;
+    private $requestMock;
 
     /**
-     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $messageManager;
+    private $messageManagerMock;
 
     /**
-     * @var \Aheadworks\Blog\Api\PostRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var PostRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $postRepository;
+    private $postRepositoryMock;
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->postRepository = $this->getMockForAbstractClass('Aheadworks\Blog\Api\PostRepositoryInterface');
-
-        $this->resultRedirect = $this->getMock(
-            'Magento\Framework\Controller\Result\Redirect',
+        $this->postRepositoryMock = $this->getMockForAbstractClass(PostRepositoryInterface::class);
+        $this->resultRedirectMock = $this->getMock(
+            Redirect::class,
             ['setPath'],
             [],
             '',
             false
         );
-        $this->resultRedirect->expects($this->any())
+        $this->resultRedirectMock->expects($this->any())
             ->method('setPath')
             ->will($this->returnSelf());
-        $resultRedirectFactoryStub = $this->getMock(
-            'Magento\Backend\Model\View\Result\RedirectFactory',
+        $resultRedirectFactoryMock = $this->getMock(
+            RedirectFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $resultRedirectFactoryStub->expects($this->any())
+        $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->resultRedirect));
+            ->will($this->returnValue($this->resultRedirectMock));
 
-        $this->request = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
-        $this->messageManager = $this->getMockForAbstractClass('Magento\Framework\Message\ManagerInterface');
+        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
         $context = $objectManager->getObject(
-            'Magento\Backend\App\Action\Context',
+            Context::class,
             [
-                'request' => $this->request,
-                'messageManager' => $this->messageManager,
-                'resultRedirectFactory' => $resultRedirectFactoryStub
+                'request' => $this->requestMock,
+                'messageManager' => $this->messageManagerMock,
+                'resultRedirectFactory' => $resultRedirectFactoryMock
             ]
         );
 
         $this->action = $objectManager->getObject(
-            'Aheadworks\Blog\Controller\Adminhtml\Post\Delete',
+            Delete::class,
             [
                 'context' => $context,
-                'postRepository' => $this->postRepository
+                'postRepository' => $this->postRepositoryMock
             ]
         );
     }
@@ -88,14 +106,14 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteRedirect()
     {
-        $this->request->expects($this->any())
+        $this->requestMock->expects($this->any())
             ->method('getParam')
-            ->with($this->equalTo('post_id'))
+            ->with($this->equalTo('id'))
             ->willReturn(null);
-        $this->resultRedirect->expects($this->atLeastOnce())
+        $this->resultRedirectMock->expects($this->atLeastOnce())
             ->method('setPath')
-            ->with($this->equalTo('*/*/index'));
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+            ->with($this->equalTo('*/*/'));
+        $this->assertSame($this->resultRedirectMock, $this->action->execute());
     }
 
     /**
@@ -103,14 +121,14 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteRedirectPostIdParam()
     {
-        $this->request->expects($this->any())
+        $this->requestMock->expects($this->any())
             ->method('getParam')
-            ->with($this->equalTo('post_id'))
+            ->with($this->equalTo('id'))
             ->willReturn(self::POST_ID);
-        $this->resultRedirect->expects($this->atLeastOnce())
+        $this->resultRedirectMock->expects($this->atLeastOnce())
             ->method('setPath')
-            ->with($this->equalTo('*/*/index'));
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+            ->with($this->equalTo('*/*/'));
+        $this->assertSame($this->resultRedirectMock, $this->action->execute());
     }
 
     /**
@@ -118,19 +136,19 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteRedirectException()
     {
-        $this->request->expects($this->any())
+        $this->requestMock->expects($this->any())
             ->method('getParam')
-            ->with($this->equalTo('post_id'))
+            ->with($this->equalTo('id'))
             ->willReturn(self::POST_ID);
-        $this->postRepository->expects($this->any())
+        $this->postRepositoryMock->expects($this->any())
             ->method('deleteById')
             ->willThrowException(
-                new \Magento\Framework\Exception\LocalizedException(__(self::ERROR_MESSAGE))
+                new \Magento\Framework\Exception\LocalizedException(__('Cannot delete.'))
             );
-        $this->resultRedirect->expects($this->atLeastOnce())
+        $this->resultRedirectMock->expects($this->atLeastOnce())
             ->method('setPath')
-            ->with($this->equalTo('*/*/index'));
-        $this->assertSame($this->resultRedirect, $this->action->execute());
+            ->with($this->equalTo('*/*/'));
+        $this->assertSame($this->resultRedirectMock, $this->action->execute());
     }
 
     /**
@@ -138,11 +156,11 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecutePostDelete()
     {
-        $this->request->expects($this->any())
+        $this->requestMock->expects($this->any())
             ->method('getParam')
-            ->with($this->equalTo('post_id'))
+            ->with($this->equalTo('id'))
             ->willReturn(self::POST_ID);
-        $this->postRepository->expects($this->once())
+        $this->postRepositoryMock->expects($this->once())
             ->method('deleteById')
             ->with($this->equalTo(self::POST_ID));
         $this->action->execute();
@@ -153,11 +171,11 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteSuccessMessage()
     {
-        $this->request->expects($this->any())
+        $this->requestMock->expects($this->any())
             ->method('getParam')
-            ->with($this->equalTo('post_id'))
+            ->with($this->equalTo('id'))
             ->willReturn(self::POST_ID);
-        $this->messageManager->expects($this->once())->method('addSuccess');
+        $this->messageManagerMock->expects($this->once())->method('addSuccessMessage');
         $this->action->execute();
     }
 
@@ -166,16 +184,16 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteErrorMessage()
     {
-        $this->request->expects($this->any())
+        $this->requestMock->expects($this->any())
             ->method('getParam')
-            ->with($this->equalTo('post_id'))
+            ->with($this->equalTo('id'))
             ->willReturn(self::POST_ID);
-        $this->postRepository->expects($this->any())
+        $this->postRepositoryMock->expects($this->any())
             ->method('deleteById')
             ->willThrowException(
-                new \Magento\Framework\Exception\LocalizedException(__(self::ERROR_MESSAGE))
+                new \Magento\Framework\Exception\LocalizedException(__('Cannot delete.'))
             );
-        $this->messageManager->expects($this->atLeastOnce())->method('addError');
+        $this->messageManagerMock->expects($this->atLeastOnce())->method('addErrorMessage');
         $this->action->execute();
     }
 }

@@ -1,73 +1,190 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block;
 
-use Aheadworks\Blog\Helper\Config;
+use Aheadworks\Blog\Api\Data\PostInterface;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Aheadworks\Blog\Api\TagRepositoryInterface;
+use Aheadworks\Blog\Block\Post as PostBlock;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Url;
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\View\Element\Template\Context;
 
 /**
  * List of posts block
  * @package Aheadworks\Blog\Block
  */
-class PostList extends PostAbstract
+class PostList extends \Magento\Framework\View\Element\Template implements IdentityInterface
 {
     /**
-     * Init post collection
-     *
-     * @param \Aheadworks\Blog\Model\ResourceModel\Post\CollectionFactory $collectionFactory
+     * @var Post\Listing
      */
-    protected function initPostCollection($collectionFactory)
-    {
-        parent::initPostCollection($collectionFactory);
-        if ($currentTag = $this->getCurrentTagModel()) {
-            $this->postCollection->addTagFilter($currentTag->getId());
-        }
+    private $postListing;
+
+    /**
+     * @var CategoryRepositoryInterface
+     */
+    private $categoryRepository;
+
+    /**
+     * @var TagRepositoryInterface
+     */
+    private $tagRepository;
+
+    /**
+     * @var Url
+     */
+    private $url;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @param Context $context
+     * @param Post\ListingFactory $postListingFactory
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param TagRepositoryInterface $tagRepository
+     * @param Url $url
+     * @param Config $config
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        Post\ListingFactory $postListingFactory,
+        CategoryRepositoryInterface $categoryRepository,
+        TagRepositoryInterface $tagRepository,
+        Url $url,
+        Config $config,
+        array $data = []
+    ) {
+        $this->postListing = $postListingFactory->create();
+        $this->categoryRepository = $categoryRepository;
+        $this->tagRepository = $tagRepository;
+        $this->url = $url;
+        $this->config = $config;
+        parent::__construct($context, $data);
     }
 
     /**
-     * Preparing layout
-     *
-     * @return $this
+     * @return PostInterface[]
+     */
+    public function getPosts()
+    {
+        return $this->postListing->getPosts();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
-        if ($this->getPostCollection()) {
+        if (count($this->getPosts())) {
             /** @var \Aheadworks\Blog\Block\PostList\Pager $pager */
             $pager = $this->getChildBlock('pager');
             if ($pager) {
-                $pager->setPath(trim($this->getRequest()->getPathInfo(), '/'));
-                $pager->setLimit($this->configHelper->getValue(Config::XML_GENERAL_POSTS_PER_PAGE));
-                $pager->setCollection($this->getPostCollection());
-                $this->getPostCollection()->load();
+                $pager
+                    ->setPath(trim($this->getRequest()->getPathInfo(), '/'))
+                    ->setLimit($this->config->getNumPostsPerPage());
+                $this->postListing->applyPagination($pager);
+            }
+        }
+        /** @var \Magento\Theme\Block\Html\Breadcrumbs $breadcrumbs */
+        $breadcrumbs = $this->getLayout()->getBlock('breadcrumbs');
+        if ($breadcrumbs) {
+            $breadcrumbs->addCrumb(
+                'home',
+                [
+                    'label' => __('Home'),
+                    'link' => $this->_storeManager->getStore()->getBaseUrl()
+                ]
+            );
+
+            $tagId = $this->getRequest()->getParam('tag_id');
+            $categoryId = $this->getRequest()->getParam('blog_category_id');
+
+            $blogTitle = $this->config->getBlogTitle();
+            if (!$tagId && !$categoryId) {
+                $breadcrumbs->addCrumb('blog_home', ['label' => $blogTitle]);
+            } else {
+                $breadcrumbs->addCrumb(
+                    'blog_home',
+                    [
+                        'label' => $blogTitle,
+                        'link' => $this->url->getBlogHomeUrl(),
+                    ]
+                );
+                if ($tagId) {
+                    $tag = $this->tagRepository->get($tagId);
+                    $breadcrumbs->addCrumb(
+                        'search_by_tag',
+                        ['label' => __("Tagged with '%1'", $tag->getName())]
+                    );
+                }
+                if ($categoryId) {
+                    $category = $this->categoryRepository->get($categoryId);
+                    $crumbInfo = ['label' => $category->getName()];
+                    if ($this->getRequest()->getParam('post_id')) {
+                        $crumbInfo['link'] = $this->url->getCategoryUrl($category);
+                    }
+                    $breadcrumbs->addCrumb('category_view', $crumbInfo);
+                }
             }
         }
         return $this;
     }
 
     /**
-     * Retrieves list item html
+     * Retrieves items list html
      *
-     * @param \Aheadworks\Blog\Model\Post $post
+     * @param PostInterface $post
      * @return string
      */
-    public function getItemHtml(\Aheadworks\Blog\Model\Post $post)
+    public function getItemHtml(PostInterface $post)
     {
-        $html = '';
-        /** @var \Aheadworks\Blog\Block\Post $block */
-        $block = $this->getLayout()->createBlock('Aheadworks\Blog\Block\Post');
-        if ($block) {
-            $html = $block
-                ->setMode(\Aheadworks\Blog\Block\Post::MODE_LIST_ITEM)
-                ->setPostModel($post)
-                ->toHtml();
-        }
-        return $html;
+        /** @var PostBlock $block */
+        $block = $this->getLayout()->createBlock(
+            PostBlock::class,
+            '',
+            [
+                'data' => [
+                    'post' => $post,
+                    'mode' => PostBlock::MODE_LIST_ITEM,
+                    // Temporary solution.
+                    // Will be revised in the scope of https://magento2.atlassian.net/browse/BB-189
+                    'social_icons_block' => $this->getSocialIconsBlock()
+                ]
+            ]
+        );
+        return $block->toHtml();
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPagerHtml()
+    public function getIdentities()
     {
-        return $this->getPostCollection() ? $this->getChildHtml('pager') : '';
+        $identities = [];
+        foreach ($this->getPosts() as $post) {
+            $identities = [\Aheadworks\Blog\Model\Post::CACHE_TAG . '_' . $post->getId()];
+        }
+        if ($categoryId = $this->getRequest()->getParam('blog_category_id')) {
+            $identities = [\Aheadworks\Blog\Model\Category::CACHE_TAG . '_' . $categoryId];
+        }
+        if ($tagId = $this->getRequest()->getParam('tag_id')) {
+            $identities = [\Aheadworks\Blog\Model\Tag::CACHE_TAG . '_'
+                . $this->tagRepository->get($tagId)->getName()];
+        }
+        if (!$categoryId && !$tagId) {
+            $identities[] = \Aheadworks\Blog\Model\Post::CACHE_TAG_LISTING;
+        }
+        return $identities;
     }
 }

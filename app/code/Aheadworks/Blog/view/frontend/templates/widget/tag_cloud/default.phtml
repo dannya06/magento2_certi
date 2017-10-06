@@ -1,22 +1,29 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 /* @var $block \Aheadworks\Blog\Block\Widget\TagCloud */
 
 // @codingStandardsIgnoreFile
 ?>
 <?php
-    $tags = $block->getTags();
-    $title = $this->getTitle() ? : 'Tags';
+    $tagCloudItems = $block->getItems();
+    $title = $block->getTitle() ? : 'Tags';
 ?>
-<?php if (count($tags)): ?>
-    <div class="block widget block-aw-blog-tag-cloud">
+<?php if ($block->isEnabled() && count($tagCloudItems)): ?>
+    <div class="block widget block-blog-tag-cloud">
         <div class="block-title">
-            <strong><?php echo __($title) ?></strong>
+            <strong><?php echo __($block->escapeHtml($title)) ?></strong>
         </div>
         <div class="block-content">
-            <div class="aw-blog-tags aw-blog-tags--<?php if ($block->isCloud()): ?>cloud<?php else: ?>plain<?php endif; ?>">
-                <?php foreach ($tags as $tag): ?>
-                    <a href="<?php echo $block->getSearchByTagUrl($tag) ?>" <?php if ($block->isCloud()): ?>style="font-size: <?php echo $block->getTagWeight($tag) ?>%;"<?php endif; ?> class="aw-blog-tags__tag">
-                        <?php echo $tag->getName() ?>
+            <div class="blog-tags blog-tags-<?php if ($block->isCloudMode()): ?>cloud<?php else: ?>plain<?php endif; ?>">
+                <?php foreach ($tagCloudItems as $tagCloudItem): ?>
+                    <a href="<?php /* @noEscape */ echo $block->getSearchByTagUrl($tagCloudItem) ?>"
+                       <?php if ($block->isCloudMode()): ?>style="font-size: <?php /* @noEscape */ echo $block->getWeight($tagCloudItem) ?>%;"<?php endif; ?>
+                       class="blog-tags-tag">
+                        <?php echo $block->escapeHtml($tagCloudItem->getTag()->getName()) ?>
                     </a>
                 <?php endforeach; ?>
             </div>

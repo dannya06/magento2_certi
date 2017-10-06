@@ -1,4 +1,9 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Ui\Component\Post\Form\Element;
 
 use Magento\Ui\Component\Form\Element\Input;
@@ -16,8 +21,6 @@ class StatusLabel extends Input
     private $statusSource;
 
     /**
-     * StatusLabel constructor.
-     *
      * @param ContextInterface $context
      * @param \Aheadworks\Blog\Model\Source\Post\Status $statusSource
      * @param array $components

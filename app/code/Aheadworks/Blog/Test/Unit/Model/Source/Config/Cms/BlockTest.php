@@ -1,8 +1,16 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model\Source\Config\Cms;
 
 use Aheadworks\Blog\Model\Source\Config\Cms\Block as CmsBlockSource;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Model\Source\Config\Cms\Block as CmsBlock;
+use Magento\Cms\Model\ResourceModel\Block\Collection;
+use Magento\Cms\Model\ResourceModel\Block\CollectionFactory;
 
 /**
  * Test for \Aheadworks\Blog\Model\Source\Config\Cms\Block
@@ -10,37 +18,42 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 class BlockTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Aheadworks\Blog\Model\Source\Config\Cms\Block
+     * @var CmsBlock
      */
     private $cmsBlockSourceModel;
 
     /**
-     * @var \Magento\Cms\Model\ResourceModel\Block\Collection|\PHPUnit_Framework_MockObject_MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $blockCollection;
+    private $blockCollectionMock;
 
     /**
      * @var array
      */
     private $optionArray = [['option value' => 'option label']];
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->blockCollection = $this->getMockBuilder('Magento\Cms\Model\ResourceModel\Block\Collection')
+        $this->blockCollectionMock = $this->getMockBuilder(Collection::class)
             ->setMethods(['toOptionArray'])
             ->disableOriginalConstructor()
             ->getMock();
-        $blockCollectionFactoryStub = $this->getMockBuilder('Magento\Cms\Model\ResourceModel\Block\CollectionFactory')
+        $blockCollectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $blockCollectionFactoryStub->expects($this->any())
+        $blockCollectionFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->blockCollection));
+            ->will($this->returnValue($this->blockCollectionMock));
         $this->cmsBlockSourceModel = $objectManager->getObject(
-            'Aheadworks\Blog\Model\Source\Config\Cms\Block',
-            ['blockCollectionFactory' => $blockCollectionFactoryStub]
+            CmsBlock::class,
+            ['blockCollectionFactory' => $blockCollectionFactoryMock]
         );
     }
 
@@ -49,12 +62,12 @@ class BlockTest extends \PHPUnit_Framework_TestCase
      */
     public function testToOptionArray()
     {
-        $this->blockCollection->expects($this->atLeastOnce())
+        $this->blockCollectionMock->expects($this->atLeastOnce())
             ->method('toOptionArray')
             ->willReturn($this->optionArray);
         $this->assertEquals(
             array_merge(
-                [CmsBlockSource::DONT_DISPLAY => CmsBlockSource::DONT_DISPLAY_LABEL],
+                [CmsBlockSource::DONT_DISPLAY => 'Don\'t display'],
                 $this->optionArray
             ),
             $this->cmsBlockSourceModel->toOptionArray()

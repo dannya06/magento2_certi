@@ -1,10 +1,16 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model;
 
 use Aheadworks\Blog\Api\Data\CategoryInterface;
 use Aheadworks\Blog\Api\Data\PostInterface;
 use Aheadworks\Blog\Api\Data\TagInterface;
 use Aheadworks\Blog\Controller\Router;
+use Magento\Framework\UrlInterface;
 
 /**
  * Class Url
@@ -18,26 +24,22 @@ class Url
     private $config;
 
     /**
-     * @var \Magento\Framework\UrlInterface
+     * @var UrlInterface
      */
     private $urlBuilder;
 
     /**
-     * Url constructor.
-     *
      * @param Config $config
-     * @param \Magento\Framework\UrlInterface $urlBuilder
+     * @param UrlInterface $urlBuilder
      */
-    public function __construct(
-        Config $config,
-        \Magento\Framework\UrlInterface $urlBuilder
-    ) {
+    public function __construct(Config $config, UrlInterface $urlBuilder)
+    {
         $this->config = $config;
         $this->urlBuilder = $urlBuilder;
     }
 
     /**
-     * Retrieves url.
+     * Retrieves url
      *
      * @param string $route
      * @param array $params
@@ -49,43 +51,40 @@ class Url
     }
 
     /**
-     * Retrieves blog home url.
+     * Retrieves blog home url
      *
      * @return string
      */
     public function getBlogHomeUrl()
     {
-        return $this->getUrl(null, ['_direct' => $this->getRouteToBlog()]);
+        return $this->getUrl(null, ['_direct' => $this->config->getRouteToBlog() . '/']);
     }
 
     /**
-     * Retrieves post url.
+     * Retrieves post url
      *
      * @param PostInterface $post
-     * @param CategoryInterface|null $category
      * @return string
      */
-    public function getPostUrl(PostInterface $post, CategoryInterface $category = null)
+    public function getPostUrl(PostInterface $post)
     {
-        $parts = [$this->getRouteToBlog()];
-        if ($category !== null) {
-            $parts[] = $category->getUrlKey();
-        }
+        $parts = [$this->config->getRouteToBlog()];
         $parts[] = $post->getUrlKey();
-        return $this->getUrl(null, ['_direct' => implode('/', $parts)]);
+        return $this->getUrl(null, ['_direct' => implode('/', $parts) . '/']);
     }
 
     /**
      * @param PostInterface $post
+     * @param int|null $storeId
      * @return string
      */
-    public function getPostRoute(PostInterface $post)
+    public function getPostRoute(PostInterface $post, $storeId = null)
     {
-        return $this->getRouteToBlog() . '/' . $post->getUrlKey();
+        return $this->config->getRouteToBlog($storeId) . '/' . $post->getUrlKey() . '/';
     }
 
     /**
-     * Retrieves post url.
+     * Retrieves post url
      *
      * @param CategoryInterface $category
      * @return string
@@ -97,15 +96,16 @@ class Url
 
     /**
      * @param CategoryInterface $category
+     * @param int|null $storeId
      * @return string
      */
-    public function getCategoryRoute(CategoryInterface $category)
+    public function getCategoryRoute(CategoryInterface $category, $storeId = null)
     {
-        return $this->getRouteToBlog() . '/' . $category->getUrlKey();
+        return $this->config->getRouteToBlog($storeId) . '/' . $category->getUrlKey() . '/';
     }
 
     /**
-     * Retrieves search by tag url.
+     * Retrieves search by tag url
      *
      * @param TagInterface|string $tag
      * @return string
@@ -115,15 +115,7 @@ class Url
         $tagName = $tag instanceof TagInterface ? $tag->getName() : $tag;
         return $this->getUrl(
             null,
-            ['_direct' => $this->getRouteToBlog() . '/' . Router::TAG_KEY . '/' . urlencode($tagName)]
+            ['_direct' => $this->config->getRouteToBlog() . '/' . Router::TAG_KEY . '/' . urlencode($tagName) . '/']
         );
-    }
-
-    /**
-     * @return string
-     */
-    protected function getRouteToBlog()
-    {
-        return $this->config->getValue(Config::XML_GENERAL_ROUTE_TO_BLOG);
     }
 }

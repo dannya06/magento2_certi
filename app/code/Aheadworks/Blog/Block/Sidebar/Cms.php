@@ -1,48 +1,82 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Block\Sidebar;
 
-use Aheadworks\Blog\Helper\Config;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Source\Config\Cms\Block as BlockConfig;
+use Aheadworks\Blog\Model\Url;
+use Magento\Cms\Model\BlockFactory;
+use Magento\Cms\Model\Template\FilterProvider;
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\View\Element\Template\Context;
 
 /**
  * Sidebar Cms block
  * @package Aheadworks\Blog\Block\Sidebar
  */
-class Cms extends \Aheadworks\Blog\Block\Sidebar
+class Cms extends \Magento\Framework\View\Element\Template implements IdentityInterface
 {
     /**
-     * @var \Aheadworks\Blog\Helper\CmsBlock
+     * @var Url
      */
-    protected $cmsBlockHelper;
+    private $url;
 
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Aheadworks\Blog\Helper\Url $urlHelper
-     * @param Config $configHelper
-     * @param \Aheadworks\Blog\Helper\CmsBlock $cmsBlockHelper
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @var lockFactory
+     */
+    private $cmsBlockFactory;
+
+    /**
+     * @var FilterProvider
+     */
+    private $cmsFilterProvider;
+
+    /**
+     * @param Context $context
+     * @param Url $url
+     * @param Config $config
+     * @param BlockFactory $cmsBlockFactory
+     * @param FilterProvider $cmsFilterProvider
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Aheadworks\Blog\Helper\Url $urlHelper,
-        \Aheadworks\Blog\Helper\Config $configHelper,
-        \Aheadworks\Blog\Helper\CmsBlock $cmsBlockHelper,
+        Context $context,
+        Url $url,
+        Config $config,
+        BlockFactory $cmsBlockFactory,
+        FilterProvider $cmsFilterProvider,
         array $data = []
     ) {
-        parent::__construct(
-            $context,
-            $urlHelper,
-            $configHelper,
-            $data
-        );
-        $this->cmsBlockHelper = $cmsBlockHelper;
+        parent::__construct($context, $data);
+        $this->url = $url;
+        $this->config = $config;
+        $this->cmsBlockFactory = $cmsBlockFactory;
+        $this->cmsFilterProvider = $cmsFilterProvider;
     }
 
     /**
-     * @return bool|\Magento\Cms\Model\Block
+     * Retrieves CMS block
+     *
+     * @return bool|\Magento\Cms\Model\Block|null
      */
     public function getCmsBlock()
     {
-        return $this->cmsBlockHelper->getBlock(Config::XML_SIDEBAR_CMS_BLOCK);
+        $cmsBlockId = $this->config->getSidebarCmsBlockId();
+        if ($cmsBlockId && $cmsBlockId != BlockConfig::DONT_DISPLAY) {
+            return $this->cmsBlockFactory->create()
+                ->setStoreId($this->_storeManager->getStore()->getId())
+                ->load($cmsBlockId);
+        }
+        return null;
     }
 
     /**
@@ -51,6 +85,16 @@ class Cms extends \Aheadworks\Blog\Block\Sidebar
      */
     public function getCmsBlockHtml(\Magento\Cms\Model\Block $cmsBlock)
     {
-        return $this->cmsBlockHelper->filter($cmsBlock->getContent());
+        return $this->cmsFilterProvider->getBlockFilter()
+            ->setStoreId($this->_storeManager->getStore()->getId())
+            ->filter($cmsBlock->getContent());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIdentities()
+    {
+        return [\Magento\Cms\Model\Block::CACHE_TAG . '_' . $this->config->getSidebarCmsBlockId()];
     }
 }

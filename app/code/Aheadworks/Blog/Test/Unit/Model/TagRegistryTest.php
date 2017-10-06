@@ -1,236 +1,136 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model;
 
+use Aheadworks\Blog\Api\Data\TagInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Aheadworks\Blog\Model\TagRegistry;
+use Magento\Framework\EntityManager\EntityManager;
+use Aheadworks\Blog\Api\Data\TagInterfaceFactory;
 
 /**
  * Test for \Aheadworks\Blog\Model\TagRegistry
  */
 class TagRegistryTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var int
+     */
     const TAG_ID = 1;
-    const NAME = 'Tag';
 
     /**
-     * @var \Aheadworks\Blog\Model\TagRegistry
+     * @var TagRegistry
      */
     private $tagRegistry;
 
     /**
-     * @var \Aheadworks\Blog\Model\Tag|\PHPUnit_Framework_MockObject_MockObject
+     * @var EntityManager|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $tag;
+    private $entityManagerMock;
 
+    /**
+     * @var TagInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $tagMock;
+
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->tag = $this->getMockBuilder('Aheadworks\Blog\Model\tag')
-            ->setMethods(['load', 'loadByName', 'getId', 'getName'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $tagFactoryStab = $this->getMockBuilder('Aheadworks\Blog\Model\TagFactory')
-            ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $tagFactoryStab->expects($this->any())
+
+        $this->entityManagerMock = $this->getMock(
+            EntityManager::class,
+            ['load'],
+            [],
+            '',
+            false
+        );
+
+        $this->tagMock = $this->getMockForAbstractClass(TagInterface::class);
+        $tagDataFactoryMock = $this->getMock(
+            TagInterfaceFactory::class,
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $tagDataFactoryMock->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->tag));
+            ->will($this->returnValue($this->tagMock));
+
         $this->tagRegistry = $objectManager->getObject(
-            'Aheadworks\Blog\Model\TagRegistry',
-            ['tagFactory' => $tagFactoryStab]
+            TagRegistry::class,
+            [
+                'entityManager' => $this->entityManagerMock,
+                'tagDataFactory' => $tagDataFactoryMock
+            ]
         );
     }
 
     /**
-     * Testing that the Tag Model is load during retrieving
+     * Testing of retrieving of an instance
      */
-    public function testRetrieveLoadModel()
+    public function testRetrieve()
     {
-        $this->tag->expects($this->any())
+        $this->entityManagerMock->expects($this->atLeastOnce())
+            ->method('load')
+            ->with($this->tagMock, self::TAG_ID)
+            ->willReturnSelf();
+        $this->tagMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
-        $this->tag->expects($this->once())
-            ->method('load')
-            ->with(self::TAG_ID)
-            ->will($this->returnValue($this->tag));
-        $this->tagRegistry->retrieve(self::TAG_ID);
+        $this->assertSame($this->tagMock, $this->tagRegistry->retrieve(self::TAG_ID));
     }
 
     /**
-     * Testing that the Tag Model is cached during retrieving
-     */
-    public function testRetrieveCaching()
-    {
-        $this->tag->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
-        $this->tagRegistry->retrieve(self::TAG_ID);
-        $this->tag->expects($this->never())
-            ->method('load')
-            ->with(self::TAG_ID)
-            ->will($this->returnValue($this->tag));
-        $this->tagRegistry->retrieve(self::TAG_ID);
-    }
-
-    /**
-     * Testing retrieve result
-     */
-    public function testRetrieveResult()
-    {
-        $this->tag->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
-        $this->tag->expects($this->any())
-            ->method('load')
-            ->with(self::TAG_ID)
-            ->will($this->returnValue($this->tag));
-        $this->assertEquals(
-            $this->tag,
-            $this->tagRegistry->retrieve(self::TAG_ID)
-        );
-    }
-
-    /**
-     * Testing exception while retrieving of non-existent Tag Model
+     * Testing exception while retrieving of non-existent instance
      *
      * @expectedException \Magento\Framework\Exception\NoSuchEntityException
      */
     public function testRetrieveException()
     {
-        $this->tag->expects($this->any())
+        $this->tagMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(null));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(null));
-        $this->tag->expects($this->any())
+        $this->assertSame($this->tagMock, $this->tagRegistry->retrieve(self::TAG_ID));
+    }
+
+    /**
+     * Testing that an instance is cached during retrieving
+     */
+    public function testRetrieveCaching()
+    {
+        $this->tagMock->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(self::TAG_ID));
+        $this->tagRegistry->retrieve(self::TAG_ID);
+        $this->entityManagerMock->expects($this->never())
             ->method('load')
-            ->with(self::TAG_ID)
-            ->will($this->returnValue($this->tag));
+            ->with($this->tagMock, self::TAG_ID);
         $this->tagRegistry->retrieve(self::TAG_ID);
     }
 
     /**
-     * Testing that the Tag Model is load during retrieving by name
-     */
-    public function testRetrieveByNameLoadModel()
-    {
-        $this->tag->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
-        $this->tag->expects($this->once())
-            ->method('loadByName')
-            ->with(self::NAME)
-            ->will($this->returnValue($this->tag));
-        $this->tagRegistry->retrieveByName(self::NAME);
-    }
-
-    /**
-     * Testing that the Tag Model is cached during retrieving by name
-     */
-    public function testRetrieveByNameCaching()
-    {
-        $this->tag->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
-        $this->tagRegistry->retrieveByName(self::NAME);
-        $this->tag->expects($this->never())
-            ->method('loadByName')
-            ->with(self::NAME)
-            ->will($this->returnValue($this->tag));
-        $this->tagRegistry->retrieveByName(self::NAME);
-    }
-
-    /**
-     * Testing retrieve by name result
-     */
-    public function testRetrieveByNameResult()
-    {
-        $this->tag->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
-        $this->tag->expects($this->any())
-            ->method('loadByName')
-            ->with(self::NAME)
-            ->will($this->returnValue($this->tag));
-        $this->assertEquals(
-            $this->tag,
-            $this->tagRegistry->retrieveByName(self::NAME)
-        );
-    }
-
-    /**
-     * Testing exception while retrieving by name of non-existent Tag Model
-     *
-     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
-     */
-    public function testRetrieveByNameException()
-    {
-        $this->tag->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(null));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(null));
-        $this->tag->expects($this->any())
-            ->method('loadByName')
-            ->with(self::NAME)
-            ->will($this->returnValue($this->tag));
-        $this->tagRegistry->retrieveByName(self::NAME);
-    }
-
-    /**
-     * Testing remove
+     * Testing remove an instance
      */
     public function testRemove()
     {
-        $this->tag->expects($this->any())
+        $this->tagMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->exactly(2))
+        $this->entityManagerMock->expects($this->exactly(2))
             ->method('load')
-            ->with(self::TAG_ID)
-            ->will($this->returnValue($this->tag));
+            ->with($this->tagMock, self::TAG_ID);
         $this->tagRegistry->retrieve(self::TAG_ID);
         $this->tagRegistry->remove(self::TAG_ID);
-        $this->tagRegistry->retrieve(self::TAG_ID);
-    }
-
-    /**
-     * Testing remove by name
-     */
-    public function testRemoveByName()
-    {
-        $this->tag->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
-        $this->tag->expects($this->exactly(2))
-            ->method('load')
-            ->with(self::TAG_ID)
-            ->will($this->returnValue($this->tag));
-        $this->tagRegistry->retrieve(self::TAG_ID);
-        $this->tagRegistry->removeByName(self::NAME);
         $this->tagRegistry->retrieve(self::TAG_ID);
     }
 
@@ -239,25 +139,16 @@ class TagRegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function testPush()
     {
-        $this->tag->expects($this->any())
+        $this->tagMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::TAG_ID));
-        $this->tag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
         $this->tagRegistry->retrieve(self::TAG_ID);
-        /** @var \Aheadworks\Blog\Model\Tag|\PHPUnit_Framework_MockObject_MockObject $newTag */
-        $newTag = $this->getMockBuilder('Aheadworks\Blog\Model\Tag')
-            ->disableOriginalConstructor()
-            ->setMethods(['getId', 'getName'])
-            ->getMock();
+        /** @var TagInterface|\PHPUnit_Framework_MockObject_MockObject $newTag */
+        $newTag = $this->getMockForAbstractClass(TagInterface::class);
         $newTag->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::TAG_ID));
-        $newTag->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(self::NAME));
         $this->tagRegistry->push($newTag);
-        $this->assertEquals($newTag, $this->tagRegistry->retrieve(self::TAG_ID));
+        $this->assertSame($newTag, $this->tagRegistry->retrieve(self::TAG_ID));
     }
 }

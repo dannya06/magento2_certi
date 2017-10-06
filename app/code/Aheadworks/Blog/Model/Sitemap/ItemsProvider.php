@@ -1,19 +1,26 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Model\Sitemap;
 
 use Aheadworks\Blog\Api\Data\CategoryInterface;
 use Aheadworks\Blog\Api\Data\PostInterface;
 use Aheadworks\Blog\Api\CategoryRepositoryInterface;
 use Aheadworks\Blog\Api\PostRepositoryInterface;
-use Aheadworks\Blog\Model\Category;
 use Aheadworks\Blog\Model\Config;
 use Aheadworks\Blog\Model\Source\Post\Status as PostStatus;
+use Aheadworks\Blog\Model\Source\Category\Status as CategoryStatus;
+use Aheadworks\Blog\Model\Url;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 
 /**
  * Sitemap blog items provider
  * @package Aheadworks\Blog\Model\Sitemap
  * @codeCoverageIgnore
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ItemsProvider
 {
@@ -33,7 +40,7 @@ class ItemsProvider
     private $searchCriteriaBuilder;
 
     /**
-     * @var \Aheadworks\Blog\Model\Url
+     * @var Url
      */
     protected $url;
 
@@ -43,19 +50,17 @@ class ItemsProvider
     protected $config;
 
     /**
-     * ItemsProvider constructor.
-     *
      * @param CategoryRepositoryInterface $categoryRepository
      * @param PostRepositoryInterface $postRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param \Aheadworks\Blog\Model\Url $url
+     * @param Url $url
      * @param Config $config
      */
     public function __construct(
         CategoryRepositoryInterface $categoryRepository,
         PostRepositoryInterface $postRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        \Aheadworks\Blog\Model\Url $url,
+        Url $url,
         Config $config
     ) {
         $this->categoryRepository = $categoryRepository;
@@ -81,7 +86,7 @@ class ItemsProvider
                     new \Magento\Framework\DataObject(
                         [
                             'id' => 'blog_home',
-                            'url' => $this->config->getValue(Config::XML_GENERAL_ROUTE_TO_BLOG, $storeId),
+                            'url' => $this->config->getRouteToBlog($storeId),
                             'updated_at' => $this->getCurrentDateTime()
                         ]
                     )
@@ -103,7 +108,7 @@ class ItemsProvider
             $categoryItems[$category->getId()] = new \Magento\Framework\DataObject(
                 [
                     'id' => $category->getId(),
-                    'url' => $this->url->getCategoryRoute($category),
+                    'url' => $this->url->getCategoryRoute($category, $storeId),
                     'updated_at' => $this->getCurrentDateTime()
                 ]
             );
@@ -130,7 +135,7 @@ class ItemsProvider
             $postItems[$post->getId()] = new \Magento\Framework\DataObject(
                 [
                     'id' => $post->getId(),
-                    'url' => $this->url->getPostRoute($post),
+                    'url' => $this->url->getPostRoute($post, $storeId),
                     'updated_at' => $this->getCurrentDateTime()
                 ]
             );
@@ -153,7 +158,7 @@ class ItemsProvider
     private function getCategories($storeId)
     {
         $this->searchCriteriaBuilder
-            ->addFilter('status', Category::STATUS_ENABLED)
+            ->addFilter('status', CategoryStatus::ENABLED)
             ->addFilter(CategoryInterface::STORE_IDS, $storeId);
         return $this->categoryRepository->getList($this->searchCriteriaBuilder->create())->getItems();
     }
@@ -179,7 +184,7 @@ class ItemsProvider
      */
     private function getChangeFreq($storeId)
     {
-        return $this->config->getValue(Config::XML_SITEMAP_CHANGEFREQ, $storeId);
+        return $this->config->getSitemapChangeFrequency($storeId);
     }
 
     /**
@@ -188,7 +193,7 @@ class ItemsProvider
      */
     private function getPriority($storeId)
     {
-        return $this->config->getValue(Config::XML_SITEMAP_PRIORITY, $storeId);
+        return $this->config->getSitemapPriority($storeId);
     }
 
     /**

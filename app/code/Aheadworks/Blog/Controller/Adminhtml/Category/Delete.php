@@ -1,60 +1,63 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Controller\Adminhtml\Category;
 
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Backend\App\Action;
+use Aheadworks\Blog\Api\CategoryRepositoryInterface;
+use Magento\Backend\App\Action\Context;
 
 /**
  * Class Delete
  * @package Aheadworks\Blog\Controller\Adminhtml\Category
  */
-class Delete extends \Aheadworks\Blog\Controller\Adminhtml\Category
+class Delete extends \Magento\Backend\App\Action
 {
     /**
-     * @var \Aheadworks\Blog\Model\CategoryFactory
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
      */
-    protected $categoryFactory;
+    const ADMIN_RESOURCE = 'Aheadworks_Blog::categories';
 
     /**
-     * @param Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Aheadworks\Blog\Model\CategoryFactory $categoryFactory
+     * @var CategoryRepositoryInterface
+     */
+    private $categoryRepository;
+
+    /**
+     * @param Context $context
+     * @param CategoryRepositoryInterface $categoryRepository
      */
     public function __construct(
-        Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Aheadworks\Blog\Model\CategoryFactory $categoryFactory
+        Context $context,
+        CategoryRepositoryInterface $categoryRepository
     ) {
-        $this->categoryFactory = $categoryFactory;
-        parent::__construct($context, $resultPageFactory);
+        parent::__construct($context);
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
-     * Delete action
+     * Delete category action
      *
      * @return \Magento\Backend\Model\View\Result\Page
      */
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-        $catId = $this->getRequest()->getParam('cat_id');
-        if ($catId) {
-            /** @var $category \Aheadworks\Blog\Model\Category */
-            $category = $this->categoryFactory->create()->load($catId);
+        $categoryId = (int)$this->getRequest()->getParam('id');
+        if ($categoryId) {
             try {
-                $category->delete();
-                $this->messageManager->addSuccess(__('Category was successfully deleted.'));
+                $this->categoryRepository->deleteById($categoryId);
+                $this->messageManager->addSuccessMessage(__('Category was successfully deleted.'));
                 return $resultRedirect->setPath('*/*/');
-            } catch (LocalizedException $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\RuntimeException $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while deleting the category.'));
+            } catch (\Exception $exception) {
+                $this->messageManager->addErrorMessage($exception->getMessage());
             }
-            return $resultRedirect->setPath('*/*/edit', ['cat_id' => $category->getCatId()]);
         }
-        $this->messageManager->addError(__('Cannot delete: wrong category ID.'));
+        $this->messageManager->addErrorMessage(__('Category could not be deleted.'));
         return $resultRedirect->setPath('*/*/');
     }
 }

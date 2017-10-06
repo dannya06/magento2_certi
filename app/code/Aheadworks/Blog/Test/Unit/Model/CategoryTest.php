@@ -1,7 +1,14 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model;
 
+use Aheadworks\Blog\Model\Category;
 use Aheadworks\Blog\Model\Source\Category\Status;
+use Aheadworks\Blog\Model\ResourceModel\Validator\UrlKeyIsUnique;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
@@ -9,17 +16,15 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  */
 class CategoryTest extends \PHPUnit_Framework_TestCase
 {
-    const URL_KEY = 'cat';
-
     /**
-     * @var \Aheadworks\Blog\Model\Category
+     * @var Category
      */
     private $categoryModel;
 
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Category|\PHPUnit_Framework_MockObject_MockObject
+     * @var UrlKeyIsUnique|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $categoryResource;
+    private $urlKeyIsUniqueMock;
 
     /**
      * Category model data
@@ -28,64 +33,48 @@ class CategoryTest extends \PHPUnit_Framework_TestCase
      */
     private $categoryData = [
         'name' => 'Category',
-        'url_key' => self::URL_KEY,
+        'url_key' => 'cat',
         'status' => Status::ENABLED,
         'sort_order' => 0,
+        'meta_title' => 'category meta title',
+        'meta_description' => 'category meta description',
         'store_ids' => [1, 2]
     ];
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->categoryResource = $this->getMockBuilder('Aheadworks\Blog\Model\ResourceModel\Category')
-            ->setMethods(['getIdFieldName', 'load', 'isUrlKeyUnique'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->urlKeyIsUniqueMock = $this->getMock(UrlKeyIsUnique::class, ['validate'], [], '', false);
         $this->categoryModel = $objectManager->getObject(
-            'Aheadworks\Blog\Model\Category',
-            ['resource' => $this->categoryResource]
+            Category::class,
+            ['urlKeyIsUnique' => $this->urlKeyIsUniqueMock]
         );
-    }
-
-    /**
-     * Testing that Category model data is loaded using resource model
-     */
-    public function testLoadByUrlKeyResourceLoad()
-    {
-        $this->categoryResource->expects($this->once())
-            ->method('load')
-            ->with(
-                $this->equalTo($this->categoryModel),
-                $this->equalTo(self::URL_KEY),
-                $this->equalTo('url_key')
-            );
-        $this->categoryModel->loadByUrlKey(self::URL_KEY);
-    }
-
-    /**
-     * Testing return value of 'loadByUrlKey' method
-     */
-    public function testLoadByUrlKeyResult()
-    {
-        $this->assertSame($this->categoryModel, $this->categoryModel->loadByUrlKey(self::URL_KEY));
     }
 
     /**
      * Testing that proper exceptions are thrown if category data is incorrect
      *
      * @dataProvider validateBeforeSaveDataProvider
+     * @param array $categoryData
+     * @param string $exceptionMessage
      */
     public function testValidateBeforeSaveExceptions($categoryData, $exceptionMessage)
     {
-        $this->categoryResource->expects($this->any())
-            ->method('isUrlKeyUnique')
+        $this->urlKeyIsUniqueMock->expects($this->any())
+            ->method('validate')
+            ->with($this->equalTo($this->categoryModel))
             ->willReturn(true);
         $this->categoryModel->setData($categoryData);
         try {
             $this->categoryModel->validateBeforeSave();
             $this->fail();
         } catch (\Exception $e) {
-            $this->assertInstanceOf('Magento\Framework\Validator\Exception', $e);
+            $this->assertInstanceOf(\Magento\Framework\Validator\Exception::class, $e);
             $this->assertContains($exceptionMessage, $e->getMessage());
         }
     }
@@ -98,14 +87,17 @@ class CategoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidateBeforeSaveDuplicatedUrlKey()
     {
-        $this->categoryResource->expects($this->any())
-            ->method('isUrlKeyUnique')
+        $this->urlKeyIsUniqueMock->expects($this->any())
+            ->method('validate')
+            ->with($this->equalTo($this->categoryModel))
             ->willReturn(false);
         $this->categoryModel->setData($this->categoryData);
         $this->categoryModel->validateBeforeSave();
     }
 
     /**
+     * Data provider for testValidateBeforeSaveExceptions method
+     *
      * @return array
      */
     public function validateBeforeSaveDataProvider()
@@ -120,7 +112,7 @@ class CategoryTest extends \PHPUnit_Framework_TestCase
                 'URL-Key is required.'
             ],
             'numeric URL-Key' => [
-                array_merge($this->categoryData, ['url_key' => 123]),
+                array_merge($this->categoryData, ['url_key' => '123']),
                 'URL-Key cannot consist only of numbers.'
             ],
             'invalid URL-Key' => [

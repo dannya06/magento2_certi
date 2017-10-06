@@ -1,7 +1,13 @@
 <?php
+/**
+* Copyright 2016 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 namespace Aheadworks\Blog\Test\Unit\Model;
 
-use Aheadworks\Blog\Model\Source\Post\Status;
+use Aheadworks\Blog\Model\Post;
+use Aheadworks\Blog\Model\ResourceModel\Validator\UrlKeyIsUnique;
 use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
@@ -10,17 +16,15 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  */
 class PostTest extends \PHPUnit_Framework_TestCase
 {
-    const URL_KEY = 'cat';
-
     /**
-     * @var \Aheadworks\Blog\Model\Post
+     * @var Post
      */
     private $postModel;
 
     /**
-     * @var \Aheadworks\Blog\Model\ResourceModel\Post|\PHPUnit_Framework_MockObject_MockObject
+     * @var UrlKeyIsUnique|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $postResource;
+    private $urlKeyIsUniqueMock;
 
     /**
      * Post model data
@@ -29,93 +33,51 @@ class PostTest extends \PHPUnit_Framework_TestCase
      */
     private $postData = [
         'title' => 'Post',
-        'url_key' => self::URL_KEY,
+        'url_key' => 'post',
         'short_content' => 'Post short content',
         'content' => 'Post content',
+        'author_name' => 'Dummy Dummy',
         'is_allow_comments' => 1,
+        'meta_title' => 'post meta title',
+        'meta_description' => 'post meta description',
         'store_ids' => [1, 2],
-        'categories' => [1, 2]
+        'category_ids' => [1, 2]
     ];
 
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->postResource = $this->getMockBuilder('Aheadworks\Blog\Model\ResourceModel\Post')
-            ->setMethods(['getIdFieldName', 'load', 'isUrlKeyUnique'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->urlKeyIsUniqueMock = $this->getMock(UrlKeyIsUnique::class, ['validate'], [], '', false);
         $this->postModel = $objectManager->getObject(
-            'Aheadworks\Blog\Model\Post',
-            ['resource' => $this->postResource]
+            Post::class,
+            ['urlKeyIsUnique' => $this->urlKeyIsUniqueMock]
         );
-    }
-
-    /**
-     * Testing that Post model data is loaded using resource model
-     */
-    public function testLoadByUrlKeyResourceLoad()
-    {
-        $this->postResource->expects($this->once())
-            ->method('load')
-            ->with(
-                $this->equalTo($this->postModel),
-                $this->equalTo(self::URL_KEY),
-                $this->equalTo('url_key')
-            );
-        $this->postModel->loadByUrlKey(self::URL_KEY);
-    }
-
-    /**
-     * Testing return value of 'loadByUrlKey' method
-     */
-    public function testLoadByUrlKeyResult()
-    {
-        $this->assertSame($this->postModel, $this->postModel->loadByUrlKey(self::URL_KEY));
-    }
-
-    /**
-     * Testing that virtual status of Post model is defined properly
-     *
-     * @dataProvider getVirtualStatusDataProvider
-     */
-    public function testGetVirtualStatus($status, $publishDate, $virtualStatus)
-    {
-        $this->postModel
-            ->setStatus($status)
-            ->setPublishDate($publishDate);
-        $this->assertEquals($virtualStatus, $this->postModel->getVirtualStatus());
-    }
-
-    /**
-     * @return array
-     */
-    public function getVirtualStatusDataProvider()
-    {
-        $now = (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT);
-        $tomorrow = (new \DateTime())->add(new \DateInterval('P1D'))->format(DateTime::DATETIME_PHP_FORMAT);
-        return [
-            'draft' => [Status::DRAFT, null, Status::DRAFT],
-            'published' => [Status::PUBLICATION, $now, Status::PUBLICATION_PUBLISHED],
-            'scheduled' => [Status::PUBLICATION, $tomorrow, Status::PUBLICATION_SCHEDULED],
-        ];
     }
 
     /**
      * Testing that proper exceptions are thrown if post data is incorrect
      *
      * @dataProvider validateBeforeSaveDataProvider
+     * @param array $postData
+     * @param string $exceptionMessage
      */
     public function testValidateBeforeSaveExceptions($postData, $exceptionMessage)
     {
-        $this->postResource->expects($this->any())
-            ->method('isUrlKeyUnique')
+        $this->urlKeyIsUniqueMock->expects($this->any())
+            ->method('validate')
+            ->with($this->equalTo($this->postModel))
             ->willReturn(true);
         $this->postModel->setData($postData);
         try {
             $this->postModel->validateBeforeSave();
             $this->fail();
         } catch (\Exception $e) {
-            $this->assertInstanceOf('Magento\Framework\Validator\Exception', $e);
+            $this->assertInstanceOf(\Magento\Framework\Validator\Exception::class, $e);
             $this->assertContains($exceptionMessage, $e->getMessage());
         }
     }
@@ -128,14 +90,17 @@ class PostTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidateBeforeSaveDuplicatedUrlKey()
     {
-        $this->postResource->expects($this->any())
-            ->method('isUrlKeyUnique')
+        $this->urlKeyIsUniqueMock->expects($this->any())
+            ->method('validate')
+            ->with($this->equalTo($this->postModel))
             ->willReturn(false);
         $this->postModel->setData($this->postData);
         $this->postModel->validateBeforeSave();
     }
 
     /**
+     * Data provider for testValidateBeforeSaveExceptions method
+     *
      * @return array
      */
     public function validateBeforeSaveDataProvider()
@@ -154,7 +119,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
                 'Content is required.'
             ],
             'numeric URL-Key' => [
-                array_merge($this->postData, ['url_key' => 123]),
+                array_merge($this->postData, ['url_key' => '123']),
                 'URL-Key cannot consist only of numbers.'
             ],
             'invalid URL-Key' => [
