@@ -13,7 +13,7 @@ Instalation:
 
     install site using wizard from browser
 
-    git checkout 2.0.1
+    git checkout 2.0.2
 
     composer update
 
@@ -33,7 +33,7 @@ How to update project that base from SWIFT
 
     git fetch swift --tags
 
-    git merge 2.0.1
+    git merge 2.0.2
 
     full deploy : setup upgrade, compile, deploy
 
@@ -47,7 +47,7 @@ How to update project that clone from SWIFT
 
     git fetch origin --tags
 
-    git checkout tags/2.0.1 -b <branch_name>_2.0.1
+    git checkout tags/2.0.2 -b <branch_name>_2.0.2
 
     full deploy : setup upgrade, compile, deploy
 
