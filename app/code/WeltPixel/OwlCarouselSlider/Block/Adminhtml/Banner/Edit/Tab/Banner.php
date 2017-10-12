@@ -341,9 +341,22 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
             'image',
             'image',
             [
-                'title'    => __('Image'),
-                'label'    => __('Image'),
+                'title'    => __('Desktop Image'),
+                'label'    => __('Desktop Image'),
                 'name'     => 'image',
+                'note'     => 'Accepted images: jpg, jpeg, gif, png',
+                'required' => false,
+            ]
+        );
+
+
+        $elements['mobile_image'] = $fieldset->addField(
+            'mobile_image',
+            'image',
+            [
+                'title'    => __('Mobile Image'),
+                'label'    => __('Mobile Image'),
+                'name'     => 'mobile_image',
                 'note'     => 'Accepted images: jpg, jpeg, gif, png',
                 'required' => false,
             ]
@@ -478,6 +491,10 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
                     'image'
                 )
                 ->addFieldMap(
+                    "{$htmlIdPrefix}mobile_image",
+                    'mobile_image'
+                )
+                ->addFieldMap(
                     "{$htmlIdPrefix}custom",
                     'custom'
                 )
@@ -487,6 +504,11 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
                 )
                 ->addFieldDependence(
                     'image',
+                    'banner_type',
+                    '1'
+                )
+                ->addFieldDependence(
+                    'mobile_image',
                     'banner_type',
                     '1'
                 )

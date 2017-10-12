@@ -8,4 +8,5 @@
         <plugin name="weltpixel-categorypage-config-view"
                 type="WeltPixel\CategoryPage\Plugin\ConfigView" sortOrder="10"/>
     </type>
+    <preference for="Magento\Catalog\Block\Product\ImageBuilder" type="WeltPixel\CategoryPage\Block\Product\ImageBuilder" />
 </config>

@@ -8,8 +8,7 @@ class Accordions implements \Magento\Framework\Option\ArrayInterface
         return [
             ['value' => 'simple', 'label' => __('Minimalist')],
             ['value' => 'accordion-bg', 'label' => __('With background')],
-            ['value' => 'accordion-border', 'label' => __('With border')],
-            ['value' => 'panel-group', 'label' => __('Bootstrap Accordion')]
+            ['value' => 'accordion-border', 'label' => __('With border')]
         ];
     }
 }

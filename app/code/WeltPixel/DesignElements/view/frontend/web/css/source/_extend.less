@@ -1,3 +1,14 @@
+/* EXTEND SOCIAL ICONS */
+.social-icons.si-light{
+    background-color: rgba(255, 255, 255, 0.5);
+    &:last-child{
+        i{
+            &:last-child{
+                color:#666 !important;
+            }
+        }
+    }
+}
 .media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
     .page-layout-fullscreen {
         .navigation,
@@ -29,6 +40,13 @@
             .switcher {
                 margin-right: 10px;
             }
+        }
+    }
+}
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
+    .theme-pearl {
+        .row {
+            margin-right: 0px;
         }
     }
 }

@@ -11,6 +11,9 @@
                     <option name="weltpixel_hp_v5" value="product/widget/content/grid_v5.phtml" selected="false">
                         <label translate="true">WeltPixel Home Page V5 Products Grid Template</label>
                     </option>
+                    <option name="weltpixel_hp_v10" value="product/widget/content/grid_v10.phtml" selected="false">
+                        <label translate="true">WeltPixel Home Page V10 Products Grid Template</label>
+                    </option>
                 </options>
             </parameter>
         </parameters>

@@ -150,6 +150,15 @@ class Banners extends \Magento\Backend\Block\Widget\Grid\Extended
             ]
         );
         $this->addColumn(
+            'mobile_image',
+            [
+                'header' => __('Mobile Image'),
+                'filter' => false,
+                'width'  => '50px',
+                'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Banner\Helper\Renderer\MobileImage',
+            ]
+        );
+        $this->addColumn(
             'title',
             [
                 'header' => __('Banner Title'),

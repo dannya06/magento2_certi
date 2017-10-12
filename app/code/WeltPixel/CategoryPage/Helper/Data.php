@@ -73,6 +73,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return mixed
      */
+    public function isHoverImageEnabled() {
+        return $this->_categoryOptions['image']['enable_hover_image'];
+    }
+
+    /**
+     * @return mixed
+     */
     public function displayAddToCart() {
         return $this->_categoryOptions['general']['display_addtocart'];
     }

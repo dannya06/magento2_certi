@@ -136,6 +136,10 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
 
         $content .= $this->_generateLogoLess($storeId);
 
+
+        $globalPromoTextColor = $this->_helper->getGlobalPromoTextColor($storeId);
+        $globalPromoBackgroundColor = $this->_helper->getGlobalPromoBackgroundColor($storeId);
+
         $topHeaderWidth = $this->_helper->getTopHeaderWidth($storeId);
 
         $topHeaderLinkColor = $this->_helper->getTopHeaderLinkColor($storeId);
@@ -164,11 +168,16 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $serachOptionsBorderColor = $this->_helper->getSerachOptionsBorderColor($storeId);
         $serachOptionsBackground = $this->_helper->getSerachOptionsBackground($storeId);
         $serachOptionsColor = $this->_helper->getSerachOptionsColor($storeId);
+        $serachOptionsPlaceHolderColor = $this->_helper->getSerachOptionsPlaceHolderColor($storeId);
         $serachOptionsFontSize = $this->_helper->getSerachOptionsFontSize($storeId);
 
         $headerIconSize = $this->_helper->getHeaderIconSize($storeId);
 
         // ---
+
+        $globalPromoTextColor = strlen(trim($globalPromoTextColor)) ? 'color: ' . $globalPromoTextColor . ';' : '';
+        $globalPromoBackgroundColor = strlen(trim($globalPromoBackgroundColor)) ? 'background-color: ' . $globalPromoBackgroundColor . ';' : '';
+
         $topHeaderWidth = strlen(trim($topHeaderWidth)) ? 'max-width:' . $topHeaderWidth . ' !important;' : '';
 
         $topHeaderLinkColor = strlen(trim($topHeaderLinkColor)) ? 'color:' . $topHeaderLinkColor . ';' : '';
@@ -192,8 +201,17 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
 
         $serachOptionsWidth = strlen(trim($serachOptionsWidth)) ? 'width: ' . $serachOptionsWidth . ';' : '';
         $serachOptionsHeight = strlen(trim($serachOptionsHeight)) ? 'height: ' . $serachOptionsHeight . ';' : '';
-        $serachOptionsBorderWidth = unserialize($serachOptionsBorderWidth)['<%- _id %>'];
-        $searchOBW = '';
+
+        $serachOptionsBorderWidthJson = json_decode($serachOptionsBorderWidth);
+        /** magento 2.2 removed serialization  */
+        if ($serachOptionsBorderWidthJson && ( $serachOptionsBorderWidth != $serachOptionsBorderWidthJson )) {
+            $serachOptionsBorderWidth = json_decode($serachOptionsBorderWidth, true);
+            $serachOptionsBorderWidth = $serachOptionsBorderWidth['<%- _id %>'];
+        } else {
+            $serachOptionsBorderWidth = unserialize($serachOptionsBorderWidth)['<%- _id %>'];
+        }
+
+        $searchOBW = [];
         $true = false;
         foreach ($serachOptionsBorderWidth as $serachOptionsBorderWidth) {
             if ($serachOptionsBorderWidth) {
@@ -206,19 +224,44 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $serachOptionsBorderStyle = strlen(trim($serachOptionsBorderStyle)) ? 'border-style: ' . $serachOptionsBorderStyle . ';' : 'border-style: solid;';
         $serachOptionsBorderColor = strlen(trim($serachOptionsBorderColor)) ? 'border-color: ' . $serachOptionsBorderColor . ';' : 'border-color: #000000;';
         $serachOptionsBackground = strlen(trim($serachOptionsBackground)) ? 'background-color: ' . $serachOptionsBackground . ';' : 'background-color: transparent;';
-        $serachOptionsColor = strlen(trim($serachOptionsColor)) ? 'color: ' . $serachOptionsColor . ';' : 'color: #000000;';
+        $serachOptionsColor = strlen(trim($serachOptionsColor)) ? 'color: ' . $serachOptionsColor . ';' : 'color: initial;';
+        $serachOptionsPlaceHolderColor = strlen(trim($serachOptionsPlaceHolderColor)) ? 'color: ' . $serachOptionsPlaceHolderColor . ';' : 'color: #000000;';
         $serachOptionsFontSize = strlen(trim($serachOptionsFontSize)) ? 'font-size: ' . $serachOptionsFontSize . ';' : 'font-size: 15px;';
 
         $headerIconSize = strlen(trim($headerIconSize)) ? 'font-size: ' . $headerIconSize . ' !important;' : 'font-size: 16px !important;';
+	    $bkColorMobile = (int)$this->_mobileBreakPoint - 1  . 'px';
 
         //        Generate Less
         $content .= "
 .page-wrapper .page-header {
     $middleHeaderBackgroundColor
+     .block-search input::-webkit-input-placeholder {
+            $serachOptionsPlaceHolderColor
+        }
+        .block-search input::-moz-placeholder {
+            $serachOptionsPlaceHolderColor
+        }
+        .block-search input::-ms-placeholder {
+            $serachOptionsPlaceHolderColor
+        }
+        .block-search input::placeholder
+        {
+            $serachOptionsPlaceHolderColor
+        }
+        .block-search .action.search:before    
+        {
+            $serachOptionsPlaceHolderColor
+        }   
     .panel.wrapper {
         $topHeaderBorderBottomColor
         $topHeaderBackgroundColor
-        $topHeaderTextColor
+        $topHeaderTextColor       
+    }
+    .header-global-promo {
+		.global-notification-wrapper {
+		    $globalPromoTextColor
+		    $globalPromoBackgroundColor
+		}
     }
     .panel.header {
         $topHeaderWidth
@@ -248,6 +291,9 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         }
     }
     // Middle
+    .header-multistore .multistore-desktop .weltpixel_multistore {
+        $middleHeaderWidth
+    }
     .header.content, .header_right {
         $middleHeaderWidth
         $bottomHeaderPadding
@@ -261,6 +307,9 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 $serachOptionsBackground
                 $serachOptionsColor
                 $serachOptionsFontSize
+                &:focus{
+                     $serachOptionsBorderColor
+                }
             }
         }
     }
@@ -278,7 +327,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         }
     }
     .header.links > li.authorization-link a:before,
-    .minicart-wrapper .action.showcart:before, 
+    .minicart-wrapper .action.showcart:before,
     .minicart-wrapper .action.showcart.active:before,
     .block-search .action.search:before {
         $headerIconSize
@@ -292,22 +341,26 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $bottomHeaderBackgroundColor
         $bottomHeaderPadding
         ul {
-            li {
-                a {
+            li.level0 > a {
+                $bottomHeaderLinkColor
+                &:visited {
                     $bottomHeaderLinkColor
-                    $bottomHeaderHoverLinkColor
-                    &:visited {
-                        $bottomHeaderLinkColor
-                    }
                 }
+                $bottomHeaderHoverLinkColor
+                @media (max-width: $bkColorMobile) {
+			        color: #575757 !important;
+			    }
             }
         }
+        @media (max-width: $bkColorMobile) {
+	        background-color: inherit !important;
+	    }
     }
-    @media (max-width: $this->_mobileBreakPoint) {
+    @media (max-width: $bkColorMobile) {
         background-color: white !important;
     }
-    .nav-sections-item-content { 
-        @media (min-width: $this->_mobileBreakPoint) {
+    .nav-sections-item-content {
+        @media (min-width: $bkColorMobile) {
             $bottomNavigationShadow
         }
     }

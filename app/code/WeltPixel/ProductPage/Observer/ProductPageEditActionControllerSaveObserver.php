@@ -53,36 +53,36 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
     protected $_mobileBreakPoint;
 
 
-	/**
-	 * @var \WeltPixel\ProductPage\Model\ProductPageFactory
-	 */
+    /**
+     * @var \WeltPixel\ProductPage\Model\ProductPageFactory
+     */
     protected $productPageFactory;
 
-	/**
-	 * @var \Magento\Framework\Json\Helper\Data
-	 */
-	protected $jsonHelper;
+    /**
+     * @var \Magento\Framework\Json\Helper\Data
+     */
+    protected $jsonHelper;
 
-	/**
-	 * ProductPageEditActionControllerSaveObserver constructor.
-	 *
-	 * @param \WeltPixel\ProductPage\Helper\Data $helper
-	 * @param \WeltPixel\FrontendOptions\Helper\Data $frontendHelper
-	 * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-	 * @param \Magento\Framework\Module\Dir\Reader $dirReader
-	 * @param \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
-	 * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-	 * @param \WeltPixel\ProductPage\Model\ProductPageFactory $productPageFactory
-	 */
+    /**
+     * ProductPageEditActionControllerSaveObserver constructor.
+     *
+     * @param \WeltPixel\ProductPage\Helper\Data $helper
+     * @param \WeltPixel\FrontendOptions\Helper\Data $frontendHelper
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Framework\Module\Dir\Reader $dirReader
+     * @param \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \WeltPixel\ProductPage\Model\ProductPageFactory $productPageFactory
+     */
     public function __construct(
         \WeltPixel\ProductPage\Helper\Data $helper,
         \WeltPixel\FrontendOptions\Helper\Data $frontendHelper,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
-        \Magento\Framework\Module\Dir\Reader $dirReader, 
-        \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory, 
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\Module\Dir\Reader $dirReader,
+        \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \WeltPixel\ProductPage\Model\ProductPageFactory $productPageFactory,
-	    \Magento\Framework\Json\Helper\Data $jsonHelper
+        \Magento\Framework\Json\Helper\Data $jsonHelper
     ) {
         $this->_helper = $helper;
         $this->_frontendHelper = $frontendHelper;
@@ -93,7 +93,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         $this->_storeCollection = $this->_storeManager->getStores();
         $this->_mobileBreakPoint = $this->_frontendHelper->getBreakpointM();
         $this->productPageFactory = $productPageFactory;
-	    $this->jsonHelper = $jsonHelper;
+        $this->jsonHelper = $jsonHelper;
     }
 
     /**
@@ -116,12 +116,12 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
             $cssOptions = $this->_helper->getCssOptions($store->getData('store_id'));
             $backgroundArrows = $this->_helper->getBackgroundArrows($store->getData('store_id'));
             $generatedCssDirectoryPath = DIRECTORY_SEPARATOR . 'frontend' .
-                    DIRECTORY_SEPARATOR . 'web' .
-                    DIRECTORY_SEPARATOR . 'css' .
-                    DIRECTORY_SEPARATOR . 'weltpixel_product_store_' .
-                    $store->getData('code') . '.less';
+                DIRECTORY_SEPARATOR . 'web' .
+                DIRECTORY_SEPARATOR . 'css' .
+                DIRECTORY_SEPARATOR . 'weltpixel_product_store_' .
+                $store->getData('code') . '.less';
 
-	        $this->collectionData($store->getData('store_id'));
+            $this->collectionData($store->getData('store_id'));
 
             $content = $this->_generateContent($imageAreaWidth, $productAreaWidth);
             $content .= $this->_generateSwatchCss($swatchOptions);
@@ -156,13 +156,13 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
 
         /* Store view specific less generation */
         $this->_generateStoreViewSpecificLess();
-        
+
         return $this;
     }
 
     /**
      * Generate the less css content for the product page options
-     * 
+     *
      * @param sring $imageAreaWidth
      * @param string $productAreaWidth
      * @return string
@@ -254,9 +254,9 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         $lineHeight = $swatchOptions['line_height'];
         $fontSize = $swatchOptions['font_size'];
 
-	    $hWidth = $width + 6 . 'px';
-	    $hHeight = $height + 6 . 'px';
-	    $icon_content = '\e116';
+        $hWidth = (int)$width + 6 . 'px';
+        $hHeight = (int)$height + 6 . 'px';
+        $icon_content = '\e116';
 
         $content = "
         .catalog-product-view {
@@ -405,33 +405,33 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         $tabTextActiveColor = $cssOptions['tab_text_active_color'];
         $tabTextColor = $cssOptions['tab_text_color'];
         $tabContainerPadding = $cssOptions['tab_container_padding'];
-	    $cssBG = $cssOptions['page_background_color'];
-	    $page_background_color = $cssBG != '' ? true : false;
-	    $pbc = '';
-	    $rgba = '';
-	    if($page_background_color){
-		    $pbc = 'background-color: ' . $cssBG . ' !important;';
-		    $rgba = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($cssBG))) . ',0.8) !important;';
-	    }
+        $cssBG = $cssOptions['page_background_color'];
+        $page_background_color = $cssBG != '' ? true : false;
+        $pbc = '';
+        $rgba = '';
+        if($page_background_color){
+            $pbc = 'background-color: ' . $cssBG . ' !important;';
+            $rgba = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($cssBG))) . ',0.8) !important;';
+        }
 
-	    $cssBGT = $cssOptions['page_background_color_top_v3'];
-	    $page_background_color_top_v3 = $cssBGT != '' ? true : false;
-	    if($page_background_color_top_v3){
-		    $page_background_color_top_v3 = 'background-color: '.$cssBGT.';';
-	    } else {
-		    $page_background_color_top_v3 = '';
-	    }
+        $cssBGT = $cssOptions['page_background_color_top_v3'];
+        $page_background_color_top_v3 = $cssBGT != '' ? true : false;
+        if($page_background_color_top_v3){
+            $page_background_color_top_v3 = 'background-color: '.$cssBGT.';';
+        } else {
+            $page_background_color_top_v3 = '';
+        }
 
-	    $page_background_color_bottom_v3 = $cssOptions['page_background_color_bottom_v3'] != '' ? true : false;
-	    if($page_background_color_bottom_v3){
-		    $pbct = 'background-color: ' . $cssOptions['page_background_color_bottom_v3'] . ';';
-		    $rgbat = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($cssOptions['page_background_color_bottom_v3']))) . ',0.8) !important;';
-	    } else {
-		    $pbct = '';
-		    $rgbat = '';
-	    }
+        $page_background_color_bottom_v3 = $cssOptions['page_background_color_bottom_v3'] != '' ? true : false;
+        if($page_background_color_bottom_v3){
+            $pbct = 'background-color: ' . $cssOptions['page_background_color_bottom_v3'] . ';';
+            $rgbat = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($cssOptions['page_background_color_bottom_v3']))) . ',0.8) !important;';
+        } else {
+            $pbct = '';
+            $rgbat = '';
+        }
 
-	    $content = "
+        $content = "
         
         .product-page-v2 {
             &.catalog-product-view #pre-div,
@@ -474,7 +474,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
 					z-index: -1;
 				}
 				.product-info-main {
-					padding-top: 75px;
+					padding-top: 7%;
+					margin-top: 0px;
 					&.cart-summary {
 						padding-top: 75px !important;
 					}
@@ -575,6 +576,11 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
             
             .product.data.items > .item.content {
                 padding: $tabContainerPadding;
+                 @media (max-width: $this->_mobileBreakPoint) {
+                    padding: 10px;
+                    margin-top:0px !important;
+                 }
+                
             }
                                     
         }
@@ -593,14 +599,14 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
     }
 
     private function _generateBackgroundArrows($backgroundArrows) {
-	    if($backgroundArrows != ''){
-		    $rgba = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($backgroundArrows))) . ',0.3) !important;';
-		    $rgbah = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($backgroundArrows))) . ',0.5) !important;';
-	    } else {
-		    $rgba = 'background-color: transparent !important;';
-		    $rgbah = 'background-color: transparent !important;';
-	    }
-    	$content = "
+        if($backgroundArrows != ''){
+            $rgba = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($backgroundArrows))) . ',0.3) !important;';
+            $rgbah = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($backgroundArrows))) . ',0.5) !important;';
+        } else {
+            $rgba = 'background-color: transparent !important;';
+            $rgbah = 'background-color: transparent !important;';
+        }
+        $content = "
     	    .fotorama__arr {
                 $rgba
     	        &:hover {
@@ -615,7 +621,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
 			}
     	";
 
-	    return $content;
+        return $content;
     }
 
     /**
@@ -631,9 +637,9 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         $lessTemplate = $this->_dirReader->getModuleDir('', 'WeltPixel_ProductPage') . DIRECTORY_SEPARATOR .
             'data' . DIRECTORY_SEPARATOR . 'template.less';
 
-		$content .= file_get_contents($lessTemplate);
+        $content .= file_get_contents($lessTemplate);
 
-	    $lessVariables = $this->_getLessVariables();
+        $lessVariables = $this->_getLessVariables();
 
         foreach ($this->_storeCollection as $store) {
             $lessValues = $this->_getLessValues($store);
@@ -696,24 +702,24 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
 
     public function collectionData($store){
 
-		$scopeConfig = 'weltpixel_product_page';
-	    $adminOptions = $this->_scopeConfig->getValue($scopeConfig, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store);
-	    $version = '';
-	    foreach ($adminOptions as $key => $values) {
-		    $name = $scopeConfig . '_' . $key . '_';
-		    if($key != 'version'){
-			    foreach ($values as $key => $value){
-				    $configs[] = [
-					    'id' => $name . $key,
-					    'value' => $value
-				    ];
-			    }
-		    } else {
-			    $version = $values['version'];
-		    }
-	    }
+        $scopeConfig = 'weltpixel_product_page';
+        $adminOptions = $this->_scopeConfig->getValue($scopeConfig, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store);
+        $version = '';
+        foreach ($adminOptions as $key => $values) {
+            $name = $scopeConfig . '_' . $key . '_';
+            if($key != 'version'){
+                foreach ($values as $key => $value){
+                    $configs[] = [
+                        'id' => $name . $key,
+                        'value' => $value
+                    ];
+                }
+            } else {
+                $version = $values['version'];
+            }
+        }
 
-	    $options = $this->jsonHelper->jsonEncode($configs);;
+        $options = $this->jsonHelper->jsonEncode($configs);;
 
         $productPage = $this->productPageFactory->create();
         $productPage->loadByVersionAndStore($version, $store);
@@ -725,30 +731,30 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         try {
             $productPage->save();
         } catch (\Exception $e) {
-	        $this->writeErrorLog($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
-	/**
-	 * Convert HEX in RGB
-	 *
-	 * @param string $hex
-	 * @return string
-	 */
-	private function hex2rgb($hex)
-	{
-		$hex = str_replace("#", "", $hex);
+    /**
+     * Convert HEX in RGB
+     *
+     * @param string $hex
+     * @return string
+     */
+    private function hex2rgb($hex)
+    {
+        $hex = str_replace("#", "", $hex);
 
-		if (strlen($hex) == 3) {
-			$r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
-			$g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
-			$b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
-		} else {
-			$r = hexdec(substr($hex, 0, 2));
-			$g = hexdec(substr($hex, 2, 2));
-			$b = hexdec(substr($hex, 4, 2));
-		}
-		$rgb = array($r, $g, $b);
-		return $rgb;
-	}
+        if (strlen($hex) == 3) {
+            $r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+            $g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+            $b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+        } else {
+            $r = hexdec(substr($hex, 0, 2));
+            $g = hexdec(substr($hex, 2, 2));
+            $b = hexdec(substr($hex, 4, 2));
+        }
+        $rgb = array($r, $g, $b);
+        return $rgb;
+    }
 }

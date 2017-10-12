@@ -5,6 +5,11 @@
             <general>
                 <header_style>v2</header_style>
             </general>
+            <global_promo>
+                <enable>0</enable>
+                <text_color>#b05d5d</text_color>
+                <background_color>#ffe8e8</background_color>
+            </global_promo>
             <top_header>
                 <active_link_color>#FFFFFF</active_link_color>
                 <background_color>#FFFFFF</background_color>

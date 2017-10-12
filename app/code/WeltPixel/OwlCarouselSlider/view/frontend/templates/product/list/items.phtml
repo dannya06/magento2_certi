@@ -203,7 +203,7 @@ switch ($type = $block->getType()) {
                             <?php endif; ?>
 
                             <?php if ($type == 'related' || $type == 'upsell'): ?>
-                                <?php /* @escapeNotVerified */ echo($iterator++ == 1) ? '<li class="item product product-item" style="display: none;">' : '</li><li class="item product product-item" style="display: none;">' ?>
+                                <?php /* @escapeNotVerified */ echo($iterator++ == 1) ? '<li class="item product product-item" style="">' : '</li><li class="item product product-item" style="">' ?>
                             <?php else: ?>
                                 <?php /* @escapeNotVerified */ echo($iterator++ == 1) ? '<li class="item product product-item">' : '</li><li class="item product product-item">' ?>
                             <?php endif; ?>

@@ -93,6 +93,12 @@ Testimonials,Testimonials
 Buttons,Buttons
 Sections/Parallax,Sections/Parallax
 Animations,Animations
+"AOS Animation","AOS Animation"
+"Check the demo. Click <a href=""http://michalsnik.github.io/aos"" target=""_blank"">here</a>","Check the demo. Click <a href=""http://michalsnik.github.io/aos"" target=""_blank"">here</a>"
+"Activate Back To Top Button","Activate Back To Top Button"
+"Show button after ""x"" pixels of scroll down","Show button after ""x"" pixels of scroll down"
+"Reduce the opacity of ""Back To Top"" button after ""x"" pixels of scroll down","Reduce the opacity of ""Back To Top"" button after ""x"" pixels of scroll down"
+"Duration of the top scrolling animation","Duration of the top scrolling animation"
 "WeltPixel Icon","WeltPixel Icon"
 "Select Icon","Select Icon"
 "Icon Size","Icon Size"

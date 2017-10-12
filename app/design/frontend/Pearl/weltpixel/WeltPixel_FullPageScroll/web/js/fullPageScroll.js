@@ -18,6 +18,8 @@ var FullPageScroll = {
 			breadcrumbsOH = breadcrumbs.outerHeight(),
 			body = jQuery('body'),
 			ww = jQuery(window).width(),
+			multiStore = jQuery('.header-multistore .multistore-desktop'),
+			globalPromo = jQuery('.header-global-promo'),
 			round = 0;
 
 		header.addClass('fps active');
@@ -31,6 +33,8 @@ var FullPageScroll = {
 			footerOH = footer.outerHeight();
 			navOH = nav.outerHeight();
 			breadcrumbsOH = breadcrumbs.outerHeight();
+			multiStoreOH = multiStore.outerHeight();
+			globalPromoOH = globalPromo.outerHeight();
 
 
             if (pageHeader.hasClass('page-header-v1')) {
@@ -48,6 +52,8 @@ var FullPageScroll = {
                 headerH = headerPanelOH + headerCntOH - round;
             }
 
+			headerH = headerH + multiStoreOH + globalPromoOH;
+
             footer.css('margin-bottom', -footerOH);
             breadcrumbs.css('top', headerH + navOH).addClass('fps active');
 
@@ -60,6 +66,10 @@ var FullPageScroll = {
 			} else {
 				nav.css('top', 0).removeClass('fps');
 			}
+		});
+
+		jQuery(document).ready(function() {
+			setTimeout(function(){ jQuery(window).trigger('resize'); }, 1000);
 		});
 
 		jQuery('#fullpage').fullpage({

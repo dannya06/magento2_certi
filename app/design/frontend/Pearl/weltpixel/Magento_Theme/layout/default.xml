@@ -4,7 +4,6 @@
 		<attribute name="class" value="theme-pearl"/>
 		<referenceBlock name="form.subscribe" remove="true"/>
 		<referenceBlock name="footer_links" remove="true"/>
-		<referenceBlock name="copyright" remove="true"/>
 		<move element="store_switcher" destination="header.panel" after="store_language" />
 		<referenceBlock name="store.settings">
 			<block class="Magento\Store\Block\Switcher" name="store.settings.storeswitcher" template="switch/stores.phtml">

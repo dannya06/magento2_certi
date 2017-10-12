@@ -56,6 +56,28 @@
         }
     }
     </script>
+    
+    <?php $_helper = $this->helper('WeltPixel\QuickCart\Helper\Data'); ?>
+    <?php $storeId = $_helper->getStoreId(); ?>
+    <style>
+        .block-content-quickcart .quickcart-top {
+            background: <?php echo $_helper->getHeaderBackground($storeId) ?>;
+            color: <?php echo $_helper->getHeaderTextColor($storeId) ?>;
+            height: <?php echo $_helper->getHeaderHeight($storeId) ?>;
+            line-height: <?php echo $_helper->getHeaderHeight($storeId) ?>;
+        }
+        .block-content-quickcart .quickcart-top button.close {
+            height: <?php echo $_helper->getHeaderBackground($storeId) ?>;
+        }
+        .block-content-quickcart .quickcart-top button.close span {
+            color: <?php echo $_helper->getHeaderTextColor($storeId) ?>;
+        }
+        .block-content-quickcart .quickcart-top .action.close::before {
+            color: <?php echo $_helper->getHeaderTextColor($storeId) ?>;
+        }
+        .block-content-quickcart .quickcart-bottom-container .subtotal {
+            background: <?php echo $_helper->getSubtotalBackground($storeId) ?>;
+            color: <?php echo $_helper->getSubtotalTextColor($storeId) ?>;
+        }
+    </style>
 </div>
-
-

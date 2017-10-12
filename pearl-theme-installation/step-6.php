@@ -1,6 +1,8 @@
 <?php
 set_time_limit(0);
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
+
 $result = array(
     'msg' => '',
     'error' => false
@@ -8,7 +10,7 @@ $result = array(
 
 
 try {
-    require __DIR__ . '/../app/bootstrap.php';
+    require $bootstrapPath;
 } catch (\Exception $e) {
     echo <<<HTML
 <div style="font:12px/1.35em arial, helvetica, sans-serif;">

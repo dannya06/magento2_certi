@@ -34,8 +34,8 @@ class Save extends \WeltPixel\OwlCarouselSlider\Controller\Adminhtml\Banner
                 $bannerModel->load($bannerId);
             }
 
+            /** Desktop Image verificaions */
             $bannerImage = $this->getRequest()->getFiles('image');
-
             $fileName = ($bannerImage && array_key_exists('name', $bannerImage)) ? $bannerImage['name'] : null;
 
             if ($bannerImage && $fileName) {
@@ -80,6 +80,59 @@ class Save extends \WeltPixel\OwlCarouselSlider\Controller\Adminhtml\Banner
                         $data['delete_image'] = true;
                     } elseif (isset($data['image']['value'])) {
                         $data['image'] = $data['image']['value'];
+                    }
+                }
+            }
+
+
+            /** Moble Image verifictions */
+            $bannerMobileImage = $this->getRequest()->getFiles('mobile_image');
+
+            $fileMobileName = ($bannerMobileImage && array_key_exists('name', $bannerMobileImage)) ? $bannerMobileImage['name'] : null;
+
+            if ($bannerMobileImage && $fileMobileName) {
+                try {
+
+                    /** @var \Magento\Framework\ObjectManagerInterface $uploader */
+                    $uploader = $this->_objectManager->create(
+                        'Magento\MediaStorage\Model\File\Uploader',
+                        ['fileId' => 'mobile_image']
+                    );
+
+                    $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
+
+                    /** @var \Magento\Framework\Image\Adapter\AdapterInterface $imageAdapterFactory */
+                    $imageAdapterFactory = $this->_objectManager->get('Magento\Framework\Image\AdapterFactory')
+                        ->create();
+
+                    $uploader->addValidateCallback('banner_mobile_image', $imageAdapterFactory, 'validateUploadFile');
+                    $uploader->setAllowRenameFiles(true);
+                    $uploader->setFilesDispersion(true);
+
+                    /** @var \Magento\Framework\Filesystem\Directory\Read $mediaDirectory */
+                    $mediaDirectory = $this->_objectManager->get('Magento\Framework\Filesystem')
+                        ->getDirectoryRead(DirectoryList::MEDIA);
+
+                    $result = $uploader->save(
+                        $mediaDirectory
+                            ->getAbsolutePath(\WeltPixel\OwlCarouselSlider\Model\Banner::OWLCAROUSELSLIDER_MEDIA_PATH)
+                    );
+
+                    $data['mobile_image'] = \WeltPixel\OwlCarouselSlider\Model\Banner::OWLCAROUSELSLIDER_MEDIA_PATH
+                        . $result['file'];
+
+                } catch (\Exception $e) {
+                    if ($e->getCode() == 0) {
+                        $this->messageManager->addError($e->getMessage());
+                    }
+                }
+            } else {
+                if (isset($data['mobile_image']) && isset($data['mobile_image']['value'])) {
+                    if (isset($data['mobile_image']['delete'])) {
+                        $data['mobile_image'] = null;
+                        $data['delete_mobile_image'] = true;
+                    } elseif (isset($data['mobile_image']['value'])) {
+                        $data['mobile_image'] = $data['mobile_image']['value'];
                     }
                 }
             }

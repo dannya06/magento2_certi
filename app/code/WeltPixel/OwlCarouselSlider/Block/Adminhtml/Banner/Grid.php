@@ -126,10 +126,20 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'image',
             [
-                'header'   => __('Image'),
+                'header'   => __('Desktop Image'),
                 'width'    => '50px',
                 'filter'   => false,
                 'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Banner\Helper\Renderer\Image',
+            ]
+        );
+
+        $this->addColumn(
+            'mobile_image',
+            [
+                'header'   => __('Mobile Image'),
+                'width'    => '50px',
+                'filter'   => false,
+                'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Banner\Helper\Renderer\MobileImage',
             ]
         );
 

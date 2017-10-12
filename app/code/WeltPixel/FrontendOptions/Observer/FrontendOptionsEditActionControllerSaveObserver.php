@@ -170,6 +170,10 @@ class FrontendOptionsEditActionControllerSaveObserver implements ObserverInterfa
     private function _generateContent($frontendOptions, $fontFamilyOptions) {
         $content = '// Generated Less from WeltPixel_FrontendOptions' . PHP_EOL;
 
+        /** Add predefined values for some variables */
+        $content .= '@breadcrumbs-background: transparent;' . PHP_EOL;
+        $content .= '@breadcrumbs__separator-color: inherit;' . PHP_EOL;
+
         foreach ($frontendOptions as $groupId => $frontendGroup) {
             if (in_array($groupId, array('section_width'))) {
                 continue;

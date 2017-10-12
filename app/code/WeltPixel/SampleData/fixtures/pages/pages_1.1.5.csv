@@ -46,7 +46,39 @@ a, .alink {
 color: #FFF;
 border-color: #fff;
 }
-",,,"
+",,"
+.nav-sections .navigation ul li.level0 > a,
+.nav-sections .navigation ul li.level0 > a:visited,
+.page-wrapper .page-header .block-search .action.search:before {
+    color: #ffffff !important
+}
+.nav-sections .navigation ul li.level0 > a:active,
+.nav-sections .navigation ul li.level0 > a:hover,
+.minicart-wrapper a.action:active,
+.minicart-wrapper a.action:hover,
+.header.links a:active,
+.header.links a:hover {
+    color: #cccccc !important;
+}
+.page-wrapper .page-header .header.content .block-search input:focus {
+    border-color: #ffffff ;
+}
+#search::-webkit-input-placeholder {
+    color: #ffffff ; opacity: 1;
+}
+#search:-moz-placeholder {
+    color: #ffffff ; opacity: 1;
+}
+#search::-moz-placeholder {
+    color: #ffffff ; opacity: 1;
+}
+#search:-ms-input-placeholder {
+    color: #ffffff ; opacity: 1;
+}
+#search::-ms-input-placeholder {
+    color: #ffffff ; opacity: 1;
+}
+","
  .nav-sections .navigation ul li a{
   color:#fff !important;
 }

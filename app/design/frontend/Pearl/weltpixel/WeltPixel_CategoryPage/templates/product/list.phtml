@@ -136,7 +136,7 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
                                                 <button type="submit"
                                                         title="<?php echo $block->escapeHtml(__('Add to Cart')); ?>"
                                                         class="action tocart primary">
-													<span><?php /* @escapeNotVerified */
+                                                    <span><?php /* @escapeNotVerified */
                                                         echo __('Add to Cart') ?></span>
                                                 </button>
                                             </form>
@@ -167,7 +167,7 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
                                            echo $block->getAddToWishlistParams($_product); ?>'
                                            data-action="add-to-wishlist"
                                            role="button">
-											<span><?php /* @escapeNotVerified */
+                                            <span><?php /* @escapeNotVerified */
                                                 echo __('Add to Wish List') ?></span>
                                         </a>
                                     <?php endif; ?>
@@ -181,7 +181,7 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
                                            data-post='<?php /* @escapeNotVerified */
                                            echo $compareHelper->getPostDataParams($_product); ?>'
                                            role="button">
-											<span><?php /* @escapeNotVerified */
+                                            <span><?php /* @escapeNotVerified */
                                                 echo __('Add to Compare') ?></span>
                                         </a>
                                     <?php endif; ?>
@@ -226,6 +226,6 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
             }
         }
 
-		</script>
+        </script>
     <?php endif; ?>
 <?php endif; ?>

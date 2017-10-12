@@ -157,11 +157,11 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             ]
         );
 
-        $elements['Next/Prev Buttons'] = $fieldset->addField(
-            'Next/Prev Buttons',
+        $elements['nav'] = $fieldset->addField(
+            'nav',
             'select',
             [
-                'name'     => 'Next/Prev Buttons',
+                'name'     => 'nav',
                 'label'    => __('Next/Prev Buttons'),
                 'title'    => __('Next/Prev Buttons'),
                 'required' => false,
@@ -332,11 +332,11 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             ]
         );
 
-        $elements['Auto Height'] = $fieldset->addField(
-            'Auto Height',
+        $elements['autoHeight'] = $fieldset->addField(
+            'autoHeight',
             'select',
             [
-                'name'     => 'Auto Height',
+                'name'     => 'autoHeight',
                 'label'    => __('Auto Height'),
                 'title'    => __('Auto Height'),
                 'required' => false,

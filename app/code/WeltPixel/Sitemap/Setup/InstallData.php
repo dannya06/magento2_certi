@@ -95,6 +95,20 @@ class InstallData implements InstallDataInterface
         $categoryEntityIntTable = $setup->getTable('catalog_category_entity_int');
         $productEntityIntTable = $setup->getTable('catalog_product_entity_int');
 
+        /** Enterprise version fix, entity_id column changed to row_id */
+        $categoryEntityId = 'entity_id';
+        $categoryEntityIntColumns = array_keys($setup->getConnection()->describeTable($categoryEntityIntTable));
+        if (in_array('row_id', $categoryEntityIntColumns)) {
+            $categoryEntityId = 'row_id';
+        }
+
+        $productEntityId = 'entity_id';
+        $productEntityIntColumns = array_keys($setup->getConnection()->describeTable($productEntityIntTable));
+        if (in_array('row_id', $productEntityIntColumns)) {
+            $productEntityId = 'row_id';
+        }
+        /** Enterprise version fix, entity_id column changed to row_id */
+
         $productCollection = $this->productCollectionFactory->create();
         $productIds = $productCollection->getAllIds();
 
@@ -102,17 +116,21 @@ class InstallData implements InstallDataInterface
         $categoryIds = $categoryCollection->getAllIds();
 
         foreach ($categoryIds as $id) {
-            $setup->getConnection()->query(
-                "INSERT INTO `$categoryEntityIntTable`" .
-                "(`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) " .
-                "VALUES (NULL, '$categoryAttributeId', '0', '$id', '0');");
+            try {
+                $setup->getConnection()->query(
+                    "INSERT INTO `$categoryEntityIntTable`" .
+                    "(`value_id`, `attribute_id`, `store_id`, `" . $categoryEntityId . "`, `value`) " .
+                    "VALUES (NULL, '$categoryAttributeId', '0', '$id', '0');");
+            } catch (\Exception $ex) {}
         }
 
         foreach ($productIds as $id) {
-            $setup->getConnection()->query(
-                "INSERT INTO `$productEntityIntTable`" .
-                "(`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) " .
-                "VALUES (NULL, '$productAttributeId', '0', '$id', '0');");
+            try {
+                $setup->getConnection()->query(
+                    "INSERT INTO `$productEntityIntTable`" .
+                    "(`value_id`, `attribute_id`, `store_id`, `" . $productEntityId . "`, `value`) " .
+                    "VALUES (NULL, '$productAttributeId', '0', '$id', '0');");
+            } catch (\Exception $ex) {}
         }
     }
 }

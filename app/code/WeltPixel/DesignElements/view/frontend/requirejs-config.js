@@ -11,7 +11,6 @@ var config = {
             Alert: 'WeltPixel_DesignElements/js/bootstrap/alert',
             Button: 'WeltPixel_DesignElements/js/bootstrap/button',
             Dropdown: 'WeltPixel_DesignElements/js/bootstrap/dropdown',
-            Panels: 'WeltPixel_DesignElements/js/bootstrap/panels',
             testimonialsGrid:  'WeltPixel_DesignElements/js/testimonialsGrid',
             flexslider: 'WeltPixel_DesignElements/js/canvas/jquery.flexslider',
             load_flex_slider: 'WeltPixel_DesignElements/js/load_flex_slider',
@@ -19,7 +18,9 @@ var config = {
             load_parallax: 'WeltPixel_DesignElements/js/load_parallax',
             jquery_important: 'WeltPixel_DesignElements/js/canvas/jquery.important',
             animations:  'WeltPixel_DesignElements/js/animations',
-            jquery_transition: 'WeltPixel_DesignElements/js/canvas/jquery.transition'
+            aos_animation:  'WeltPixel_DesignElements/js/aos',
+            jquery_transition: 'WeltPixel_DesignElements/js/canvas/jquery.transition',
+            btt_button:  'WeltPixel_DesignElements/js/btt_button',
         }
     },
     shim: {
@@ -39,9 +40,6 @@ var config = {
             deps: ['jquery']
         },
         Dropdown: {
-            deps: ['jquery']
-        },
-        Panels: {
             deps: ['jquery']
         },
         flexslider: {

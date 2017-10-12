@@ -53,7 +53,7 @@ class PaymentInformation
         $additionalInformation = $order->getPayment()->getAdditionalInformation();
         $paymentMethodTitle = $additionalInformation['method_title'];
 
-        $this->_checkoutSession->setCheckoutOptionsData($this->helper->addCheckoutStepPushData('2', $paymentMethodTitle));
+        $this->_checkoutSession->setCheckoutOptionsData($this->helper->addCheckoutStepPushData('3', $paymentMethodTitle));
 
         return $result;
     }

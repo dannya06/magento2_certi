@@ -19,6 +19,28 @@
                     <source_model>WeltPixel\CustomHeader\Model\Config\Source\Headerstyles</source_model>
                 </field>
             </group>
+            <group id="global_promo" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Global Promo Message</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>weltpixel_global_promo_message static block content is displayed.</comment>
+                </field>
+                <field id="text_color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="background_color" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+            </group>
             <group id="top_header" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Top Header</label>
                 <field id="width" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -119,7 +141,12 @@
                     <label>Font color</label>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
-                <field id="font_size" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="placeholder_color" translate="label" type="text" sortOrder="245" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Placeholder color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+
+                <field id="font_size" translate="label" type="text" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font size</label>
                 </field>
             </group>

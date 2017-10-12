@@ -1,6 +1,9 @@
 <?php
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
+
 try {
-    require __DIR__ . '/../app/bootstrap.php';
+    require $bootstrapPath;
 } catch (\Exception $e) {
     echo <<<HTML
 <div style="font:12px/1.35em arial, helvetica, sans-serif;">
@@ -19,6 +22,7 @@ $objectManager = $bootstrap->getObjectManager();
 $storeRepository = $objectManager->get('\Magento\Store\Model\StoreRepository');
 $helperBackend = $objectManager->get('\Magento\Backend\Helper\Data');
 $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$state = $objectManager->get('\Magento\Framework\App\State');
 
 $homeUrl = $storeManager->getStore()->getBaseUrl();
 $backendUrl = $helperBackend->getHomePageUrl();
@@ -64,6 +68,16 @@ unset($storeList['admin']);
     </div>
 </div>
 
+<?php if ($state->getMode() === \Magento\Framework\App\State::MODE_PRODUCTION) : ?>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <p class="notification-msg">The GUI is not working on production mode. <br/>
+                Please set your magento installation to developer mode.</p>
+        </div>
+    </div>
+</div>
+<?php else:  ?>
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
@@ -228,6 +242,8 @@ unset($storeList['admin']);
                                 <option value="v7">v7</option>
                                 <option value="v8">v8</option>
                                 <option value="v9">v9</option>
+                                <option value="v10">v10</option>
+                                <option value="v11">v11</option>
                             </select>
                         </div>
                         <div class="checkbox">
@@ -263,6 +279,8 @@ unset($storeList['admin']);
                                 <option value="v7">v7</option>
                                 <option value="v8">v8</option>
                                 <option value="v9">v9</option>
+                                <option value="v10">v10</option>
+                                <option value="v11">v11</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -354,7 +372,7 @@ unset($storeList['admin']);
         <p class="copyright">&copy; <?php echo date("Y"); ?> WeltPixel</p>
     </footer>
 </div> <!-- /container -->
-
+<?php endif; ?>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->

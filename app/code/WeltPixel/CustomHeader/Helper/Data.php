@@ -308,6 +308,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int $storeId
      * @return mixed
      */
+    public function getSerachOptionsPlaceHolderColor($storeId = 0) {
+        if ($storeId) {
+            return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/placeholder_color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_headerOptions['search_options']['placeholder_color'];
+        }
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
     public function getSerachOptionsFontSize($storeId = 0) {
         if ($storeId) {
             return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/font_size', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
@@ -327,4 +339,40 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 			return $this->_headerOptions['icons']['icon_size'];
 		}
 	}
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function isGlobalPromoEnabled($storeId = 0) {
+        if ($storeId) {
+            return $this->scopeConfig->getValue('weltpixel_custom_header/global_promo/enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_headerOptions['global_promo']['enable'];
+        }
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getGlobalPromoTextColor($storeId = 0) {
+        if ($storeId) {
+            return $this->scopeConfig->getValue('weltpixel_custom_header/global_promo/text_color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_headerOptions['global_promo']['text_color'];
+        }
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getGlobalPromoBackgroundColor($storeId = 0) {
+        if ($storeId) {
+            return $this->scopeConfig->getValue('weltpixel_custom_header/global_promo/background_color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_headerOptions['global_promo']['background_color'];
+        }
+    }
 }

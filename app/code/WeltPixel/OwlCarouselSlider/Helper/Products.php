@@ -108,7 +108,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * Retrieve the product limit config value.
      *
-     * @param $string type
+     * @param string $type
      * @return int
      */
     public function getProductLimit($type)
@@ -121,7 +121,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * Retrieve the random sort config value.
      *
-     * @param $string type
+     * @param string $type
      * @return int
      */
     public function getRandomSort($type)
@@ -134,16 +134,18 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * Retrieve the slider configuration.
      *
-     * @param $string type
+     * @param string $type
      * @return array
      */
     public function getSliderConfiguration($type)
     {
         switch($type){
             case 'related':
+            case 'related-rule':
                 $type = 'related_products';
                 break;
             case 'upsell':
+            case 'upsell-rule':
                 $type = 'upsell_products';
                 break;
             case 'crosssell':

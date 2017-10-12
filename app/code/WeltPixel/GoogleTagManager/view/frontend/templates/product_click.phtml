@@ -20,7 +20,7 @@
                         array(
                             'name'  => html_entity_decode($product->getName()),
                             'id'    => $helper->getGtmProductId($product),
-                            'price' => number_format($product->getFinalPrice(), 2),
+                            'price' => number_format($product->getFinalPrice(), 2, '.', ''),
                             'category'  =>  $helper->getGtmCategoryFromCategoryIds($product->getCategoryIds()),
                             'position'  => $index
                         )

@@ -9,6 +9,11 @@ namespace WeltPixel\QuickCart\Helper;
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
 	/**
+	 * @var \Magento\Store\Model\StoreManagerInterface
+	 */
+	protected $_storeManager;
+	
+	/**
 	 * @var array
 	 */
 	protected $_quickcartOptions;
@@ -18,13 +23,23 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	 * Constructor
 	 *
 	 * @param \Magento\Framework\App\Helper\Context $context
+	 * @param \Magento\Store\Model\StoreManagerInterface $storeManager
 	 */
 	public function __construct(
-			\Magento\Framework\App\Helper\Context $context
+			\Magento\Framework\App\Helper\Context $context,
+			\Magento\Store\Model\StoreManagerInterface $storeManager
 	) {
 		parent::__construct($context);
 		
+		$this->_storeManager = $storeManager;
 		$this->_quickcartOptions = $this->scopeConfig->getValue('weltpixel_quick_cart', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getStoreId() {
+		return $this->_storeManager->getStore()->getId();
 	}
 	
 	/**

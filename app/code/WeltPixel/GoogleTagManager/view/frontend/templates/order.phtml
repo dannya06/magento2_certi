@@ -37,7 +37,7 @@
             $remarketingData = [];
             $remarketingData['ecomm_pagetype'] = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_PURCHASE;
             $remarketingData['ecomm_prodid'] = $this->getProductIds();
-            $remarketingData['ecomm_totalvalue'] = number_format($this->getOrderTotal(), 2);
+            $remarketingData['ecomm_totalvalue'] = number_format($this->getOrderTotal(), 2, '.', '');
             $this->setDataLayerOption('google_tag_params', $remarketingData);
         endif;
 

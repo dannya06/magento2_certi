@@ -96,6 +96,7 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
                 'url',
                 'banner_type',
                 'image',
+                'mobile_image',
                 'video',
                 'custom',
                 'alt_text',
@@ -228,9 +229,30 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
         return false;
     }
 
+    /**
+     * @return mixed
+     */
     public function isGatEnabled()
     {
         $sysPath = 'weltpixel_owl_slider_config/general/enable_google_tracking';
+        return $this->_scopeConfig->getValue($sysPath, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isHoverImageEnabled()
+    {
+        $sysPath = 'weltpixel_owl_slider_config/general/enable_hover_image';
+        return $this->_scopeConfig->getValue($sysPath, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMobileBreakpoint()
+    {
+        $sysPath = 'weltpixel_owl_slider_config/general/mobile_breakpoint';
         return $this->_scopeConfig->getValue($sysPath, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

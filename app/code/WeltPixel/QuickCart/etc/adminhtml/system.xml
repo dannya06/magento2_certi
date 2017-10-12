@@ -40,7 +40,7 @@
                     <validate>required color {required:false, hash:true}</validate>
                 </field>
             </group>
-            <group id="footer" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="footer" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Quick Cart Footer</label>
                 <field id="subtotal_background" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Subtotal Background Color</label>

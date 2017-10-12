@@ -8,23 +8,19 @@ class Custom extends \Magento\Framework\View\Element\Template implements \Magent
     protected $_helperCustom;
 
     /**
-     * Internal constructor, that is called from real constructor
-     *
-     * @param \Magento\Framework\View\Element\Template\Context  $context
-     * @param \WeltPixel\OwlCarouselSlider\Helper\Custom        $helperCustom
+     * Custom constructor.
+     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @param \WeltPixel\OwlCarouselSlider\Helper\Custom $helperCustom
+     * @param array $data
      */
-
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Framework\Registry $registry,
         \WeltPixel\OwlCarouselSlider\Helper\Custom $helperCustom,
 
         array $data = []
     )
     {
-        $this->_coreRegistry = $registry;
         $this->_helperCustom = $helperCustom;
-
         $this->setTemplate('sliders/custom.phtml');
 
         parent::__construct($context, $data);
@@ -46,18 +42,35 @@ class Custom extends \Magento\Framework\View\Element\Template implements \Magent
         return $this->_sliderConfiguration;
     }
 
+    /**
+     * @return array
+     */
     public function getBreakpointConfiguration()
     {
         return $this->_helperCustom->getBreakpointConfiguration();
     }
 
+    /**
+     * @return mixed
+     */
     public function getMediaUrl()
     {
         return $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
     }
 
+    /**
+     * @return mixed
+     */
     public function isGatEnabled()
     {
         return $this->_helperCustom->isGatEnabled();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getMobileBreakPoint() {
+        return $this->_helperCustom->getMobileBreakpoint();
+    }
+
 }

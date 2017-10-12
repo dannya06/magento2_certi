@@ -42,14 +42,7 @@ class ResultPage
         $defaultHandle = null)
     {
         if ($this->request->getFullActionName() == 'weltpixel_quickview_catalog_product_view') {
-            $arrayKeys = array_keys($parameters);
-            if ((count($arrayKeys) == 3) &&
-                in_array('id', $arrayKeys) &&
-                in_array('sku', $arrayKeys) &&
-                in_array('type', $arrayKeys)) {
-
-                return [$parameters, 'catalog_product_view'];
-            }
+            return [$parameters, 'catalog_product_view'];
         } else {
             return [$parameters, $defaultHandle];
         }

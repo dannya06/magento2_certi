@@ -1,11 +1,12 @@
 <script>
     window.quickcartEnabled = '<?php /* @escapeNotVerified */ echo $block->getValuesConfig('general', 'enable'); ?>';
-    window.openMinicart = '<?php /* @escapeNotVerified */ echo $block->getValuesConfig('general', 'open_minicart'); ?>';
-
-    requirejs(['jquery', 'weltpixel_quickcart' ],
-        function   ($, quickcart) {
-            $(document).ready(function() {
-                quickcart.initialize();
+    if (window.quickcartEnabled == 1) {
+        window.openMinicart = '<?php /* @escapeNotVerified */ echo $block->getValuesConfig('general', 'open_minicart'); ?>';
+        requirejs(['jquery', 'weltpixel_quickcart' ],
+            function   ($, quickcart) {
+                $(document).ready(function() {
+                    quickcart.initialize();
+                });
             });
-        });
+    }
 </script>

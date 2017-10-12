@@ -82,7 +82,19 @@ class UpgradeSchema implements UpgradeSchemaInterface
             );
         }
 
-
-        $setup->endSetup();
+        if (version_compare($context->getVersion(), '1.1.1') < 0) {
+            $setup->getConnection()->addColumn(
+                $setup->getTable('weltpixel_owlcarouselslider_banners'),
+                'mobile_image',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => '255',
+                    'nullable' => true,
+                    'default' => '',
+                    'comment' => 'Mobile Image',
+                    'after' => 'image'
+                ]
+            );
+        }
     }
 }

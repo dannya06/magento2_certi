@@ -700,6 +700,93 @@ class Owl
 
                 break;
             }
+            case '1.1.11' : {
+                $slider = $this->sliderFactory->create();
+
+                $sliderData = array(
+                    'status' => 1,
+                    'title' => 'Homepage V10',
+                    'show_title' => 0,
+                    'slider_content' => NULL,
+                    'nav' => 1,
+                    'dots' => 1,
+                    'center' => 0,
+                    'items' => 1,
+                    'loop' => 1,
+                    'margin' => 0,
+                    'stagePadding' => 0,
+                    'lazyLoad' => 0,
+                    'transition' => 'slide',
+                    'autoplay' => 1,
+                    'autoplayTimeout' => 4000,
+                    'autoplayHoverPause' => 0,
+                    'autoHeight' => 1,
+                    'nav_brk1' => 0,
+                    'items_brk1' => 1,
+                    'nav_brk2' => 0,
+                    'items_brk2' => 1,
+                    'nav_brk3' => 0,
+                    'items_brk3' => 1,
+                    'nav_brk4' => 1,
+                    'items_brk4' => 1,
+                );
+
+                $slider->addData($sliderData);
+                $slider->save();
+
+                $sliderId = $slider->getData('id');
+                $sliderIds[] = $sliderId;
+
+                $customContent = [
+                    '1' => '<div class="page-width">              
+                        <h2>MAGENTO 2 THEME PEARL</h2>
+                        <span class="sub-heading">Accessories</span>
+                    </div>',
+                    '2' => '<div class="page-width">
+                        <h2>ACCESSORIES FOR MOBILE DEVICES</h2>
+                        <span class="sub-heading">Crafted from the finest materials</span>
+                    </div>',
+                    '3' => '<div class="page-width">
+                        <h2>NEW WAY TO DESIGN</h2>
+                        <span class="sub-heading">Travel accessories</span>
+                    </div>'
+                ];
+
+                for ($i = 1; $i < 4; $i++) {
+                    $banner = $this->bannerFactory->create();
+                    $bannerData = array(
+                        'status' => 1,
+                        'title' => 'Banner Slider V10 - ' . $i,
+                        'show_title' => 0,
+                        'description' => NULL,
+                        'show_description' => 0,
+                        'banner_type' => 1,
+                        'display_position' => NULL,
+                        'slider_id' => $sliderId,
+                        'url' => '#',
+                        'target' => '_self',
+                        'video' => NULL,
+                        'image' => "weltpixel/owlcarouselslider/images/h/10/h10_h{$i}.jpg",
+                        'custom' => NULL,
+                        'alt_text' => NULL,
+                        'button_text' => NULL,
+                        'custom_content' => $customContent[$i],
+                        'custom_css' => NULL,
+                        'valid_from' => '2015-01-01 12:00:00',
+                        'valid_to' => '2030-01-01 12:00:00',
+                        'sort_order' => $i
+                    );
+
+                    $banner->addData($bannerData);
+                    $banner->save();
+
+                    unset($banner);
+                }
+
+                unset($slider);
+
+                break;
+            }
         }
 
         return $sliderIds;

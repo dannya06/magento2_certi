@@ -58,6 +58,10 @@ class AddUpdateHandlesObserver implements ObserverInterface
             $layout->getUpdate()->addHandle('weltpixel_productpage_movetabs');
         }
 
+        if ($version == 1) {
+            $layout->getUpdate()->addHandle('catalog_product_view_v1');
+        }
+
         if ($version == 2) {
             $layout->getUpdate()->addHandle('catalog_product_view_v2');
         }
