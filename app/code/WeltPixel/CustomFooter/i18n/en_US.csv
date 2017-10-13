@@ -6,3 +6,6 @@ Enable,Enable
 "Footer Settings","Footer Settings"
 "Footer Version","Footer Version"
 "Choose footer version.","Choose footer version."
+"Edit footer in Content -> Blocks. Find the block with identifier name ""weltpixel_footer_v[x]"", where x is the footer version.","Edit footer in Content -> Blocks. Find the block with identifier name ""weltpixel_footer_v[x]"", where x is the footer version."
+"Copyright Settings","Copyright Settings"
+"Edit the copyright content in Content -> Configuration -> Desired store view Edit -> Footer -> Copyright","Edit the copyright content in Content -> Configuration -> Desired store view Edit -> Footer -> Copyright"

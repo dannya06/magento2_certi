@@ -19,7 +19,12 @@
                 <bootstrap_tables>1</bootstrap_tables>
                 <bootstrap_grids>1</bootstrap_grids>
                 <animations>1</animations>
+                <aos_animation>1</aos_animation>
                 <alert_boxes>1</alert_boxes>
+                <btt_button>1</btt_button>
+                <btt_offset>300</btt_offset>
+                <btt_offset_opacity>1200</btt_offset_opacity>
+                <btt_duration>700</btt_duration>
             </general>
         </weltpixel_design_elements>
     </default>

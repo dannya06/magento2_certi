@@ -10,7 +10,7 @@
                 resource="WeltPixel_QuickCart::QuickCart_Label"
         />
         <add
-                id="WeltPixel_QuickCart::Quickview"
+                id="WeltPixel_QuickCart::QuickCart"
                 title="Quick Cart"
                 module="WeltPixel_QuickCart"
                 action="adminhtml/system_config/edit/section/weltpixel_quick_cart/"

@@ -9,11 +9,30 @@ var productPage = {
 
 	ajaxComplete: function () {
 		this.mageSticky();
-		// this.swatchOptionMageSticky();
+		this.adjustHeight();
 	},
 
 	resize: function () {
 		this.action();
+		this.adjustHeight();
+	},
+
+	adjustHeight: function() {
+		// adjust left media height as well, in case it is smallers
+		var media = jQuery('.product.media'),
+			mediaGallery = jQuery('.product.media .gallery'),
+			infoMain = jQuery('.product-info-main');
+
+		if ( jQuery('body').hasClass('wp-device-xs') ||
+			jQuery('body').hasClass('wp-device-s') ||
+			jQuery('body').hasClass('wp-device-m')
+		) {
+			media.height('auto');
+		} else {
+			if ( ( mediaGallery.height() > 0 ) && ( mediaGallery.height() < infoMain.height())) {
+				media.height(infoMain.height());
+			}
+		}
 	},
 
 	mageSticky: function () {

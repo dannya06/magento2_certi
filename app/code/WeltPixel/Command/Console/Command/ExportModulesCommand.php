@@ -105,7 +105,7 @@ class ExportModulesCommand extends Command
                     InputOption::VALUE_REQUIRED,
                     'Module(s)'
                 )
-            ]);;
+            ]);
 
         parent::configure();
     }

@@ -451,7 +451,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $productData = [];
         $productData['name'] = html_entity_decode($product->getName());
         $productData['id'] = $this->getGtmProductId($product);
-        $productData['price'] = number_format($product->getFinalPrice(), 2);
+        $productData['price'] = number_format($product->getFinalPrice(), 2, '.', '');
         if ($this->isBrandEnabled()) {
             $productData['brand'] = $this->getGtmBrand($product);
         }
@@ -609,7 +609,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $productData = [];
         $productData['name'] = html_entity_decode($product->getName());
         $productData['id'] = $this->getGtmProductId($product);
-        $productData['price'] = number_format($product->getFinalPrice(), 2);
+        $productData['price'] = number_format($product->getFinalPrice(), 2, '.', '');
         if ($this->isBrandEnabled()) {
             $productData['brand'] = $this->getGtmBrand($product);
         }

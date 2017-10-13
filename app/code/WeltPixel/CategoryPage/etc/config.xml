@@ -13,6 +13,7 @@
                 <remove_breadcrumbs>0</remove_breadcrumbs>
             </general>
             <image>
+                <enable_hover_image>0</enable_hover_image>
                 <grid_height>300</grid_height>
                 <grid_width>240</grid_width>
                 <list_height></list_height>

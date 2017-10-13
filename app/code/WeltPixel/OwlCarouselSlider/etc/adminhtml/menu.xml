@@ -3,11 +3,20 @@
     <menu>
         <add
                 id="WeltPixel_OwlCarouselSlider::owlcarouselslider"
-                title="Carousels"
+                title="Carousels Pro"
                 module="WeltPixel_OwlCarouselSlider"
                 sortOrder="130"
                 parent="WeltPixel_Backend::WeltPixel"
                 resource="WeltPixel_OwlCarouselSlider::owlcarouselslider"
+        />
+        <add
+                id="WeltPixel_OwlCarouselSlider::owlcarouselslider_general_configuration_carousel"
+                title="General Settings"
+                module="WeltPixel_OwlCarouselSlider"
+                action="adminhtml/system_config/edit/section/weltpixel_owl_slider_config/"
+                sortOrder="5"
+                parent="WeltPixel_OwlCarouselSlider::owlcarouselslider"
+                resource="WeltPixel_OwlCarouselSlider::owlcarouselslider_general_configuration_carousel"
         />
         <add
                 id="WeltPixel_OwlCarouselSlider::owlcarouselslider_products_sliders"
@@ -20,20 +29,20 @@
         />
         <add
                 id="WeltPixel_OwlCarouselSlider::owlsliders"
-                title="Sliders"
+                title="Sliders Pro"
                 module="WeltPixel_OwlCarouselSlider"
                 sortOrder="140"
                 parent="WeltPixel_Backend::WeltPixel"
                 resource="WeltPixel_OwlCarouselSlider::owlcarouselslider"
         />
         <add
-                id="WeltPixel_OwlCarouselSlider::owlcarouselslider_general_configuration"
+                id="WeltPixel_OwlCarouselSlider::owlcarouselslider_general_configuration_slider"
                 title="General Settings"
                 module="WeltPixel_OwlCarouselSlider"
                 action="adminhtml/system_config/edit/section/weltpixel_owl_slider_config/"
                 sortOrder="5"
                 parent="WeltPixel_OwlCarouselSlider::owlsliders"
-                resource="WeltPixel_OwlCarouselSlider::owlcarouselslider_custom_banners"
+                resource="WeltPixel_OwlCarouselSlider::owlcarouselslider_general_configuration_slider"
         />
         <add
                 id="WeltPixel_OwlCarouselSlider::owlcarouselslider_custom_banners"

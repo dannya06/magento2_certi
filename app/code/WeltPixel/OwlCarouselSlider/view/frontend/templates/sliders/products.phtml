@@ -17,6 +17,7 @@ $productsType = $this->getData('products_type');
 $sliderConfig = json_encode($sliderData);
 $sliderTitle  = array_key_exists('title', $sliderData) ? $sliderData['title'] : '';
 $breakpoint   = $this->getBreakpointConfiguration();
+$isHoverImageEnabled = $this->isHoverImageEnabled();
 
 ?>
 
@@ -32,7 +33,13 @@ $breakpoint   = $this->getBreakpointConfiguration();
             <?php
             $_imagehelper = $this->helper('Magento\Catalog\Helper\Image');
             $productImage = $_imagehelper->init($product, 'category_page_list')->constrainOnly(FALSE)->keepAspectRatio(TRUE)->keepFrame(FALSE)->resize(400)->getUrl();
-            $productUrl   =  $product->getUrlModel()->getUrl($product);
+            $productUrl = $product->getUrlModel()->getUrl($product);
+
+            if ($isHoverImageEnabled) {
+                $productImageHover = $_imagehelper->init($product, 'owlcarousel_product_hover')->constrainOnly(FALSE)->keepAspectRatio(TRUE)->keepFrame(FALSE)->resize(400);
+                $productImageHoverUrl = $productImageHover->getUrl();
+                $productImageHoverPlaceholderUrl = $productImageHover->getDefaultPlaceholderUrl();
+            }
             ?>
 
             <div class="item product product-item">
@@ -40,7 +47,15 @@ $breakpoint   = $this->getBreakpointConfiguration();
                     <a tabindex="-1" class="product photo product-item-photo" href="<?php echo $productUrl; ?>">
                         <span style="width:240px;" class="product-image-container">
                             <span style="padding-bottom: 125%;" class="product-image-wrapper">
-                                <img width="240" height="300" alt="<?php echo $product->getName(); ?>" src="<?php echo $productImage; ?>" class="product-image-photo"
+                                <img width="240" height="300"
+                                     alt="<?php echo $product->getName(); ?>"
+                                     src="<?php echo $productImage; ?>"
+                                     <?php if ($isHoverImageEnabled && ($productImageHoverUrl != $productImageHoverPlaceholderUrl)) : ?>
+                                     data-hoversrc="<?php /* @escapeNotVerified */ echo $productImageHoverUrl; ?>"
+                                     onmouseover="tmpSrc = this.src; this.src=this.getAttribute('data-hoversrc'); this.setAttribute('data-hoversrc', tmpSrc);"
+                                     onmouseout=onmouseover()
+                                     <?php endif; ?>
+                                     class="product-image-photo"
                                     <?php echo $sliderData['lazyLoad'] ? 'data-src="' . $productImage . '" data-src-retina="' . $productImage . '" class="owl-lazy"' : '' ?>
                                 />
                             </span>

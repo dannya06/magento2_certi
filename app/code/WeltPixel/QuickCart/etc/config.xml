@@ -3,7 +3,7 @@
     <default>
         <weltpixel_quick_cart>
             <general>
-                <enable>1</enable>
+                <enable>0</enable>
                 <open_minicart>1</open_minicart>
             </general>
             <header>

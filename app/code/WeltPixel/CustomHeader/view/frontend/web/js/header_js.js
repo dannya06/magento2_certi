@@ -1,42 +1,38 @@
-var Header = {
+define(['jquery'], function ($) {
+	Header = {
 
-	headerLinks: function () {
-		var headerLinks_1         = jQuery('.header.panel >.header.links'),
-			headerRightMiniCart   = jQuery('.header_right > .minicart-wrapper');
+		headerLinks_1: $('.header.panel >.header.links'),
+		headerRightMiniCart: $('.header_right > .minicart-wrapper'),
 
+		headerLinks: function () {
 
-		if ((jQuery('body').hasClass('wp-device-l')) || jQuery('body').hasClass('wp-device-xl') ) {
-			if (!headerLinks_1.hasClass('moved-header')) {
-				headerLinks_1.clone().insertBefore(headerRightMiniCart);
-				headerLinks_1.addClass('moved-header');
+			if (($('body').hasClass('wp-device-l')) || $('body').hasClass('wp-device-xl') ) {
+				if (!this.headerLinks_1.hasClass('moved-header')) {
+					this.headerLinks_1.insertBefore(this.headerRightMiniCart);
+					$('.header_right > .header.links .authorization-link a[data-post]').hide();
+					$('.header_right .customer-menu .header.links .authorization-link a[data-post]').show();
+					this.headerLinks_1.addClass('moved-header');
+					this.headerLinks_1.removeClass('moved-header-mobile');
+				}
+			} else {
+				if (($('body').hasClass('wp-device-m')) || $('body').hasClass('wp-device-s') || $('body').hasClass('wp-device-xs')) {
+					if (!$('#store\\.links .header.links').length && !this.headerLinks_1.hasClass('moved-header-mobile')) {
+						$('#store\\.links').append(this.headerLinks_1);
+						this.headerLinks_1.removeClass('moved-header');
+						this.headerLinks_1.addClass('moved-header-mobile');
+					}
+				}
 			}
+		},
+
+		resizeActions: function () {
+			this.headerLinks();
+		},
+
+		action: function () {
+			this.resizeActions();
 		}
-	},
 
-	resizeActions: function () {
-		this.headerLinks();
-	},
-
-	action: function () {
-		this.resizeActions();
-	}
-
-};
-
-require(['jquery'],
-	function ($) {
-		$(document).ready(function () {
-			Header.action();
-		});
-
-		$(window).load(function () {
-			Header.action();
-		});
-
-		var reinitTimer;
-		$(window).on('resize', function () {
-			clearTimeout(reinitTimer);
-			reinitTimer = setTimeout(function() {Header.action();}, 100);
-		});
-	}
-);
+	};
+	return Header;
+});

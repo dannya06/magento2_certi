@@ -32,6 +32,8 @@ class AddFrontendOptionsObserver implements ObserverInterface
     const XML_PATH_DESIGN_ELEMENTS_BUTTONS = 'weltpixel_design_elements/general/buttons';
     const XML_PATH_DESIGN_ELEMENTS_SECTIONS = 'weltpixel_design_elements/general/sections';
     const XML_PATH_DESIGN_ELEMENTS_ANIMATIONS = 'weltpixel_design_elements/general/animations';
+    const XML_PATH_DESIGN_ELEMENTS_AOS_ANIMATION = 'weltpixel_design_elements/general/aos_animation';
+    const XML_PATH_DESIGN_ELEMENTS_BTT_BUTTON = 'weltpixel_design_elements/general/btt_button';
 
     /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
@@ -71,6 +73,8 @@ class AddFrontendOptionsObserver implements ObserverInterface
         $includeButtons = $this->scopeConfig->getValue(self::XML_PATH_DESIGN_ELEMENTS_BUTTONS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $includeSections = $this->scopeConfig->getValue(self::XML_PATH_DESIGN_ELEMENTS_SECTIONS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $includeAnimations = $this->scopeConfig->getValue(self::XML_PATH_DESIGN_ELEMENTS_ANIMATIONS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $includeAOSAnimation = $this->scopeConfig->getValue(self::XML_PATH_DESIGN_ELEMENTS_AOS_ANIMATION,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $includeBttButton = $this->scopeConfig->getValue(self::XML_PATH_DESIGN_ELEMENTS_BTT_BUTTON,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
         if ($includeBootstrapGrid) {
             $layout->getUpdate()->addHandle('weltpixel_design_elements_bootstrap_grid');
@@ -122,6 +126,12 @@ class AddFrontendOptionsObserver implements ObserverInterface
         }
         if ($includeAnimations) {
             $layout->getUpdate()->addHandle('weltpixel_design_elements_animations');
+        }
+        if ($includeAOSAnimation) {
+            $layout->getUpdate()->addHandle('weltpixel_design_elements_aos_animation');
+        }
+        if ($includeBttButton) {
+            $layout->getUpdate()->addHandle('weltpixel_design_elements_btt_button');
         }
 
         if($this->httpRequest->getFullActionName() == 'cms_index_index' || $this->httpRequest->getFullActionName() == 'cms_page_view'){

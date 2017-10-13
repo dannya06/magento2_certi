@@ -322,10 +322,9 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
     .catalog-product-view .grid.products-grid .owl-item .product-item { width: 100% !important; }
     .page-products .grid.products-grid .product-item { width: $width% }
     .catalog-product-view .grid.products-grid .product-item { width: $widthPV% }
-    .catalog-product-view .grid.products-grid .owl-item .product-item { width: 100% !important; margin: 0; }
+    .catalog-product-view .grid.products-grid .owl-item .product-item { width: 89% !important; margin: 0; }
 }
         ";
-
 		return $content;
 	}
 
@@ -426,9 +425,9 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
     }
             ";
 		}
-		$hWidth = $width - 4 . 'px';
-		$hHeight = $height - 4 . 'px';
-		$lineHeightText = $height - 2 . 'px';
+		$hWidth = (int)$width - 4 . 'px';
+		$hHeight = (int)$height - 4 . 'px';
+		$lineHeightText = (int)$height - 2 . 'px';
 		$icon_content = '\e116';
 		$content = "
 $wrapperClass {
@@ -889,8 +888,15 @@ $wrapperClass {
 		$backgroundSelectImage = 'background: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' height=\'10\' width=\'16\'><line x1=\'0\' y1=\'0\' x2=\'8\' y2=\'8\' style=\'stroke:' . $select_arrow_c . ';stroke-width:2\' /><line x1=\'16\' y1=\'0\' x2=\'8\' y2=\'8\' style=\'stroke:' . $select_arrow_c . ';stroke-width:2\' /></svg>") no-repeat 90% 50% ' . $select_background_color . ';';
 		$backgroundSelectImageHover = 'background: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' height=\'10\' width=\'16\'><line x1=\'0\' y1=\'0\' x2=\'8\' y2=\'8\' style=\'stroke:' . $select_arrow_hover_c . ';stroke-width:2\' /><line x1=\'16\' y1=\'0\' x2=\'8\' y2=\'8\' style=\'stroke:' . $select_arrow_hover_c . ';stroke-width:2\' /></svg>") no-repeat 90% 50% ' . $select_background_focus_color . ';';
 
-		$select_border_width = unserialize($select_border_width)['<%- _id %>'];
-		$selectOBW = '';
+        $select_border_width_json = json_decode($select_border_width);
+        /** magento 2.2 removed serialization  */
+        if ($select_border_width_json && ( $select_border_width != $select_border_width_json )) {
+            $select_border_width = json_decode($select_border_width, true);
+            $select_border_width = $select_border_width['<%- _id %>'];
+        } else {
+            $select_border_width = unserialize($select_border_width)['<%- _id %>'];
+        }
+		$selectOBW = [];
 		$true = false;
 		foreach ($select_border_width as $sbw) {
 			if ($sbw) {

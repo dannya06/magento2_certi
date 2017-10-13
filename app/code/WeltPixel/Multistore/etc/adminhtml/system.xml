@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="weltpixel_multistore" translate="label" type="text" sortOrder="155" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Multistore</label>
+            <tab>weltpixel</tab>
+            <resource>WeltPixel_Multistore::MultistoreSettings</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="redirect_to_home_page" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Redirect to Home Page on store switch</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="store_image" translate="label comment" type="image" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Active Store Image</label>
+                    <backend_model>WeltPixel\Multistore\Model\Config\Backend\Svg</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/multistore/logo</upload_dir>
+                    <base_url type="media" scope_info="1">weltpixel/multistore/logo</base_url>
+                    <comment><![CDATA[Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.]]></comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="store_image_inactive" translate="label comment" type="image" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Inactive Store Image</label>
+                    <backend_model>WeltPixel\Multistore\Model\Config\Backend\Svg</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/multistore/logo_inactive</upload_dir>
+                    <base_url type="media" scope_info="1">weltpixel/multistore/logo_inactive</base_url>
+                    <comment><![CDATA[Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.]]></comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="one_row" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display in one row</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Displays the store views at the top in a single row.</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="visibility" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Visibility on storefront</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="img_height" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Logo Height</label>
+                    <validate>required</validate>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Specify in px. Ex: 40px;</comment>
+                </field>
+                <field id="img_width" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Logo Width</label>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Specify in px. Ex: 80px; It can be left empty, in this case the proper ratio will be used.</comment>
+                </field>
+                <field id="exclude_stores" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Exclude stores</label>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Please list here the store codes that should be exluded from the listing on frontend, separat them by a comma. Ex: default, german</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

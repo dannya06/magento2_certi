@@ -9,7 +9,7 @@ weltpixel_frontend_options/section_width/page_main,100%,stores
 weltpixel_frontend_options/section_width/page_main_padding,"0 15px",stores
 weltpixel_frontend_options/section_width/footer,100%,stores
 weltpixel_frontend_options/section_width/row,1170px,stores
-weltpixel_frontend_options/section_width/default_page,100%,stores
+weltpixel_frontend_options/section_width/default_page,1400px,stores
 weltpixel_frontend_options/section_width/cms_page,100%,stores
 weltpixel_frontend_options/section_width/category_page,1400px,stores
 weltpixel_frontend_options/section_width/product_page,1400px,stores
@@ -123,7 +123,10 @@ weltpixel_frontend_options/icons/icon_label__font____size,12px,default
 weltpixel_frontend_options/price/old_price__line____through,1,default
 weltpixel_custom_header/notification/notification_msg,,stores
 weltpixel_custom_header/general/header_style,v3,stores
-weltpixel_custom_header/top_header/width,1400px,stores
+weltpixel_custom_header/global_promo/enable,0,stores
+weltpixel_custom_header/global_promo/text_color,#B05D5D,stores
+weltpixel_custom_header/global_promo/background_color,#FFE8E8,stores
+weltpixel_custom_header/top_header/width,1440px,stores
 weltpixel_custom_header/top_header/link_color,#FFFFFF,stores
 weltpixel_custom_header/top_header/hover_link_color,#F8F8F8,stores
 weltpixel_custom_header/top_header/active_link_color,#FFFFFF,stores
@@ -131,7 +134,7 @@ weltpixel_custom_header/top_header/submenu_link_color,#212121,stores
 weltpixel_custom_header/top_header/submenu_hover_link_color,#000000,stores
 weltpixel_custom_header/top_header/text_color,#FFFFFF,stores
 weltpixel_custom_header/top_header/background_color,#232323,stores
-weltpixel_custom_header/top_header/border_bottom_color,#232323,stores
+weltpixel_custom_header/top_header/border_bottom_color,#FFFFFF,stores
 weltpixel_custom_header/middle_header/width,1400px,stores
 weltpixel_custom_header/middle_header/background,,stores
 weltpixel_custom_header/bottom_header/width,1400px,stores
@@ -143,14 +146,16 @@ weltpixel_custom_header/search_options/width,250px,stores
 weltpixel_custom_header/search_options/height,30px,stores
 weltpixel_custom_header/search_options/border_width,"a:1:{s:10:""<%- _id %>"";a:4:{s:16:""border_width_top"";s:1:""0"";s:18:""border_width_right"";s:1:""0"";s:19:""border_width_bottom"";s:3:""1px"";s:17:""border_width_left"";s:1:""0"";}}",stores
 weltpixel_custom_header/search_options/border_style,solid,stores
-weltpixel_custom_header/search_options/border_color,#CCCCCC,stores
+weltpixel_custom_header/search_options/border_color,#575757,stores
 weltpixel_custom_header/search_options/background,,stores
-weltpixel_custom_header/search_options/color,#5C5C5C,stores
+weltpixel_custom_header/search_options/color,#575757,stores
+weltpixel_custom_header/search_options/placeholder_color,#575757,stores
 weltpixel_custom_header/search_options/font_size,12px,stores
 weltpixel_custom_header/icons/icon_size,16px,stores
 weltpixel_custom_footer/prefooter/enable,0,stores
 weltpixel_custom_footer/footer/enable,1,stores
 weltpixel_custom_footer/footer/version,v2,stores
+weltpixel_custom_footer/copyright/enable,0,stores
 weltpixel_design_elements/general/bootstrap_grids,1,stores
 weltpixel_design_elements/general/icons,1,stores
 weltpixel_design_elements/general/bootstrap_tables,1,stores
@@ -168,8 +173,13 @@ weltpixel_design_elements/general/flexslider,1,stores
 weltpixel_design_elements/general/buttons,1,stores
 weltpixel_design_elements/general/sections,1,stores
 weltpixel_design_elements/general/animations,1,stores
+weltpixel_design_elements/general/aos_animation,1,stores
+weltpixel_design_elements/general/btt_button,1,stores
+weltpixel_design_elements/general/btt_offset,300,stores
+weltpixel_design_elements/general/btt_offset_opacity,1200,stores
+weltpixel_design_elements/general/btt_duration,700,stores
 weltpixel_category_page/notification/notification_msg,,stores
-weltpixel_category_page/general/display_wishlist,2,stores
+weltpixel_category_page/general/display_wishlist,0,stores
 weltpixel_category_page/general/display_compare,0,stores
 weltpixel_category_page/general/display_swatches,2,stores
 weltpixel_category_page/general/display_swatch_tooltip,0,stores
@@ -177,9 +187,10 @@ weltpixel_category_page/general/display_addtocart,5,stores
 weltpixel_category_page/general/addtocart_align,center,stores
 weltpixel_category_page/general/products_per_line,3,stores
 weltpixel_category_page/general/remove_breadcrumbs,0,stores
-weltpixel_category_page/item/box_shadow,"0px 20px 50px -20px rgba(0,0,0,0.5)",stores
+weltpixel_category_page/item/box_shadow,"0px 4px 21px rgba(130,130,130,1)",stores
 weltpixel_category_page/item/border_width,0px,stores
 weltpixel_category_page/item/border_color,#FFFFFF,stores
+weltpixel_category_page/image/enable_hover_image,1,stores
 weltpixel_category_page/image/grid_width,500,stores
 weltpixel_category_page/image/grid_height,750,stores
 weltpixel_category_page/image/list_width,,stores
@@ -237,7 +248,7 @@ weltpixel_category_page/toolbar/pagination_background_hover_color,,stores
 weltpixel_category_page/toolbar/pagination_background_active_color,,stores
 weltpixel_category_page/toolbar/pagination_border_color,,stores
 weltpixel_category_page/toolbar/pagination_border_hover_color,,stores
-weltpixel_category_page/toolbar/pagination_border_active_color,#CCCCCC,stores
+weltpixel_category_page/toolbar/pagination_border_active_color,#000000,stores
 weltpixel_category_page/toolbar/pagination_border_radius,30px,stores
 weltpixel_category_page/toolbar/pagination_next_prev_font_size,16px,stores
 weltpixel_category_page/toolbar/pagination_next_prev_font_color,#000000,stores

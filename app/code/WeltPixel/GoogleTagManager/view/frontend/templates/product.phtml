@@ -10,7 +10,7 @@
         $productDetail = array();
         $productDetail['name'] = html_entity_decode($product->getName());
         $productDetail['id'] = $helper->getGtmProductId($product);
-        $productDetail['price'] = number_format($product->getFinalPrice(), 2);
+        $productDetail['price'] = number_format($product->getFinalPrice(), 2, '.', '');
         if ($helper->isBrandEnabled()) :
             $productDetail['brand'] = $helper->getGtmBrand($product);
         endif;
@@ -28,11 +28,11 @@
 
         if (count($relatedProductsCollection)) :
             $i = 1;
-            foreach ($relatedProductsCollection->getItems() as $_product) :
+            foreach ($relatedProductsCollection as $_product) :
                 $relatedProduct = array();
                 $relatedProduct['name'] = html_entity_decode($_product->getName());
                 $relatedProduct['id'] = $helper->getGtmProductId($_product);
-                $relatedProduct['price'] = number_format($_product->getFinalPrice(), 2);
+                $relatedProduct['price'] = number_format($_product->getFinalPrice(), 2, '.', '');
                 if ($helper->isBrandEnabled()) :
                     $relatedProduct['brand'] = $helper->getGtmBrand($_product);
                 endif;
@@ -51,7 +51,7 @@
                 $upsellProduct = array();
                 $upsellProduct['name'] = html_entity_decode($_product->getName());
                 $upsellProduct['id'] = $helper->getGtmProductId($_product);
-                $upsellProduct['price'] = number_format($_product->getFinalPrice(), 2);
+                $upsellProduct['price'] = number_format($_product->getFinalPrice(), 2, '.', '');
                 if ($helper->isBrandEnabled()) :
                     $upsellProduct['brand'] = $helper->getGtmBrand($_product);
                 endif;
@@ -78,7 +78,7 @@
             $remarketingData = [];
             $remarketingData['ecomm_pagetype'] = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_PRODUCT;
             $remarketingData['ecomm_prodid'] = $helper->getGtmProductId($product);
-            $remarketingData['ecomm_totalvalue'] = number_format($product->getFinalPrice(), 2);
+            $remarketingData['ecomm_totalvalue'] = number_format($product->getFinalPrice(), 2, '.', '');
             $remarketingData['ecomm_category'] = $helper->getGtmCategoryFromCategoryIds($product->getCategoryIds());
             $this->setDataLayerOption('google_tag_params', $remarketingData);
         endif;

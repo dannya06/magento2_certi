@@ -78,7 +78,7 @@ class ExportConfigurationsCommand extends Command
                     InputOption::VALUE_REQUIRED,
                     'Store'
                 )
-            ]);;
+            ]);
 
         parent::configure();
     }

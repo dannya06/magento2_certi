@@ -1,44 +1,58 @@
-.weltpixel-quickview-catalog-product-view {
-	.box-tocart .action.tocart {
-		width: 100%;
-	}
-	.page-wrapper .page-main {
-		//margin: 20px 0;
-		padding: 20px;
-		min-height: 600px;
-	}
-	.reviews-actions .add {
-		display: none;
-	}
-}
+& when (@media-common = true) {
+	.weltpixel-quickview-catalog-product-view {
+		.box-tocart .action.tocart {
+			width: 100%;
+		}
+		.page-wrapper .page-main {
+			padding: 20px;
+			min-height: 600px;
+		}
+		.reviews-actions .add {
+			display: none;
+		}
 
-.box-gotoproduct #product-gotoproduct-button {
-	width: 100%;
-	padding: 14px 17px;
-	font-size: 1.8rem;
-	text-align: center;
-	border: 1px solid transparent;
-}
-
-.page-products .product-item .weltpixel-quickview {
-	display: none
-}
-
-.weltpixel-quickview-catalog-product-view {
-	.page-wrapper {
-		min-height: auto !important;
-	}
-	.column.main {
-		display: inline-block;
-		padding-bottom: 0;
-	}
-	&.catalog-product-view .page-title-wrapper {
-		h1 {
-			font-size: 22px !important;
+		&.page-product-downloadable {
+			.product-options-wrapper,
+			.product-options-bottom {
+				float: none;
+				width: 100%;
+			}
+			.product-options-bottom {
+				.price-box {
+					display: none;
+				}
+			}
 		}
 	}
-}
 
+	.box-gotoproduct #product-gotoproduct-button {
+		width: 100%;
+		padding: 14px 17px;
+		font-size: 1.8rem;
+		text-align: center;
+		border: 1px solid transparent;
+	}
+
+	.page-products .product-item .weltpixel-quickview {
+		display: none
+	}
+
+	.weltpixel-quickview-catalog-product-view {
+		.page-wrapper {
+			min-height: auto !important;
+		}
+		.column.main {
+			display: inline-block;
+			padding-bottom: 0;
+		}
+		&.catalog-product-view .page-title-wrapper {
+			h1 {
+				font-size: 22px !important;
+			}
+		}
+	}
+
+}
 .media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
 
 	.weltpixel-quickview-catalog-product-view {
@@ -108,7 +122,7 @@
 					background-image: url('../WeltPixel_Quickview/images/quickview.png');
 					background-repeat: no-repeat;
 					top: -46px;
-					right: 0px;
+					right: 5px;
 				}
 			}
 		}

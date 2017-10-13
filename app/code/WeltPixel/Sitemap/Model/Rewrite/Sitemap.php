@@ -15,10 +15,15 @@ class Sitemap extends \Magento\Sitemap\Model\Sitemap
     }
 
     /**
+     * Add a sitemap item to the array of sitemap items
+     *
+     * Not existed in core class prior 2.2 version
+     *
      * @param \Magento\Framework\DataObject $sitemapItem
      * @return $this
      */
-    public function addSitemapItem($sitemapItem) {
+    public function addSitemapItem(\Magento\Framework\DataObject $sitemapItem)
+    {
         $this->_sitemapItems[] = $sitemapItem;
 
         return $this;

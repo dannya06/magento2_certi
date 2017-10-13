@@ -60,7 +60,7 @@ class ShippingInformation
         $quote = $this->quoteRepository->getActive($cartId);
         $shippingDescription = $quote->getShippingAddress()->getShippingDescription();
 
-        $this->_checkoutSession->setCheckoutOptionsData($this->helper->addCheckoutStepPushData('1', $shippingDescription));
+        $this->_checkoutSession->setCheckoutOptionsData($this->helper->addCheckoutStepPushData('2', $shippingDescription));
 
         return $result;
     }

@@ -15,10 +15,7 @@ class WidgetProducts implements \Magento\Framework\Option\ArrayInterface
             ['value' => 'new_products', 'label' => __('New Products')],
             ['value' => 'bestsell_products', 'label' => __('Best-sell Products')],
             ['value' => 'sell_products', 'label' => __('Sale Products')],
-            ['value' => 'recently_viewed', 'label' => __('Recently Viewed')],
-//            ['value' => 'related_products', 'label' => __('Related Products')],
-//            ['value' => 'upsell_products', 'label' => __('Up-sell Products')],
-//            ['value' => 'crosssell_products', 'label' => __('Cross-sell Products')]
+            ['value' => 'recently_viewed', 'label' => __('Recently Viewed')]
         ];
     }
 }

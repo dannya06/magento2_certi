@@ -32,52 +32,66 @@ title,identifier,content,is_active
 </div>",1
 "WeltPixel Footer V1",weltpixel_footer_v1,"
 <div class=""footer-v1"">
-<div class=""footer-v1-content row"">
-
-<div class=""col-sm-3 col-xs-12"">
-<p class=""footer-title"">About us</p>
-<ul class=""footer links"">
-<li class=""nav item""><a href=""{{store url=""privacy-policy-cookie-restriction-mode/""}}"">Privacy and Cookie Policy</a></li>
-<li class=""nav item""><a href=""{{store url=""search/term/popular/""}}"">Search Terms</a></li>
-<li class=""nav item""><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
-<li class=""nav item""><a href=""{{store url=""catalogsearch/advanced/""}}"" data-action=""advanced-search"">Advanced Search</a></li>
-<li class=""nav item""><a href=""{{store url=""sales/guest/form/""}}"">Orders and Returns</a></li>
-</ul>
-</div>
-
-<div class=""col-sm-3 col-xs-12"">
-<p class=""footer-title"">About us</p>
-<ul class=""footer links"">
-<li class=""nav item""><a href=""{{store url=""privacy-policy-cookie-restriction-mode/""}}"">Privacy and Cookie Policy</a></li>
-<li class=""nav item""><a href=""{{store url=""search/term/popular/""}}"">Search Terms</a></li>
-<li class=""nav item""><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
-<li class=""nav item""><a href=""{{store url=""catalogsearch/advanced/""}}"" data-action=""advanced-search"">Advanced Search</a></li>
-<li class=""nav item""><a href=""{{store url=""sales/guest/form/""}}"">Orders and Returns</a></li>
-</ul>
-</div>
-
-<div class=""col-sm-3 col-xs-12"">
-<p class=""footer-title"">About us</p>
-<ul class=""footer links"">
-<li class=""nav item""><a href=""{{store url=""privacy-policy-cookie-restriction-mode/""}}"">Privacy and Cookie Policy</a></li>
-<li class=""nav item""><a href=""{{store url=""search/term/popular/""}}"">Search Terms</a></li>
-<li class=""nav item""><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
-<li class=""nav item""><a href=""{{store url=""catalogsearch/advanced/""}}"" data-action=""advanced-search"">Advanced Search</a></li>
-<li class=""nav item""><a href=""{{store url=""sales/guest/form/""}}"">Orders and Returns</a></li>
-</ul>
-</div>
-
-<div class=""col-sm-3 col-xs-12"">
-<p class=""footer-title"">About us</p>
-<ul class=""footer links"">
-<li class=""nav item"">Lorem Ipsum 2598</li>
-<li class=""nav item"">New York, NY, 00841</li>
-<li class=""nav item"">1-800-000-0000</li>
-<li class=""nav item"">support@weltpixel.com</li>
-</ul>
-</div>
-
-</div>
+   <div class=""footer-v1-content row"">
+      <div class=""col-sm-3 col-xs-12 nopaddingleft"">
+     		<h4 class=""mini-logo""><img alt=""Logo"" src=""{{media url=""wysiwyg/pearl_theme/pearl_logo.png""}}"" style=""width:100px""></h4>
+            <p>New York, NY, 00841</p>
+	         <p>1-800-000-0000</p>
+	         <p> support@weltpixel.com</p>
+      </div>
+      <div class=""col-sm-3 col-xs-12 nopaddingleft"">
+         <p class=""footer-title"">Pearl Theme</p>
+         <ul class=""footer links"">
+            <li class=""nav item""><a href=""{{store url=""#""}}"">Buy Pearl Theme</a></li>
+            <li class=""nav item""><a href=""{{store url=""#""}}"">User Guide</a></li>
+            <li class=""nav item""><a href=""{{store url=""#""}}"">Sign In</a></li>
+            <li class=""nav item""><a href=""{{store url=""#""}}"" data-action=""advanced-search"">Create Account</a></li>
+         </ul>
+      </div>
+      <div class=""col-sm-3 col-xs-12 nopaddingleft"">
+         <p class=""footer-title"">Help</p>
+         <ul class=""footer links"">
+            <li class=""nav item""><a href=""{{store url=""#""}}"">Help Center</a></li>
+            <li class=""nav item""><a href=""{{store url=""#""}}"">Contact Us</a></li>
+            <li class=""nav item""><a href=""{{store url=""#""}}"">Privacy and Cookie Policy</a></li>
+            <li class=""nav item""><a href=""{{store url=""#""}}"" data-action=""advanced-search"">Orders and Returns</a></li>
+         </ul>
+      </div>
+      <div class=""col-sm-3 col-xs-12 nopaddingleft"">
+         <p class=""footer-title"">Search</p>
+         <ul class=""footer links"">
+            <li class=""nav item""><a href=""#"">Search Terms</a></li>
+            <li class=""nav item""><a href=""#"">Advanced Search</a></li>
+         </ul>
+      </div>
+      <div class=""col-xs-12 border-v1"">
+	      <div class=""pull-left-md"">
+      		<small>Let's stay in touch!</small>
+	      </div>
+	      <div class=""pull-right-md social-icons-v1"">
+	      		<a href=""#"" class=""social-icons si-borderless si-facebook"">
+                    <i class=""icon-facebook""></i>
+                    <i class=""icon-facebook""></i>
+                </a>
+                <a href=""#"" class=""social-icons si-borderless si-twitter"">
+                    <i class=""icon-twitter""></i>
+                    <i class=""icon-twitter""></i>
+                </a>
+                <a href=""#"" class=""social-icons si-borderless si-linkedin"">
+                    <i class=""icon-linkedin""></i>
+                    <i class=""icon-linkedin""></i>
+                </a>
+                <a href=""#"" class=""social-icons si-borderless si-instagram"">
+                    <i class=""icon-instagram""></i>
+                    <i class=""icon-instagram""></i>
+                </a>
+                 <a href=""#"" class=""social-icons si-borderless si-pinterest"">
+                    <i class=""icon-pinterest""></i>
+                    <i class=""icon-pinterest""></i>
+                </a>
+	      </div>
+      </div>
+   </div>
 </div>
 ",0
 "WeltPixel Footer V2",weltpixel_footer_v2,"

@@ -132,4 +132,9 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
     }
 
 }
-",,,,,,,
+",,,,,,"
+.content-v9 .single-image{
+    margin: 0 0 30px;
+
+}
+",

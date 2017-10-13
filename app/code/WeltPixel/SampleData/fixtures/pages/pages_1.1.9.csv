@@ -13,7 +13,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
                 <h4>Fashion for Spring</h4>
             </div>
             <div>
-                {{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" products_count=""6"" template=""product/widget/content/grid_v5.phtml"" conditions_encoded=""a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:2:`23`;]]""}}
+                {{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" products_count=""6"" template=""product/widget/content/grid_v5.phtml"" conditions_encoded=""{{widget_condition_1}}""}}
             </div>
         </div>
     </div>
@@ -27,11 +27,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
         </div>
         <div class=""min-height-content content-green-light  col-md-8 col-sm-12 col-xs-12 nopadding paddingleft paddingbottom paddingright box-content valign-parent"">
             <div class=""pad-bottom-lg pad-top-lg page-small-width"">
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras <br> tempus nulla quis magna accumsan
-                    iaculis non vitae mi. Nam ac consectetur purus, ut scelerisque turpis. Ut id nulla cursus, convallis
-                    leo eu, placerat ipsum. Fusce lacus nunc, feugiat ac sodales et, bibendum id orci.
-                </p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras <br /> tempus nulla quis magna accumsan iaculis non vitae mi. <br>Fusce lacus nunc, feugiat ac sodales et, bibendum id orci. </p><a href=""#"">SHOP NOW -&gt;</a>
             </div>
         </div>
     </div>
@@ -41,7 +37,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
                 <h4>Fashion for Spring</h4>
             </div>
             <div>
-            {{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" products_count=""6"" template=""product/widget/content/grid_v5.phtml"" conditions_encoded=""a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:2:`15`;]]""}}
+            {{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" products_count=""6"" template=""product/widget/content/grid_v5.phtml"" conditions_encoded=""{{widget_condition_2}}""}}
             </div>
         </div>
         <div
@@ -57,7 +53,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras<br> tempus nulla quis magna accumsan
                     iaculis non vitae <br> mi. Nam ac consectetur purus, ut scelerisque turpis.
                 </p>
-                <a href=""#"">Shop now -></a>
+                <a href=""#"">SHOP NOW -&gt;</a>
             </div>
         </div>
         <div
@@ -79,7 +75,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
                 <h4>Fashion for Spring</h4>
             </div>
             <div>
-                {{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" products_count=""6"" template=""product/widget/content/grid_v5.phtml"" conditions_encoded=""a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:2:`23`;]]""}}
+                {{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" products_count=""6"" template=""product/widget/content/grid_v5.phtml"" conditions_encoded=""{{widget_condition_1}}""}}
             </div>
         </div>
     </div>
@@ -93,11 +89,8 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
         </div>
         <div class=""min-height-content content-blue-light col-md-8 col-sm-12 col-xs-12 nopadding paddingleft paddingbottom paddingright box-content valign-parent"">
             <div class=""pad-bottom-lg pad-top-lg page-small-width"">
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus nulla quis magna accumsan
-                    iaculis non vitae mi. Nam ac consectetur purus, ut scelerisque turpis. Ut id nulla cursus, convallis
-                    leo eu, placerat ipsum. Fusce lacus nunc, feugiat ac sodales et, bibendum id orci.
-                </p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus nulla quis magna accumsan iaculis non vitae mi. Nam ac consectetur purus, ut scelerisque turpis. Ut id nulla cursus, convallis leo eu, placerat ipsum. Fusce lacus nunc, feugiat ac sodales et, bibendum id orci. </p>
+                <a href="""">SALE UP TO 50% -&gt;</a>
             </div>
         </div>
     </div>
@@ -118,7 +111,6 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
         </div>
     </div>
 </div>
-<a href=""#"" class=""cd-top ""><i class=""icon-chevron-up""></i></a>
 ",1,,,,,,,,"
 .theme-pearl .page-wrapper .columns, .page.messages {width: 100%; max-width: 100%}
 .theme-pearl .row {max-width: 100%}

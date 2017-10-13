@@ -226,7 +226,11 @@ Tops</h2>
             </div>
 
             <div class=""col-xs-12 col-sm-12"" style=""line-height: 50px; height:87px"">
-                <h2 class=""center hp-subtitle hidden-xs""><span class=""subtitle"">New Collection, re-write this season's story with minimal style</span>
+                <h2 class=""center hp-subtitle hidden-xs"">
+                    <span class=""subtitle"">New Collection</span>
+                    <span class=""block-span text-initial"">Re-write this season's story</span>
+                    <span class=""text-lowercase font-weight-normal"">with</span>
+                    <span class=""font-weight-normal text-lowercase"">minimal style</span>
                 </h2>
             </div>
         </div>
@@ -312,6 +316,10 @@ Staff picks</h2>
     padding-bottom: 0 !important;
 }
 
+.theme-pearl .font-weight-normal{
+   font-weight:normal;
+}
+
 .theme-pearl .page-main {
     max-width: 100%;
     width: 100%;
@@ -338,27 +346,27 @@ Staff picks</h2>
 "Home Page V3",1column,,,home-page-v3,"","
 <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
 <div class=""module-split col-xs-12"">
-<div class=""col-xs-12 col-sm-4 col-sm-push-3 topmargin"">
-<img src=""{{media url=""wysiwyg/pearl_theme/c1.jpeg""}}"" width=""100%"">
+<div class=""col-xs-12 col-sm-4 col-sm-push-3 topmargin"" data-aos=""fade-up"" data-aos-duration=""3000"">
+<a href=""#""><img src=""{{media url=""wysiwyg/pearl_theme/c1.jpeg""}}"" width=""100%""></a>
 </div>
 <div class=""col-xs-12 col-sm-5 col-sm-push-2"" style=""margin-top: 15%;"">
 <h3>Denim upgrades</h3>
 <p>Feeling blue? Get your denim boost from head to toe with our indigo essentials. We're painting the day cerulean with new lace-ups in drapey silhouettes, bleach-spotted denims, and workwear detailed trucker jackets.</p>
-<span><a href=""#"">Shop Denim Essentials</a></span>
+<span><a href=""#""><i class=""icon-line2-handbag handbag-v3""></i>Shop Denim Essentials</a></span>
 </div>
 </div>
 
 <div class=""clearfix""></div>
 <div class=""module-split col-xs-12"">
 <div class=""col-xs-12 col-sm-4 col-sm-push-2 topmargin"">
-<img src=""{{media url=""wysiwyg/pearl_theme/c2.jpeg""}}"" width=""100%"">
+<a href=""#""><img src=""{{media url=""wysiwyg/pearl_theme/c2.jpeg""}}"" width=""100%""></a>
 </div>
 <div class=""col-xs-12 col-sm-4 col-sm-push-5 position-absolute"" style=""margin-top: 5%;"">
 <h3>Craft your style</h3>
 <p>This season, denim crafting is done under a dome of stars.</span>
 </div>
 <div class=""col-xs-12 col-sm-3 col-sm-push-3"" style=""margin-top: 11%;padding: 1.5%;background: #ffe8e8;"">
-<img src=""{{media url=""wysiwyg/pearl_theme/c6.jpeg""}}"" width=""100%"">
+<a href=""#""><img src=""{{media url=""wysiwyg/pearl_theme/c6.jpeg""}}"" width=""100%""></a>
 </div>
 </div>
 
@@ -366,12 +374,12 @@ Staff picks</h2>
 
 <div class=""module-split col-xs-12"">
 <div class=""col-xs-12 col-sm-10"" style=""margin: 5%;padding: 5% 5% 5% 7%;background: #fff8ee;"">
-<img src=""{{media url=""wysiwyg/pearl_theme/c7.jpeg""}}"" width=""100%"">
+<a href=""#""><img src=""{{media url=""wysiwyg/pearl_theme/c7.jpeg""}}"" width=""100%""></a>
 </div>
 <div class=""col-xs-12 col-sm-5 col-sm-push-7"" style=""margin-top: -17%;"">
-<h3>Summer Denim</h3>
-<p>Premium high-waist straight jean cut in a classic slouchy 'mom' fit</p>
-<span><a href=""#"">Shop Denim Essentials</a></span>
+<h3 class=""summer-denim"">Summer Denim</h3>
+<p class=""premium-p"">Premium high-waist straight jean cut in a classic slouchy 'mom' fit</p>
+<span><a href=""#""><i class=""icon-line2-handbag handbag-v3""></i>Shop Denim Essentials</a></span>
 </div>
 </div>
 
@@ -384,13 +392,13 @@ Staff picks</h2>
 <span><a href=""#"">Shop Now</a></span>
 </div>
 <div class=""col-xs-12 col-sm-7 col-sm-push-2 topmargin bottommargin"">
-<img src=""{{media url=""wysiwyg/pearl_theme/c3.jpeg""}}"" width=""100%"">
+<a href=""#""><img src=""{{media url=""wysiwyg/pearl_theme/c3.jpeg""}}"" width=""100%""></a>
 </div>
 <div class=""col-xs-12 col-sm-4 position-absolute"" style=""margin-top: 34%;margin-left: 39%;padding: 2%;background: #000;"">
-<img src=""{{media url=""wysiwyg/pearl_theme/c4.jpeg""}}"" width=""100%"">
+<a href=""#""><img src=""{{media url=""wysiwyg/pearl_theme/c4.jpeg""}}"" width=""100%""></a>
 </div>
 <div class=""col-xs-12 col-sm-4 position-absolute"" style=""margin-top: 39%;padding: 2%;background: #ffe8e8;margin-left: -4%;"">
-<img src=""{{media url=""wysiwyg/pearl_theme/c5.jpeg""}}"" width=""100%"">
+<a href=""#""><img src=""{{media url=""wysiwyg/pearl_theme/c5.jpeg""}}"" width=""100%""></a>
 </div>
 </div>
 ",1,,,,,,,,"
@@ -424,7 +432,7 @@ Staff picks</h2>
 </div>
 <!-- PARALLAX SECTION END-->
 
-<div class=""col-xs-12 col-sm-push-2"">
+<div class=""col-xs-12 col-sm-7 col-sm-push-2"">
 <div class=""heading-title"" style=""margin:15% 0"">
             <h2>PEARL IS A HIGH-END FASHION <br>BRAND FOUNDED IN 2014 WITH <br>STORES IN NYC, LA, AND BERLIN.</h2>
 </div>
@@ -437,7 +445,7 @@ Staff picks</h2>
 </div>
 <!-- PARALLAX SECTION END-->
 
-<div class=""col-xs-12 col-sm-7 col-sm-push-2"">
+<div class=""col-xs-12 col-sm-9 col-sm-push-2"">
 <div class=""heading-title"" style=""
     margin: 15% 0;
 "">

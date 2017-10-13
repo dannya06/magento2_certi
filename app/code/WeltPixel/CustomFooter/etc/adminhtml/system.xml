@@ -21,7 +21,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Make sure the static blocks are enabled and assigned to the proper store views.</comment>
                 </field>
-                <field id="version" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="version" translate="label comment tooltip" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Footer Version</label>
                     <source_model>WeltPixel\CustomFooter\Model\Config\Source\FooterVersion</source_model>
                     <depends>
@@ -29,6 +29,14 @@
                     </depends>
                     <comment>Choose footer version.</comment>
                     <tooltip>Edit footer in Content -> Blocks. Find the block with identifier name "weltpixel_footer_v[x]", where x is the footer version.</tooltip>
+                </field>
+            </group>
+            <group id="copyright" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Copyright Settings</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Edit the copyright content in Content -> Configuration -> Desired store view Edit -> Footer -> Copyright</comment>
                 </field>
             </group>
         </section>

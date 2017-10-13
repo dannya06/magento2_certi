@@ -2,14 +2,14 @@
     "name": "weltpixel/module-sitemap",
     "description": "WeltPixel Sitemap Module",
     "require": {
-        "php": "~5.6.5|7.0.2|7.0.4|~7.0.6",
+        "php": "~5.6.5|7.0.2|7.0.4|~7.0.6|~7.1.0",
         "weltpixel/m2-weltpixel-backend": "~1.0 | master",
         "magento/module-sitemap": "100.*",
         "magento/module-cms": "101.* | 100.*",
         "magento/module-catalog": "101.* | 100.*"
     },
     "type": "magento2-module",
-    "version": "1.0.2",
+    "version": "1.5.3",
     "license": [
         "OSL-3.0",
         "AFL-3.0"

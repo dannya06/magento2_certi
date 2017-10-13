@@ -11,6 +11,7 @@
                 <item name="importDemoCommand" xsi:type="object">WeltPixel\Command\Console\Command\ImportDemoCommand</item>
                 <item name="themeConfiguratorCommand" xsi:type="object">WeltPixel\Command\Console\Command\ThemeConfiguratorCommand</item>
                 <item name="activateThemeCommand" xsi:type="object">WeltPixel\Command\Console\Command\ActivateThemeCommand</item>
+                <item name="generateCssCommand" xsi:type="object">WeltPixel\Command\Console\Command\GenerateCssCommand</item>
             </argument>
         </arguments>
     </type>

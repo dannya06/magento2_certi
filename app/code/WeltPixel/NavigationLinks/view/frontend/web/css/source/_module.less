@@ -1,0 +1,185 @@
+& when (@media-common = true) {
+    /* apply only on desktops */
+    @media only screen and (min-width: @screen__m) {
+        /* style fixes for header versions */
+        .page-header-v3 {
+            .header {
+                position: relative;
+
+                .sections,
+                .section-items,
+                .section-item-content,
+                .navigation,
+                .navigation > ul {
+                    position: unset;
+                }
+            }
+
+        }
+
+        .navigation ul li.level0 > a {
+            text-transform: uppercase;
+        }
+
+        .navigation {
+            /* common styles for every menu type */
+            .megamenu.level-top-fullwidth,
+            .megamenu.level-top-sectioned,
+            .megamenu.level-top-boxed {
+                .submenu {
+                    padding-bottom: 10px;
+                    z-index: 5;
+                    .columns-group {
+                        li a {
+                            -webkit-transition: all 0.25s ease;
+                            -moz-transition: all 0.25s ease;
+                            -ms-transition: all 0.25s ease;
+                            -o-transition: all 0.25s ease;
+                            transition: all 0.25s ease;
+
+                            &:hover {
+                                padding-left: 25px;
+                            }
+                        }
+                    }
+                    .level1 {
+                        display: inline-block;
+                        float: left;
+                        margin-bottom: 0;
+                        margin-top: 10px;
+                        width: auto;
+                        .submenu {
+                            border: 0 none;
+                            box-shadow: inherit;
+                            display: block !important;
+                            position: relative;
+                            left: 0 !important;
+                            li {
+                                margin: 0;
+                                padding: 0 10px;
+                                width: 100%;
+                                a {
+                                    padding: 5px 20px;
+                                    -webkit-transition: all 0.25s ease;
+                                    -moz-transition: all 0.25s ease;
+                                    -ms-transition: all 0.25s ease;
+                                    -o-transition: all 0.25s ease;
+                                    transition: all 0.25s ease;
+                                    &:hover {
+                                        padding-left: 25px;
+                                    }
+                                }
+                                a:first-child {
+                                    margin-top: 5px;
+                                }
+                            }
+                        }
+                    }
+                    [data-has-children] {
+                        margin-top: 0;
+                    }
+                    [data-has-children] > a {
+                        font-size: 1.8rem;
+                        line-height: 2;
+
+                        span:last-child {
+                            border-bottom: 1px solid #a8a8a8;
+                            padding: 0 10px 5px;
+                        }
+                    }
+                    .level3 a span {
+                        text-transform: none;
+                    }
+                    &:not(:first-child) .active > a {
+                        border-left: 0 none;
+                    }
+                }
+            }
+            /* specific styles for each menu type */
+            .megamenu.level-top-fullwidth {
+                position: initial;
+                .fullwidth {
+                    left: 0 !important;
+                    width: 100%;
+                }
+            }
+            .megamenu.level-top-sectioned {
+                .sectioned {
+                    display: table;
+                    .columns-group {
+                        display: table-cell !important;
+                        float: none;
+                        left: 0 !important;
+                        overflow: hidden;
+                        vertical-align: top;
+                        width: 100%;
+                        li > a {
+                            white-space:nowrap;
+                        }
+                    }
+                }
+            }
+            .megamenu.level-top-boxed {
+                .boxed {
+                    .columns-group {
+                        right: inherit !important;
+                        width: 100% !important;
+                        li > a {
+                            white-space:nowrap;
+                        }
+                    }
+                    .level1 {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+    }
+    @media only screen and (max-width: @screen__m) {
+        .navigation {
+            .columns-group {
+                width: 100% !important;
+            }
+            .megamenu.level-top-sectioned {
+                .sectioned {
+                    display: block;
+                }
+            }
+        }
+        .level0.has-active > a {
+            &:not(.ui-state-active) {
+                border-left: 0 none !important;
+            }
+        }
+        .submenu {
+            &:not(:first-child) .active > a {
+                border-left: 0 none !important;
+            }
+        }
+    }
+    .navigation {
+
+        .columns-group {
+            display: inline-block !important;
+            float: left;
+            margin-top: 0 !important;
+            width: auto;
+
+            &:before,
+            &:after {
+                content: none !important;
+                display: none !important;
+            }
+        }
+        .columns-group > li {
+            float: left !important;
+            width: 100% !important;
+        }
+    }
+    /** fix for magnified product image */
+    .catalog-product-view {
+        .magnifier-preview {
+            z-index: 1;
+        }
+    }
+}

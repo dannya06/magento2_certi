@@ -4,5 +4,8 @@
     <group name="catalog_category">
         <attribute name="weltpixel_category_url"/>
         <attribute name="weltpixel_category_url_newtab" />
+        <attribute name="weltpixel_mm_display_mode" />
+        <attribute name="weltpixel_mm_columns_number" />
+        <attribute name="weltpixel_mm_column_width" />
     </group>
 </config>

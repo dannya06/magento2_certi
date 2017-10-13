@@ -6,10 +6,10 @@ title,identifier,content,is_active
 {{block class=""Magento\\Cms\\Block\\Block"" block_id=""weltpixel_footer_v4""}}
 ",1
 "WeltPixel Footer V3",weltpixel_footer_v3,"
-<div class=""w"">
+<div class=""w footer-v3"">
     <div class=""footer-section2-content row"">
         <!-- FOOTER COLUMN #1 BEGIN -->
-        <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle"">
+        <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle address-v3"">
             <h4 class=""mini-logo""><img alt=""Logo"" src=""{{media url=""wysiwyg/pearl_theme/logo_white.png""}}""
                 style=""width:100px""></h4>
             <p><i class=""icon icon-location""></i>9087S Divamus Faucibus Str., <br>
@@ -23,7 +23,7 @@ title,identifier,content,is_active
         <!-- FOOTER COLUMN #2 BEGIN -->
         <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle"">
             <h4>Company</h4>
-            <ul>
+            <ul class=""footer-v3-list"">
                 <li><a href=""{{store url=""about-us/""}}"">About Us</a></li>
                 <li><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
                 <li><a href=""{{store url=""customer-service/""}}"">Customer Service</a></li>
@@ -37,7 +37,7 @@ title,identifier,content,is_active
         <!-- FOOTER COLUMN #3 BEGIN -->
         <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle"">
             <h4>Quick Links</h4>
-            <ul>
+            <ul class=""footer-v3-list"">
                 <li><a href=""{{store url=""sitemap.xml""}}"" title=""Site Map"">Site Map</a></li>
                 <li><a href=""{{store url=""search/term/popular/""}}"" title=""Search Terms"">Search Terms</a></li>
                 <li><a href=""{{store url=""catalogsearch/advanced/""}}"" title=""Advanced Search"">Advanced Search</a></li>

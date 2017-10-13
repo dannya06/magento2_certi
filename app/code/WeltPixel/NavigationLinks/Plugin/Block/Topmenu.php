@@ -158,7 +158,7 @@ class Topmenu
 
         if (isset($customCategoryUrl) && strlen($customCategoryUrl)) {
 
-            if (strpos($customCategoryUrl, 'http://') === 0) {
+            if (strpos($customCategoryUrl, 'http://') === 0 || strpos($customCategoryUrl, 'https://') === 0) {
                 $result['url'] = $customCategoryUrl;
             } elseif ($customCategoryUrl == '#') {
                 $result['url'] = 'javascript:void(0);';
@@ -170,6 +170,22 @@ class Topmenu
         $result['open_in_newtab'] = 0;
         if (isset($categoryMenuData['weltpixel_category_url_newtab']) && $categoryMenuData['weltpixel_category_url_newtab']) {
             $result['open_in_newtab'] = 1;
+        }
+	
+	    $result['weltpixel_mm_display_mode'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_display_mode'])) {
+	        $result['weltpixel_mm_display_mode'] = $categoryMenuData['weltpixel_mm_display_mode'];
+        }
+	
+	    $result['weltpixel_mm_columns_number'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_columns_number'])) {
+        	$colNumber = (int) $categoryMenuData['weltpixel_mm_columns_number'];
+	        $result['weltpixel_mm_columns_number'] = $colNumber;
+        }
+	
+	    $result['weltpixel_mm_column_width'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_column_width'])) {
+	        $result['weltpixel_mm_column_width'] = $categoryMenuData['weltpixel_mm_column_width'];
         }
 
         return $result;
@@ -188,7 +204,15 @@ class Topmenu
         /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $collection */
         $collection = $this->collectionFactory->create();
         $collection->setStoreId($storeId);
-        $collection->addAttributeToSelect(array('name', 'weltpixel_category_url', 'weltpixel_category_url_newtab'));
+        $collection->addAttributeToSelect(array(
+        		'name',
+		        'weltpixel_category_url',
+		        'weltpixel_category_url_newtab',
+		        'weltpixel_mm_display_mode',
+		        'weltpixel_mm_columns_number',
+		        'weltpixel_mm_column_width',
+            )
+        );
         $collection->addFieldToFilter('path', ['like' => '1/' . $rootId . '/%']); //load only from store root
         $collection->addAttributeToFilter('include_in_menu', 1);
         $collection->addIsActiveFilter();

@@ -8,7 +8,7 @@ define(['jquery'], function (jQuery) {
                 addtocart_position = '.addtocart_position_',
                 productItem = '.products-grid .product-item',
                 productImage = '.product_image',
-                priceBox = '.price-box';
+                priceBox = '.price-box.price-final_price';
 
             if (displayAddToCart == 1 || displayAddToCart == 2) {
                 jQuery(productItem).each(function () {
@@ -90,10 +90,10 @@ define(['jquery'], function (jQuery) {
                 if (eTrue) {
                     el.find(buttonQuickView_1).addClass('weltpixel_quickview_button_v2').removeClass('weltpixel_quickview_button_v1');
                     var quickViewH_2 = el.find(buttonQuickView_2).outerHeight() + 10;
-                    el.find(buttonQuickView_2).css('top', img - quickViewH_2);
+
                 } else {
-                    el.find(buttonQuickView_1).css('top', img - quickViewH_1);
-                    el.find(buttonQuickView_2).css('top', img - quickViewH_2);
+
+                    el.find(buttonQuickView_2).css('top', img - quickViewH_2 - 10);
                 }
 
             });
@@ -118,6 +118,17 @@ define(['jquery'], function (jQuery) {
             });
         },
 
+        itemHeight: function () {
+            var productItem = '.products-grid .product-item',
+                productItemHeight = {};
+            jQuery(productItem).each(function() {
+                var height = jQuery(this).outerHeight();
+                productItemHeight[height] = height;
+            });
+            var finalHeight = productItemHeight[Object.keys(productItemHeight)[Object.keys(productItemHeight).length - 1]];
+            jQuery(productItem).height(finalHeight);
+        },
+
         actions: function (actions) {
             this.displayAddToCart(actions);
             this.displayWishlist(actions);
@@ -125,7 +136,7 @@ define(['jquery'], function (jQuery) {
             this.toCartWidth(actions);
             this.hoverShow(actions);
             this.buttonQuickView();
-            this.itemHover();
+            this.itemHeight();
 
             var that = this;
             jQuery(window).resize(function() {

@@ -2,12 +2,18 @@
 @storeViewClass {
 	&.catalog-product-view {
 		.product.info.detailed {
+			.product.data.items > .item.title.active {
+				bottom: 0px;
+			}
+			.product.data.items > .item.title.active .switch {
+				height:40px !important;
+			}
 			.product.data.items {
 				border-bottom: 1px solid #cccccc;
 				.lib-data-accordion();
 				.item.title {
 					&.active {
-						content: "cucu";
+						content: "";
 						a:after {
 							position: absolute;
 							bottom: -1px;
@@ -27,6 +33,7 @@
 					.switch {
 						border-left: none;
 						border-right: none;
+						border-top: none !important;
 					}
 				}
 				.review-ratings {

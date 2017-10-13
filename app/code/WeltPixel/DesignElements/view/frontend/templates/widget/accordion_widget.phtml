@@ -17,12 +17,7 @@ $text = trim($this->getContent());
         }
     </style>
 <?php endif;?>
-<?php if($style == 'panel-group'):?>
-    <div id="accordion" class="panel-group nobottommargin panel-accordion">
-        <?php echo $text;?>
-    </div>
-<?php else:?>
-    <div class="accordion <?php echo $style.' '.$uniqueid;?> clearfix" style="<?php echo $borderColor;?>">
-        <?php echo $text;?>
-    </div>
-<?php endif;?>
+
+<div class="accordion <?php echo $style.' '.$uniqueid;?> clearfix" style="<?php echo $borderColor;?>">
+    <?php echo $text;?>
+</div>

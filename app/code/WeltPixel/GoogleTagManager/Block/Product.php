@@ -13,12 +13,19 @@ class Product extends \WeltPixel\GoogleTagManager\Block\Core
     {
         /** @var \Magento\Catalog\Block\Product\ProductList\Related $relatedProductListBlock */
         $relatedProductListBlock = $this->_layout->getBlock('catalog.product.related');
+        $collection = '';
 
         if (empty($relatedProductListBlock)) {
             return null;
         }
 
-        $collection = $relatedProductListBlock->getItems();
+        $blockType = $relatedProductListBlock->getData('type');
+        if ($blockType == 'related-rule') {
+            $collection = $relatedProductListBlock->getAllItems();
+        } else {
+            $collection = $relatedProductListBlock->getItems();
+        }
+
         return $collection;
     }
 
@@ -29,12 +36,19 @@ class Product extends \WeltPixel\GoogleTagManager\Block\Core
     {
         /** @var \Magento\Catalog\Block\Product\ProductList\Upsell $upsellProductListBlock */
         $upsellProductListBlock = $this->_layout->getBlock('product.info.upsell');
+        $collection = '';
 
         if (empty($upsellProductListBlock)) {
             return null;
         }
 
-        $collection = $upsellProductListBlock->getItemCollection()->getItems();
+        $blockType = $upsellProductListBlock->getData('type');
+        if ($blockType == 'upsell-rule') {
+            $collection = $upsellProductListBlock->getAllItems();
+        } else {
+            $collection = $upsellProductListBlock->getItemCollection()->getItems();
+        }
+
         return $collection;
     }
 }

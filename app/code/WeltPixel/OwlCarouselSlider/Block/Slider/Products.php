@@ -24,6 +24,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
     protected $_productCollectionFactory;
     protected $_reportsCollectionFactory;
     protected $_viewProductsBlock;
+    protected $_categoryFactory;
 
     /**
      * Internal constructor, that is called from real constructor
@@ -35,8 +36,9 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory        $productsCollectionFactory
      * @param \Magento\Reports\Model\ResourceModel\Product\CollectionFactory        $reportsCollectionFactory
      * @param \Magento\Reports\Block\Product\Widget\Viewed\Proxy                    $viewedProductsBlock
+     * @param \Magento\Catalog\Model\CategoryFactory                                $categoryFactory
+     * @param array $data
      */
-
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \WeltPixel\OwlCarouselSlider\Helper\Products $helperProducts,
@@ -45,6 +47,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productsCollectionFactory,
         \Magento\Reports\Model\ResourceModel\Product\CollectionFactory $reportsCollectionFactory,
         \Magento\Reports\Block\Product\Widget\Viewed\Proxy $viewedProductsBlock,
+        \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
     )
     {
@@ -55,6 +58,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
         $this->_productCollectionFactory  = $productsCollectionFactory;
         $this->_reportsCollectionFactory  = $reportsCollectionFactory;
         $this->_viewProductsBlock         = $viewedProductsBlock;
+        $this->_categoryFactory           = $categoryFactory;
 
         $this->setTemplate('sliders/products.phtml');
 
@@ -64,8 +68,36 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 
         parent::__construct($context, $data);
         $this->_isScopePrivate = false;
-
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+
+        $this->addData([
+            'cache_lifetime' => 86400,
+            'cache_tags' => [\Magento\Catalog\Model\Product::CACHE_TAG,
+            ], ]);
+    }
+
+    /**
+     * Get key pieces for caching block content
+     *
+     * @return array
+     */
+    public function getCacheKeyInfo()
+    {
+        return [
+            'WELTPIXEL_PRODUCTS_LIST_WIDGET',
+            $this->_storeManager->getStore()->getId(),
+            $this->_design->getDesignTheme()->getId(),
+            $this->getData('products_type')
+        ];
+    }
+
 
     /**
      * Retrieve the product collection based on product type.
@@ -88,6 +120,10 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
                 break;
             case 'recently_viewed':
                 $productCollection =  $this->_getRecentlyViewedCollection($this->_productCollectionFactory->create());
+                break;
+            case 'category_products':
+                $categoryId = $this->_getCategoryIdFrom($this->getData('category'));
+                $productCollection = $this->_getCustomCategoryCollection($categoryId);
                 break;
             case 'related_products':
                 $productCollection = $this->getProductCollectionRelated();
@@ -330,6 +366,36 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
     }
 
     /**
+     * @param $categoryId
+     * @return array|\Magento\Framework\Data\Collection\AbstractDb
+     */
+    protected function _getCustomCategoryCollection($categoryId)
+    {
+        $limit  = $this->_getProductLimit('category_products');
+        $random = $this->_getRandomSort('category_products');
+
+        if($limit == 0) {
+            return [];
+        };
+
+
+        $category = $this->_categoryFactory->create()->load($categoryId);
+
+        $_collection = $category->getProductCollection();
+        $_collection->addAttributeToSelect('*');
+
+        if ($random) {
+            $_collection->getSelect()->order('RAND()');
+        };
+
+        if ($limit && $limit > 0 ) {
+            $_collection->setPageSize($limit);
+        };
+
+        return $_collection;
+    }
+
+    /**
      * Get related slider products.
      *
      * @return \Magento\Catalog\Model\ResourceModel\Product\Collection
@@ -472,11 +538,34 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 
     /**
      * Retrieve the current store id.
-     * 
+     *
      * @return int
      */
     public function getStoreId()
     {
         return $this->_storeManager->getStore()->getId();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isHoverImageEnabled()
+    {
+        return $this->_helperCustom->isHoverImageEnabled();
+    }
+
+    /**
+     * @param $category
+     * @return bool
+     */
+    protected function _getCategoryIdFrom($category) {
+        $value = explode('/', $category);
+        $categoryId = false;
+
+        if (isset($value[0]) && isset($value[1]) && $value[0] == 'category') {
+            $categoryId = $value[1];
+        }
+
+        return $categoryId;
     }
 }

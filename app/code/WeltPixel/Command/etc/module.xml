@@ -3,6 +3,7 @@
     <module name="WeltPixel_Command" setup_version="1.0.0" >
         <sequence>
             <module name="Magento_Backend"/>
+            <module name="Magento_Store"/>
         </sequence>
     </module>
 </config>
