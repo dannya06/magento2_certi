@@ -54,3 +54,7 @@ atlassian*
 !/var/.htaccess
 /vendor/*
 !/vendor/.htaccess
+
+/app/code/WeltPixel/FrontendOptions/view/frontend/web/*
+/app/code/WeltPixel/ProductPage/view/frontend/web/css/*
+/app/code/WeltPixel/QuickCart/view/frontend/web/css/*
