@@ -1,27 +1,27 @@
 "title","page_layout","meta_keywords","meta_description","identifier","content_heading","content",is_active,"sort_order","layout_update_xml","custom_theme","custom_root_template","custom_layout_update_xml","custom_theme_from","custom_theme_to","css_global","css_phone_small","css_phone","css_tablet_small","css_tablet","css_desktop","css_desktop_large",custom_js
-"Home Page V9","1column","","","home-page-v9","","<div class=\"container-fluid content-v8 content-v5 content-v9 nopadding\">
-    <div class=\"wrapper-top-slider-v9\">{{widget_nr_1}}</div>
+"Home Page V9","1column","","","home-page-v9","","<div class=""container-fluid content-v8 content-v5 content-v9 nopadding"">
+    <div class=""wrapper-top-slider-v9"">{{widget_nr_1}}</div>
 
     <!-- Homepage Collection 1 V9 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"collection1_v9\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""collection1_v9""}}
     <!-- Homepage Collection 1 V9 end -->
 
     <!-- Homepage Collection 2 V9 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"collection2_v9\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""collection2_v9""}}
     <!-- Homepage Collection 2 V9 end -->
 
     <!-- Homepage Collection 3 V9 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"collection3_v9\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""collection3_v9""}}
     <!-- Homepage Collection 3 V9end -->
 
     <!-- Homepage Collection 4 V9 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"collection4_v9\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""collection4_v9""}}
     <!-- Homepage Collection 4 V9 end -->
 
-    <div class=\"row brands-slider\">{{widget_nr_2}}</div>
+    <div class=""row brands-slider"">{{widget_nr_2}}</div>
 
     <!-- Homepage Shipping Return V9 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"shipping_return_v9\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""shipping_return_v9""}}
     <!-- Homepage Shipping Return V9 end -->
 
 </div>",1,"","","","","","","","

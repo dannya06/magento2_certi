@@ -1,26 +1,26 @@
 "title","page_layout","meta_keywords","meta_description","identifier","content_heading","content",is_active,"sort_order","layout_update_xml","custom_theme","custom_root_template","custom_layout_update_xml","custom_theme_from","custom_theme_to","css_global","css_phone_small","css_phone","css_tablet_small","css_tablet","css_desktop","css_desktop_large","custom_js"
 "Home Page V11","1column","","","home-page-v11","","<!-- Homepage Content 1 V11 -->
-{{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"content_v11\"}}
+{{block class=""Magento\Cms\Block\Block"" block_id=""content_v11""}}
 <!-- Homepage Content 1 V11 end -->
 
 <!-- Homepage Content 2 V11 -->
-{{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"content2_v11\"}}
+{{block class=""Magento\Cms\Block\Block"" block_id=""content2_v11""}}
 <!-- Homepage Content 2 V11 end -->
 
 <!-- Homepage Content 3 V11 -->
-{{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"content3_11\"}}
+{{block class=""Magento\Cms\Block\Block"" block_id=""content3_11""}}
 <!-- Homepage Content 3 V11 end -->
 
 <!-- Homepage Content 4 Testimonial V11 -->
-{{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"content4_testimonial_v11\"}}
+{{block class=""Magento\Cms\Block\Block"" block_id=""content4_testimonial_v11""}}
 <!-- Homepage Content 4 Testimonial V11 end -->
 
 <!-- Homepage Content 5 V11 -->
-{{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"content5_v11\"}}
+{{block class=""Magento\Cms\Block\Block"" block_id=""content5_v11""}}
 <!-- Homepage Content 5 V11 end -->
 
 <!-- Homepage Content 6 V11 -->
-{{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"content6_v11\"}}
+{{block class=""Magento\Cms\Block\Block"" block_id=""content6_v11""}}
 <!-- Homepage Content 6 V11 end -->",1,"","","","","","","","
 .theme-pearl .page-main{
        padding:0px !important;
@@ -28,164 +28,164 @@
 ","","","","","","","
 require(['jquery'], function($){
     /* Get src attribute from img */
-    $(\".bg-img\").each(function() {
+    $("".bg-img"").each(function() {
         var urlImg = $(this).attr('src'),
         parent = $(this).closest( '.img-bar' )
-        $(this).css(\"visibility\", \"hidden\");
+        $(this).css(""visibility"", ""hidden"");
         parent.css(
         {
-        'background':'url(\"'+urlImg+'\") no-repeat 0 0',
+        'background':'url(""'+urlImg+'"") no-repeat 0 0',
         'background-size': 'cover'
         });
     });
 });
 "
 "Aos Animations","1column","","","weltpixel-aos-animations","","
-<div class=\"container-aos\">
-    <div class=\"row distance\">
-        <div class=\"col-main main\">
-            <div class=\"std\">
-                <div class=\"col_full clearfix\">
+<div class=""container-aos"">
+    <div class=""row distance"">
+        <div class=""col-main main"">
+            <div class=""std"">
+                <div class=""col_full clearfix"">
                     <h3>Fade Up</h3>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"fade-up\"=\"bounce\" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro, libero, temporibus quam eaque numquam debitis excepturi assumenda necessitatibus dolore dolorum vero enim distinctio ipsa. Quod, dolorum, quidem eum quisquam facilis nam molestias et voluptas omnis quibusdam dignissimos illum ullam. Possimus consectetur veniam fugit libero pariatur illum eos tempora repudiandae dolorum non. Adipisci, porro, natus hic expedita sed eius provident incidunt fugit autem alias quod ratione et reprehenderit architecto qui ea.</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""fade-up""=""bounce"" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro, libero, temporibus quam eaque numquam debitis excepturi assumenda necessitatibus dolore dolorum vero enim distinctio ipsa. Quod, dolorum, quidem eum quisquam facilis nam molestias et voluptas omnis quibusdam dignissimos illum ullam. Possimus consectetur veniam fugit libero pariatur illum eos tempora repudiandae dolorum non. Adipisci, porro, natus hic expedita sed eius provident incidunt fugit autem alias quod ratione et reprehenderit architecto qui ea.</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Fade down</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"fade-down\" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""fade-down"" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Fade Left</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"fade-left\" data-aos-anchor-placement=\"bottom-bottom\" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""fade-left"" data-aos-anchor-placement=""bottom-bottom"" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Fade right</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"fade-right\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""fade-right"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Fade Up Right</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"fade-up-right\" data-aos-anchor-placement=\"bottom-bottom\" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""fade-up-right"" data-aos-anchor-placement=""bottom-bottom"" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Fade Up Left</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"fade-up-left\" data-aos-anchor-placement=\"bottom-bottom\" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""fade-up-left"" data-aos-anchor-placement=""bottom-bottom"" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Fade Down Right</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"fade-down-right\" data-aos-anchor-placement=\"bottom-bottom\" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""fade-down-right"" data-aos-anchor-placement=""bottom-bottom"" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Fade Down Left</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"fade-down-left\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""fade-down-left"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Flip Up</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"flip-up\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""flip-up"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Flip Down</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\"  data-aos=\"flip-down\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image""  data-aos=""flip-down"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Flip Left</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"flip-left\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""flip-left"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Flip Right</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"flip-right\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""flip-right"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Zoom In Up</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"zoom-in-up\" data-aos-anchor-placement=\"bottom-bottom\" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""zoom-in-up"" data-aos-anchor-placement=""bottom-bottom"" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Zoom In Down</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"zoom-in-down\" data-aos-anchor-placement=\"bottom-bottom\" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""zoom-in-down"" data-aos-anchor-placement=""bottom-bottom"" />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Zoom In Left</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"zoom-in-left\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""zoom-in-left"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Zoom In Right</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"zoom-in-right\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""zoom-in-right"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Zoom Out Up</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"zoom-out-up\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""zoom-out-up"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Zoom Out Down</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"zoom-out-down\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""zoom-out-down"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Zoom Out Left</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"zoom-out-left\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""zoom-out-left"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Zoom Out Right</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"zoom-out-right\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""zoom-out-right"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Slide Up</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"slide-up\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""slide-up"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Slide Down</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"slide-down\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""slide-down"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Slide Left</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignleft notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"slide-left\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignleft notopmargin"" alt=""Image"" title=""Image"" data-aos=""slide-left"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
-                <div class=\"col_full clearfix\">
-                    <div class=\"fancy-title title-dotted-border\">
+                <div class=""col_full clearfix"">
+                    <div class=""fancy-title title-dotted-border"">
                         <h3>Slide Right</h3>
                     </div>
-                    <p style=\"font-size: 14px; line-height: 22px;\"><img src=\"{{media url=\"wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg\"}}\" class=\"alignright notopmargin\" alt=\"Image\" title=\"Image\" data-aos=\"slide-right\" data-aos-anchor-placement=\"bottom-bottom\"/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
+                    <p style=""font-size: 14px; line-height: 22px;""><img src=""{{media url=""wysiwyg/Pearl_Responsive_Theme_For_Magento_2_01.jpg""}}"" class=""alignright notopmargin"" alt=""Image"" title=""Image"" data-aos=""slide-right"" data-aos-anchor-placement=""bottom-bottom""/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, cumque, distinctio, in assumenda voluptates iste autem fugiat recusandae quas corporis laboriosam maxime vero. Harum, similique, doloribus, voluptate aliquam unde quas at consequuntur rem iste eum iusto placeat quae inventore quibusdam explicabo itaque eaque dolor quam omnis assumenda. Hic, nesciunt vel debitis quas reiciendis. Debitis, natus, voluptas, quaerat, nostrum tempora aliquid nesciunt sapiente commodi excepturi fugiat neque facilis perferendis quam porro!</p>
                 </div>
             </div>
         </div>

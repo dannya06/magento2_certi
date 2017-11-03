@@ -1,55 +1,55 @@
 "title","page_layout","meta_keywords","meta_description","identifier","content_heading","content",is_active,"sort_order","layout_update_xml","custom_theme","custom_root_template","custom_layout_update_xml","custom_theme_from","custom_theme_to","css_global","css_phone_small","css_phone","css_tablet_small","css_tablet","css_desktop","css_desktop_large","custom_js"
-"Home Page V7","1column","","","home-page-v7","","<div class=\"hp-v7\">
-    <div class=\"hp-v7-slider\">
+"Home Page V7","1column","","","home-page-v7","","<div class=""hp-v7"">
+    <div class=""hp-v7-slider"">
         {{widget_nr_1}}
     </div>
 
-    <div class=\"hp-v7-boxes container topmargin\">
+    <div class=""hp-v7-boxes container topmargin"">
 
-        <div class=\"row\">
+        <div class=""row"">
             <!-- Homepage Limited Edition V7 -->
-            {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"limited_edition_v7\"}}
+            {{block class=""Magento\Cms\Block\Block"" block_id=""limited_edition_v7""}}
             <!-- Homepage Limited Edition V7 end -->
 
             <!-- Homepage Soft Collection V7 -->
-            {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"soft_collection_v7\"}}
+            {{block class=""Magento\Cms\Block\Block"" block_id=""soft_collection_v7""}}
             <!-- Homepage Soft Collection V7 end -->
 
         </div>
 
-        <div class=\"row\">
+        <div class=""row"">
 
             <!-- Homepage Category Left V7 -->
-            {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"category_left_v7\"}}
+            {{block class=""Magento\Cms\Block\Block"" block_id=""category_left_v7""}}
             <!-- Homepage Category Left V7 end -->
 
-            <div class=\"col-md-8 col-sm-6 col-xs-12 nopadding\">
+            <div class=""col-md-8 col-sm-6 col-xs-12 nopadding"">
 
                 <!-- Homepage Category Right Top V7 -->
-                {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"category_right_top_v7\"}}
+                {{block class=""Magento\Cms\Block\Block"" block_id=""category_right_top_v7""}}
                 <!-- Homepage Category Right Top V7 end -->
 
                 <!-- Homepage Category Right Bottom V7 -->
-                {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"category_right_bottom_v7\"}}
+                {{block class=""Magento\Cms\Block\Block"" block_id=""category_right_bottom_v7""}}
                 <!-- Homepage Category Right Bottom V7 end -->
 
             </div>
 
         </div>
 
-        <div class=\"row visible-sm visible-xs\">
+        <div class=""row visible-sm visible-xs"">
 
             <!-- Homepage New Style V7 -->
-            {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"new_style_v7\"}}
+            {{block class=""Magento\Cms\Block\Block"" block_id=""new_style_v7""}}
             <!-- Homepage New Style V7 end -->
             
             <!-- Homepage New Style 2 V7 -->
-            {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"new_style2_v7\"}}
+            {{block class=""Magento\Cms\Block\Block"" block_id=""new_style2_v7""}}
             <!-- Homepage New Style 2 V7 end -->
         </div>
 
         <p>
-            {{widget type=\"WeltPixel\\InstagramWidget\\Block\\Widget\\Instagram\" instagram_client_id=\"ae53d26309844530a3ff8e821bc4aca6\" instagram_access_token=\"1127918776.ae53d26.5bc622b6abdb44e29ceaee72c4fe6d4e\" title=\"#PEARL ON INSTAGRAM\" description=\"Instagram Fresh Styles, Designer Brands?\" images_per_row=\"col-4\" limit=\"4\" sort_by=\"none\" resolution=\"standard_resolution\" feed_type=\"tagged\" tag_name=\"pearltheme_v7\"}}
+            {{widget type=""WeltPixel\InstagramWidget\Block\Widget\Instagram"" instagram_client_id=""ae53d26309844530a3ff8e821bc4aca6"" instagram_access_token=""1127918776.ae53d26.5bc622b6abdb44e29ceaee72c4fe6d4e"" title=""#PEARL ON INSTAGRAM"" description=""Instagram Fresh Styles, Designer Brands?"" images_per_row=""col-4"" limit=""4"" sort_by=""none"" resolution=""standard_resolution"" feed_type=""tagged"" tag_name=""pearltheme_v7""}}
         </p>
     </div>
 </div>",1,"","","","","","","","
@@ -64,7 +64,7 @@ var _this = this,
 $this = $(el),
 $el = $this.clone(),
 href = $this.attr('href'),
-$target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\\s]+$)/, ''))), //strip for ie7
+$target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))), //strip for ie7
 _overlay_css = {};
 
 if ( ! $target.length )
@@ -75,7 +75,7 @@ if ($target.length) {
 
 this.set_from_attr(el, opts);
 
-$wrap = $('<div class=\"drop-panel\" />',{position: 'relative', 'z-index': 1, display: 'block', overflow: 'hidden'})
+$wrap = $('<div class=""drop-panel"" />',{position: 'relative', 'z-index': 1, display: 'block', overflow: 'hidden'})
 .append($el)
 .append($target);
 

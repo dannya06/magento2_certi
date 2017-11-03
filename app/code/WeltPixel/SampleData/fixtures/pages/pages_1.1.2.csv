@@ -1,21 +1,21 @@
 "title","page_layout","meta_keywords","meta_description","identifier","content_heading","content",is_active,"sort_order","layout_update_xml","custom_theme","custom_root_template","custom_layout_update_xml","custom_theme_from","custom_theme_to","css_global",css_desktop
-"Home Page V8","1column","","","home-page-v8","","<div class=\"container-fluid content-v8 nopadding\">
+"Home Page V8","1column","","","home-page-v8","","<div class=""container-fluid content-v8 nopadding"">
     <!-- Homepage New Product V8 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"new_product_v8\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""new_product_v8""}}
     <!-- Homepage New Product V8 end -->
 
-    <div class=\"slider-custom-1 \">{{widget_nr_1}}</div>
+    <div class=""slider-custom-1 "">{{widget_nr_1}}</div>
     <!--
-\"Featured product category can be changed by inserting another widget: Insert Widget -> Catalog Product List -> (Weltpixel Homepage V8 Product Grid) / Conditions - Category is [number] where 'number' is the id of the category you want to advertise on homepage.\"
+""Featured product category can be changed by inserting another widget: Insert Widget -> Catalog Product List -> (Weltpixel Homepage V8 Product Grid) / Conditions - Category is [number] where 'number' is the id of the category you want to advertise on homepage.""
 -->
     <!-- Homepage Latest Product V8 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"latest_product_v8\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""latest_product_v8""}}
     <!-- Homepage Latest Product V8 end -->
 
-    <div class=\"row brands-slider\">{{widget_nr_2}}</div>
+    <div class=""row brands-slider"">{{widget_nr_2}}</div>
 
     <!-- Homepage Shipping Return V8 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"shipping_return_v8\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""shipping_return_v8""}}
     <!-- Homepage Shipping Return V8 end -->
 </div>",1,"","","","","","","","
 .theme-pearl .page-wrapper .columns, .page.messages {width: 100% !important; max-width: 100% !important}

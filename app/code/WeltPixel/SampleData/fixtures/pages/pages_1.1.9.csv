@@ -1,35 +1,35 @@
 "title","page_layout","meta_keywords","meta_description","identifier","content_heading","content",is_active,"sort_order","layout_update_xml","custom_theme","custom_root_template","custom_layout_update_xml","custom_theme_from","custom_theme_to","css_global","css_phone_small","css_phone","css_tablet_small","css_tablet","css_desktop","css_desktop_large","custom_js"
-"Home Page V5","1column","","","home-page-v5","","<div class=\"container-fluid content-v5 nopadding\">
-    <div class=\"slider-custom-1 row nomargin\">
+"Home Page V5","1column","","","home-page-v5","","<div class=""container-fluid content-v5 nopadding"">
+    <div class=""slider-custom-1 row nomargin"">
         {{widget_nr_1}}
     </div>
     
     <!-- Homepage Section Content 1 V5 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"section_content1_v5\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""section_content1_v5""}}
     <!-- Homepage Section Content 1 V5 end -->
     
     <!-- Homepage Our Story V5 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"our_story_v5\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""our_story_v5""}}
     <!-- Homepage Our Story V5 end -->
       
     <!-- Homepage Section Content 2 V5 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"section_content2_v5\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""section_content2_v5""}}
     <!-- Homepage Section Content 2 V5 end -->
         
     <!-- Homepage Special Offer V5 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"special_offer_v5\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""special_offer_v5""}}
     <!-- Homepage Special Offer V5 end -->
         
     <!-- Homepage Section Content 3 V5 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"section_content3_v5\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""section_content3_v5""}}
     <!-- Homepage Section Content 3 V5 end -->
 
     <!-- Homepage Custom Block V5 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"custom_block_v5\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""custom_block_v5""}}
     <!-- Homepage Custom Block V5 end -->
        
     <!-- Homepage Shipping Return V5 -->
-    {{block class=\"Magento\\Cms\\Block\\Block\" block_id=\"shipping_return_v5\"}}
+    {{block class=""Magento\Cms\Block\Block"" block_id=""shipping_return_v5""}}
     <!-- Homepage Shipping Return V5 end -->
 
 </div>",1,"","","","","","","","
@@ -48,13 +48,13 @@
 ","","","","","","","
 require(['jquery'], function($){
     /* Get src attribute from img */
-    $(\".bg-img\").each(function() {
+    $("".bg-img"").each(function() {
         var urlImg = $(this).attr('src'),
         parent = $(this).parent();
         $(this).remove();
         parent.css(
         {
-        'background':'url(\"'+urlImg+'\") no-repeat 50% 0',
+        'background':'url(""'+urlImg+'"") no-repeat 50% 0',
         'background-size': 'cover'
         });
     });
