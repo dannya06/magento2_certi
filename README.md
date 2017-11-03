@@ -47,7 +47,7 @@ How to update project that clone from SWIFT
 
     git fetch origin --tags
 
-    git checkout tags/2.0.5-b <branch_name>_2.0.5
+    git checkout tags/2.0.5 -b <branch_name>_2.0.5
 
     full deploy : setup upgrade, compile, deploy
 
