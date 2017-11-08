@@ -56,3 +56,25 @@ How to update project that clone from SWIFT
 Additional extension that excluded from SWIFT:
 
 - Rapidflow. Can install using composer https://github.com/icubeus/magento2-rapidflow
+
+
+How to get ShareThis Script and put into admin page
+=============================================================
+
+    Go to https://platform.sharethis.com/login (if don't have a account, please create first)
+
+    After login, in the sidebar menu go to Share Buttons > Inline Share Buttons
+
+    Crete new Property in top left corner (dropdown list) > Setup New Property
+
+    Setup your share button what do you want (Inline Share Button = On)
+
+    After you setup, click "update" button in the bottom, after that go to above to click "Get the code" button
+
+    Copy Paste the script and paste in Magento Admin
+
+    Paste in Content > Design, Configuration > Choose your Theme
+
+    Go to HTML Head > Scripts and Style Sheets. Paste your script and click "Save Configuration" button
+
+
