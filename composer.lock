@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "315bd7e8494df4676be22cda6bffe569",
+    "content-hash": "312816849dcab3ef5c038aa8f2b33050",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -590,11 +590,11 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "dev-master",
+            "version": "2.1.10",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "32340ae0da953b91ef6dd1b26da9495d1f52ec9e"
+                "reference": "ffded742b7fc93f34af75dec1afcf1547efe84d7"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -634,7 +634,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2017-10-20 09:23:19"
+            "time": "2017-11-09T10:31:18+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -9801,7 +9801,6 @@
         "icubeus/magento2-veritranspayment": 20,
         "icubeus/magento2-confirmpayment": 20,
         "icubeus/magento2-trackorder": 20,
-        "icubeus/magento2-checkout": 20,
         "icubeus/magento2-indonesianlanguage": 20,
         "phpmd/phpmd": 0
     },
