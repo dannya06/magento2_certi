@@ -25,8 +25,9 @@ body,html{
     width: 100%;
 }
 .page-main .maintenance .container p{
-	font-size: 30px;
-	font-family: Helvetica;
+	font-size: 26px;
+	font-family: Helvetica,Arial,Verdana;
+	font-weight: 300;
 }
 .page-main .maintenance .container img{
 	margin-bottom: 50px
