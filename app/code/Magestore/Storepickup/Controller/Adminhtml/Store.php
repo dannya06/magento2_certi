@@ -52,7 +52,7 @@ abstract class Store extends \Magestore\Storepickup\Controller\Adminhtml\Abstrac
     protected function initPage($resultPage)
     {
         $resultPage->setActiveMenu('Magestore_Storepickup::storepickup')
-            ->addBreadcrumb(__('Store pickup'), __('Store pickup'))
+            ->addBreadcrumb(__('Store Locator'), __('Store Locator'))
             ->addBreadcrumb(__('Manage Store'), __('Manage Store'));
 
         return $resultPage;
