@@ -27,7 +27,7 @@
         </tab>
         <section id="storepickup" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>Store pickup</label>
+            <label>Store Locator</label>
             <tab>magestore</tab>
             <resource>Magestore_Storepickup::config_storepickup</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
