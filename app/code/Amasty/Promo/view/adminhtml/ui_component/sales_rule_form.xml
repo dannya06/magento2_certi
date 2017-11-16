@@ -6,7 +6,6 @@
  * @package Amasty_Promo
  */
 -->
-
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <fieldset name="actions">
         <field name="ampromorule[sku]">
@@ -31,12 +30,12 @@
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">ampromorule[type]</item>
                     <item name="options" xsi:type="array">
-                        <item name="all" xsi:type="array">
-                            <item name="value" xsi:type="string">0</item>
+                        <item name="0" xsi:type="array">
+                            <item name="value" xsi:type="number">0</item>
                             <item name="label" xsi:type="string" translate="true">All SKUs below</item>
                         </item>
-                        <item name="one" xsi:type="array">
-                            <item name="value" xsi:type="string">1</item>
+                        <item name="1" xsi:type="array">
+                            <item name="value" xsi:type="number">1</item>
                             <item name="label" xsi:type="string" translate="true">One of the SKUs below</item>
                         </item>
                     </item>

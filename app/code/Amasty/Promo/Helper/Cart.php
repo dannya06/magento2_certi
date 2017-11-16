@@ -175,6 +175,7 @@ class Cart extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         if ($saveCart) {
+            $quote->save();
             $this->cart->save();
         }
     }

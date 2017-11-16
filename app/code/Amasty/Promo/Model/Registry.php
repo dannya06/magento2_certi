@@ -13,6 +13,7 @@ class Registry extends \Magento\Framework\Model\AbstractModel
     protected $_hasItems = false;
     protected $_locked = false;
     protected $_isHandled = [];
+    protected $autoAddTypes = ['simple', 'virtual', 'downloadable'];
 
     /**
      * @var \Magento\Checkout\Model\Session
@@ -116,7 +117,7 @@ class Registry extends \Magento\Framework\Model\AbstractModel
                 if (!$product || !$product->isInStock() || !$product->isSalable()) {
                     $this->promoMessagesHelper->addAvailabilityError($product);
                 } else {
-                    if (in_array($product->getTypeId(), ['simple', 'virtual'])
+                    if (in_array($product->getTypeId(), $this->autoAddTypes)
                         && !$product->getTypeInstance(true)->hasRequiredOptions($product)
                     ) {
                         $autoAdd = true;

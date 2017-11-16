@@ -38,7 +38,7 @@ class GroupnDisc extends AbstractRule
         $discountData = $this->discountFactory->create();
         $allItems = $this->getSortedItems($item->getAddress(), $rule, 'asc');
         $qty = $this->ruleQuantity(count($allItems), $rule);
-        if (!$this->hasDiscountItems($allItems,$qty)) {
+        if (!$this->hasDiscountItems($allItems, $qty)) {
             return $discountData;
         }
         $currQty = 0;
@@ -48,6 +48,9 @@ class GroupnDisc extends AbstractRule
         $baseItemOriginalDiscount = 0;
         $r = [];
         $step = (int)$rule->getDiscountStep();
+        if ($step === 0) {
+            $step = 1;
+        }
         $countPrices = count($allItems);
         //we must check all items price and compare with group price
         $totalPrice = 0;

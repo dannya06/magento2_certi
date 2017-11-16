@@ -39,7 +39,7 @@ class SalesRule
         $this->_objectManager = $objectManager;
     }
 
-    public function afterSave(\Magento\SalesRule\Model\Rule $subject, $result)
+    public function afterAfterSave(\Magento\SalesRule\Model\Rule $subject, $result)
     {
         $this->_coreRegistry->register('amrules_current_salesrule', $subject, true);
         return $result;

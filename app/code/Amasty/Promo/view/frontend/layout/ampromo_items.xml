@@ -19,6 +19,7 @@
             </block>
 
             <block class="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable" name="ampromo.configurable.prototype" as="configurable_prototype" template="Amasty_Promo::product/view/type/options/configurable.phtml"/>
+            <block class="Magento\Downloadable\Block\Catalog\Product\Links" name="ampromo.downloadable.prototype" as="downloadable_prototype" template="Amasty_Promo::catalog/product/links.phtml" />
         </block>
     </body>
 </page>

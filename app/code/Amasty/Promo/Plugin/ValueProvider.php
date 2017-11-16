@@ -8,23 +8,76 @@
 
 namespace Amasty\Promo\Plugin;
 
+use Amasty\Base\Model\Serializer;
+use Amasty\Promo\Model\RuleFactory;
 use Magento\SalesRule\Model\Rule;
 use Magento\SalesRule\Model\Rule\Metadata\ValueProvider as SalesRuleValueProvider;
 
 class ValueProvider
 {
+    const TOPBANNERS = [
+        'ampromorule_top_banner_image',
+        'ampromorule_top_banner_alt',
+        'ampromorule_top_banner_on_hover_text',
+        'ampromorule_top_banner_link',
+        'ampromorule_top_banner_show_gift_images',
+        'ampromorule_top_banner_description',
+    ];
+
+    const AFTERBANNERS = [
+        'ampromorule_after_product_banner_image',
+        'ampromorule_after_product_banner_alt',
+        'ampromorule_after_product_banner_on_hover_text',
+        'ampromorule_after_product_banner_link',
+        'ampromorule_after_product_banner_show_gift_images',
+        'ampromorule_after_product_banner_description',
+    ];
+
+    const ACTIONS = [
+        'ampromorule[sku]',
+        'ampromorule[type]',
+    ];
+
+    const LABELS = [
+        'ampromorule_label_image',
+        'ampromorule_label_image_alt',
+    ];
+
+    const IMAGE = [
+        'after_product_banner_image',
+        'top_banner_image',
+        'label_image',
+    ];
+
+    const FIELDSETS = [
+        'actions',
+        'ampromorule_top_banner',
+        'ampromorule_after_product_banner',
+        'ampromorule_product_label',
+    ];
 
     /**
-     * @var \Amasty\Promo\Model\RuleFactory
+     * @var RuleFactory
      */
     private $ruleFactory;
+    /**
+     * @var Serializer
+     */
+    private $serializerBase;
 
-    public function __construct(
-        \Amasty\Promo\Model\RuleFactory $ruleFactory
-    ) {
+    public function __construct(RuleFactory $ruleFactory, Serializer $serializerBase)
+    {
         $this->ruleFactory = $ruleFactory;
+        $this->serializerBase = $serializerBase;
     }
 
+    /**
+     * @param SalesRuleValueProvider $subject
+     * @param \Closure $proceed
+     * @param Rule $rule
+     *
+     * @return array
+     */
     public function aroundGetMetadataValues(
         SalesRuleValueProvider $subject,
         \Closure $proceed,
@@ -55,59 +108,107 @@ class ValueProvider
         $ampromoRule = $this->ruleFactory->create();
         $ampromoRule->load($rule->getId(), 'salesrule_id');
 
-        $result['actions']['children']['ampromorule[sku]']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('sku');
-
-        $result['actions']['children']['ampromorule[type]']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('type');
-
-        if ($ampromoRule->getData('top_banner_image')) {
-            $result['ampromorule_top_banner']['children']['ampromorule_top_banner_image']['arguments']['data']['config']['value']
-                = @unserialize($ampromoRule->getData('top_banner_image'));
+        foreach (self::FIELDSETS as $fieldSet) {
+            $result = $this->setValueForFields($result, $fieldSet, $ampromoRule);
+            $result = $this->setComponentTypeForFields($result, $fieldSet);
         }
 
-        $result['ampromorule_top_banner']['children']['ampromorule_top_banner_alt']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('top_banner_alt');
+        return $result;
+    }
 
-        $result['ampromorule_top_banner']['children']['ampromorule_top_banner_on_hover_text']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('top_banner_on_hover_text');
-
-        $result['ampromorule_top_banner']['children']['ampromorule_top_banner_link']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('top_banner_link');
-
-        $result['ampromorule_top_banner']['children']['ampromorule_top_banner_show_gift_images']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('top_banner_show_gift_images');
-
-        $result['ampromorule_top_banner']['children']['ampromorule_top_banner_description']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('top_banner_description');
-
-        if ($ampromoRule->getData('after_product_banner_image')) {
-            $result['ampromorule_after_product_banner']['children']['ampromorule_after_product_banner_image']['arguments']['data']['config']['value']
-                = @unserialize($ampromoRule->getData('after_product_banner_image'));
+    /**
+     * set component type to field for schedule update
+     *
+     * @param $result
+     * @param $field
+     *
+     * @return array
+     */
+    private function setComponentTypeForFields($result, $field)
+    {
+        switch ($field) {
+            case 'ampromorule_top_banner':
+                foreach (self::TOPBANNERS as $topBanner) {
+                    $result[$field]['children'][$topBanner]['arguments']['data']['config']['componentType'] = 'text';
+                }
+                break;
+            case 'ampromorule_after_product_banner':
+                foreach (self::AFTERBANNERS as $topBanner) {
+                    $result[$field]['children'][$topBanner]['arguments']['data']['config']['componentType'] = 'text';
+                }
+                break;
+            case 'ampromorule_product_label':
+                foreach (self::LABELS as $label) {
+                    $result[$field]['children'][$label]['arguments']['data']['config']['componentType'] = 'text';
+                }
+                break;
+            case 'actions':
+                foreach (self::ACTIONS as $action) {
+                    $result[$field]['children'][$action]['arguments']['data']['config']['componentType'] = 'text';
+                }
+                break;
         }
 
-        $result['ampromorule_after_product_banner']['children']['ampromorule_after_product_banner_alt']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('after_product_banner_alt');
+        return $result;
+    }
 
-        $result['ampromorule_after_product_banner']['children']['ampromorule_after_product_banner_on_hover_text']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('after_product_banner_on_hover_text');
-
-        $result['ampromorule_after_product_banner']['children']['ampromorule_after_product_banner_link']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('after_product_banner_link');
-
-        $result['ampromorule_after_product_banner']['children']['ampromorule_after_product_banner_show_gift_images']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('after_product_banner_show_gift_images');
-
-        $result['ampromorule_after_product_banner']['children']['ampromorule_after_product_banner_description']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('after_product_banner_description');
-
-        if ($ampromoRule->getData('label_image')) {
-            $result['ampromorule_product_label']['children']['ampromorule_label_image']['arguments']['data']['config']['value']
-                = @unserialize($ampromoRule->getData('label_image'));
+    /**
+     * set value for amasty field in other field sets
+     *
+     * @param $result
+     * @param $field
+     * @param \Amasty\Promo\Model\Rule $rule
+     *
+     * @return array
+     *
+     */
+    private function setValueForFields($result, $field, $rule)
+    {
+        switch ($field) {
+            case 'ampromorule_top_banner':
+                $result = $this->setValueForAmastyFieldSet($field, self::TOPBANNERS, $rule, $result);
+                break;
+            case 'ampromorule_after_product_banner':
+                $result = $this->setValueForAmastyFieldSet($field, self::AFTERBANNERS, $rule, $result);
+                break;
+            case 'ampromorule_product_label':
+                $result = $this->setValueForAmastyFieldSet($field, self::LABELS, $rule, $result);
+                break;
+            case 'actions':
+                foreach (self::ACTIONS as $action) {
+                    preg_match('/.+?\[(.+?)\]/', $action, $modelField);
+                    $value = $rule->getData($modelField[1]);
+                    $result[$field]['children']["ampromorule[$modelField[1]]"]['arguments']['data']['config']['value']
+                           = $value;
+                }
+                break;
         }
 
-        $result['ampromorule_product_label']['children']['ampromorule_label_image_alt']['arguments']['data']['config']['value']
-            = $ampromoRule->getData('label_image_alt');
+        return $result;
+    }
+
+    /**
+     * set value for amasty field set
+     *
+     * @param $type
+     * @param $arrayWithField
+     * @param $rule
+     * @param $result
+     *
+     * @return array
+     */
+    private function setValueForAmastyFieldSet($type, $arrayWithField, $rule, $result)
+    {
+        foreach ($arrayWithField as $field) {
+            $promoAttribute = str_replace('ampromorule_', '', $field);
+            $value = $rule->getData($promoAttribute);
+            if (in_array($promoAttribute, self::IMAGE) && $value === null) {
+                continue;
+            } elseif (in_array($promoAttribute, self::IMAGE) && $value !== null) {
+                $value = $this->serializerBase->unserialize($value);
+            }
+            $result[$type]['children'][$field]['arguments']['data']['config']['value'] = $value;
+        }
 
         return $result;
     }

@@ -16,6 +16,9 @@ $imageHelper = $block->getImageHelper();
 <div class="ampromo-gallery" data-count="<?= $products ? count($products) : 0 ?>" data-role="ampromo-gallery">
     <?php if ($products)
         foreach ($products as $product): ?>
+            <?php if ($product->getTypeId() === 'downloadable') : ?>
+            <?php $product->load($product->getId()) ?>
+            <?php endif; ?>
             <div class="ampromo-item" data-product-id="<?= $product->getId()?>" data-product-sku="<?= $product->getSku()?>">
                 <form method="POST" action="<?= $block->getFormActionUrl()?>" class="ampromo_items_form" id="ampromo_items_form-<?= $product->getId()?>">
                     <input type="hidden" name="<?= Action::PARAM_NAME_URL_ENCODED; ?>" value="<?= $block->getCurrentBase64Url() ?>">

@@ -220,7 +220,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
             amHelper\Data::TYPE_EACH_M_AFT_N_FIX
         ];
         $simpleAction = $rule->getSimpleAction();
-        if (($step > 1) && (($i + 1) % $step) && in_array($simpleAction, $types)) {
+        if (($step > 1) && !(($i + 1) % $step) && in_array($simpleAction, $types)) {
             return true;
         }
 
@@ -257,8 +257,14 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         $discountQty = 1;
         $discountStep = (int)$rule->getDiscountStep();
 
+        $arrayWithEachRules = ['eachmaftn_fixdisc', 'eachmaftn_perc', 'eachmaftn_fixprice'];
+
         if ($discountStep) {
-            $discountQty = floor($qty / $discountStep);
+            if (in_array($rule->getSimpleAction(), $arrayWithEachRules)) {
+                $discountQty = round($qty / $discountStep);
+            } else {
+                $discountQty = floor($qty / $discountStep);
+            }
 
             $maxDiscountQty = (int)$rule->getDiscountQty();
             if (!$maxDiscountQty) {
@@ -278,13 +284,12 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      */
     public function skipEachN($allItems, $rule)
     {
-        if ( '' !== $rule->getAmrulesRule()->getEachm()) {
-            $step = (int)$rule->getAmrulesRule()->getEachm();
-        } else {
+        if ( '' !== (int)$rule->getDiscountStep()) {
             $step = (int)$rule->getDiscountStep();
+        } else {
+            $step = (int)$rule->getAmrulesRule()->getEachm();
         }
 
-        //$step = (int)$rule->getDiscountStep();
         $currQty = 0;
         $resItems = [];
         $itemsId = $this->getItemsId($allItems);
@@ -360,7 +365,9 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      */
     public function afterCalculate($discountData, $rule, $item)
     {
-        $this->rulesDiscountHelper->setDiscount($rule,$discountData);
+        if (!$item->getOriginalDiscountAmount()) {
+            $this->rulesDiscountHelper->setDiscount($rule, $discountData);
+        }
         return true;
     }
 

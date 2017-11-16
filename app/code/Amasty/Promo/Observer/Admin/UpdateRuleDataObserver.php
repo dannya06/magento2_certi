@@ -26,15 +26,21 @@ class UpdateRuleDataObserver implements ObserverInterface
 
     /** @var \Magento\Framework\Stdlib\StringUtils */
     protected $_string;
+    /**
+     * @var \Amasty\Base\Model\Serializer
+     */
+    private $serializerBase;
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\Stdlib\StringUtils $string
+        \Magento\Framework\Stdlib\StringUtils $string,
+        \Amasty\Base\Model\Serializer $serializerBase
     ) {
         $this->_objectManager = $objectManager;
         $this->_coreRegistry  = $registry;
         $this->_string        = $string;
+        $this->serializerBase = $serializerBase;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -49,7 +55,9 @@ class UpdateRuleDataObserver implements ObserverInterface
 
         foreach ($observer->getRequest()->getParams() as $key => $value) {
             if ($this->_string->strpos($key, 'ampromorule_') !== false) {
-                $ampromoData[str_replace('ampromorule_', '', $key)] = is_array($value) ? serialize($value) : $value;
+                $ampromoData[str_replace('ampromorule_', '', $key)] = is_array($value)
+                    ? $this->serializerBase->serialize($value)
+                    : $value;
             }
         }
 
