@@ -11,11 +11,21 @@ body,html{
 	padding: 0;
     height: 100%;
 }
-.page-main .maintenance{
-	background: #6bbfe4;
+.page-main .maintenance{  
+	background: red; /* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(left top, #7f2b8b, #502c83); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(bottom right, #7f2b8b, #502c83); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(bottom right, #7f2b8b, #502c83); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(to bottom right, #7f2b8b, #502c83); /* Standard syntax */
     text-align: center;
     color: white;
     height: 100%;
+}
+.page-main .maintenance .swift-logo{
+	position: absolute;
+    left: 5%;
+    top: 5%;
+    width: 150px;
 }
 .page-main .maintenance .container{
 	position: absolute;
@@ -24,11 +34,19 @@ body,html{
     transform: translate(-50%,-50%);
     width: 100%;
 }
+.page-main .maintenance .container .text{
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%,0%);
+    width: 100%;
+}
 .page-main .maintenance .container p{
 	font-size: 26px;
 	font-family: Helvetica,Arial,Verdana;
 	font-weight: 300;
 }
-.page-main .maintenance .container img{
-	margin-bottom: 50px
+.page-main .maintenance .container img{   
+	width: 400px;
+    margin-bottom: 0px;
 }
