@@ -10,6 +10,7 @@ use Aheadworks\Blog\Api\Data\PostInterface;
 use Aheadworks\Blog\Api\PostRepositoryInterface;
 use Aheadworks\Blog\Block\Post\ListingFactory ;
 use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Template\FilterProvider;
 use Aheadworks\Blog\Model\Url;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Element\Template\Context;
@@ -41,6 +42,11 @@ class Recent extends \Magento\Framework\View\Element\Template implements Identit
     private $url;
 
     /**
+     * @var FilterProvider
+     */
+    private $templateFilterProvider;
+
+    /**
      * @param Context $context
      * @param PostRepositoryInterface $postRepository
      * @param ListingFactory $postListingFactory
@@ -54,12 +60,14 @@ class Recent extends \Magento\Framework\View\Element\Template implements Identit
         ListingFactory $postListingFactory,
         Config $config,
         Url $url,
+        FilterProvider $templateFilterProvider,
         array $data = []
     ) {
         $this->postRepository = $postRepository;
         $this->postListing = $postListingFactory->create();
         $this->config = $config;
         $this->url = $url;
+        $this->templateFilterProvider = $templateFilterProvider;
         parent::__construct($context, $data);
     }
 
@@ -87,6 +95,21 @@ class Recent extends \Magento\Framework\View\Element\Template implements Identit
 
     /**
      * Retrieve post url
+     *
+     * @param PostInterface $post
+     * @return string
+     */
+    public function getShortContent(PostInterface $post)
+    {
+        $content = $post->getShortContent();
+
+        return $this->templateFilterProvider->getFilter()
+            ->setStoreId($this->_storeManager->getStore()->getId())
+            ->filter($content);
+    }
+
+    /**
+     * Retrieve post short content
      *
      * @param PostInterface $post
      * @return string
