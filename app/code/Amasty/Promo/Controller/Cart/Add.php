@@ -61,7 +61,7 @@ class Add extends \Magento\Framework\App\Action\Action
             if ($addAllRule || $addOneRule) {
                 $params = $this->getRequest()->getParams();
                 $requestOptions = array_intersect_key($params, array_flip([
-                    'super_attribute', 'options', 'super_attribute'
+                    'super_attribute', 'options', 'super_attribute', 'links'
                 ]));
 
                 $this->promoCartHelper->addProduct(

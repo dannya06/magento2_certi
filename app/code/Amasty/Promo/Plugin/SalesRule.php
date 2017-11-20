@@ -23,7 +23,7 @@ class SalesRule
         $this->coreRegistry = $registry;
     }
 
-    public function afterSave(\Magento\SalesRule\Model\Rule $subject, $result)
+    public function afterAfterSave(\Magento\SalesRule\Model\Rule $subject, $result)
     {
         $this->coreRegistry->register('ampromo_current_salesrule', $subject, true);
 

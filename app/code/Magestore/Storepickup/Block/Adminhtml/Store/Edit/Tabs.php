@@ -64,63 +64,6 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
         // add image gallery section
         $this->addTab('imagegallery_section', 'store_edit_tab_imagegallery');
 
-        // add schedule tab
-        $this->addTab('schedule_section', 'store_edit_tab_schedule');
-
-        // add schedule tab
-        $this->addTab(
-            'tag_section',
-            [
-                'label' => 'Store\'s Tags',
-                'title' => 'Store\'s Tags',
-                'class' => 'ajax',
-                'url' => $this->getUrl(
-                    'storepickupadmin/ajaxtabgrid_tag',
-                    [
-                        'method_getter_id' => \Magestore\Storepickup\Model\Store::METHOD_GET_TAG_ID,
-                        'serialized_name' => 'serialized_tags',
-                        '_current' => true,
-                    ]
-                ),
-            ]
-        );
-
-        // add holiday tab
-        $this->addTab(
-            'holiday_section',
-            [
-                'label' => 'Store\'s Holidays',
-                'title' => 'Store\'s Holidays',
-                'class' => 'ajax',
-                'url' => $this->getUrl(
-                    'storepickupadmin/ajaxtabgrid_holiday',
-                    [
-                        'method_getter_id' => \Magestore\Storepickup\Model\Store::METHOD_GET_HOLIDAY_ID,
-                        'serialized_name' => 'serialized_holidays',
-                        '_current' => true,
-                    ]
-                ),
-            ]
-        );
-
-        // add specialday tab
-        $this->addTab(
-            'specialday_section',
-            [
-                'label' => 'Store\'s Special days',
-                'title' => 'Store\'s Special days',
-                'class' => 'ajax',
-                'url' => $this->getUrl(
-                    'storepickupadmin/ajaxtabgrid_specialday',
-                    [
-                        'method_getter_id' => \Magestore\Storepickup\Model\Store::METHOD_GET_SPECIALDAY_ID,
-                        'serialized_name' => 'serialized_specialdays',
-                        '_current' => true,
-                    ]
-                ),
-            ]
-        );
-
         return $this;
     }
 }

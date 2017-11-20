@@ -180,7 +180,7 @@ Status,Status
 Store Infomation,Store Infomation
 Store Information,Store Information
 Store list,Store list
-Store pickup,Store pickup
+Store Locator,Store Locator
 Store Map,Store Map
 Store Name,Store Name
 Store Name,Store Name
@@ -248,15 +248,15 @@ Zip Code,Zip Code
 Zip Code,Zip Code
 Zoom Level,Zoom Level
 "
-    Magento Store pickup extension allows locating stores and getting directions with Google Map integrated:<br />
-        1. To add/ import stores with location, time schedule and other information, go to <strong>Store pickup</strong> -> <strong>Manage Stores</strong>.<br />
-        2. To set days off for store(s), go to <strong>Store pickup</strong> -> <strong>Manage Holidays</strong>.<br />
-        3. To set days with special working time for store(s), go to <strong>Store pickup</strong> -> <strong>Manage Special Days</strong>.<br />
-        4. To configure Store pickup extension, go to <strong>Store pickup</strong> -> <strong>Settings</strong>.
+    Magento Store Locator extension allows locating stores and getting directions with Google Map integrated:<br />
+        1. To add/ import stores with location, time schedule and other information, go to <strong>Store Locator</strong> -> <strong>Manage Stores</strong>.<br />
+        2. To set days off for store(s), go to <strong>Store Locator</strong> -> <strong>Manage Holidays</strong>.<br />
+        3. To set days with special working time for store(s), go to <strong>Store Locator</strong> -> <strong>Manage Special Days</strong>.<br />
+        4. To configure Store Locator extension, go to <strong>Store Locator</strong> -> <strong>Settings</strong>.
     ","
-    Magento Store pickup extension allows locating stores and getting directions with Google Map integrated:<br />
-        1. To add/ import stores with location, time schedule and other information, go to <strong>Store pickup</strong> -> <strong>Manage Stores</strong>.<br />
-        2. To set days off for store(s), go to <strong>Store pickup</strong> -> <strong>Manage Holidays</strong>.<br />
-        3. To set days with special working time for store(s), go to <strong>Store pickup</strong> -> <strong>Manage Special Days</strong>.<br />
-        4. To configure Store pickup extension, go to <strong>Store pickup</strong> -> <strong>Settings</strong>.
+    Magento Store Locator extension allows locating stores and getting directions with Google Map integrated:<br />
+        1. To add/ import stores with location, time schedule and other information, go to <strong>Store Locator</strong> -> <strong>Manage Stores</strong>.<br />
+        2. To set days off for store(s), go to <strong>Store Locator</strong> -> <strong>Manage Holidays</strong>.<br />
+        3. To set days with special working time for store(s), go to <strong>Store Locator</strong> -> <strong>Manage Special Days</strong>.<br />
+        4. To configure Store Locator extension, go to <strong>Store Locator</strong> -> <strong>Settings</strong>.
     "

@@ -17,7 +17,7 @@
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">amrulesrule[eachm]</item>
-                    <item name="sortOrder" xsi:type="number">1</item>
+                    <item name="sortOrder" xsi:type="number">23</item>
                 </item>
             </argument>
         </field>
@@ -31,20 +31,20 @@
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">amrulesrule[priceselector]</item>
                     <item name="options" xsi:type="array">
-                        <item name="price" xsi:type="array">
+                        <item name="0" xsi:type="array">
                             <item name="value" xsi:type="string">0</item>
                             <item name="label" xsi:type="string" translate="true">Price (Special Price if Set)</item>
                         </item>
-                        <item name="discounted" xsi:type="array">
+                        <item name="1" xsi:type="array">
                             <item name="value" xsi:type="string">1</item>
                             <item name="label" xsi:type="string" translate="true">Price After Previous Discount(s)</item>
                         </item>
-                        <item name="original" xsi:type="array">
+                        <item name="2" xsi:type="array">
                             <item name="value" xsi:type="string">2</item>
                             <item name="label" xsi:type="string" translate="true">Original Price</item>
                         </item>
                     </item>
-                    <item name="sortOrder" xsi:type="number">1</item>
+                    <item name="sortOrder" xsi:type="number">24</item>
                 </item>
             </argument>
         </field>
@@ -58,7 +58,7 @@
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">amrulesrule[promo_cats]</item>
-                    <item name="sortOrder" xsi:type="number">1</item>
+                    <item name="sortOrder" xsi:type="number">25</item>
                 </item>
             </argument>
         </field>
@@ -72,7 +72,7 @@
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">amrulesrule[promo_skus]</item>
-                    <item name="sortOrder" xsi:type="number">1</item>
+                    <item name="sortOrder" xsi:type="number">26</item>
                 </item>
             </argument>
         </field>
@@ -85,7 +85,7 @@
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">amrulesrule[nqty]</item>
-                    <item name="sortOrder" xsi:type="number">1</item>
+                    <item name="sortOrder" xsi:type="number">27</item>
                 </item>
             </argument>
         </field>
@@ -98,7 +98,7 @@
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">amrulesrule[max_discount]</item>
-                    <item name="sortOrder" xsi:type="number">1</item>
+                    <item name="sortOrder" xsi:type="number">28</item>
                 </item>
             </argument>
         </field>
@@ -111,24 +111,24 @@
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">amrulesrule[skip_rule]</item>
                     <item name="options" xsi:type="array">
-                        <item name="default" xsi:type="array">
+                        <item name="0" xsi:type="array">
                             <item name="value" xsi:type="string">0</item>
                             <item name="label" xsi:type="string" translate="true">As Default</item>
                         </item>
-                        <item name="yes" xsi:type="array">
+                        <item name="1" xsi:type="array">
                             <item name="value" xsi:type="string">1</item>
                             <item name="label" xsi:type="string" translate="true">Yes</item>
                         </item>
-                        <item name="no" xsi:type="array">
+                        <item name="2" xsi:type="array">
                             <item name="value" xsi:type="string">2</item>
                             <item name="label" xsi:type="string" translate="true">No</item>
                         </item>
-                        <item name="discounted  " xsi:type="array">
+                        <item name="3" xsi:type="array">
                             <item name="value" xsi:type="string">3</item>
                             <item name="label" xsi:type="string" translate="true">Skip If Discounted</item>
                         </item>
                     </item>
-                    <item name="sortOrder" xsi:type="number">1</item>
+                    <item name="sortOrder" xsi:type="number">29</item>
                 </item>
             </argument>
         </field>

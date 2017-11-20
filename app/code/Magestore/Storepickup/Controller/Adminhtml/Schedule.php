@@ -52,7 +52,7 @@ abstract class Schedule extends \Magestore\Storepickup\Controller\Adminhtml\Abst
     protected function initPage($resultPage)
     {
         $resultPage->setActiveMenu('Magestore_Storepickup::storepickup')
-            ->addBreadcrumb(__('Store pickup'), __('Store pickup'))
+            ->addBreadcrumb(__('Store Locator'), __('Store Locator'))
             ->addBreadcrumb(__('Manage Schedule'), __('Manage Schedule'));
 
         return $resultPage;

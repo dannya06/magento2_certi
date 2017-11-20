@@ -3,7 +3,7 @@ define([
     "amasty_slick",
     "jquery/ui",
     "uiRegistry"
-], function ($, slick, ui, registry) {
+], function ($) {
 
     $.widget('mage.ampromoPopup', {
         options: {
@@ -30,13 +30,13 @@ define([
             }
 
             var widget = this;
-            registry.get('component=Magento_Checkout/js/model/totals', function (discountComponent) {
-                discountComponent.isLoading.subscribe(function(isLoading){
-                    if (!isLoading) {
+            $(document).on('customer-data-reload', function (event, sections) {
+                var inArray = $.inArray('cart', sections);
+                if (inArray !== -1) {
                         widget.reload();
                     }
-                })
-            });
+                }
+            );
         },
 
         hide: function () {

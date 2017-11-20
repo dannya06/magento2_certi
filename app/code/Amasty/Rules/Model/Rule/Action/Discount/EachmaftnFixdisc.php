@@ -44,8 +44,8 @@ class EachmaftnFixdisc extends AbstractRule
         } else {
             $qty = count($allItems);
         }
-        $step = (int)$rule->getDiscountStep();
-        $offset = max(0, $step);
+        $offset = (int)$rule->getAmrulesRule()->getEachm();
+        $offset = max(0, $offset);
         $offset = min($offset, count($allItems));
         $allItems = array_slice($allItems, $offset, $qty);
         $allItems = $this->skipEachN($allItems, $rule);

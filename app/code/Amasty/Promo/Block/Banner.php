@@ -68,6 +68,10 @@ class Banner extends Template
 
     /** @var \Magento\Catalog\Helper\Image  */
     protected $helperImage;
+    /**
+     * @var \Amasty\Base\Model\Serializer
+     */
+    private $serializerBase;
 
     /**
      * @param Template\Context $context
@@ -76,8 +80,13 @@ class Banner extends Template
      * @param \Magento\SalesRule\Model\ResourceModel\Rule\CollectionFactory $ruleCollectionFactory
      * @param \Amasty\Promo\Helper\Config\Proxy $config
      * @param \Magento\Quote\Model\QuoteFactory $quoteFactory
-     * @param \Magento\Quote\Model\Quote\Item\Factory $quoteItemFactory
+     * @param \Magento\Quote\Model\Quote\Item\Factory|\Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
      * @param \Magento\Catalog\Model\ProductFactory $productFactory
+     * @param \Amasty\Promo\Model\ResourceModel\Rule\CollectionFactory $ruleConfigCollectionFactory
+     * @param \Magento\Catalog\Model\Template\Filter\Factory $templateFilterFactory
+     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
+     * @param \Magento\Catalog\Helper\Image $helperImage
+     * @param \Amasty\Base\Model\Serializer $serializerBase
      * @param array $data
      */
     public function __construct(
@@ -93,6 +102,7 @@ class Banner extends Template
         \Magento\Catalog\Model\Template\Filter\Factory $templateFilterFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Catalog\Helper\Image $helperImage,
+        \Amasty\Base\Model\Serializer $serializerBase,
         array $data = []
     ) {
         $this->coreRegistry = $registry;
@@ -107,6 +117,7 @@ class Banner extends Template
         $this->productCollectionFactory = $productCollectionFactory;
         $this->helperImage = $helperImage;
         parent::__construct($context, $data);
+        $this->serializerBase = $serializerBase;
     }
 
     /**
@@ -127,7 +138,7 @@ class Banner extends Template
     {
         $validRules = [];
         $currentQuote = $this->checkoutSession->getQuote();
-        $quoteItem = $this->quoteItemFactory->create();;
+        $quoteItem = $this->quoteItemFactory->create();
         $quoteItem->setProduct($this->getProduct());
         $quoteItem->setStoreId($currentQuote->getStoreId());
         $quoteItem->setIsVirtual(false);
@@ -135,9 +146,8 @@ class Banner extends Template
         $quoteItem->setAllItems([$quoteItem]);
         
         /** @var \Magento\SalesRule\Model\Rule $rule */
-        foreach($this->getRulesCollection() as $rule){
-
-            if ($rule->validate($quoteItem) && $rule->getActions()->validate($quoteItem)){
+        foreach ($this->getRulesCollection() as $rule) {
+            if ($rule->validate($quoteItem) && $rule->getActions()->validate($quoteItem)) {
                 $validRules[] = $rule->getId();
             }
         }
@@ -154,11 +164,14 @@ class Banner extends Template
         $validRules = [];
 
         $product = $this->getProduct();
+        if (!$product->isSalable()) {
+            return;
+        }
         $product = clone $product;
 
-        if ($product->getTypeId() === 'configurable'){
+        if ($product->getTypeId() === 'configurable') {
             $childrenProducts = $product->getChildrenProducts();
-            if (count($childrenProducts) > 0){
+            if (count($childrenProducts) > 0) {
                 $product = end($childrenProducts);
                 $product = $this->productFactory->load($product->getId());
             }
@@ -172,7 +185,7 @@ class Banner extends Template
         $afterQuote->addProduct($product);
         $afterQuote->collectTotals();
 
-        $currentRules = array();
+        $currentRules = [];
 
         /**
          * validate rules according to current quote
@@ -180,7 +193,7 @@ class Banner extends Template
         foreach ($this->getRulesCollection() as $rule) {
             foreach ($currentQuote->getItemsCollection() as $item) {
                 if ($item->getProduct()->getId() == $this->getProduct()->getId()) {
-                    if ($rule->validate($item) && $rule->getActions()->validate($item)){
+                    if ($rule->validate($item) && $rule->getActions()->validate($item)) {
                         $currentRules[] = $rule->getId();
                     }
                 }
@@ -194,7 +207,7 @@ class Banner extends Template
             if (!in_array($rule->getId(), $currentRules)) {
                 foreach ($afterQuote->getItemsCollection() as $item) {
                     if ($item->getProduct()->getId() == $product->getId()) {
-                        if ($rule->validate($item) && $rule->getActions()->validate($item)){
+                        if ($rule->validate($item) && $rule->getActions()->validate($item)) {
                             $validRules[] = $rule->getId();
                         }
                     }
@@ -237,7 +250,7 @@ class Banner extends Template
                 $validRulesIds = $this->getCartBasedValidRuleIds();
             }
 
-            if ($this->config->getScopeValue('banners/single') === '1'){
+            if ($this->config->getScopeValue('banners/single') === '1' && $validRulesIds) {
                 $validRulesIds = array_slice($validRulesIds, 0, 1);
             }
 
@@ -264,8 +277,8 @@ class Banner extends Template
     public function getImage(\Amasty\Promo\Model\Rule $validRule)
     {
         $url = null;
-        $image = @unserialize($validRule->getData($this->getPosition() . '_banner_image'));
-        if (is_array($image) && count($image) > 0){
+        $image = $this->serializerBase->unserialize($validRule->getData($this->getPosition() . '_banner_image'));
+        if (is_array($image) && count($image) > 0) {
             $image = end($image);
             $url = $image['url'];
         }
@@ -294,7 +307,7 @@ class Banner extends Template
      * @param \Amasty\Promo\Model\Rule $validRule
      * @return mixed|string
      */
-    function getLink(\Amasty\Promo\Model\Rule $validRule)
+    public function getLink(\Amasty\Promo\Model\Rule $validRule)
     {
         return $validRule->getData($this->getPosition() . '_banner_link') ? $validRule->getData($this->getPosition() . '_banner_link') : "#";
     }
@@ -303,7 +316,7 @@ class Banner extends Template
      * @param \Amasty\Promo\Model\Rule $validRule
      * @return bool
      */
-    function isShowGiftImages(\Amasty\Promo\Model\Rule $validRule)
+    public function isShowGiftImages(\Amasty\Promo\Model\Rule $validRule)
     {
         return (int)$validRule->getData($this->getPosition() . '_banner_show_gift_images') === 1;
     }
@@ -312,11 +325,11 @@ class Banner extends Template
      * @param \Amasty\Promo\Model\Rule $validRule
      * @return mixed
      */
-    function getLabelImage(\Amasty\Promo\Model\Rule $validRule)
+    public function getLabelImage(\Amasty\Promo\Model\Rule $validRule)
     {
         $url = null;
-        $image = @unserialize($validRule->getData('label_image'));
-        if (is_array($image) && count($image) > 0){
+        $image = $this->serializerBase->unserialize($validRule->getData('label_image'));
+        if (is_array($image) && count($image) > 0) {
             $image = end($image);
             $url = $image['url'];
         }
@@ -327,7 +340,7 @@ class Banner extends Template
      * @param \Amasty\Promo\Model\Rule $validRule
      * @return mixed
      */
-    function getLabelImageAlt(\Amasty\Promo\Model\Rule $validRule)
+    public function getLabelImageAlt(\Amasty\Promo\Model\Rule $validRule)
     {
         return $validRule->getData('label_image_alt');
     }
@@ -338,7 +351,7 @@ class Banner extends Template
      */
     public function getPageTemplateProcessor()
     {
-        if (!$this->pageTemplateProcessor){
+        if (!$this->pageTemplateProcessor) {
             $this->pageTemplateProcessor = $this->templateFilterFactory->create('Magento\Catalog\Model\Template\Filter');
         }
         return $this->pageTemplateProcessor;
@@ -348,15 +361,16 @@ class Banner extends Template
      * @param \Amasty\Promo\Model\Rule $validRule
      * @return $this|array
      */
-    function getProducts(\Amasty\Promo\Model\Rule $validRule)
+    public function getProducts(\Amasty\Promo\Model\Rule $validRule)
     {
-        $products = array();
+        $products = [];
         $promoSku = $validRule->getSku();
-        if (!empty($promoSku)){
+        if (!empty($promoSku)) {
             $products = $this->productCollectionFactory->create()
-                ->addFieldToFilter('sku', array('in' => explode(",", $promoSku)))
+                ->addFieldToFilter('sku', ['in' => explode(",", $promoSku)])
                 ->addUrlRewrite()
-                ->addAttributeToSelect(array('name', 'thumbnail', $this->getAttributeHeader(), $this->getAttributeDescription()));
+                ->addAttributeToSelect(['name', 'thumbnail',
+                    $this->getAttributeHeader(), $this->getAttributeDescription()]);
         }
 
         return $products;
@@ -365,7 +379,7 @@ class Banner extends Template
     /**
      * @return mixed
      */
-    function getAttributeHeader()
+    public function getAttributeHeader()
     {
         return $this->config->getScopeValue('gift_images/attribute_header');
     }
@@ -373,7 +387,7 @@ class Banner extends Template
     /**
      * @return mixed
      */
-    function getAttributeDescription()
+    public function getAttributeDescription()
     {
         return $this->config->getScopeValue('gift_images/attribute_description');
     }
@@ -381,7 +395,7 @@ class Banner extends Template
     /**
      * @return mixed
      */
-    function getWidth()
+    public function getWidth()
     {
         return $this->config->getScopeValue('gift_images/gift_image_width');
     }
@@ -389,7 +403,7 @@ class Banner extends Template
     /**
      * @return mixed
      */
-    function getHeight()
+    public function getHeight()
     {
         return $this->config->getScopeValue('gift_images/gift_image_height');
     }

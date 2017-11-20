@@ -32,7 +32,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     protected $_productsCache = null;
 
-    protected $_allowedTypes = ['simple', 'configurable', 'virtual', 'bundle'];
+    protected $_allowedTypes = [
+        'simple',
+        'configurable',
+        'virtual',
+        'bundle',
+        'downloadable'
+    ];
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,

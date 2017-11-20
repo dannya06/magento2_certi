@@ -24,7 +24,7 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Magestore_Storepickup::storepickup" title="Store pickup" sortOrder="10">
+                <resource id="Magestore_Storepickup::storepickup" title="Store Locator" sortOrder="10">
                     <resource id="Magestore_Storepickup::store" title="Manage Store" sortOrder="10"/>
                     <resource id="Magestore_Storepickup::guide" title="Guide" sortOrder="10"/>
                     <resource id="Magestore_Storepickup::settings" title="Settings" sortOrder="10"/>
@@ -32,7 +32,7 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="Magestore_Storepickup::config_storepickup" title="Store pickup"  sortOrder="10" />
+                            <resource id="Magestore_Storepickup::config_storepickup" title="Store Locator"  sortOrder="10" />
                         </resource>
                     </resource>
                 </resource>

@@ -42,8 +42,8 @@ class Mode implements \Magento\Framework\Option\ArrayInterface
     public function toArray()
     {
         return [
-            \Amasty\Promo\Block\Banner::MODE_CART    => __('Cart'),
-            \Amasty\Promo\Block\Banner::MODE_PRODUCT => __('Product')
+            \Amasty\Promo\Block\Banner::MODE_CART    => __('Cart contents'),
+            \Amasty\Promo\Block\Banner::MODE_PRODUCT => __('Product page')
         ];
     }
 }

@@ -32,7 +32,7 @@ if (!$block->isAjax()): ?>
                                 <?php echo $block->escapeHtml($post->getTitle()) ?>
                             </a>
                             <div class="block-recent-post-content">
-                                <?php echo $post->getShortContent() ?>
+                                <?php echo $block->getShortContent($post) ?>
                             </div>
                             <div class="block-recent-post-toolbar">
                                 <span class="block-recent-post-publishdate">
