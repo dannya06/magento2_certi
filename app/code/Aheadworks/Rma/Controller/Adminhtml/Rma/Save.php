@@ -6,88 +6,129 @@
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Rma;
 
-use Aheadworks\Rma\Model\Status;
-use Aheadworks\Rma\Model\Source\Request\Status as StatusSource;
-use Magento\Backend\App\Action;
+use Aheadworks\Rma\Api\RequestManagementInterface;
+use Aheadworks\Rma\Model\Request\PostDataProcessor\Composite as RequestPostDataProcessor;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\Action\Action;
+use Aheadworks\Rma\Api\Data\RequestInterfaceFactory as RmaRequestInterfaceFactory;
+use Aheadworks\Rma\Api\Data\RequestInterface as RmaRequestInterface;
 
-class Save extends \Aheadworks\Rma\Controller\Adminhtml\Rma
+/**
+ * Class Save
+ *
+ * @package Aheadworks\Rma\Controller\Adminhtml\Rma
+ */
+class Save extends Action
 {
     /**
-     * @var \Magento\Framework\Registry
+     * @var PageFactory
      */
-    protected $coreRegistry;
-    
-    /**
-     * @var \Aheadworks\Rma\Model\RequestManager
-     */
-    private $requestManager;
+    private $resultPageFactory;
 
     /**
-     * @var \Aheadworks\Rma\Model\RequestFactory
+     * @var DataObjectHelper
      */
-    protected $requestModelFactory;
+    private $dataObjectHelper;
 
+    /**
+     * @var RequestManagementInterface
+     */
+    private $requestManagement;
+
+    /**
+     * @var RequestPostDataProcessor
+     */
+    private $requestPostDataProcessor;
+
+    /**
+     * @var RmaRequestInterfaceFactory
+     */
+    private $requestFactory;
+
+    /**
+     * @var DataPersistorInterface
+     */
+    private $dataPersistor;
+
+    /**
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param RequestManagementInterface $requestManagement
+     * @param RequestPostDataProcessor $requestPostDataProcessor
+     * @param RmaRequestInterfaceFactory $requestFactory
+     * @param DataPersistorInterface $dataPersistor
+     */
     public function __construct(
-        \Magento\Framework\Registry $registry,
-        Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Aheadworks\Rma\Model\RequestFactory $requestModelFactory,
-        \Aheadworks\Rma\Model\RequestManager $requestManager
+        Context $context,
+        PageFactory $resultPageFactory,
+        DataObjectHelper $dataObjectHelper,
+        RequestManagementInterface $requestManagement,
+        RequestPostDataProcessor $requestPostDataProcessor,
+        RmaRequestInterfaceFactory $requestFactory,
+        DataPersistorInterface $dataPersistor
     ) {
-        $this->requestModelFactory = $requestModelFactory;
-        $this->requestManager = $requestManager;
-        $this->coreRegistry = $registry;
-        parent::__construct($context, $resultPageFactory);
+        parent::__construct($context);
+        $this->resultPageFactory = $resultPageFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->requestManagement = $requestManagement;
+        $this->requestPostDataProcessor = $requestPostDataProcessor;
+        $this->requestFactory = $requestFactory;
+        $this->dataPersistor = $dataPersistor;
     }
 
     /**
-     * Save action
-     *
-     * @return \Magento\Backend\Model\View\Result\Page
+     * {@inheritdoc}
      */
     public function execute()
     {
-        $data = $this->getRequest()->getPostValue();
         $resultRedirect = $this->resultRedirectFactory->create();
-        $id = $this->getRequest()->getParam('request_id');
-        $back = $this->getRequest()->getParam('back');
-        if (!$id) {
-            $this->messageManager->addError(__('Something went wrong while saving the request.'));
-            return $resultRedirect->setPath('*/*/');
-        }
-        /** @var $request \Aheadworks\Rma\Model\Request */
-        $request = $this->requestModelFactory->create()->load($id);
-        if (isset($data['custom_fields'])) {
-            $customFields = array_replace($request->getData('custom_fields'), $data['custom_fields']);
-            $request->setData('custom_fields', $customFields);
-        }
-        if (isset($data['items'])) {
-            $request->setData('items', $data['items']);
-        }
-        if ($status = $this->getRequest()->getParam('status')) {
-            $request->setStatusId($status);
-        }
-        try {
-            $request->save();
-            if ($status) {//todo control before saving status(case status was changed from frontend before admin form submit)
-                if ($status == StatusSource::CANCELED) {
-                    $this->coreRegistry->register('aw_rma_cancel_by_admin', true);
+        if ($data = $this->getRequest()->getPostValue()) {
+            try {
+                $data = $this->requestPostDataProcessor->prepareEntityData($data);
+                $requestEntity = $this->performSave($data);
+                $this->dataPersistor->clear('aw_rma_custom_field');
+                $this->messageManager->addSuccessMessage(__('Return has been successfully updated.'));
+                if ($this->getRequest()->getParam('back') == 'edit') {
+                    return $resultRedirect->setPath('*/*/edit', ['id' => $requestEntity->getId()]);
                 }
-                $this->requestManager->notifyAboutStatusChange($request);
-                $this->messageManager->addSuccess(__('Request status was successfully changed.'));
+                return $resultRedirect->setPath('*/*/');
+            } catch (LocalizedException $e) {
+                $this->messageManager->addErrorMessage($e->getMessage());
+            } catch (\RuntimeException $e) {
+                $this->messageManager->addErrorMessage($e->getMessage());
+            } catch (\Exception $e) {
+                $this->messageManager->addExceptionMessage($e, __('Something went wrong while updating the return.'));
             }
-            $this->messageManager->addSuccess(__('Request was successfully saved.'));
-            if ($back == 'edit') {
-                return $resultRedirect->setPath('*/*/' . $back, ['id' => $request->getId(), '_current' => true]);
+            $this->dataPersistor->set('aw_rma_request', $data);
+            $id = isset($data['id']) ? $data['id'] : false;
+            if ($id) {
+                return $resultRedirect->setPath('*/*/edit', ['id' => $id, '_current' => true]);
             }
-            return $resultRedirect->setPath('*/*/');
-        } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            $this->messageManager->addError($e->getMessage());
-        } catch (\RuntimeException $e) {
-            $this->messageManager->addError($e->getMessage());
-        } catch (\Exception $e) {
-            $this->messageManager->addException($e, __('Something went wrong while saving the request.'));
+            return $resultRedirect->setPath('*/*/new', ['_current' => true]);
         }
-        return $resultRedirect->setPath('*/*/edit', ['id' => $id]);
+        return $resultRedirect->setPath('*/*/');
+    }
+
+    /**
+     * Perform save
+     *
+     * @param array $data
+     * @return RmaRequestInterface
+     */
+    private function performSave($data)
+    {
+        $requestObject = $this->requestFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $requestObject,
+            $data,
+            RmaRequestInterface::class
+        );
+
+        return $this->requestManagement->updateRequest($requestObject, true);
     }
 }

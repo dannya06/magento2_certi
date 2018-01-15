@@ -24,14 +24,46 @@
     };
     var actE = [];
 
+    function ObjectToArray(x) {
+        for(var i = 0, a = []; i < x.length; i++)
+            a.push(x[i]);
+
+        return a
+    }
+
     function optimizeJson(item) {
-        if (item['children']) {
+        if (typeof(item['children']) != "undefined" && item['children']) {
+            
             for (var x = 0; x < item['children'].length; x++) {
-                item['children'][x] = optimizeJson(item['children'][x]);
+                if(typeof(item['children'][x]) != "undefined"){
+                   delete item['children'][x]['bind'];
+                   if (typeof(item['children'][x]['children']) != "undefined" && item['children'][x]['children']) {
+                        if(typeof(item['children'][x]) === 'object') {
+
+                        } else {
+                           item['children'][x] = optimizeJson(item['children'][x]); 
+                        }
+                        
+                   }
+                }
+                
             }
         }
         delete item['bind'];
         return item;
+    }
+
+    var initGetCmsPageLink = function() {
+        if($("#option-cms_page").length > 0) {
+            $("#option-cms_page").on("change", function(){
+                var selected_value = $(this).val();
+                if(selected_value){
+                    var generated_link = '{{store url="'+selected_value+'"}}';
+                    $("#option-link").val(generated_link);
+                    $("#option-link").change();
+                }
+            })
+        }
     }
 
     var updateListData = function(e, eventType){
@@ -224,6 +256,9 @@
     var selectedItem        = ko.observable();
     var loadcategory        = ko.observable();
     var importsubcategries  = ko.observable(false);
+    var startindex          = ko.observable();
+    var endindex            = ko.observable();
+    var menulevel           = ko.observable();
     var icons               = ko.observableArray(window.megamenu.icons);
     var items               = window.megamenu.items;
     var previewStore        = ko.observable();
@@ -237,6 +272,9 @@
         loadcategory: loadcategory,
         importSelectedCategory: '',
         importsubcategries: importsubcategries,
+        menulevel: menulevel,
+        startindex: startindex,
+        endindex: endindex,
         icons: icons,
         totalItems: 0,
         targetField: '',
@@ -249,6 +287,8 @@
         modeClass: ko.observable('horizontal'),
 
         initialize: function () {
+            this.importedIndex = [];
+            this.importingItems = [];
             this._super();
             _.bindAll(this, 'removeItem', 'selectItem', 'btnSelectItem', 'acceptItem', 'addAppendChild', 'addPrependChild', 'showIconList', 'selectIcon', 'revertItem', 'previewMenu', 'saveItem', 'submitForm', 'switcher', 'setMenuType');
             return this;
@@ -260,7 +300,7 @@
             .observe('opened');
             this.items = ko.observableArray(ko.utils.arrayMap(window.megamenu.items, function(data){
                 if(data.children) {
-                    data.children = self.convertToObject(data.children);
+                    data.children = self.convertToObject(data.children, '', 0, 0, 0, 0, false);
                 }
                 return new Item(data);
             }));
@@ -356,6 +396,7 @@
             updateListData(jQuery('#nestable').data('output', jQuery('#nestable-output')), 'add');
             this.saveItem(item, 'add');
             this.gotoScroll();
+            initGetCmsPageLink();
         },
 
         activeFirstItem: function() {
@@ -400,11 +441,22 @@
 
             if (this.importSelectedCategory) {
                 var importsubcategries = this.importsubcategries();
+                var menulevel = this.menulevel();
+                var startindex = this.startindex();
+                var endindex = this.endindex();
                 var category = this.importSelectedCategory;
                 var item;
                 if (importsubcategries == 0) {
                     if (category.children) {
-                        category.children = this.convertToObject(category.children, 'import');
+                        if(menulevel) {
+                            if(menulevel > 1) {
+                                category.children = this.convertToObject(category.children, 'import', startindex, endindex, 1, menulevel);
+                            } else {
+                                category.children = [];
+                            }
+                        } else {
+                            category.children = this.convertToObject(category.children, 'import', startindex, endindex, 1, 0);
+                        }
                     }
                     for (var x = 0; x < fields.length; x++) {
                         var type = fields[x]['type'];
@@ -418,12 +470,19 @@
                     }
                     var item = new Item(category);
                     this.items.push(item);
-                    this.saveItem(item, 'import');
+                    this.importingItems.push(item);
+                    /*this.saveItem(item, 'import');*/
                 } else {
+
                     if (category.children) {
                         this.ajaxCount = 0;
                         var children = category.children;
                         for (var i = 0; i < children.length; i++) {
+                            if(endindex > 0 && endindex != '' && endindex !='0' && endindex != null && endindex != 'undefined') {
+                                if(i < startindex) continue;
+                                if(endindex != 'end' && endindex != 'all' && i >= endindex) continue;
+                            }
+
                             var data = children[i];
                             for (var x = 0; x < fields.length; x++) {
                                 var type = fields[x]['type'];
@@ -436,13 +495,25 @@
                                 }
                             }
                             if (typeof(data.children)!='undefined'){
-                                data.children = this.convertToObject(data.children, 'import');
+                                if(menulevel) {
+                                    if(menulevel > 1) {
+                                        data.children = this.convertToObject(data.children, 'import', startindex, endindex, 1, menulevel);
+                                    } else {
+                                        data.children = [];
+                                    }
+                                } else {
+                                    data.children = this.convertToObject(data.children, 'import', startindex, endindex, 1, menulevel);
+                                }
                             }
                             item = new Item(data);
                             this.items.push(item);
-                            this.saveItem(item, 'import');
+                            this.importingItems.push(item);
+                            /*this.saveItem(item, 'import');*/
                         }
                     }
+                }
+                if(this.importingItems.length > 0) { /*If have importing items, then save all menu items into database*/
+                    this.saveImportedItems('all', 'import');
                 }
                 this.importSelectedCategory = '';
             }
@@ -466,6 +537,7 @@
             selected.update(edited);
             this.selectItem(item);
             this.saveItem(this.itemForEditing(), 'save');
+            initGetCmsPageLink();
         },
 
         revertItem: function() {
@@ -491,6 +563,7 @@
                 this.loadDependField();
                 this.loadWysiwygEditor();
                 this.loadColorPicker();
+                initGetCmsPageLink();
             }
         },
 
@@ -502,6 +575,7 @@
             jQuery('#' + item.item_id  + ' > .dd-list').show();
             jQuery('#' + item.item_id).parents('.dd-list').css({'display':'block'});
             this.gotoScroll();
+
         },
 
         addPrependChild: function(item) {
@@ -550,6 +624,7 @@
             value = icon['value'];
             edited[targetField] = value;
             item.update(edited);
+            initGetCmsPageLink();
         },
 
         saveItem: function(item, action) {
@@ -598,6 +673,7 @@
                             }
                             self.loading(false);
                         }
+                        initGetCmsPageLink();
                     }
                 }
             });
@@ -608,7 +684,75 @@
                 }, (self.requestTime/2));
             }
         },
+        saveImportedItems: function(item, action) {
+            if(item == 'all') { /*get first item of importing array*/
+                item = this.importingItems[0];
+                this.importingItems.shift();
+            }
+            var start_time = new Date().getTime();
+            var item2 = ko.toJS(item);
+            var data = {
+                item: ko.toJSON(item2),
+                menu_id: $('#menu_id').val(),
+                action: action
+            };
+            var ajaxUrl = window.megamenu.ajaxSaveItemUrl;
+            var self = this;
+            this.loading(true);
+            this.ajaxCount = this.ajaxCount + 1;
+            jQuery.ajax({
+                url: ajaxUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function(response) {
+                    if (response['status'] === true) {
+                        switch (action) {
+                            case 'add':
+                            Message($.mage.__('Item Created'));
+                            break;
 
+                            case 'save':
+                            Message($.mage.__('Item Saved'));
+                            break;
+                        }
+                        self.ajaxCount = self.ajaxCount-1;
+
+                        if (self.ajaxCount == 0) {
+                            console.log(action);
+                            if (self.requestTime==0 && action =='add') {
+                                self.requestTime = new Date().getTime() - start_time;
+                            }
+
+                            if (action=='import') {
+                                Message($.mage.__('Menu Item')+' "'+item2.name+'" '+$.mage.__('Was Imported Sucessfully'));
+                                updateListData(jQuery('#nestable').data('output', jQuery('#nestable-output')), 'add');
+                            }
+
+                            if  (self.clickTarget != '') {
+                                $(self.clickTarget).trigger('click');
+                            }
+                            self.loading(false);
+                        }
+                        initGetCmsPageLink();
+                    }
+                    /*Call back this saveImportedItems to save next item in importing array*/
+                    if(self.importingItems.length > 0) {
+                        setTimeout(function() {
+                            var nextItem = self.importingItems[0];
+                            self.importingItems.shift();
+                            self.saveImportedItems(nextItem, action);
+                        }, 1000);
+                    }
+                }
+            });
+
+            if (self.requestTime && action =='add') {
+                setTimeout(function() {
+                    self.loading(false);
+                }, (self.requestTime/2));
+            }
+        },
         loadDependField: function() {
             for (var i = 0; i < fields.length; i++) {
                 var fieldDepend = fields[i]['depend'];
@@ -666,7 +810,7 @@
             });
         },
 
-        // retrieve directives URL with substituted directive value
+        /* retrieve directives URL with substituted directive value*/
         makeDirectiveUrl: function(directive) {
 
             var config = $.parseJSON('[' + window.megamenu.editor + ']');
@@ -674,10 +818,10 @@
         },
 
         encodeDirectives: function(content) {
-            // collect all HTML tags with attributes that contain directives
+            /* collect all HTML tags with attributes that contain directives*/
             return content.gsub(/<([a-z0-9\-\_]+.+?)([a-z0-9\-\_]+=".*?\{\{.+?\}\}.*?".+?)>/i, function(match) {
                 var attributesString = match[2];
-                // process tag attributes string
+                /* process tag attributes string */
                 attributesString = attributesString.gsub(/([a-z0-9\-\_]+)="(.*?)(\{\{.+?\}\})(.*?)"/i, function(m) {
                     return m[1] + '="' + m[2] + this.makeDirectiveUrl(Base64.mageEncode(m[3])) + m[4] + '"';
                 }.bind(this));
@@ -702,9 +846,14 @@
             $parent.find('.ves-fieldset-content').eq(0).toggleClass('active');
         },
 
-        convertToObject: function(children, $type = '') {
+        convertToObject: function(children, $type = '', $startindex = 0, $endindex = 0, $level = 0, $maxlevel = 0, $isSave = true) {
+            var _self = this;
             var itemChidrens = [];
             for (var i = 0; i < children.length; i++) {
+                if($endindex > 0 && $endindex != '' && $endindex !='0' && $endindex != null && $endindex != 'undefined') {
+                    if(i < $startindex) continue;
+                    if($endindex != 'end' && $endindex != 'all' && i >= $endindex) continue;
+                }
                 if (children[i] instanceof Item) {
                     var item = ko.toJS(children[i]);
                     itemChidrens[i] = '';
@@ -724,9 +873,9 @@
                     }
                     var newItem = new Item(defaultValue);
                     itemChidrens[i] = newItem;
-                    if ($type == 'import') {
-                        this.saveItem(newItem, 'import');
-                    }
+                    if($isSave) 
+                        this.importingItems.push(newItem);
+                        /*this.saveItem(newItem, 'import');*/
                 } else {
                     for (var x = 0; x < fields.length; x++) {
                         var type = fields[x]['type'];
@@ -740,13 +889,23 @@
                     }
                     var item               = new Item(children[i]);
                     itemChidrens[i]        = item;
-                    if ($type == 'import') {
-                        this.saveItem(item, 'import');
-                    }
+
+                    if($isSave)
+                        this.importingItems.push(item);
+                        /*this.saveItem(item, 'import');*/
                 }
                 if (children[i] && children[i]['children']) {
-                    itemChidrens[i]['children'] = this.convertToObject(children[i]['children'], $type);
+                    if($level && $maxlevel) {
+                        if ($level < $maxlevel) {
+                            itemChidrens[i]['children'] = this.convertToObject(children[i]['children'], $type, $startindex, $endindex, ++$level, $maxlevel, $isSave);
+                        } else {
+                            itemChidrens[i]['children'] = [];
+                        }
+                    } else {
+                        itemChidrens[i]['children'] = this.convertToObject(children[i]['children'], $type, $startindex, $endindex, $level, $maxlevel, $isSave);
+                    }
                 }
+                _self.importedIndex.push("cat"+i);
             }
             return itemChidrens;
         },

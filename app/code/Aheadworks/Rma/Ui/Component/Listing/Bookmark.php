@@ -10,27 +10,35 @@ use Aheadworks\Rma\Model\Source\Request\Status;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Ui\Api\BookmarkManagementInterface;
 use Magento\Ui\Api\BookmarkRepositoryInterface;
+use Magento\Ui\Component\Bookmark as UiBookmark;
+use Magento\Ui\Api\Data\BookmarkInterfaceFactory;
+use Magento\Authorization\Model\UserContextInterface;
 
 /**
  * Class Bookmark
+ *
+ * @package Aheadworks\Rma\Ui\Component\Listing
  */
-class Bookmark extends \Magento\Ui\Component\Bookmark
+class Bookmark extends UiBookmark
 {
-    const RMA_LISTING_NAMESPACE = 'aw_rma_listing';
-
     /**
-     * @var \Magento\Ui\Api\Data\BookmarkInterfaceFactory
+     * @var string
      */
-    protected $bookmarkFactory;
+    const RMA_LISTING_NAMESPACE = 'aw_rma_request_listing';
 
     /**
-     * @var \Magento\Authorization\Model\UserContextInterface
+     * @var BookmarkInterfaceFactory
      */
-    protected $userContext;
+    private $bookmarkFactory;
 
     /**
-     * @param \Magento\Ui\Api\Data\BookmarkInterfaceFactory $bookmarkFactory
-     * @param \Magento\Authorization\Model\UserContextInterface $userContext
+     * @var UserContextInterface
+     */
+    private $userContext;
+
+    /**
+     * @param BookmarkInterfaceFactory $bookmarkFactory
+     * @param UserContextInterface $userContext
      * @param ContextInterface $context
      * @param BookmarkRepositoryInterface $bookmarkRepository
      * @param BookmarkManagementInterface $bookmarkManagement
@@ -38,8 +46,8 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
      * @param array $data
      */
     public function __construct(
-        \Magento\Ui\Api\Data\BookmarkInterfaceFactory $bookmarkFactory,
-        \Magento\Authorization\Model\UserContextInterface $userContext,
+        BookmarkInterfaceFactory $bookmarkFactory,
+        UserContextInterface $userContext,
         ContextInterface $context,
         BookmarkRepositoryInterface $bookmarkRepository,
         BookmarkManagementInterface $bookmarkManagement,
@@ -59,8 +67,7 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
     public function prepare()
     {
         parent::prepare();
-
-        $config = $this->getConfiguration($this);
+        $config = $this->getConfiguration();
         if (!isset($config['views'])) {
             $this->addView('default', __('Default View'), ['payment_method']);
             $this->addView(
@@ -92,15 +99,16 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
 
     /**
      * Add view to the current config and save the bookmark to db
-     * @param $index
-     * @param $label
+     *
+     * @param string $index
+     * @param string $label
      * @param array $hideColumns columns to hide comparing to default view config
      * @param array $filters applied filters as $filterName => $filterValue array
      * @return $this
      */
-    public function addView($index, $label, $hideColumns = [], $filters = [])
+    private function addView($index, $label, $hideColumns = [], $filters = [])
     {
-        $config = $this->getConfiguration($this);
+        $config = $this->getConfiguration();
 
         $viewConf = $this->getDefaultViewConfig();
         $viewConf = array_merge($viewConf, [
@@ -117,20 +125,21 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
         }
         $viewConf['data']['displayMode'] = 'grid';
 
-        $this->_saveBookmark($index, $label, $viewConf);
+        $this->saveBookmark($index, $label, $viewConf);
 
         $config['views'][$index] = $viewConf;
-        $this->setData('config', array_replace_recursive($config, $this->getConfiguration($this)));
+        $this->setData('config', array_replace_recursive($config, $this->getConfiguration()));
         return $this;
     }
 
     /**
      * Save bookmark to db
-     * @param $index
-     * @param $label
-     * @param $viewConf
+     *
+     * @param string $index
+     * @param string $label
+     * @param array $viewConf
      */
-    protected function _saveBookmark($index, $label, $viewConf)
+    private function saveBookmark($index, $label, $viewConf)
     {
         $bookmark = $this->bookmarkFactory->create();
         $config = ['views' => [$index => $viewConf]];
@@ -143,19 +152,21 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
     }
 
     /**
+     * Retrieve default view config
+     *
      * @return mixed
      */
-    public function getDefaultViewConfig()
+    private function getDefaultViewConfig()
     {
         $config['editable']  = false;
         $config['data']['filters']['applied']['placeholder'] = true;
         $config['data']['columns'] = [
-            'id'            => ['sorting' => 'desc', 'visible' => true],
-            'order_id'      => ['sorting' => false, 'visible' => true],
+            'ids'                => ['sorting' => false, 'visible' => true],
+            'increment_id'       => ['sorting' => 'desc', 'visible' => true],
+            'order_increment_id' => ['sorting' => false, 'visible' => true],
             'payment_method'=> ['sorting' => false, 'visible' => true],
-            'customer_id'   => ['sorting' => false, 'visible' => true],
+            'customer'      => ['sorting' => false, 'visible' => true],
             'products'      => ['sorting' => false, 'visible' => true],
-            'cf1_value'     => ['sorting' => false, 'visible' => true],//todo
             'last_reply_by' => ['sorting' => false, 'visible' => true],
             'status_id'     => ['sorting' => false, 'visible' => true],
             'store_id'      => ['sorting' => false, 'visible' => true],
@@ -179,6 +190,7 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
             ],
             'value' => 20
         ];
+
         return $config;
     }
 }

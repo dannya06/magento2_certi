@@ -154,12 +154,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     }
 
     protected function _toHtml(){
-        /*
         $this->_eventManager->dispatch(
          'ves_check_license',
          ['obj' => $this,'ex'=>'Ves_Megamenu']
          );
-         */
         return parent::_toHtml();
     }
 

@@ -5,11 +5,19 @@
 */
 
 namespace Aheadworks\Rma\Block\CustomField\Input\Renderer;
+
+use Magento\Framework\View\Element\Template;
+
 /**
- * Class Textarea
+ * Class TextArea
+ *
+ * @method string getValue()
+ * @method string getFieldName
+ * @method string getUid
+ * @method string getFieldClass
  * @package Aheadworks\Rma\Block\CustomField\Input\Renderer
  */
-class Textarea extends RendererAbstract
+class TextArea extends Template
 {
     /**
      * Default number of rows
@@ -24,14 +32,11 @@ class Textarea extends RendererAbstract
     /**
      * @var string
      */
-    protected $_template = 'customfield/input/renderer/textarea.phtml';
+    protected $_template = 'Aheadworks_Rma::customfield/input/renderer/textarea.phtml';
 
     /**
-     * @var array
-     */
-    protected $classNames = ['textarea'];
-
-    /**
+     * Retrieve rows
+     *
      * @return int
      */
     public function getRows()
@@ -43,6 +48,8 @@ class Textarea extends RendererAbstract
     }
 
     /**
+     * Retrieve cols
+     *
      * @return int
      */
     public function getCols()

@@ -4,19 +4,17 @@
 * See LICENSE.txt for license details.
 */
 
+// @codingStandardsIgnoreFile
+
 /* @var $block \Magento\Framework\View\Element\Template */
 ?>
-<div class="aw-rma-view-actions">
-    <button id="aw-rma-save-and-print-button" type="button" class="action primary" title="<?php echo __('Save and Print Label') ?>">
-        <span><?php echo __('Save and Print Label') ?></span>
+<div class="aw-rma__actions">
+    <?php /* @noEscape */ echo $block->getChildHtml('back') ?>
+    <button id="aw-rma__save"
+            data-role="aw-rma-save-and-print-button"
+            type="submit"
+            class="action primary"
+            title="<?php echo $block->escapeHtml(__('Save and Print Label')) ?>">
+        <span><?php echo $block->escapeHtml(__('Save and Print Label')) ?></span>
     </button>
-    <script>
-        require(['jquery'], function($){
-            $(document).ready(function() {
-                $('#aw-rma-save-and-print-button').on('click', function() {
-                    $('#aw-rma-view-print-label-form').submit();
-                });
-            });
-        });
-    </script>
 </div>

@@ -46,6 +46,11 @@
 				<field id="custom_css" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Custom CSS</label>
 				</field>
+				<field id="enable_cache" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Cache</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment><![CDATA[Allow Cache The Generated Megamenu Html Into Database.]]></comment>
+				</field>
 			</group>
 		</section>
 	</system>

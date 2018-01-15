@@ -34,6 +34,11 @@ class Menu extends \Magento\Framework\Model\AbstractModel
     const CACHE_TAG = 'megamenu_menu';
 
     /**
+     * Menu cache tag
+     */
+    const CACHE_WIDGET_TAG = 'megamenu_menu_widget';
+
+    /**
      * Product collection factory
      *
      * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory

@@ -201,7 +201,7 @@ class Breadcrumbs extends \Magento\Backend\Block\Template
      * @param Filter\Store $storeFilter
      * @param Filter\Groupby $groupbyFilter
      * @param Filter\Period $periodFilter
-     * @param [] $data
+     * @param array $data
      */
     public function __construct(
         Context $context,

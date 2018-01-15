@@ -64,7 +64,7 @@ class Collection extends CustomerSalesCollection implements SearchResultInterfac
         Filter\Period $periodFilter,
         CustomerSalesRangeResource $customerSalesRangeResource,
         $model = Document::class,
-        $connection = null,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
         parent::__construct(

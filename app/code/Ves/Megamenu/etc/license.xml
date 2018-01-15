@@ -1,5 +1,4 @@
 <license>
-	<!--
 	<code>ves-megamneu-pro</code>
 	<name>Ves_Megamenu</name>
 	<author>Landofcoder</author>
@@ -7,5 +6,5 @@
 	<item_title>Mega Menu PRO Extension</item_title>
 	<item_url>http://landofcoder.com/magento-2-mega-menu-pro.html</item_url>
 	<item_id>3476479</item_id>
-	<version>1.1.4</version>-->
+	<version>1.1.5</version>
 </license>

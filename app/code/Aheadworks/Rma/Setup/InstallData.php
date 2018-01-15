@@ -6,165 +6,327 @@
 
 namespace Aheadworks\Rma\Setup;
 
+use Aheadworks\Rma\Api\CustomFieldRepositoryInterface;
+use Aheadworks\Rma\Api\Data\CustomFieldInterface;
+use Aheadworks\Rma\Api\Data\CustomFieldInterfaceFactory;
+use Aheadworks\Rma\Api\Data\CustomFieldOptionInterface;
+use Aheadworks\Rma\Api\Data\StatusEmailTemplateInterface;
+use Aheadworks\Rma\Api\Data\StatusInterface;
+use Aheadworks\Rma\Api\Data\StatusInterfaceFactory;
+use Aheadworks\Rma\Api\Data\StoreValueInterface;
+use Aheadworks\Rma\Api\StatusRepositoryInterface;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Aheadworks\Rma\Model\Status\ConfigDefault as StatusConfigDefault;
+use Aheadworks\Rma\Model\CustomField\ConfigDefault as CustomFieldConfigDefault;
+use Aheadworks\Rma\Model\Source\Request\Status as StatusSource;
+use Magento\Store\Model\StoreManagerInterface;
 
+/**
+ * Class InstallData
+ *
+ * @package Aheadworks\Rma\Setup
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class InstallData implements InstallDataInterface
 {
     /**
-     * @var \Aheadworks\Rma\Model\Status\ConfigDefault
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * @var StatusConfigDefault
      */
     private $statusConfigDefault;
 
     /**
-     * @var \Aheadworks\Rma\Model\Source\Request\Status
-     */
-    private $statusSource;
-
-    /**
-     * @var \Aheadworks\Rma\Model\ResourceModel\Status\CollectionFactory
-     */
-    private $statusCollectionFactory;
-
-    /**
-     * @var \Aheadworks\Rma\Model\CustomFieldFactory
-     */
-    private $customFieldFactory;
-
-    /**
-     * @var \Aheadworks\Rma\Model\CustomField\ConfigDefault
+     * @var CustomFieldConfigDefault
      */
     private $customFieldConfigDefault;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StatusInterfaceFactory
+     */
+    private $statusFactory;
+
+    /**
+     * @var CustomFieldInterfaceFactory
+     */
+    private $customFieldFactory;
+
+    /**
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
+
+    /**
+     * @var StatusRepositoryInterface
+     */
+    private $statusRepository;
+
+    /**
+     * @var CustomFieldRepositoryInterface
+     */
+    private $customFieldRepository;
+
+    /**
+     * @var StatusSource
+     */
+    private $statusSource;
+
+    /**
+     * @var StoreManagerInterface
      */
     private $storeManager;
 
     /**
-     * @param \Aheadworks\Rma\Model\Status\ConfigDefault $statusConfigDefault
-     * @param \Aheadworks\Rma\Model\Source\Request\Status $statusSource
-     * @param \Aheadworks\Rma\Model\ResourceModel\Status\CollectionFactory $statusCollectionFactory
-     * @param \Aheadworks\Rma\Model\CustomFieldFactory $customFieldFactory
-     * @param \Aheadworks\Rma\Model\CustomField\ConfigDefault $customFieldConfigDefault
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @var array|null
+     */
+    private $statusIds;
+
+    /**
+     * @var array|null
+     */
+    private $websiteIds;
+
+    /**
+     * @param DataObjectHelper $dataObjectHelper
+     * @param StatusConfigDefault $statusConfigDefault
+     * @param CustomFieldConfigDefault $customFieldConfigDefault
+     * @param StatusInterfaceFactory $statusFactory
+     * @param CustomFieldInterfaceFactory $customFieldFactory
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param StatusRepositoryInterface $statusRepository
+     * @param CustomFieldRepositoryInterface $customFieldRepository
+     * @param StatusSource $statusSource
+     * @param StoreManagerInterface $storeManager
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Aheadworks\Rma\Model\Status\ConfigDefault $statusConfigDefault,
-        \Aheadworks\Rma\Model\Source\Request\Status $statusSource,
-        \Aheadworks\Rma\Model\ResourceModel\Status\CollectionFactory $statusCollectionFactory,
-        \Aheadworks\Rma\Model\CustomFieldFactory $customFieldFactory,
-        \Aheadworks\Rma\Model\CustomField\ConfigDefault $customFieldConfigDefault,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        DataObjectHelper $dataObjectHelper,
+        StatusConfigDefault $statusConfigDefault,
+        CustomFieldConfigDefault $customFieldConfigDefault,
+        StatusInterfaceFactory $statusFactory,
+        CustomFieldInterfaceFactory $customFieldFactory,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        StatusRepositoryInterface $statusRepository,
+        CustomFieldRepositoryInterface $customFieldRepository,
+        StatusSource $statusSource,
+        StoreManagerInterface $storeManager
     ) {
+        $this->dataObjectHelper = $dataObjectHelper;
         $this->statusConfigDefault = $statusConfigDefault;
-        $this->statusSource = $statusSource;
-        $this->statusCollectionFactory = $statusCollectionFactory;
-        $this->customFieldFactory = $customFieldFactory;
         $this->customFieldConfigDefault = $customFieldConfigDefault;
+        $this->statusFactory = $statusFactory;
+        $this->customFieldFactory = $customFieldFactory;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->statusRepository = $statusRepository;
+        $this->customFieldRepository = $customFieldRepository;
+        $this->statusSource = $statusSource;
         $this->storeManager = $storeManager;
     }
 
     /**
      * {@inheritdoc}
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->installStatuses($setup);
+        $this->installStatuses();
         $this->installCustomFields();
     }
 
-    private function installStatuses(ModuleDataSetupInterface $setup)
+    /**
+     * Install statuses
+     *
+     * @return $this
+     */
+    private function installStatuses()
     {
-        $connection = $setup->getConnection();
         foreach ($this->statusConfigDefault->get() as $statusData) {
-            $connection->insert(
-                $setup->getTable('aw_rma_request_status'),
-                [
-                    'id' => $statusData['id'],
-                    'name' => $this->statusSource->getOptionLabelByValue($statusData['id'], false),
-                    'is_email_customer' => $statusData['is_email_customer'],
-                    'is_email_admin' => $statusData['is_email_admin'],
-                    'is_thread' => $statusData['is_thread']
-                ]
+            $statusData = $this->prepareStatusData($statusData);
+            $statusObject = $this->statusFactory->create();
+            $this->dataObjectHelper->populateWithArray(
+                $statusObject,
+                $statusData,
+                StatusInterface::class
             );
-            foreach ($statusData['attribute'] as $attrCode => $attrValue) {
-                foreach ($this->storeManager->getStores() as $store) {
-                    $connection->insert(
-                        $setup->getTable('aw_rma_status_attr_value'),
-                        [
-                            'store_id' => $store->getId(),
-                            'attribute_code' => $attrCode,
-                            'value' => $attrValue,
-                            'status_id' => $statusData['id']
-                        ]
-                    );
-                }
-            }
+            $statusObject->setName($this->statusSource->getOptionLabelByValue($statusObject->getId(), false));
+
+            $this->statusRepository->save($statusObject);
         }
+        return $this;
     }
 
+    /**
+     * Prepare status data
+     *
+     * @param array $statusData
+     * @return array
+     */
+    private function prepareStatusData($statusData)
+    {
+        $frontendLabels = [];
+        $adminTemplates = [];
+        $customerTemplates = [];
+        $threadTemplates = [];
+        foreach ($this->storeManager->getStores() as $store) {
+            $frontendLabels[] = [
+                StoreValueInterface::STORE_ID => $store->getId(),
+                StoreValueInterface::VALUE => $statusData['frontend_label']['value']
+            ];
+            $threadTemplates[] = [
+                StoreValueInterface::STORE_ID => $store->getId(),
+                StoreValueInterface::VALUE => $statusData['thread_template']['value']
+            ];
+            foreach ($statusData['email_template'] as $emailTemplate) {
+                if (empty($emailTemplate['value'])) {
+                    continue;
+                }
+                $value = [
+                    StatusEmailTemplateInterface::STORE_ID    => $store->getId(),
+                    StatusEmailTemplateInterface::VALUE       => $emailTemplate['value'],
+                    StatusEmailTemplateInterface::CUSTOM_TEXT => $emailTemplate['custom_text']
+                ];
+                if ($emailTemplate['template_type'] == 'customer') {
+                    $customerTemplates[] = $value;
+                } else {
+                    $adminTemplates[] = $value;
+                }
+            }
+        }
+        $statusData[StatusInterface::FRONTEND_LABELS] = $frontendLabels;
+        $statusData[StatusInterface::ADMIN_TEMPLATES] = $adminTemplates;
+        $statusData[StatusInterface::CUSTOMER_TEMPLATES] = $customerTemplates;
+        $statusData[StatusInterface::THREAD_TEMPLATES] = $threadTemplates;
+
+        return $statusData;
+    }
+
+    /**
+     * Install custom fields
+     *
+     * @return $this
+     */
     private function installCustomFields()
     {
-        $websiteIds = [];
-        foreach ($this->storeManager->getWebsites() as $website) {
-            $websiteIds[] = $website->getId();
-        }
-        $statusIds = $this->statusCollectionFactory->create()->getAllIds();
         foreach ($this->customFieldConfigDefault->get() as $customFieldData) {
-            $customFieldData['is_system'] = 1;
-            $customFieldData['website_ids'] = $websiteIds;
+            $customFieldData = $this->prepareCustomField($customFieldData);
+            $customFieldObject = $this->customFieldFactory->create();
+            $this->dataObjectHelper->populateWithArray(
+                $customFieldObject,
+                $customFieldData,
+                CustomFieldInterface::class
+            );
 
-            $statusesRelatedFields = [
-                'visible_for_status_ids',
-                'editable_for_status_ids',
-                'editable_admin_for_status_ids'
-            ];
-            foreach ($statusesRelatedFields as $field) {
-                $fieldValue = $customFieldData[$field];
-                if (is_array($fieldValue)) {
-                    if (in_array('none', $fieldValue)) {
-                        $customFieldData[$field] = [];
-                    } elseif (in_array('all', $fieldValue)) {
-                        $customFieldData[$field] = $statusIds;
-                    }
-                }
-            }
-
-            foreach ($customFieldData['attribute'] as $attrCode => $attrValue) {
-                $perStoreAttrValues = [];
-                foreach ($this->storeManager->getStores() as $store) {
-                    $perStoreAttrValues[$store->getId()] = $attrValue;
-                }
-                $customFieldData['attribute'][$attrCode] = $perStoreAttrValues;
-            }
-
-            $counter = 0;
-            $defaultValue = false;
-            $perStoreOptionValues = ['value' => []];
-            foreach ($customFieldData['option'] as $optionValue => $isDefault) {
-                $perStoreOptionValues['value']['option_' . $counter] = [];
-                foreach ($this->storeManager->getStores(true) as $store) {
-                    $perStoreOptionValues['value']['option_' . $counter][$store->getId()] = $optionValue;
-                }
-                if ((int)$isDefault) {
-                    $defaultValue = 'option_' . $counter;
-                }
-                $counter++;
-            }
-            $customFieldData['option'] = $perStoreOptionValues;
-            if ($defaultValue) {
-                $customFieldData['option']['default'] = [$defaultValue];
-            }
-
-            $this->customFieldFactory->create()
-                ->setData($customFieldData)
-                ->save()
-            ;
+            $this->customFieldRepository->save($customFieldObject);
         }
+        return $this;
+    }
+
+    /**
+     * Retrieve statuses ids
+     *
+     * @return array
+     */
+    private function getStatusIds()
+    {
+        if (null == $this->statusIds) {
+            $statuses = $this->statusRepository->getList($this->searchCriteriaBuilder->create())->getItems();
+            $this->statusIds = [];
+            /** @var StatusInterface $status */
+            foreach ($statuses as $status) {
+                $this->statusIds[] = $status->getId();
+            }
+        }
+
+        return $this->statusIds;
+    }
+
+    /**
+     * Retrieve website ids
+     *
+     * @return array
+     */
+    private function getWebsiteIds()
+    {
+        if (null == $this->websiteIds) {
+            $this->websiteIds = [];
+            foreach ($this->storeManager->getWebsites() as $website) {
+                $this->websiteIds[] = $website->getId();
+            }
+        }
+
+        return $this->websiteIds;
+    }
+
+    /**
+     * Prepare custom field
+     *
+     * @param array $customFieldData
+     * @return array
+     */
+    private function prepareCustomField($customFieldData)
+    {
+        $frontendLabels = [];
+        $customFieldOptions = [];
+        foreach ($this->storeManager->getStores() as $store) {
+            $frontendLabels[] = [
+                StoreValueInterface::STORE_ID => $store->getId(),
+                StoreValueInterface::VALUE => $customFieldData['frontend_label']['value']
+            ];
+        }
+        foreach ($customFieldData['option'] as $option) {
+            $storeLabels = [];
+            foreach ($this->storeManager->getStores(true) as $store) {
+                $storeLabels[] = [
+                    StoreValueInterface::STORE_ID => $store->getId(),
+                    StoreValueInterface::VALUE    => $option['value']
+                ];
+            }
+            $customFieldOptions[] = [
+                CustomFieldOptionInterface::ENABLED      => $option['enabled'],
+                CustomFieldOptionInterface::SORT_ORDER   => $option['sort_order'],
+                CustomFieldOptionInterface::IS_DEFAULT   => $option['default'],
+                CustomFieldOptionInterface::STORE_LABELS => $storeLabels
+            ];
+        }
+        $customFieldData = $this->prepareCustomFieldStatuses($customFieldData);
+        $customFieldData[CustomFieldInterface::FRONTEND_LABELS] = $frontendLabels;
+        $customFieldData[CustomFieldInterface::OPTIONS] = $customFieldOptions;
+        $customFieldData[CustomFieldInterface::WEBSITE_IDS] = $this->getWebsiteIds();
+
+        return $customFieldData;
+    }
+
+    /**
+     * Prepare custom field statuses
+     *
+     * @param array $customFieldData
+     * @return array
+     */
+    private function prepareCustomFieldStatuses($customFieldData)
+    {
+        $statusesRelatedFields = [
+            CustomFieldInterface::VISIBLE_FOR_STATUS_IDS,
+            CustomFieldInterface::EDITABLE_FOR_STATUS_IDS,
+            CustomFieldInterface::EDITABLE_ADMIN_FOR_STATUS_IDS
+        ];
+
+        foreach ($statusesRelatedFields as $field) {
+            $fieldValue = $customFieldData[$field];
+            if (is_array($fieldValue)) {
+                if (in_array('none', $fieldValue)) {
+                    $customFieldData[$field] = [];
+                } elseif (in_array('all', $fieldValue)) {
+                    $customFieldData[$field] = $this->getStatusIds();
+                }
+            }
+        }
+
+        return $customFieldData;
     }
 }

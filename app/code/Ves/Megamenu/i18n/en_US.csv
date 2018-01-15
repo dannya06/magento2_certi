@@ -1,12 +1,20 @@
-"Mega Menu Cache Status: <span style=""background: #d0e5a9 none repeat scroll 0 0;border: 1px solid #5b8116;color: #185b00;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;"">Enabled</span","Mega Menu Cache Status: <span style=""background: #d0e5a9 none repeat scroll 0 0;border: 1px solid #5b8116;color: #185b00;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;"">Enabled</span"
-"Mega Menu Cache Status: <span style=""background: #f9d4d4 none repeat scroll 0 0;border: 1px solid #e22626;color: #e22626;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;"">Disabled</span","Mega Menu Cache Status: <span style=""background: #f9d4d4 none repeat scroll 0 0;border: 1px solid #e22626;color: #e22626;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;"">Disabled</span"
 "Enable Cache","Enable Cache"
 "Disable Cache","Disable Cache"
+"Mega Menu Cache Status: <span style=""background: #d0e5a9 none repeat scroll 0 0;border: 1px solid #5b8116;color: #185b00;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;"">Enabled</span","Mega Menu Cache Status: <span style=""background: #d0e5a9 none repeat scroll 0 0;border: 1px solid #5b8116;color: #185b00;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;"">Enabled</span"
+"Mega Menu Cache Status: <span style=""background: #f9d4d4 none repeat scroll 0 0;border: 1px solid #e22626;color: #e22626;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;"">Disabled</span","Mega Menu Cache Status: <span style=""background: #f9d4d4 none repeat scroll 0 0;border: 1px solid #e22626;color: #e22626;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;"">Disabled</span"
 "Flush Menu Cache","Flush Menu Cache"
+"Add New Menu","Add New Menu"
+"Horizontal Menu","Horizontal Menu"
+"Vertical Left Menu","Vertical Left Menu"
+"Vertical Right Menu","Vertical Right Menu"
+"Accordion Menu","Accordion Menu"
+"Drill Down Menu","Drill Down Menu"
+"Edit Menu","Edit Menu"
 "New Menu","New Menu"
 "Manage Menus","Manage Menus"
 Settings,Settings
-Guide,Guide
+"User Guide","User Guide"
+"Video Guide","Video Guide"
 "Get Support","Get Support"
 "Revert Previous Version","Revert Previous Version"
 "Revert Next Version","Revert Next Version"
@@ -51,14 +59,13 @@ No,No
 "Something went wrong while refresh menu cache.","Something went wrong while refresh menu cache."
 Menu,Menu
 "This menu no longer exists.","This menu no longer exists."
-"Edit Menu","Edit Menu"
 "The Mega Menu Cache has been flushed.","The Mega Menu Cache has been flushed."
 "Something went wrong in progressing.","Something went wrong in progressing."
 Menus,Menus
 "A total of %1 record(s) have been deleted.","A total of %1 record(s) have been deleted."
 "A total of %1 record(s) have been disabled.","A total of %1 record(s) have been disabled."
 "A total of %1 record(s) have been enabled.","A total of %1 record(s) have been enabled."
-"You reverted the menu id %1, version #%2","You reverted the menu id %1, version #%2"
+"You reverted the menu id #%1, current version #%2","You reverted the menu id #%1, current version #%2"
 "You saved this menu.","You saved this menu."
 "Something went wrong while saving the menu.","Something went wrong while saving the menu."
 "You duplicated this menu.","You duplicated this menu."
@@ -66,6 +73,8 @@ Menus,Menus
 "General Information","General Information"
 "CSS Classes","CSS Classes"
 "Link Type","Link Type"
+"Cms Page","Cms Page"
+"Choose a cms page to generate link for it.","Choose a cms page to generate link for it."
 "Custom Link","Custom Link"
 "<ul class=""menu-note""><li>Enter hash(#) to make this item not clickable.</li><li>Support Magento 2 Store Directive - It helps get URLs of your store. Example: <b>{{store url=""""}}</b>, <b>{{store url=""contact""}}</b></li></ul>","<ul class=""menu-note""><li>Enter hash(#) to make this item not clickable.</li><li>Support Magento 2 Store Directive - It helps get URLs of your store. Example: <b>{{store url=""""}}</b>, <b>{{store url=""contact""}}</b></li></ul>"
 Category,Category
@@ -181,8 +190,29 @@ Disable,Disable
 "Rotating Exits","Rotating Exits"
 "Sliding Exits","Sliding Exits"
 "Zoom Exits","Zoom Exits"
+"Theme defaults","Theme defaults"
+Solid,Solid
+Dotted,Dotted
+Dashed,Dashed
+Hidden,Hidden
+Double,Double
+Groove,Groove
+Ridge,Ridge
+Inset,Inset
+Outset,Outset
+Initial,Initial
+Inherit,Inherit
 Hover,Hover
 Click,Click
+Custom...,Custom...
+"Google Fonts...","Google Fonts..."
+"Arial, Helvetica Neue, Helvetica, sans-serif","Arial, Helvetica Neue, Helvetica, sans-serif"
+"Georgia, serif","Georgia, serif"
+"Lucida Sans Unicode, Lucida Grande, sans-serif","Lucida Sans Unicode, Lucida Grande, sans-serif"
+"Palatino Linotype, Book Antiqua, Palatino, serif","Palatino Linotype, Book Antiqua, Palatino, serif"
+"Tahoma, Geneva, sans-serif","Tahoma, Geneva, sans-serif"
+"Trebuchet MS, Helvetica, sans-serif","Trebuchet MS, Helvetica, sans-serif"
+"Verdana, Geneva, sans-serif","Verdana, Geneva, sans-serif"
 Left,Left
 Right,Right
 500px,500px
@@ -975,8 +1005,8 @@ youtube-square,youtube-square
 "Load in the parent frameset","Load in the parent frameset"
 "Load in the full body of the window","Load in the full body of the window"
 "Category Link","Category Link"
+"-- Please Select CMS Page --","-- Please Select CMS Page --"
 "Vertical Menu","Vertical Menu"
-"Horizontal Menu","Horizontal Menu"
 "Child Menu Item","Child Menu Item"
 Content,Content
 "Dynamic Content Tab","Dynamic Content Tab"
@@ -991,11 +1021,7 @@ Space,Space
 Disabled,Disabled
 Top,Top
 "Off Canvas Left","Off Canvas Left"
-"Accordion Menu","Accordion Menu"
 "Custom Menu","Custom Menu"
-"Drill Down Menu","Drill Down Menu"
-"Vertical Left Menu","Vertical Left Menu"
-"Vertical Right Menu","Vertical Right Menu"
 "A menu alias with the same properties already exists in the selected store.","A menu alias with the same properties already exists in the selected store."
 Edit,Edit
 "Add Menu Item","Add Menu Item"
@@ -1017,19 +1043,43 @@ Desktop(1280px),Desktop(1280px)
 "Mobile Portrait (320x480)","Mobile Portrait (320x480)"
 Load,Load
 "Only Import Subcategories","Only Import Subcategories"
+"Import Sub-categories Level","Import Sub-categories Level"
+"Import From Item Index","Import From Item Index"
+"Import To Item Index","Import To Item Index"
 Import,Import
+Margin,Margin
+Border,Border
+Padding,Padding
+"Border color","Border color"
+"Border Color","Border Color"
+"Border Style","Border Style"
+"Background color","Background color"
+Background,Background
+"Box Shadow","Box Shadow"
+inset,inset
+"Boxshadow X","Boxshadow X"
+"Boxshadow Y","Boxshadow Y"
+Blur,Blur
+"Boxshadow Blur","Boxshadow Blur"
+Spread,Spread
+"Boxshadow Spread","Boxshadow Spread"
+"Boxshadow Color","Boxshadow Color"
+"Font Size","Font Size"
+"Font Family","Font Family"
+Custom,Custom
+"Type in your custom font stack, e.g.:<br><em>Arial, ""Helvetica Neue"", Helvetica, sans-serif</em>.<br><strong>Important</strong>: Do not add trailing semicolon.","Type in your custom font stack, e.g.:<br><em>Arial, ""Helvetica Neue"", Helvetica, sans-serif</em>.<br><strong>Important</strong>: Do not add trailing semicolon."
+"Google Font","Google Font"
+"Font preview is available on <a href=""http://www.google.com/webfonts"">Google Web Fonts</a><br><strong style=""color:red;"">Important</strong>: most of the fonts from Google are not available in all weights. Make sure that you specified correct weight (field <strong>Font Weight</strong> below) for selected font. Otherwise font will not be displayed. Refer to <a href=""http://www.google.com/webfonts"">Google Web Fonts</a> to check if the selected weight is available for your font.","Font preview is available on <a href=""http://www.google.com/webfonts"">Google Web Fonts</a><br><strong style=""color:red;"">Important</strong>: most of the fonts from Google are not available in all weights. Make sure that you specified correct weight (field <strong>Font Weight</strong> below) for selected font. Otherwise font will not be displayed. Refer to <a href=""http://www.google.com/webfonts"">Google Web Fonts</a> to check if the selected weight is available for your font."
+"Character Sets","Character Sets"
+"Some of the fonts support multiple scripts (like Latin and Cyrillic for example). You need to select at least one character set.<br><strong style=""color:red;"">Important</strong>: not all fonts support extended character sets. For a complete list of available fonts and font subsets refer to <a href=""http://www.google.com/webfonts"">Google Web Fonts</a>.<br><strong style=""color:red;"">Important</strong>: using multiple character sets affects performance, so only select the character sets that you actually need.","Some of the fonts support multiple scripts (like Latin and Cyrillic for example). You need to select at least one character set.<br><strong style=""color:red;"">Important</strong>: not all fonts support extended character sets. For a complete list of available fonts and font subsets refer to <a href=""http://www.google.com/webfonts"">Google Web Fonts</a>.<br><strong style=""color:red;"">Important</strong>: using multiple character sets affects performance, so only select the character sets that you actually need."
+"Font Weight","Font Weight"
+"Specify the weight of the font. You can only use <strong>numeric font weights</strong> which are available for the CSS property <a href=""https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight""><em>font-weight</em></a>. E.g. normal weight is <em>400</em>, bold is <em>700</em>. Leave empty to use default weight.<br><strong style=""color:red;"">Important</strong>: if you selected a font from Google Fonts, note that some fonts are not available in all weights. Refer to <a href=""http://www.google.com/webfonts"">Google Web Fonts</a> to check if the selected weight is available for your font.","Specify the weight of the font. You can only use <strong>numeric font weights</strong> which are available for the CSS property <a href=""https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight""><em>font-weight</em></a>. E.g. normal weight is <em>400</em>, bold is <em>700</em>. Leave empty to use default weight.<br><strong style=""color:red;"">Important</strong>: if you selected a font from Google Fonts, note that some fonts are not available in all weights. Refer to <a href=""http://www.google.com/webfonts"">Google Web Fonts</a> to check if the selected weight is available for your font."
+"Border Radius","Border Radius"
 "Append New Item","Append New Item"
 "Prepend New Item","Prepend New Item"
-"Import Store Categories","Import Store Categories"
-"<strong style=""color: red;"">Important:</strong> Save data of current item before selecting other item or saving menu data. If not, the data will lost.","<strong style=""color: red;"">Important:</strong> Save data of current item before selecting other item or saving menu data. If not, the data will lost."
-"Menu Item","Menu Item"
-"Item Created","Item Created"
-"Are you sure you want to delete this ?","Are you sure you want to delete this ?"
-"Item Deleted","Item Deleted"
-"Item Updated","Item Updated"
-"Item Selected","Item Selected"
 "General Settings","General Settings"
 "Menu Editor","Menu Editor"
+"Design Options","Design Options"
 "Toggle Nav","Toggle Nav"
 Sale,Sale
 New,New
@@ -1040,11 +1090,19 @@ New,New
 "Add to Wish List","Add to Wish List"
 "Add to Compare","Add to Compare"
 Submit,Submit
+"Item Selected","Item Selected"
+"Item Created","Item Created"
 "Item Saved","Item Saved"
+"Import Sucessfully","Import Sucessfully"
+"Menu Item","Menu Item"
+"Was Imported Sucessfully","Was Imported Sucessfully"
+"<a href=""http://venustheme.com"" target=""_BLANK"" title=""Venustheme.com - Premium Magento Template Club"">Venustheme.com</a>","<a href=""http://venustheme.com"" target=""_BLANK"" title=""Venustheme.com - Premium Magento Template Club"">Venustheme.com</a>"
 "Mega Menu","Mega Menu"
 "Enable Auto Backup Tool","Enable Auto Backup Tool"
 "Allow backup a menu version after save menu","Allow backup a menu version after save menu"
 "Number Backup Version","Number Backup Version"
+"Custom CSS","Custom CSS"
+"Allow Cache The Generated Megamenu Html Into Database.","Allow Cache The Generated Megamenu Html Into Database."
 "Ves Megamenu: Menu","Ves Megamenu: Menu"
 "Select a Menu","Select a Menu"
 Title,Title
@@ -1097,11 +1155,9 @@ Keyboard,Keyboard
 "Unit: pixel. Empty to set auto height","Unit: pixel. Empty to set auto height"
 "Number of Item per Column","Number of Item per Column"
 "Multiple Row","Multiple Row"
-Margin,Margin
 "Margin-right(px) on item.","Margin-right(px) on item."
 "Mouse Drag","Mouse Drag"
 "Pull Drag","Pull Drag"
-"Free Drag","Free Drag"
 "Stage Padding","Stage Padding"
 "Auto Width","Auto Width"
 Autoplay,Autoplay
@@ -1129,10 +1185,10 @@ RTL,RTL
 "Show Compare Link","Show Compare Link"
 "Show Wishlist Link","Show Wishlist Link"
 "Show Add To Cart Button","Show Add To Cart Button"
-"Add New Menu","Add New Menu"
 "Delete items","Delete items"
 "Are you sure you wan't to delete selected items?","Are you sure you wan't to delete selected items?"
 Enable,Enable
 ID,ID
+"Current Version","Current Version"
 Created,Created
 Modified,Modified

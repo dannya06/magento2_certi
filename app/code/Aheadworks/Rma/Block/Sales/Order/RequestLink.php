@@ -6,45 +6,64 @@
 
 namespace Aheadworks\Rma\Block\Sales\Order;
 
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Aheadworks\Rma\Model\Request\Order as RequestOrder;
+use Aheadworks\Rma\Model\Request\Order\Item as RequestOrderItem;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+
 /**
  * Class RequestLink
+ *
  * @package Aheadworks\Rma\Block\Sales\Order
  */
-class RequestLink extends \Magento\Framework\View\Element\Template
+class RequestLink extends Template
 {
     /**
      * @var string
      */
-    protected $_template = 'sales/order/requestlink.phtml';
+    protected $_template = 'Aheadworks_Rma::sales/order/requestlink.phtml';
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var OrderRepositoryInterface
      */
-    protected $coreRegistry;
+    private $orderRepository;
 
     /**
-     * @var \Aheadworks\Rma\Helper\Order
+     * @var RequestOrder
      */
-    protected $orderHelper;
+    private $requestOrder;
 
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Aheadworks\Rma\Helper\Order $orderHelper
+     * @var RequestOrderItem
+     */
+    private $requestOrderItem;
+
+    /**
+     * @param Context $context
+     * @param OrderRepositoryInterface $orderRepository
+     * @param RequestOrder $requestOrder
+     * @param RequestOrderItem $requestOrderItem
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Aheadworks\Rma\Helper\Order $orderHelper,
+        Context $context,
+        OrderRepositoryInterface $orderRepository,
+        RequestOrder $requestOrder,
+        RequestOrderItem $requestOrderItem,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->coreRegistry = $coreRegistry;
-        $this->orderHelper = $orderHelper;
+        $this->orderRepository = $orderRepository;
+        $this->requestOrder = $requestOrder;
+        $this->requestOrderItem = $requestOrderItem;
     }
 
     /**
+     * Check if can return
+     *
      * @return bool
      */
     public function canReturn()
@@ -54,31 +73,42 @@ class RequestLink extends \Magento\Framework\View\Element\Template
         if (!$order) {
             return false;
         }
-        $itemsAvailable = false;
-        foreach ($order->getItems() as $orderItem) {
-            if (
-                !in_array($orderItem->getProductType(), $this->orderHelper->getNotReturnedOrderItemProductTypes()) &&
-                $this->orderHelper->getItemMaxCount($orderItem)
-            ) {
-                $itemsAvailable = true;
+        if (!$this->requestOrder->isAllowedForOrder($order)) {
+            return false;
+        }
+
+        $orderItems = $this->requestOrderItem->getOrderItemsToRequest($order->getEntityId());
+        foreach ($orderItems as $orderItem) {
+            if ($this->requestOrderItem->getItemMaxCount($orderItem)) {
+                return true;
             }
         }
-        return ($this->orderHelper->isAllowedForOrder($this->getOrder()) && $itemsAvailable);
+
+        return false;
     }
 
     /**
+     * Retrieve action url
+     *
      * @return string
      */
     public function getActionUrl()
     {
-        return $this->getUrl('aw_rma/customer/new', ['id' => $this->getOrder()->getId()]);
+        return $this->getUrl('aw_rma/customer/new', ['order_id' => $this->getOrder()->getEntityId()]);
     }
 
     /**
-     * @return \Magento\Sales\Model\Order
+     * Retrieve order
+     *
+     * @return OrderInterface|bool
      */
-    public function getOrder()
+    private function getOrder()
     {
-        return $this->coreRegistry->registry('current_order');
+        $orderId = $this->_request->getParam('order_id');
+        try {
+            return $this->orderRepository->get($orderId);
+        } catch (NoSuchEntityException $e) {
+            return false;
+        }
     }
 }

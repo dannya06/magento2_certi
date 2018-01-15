@@ -130,6 +130,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
                 'label' => __('Overwrite Existing Blocks'),
                 'title' => __('Overwrite Existing Blocks'),
                 'values' => $this->_yesno->toArray(),
+                'value' => 1,
                 'note' => __('If set to <b>Yes</b>, the import data will override exist data. Check exits data according to the field <b>URL Key</b> of <b>Cms Pages</b> and the field <b>Identifier</b> of <b>Static Block</b>.<br><br>If set to <b>No</b>, the function import will empty data of all table of <b>CMS Page</b> and <b>Static Block</b>, then insert import data.')
             ]
         );

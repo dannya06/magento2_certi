@@ -6,80 +6,46 @@
 
 namespace Aheadworks\Rma\Block\CustomField\Input\Renderer;
 
+use Magento\Framework\View\Element\Template;
+
 /**
  * Class Select
+ *
+ * @method int getValue()
+ * @method array getOptions()
+ * @method array getDefaultOptions()
+ * @method string getFieldName
+ * @method string getUid
+ * @method string getFieldClass
  * @package Aheadworks\Rma\Block\CustomField\Input\Renderer
  */
-class Select extends RendererAbstract
+class Select extends Template
 {
     /**
      * @var string
      */
-    protected $_template = 'customfield/input/renderer/select.phtml';
+    protected $_template = 'Aheadworks_Rma::customfield/input/renderer/select.phtml';
 
     /**
-     * @var array
-     */
-    protected $classNames = ['select'];
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->getWithCaptions() ?
-            array_merge([['value' => '', 'label' => __('-- please select --')]], $this->getOptionArray()) :
-            $this->getOptionArray()
-            ;
-    }
-
-    /**
+     * Check is value selected
+     *
      * @param int $value
      * @return bool
      */
     public function isSelected($value)
     {
+        // If set value
         if ($this->getValue()) {
             return $value == (int)$this->getValue();
         }
-        $default = $this->getCustomField()->getOption('default');
-        if (is_array($default)) {
-            return in_array($value, $default);
-        }
-        return false;
-    }
 
-    /**
-     * @return bool
-     */
-    public function isEditable()
-    {
-        if (!$this->getCustomField()->getIsSystem() && $this->getValue()) {
-            $enable = $this->getCustomField()->getOption('enable');
-            if (!in_array($this->getValue(), $enable)) {
-                return false;
+        // If new request
+        $options = $this->getOptions();
+        foreach ($options as $option) {
+            if ($option['value'] == $value && in_array($option['value'], $this->getDefaultOptions())) {
+                return true;
             }
         }
-        return parent::isEditable();
-    }
-
-    /**
-     * @return string
-     */
-    public function getValueLabel()
-    {
-        if ($this->getValue()) {
-            return $this->getCustomField()->getOptionLabelByValue($this->getValue());
-        }
-        return '';
-    }
-
-    /**
-     * @return array
-     */
-    protected function getOptionArray()
-    {
-        $optionArray = $this->getCustomField()->toOptionArray();
-        return is_array($optionArray) ? $optionArray : [];
+        return false;
     }
 }

@@ -6,7 +6,14 @@
 
 namespace Aheadworks\Rma\Model\CustomField\ConfigDefault\Converter;
 
-class Xml implements \Magento\Framework\Config\ConverterInterface
+use Magento\Framework\Config\ConverterInterface;
+
+/**
+ * Class Xml
+ *
+ * @package Aheadworks\Rma\Model\CustomField\ConfigDefault\Converter
+ */
+class Xml implements ConverterInterface
 {
     /**
      * Converting data to array type
@@ -30,12 +37,13 @@ class Xml implements \Magento\Framework\Config\ConverterInterface
                 if (!$child instanceof \DOMElement) {
                     continue;
                 }
+                $statusesType = ['visible_for_status_ids', 'editable_for_status_ids', 'editable_admin_for_status_ids'];
                 /** @var $customField \DOMElement */
-                if (in_array($child->nodeName, ['visible_for_status_ids', 'editable_for_status_ids', 'editable_admin_for_status_ids'])) {
+                if (in_array($child->nodeName, $statusesType)) {
                     $this->collectStatusesData($child, $customFieldData);
-                } elseif ($child->nodeName == 'attribute') {
+                } elseif ($child->nodeName == 'attributes') {
                     $this->collectAttrData($child, $customFieldData);
-                } elseif($child->nodeName == 'option') {
+                } elseif ($child->nodeName == 'option') {
                     $this->collectOptionData($child, $customFieldData);
                 } else {
                     $customFieldData[$child->nodeName] = $child->nodeValue;
@@ -46,21 +54,38 @@ class Xml implements \Magento\Framework\Config\ConverterInterface
         return $output;
     }
 
+    /**
+     * Collect attribute data
+     *
+     * @param \DOMElement $node
+     * @param array $customFieldData
+     * @return void
+     */
     protected function collectAttrData($node, &$customFieldData)
     {
-        $attrData = [];
         foreach ($node->childNodes as $attrNode) {
-            if (!$attrNode instanceof \DOMElement || !in_array($attrNode->nodeName, ['name', 'value'])) {
+            if (!$attrNode instanceof \DOMElement) {
                 continue;
             }
-            $attrData[$attrNode->nodeName] = $attrNode->nodeValue;
+            $params = [];
+            /** @var $attrNode \DOMElement */
+            foreach ($attrNode->childNodes as $attrParam) {
+                if (!$attrParam instanceof \DOMElement) {
+                    continue;
+                }
+                $params[$attrParam->nodeName] = trim($attrParam->nodeValue);
+            }
+            $customFieldData[$attrNode->nodeName] = $params;
         }
-        if (!array_key_exists('name', $attrData) || !array_key_exists('value', $attrData)) {
-            return;
-        }
-        $customFieldData[$node->nodeName][$attrData['name']] = $attrData['value'];
     }
 
+    /**
+     * Collect statuses data
+     *
+     * @param \DOMElement $node
+     * @param array $customFieldData
+     * @return void
+     */
     protected function collectStatusesData($node, &$customFieldData)
     {
         $statusesData = [];
@@ -73,18 +98,22 @@ class Xml implements \Magento\Framework\Config\ConverterInterface
         $customFieldData[$node->nodeName] = $statusesData;
     }
 
-    protected function collectOptionData($node, &$customFieldData)
+    /**
+     * Collect option data
+     *
+     * @param \DOMElement $node
+     * @param array $customFieldData
+     * @return void
+     */
+    private function collectOptionData($node, &$customFieldData)
     {
         $optionData = [];
         foreach ($node->childNodes as $optionNode) {
-            if (!$optionNode instanceof \DOMElement || !in_array($optionNode->nodeName, ['value', 'default'])) {
+            if (!$optionNode instanceof \DOMElement) {
                 continue;
             }
             $optionData[$optionNode->nodeName] = $optionNode->nodeValue;
         }
-        if (!array_key_exists('value', $optionData) || !array_key_exists('default', $optionData)) {
-            return;
-        }
-        $customFieldData[$node->nodeName][$optionData['value']] = $optionData['default'];
+        $customFieldData[$node->nodeName][] = $optionData;
     }
 }

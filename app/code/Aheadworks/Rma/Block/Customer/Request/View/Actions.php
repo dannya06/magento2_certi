@@ -6,116 +6,181 @@
 
 namespace Aheadworks\Rma\Block\Customer\Request\View;
 
+use Aheadworks\Rma\Api\RequestRepositoryInterface;
+use Aheadworks\Rma\Model\Config;
+use Aheadworks\Rma\Model\Request\Resolver\Status as StatusResolver;
+use Aheadworks\Rma\Model\Source\Request\Status;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+
 /**
  * Class Actions
+ *
+ * @method bool|null getOnlyShowUpdateActions()
  * @package Aheadworks\Rma\Block\Customer\Request\View
  */
-class Actions extends \Magento\Framework\View\Element\Template
+class Actions extends Template
 {
-    const XML_PATH_CONFIRM_SHIPPING_POPUP_TEXT = 'aw_rma/general/confirm_shipping_popup_text';
-
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    protected $_template = 'customer/request/view/actions.phtml';
+    protected $_template = 'Aheadworks_Rma::customer/request/view/actions.phtml';
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var RequestRepositoryInterface
      */
-    protected $coreRegistry;
+    protected $requestRepository;
 
     /**
-     * @var \Aheadworks\Rma\Helper\Status
+     * @var Config
      */
-    protected $statusHelper;
+    private $config;
 
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Aheadworks\Rma\Helper\Status $statusHelper
+     * @var StatusResolver
+     */
+    private $statusResolver;
+
+    /**
+     * @param Context $context
+     * @param RequestRepositoryInterface $requestRepository
+     * @param Config $config
+     * @param StatusResolver $statusResolver
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Aheadworks\Rma\Helper\Status $statusHelper,
+        Context $context,
+        RequestRepositoryInterface $requestRepository,
+        Config $config,
+        StatusResolver $statusResolver,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->coreRegistry = $coreRegistry;
-        $this->statusHelper = $statusHelper;
+        $this->requestRepository = $requestRepository;
+        $this->config = $config;
+        $this->statusResolver = $statusResolver;
     }
 
     /**
-     * @return \Aheadworks\Rma\Model\Request
+     * Retrieve RMA request
+     *
+     * @return \Aheadworks\Rma\Api\Data\RequestInterface
      */
-    public function getRequestModel()
+    public function getRmaRequest()
     {
-        return $this->coreRegistry->registry('aw_rma_request');
+        $requestId = $this->getRequest()->getParam('id');
+        return $this->requestRepository->get($requestId);
     }
 
     /**
+     * Retrieve request identity value
+     *
+     * @return int|string
+     */
+    public function getRequestIdentityValue()
+    {
+        return $this->getRmaRequest()->getId();
+    }
+
+    /**
+     * Check if can canceled
+     *
      * @return bool
      */
     public function canCancel()
     {
-        return $this->statusHelper->isAvailableForCustomerCancel(
-            $this->getRequestModel()->getStatusId()
-        );
+        return $this->statusResolver->isAvailableActionForStatus('cancel', $this->getRmaRequest(), false)
+            && !$this->getOnlyShowUpdateActions();
     }
 
     /**
+     * Check if can update request
+     *
+     * @return bool
+     */
+    public function canUpdateRequest()
+    {
+        return $this->statusResolver->isAvailableActionForStatus('update', $this->getRmaRequest(), false);
+    }
+
+    /**
+     * Check if can print label
+     *
      * @return bool
      */
     public function canPrintLabel()
     {
-        return $this->statusHelper->isAvailableForPrintLabel(
-            $this->getRequestModel()->getStatusId()
-        );
+        return $this->statusResolver->isAvailableActionForStatus('print_label', $this->getRmaRequest(), false)
+            && !$this->getOnlyShowUpdateActions();
     }
 
     /**
+     * Check if can confirm shipping
+     *
      * @return bool
      */
     public function canConfirmShipping()
     {
-        return $this->statusHelper->isAvailableForConfirmShipping(
-            $this->getRequestModel()->getStatusId()
-        );
+        return $this->statusResolver->isAvailableActionForStatus('confirm_shipping', $this->getRmaRequest(), false);
     }
 
     /**
+     * Retrieve "Confirm Shipping" alert text
+     *
      * @return string
      */
     public function getConfirmShippingPopupText()
     {
-        return $this->_scopeConfig->getValue(
-            self::XML_PATH_CONFIRM_SHIPPING_POPUP_TEXT,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        return $this->config->getConfirmShippingPopupText();
     }
 
     /**
-     * @return string
-     */
-    public function getCancelUrl()
-    {
-        return $this->getUrl('*/*/cancel', ['id' => $this->getRequestModel()->getId()]);
-    }
-
-    /**
+     * Retrieve print label url
+     *
      * @return string
      */
     public function getPrintLabelUrl()
     {
-        return $this->getUrl('*/*/printLabel', ['id' => $this->getRequestModel()->getId()]);
+        return $this->getUrl('*/*/printLabel', ['id' => $this->getRequestIdentityValue()]);
     }
 
     /**
+     * Retrieve confirm shipping status value
+     *
      * @return string
      */
-    public function getConfirmShipping()
+    public function getConfirmShippingStatusValue()
     {
-        return $this->getUrl('*/*/confirmShipping', ['id' => $this->getRequestModel()->getId()]);
+        return Status::PACKAGE_SENT;
+    }
+
+    /**
+     * Retrieve cancel status value
+     *
+     * @return string
+     */
+    public function getCancelStatusValue()
+    {
+        return Status::CANCELED;
+    }
+
+    /**
+     * Retrieve update request form selector
+     *
+     * @return string
+     */
+    public function getUpdateRequestFormSelector()
+    {
+        return '[data-role=aw-rma-update-request-form]';
+    }
+
+    /**
+     * Retrieve update request action selector
+     *
+     * @return string
+     */
+    public function getUpdateRequestActionSelector()
+    {
+        return '[data-role=aw-rma-update-request-status]';
     }
 }

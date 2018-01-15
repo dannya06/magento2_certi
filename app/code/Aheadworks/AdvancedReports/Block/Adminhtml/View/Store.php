@@ -29,7 +29,7 @@ class Store extends \Magento\Backend\Block\Template
     /**
      * @param Context $context
      * @param StoreFilter $storeFilter
-     * @param [] $data
+     * @param array $data
      */
     public function __construct(
         Context $context,

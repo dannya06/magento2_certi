@@ -67,7 +67,7 @@ class Collection extends ProductAttributesCollection implements SearchResultInte
         AttributeRepositoryInterface $attributeRepository,
         \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         $model = Document::class,
-        $connection = null,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
         parent::__construct(

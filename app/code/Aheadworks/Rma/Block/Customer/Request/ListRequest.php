@@ -6,175 +6,205 @@
 
 namespace Aheadworks\Rma\Block\Customer\Request;
 
+use Aheadworks\Rma\Api\Data\RequestInterface;
+use Aheadworks\Rma\Api\RequestRepositoryInterface;
+use Aheadworks\Rma\Api\StatusRepositoryInterface;
+use Aheadworks\Rma\Block\Html\Pager;
+use Magento\Framework\Api\SortOrder;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\Api\SortOrderBuilder;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Aheadworks\Rma\Model\Request\Resolver\Order as OrderResolver;
+use Aheadworks\Rma\Model\Request\Resolver\OrderItem as OrderItemResolver;
+
 /**
  * Class ListRequest
+ *
  * @package Aheadworks\Rma\Block\Customer\Request
  */
-class ListRequest extends \Magento\Framework\View\Element\Template
+class ListRequest extends Template
 {
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    protected $_template = 'customer/request/list.phtml';
+    protected $_template = 'Aheadworks_Rma::customer/request/list.phtml';
 
     /**
-     * @var \Aheadworks\Rma\Model\ResourceModel\Request\CollectionFactory
+     * @var RequestRepositoryInterface
      */
-    protected $requestCollectionFactory;
+    private $requestRepository;
 
     /**
-     * @var null|\Aheadworks\Rma\Model\ResourceModel\Request\Collection
+     * @var SearchCriteriaBuilder
      */
-    protected $requestCollection = null;
+    private $searchCriteriaBuilder;
 
     /**
-     * @var \Magento\Customer\Model\Session
+     * @var SortOrderBuilder
      */
-    protected $customerSession;
+    private $sortOrderBuilder;
 
     /**
-     * @var \Magento\Catalog\Model\ProductFactory
+     * @var CustomerSession
      */
-    protected $productFactory;
+    private $customerSession;
 
     /**
-     * @var \Aheadworks\Rma\Helper\Order
+     * @var StatusRepositoryInterface
      */
-    protected $orderHelper;
+    private $statusRepository;
 
     /**
-     * @var array
+     * @var OrderResolver
      */
-    protected $products = [];
+    private $orderResolver;
 
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Magento\Catalog\Model\ProductFactory $productFactory
-     * @param \Aheadworks\Rma\Model\ResourceModel\Request\CollectionFactory $requestCollectionFactory
-     * @param \Aheadworks\Rma\Helper\Order $orderHelper
+     * @var OrderItemResolver
+     */
+    private $orderItemResolver;
+
+    /**
+     * @var \Aheadworks\Rma\Api\Data\RequestSearchResultsInterface[]|null
+     */
+    private $customerRequests;
+
+    /**
+     * @param Context $context
+     * @param RequestRepositoryInterface $requestRepository
+     * @param StatusRepositoryInterface $statusRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param SortOrderBuilder $sortOrderBuilder
+     * @param CustomerSession $customerSession
+     * @param OrderResolver $orderResolver
+     * @param OrderItemResolver $orderItemResolver
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Customer\Model\Session $customerSession,
-        \Magento\Catalog\Model\ProductFactory $productFactory,
-        \Aheadworks\Rma\Model\ResourceModel\Request\CollectionFactory $requestCollectionFactory,
-        \Aheadworks\Rma\Helper\Order $orderHelper,
+        Context $context,
+        RequestRepositoryInterface $requestRepository,
+        StatusRepositoryInterface $statusRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        SortOrderBuilder $sortOrderBuilder,
+        CustomerSession $customerSession,
+        OrderResolver $orderResolver,
+        OrderItemResolver $orderItemResolver,
         array $data = []
     ) {
         parent::__construct($context, $data);
+        $this->requestRepository = $requestRepository;
+        $this->statusRepository = $statusRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->sortOrderBuilder = $sortOrderBuilder;
         $this->customerSession = $customerSession;
-        $this->productFactory = $productFactory;
-        $this->requestCollectionFactory = $requestCollectionFactory;
-        $this->orderHelper = $orderHelper;
+        $this->orderResolver = $orderResolver;
+        $this->orderItemResolver = $orderItemResolver;
     }
 
     /**
-     * @return \Aheadworks\Rma\Model\ResourceModel\Request\Collection|bool|null
+     * Retrieve customer requests
+     *
+     * @return \Aheadworks\Rma\Api\Data\RequestSearchResultsInterface|bool
      */
-    public function getRequestCollection()
+    public function getCustomerRequests()
     {
-        if (!($customerId = $this->customerSession->getCustomerId())) {
+        $customerId = $this->customerSession->getCustomerId();
+        if (!$customerId) {
             return false;
         }
-        if ($this->requestCollection === null) {
-            $this->requestCollection = $this->requestCollectionFactory->create()
-                ->addCustomerFilter($customerId)
-                ->joinStatusAttributeValues(['frontend_label'])
-                ->joinOrders()
-                ->addOrder('created_at')
-            ;
+
+        if (null === $this->customerRequests) {
+            $sortOrder = $this->sortOrderBuilder
+                ->setField(RequestInterface::CREATED_AT)
+                ->setDirection(SortOrder::SORT_DESC)
+                ->create();
+            $this->searchCriteriaBuilder
+                ->addFilter(RequestInterface::CUSTOMER_ID, $customerId)
+                ->addSortOrder($sortOrder);
+
+            $this->customerRequests = $this->requestRepository
+                ->getList($this->searchCriteriaBuilder->create());
         }
-        return $this->requestCollection;
+
+        return $this->customerRequests;
     }
 
     /**
-     * @param int $productId
-     * @return \Magento\Catalog\Model\Product
+     * Retrieve order increment id by request
+     *
+     * @param RequestInterface $rmaRequest
+     * @return string
      */
-    protected function getProduct($productId)
+    public function getOrderIncrementId($rmaRequest)
     {
-        if (!isset($this->products[$productId])) {
-            $this->products[$productId] = $this->productFactory->create()->load($productId);
-        }
-        return $this->products[$productId];
+        return $this->orderResolver->getIncrementId($rmaRequest->getOrderId());
     }
 
     /**
-     * @return $this
+     * Retrieve order item name by id
+     *
+     * @param int $itemId
+     * @return string
      */
-    protected function _prepareLayout()
+    public function getOrderItemName($itemId)
     {
-        parent::_prepareLayout();
-        if ($this->getRequestCollection()) {
-            /** @var \Magento\Theme\Block\Html\Pager $pager */
-            $pager = $this->getChildBlock('pager');
-            if ($pager) {
-                $pager->setCollection($this->getRequestCollection());
-                $this->getRequestCollection()->load();
-            }
-        }
-        return $this;
+        return $this->orderItemResolver->getName($itemId);
     }
 
     /**
+     * Retrieve storefront status label by request
+     *
+     * @param RequestInterface $rmaRequest
+     * @return string
+     */
+    public function getStorefrontStatusLabel($rmaRequest)
+    {
+        return $this->statusRepository->get($rmaRequest->getStatusId())->getStorefrontLabel();
+    }
+
+    /**
+     * Retrieve pager
+     *
      * @return string
      */
     public function getPagerHtml()
     {
-        return $this->getRequestCollection() ? $this->getChildHtml('pager') : '';
+        return $this->getCustomerRequests() ? $this->getChildHtml('pager') : '';
     }
 
     /**
-     * @param $productId
-     * @return bool
-     */
-    public function isProductExists($productId)
-    {
-        return (bool)$this->getProduct($productId)->getId();
-    }
-
-    /**
-     * @return string
-     */
-    public function getBackUrl()
-    {
-        return $this->getUrl('customer/account/');
-    }
-
-    /**
-     * @param int $orderId
-     * @return string
-     */
-    public function getOrderViewUrl($orderId)
-    {
-        return $this->getUrl('sales/order/view', ['order_id' => $orderId]);
-    }
-
-    /**
-     * @param $requestItem
-     * @return string
-     */
-    public function getProductViewUrl($requestItem)
-    {
-        $product = $this->getProduct($requestItem->getProductId());
-        $parentProductId = $requestItem->getParentProductId();
-        if ($parentProductId) {
-            $parentProduct = $this->getProduct($parentProductId);
-            if (in_array($parentProduct->getTypeId(), $this->orderHelper->getNotReturnedOrderItemProductTypes())) {
-                return $parentProduct->getProductUrl();
-            }
-        }
-        return $product->getProductUrl();
-    }
-
-    /**
+     * Retrieve request view url
+     *
      * @param int $requestId
      * @return string
      */
     public function getRequestViewUrl($requestId)
     {
         return $this->getUrl('*/*/view', ['id' => $requestId]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _prepareLayout()
+    {
+        parent::_prepareLayout();
+        /** @var Pager $pager */
+        $pager = $this->getLayout()->createBlock(
+            Pager::class,
+            'aw_rma_customer_requests.pager'
+        );
+
+        $this->searchCriteriaBuilder->setCurrentPage($pager->getCurrentPage());
+        $this->searchCriteriaBuilder->setPageSize($pager->getLimit());
+
+        if ($this->getCustomerRequests()) {
+            $pager->setSearchResults($this->getCustomerRequests());
+            $this->setChild('pager', $pager);
+        }
+
+        return $this;
     }
 }

@@ -61,7 +61,7 @@ class Collection extends LocationCityCollection implements SearchResultInterface
         Filter\Groupby $groupbyFilter,
         Filter\Period $periodFilter,
         $model = Document::class,
-        $connection = null,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
         parent::__construct(

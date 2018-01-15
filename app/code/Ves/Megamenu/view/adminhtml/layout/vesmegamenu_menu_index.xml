@@ -30,7 +30,7 @@
             <uiComponent name="megamenu_menu_listing"/>
             <block class="Ves\Megamenu\Block\Adminhtml\DropdownMenu" name="dropdown_menu" after='-'/>
 
-            <block class="\Magento\Backend\Block\Template" name="megamenu.js" template="Ves_Megamenu::scripts.phtml"/>
+            <block class="Magento\Backend\Block\Template" name="megamenu.js" template="Ves_Megamenu::scripts.phtml"/>
         </referenceContainer>
     </body>
 </page>

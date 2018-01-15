@@ -5,149 +5,129 @@
 
 define([
     'jquery',
-    'mage/translate',
-    'mage/validation'
-], function($, $t) {
+    'underscore'
+], function($, _) {
     'use strict';
 
     $.widget("awrma.awRmaSelectItemForm", {
         options: {
             currentOrderId: '',
-            currentRequestItems: ''
+            nextAction: '[data-role=next-action]',
+            orderSelector: 'input[name=order_id]'
         },
+
+        /**
+         * Initialize widget
+         */
         _create: function() {
             this._bind();
-            this._initValidators();
             this._setCurrentValues();
         },
-        destroy: function() {
-            this._unbind();
-        },
+
+        /**
+         * Event binding
+         */
         _bind: function() {
-            $(this.element).on('click', 'input[name=order_id]', $.proxy(this.onSelectOrderClick, this));
-            $(this.element).on('click', 'input.order-item-select', $.proxy(this.onSelectOrderItemClick, this));
+            var handlers = {};
+
+            handlers['click .order-row'] = '_onOrderSelect';
+            this._on(handlers);
         },
-        _unbind: function() {
-            $(this.element).off('click', 'input[name=order_id]', $.proxy(this.onSelectOrderClick, this));
-            $(this.element).off('click', 'input.order-item-select.', $.proxy(this.onSelectOrderItemClick, this));
+
+        /**
+         * Order action click event handler
+         *
+         * @param {Object} event
+         */
+        _onOrderSelect: function(event) {
+            this.rowToggle(event.currentTarget);
         },
-        _initValidators: function() {
-            $.validator.addMethod(
-                'aw-rma-order-required',
-                $.proxy(this.validateOrderSelection, this),
-                $t('Please select order')
-            );
-            $.validator.addMethod(
-                'aw-rma-order-items-available',
-                $.proxy(this.validateOrderItemsAvailable, this),
-                $t('No items available for selected order')
-            );
-            $.validator.addMethod(
-                'aw-rma-order-item-required',
-                $.proxy(this.validateOrderItemSelection, this),
-                $t('Please select order item(s)')
-            );
-            $.validator.addMethod(
-                'aw-rma-qty-max',
-                $.proxy(this.validateMaxQty, this),
-                $t('Entered quantity is too high')
-            );
+
+        /**
+         * Row toggle
+         *
+         * @param {Object|String} rowSelector
+         * @param {Boolean} selectRow
+         */
+        rowToggle: function (rowSelector, selectRow) {
+            var orderInput = $(rowSelector).find(this.options.orderSelector),
+                orderId = orderInput.val();
+
+            selectRow = _.isUndefined(selectRow) ? !$(rowSelector).hasClass('selected') : selectRow;
+            if (selectRow) {
+                this.selectOrderItems(orderId);
+                this._scrollTo(rowSelector);
+            } else {
+                this.resetRowSelected();
+            }
+            orderInput.prop('checked', true);
+            this._updateActionRowVisibility(rowSelector);
         },
+
+        /**
+         * Update order item rows
+         *
+         * @param {Number} orderId
+         */
+        selectOrderItems: function (orderId) {
+            var itemRows = $(this.element).find('.order-item-row'),
+                selectedItemRows = itemRows.filter('[data-order-id=' + orderId + ']'),
+                orderRows = $(this.element).find('.order-row');
+
+            this.resetRowSelected();
+            orderRows.filter('[data-order-id=' + orderId + ']').addClass('selected');
+            selectedItemRows.show();
+        },
+
+        /**
+         * Reset selected order
+         */
+        resetRowSelected: function() {
+            var itemRows = $(this.element).find('.order-item-row'),
+                orderRows = $(this.element).find('.order-row');
+
+            itemRows.hide();
+            orderRows.removeClass('selected')
+        },
+
+        /**
+         * Update action row visibility
+         *
+         * @param {Object|String} rowSelector
+         */
+        _updateActionRowVisibility: function(rowSelector) {
+            var nextActions = $(this.element).find(this.options.nextAction),
+                selectedRowAction = $(rowSelector).find(this.options.nextAction);
+
+            nextActions.hide().attr('disabled', 'disabled');
+            selectedRowAction.show().removeAttr('disabled');
+        },
+
+        /**
+         * Set current values
+         */
         _setCurrentValues: function() {
             this.setCurrentOrderId();
-            this.setCurrentRequestItems();
         },
+
+        /**
+         * Set current order id
+         */
         setCurrentOrderId: function () {
             if (this.options.currentOrderId) {
-                $(this.element).find('input[name=order_id]').filter('[value=' + this.options.currentOrderId +']').click();
+                this.rowToggle('.order-row[data-order-id=' + this.options.currentOrderId + ']', false);
             }
         },
-        setCurrentRequestItems: function () {
-            if (this.options.currentRequestItems) {
-                for (var orderItemId in this.options.currentRequestItems) {
-                    if (this.options.currentRequestItems[orderItemId]) {
-                        var qty = this.options.currentRequestItems[orderItemId].qty,
-                            inputQty = $(this.element).find('input[data-order-item-id=' + orderItemId + ']');
 
-                        inputQty.val(qty);
-                    }
-                    $(this.element).find('input[name=item_selected]').filter('[value=' + orderItemId +']').click();
-                }
-            }
-        },
-        validateOrderSelection: function(value) {
-            return !$.mage.isEmpty(value);
-        },
-        validateOrderItemsAvailable: function(orderId, element) {
-            var orderItemSelected = $(element).closest('form')
-                .find('.order-item-row[data-order-id=' + orderId + '] input[name=item_selected]');
-            return orderItemSelected.length > 0;
-        },
-        validateOrderItemSelection: function(value) {
-            return !$.mage.isEmpty(value);
-        },
-        validateMaxQty: function(value, element) {
-            var qtyValue = parseInt(value),
-                maxQtyValue = parseInt($(element).data('max-value'));
-
-            return !isNaN(qtyValue) && !isNaN(maxQtyValue) && (qtyValue <= maxQtyValue);
-        },
-        onSelectOrderClick: function(event) {
-            var orderId = $(event.target).val();
-
-            this.updateOrderItemRows(orderId);
-            this.updateSubmitBtnVisibility();
-        },
-        onSelectOrderItemClick: function(event) {
-            var orderItemId = $(event.target).val(),
-                isChecked = $(event.target).prop('checked');
-
-            this.updateOrderItem(orderItemId, isChecked);
-            this.updateSubmitBtnVisibility();
-        },
-        updateOrderItemRows: function (orderId) {
-            var itemRows = $(this.element).find('.order-item-row');
-            var selectedItemRows = itemRows.filter('[data-order-id=' + orderId + ']');
-            itemRows
-                .hide()
-                .find('input').attr('disabled', 'disabled');
-            selectedItemRows
-                .show()
-                .find('input[data-order-id=' + orderId + ']')
-                .filter('input.order-item-select, input.selected').removeAttr('disabled');
-            selectedItemRows.last().addClass('last');
-
-            var orderRows = $(this.element).find('.order-row');
-            orderRows
-                .removeClass('selected')
-                .filter('[data-order-id=' + orderId + ']').addClass('selected');
-        },
-        updateOrderItem: function (orderItemId, isChecked) {
-            var inputQty = $(this.element).find('input[data-order-item-id=' + orderItemId + ']'),
-                orderItemRow = $(this.element).find('.order-item-row[data-order-item-id=' + orderItemId + ']');
-
-            if (isChecked) {
-                inputQty
-                    .addClass('selected')
-                    .removeAttr('disabled');
-                orderItemRow.addClass('selected');
-            } else {
-                inputQty
-                    .removeClass('selected')
-                    .attr('disabled', 'disabled');
-                orderItemRow.removeClass('selected');
-            }
-        },
-        updateSubmitBtnVisibility: function() {
-            var submitBtn = $(this.element).find('button[data-role=submit-btn]'),
-                selectedOrder = $(this.element).find('input[name=order_id]:checked'),
-                selectedItems = $(this.element).find('input[name=item_selected]:checked:enabled');
-
-            if (selectedOrder.length && selectedItems.length) {
-                submitBtn.removeAttr('disabled');
-            } else {
-                submitBtn.attr('disabled', 'disabled');
-            }
+        /**
+         * Scroll to element
+         *
+         * @param {Object|String} selector
+         */
+        _scrollTo: function(selector) {
+            $('html, body').animate({
+                scrollTop: $(selector).offset().top
+            }, 200);
         }
     });
 

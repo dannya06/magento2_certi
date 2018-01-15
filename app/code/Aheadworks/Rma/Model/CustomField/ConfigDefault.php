@@ -6,11 +6,20 @@
 
 namespace Aheadworks\Rma\Model\CustomField;
 
-class ConfigDefault extends \Magento\Framework\Config\Data
+use Magento\Framework\Config\Data as ConfigData;
+use Aheadworks\Rma\Model\CustomField\ConfigDefault\Reader\Xml;
+use Magento\Framework\Config\CacheInterface;
+
+/**
+ * Class ConfigDefault
+ *
+ * @package Aheadworks\Rma\Model\CustomField
+ */
+class ConfigDefault extends ConfigData
 {
     public function __construct(
-        \Aheadworks\Rma\Model\CustomField\ConfigDefault\Reader\Xml $reader,
-        \Magento\Framework\Config\CacheInterface $cache,
+        Xml $reader,
+        CacheInterface $cache,
         $cacheId = 'aheadworks_rma_custom_field_config_default_cache'
     ) {
         parent::__construct($reader, $cache, $cacheId);

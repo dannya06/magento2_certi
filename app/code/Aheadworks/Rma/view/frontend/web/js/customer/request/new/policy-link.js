@@ -5,41 +5,66 @@
 
 define([
     'jquery',
-    'mage/translate',
-    'jquery/ui'
-], function($, $t) {
+    'Magento_Ui/js/modal/modal',
+    'Magento_Ui/js/modal/alert',
+    'mageUtils'
+], function($, modal, alert, utils){
     'use strict';
 
     $.widget("awrma.awRmaPolicyLink", {
         options: {
+            popupSelector: '#aw-rma-policy-popup',
         },
+
+        /**
+         * Initialize widget
+         */
         _create: function() {
+            var options = {
+                'type': 'popup',
+                'modalClass': '',
+                'responsive': true,
+                'innerScroll': true,
+                'buttons': []
+            };
+
             this._bind();
+            modal(options, $(this.options.popupSelector));
         },
-        destroy: function() {
-            this._unbind();
-        },
+
+        /**
+         * Event binding
+         */
         _bind: function() {
-            $(this.element).on('click', $.proxy(this.onClick, this));
-        },
-        _unbind: function() {
-            $(this.element).off('click');
-        },
-        onClick: function (event) {
-            var popup = $(this.options.popup).dialog({
-                dialogClass: "aw-rma-policy",
-                width: $(window).width() * 0.9,
-                height: $(window).height() * 0.9,
-                position: {my: "center", at: "center", of: window},
-                modal: true,
-                buttons: [
-                    {text: $t("OK"), click: function() {$(popup).dialog("close");}}
-                ]
+            this._on({
+                'click': '_onClick'
             });
-            $('.ui-widget-overlay').one('click', function(event) {
-                $(popup).dialog("close");
-            });
+            $(document).on('click', $.proxy(this._onClickDocument, this));
+        },
+
+        /**
+         * Click event handler
+         *
+         * @param {Object} event
+         */
+        _onClick: function (event) {
             event.preventDefault();
+            $(this.options.popupSelector).modal('openModal');
+        },
+
+        /**
+         * Click on document
+         */
+        _onClickDocument: function(e) {
+            var popupContent = $(this.options.popupSelector),
+                popupData = popupContent.data('mageModal');
+
+            if (!utils.isEmpty(popupData) && popupData.options.isOpen
+                && !popupContent.is(e.target) && popupContent.has(e.target).length === 0
+                && $(e.target).data('role') !== this.element.data('role')
+            ) {
+                popupContent.modal('closeModal');
+            }
         }
     });
 

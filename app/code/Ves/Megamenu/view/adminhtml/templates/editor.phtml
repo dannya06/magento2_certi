@@ -71,7 +71,7 @@ if ($design) {
                     <button class="btn item-structure" onclick="javascript:void(0);"><i class="fa fa-search" aria-hidden="true"></i><?php echo __('Structure Preview'); ?></button>
                 </div>
             </div>
-            <div class="megamenu-editor1 ves-field-list">
+            <div id="megamenu-editor1" class="megamenu-editor1 ves-field-list">
                 <?php
                 $i           = 0;
                 $hasFieldset = false;
@@ -180,6 +180,30 @@ if ($design) {
                         <option value="1"><?php echo __('Yes') ?></option>
                         <option value="0"><?php echo __('No') ?></option>
                     </select>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="fieldset admin__fieldset " style="display: none">
+            <div class="admin__field field " data-ui-id="import-wordress-form-fieldset-element-form-field-import-categories">
+                <label class="label admin__field-label" for="blogimport_import_categories" data-ui-id="import-wordress-form-fieldset-element-select-import-categories-label"><span><?php echo __('Import Sub-categories Level') ?></span></label>
+                <div class="admin__field-control control">
+                    <input type="text" data-bind="value: menulevel">
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="fieldset admin__fieldset " style="display: none">
+            <div class="admin__field field " data-ui-id="import-wordress-form-fieldset-element-form-field-import-categories">
+                <label class="label admin__field-label" for="blogimport_index_from" data-ui-id="import-wordress-form-fieldset-element-select-import-categories-label"><span><?php echo __('Import From Item Index') ?></span></label>
+                <div class="admin__field-control control">
+                    <input type="text" data-bind="value: startindex">
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="fieldset admin__fieldset " style="display: none">
+            <div class="admin__field field " data-ui-id="import-wordress-form-fieldset-element-form-field-import-categories">
+                <label class="label admin__field-label" for="blogimport_index_to" data-ui-id="import-wordress-form-fieldset-element-select-import-categories-label"><span><?php echo __('Import To Item Index') ?></span></label>
+                <div class="admin__field-control control">
+                    <input type="text" data-bind="value: endindex">
                 </div>
             </div>
         </fieldset>
@@ -392,6 +416,7 @@ if ($design) {
     window.megamenu = <?php echo \Zend_Json::encode($options); ?>;
 </script>
 <script>
+    
     require(['jquery'], function($) {
         jQuery(document).ready(function($) {
             $("body").append("<div class='ves-notify'></div>");

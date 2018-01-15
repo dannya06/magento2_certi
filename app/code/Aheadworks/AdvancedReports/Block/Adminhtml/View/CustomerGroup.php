@@ -29,7 +29,7 @@ class CustomerGroup extends \Magento\Backend\Block\Template
     /**
      * @param Context $context
      * @param CustomerGroupFilter $customerGroupFilter
-     * @param [] $data
+     * @param array $data
      */
     public function __construct(
         Context $context,

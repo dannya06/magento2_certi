@@ -6,30 +6,38 @@
 
 namespace Aheadworks\Rma\Model\Status\ConfigDefault\Reader;
 
+use Magento\Framework\Config\Reader\Filesystem;
+use Magento\Framework\Config\Dom;
+use Magento\Framework\Config\FileResolverInterface;
+use Aheadworks\Rma\Model\Status\ConfigDefault\Converter\Xml as ConverterXml;
+use Aheadworks\Rma\Model\Status\ConfigDefault\SchemaLocator;
+use Magento\Framework\Config\ValidationStateInterface;
+
 /**
  * Class Xml
+ *
  * @package Aheadworks\Rma\Model\Status\ConfigDefault\Reader
  */
-class Xml extends \Magento\Framework\Config\Reader\Filesystem
+class Xml extends Filesystem
 {
     /**
-     * @param \Magento\Framework\Config\FileResolverInterface $fileResolver
-     * @param \Aheadworks\Rma\Model\Status\ConfigDefault\Converter\Xml $converter
-     * @param \Aheadworks\Rma\Model\Status\ConfigDefault\SchemaLocator $schemaLocator
-     * @param \Magento\Framework\Config\ValidationStateInterface $validationState
+     * @param FileResolverInterface $fileResolver
+     * @param ConverterXml $converter
+     * @param SchemaLocator $schemaLocator
+     * @param ValidationStateInterface $validationState
      * @param string $fileName
      * @param array $idAttributes
      * @param string $domDocumentClass
      * @param string $defaultScope
      */
     public function __construct(
-        \Magento\Framework\Config\FileResolverInterface $fileResolver,
-        \Aheadworks\Rma\Model\Status\ConfigDefault\Converter\Xml $converter,
-        \Aheadworks\Rma\Model\Status\ConfigDefault\SchemaLocator $schemaLocator,
-        \Magento\Framework\Config\ValidationStateInterface $validationState,
+        FileResolverInterface $fileResolver,
+        ConverterXml $converter,
+        SchemaLocator $schemaLocator,
+        ValidationStateInterface $validationState,
         $fileName = 'rma_statuses.xml',
         $idAttributes = [],
-        $domDocumentClass = 'Magento\Framework\Config\Dom',
+        $domDocumentClass = Dom::class,
         $defaultScope = 'global'
     ) {
         parent::__construct(

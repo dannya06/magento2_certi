@@ -41,7 +41,7 @@ class Creditmemo extends AbstractTotal
      * @param CreditmemoExtensionFactory $creditmemoExtensionFactory
      * @param GiftcardCreditmemoInterfaceFactory $giftcardCreditmemoFactory
      * @param DataObjectHelper $dataObjectHelper
-     * @param [] $data
+     * @param array $data
      */
     public function __construct(
         CreditmemoExtensionFactory $creditmemoExtensionFactory,
@@ -66,8 +66,7 @@ class Creditmemo extends AbstractTotal
         $creditmemo->setBaseAwGiftcardAmount(0);
 
         $order = $creditmemo->getOrder();
-        if (
-            $order->getBaseAwGiftcardAmount()
+        if ($order->getBaseAwGiftcardAmount()
             && $order->getBaseAwGiftcardRefunded() != $order->getBaseAwGiftcardAmount()
             && $order->getExtensionAttributes() && $order->getExtensionAttributes()->getAwGiftcardCodesInvoiced()
         ) {

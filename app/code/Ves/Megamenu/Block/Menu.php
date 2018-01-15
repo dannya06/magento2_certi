@@ -50,6 +50,8 @@ class Menu extends \Magento\Framework\View\Element\Template
      */
     protected $_mobileDetect;
 
+    protected $httpContext;
+
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context            
      * @param \Ves\Megamenu\Helper\Data                        $helper             
@@ -64,6 +66,7 @@ class Menu extends \Magento\Framework\View\Element\Template
         \Ves\Megamenu\Model\Menu $menu,
         \Magento\Customer\Model\Session $customerSession,
         \Ves\Megamenu\Helper\MobileDetect $mobileDetectHelper,
+        \Magento\Framework\App\Http\Context $httpContext,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -71,8 +74,43 @@ class Menu extends \Magento\Framework\View\Element\Template
         $this->_menu            = $menu;
         $this->_customerSession = $customerSession;
         $this->_mobileDetect    = $mobileDetectHelper;
+        $this->httpContext = $httpContext;
+    }
+    /**
+     * {@inheritdoc}
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->addData([
+            'cache_lifetime' => 86400,
+            'cache_tags' => [\Ves\Megamenu\Model\Menu::CACHE_TAG]]);
     }
 
+    /**
+     * Get key pieces for caching block content
+     *
+     * @return array
+     */
+    public function getCacheKeyInfo()
+    {
+        $menuId = $this->getData('id');
+        $menuId = $menuId?$menuId:0;
+        $code = $this->getConfig('alias');
+
+        $conditions = $code.".".$menuId;
+        if ($this->getMobileDetect()->isMobile()) {
+            $conditions .= ".mobilemenu";
+        }
+        return [
+        'VES_MEGAMENU_MENU_BLOCK',
+        $this->_storeManager->getStore()->getId(),
+        $this->_design->getDesignTheme()->getId(),
+        $this->httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_GROUP),
+        'template' => $this->getTemplate(),
+        $conditions
+        ];
+    }
 
     public function getMobileTemplateHtml($menuAlias)
     {
@@ -127,5 +165,11 @@ class Menu extends \Magento\Framework\View\Element\Template
             $this->setData("menu", $menu);
         }
         return parent::_toHtml();
+    }
+    public function getConfig($key, $default = NULL){
+        if($this->hasData($key)){
+            return $this->getData($key);
+        }
+        return $default;
     }
 }

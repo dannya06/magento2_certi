@@ -37,7 +37,7 @@ class View extends \Magento\Backend\Block\Template
      * @param Context $context
      * @param Flag $flag
      * @param StatisticsProcessor $statisticsProcessor
-     * @param [] $data
+     * @param array $data
      */
     public function __construct(
         Context $context,
@@ -77,8 +77,7 @@ class View extends \Magento\Backend\Block\Template
      */
     public function canShowScheduleMessage()
     {
-        if (
-            $this->_authorization->isAllowed('Aheadworks_AdvancedReports::reports_statistics')
+        if ($this->_authorization->isAllowed('Aheadworks_AdvancedReports::reports_statistics')
             && !$this->statisticsProcessor->isReindexScheduled()
         ) {
             return true;

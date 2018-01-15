@@ -6,86 +6,166 @@
 
 namespace Aheadworks\Rma\Controller\Customer;
 
+use Aheadworks\Rma\Api\RequestManagementInterface;
+use Aheadworks\Rma\Model\Request\PostDataProcessor\Composite as RequestPostDataProcessor;
+use Aheadworks\Rma\Model\Request\Resolver\Customer\Session as CustomerSessionResolver;
+use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Framework\Controller\Result\ForwardFactory;
+use Magento\Framework\App\Action\Action;
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\Data\Form\FormKey\Validator as FormKeyValidator;
+use Aheadworks\Rma\Api\Data\RequestInterfaceFactory as RmaRequestInterfaceFactory;
+use Aheadworks\Rma\Api\Data\RequestInterface as RmaRequestInterface;
 
 /**
- * Class Save
+ * Class CreateRequestStep
+ *
  * @package Aheadworks\Rma\Controller\Customer
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Save extends \Aheadworks\Rma\Controller\Customer
+class Save extends Action
 {
     /**
-     * @var ForwardFactory
+     * @var CustomerSession
      */
-    private $resultForwardFactory;
+    private $customerSession;
+
+    /**
+     * @var FormKeyValidator
+     */
+    private $formKeyValidator;
+
+    /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * @var RequestManagementInterface
+     */
+    private $requestManagement;
+
+    /**
+     * @var RequestPostDataProcessor
+     */
+    private $requestPostDataProcessor;
+
+    /**
+     * @var RmaRequestInterfaceFactory
+     */
+    private $requestFactory;
+
+    /**
+     * @var CustomerSessionResolver
+     */
+    private $customerSessionResolver;
 
     /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Aheadworks\Rma\Model\RequestManager $requestManager
-     * @param \Aheadworks\Rma\Model\RequestFactory $requestFactory
-     * @param ForwardFactory $resultForwardFactory
+     * @param CustomerSession $customerSession
+     * @param FormKeyValidator $formKeyValidator
+     * @param DataObjectHelper $dataObjectHelper
+     * @param RequestManagementInterface $requestManagement
+     * @param RequestPostDataProcessor $requestPostDataProcessor
+     * @param RmaRequestInterfaceFactory $requestFactory
+     * @param CustomerSessionResolver $customerSessionResolver
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        \Magento\Customer\Model\Session $customerSession,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Aheadworks\Rma\Model\RequestManager $requestManager,
-        \Aheadworks\Rma\Model\RequestFactory $requestFactory,
-        ForwardFactory $resultForwardFactory
-
+        CustomerSession $customerSession,
+        FormKeyValidator $formKeyValidator,
+        DataObjectHelper $dataObjectHelper,
+        RequestManagementInterface $requestManagement,
+        RequestPostDataProcessor $requestPostDataProcessor,
+        RmaRequestInterfaceFactory $requestFactory,
+        CustomerSessionResolver $customerSessionResolver
     ) {
-        $this->resultForwardFactory = $resultForwardFactory;
-        parent::__construct(
-            $context,
-            $resultPageFactory,
-            $coreRegistry,
-            $formKeyValidator,
-            $scopeConfig,
-            $requestManager,
-            $requestFactory,
-            $customerSession
-        );
+        parent::__construct($context);
+        $this->customerSession = $customerSession;
+        $this->formKeyValidator = $formKeyValidator;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->requestManagement = $requestManagement;
+        $this->requestPostDataProcessor = $requestPostDataProcessor;
+        $this->requestFactory = $requestFactory;
+        $this->customerSessionResolver = $customerSessionResolver;
     }
 
     /**
-     * @return $this
+     * {@inheritdoc}
+     */
+    public function dispatch(RequestInterface $request)
+    {
+        if (!$this->customerSession->authenticate()) {
+            $this->_actionFlag->set('', 'no-dispatch', true);
+        }
+        return parent::dispatch($request);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function execute()
     {
-        $data = $this->getRequest()->getPostValue();
         $resultRedirect = $this->resultRedirectFactory->create();
-        if (!$this->validateFormKey()) {
-            return $resultRedirect->setPath('*/*/');
-        }
+        $data = $this->getRequest()->getPostValue();
         if ($data) {
-            $this->customerSession->setFormData($data);
-            unset($data['form_key']);
             try {
-                $requestModel = $this->requestManager->create($data);
-                $this->messageManager->addSuccess(__('Return has been successfully created.'));
-                $this->customerSession->unsFormData();
-                $this->customerSession->unsOrderSelectData();
-                return $resultRedirect->setPath('*/*/view', ['id' => $requestModel->getId()]);
+                $this->validate();
+                $data = $this->requestPostDataProcessor->prepareEntityData($data);
+                $requestEntity = $this->performSave($data);
+                $this->messageManager->addSuccessMessage(
+                    __(
+                        'Return has been successfully created.'
+                        . ' You will receive an email with the request details and instructions shortly.'
+                    )
+                );
+                $this->customerSession->unsAwRmaRequestOrderId();
+                return $resultRedirect->setPath('*/*/view', ['id' => $requestEntity->getId()]);
             } catch (LocalizedException $e) {
-                $this->messageManager->addError($e->getMessage());
+                $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\RuntimeException $e) {
-                $this->messageManager->addError($e->getMessage());
+                $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while creating the return.'));
+                $this->messageManager->addExceptionMessage($e, __('Something went wrong while creating the return.'));
             }
             return $resultRedirect->setUrl($this->_redirect->getRefererUrl());
         }
         return $resultRedirect->setPath('*/*/');
+    }
+
+    /**
+     * Validate form
+     *
+     * @throws LocalizedException
+     */
+    private function validate()
+    {
+        if (!$this->formKeyValidator->validate($this->getRequest())) {
+            throw new LocalizedException(__('Invalid Form Key. Please refresh the page.'));
+        }
+    }
+
+    /**
+     * Perform save
+     *
+     * @param array $data
+     * @return RmaRequestInterface
+     */
+    private function performSave($data)
+    {
+        $requestObject = $this->requestFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $requestObject,
+            $data,
+            RmaRequestInterface::class
+        );
+        $requestObject
+            ->setCustomerId($this->customerSessionResolver->getCustomerId($requestObject))
+            ->setCustomerEmail($this->customerSessionResolver->getCustomerEmail($requestObject))
+            ->setCustomerName($this->customerSessionResolver->getCustomerFullName($requestObject));
+
+        return $this->requestManagement->createRequest($requestObject, false);
     }
 }

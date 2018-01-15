@@ -6,28 +6,36 @@
 
 namespace Aheadworks\Rma\Model\CustomField\ConfigDefault;
 
-class SchemaLocator implements \Magento\Framework\Config\SchemaLocatorInterface
+use Magento\Framework\Config\SchemaLocatorInterface;
+use Magento\Framework\Module\Dir\Reader;
+
+/**
+ * Class SchemaLocator
+ *
+ * @package Aheadworks\Rma\Model\CustomField\ConfigDefault
+ */
+class SchemaLocator implements SchemaLocatorInterface
 {
     /**
      * Path to corresponding XSD file with validation rules for merged config
      *
      * @var string
      */
-    protected $schema;
+    private $schema;
 
     /**
      * Path to corresponding XSD file with validation rules for separate config files
      *
      * @var string
      */
-    protected $perFileSchema;
+    private $perFileSchema;
 
     /**
-     * @param \Magento\Framework\Module\Dir\Reader $moduleReader
+     * @param Reader $moduleReader
      */
-    public function __construct(\Magento\Framework\Module\Dir\Reader $moduleReader)
+    public function __construct(Reader $moduleReader)
     {
-        $this->schema = $moduleReader->getModuleDir('etc', 'Aheadworks_Rma') . DIRECTORY_SEPARATOR . 'rma_custom_fields.xsd';
+        $this->schema = $this->getSchemaPath($moduleReader);
         $this->perFileSchema = $this->schema;
     }
 
@@ -49,5 +57,16 @@ class SchemaLocator implements \Magento\Framework\Config\SchemaLocatorInterface
     public function getPerFileSchema()
     {
         return $this->perFileSchema;
+    }
+
+    /**
+     * Retrieve schema path
+     *
+     * @param Reader $moduleReader
+     * @return string
+     */
+    private function getSchemaPath($moduleReader)
+    {
+        return $moduleReader->getModuleDir('etc', 'Aheadworks_Rma') . DIRECTORY_SEPARATOR . 'rma_custom_fields.xsd';
     }
 }

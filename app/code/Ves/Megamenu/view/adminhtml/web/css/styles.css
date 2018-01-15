@@ -833,7 +833,7 @@
 .ves-notify {
     position: fixed;
     top: 50%;
-    right: -150px;
+    right: -450px;
     z-index: 5000;
     background: #27ae60;
     color: #FFF;
@@ -851,7 +851,7 @@
 }
 
 .ves-notify.out {
-    right: -150px;
+    right: -450px;
     opacity: 0.2
 }
 
@@ -1562,4 +1562,11 @@
 .boxshadow-options .boxshadow-inset.active {
     background: #EB5201;
     color: #FFF;
+}
+.horizontal .dd-placeholder {
+    width: 100%!important;
+}
+.horizontal .ves-column3 > .dd-item {
+    width: 100%!important;
+    float: none!important;
 }

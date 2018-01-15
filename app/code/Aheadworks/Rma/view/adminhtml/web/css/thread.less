@@ -1,0 +1,38 @@
+@admin__color: #e3e3e3;
+@auto__color: @admin__color;
+@customer__color: #f8f8f8;
+
+.aw-rma__thread-messages {
+    list-style: none;
+    padding: 0;
+
+    .thread-message {
+        display: block;
+        margin-bottom: 1rem;
+        padding: 2rem;
+        width: 70%;
+        box-sizing: border-box;
+
+        &.admin {
+            background: @admin__color;
+            margin-left: 30%;
+
+            &.auto {
+                background: @admin__color;
+            }
+        }
+
+        &.customer {
+            background: @customer__color;
+        }
+
+        .thread-message-attachments,
+        .thread-message-text {
+            margin-top: 1rem;
+        }
+
+        .thread-message-text {
+            white-space: pre-wrap;
+        }
+    }
+}

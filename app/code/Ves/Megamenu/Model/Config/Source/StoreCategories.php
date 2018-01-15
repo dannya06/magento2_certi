@@ -214,14 +214,14 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
 
     public function getCategoriesCollection($menuCatgories = [], $filter = null, $_store_id = null)
     {
-        $categoryTree = $this->getCacheManager()->load(self::CATEGORY_TREE_ID . '_' . $filter.'_'.$_store_id);
-        if ($categoryTree) { 
+        krsort($menuCatgories);
+        $cache_cat_key = implode("_", $menuCatgories);
+        $categoryTree = $this->getCacheManager()->load(self::CATEGORY_TREE_ID .'_'.$cache_cat_key. '_' . $filter.'_'.$_store_id);
+
+        if ($categoryTree) {
             return unserialize($categoryTree);
         }
 
-        if (isset($this->categoriesCollection[$filter])) {
-            return $this->categoriesCollection[$filter];
-        }
         $storeId = $this->_storeManager->getStore()->getId();
 
         // @var $matchingNamesCollection \Magento\Catalog\Model\ResourceModel\Category\Collection
@@ -281,7 +281,7 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
 
         $this->getCacheManager()->save(
             serialize($categoryById),
-            self::CATEGORY_TREE_ID . '_' . $filter.'_'.$_store_id,
+            self::CATEGORY_TREE_ID .'_' . $cache_cat_key.'_' . $filter.'_'.$_store_id,
             [
                 \Magento\Catalog\Model\Category::CACHE_TAG,
                 \Magento\Framework\App\Cache\Type\Block::CACHE_TAG

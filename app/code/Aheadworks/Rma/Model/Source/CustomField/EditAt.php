@@ -6,29 +6,50 @@
 
 namespace Aheadworks\Rma\Model\Source\CustomField;
 
+use Aheadworks\Rma\Model\Source\Request\Status as RequestStatusSource;
+use Magento\Framework\Option\ArrayInterface;
+
 /**
  * Class EditAt
+ *
  * @package Aheadworks\Rma\Model\Source\CustomField
  */
-class EditAt extends \Aheadworks\Rma\Model\Source\Request\Status
+class EditAt implements ArrayInterface
 {
-    const NEW_REQUEST_PAGE          = -1;
-
-    const NEW_REQUEST_PAGE_LABEL    = 'New Request Page';
+    /**
+     * @var string
+     */
+    const NEW_REQUEST_PAGE = -1;
 
     /**
-     * @return array
+     * @var array
      */
-    public function getOptions()
+    private $options;
+
+    /**
+     * @var RequestStatusSource
+     */
+    private $requestStatusSource;
+
+    /**
+     * @param RequestStatusSource $requestStatusSource
+     */
+    public function __construct(
+        RequestStatusSource $requestStatusSource
+    ) {
+        $this->requestStatusSource = $requestStatusSource;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toOptionArray()
     {
-        if ($this->options === null) {
-            $options = [
-                self::NEW_REQUEST_PAGE => __(self::NEW_REQUEST_PAGE_LABEL)
+        if (null === $this->options) {
+            $this->options = [
+                ['value' => self::NEW_REQUEST_PAGE, 'label' => __('New Request Page')]
             ];
-            foreach (parent::getOptions() as $value => $label) {
-                $options[$value] = $label;
-            }
-            $this->options = $options;
+            $this->options = array_merge($this->options, $this->requestStatusSource->toOptionArray());
         }
         return $this->options;
     }

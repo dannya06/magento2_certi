@@ -1,9 +1,10 @@
-<!--@subject {{var store.name}} RMA {{var request.getTextId()}} @-->
-<!--@styles
-body,td { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; }
-@-->
-<p>You have new reply regarding your RMA {{var request.getTextId()}}.</p>
-{{var request.getNotifyCommentText()|nl2br}}
-<br/>
-<p>You can view RMA by following the link <a href="{{var request.getUrl()}}">{{var request.getUrl()}}</a>.</p>
-<p>Thank you for using our RMA service.</p>
+<!--@subject {{trans '%store_name RMA #%request_text_id' store_name=$store.name request_text_id=$request.getTextId() @-->
+{{template config_path="design/email/header_template"}}
+
+<p>{{trans 'Dear %customer_name,' customer_name=$request.getCustomerName()}}</p>
+<p>{{trans 'You\'ve got a new reply in your RMA thread:'}}</p>
+<p>{{var request.getNotifyCommentText() |nl2br}}</p>
+<p>{{trans 'You can view and update your RMA <a href="%url">here</a>.' url=$request.getUrl() |raw}}</p>
+<p>{{trans 'Thank you for using our RMA service.'}}</p>
+
+{{template config_path="design/email/footer_template"}}

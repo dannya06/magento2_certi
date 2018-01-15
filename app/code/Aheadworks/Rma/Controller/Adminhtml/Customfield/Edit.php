@@ -4,59 +4,79 @@
 * See LICENSE.txt for license details.
 */
 
-namespace Aheadworks\Rma\Controller\Adminhtml\Customfield;
+namespace Aheadworks\Rma\Controller\Adminhtml\CustomField;
 
+use Aheadworks\Rma\Api\CustomFieldRepositoryInterface;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Result\PageFactory;
+use Magento\Backend\App\Action;
 
-class Edit extends \Aheadworks\Rma\Controller\Adminhtml\Customfield
+/**
+ * Class Edit
+ *
+ * @package Aheadworks\Rma\Controller\Adminhtml\CustomField
+ */
+class Edit extends Action
 {
     /**
-     * @var \Magento\Framework\Registry
+     * {@inheritdoc}
      */
-    protected $coreRegistry;
+    const ADMIN_RESOURCE = 'Aheadworks_Rma::custom_fields';
 
     /**
-     * @var \Aheadworks\Rma\Model\CustomFieldFactory
+     * @var CustomFieldRepositoryInterface
      */
-    protected $customFieldFactory;
+    private $customFieldRepository;
 
+    /**
+     * @var PageFactory
+     */
+    private $resultPageFactory;
+
+    /**
+     * @param Context $context
+     * @param CustomFieldRepositoryInterface $customFieldRepository
+     * @param PageFactory $resultPageFactory
+     */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        \Magento\Framework\Registry $coreRegistry,
-        \Aheadworks\Rma\Model\CustomFieldFactory $customFieldFactory
+        CustomFieldRepositoryInterface $customFieldRepository,
+        PageFactory $resultPageFactory
     ) {
-        parent::__construct($context, $resultPageFactory);
-        $this->coreRegistry = $coreRegistry;
-        $this->customFieldFactory = $customFieldFactory;
+        parent::__construct($context);
+        $this->customFieldRepository = $customFieldRepository;
+        $this->resultPageFactory = $resultPageFactory;
     }
 
     /**
-     * Index action
+     * Edit action
      *
-     * @return \Magento\Backend\Model\View\Result\Page
+     * @return \Magento\Backend\Model\View\Result\Page|\Magento\Framework\Controller\Result\Redirect
      */
     public function execute()
     {
-        /** @var \Aheadworks\Rma\Model\CustomField $customField */
-        $customField = $this->customFieldFactory->create();
-        $id = $this->getRequest()->getParam('id');
-        if ($id) {
-            $customField->load($id);
+        $customFieldId = (int)$this->getRequest()->getParam('id');
+        if ($customFieldId) {
+            try {
+                $customField = $this->customFieldRepository->get($customFieldId);
+            } catch (NoSuchEntityException $exception) {
+                $this->messageManager->addExceptionMessage(
+                    $exception,
+                    __('This custom field no longer exists.')
+                );
+                $resultRedirect = $this->resultRedirectFactory->create();
+                $resultRedirect->setPath('*/*/');
+                return $resultRedirect;
+            }
         }
-        $data = $this->_getSession()->getFormData(true);
-        if (!empty($data)) {
-            $customField->addData($data);
-        }
-
-        $this->coreRegistry->register('aw_rma_custom_field', $customField);
-
-        $resultPage = $this->getResultPage();
-        $resultPage->setActiveMenu('Aheadworks_Rma::home');
-        $resultPage->getConfig()->getTitle()
-            ->prepend($customField->getId() ? __('Edit "%1" custom field', $customField->getName()) : 'New custom field')
-        ;
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage
+            ->setActiveMenu('Aheadworks_Rma::custom_fields')
+            ->getConfig()->getTitle()->prepend(
+                $customFieldId ? __('Edit "%1" custom field', $customField->getName()) : __('New custom field')
+            );
         return $resultPage;
     }
 }

@@ -25,7 +25,6 @@
 	<head>
 		<css src="Ves_Megamenu::css/style.css" />
 	</head>
-	<!--
 	<body>
 		<referenceContainer name="notices.wrapper">
 			<block class="Ves\All\Block\Adminhtml\License" name="megamenu_license">
@@ -34,5 +33,5 @@
 				</arguments>
 			</block>
 		</referenceContainer>
-	</body>-->
+	</body>
 </page>
