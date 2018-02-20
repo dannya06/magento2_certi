@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -13,6 +13,7 @@ namespace Amasty\Extrafee\Model\Fee;
  * @author Artem Brunevski
  */
 
+use Amasty\Base\Model\Serializer;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 use Amasty\Extrafee\Model\ResourceModel\Fee\CollectionFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
@@ -40,6 +41,10 @@ class DataProvider extends AbstractDataProvider
 
     /** @var  array */
     protected $stores;
+    /**
+     * @var Serializer
+     */
+    private $serializerBase;
 
     public function __construct(
         $name,
@@ -48,6 +53,7 @@ class DataProvider extends AbstractDataProvider
         CollectionFactory $feeCollectionFactory,
         DataPersistorInterface $dataPersistor,
         StoreManagerInterface $storeManager,
+        Serializer $serializerBase,
         array $meta = [],
         array $data = []
     ) {
@@ -56,6 +62,7 @@ class DataProvider extends AbstractDataProvider
         $this->storeManager = $storeManager;
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->meta = $this->prepareMeta($this->meta);
+        $this->serializerBase = $serializerBase;
     }
 
     /**
@@ -96,11 +103,11 @@ class DataProvider extends AbstractDataProvider
     {
         $metaOptions = &$meta['options']['children']['rows']['children']['record']['children'];
         /** @var Store $store */
-        foreach($this->getStoresSortedBySortOrder() as $store){
+        foreach ($this->getStoresSortedBySortOrder() as $store) {
             $validation = [];
             $label = $store->getName();
             $required = false;
-            if ($store->getId() == Store::DEFAULT_STORE_ID){
+            if ($store->getId() == Store::DEFAULT_STORE_ID) {
                 $label = __($label);
                 $required = true;
                 $validation['required-entry'] = true;
@@ -130,7 +137,7 @@ class DataProvider extends AbstractDataProvider
                             'dataType' => 'text',
                             'fit' => true
                         ]
-                ]
+                    ]
             ]
 
         ];
@@ -153,9 +160,9 @@ class DataProvider extends AbstractDataProvider
         foreach ($items as $fee) {
             $data = $fee->getData();
 
-            $options = @unserialize($data['options_serialized']);
+            $options = $this->serializerBase->unserialize($data['options_serialized']);
 
-            if (is_array($options)){
+            if (is_array($options)) {
                 $data['options'] = $options;
             }
             $this->loadedData[$fee->getId()] = $data;

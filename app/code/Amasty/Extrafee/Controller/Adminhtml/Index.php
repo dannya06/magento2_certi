@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -55,6 +55,11 @@ abstract class Index extends Action
     protected $_feeCollectionFactory;
 
     /**
+     * @var \Amasty\Base\Model\Serializer
+     */
+    protected $serializer;
+
+    /**
      * @param Action\Context $context
      * @param ForwardFactory $resultForwardFactory
      * @param PageFactory $resultPageFactory
@@ -62,7 +67,8 @@ abstract class Index extends Action
      * @param FeeRepository $feeRepository
      * @param FeeFactory $feeFactory
      * @param Filter $filter
-     * @param FeeCollectionFactory $feeCollectionFactory
+     * @param FeeCollectionFactory $feeCollectionFactory,
+     * @param \Amasty\Base\Model\Serializer $serializer
      */
     public function __construct(
         Action\Context $context,
@@ -72,7 +78,8 @@ abstract class Index extends Action
         FeeRepository $feeRepository,
         FeeFactory $feeFactory,
         Filter $filter,
-        FeeCollectionFactory $feeCollectionFactory
+        FeeCollectionFactory $feeCollectionFactory,
+        \Amasty\Base\Model\Serializer $serializer
     ){
         $this->_resultForwardFactory = $resultForwardFactory;
         $this->_resultPageFactory = $resultPageFactory;
@@ -81,6 +88,7 @@ abstract class Index extends Action
         $this->_feeFactory = $feeFactory;
         $this->_filter = $filter;
         $this->_feeCollectionFactory = $feeCollectionFactory;
+        $this->serializer = $serializer;
         return parent::__construct($context);
     }
 

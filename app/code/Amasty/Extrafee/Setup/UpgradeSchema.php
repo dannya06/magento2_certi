@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -13,6 +13,8 @@
 
 namespace Amasty\Extrafee\Setup;
 
+use Amasty\Extrafee\Model\Config\Source\Excludeinclude;
+use Magento\Framework\DB\Ddl\Table as DdlTable;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
@@ -31,41 +33,13 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->addCalculationColumns($setup);
         }
 
-
-        if (version_compare($context->getVersion(), '1.1.1', '<')) {
-            $installer = $setup;
-            $table = $installer->getConnection()
-                               ->newTable($installer->getTable('icube_quote_fee'))
-                               ->addColumn(
-                                    'id',
-                                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                                    null,
-                                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-                                    'Id'
-                                )   
-                                ->addColumn(//
-                                    'quote_id',
-                                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                                    11,
-                                    [],
-                                    'Quote id'
-                                )
-                                 ->addColumn(//
-                                    'fee',
-                                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                                    11,
-                                    [],
-                                    'Fee'
-                                )
-                              
-                               
-                                ->setComment(
-                                    'Icube Quote Fee'
-                                );  
-
-                                $installer->getConnection()->createTable($table);
+        if (version_compare($context->getVersion(), '1.1.3', '<')) {
+            $this->changeIdColumnType($setup);
         }
 
+        if (version_compare($context->getVersion(), '1.1.4', '<')) {
+            $this->addTaxColumns($setup);
+        }
 
         $setup->endSetup();
     }
@@ -79,9 +53,9 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $table,
             'discount_in_subtotal',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                'type' => DdlTable::TYPE_SMALLINT,
                 'nullable' => false,
-                'default' => \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT,
+                'default' => Excludeinclude::VAR_DEFAULT,
                 'comment' => 'Discount In Subtotal'
             ]
         );
@@ -90,9 +64,9 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $table,
             'tax_in_subtotal',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                'type' => DdlTable::TYPE_SMALLINT,
                 'nullable' => false,
-                'default' => \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT,
+                'default' => Excludeinclude::VAR_DEFAULT,
                 'comment' => 'Tax In Subtotal'
             ]
         );
@@ -101,10 +75,59 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $table,
             'shipping_in_subtotal',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                'type' => DdlTable::TYPE_SMALLINT,
                 'nullable' => false,
-                'default' => \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT,
+                'default' => Excludeinclude::VAR_DEFAULT,
                 'comment' => 'Shipping In Subtotal'
+            ]
+        );
+    }
+
+    protected function changeIdColumnType(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()
+            ->changeColumn(
+                $setup->getTable('amasty_extrafee_quote'),
+                'entity_id',
+                'entity_id',
+                [
+                    'type' => Table::TYPE_INTEGER,
+                    'length' => 11,
+                    'identity' => true,
+                    'unsigned' => true,
+                    'nullable' => false,
+                    'primary' => true,
+                    'comment' => 'Entity ID'
+                ]
+            );
+    }
+
+    protected function addTaxColumns(SchemaSetupInterface $setup)
+    {
+        $table = $setup->getTable('amasty_extrafee_quote');
+        $connection = $setup->getConnection();
+
+        $connection->addColumn(
+            $table,
+            'tax_amount',
+            [
+                'type' => DdlTable::TYPE_DECIMAL,
+                'length' => '12,4',
+                'nullable' => false,
+                'default' => '0.0000',
+                'comment' => 'Tax'
+            ]
+        );
+
+        $connection->addColumn(
+            $table,
+            'base_tax_amount',
+            [
+                'type' => DdlTable::TYPE_DECIMAL,
+                'length' => '12,4',
+                'nullable' => false,
+                'default' => '0.0000',
+                'comment' => 'Tax'
             ]
         );
     }

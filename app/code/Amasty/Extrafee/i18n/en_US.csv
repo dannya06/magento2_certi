@@ -22,6 +22,7 @@ Type,Type
 Description,Description
 Options,Options
 "Fee Information","Fee Information"
+"Additional Fees","Additional Fees"
 "Extra Fee: %1","Extra Fee: %1"
 Fees,Fees
 "The fee has been deleted.","The fee has been deleted."
@@ -31,8 +32,8 @@ Fees,Fees
 "A total of %1 record(s) have been deleted.","A total of %1 record(s) have been deleted."
 "A total of %1 record(s) have been changed.","A total of %1 record(s) have been changed."
 "Something went wrong while saving the data.","Something went wrong while saving the data."
-Yes,Yes
 No,No
+Yes,Yes
 Default,Default
 Checkbox,Checkbox
 Dropdown,Dropdown
@@ -42,6 +43,7 @@ Percent,Percent
 "Could not save the fee: %1","Could not save the fee: %1"
 "Fee with id ""%1"" does not exist.","Fee with id ""%1"" does not exist."
 "Could not delete the fee: %1","Could not delete the fee: %1"
+"Extra Fee (%1)","Extra Fee (%1)"
 "Amasty Fee","Amasty Fee"
 "Totals calculation is not applicable to empty cart","Totals calculation is not applicable to empty cart"
 Edit,Edit
@@ -52,7 +54,9 @@ Price,Price
 "Sort Option","Sort Option"
 label,label
 Delete,Delete
-"Additional Fees","Additional Fees"
+"Choose Option","Choose Option"
+"Apply Fees","Apply Fees"
+"No Extra Fees available.","No Extra Fees available."
 "Amasty: Extra Fee","Amasty: Extra Fee"
 "Manage Fees","Manage Fees"
 "Extra Fee","Extra Fee"

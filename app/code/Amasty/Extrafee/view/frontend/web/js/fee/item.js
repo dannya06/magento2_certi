@@ -81,7 +81,7 @@ define([
                 return this.options;
             },
             optionsText: function(item) {
-                return item.label + ' ' +this.getFormattedPrice(item.price);
+                return item.label + ' ' + this.getFormattedPrice(item.price);
             },
             /**
              *

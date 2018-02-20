@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
@@ -65,5 +65,12 @@
             <argument name="eventObject" xsi:type="string">amasty_extrafee_grid_collection</argument>
             <argument name="resourceModel" xsi:type="string">Amasty\Extrafee\Model\ResourceModel\Fee</argument>
         </arguments>
+    </type>
+
+    <type name="Magento\SalesRule\Model\Rule\Condition\Product\Subselect">
+        <plugin name="Amasty_Extrafee::Subselect" type="Amasty\Extrafee\Plugin\Subselect"/>
+    </type>
+    <type name="\Magento\SalesRule\Setup\UpgradeData">
+        <plugin name="Amasty_Extrafee::SetupUpgradeData" type="Amasty\Extrafee\Plugin\Setup\UpgradeData" />
     </type>
 </config>

@@ -1,9 +1,10 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
+
 
 namespace Amasty\Extrafee\Model;
 
@@ -17,7 +18,6 @@ use Amasty\Extrafee\Api\TotalsInformationManagementInterface;
 use Amasty\Extrafee\Api\Data\TotalsInformationInterface;
 use Magento\Quote\Api\CartTotalRepositoryInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
-use Amasty\Extrafee\Model\Quote;
 use Amasty\Extrafee\Helper\Data as ExtrafeeHelper;
 use Amasty\Extrafee\Api\FeeRepositoryInterface;
 use Amasty\Extrafee\Model\QuoteFactory as FeeQuoteFactory;
@@ -51,6 +51,9 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
 
     /** @var FeeCollectionFactory  */
     protected $feeCollectionFactory;
+
+    /** @var CheckoutTotalsInformationManagement  */
+    protected $checkoutTotalsInformationManagement;
 
     /**
      * @param CartRepositoryInterface $cartRepository
@@ -104,20 +107,30 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
         $cartId,
         TotalsInformationInterface $information,
         \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
-    ){
+    ) {
         /** @var \Magento\Quote\Model\Quote $quote */
-
         $quote = $this->cartRepository->get($cartId);
 
         $optionsIds = $information->getOptionsIds();
         $feeId = $information->getFeeId();
 
-        if (is_array($optionsIds)){
+        $this->proceedQuoteOptions($quote, $feeId, $optionsIds);
 
+        return $this->checkoutTotalsInformationManagement->calculate($cartId, $addressInformation);
+    }
+
+    /**
+     * @param \Magento\Quote\Model\Quote $quote
+     * @param string|int $feeId
+     * @param $optionsIds
+     */
+    public function proceedQuoteOptions(\Magento\Quote\Model\Quote $quote, $feeId, $optionsIds)
+    {
+        if (is_array($optionsIds)) {
             $fee = $this->feeRepository->getById($feeId);
 
             //only checkbox type allow multifee mode
-            if ($fee->getFrontendType() !== Fee::FRONTEND_TYPE_CHECKBOX){
+            if ($fee->getFrontendType() !== Fee::FRONTEND_TYPE_CHECKBOX) {
                 $optionsIds = array_slice($optionsIds, 0, 1);
             }
 
@@ -130,7 +143,7 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
             /**
              * fees amount and label will set up on collect totals process
              */
-            foreach($optionsIds as $optionId){
+            foreach ($optionsIds as $optionId) {
                 //check that fee wasn't applied
                 if ($optionId !== null && !array_key_exists($optionId, $feesOptionsHash)) {
                     $this->feeQuoteFactory->create()
@@ -148,18 +161,13 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
                 $optionsIds
             );
         }
-
-        return $this->checkoutTotalsInformationManagement->calculate($cartId, $addressInformation);
     }
 
     /**
      * @param \Magento\Quote\Model\Quote $quote
-     * @param \Magento\Quote\Model\Quote\Address\Total $total
      */
-    public function updateQuoteFees(
-        \Magento\Quote\Model\Quote $quote,
-        \Magento\Quote\Model\Quote\Address\Total $total
-    ){
+    public function updateQuoteFees(\Magento\Quote\Model\Quote $quote)
+    {
         $feesQuoteCollection = $this->feeQuoteCollectionFactory->create()
             ->addFieldToFilter('option_id', ['neq' => '0'])
             ->addFieldToFilter('quote_id', $quote->getId());
@@ -179,7 +187,7 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
                 $fee = $feesItems[$feesQuoteItem->getFeeId()];
 
                 $baseOptions = $fee->loadOptions()
-                                   ->fetchBaseOptions($quote, $total);
+                                   ->fetchBaseOptions($quote);
 
                 $option = $this->findOption($baseOptions, $feesQuoteItem->getOptionId());
                 /**
@@ -187,11 +195,15 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
                  */
                 if ($option['price'] !== $feesQuoteItem->getFeeAmount() ||
                     $option['base_price'] !== $feesQuoteItem->getBaseFeeAmount() ||
+                    $option['tax'] !== $feesQuoteItem->getTaxAmount() ||
+                    $option['base_tax'] !== $feesQuoteItem->getBaseTaxAmount() ||
                     $option['label'] !== $feesQuoteItem->getLabel()
                 ) {
                     $feesQuoteItem
                         ->setFeeAmount($option['price'])
                         ->setBaseFeeAmount($option['base_price'])
+                        ->setTaxAmount($option['tax'])
+                        ->setBaseTaxAmount($option['base_tax'])
                         ->setLabel($option['label'])
                         ->save();
                 }

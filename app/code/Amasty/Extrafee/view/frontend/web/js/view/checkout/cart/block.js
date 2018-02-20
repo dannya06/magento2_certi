@@ -10,6 +10,9 @@ define(
              * @returns {*}
              */
             visible: function(){
+                if (!this.fieldset()) {
+                    return;
+                }
                 var elems = this.fieldset().elems.filter(function(el){
                     return el.visible() === true;
                 });

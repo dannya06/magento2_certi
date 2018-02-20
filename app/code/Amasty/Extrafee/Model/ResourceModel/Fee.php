@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -28,19 +28,27 @@ class Fee extends AbstractDb
     protected $_metadataPool;
 
     /**
+     * @var \Amasty\Base\Model\Serializer
+     */
+    protected $serializer;
+
+    /**
      * @param Context $context
      * @param StoreManagerInterface $storeManager
      * @param MetadataPool $metadataPool
+     * @param \Amasty\Base\Model\Serializer $serializer
      * @param null $connectionName
      */
     public function __construct(
         Context $context,
         StoreManagerInterface $storeManager,
         MetadataPool $metadataPool,
+        \Amasty\Base\Model\Serializer $serializer,
         $connectionName = null
     ){
         $this->_storeManager = $storeManager;
         $this->_metadataPool = $metadataPool;
+        $this->serializer   = $serializer;
         parent::__construct($context, $connectionName);
     }
 
@@ -108,7 +116,7 @@ class Fee extends AbstractDb
         $options = $connection->fetchAll($select);
         foreach($options as &$option){
             $option['price'] = number_format($option['price'], 2);
-            $option['options'] = @unserialize($option['options_serialized']);
+            $option['options'] = $this->serializer->unserialize($option['options_serialized']);
             unset($option['options_serialized']);
         }
 
@@ -209,7 +217,7 @@ class Fee extends AbstractDb
                         'order' => $options['order'][$id],
                         'default' => in_array($id, $default),
                         'admin' => $value[0],
-                        'options_serialized' => serialize($value),
+                        'options_serialized' => $this->serializer->serialize($value),
                     ];
                 } else {
                     $deleteIds[] = $entityId;

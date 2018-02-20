@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -30,6 +30,13 @@ class Module extends AbstractHelper
      * @var \Magento\Framework\App\CacheInterface
      */
     protected $cache;
+
+    /**
+     * @var array
+     */
+    protected $restrictedModules = [
+        'Amasty_CommonRules'
+    ];
 
     /**
      * Module constructor.
@@ -141,5 +148,13 @@ class Module extends AbstractHelper
     public function serialize($data)
     {
         return $this->serializer->serialize($data);
+    }
+
+    /**
+     * @return array
+     */
+    public function getRestrictedModules()
+    {
+        return $this->restrictedModules;
     }
 }

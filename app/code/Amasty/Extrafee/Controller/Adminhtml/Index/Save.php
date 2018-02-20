@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -31,7 +31,7 @@ class Save extends Index
             $salesRule = $this->_objectManager->create('Magento\SalesRule\Model\Rule');
             $salesRule->loadPost($data);
 
-            $data['conditions_serialized'] = serialize($salesRule->getConditions()->asArray());
+            $data['conditions_serialized'] = $this->serializer->serialize($salesRule->getConditions()->asArray());
             unset($data['conditions']);
             unset($data['option']);
         }

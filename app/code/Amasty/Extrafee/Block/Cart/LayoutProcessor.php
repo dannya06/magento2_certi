@@ -1,17 +1,12 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
-namespace Amasty\Extrafee\Block\Cart;
 
-/**
- * Class LayoutProcessor
- *
- * @author Artem Brunevski
- */
+namespace Amasty\Extrafee\Block\Cart;
 
 use Magento\Checkout\Block\Checkout\LayoutProcessorInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
@@ -39,7 +34,6 @@ class LayoutProcessor implements LayoutProcessorInterface
     ];
 
     /**
-     * @param FeesInformationManagement $feesInformationManagement
      * @param CheckoutSession $checkoutSession
      * @param ExtrafeeHelper $extrafeeHelper
      */
@@ -47,7 +41,7 @@ class LayoutProcessor implements LayoutProcessorInterface
         FeesInformationManagement $feesInformationManagement,
         CheckoutSession $checkoutSession,
         ExtrafeeHelper $extrafeeHelper
-    ){
+    ) {
         $this->feesInformationManagement = $feesInformationManagement;
         $this->checkoutSession = $checkoutSession;
         $this->extrafeeHelper = $extrafeeHelper;
@@ -62,30 +56,22 @@ class LayoutProcessor implements LayoutProcessorInterface
     public function process($jsLayout)
     {
         if ($this->extrafeeHelper->getScopeValue('frontend/cart') === '1') {
-            $quote = $this->checkoutSession->getQuote();
-            $fees = $this->feesInformationManagement->collectQuote($quote);
-
             if (isset($jsLayout['components']['block-amasty-extrafee-summary']['children']['block-amasty-extrafee']['children']
                 ['amasty-extrafee-fieldsets']['children'])
             ) {
                 $pointer = &$jsLayout['components']['block-amasty-extrafee-summary']['children']['block-amasty-extrafee']
                 ['children']['amasty-extrafee-fieldsets']['children'];
 
-                $this->prepareFeesOptions($fees, $pointer);
+                $this->prepareFeesOptions($pointer);
             }
         }
 
         if ($this->extrafeeHelper->getScopeValue('frontend/checkout') === '1') {
-            $quote = $this->checkoutSession->getQuote();
-            $fees = $this->feesInformationManagement->collectQuote($quote);
-            
-            if (isset($jsLayout['components']['checkout']['children']['sidebar']['children']['summary']['children']['block-amasty-extrafee-summary']['children']['block-amasty-extrafee']['children']
-            ['amasty-extrafee-fieldsets']['children'])){
+            if (isset($jsLayout['components']['checkout']['children']['sidebar']['children']['summary']['children']['block-amasty-extrafee-summary']['children']['block-amasty-extrafee']['children']['amasty-extrafee-fieldsets']['children'])){
 
-                $pointer = &$jsLayout['components']['checkout']['children']['sidebar']['children']['summary']['children']['block-amasty-extrafee-summary']['children']['block-amasty-extrafee']['children']
-                ['amasty-extrafee-fieldsets']['children'];
+                $pointer = &$jsLayout['components']['checkout']['children']['sidebar']['children']['summary']['children']['block-amasty-extrafee-summary']['children']['block-amasty-extrafee']['children']['amasty-extrafee-fieldsets']['children'];
 
-                $this->prepareFeesOptions($fees, $pointer);
+                $this->prepareFeesOptions($pointer);
             }
         }
 
@@ -93,35 +79,25 @@ class LayoutProcessor implements LayoutProcessorInterface
     }
 
     /**
-     * @param array $fees
      * @param array $elements
      */
-    protected function prepareFeesOptions(array $fees, array &$elements)
+    protected function prepareFeesOptions(array &$elements)
     {
-        $quote = $this->checkoutSession->getQuote();
+        $items = $this->extrafeeHelper->getFeesOptions($this->checkoutSession->getQuote());
 
-        $items = $this->feesInformationManagement->collectQuote($quote);
-
-        foreach($items as $feeData)
-        {
-            $id = array_key_exists('id', $feeData) ? $feeData['id'] : null;
-            $name = array_key_exists('name', $feeData) ? $feeData['name'] : null;
-            $description = array_key_exists('description', $feeData) ? $feeData['description'] : null;
-            $options = array_key_exists('base_options', $feeData) ? $feeData['base_options'] : [];
-            $frontendType = array_key_exists('frontend_type', $feeData) ? $feeData['frontend_type'] : null;
-            $currentValue = array_key_exists('current_value', $feeData) ? $feeData['current_value'] : null;
-
-            if (array_key_exists($frontendType, $this->components)) {
+        foreach ($items as $feeData) {
+            $id = array_key_exists('id', $feeData) ? $feeData['id'] : null; //don't remove. appearance fees on cart page bugfix
+            if (array_key_exists($feeData['frontend_type'], $this->components)) {
                 $elements['fee.' . $id] = [
                     'parent' => '${ $.name }',
                     'name' => '${ $.name }.fee.' . $id,
-                    'description' => $description,
-                    'component' => $this->components[$frontendType],
-                    'options' => $options,
-                    'label' => $name,
-                    'frontendType' => $frontendType,
+                    'description' => $feeData['description'],
+                    'component' => $this->components[$feeData['frontend_type']],
+                    'options' => $feeData['base_options'],
+                    'label' => $feeData['name'],
+                    'frontendType' => $feeData['frontend_type'],
                     'feeId' => $id,
-                    'currentValue' => $currentValue
+                    'currentValue' => $feeData['current_value']
                 ];
             }
         }

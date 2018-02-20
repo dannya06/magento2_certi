@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -88,7 +88,7 @@ class Fee extends AbstractTotal
         $total->setTotalAmount($this->getCode(), 0);
         $total->setBaseTotalAmount($this->getCode(), 0);
 
-        $this->totalsInformationManagement->updateQuoteFees($quote, $total);
+        $this->totalsInformationManagement->updateQuoteFees($quote);
         
         if (!count($shippingAssignment->getItems())) {
             return $this;
@@ -104,15 +104,22 @@ class Fee extends AbstractTotal
 
         $feeAmount = 0;
         $baseFeeAmount = 0;
+        $taxAmount = 0;
+        $baseTaxAmount = 0;
 
         foreach($feesQuoteCollection as $feeOption) {
             $feeAmount += $feeOption->getFeeAmount();
             $baseFeeAmount += $feeOption->getBaseFeeAmount();
+            $taxAmount += $feeOption->getTaxAmount();
+            $baseTaxAmount += $feeOption->getBaseTaxAmount();
             $this->jsonLabels[] = $feeOption->getLabel();
         }
 
+
         $total->setTotalAmount($this->getCode(), $feeAmount);
         $total->setBaseTotalAmount($this->getCode(), $baseFeeAmount);
+        $total->setTotalAmount('tax', $total->getTotalAmount('tax') + $taxAmount);
+        $total->setBaseTotalAmount('tax', $total->getBaseTotalAmount('tax') + $baseTaxAmount);
 
         $this->feeAmount = $feeAmount;
 
@@ -129,11 +136,13 @@ class Fee extends AbstractTotal
      */
     public function fetch(Quote $quote, Total $total)
     {
-        return [
-            'code' => 'amasty_extrafee',
-            'title' => __(implode(', ', $this->jsonLabels)),
-            'value' => $this->feeAmount
-        ];
+        if ($this->jsonLabels) {
+            return [
+                'code' => 'amasty_extrafee',
+                'title' => __('Extra Fee (%1)', implode(', ', $this->jsonLabels)),
+                'value' => $this->feeAmount
+            ];
+        }
     }
 
     /**

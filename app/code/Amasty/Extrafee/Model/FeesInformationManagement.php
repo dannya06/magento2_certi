@@ -1,18 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Model;
 
-/**
- * Class FeesInformationManagement
- *
- * @author Artem Brunevski
- */
-
+use Amasty\Base\Model\Serializer;
 use Amasty\Extrafee\Api\FeesInformationManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -20,7 +16,6 @@ use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\Search\FilterGroupBuilder;
 use Magento\Framework\Api\SortOrderBuilder;
 use Amasty\Extrafee\Model\Data\FeesManagerFactory;
-
 use Magento\Checkout\Model\TotalsInformationManagement as CheckoutTotalsInformationManagement;
 
 
@@ -49,6 +44,10 @@ class FeesInformationManagement implements FeesInformationManagementInterface
 
     /** @var FeesManagerFactory  */
     protected $feesManagerFactory;
+    /**
+     * @var Serializer
+     */
+    private $serializerBase;
 
     /**
      * @param CartRepositoryInterface $cartRepository
@@ -59,6 +58,7 @@ class FeesInformationManagement implements FeesInformationManagementInterface
      * @param SortOrderBuilder $sortOrderBuilder
      * @param CheckoutTotalsInformationManagement $checkoutTotalsInformationManagement
      * @param FeesManagerFactory $feesManagerFactory
+     * @param Serializer $serializerBase
      */
     public function __construct(
         CartRepositoryInterface $cartRepository,
@@ -68,8 +68,9 @@ class FeesInformationManagement implements FeesInformationManagementInterface
         FilterBuilder $filterBuilder,
         SortOrderBuilder $sortOrderBuilder,
         CheckoutTotalsInformationManagement $checkoutTotalsInformationManagement,
-        FeesManagerFactory $feesManagerFactory
-    ){
+        FeesManagerFactory $feesManagerFactory,
+        Serializer $serializerBase
+    ) {
         $this->cartRepository = $cartRepository;
         $this->feeRepository = $feeRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -78,6 +79,7 @@ class FeesInformationManagement implements FeesInformationManagementInterface
         $this->sortOrderBuilder = $sortOrderBuilder;
         $this->checkoutTotalsInformationManagement = $checkoutTotalsInformationManagement;
         $this->feesManagerFactory = $feesManagerFactory;
+        $this->serializerBase = $serializerBase;
     }
 
     /**
@@ -85,12 +87,13 @@ class FeesInformationManagement implements FeesInformationManagementInterface
      * @param string $paymentMethod
      * @param \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
      * @return \Amasty\Extrafee\Api\Data\FeesManagerInterface
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function collect(
         $cartId,
         $paymentMethod,
         \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
-    ){
+    ) {
         $quote = $this->cartRepository->get($cartId);
         $quote->getShippingAddress()->setPaymentMethod($paymentMethod);
         $this->checkoutTotalsInformationManagement->calculate($cartId, $addressInformation);
@@ -115,7 +118,7 @@ class FeesInformationManagement implements FeesInformationManagementInterface
      */
     public function collectQuote(
         \Magento\Quote\Model\Quote $quote
-    ){
+    ) {
         $filterEnabled = $this->filterBuilder->setField('enabled')
             ->setValue('1')
             ->setConditionType('eq')
@@ -149,6 +152,26 @@ class FeesInformationManagement implements FeesInformationManagementInterface
             $criteria,
             $quote
         );
+
+        $resultItems = [];
+        foreach ($searchResults->getItems() as $item) {
+            if (is_array($item['base_options']) && !empty($item['base_options'])) {
+                $unserializeOptions = [];
+                foreach ($item['base_options'] as $baseOption) {
+                    try {
+                        $unserializeOptions[] = $this->serializerBase->unserialize($baseOption);
+                    } catch (\Exception $exception) {
+                        $unserializeOptions[] = $baseOption;
+                    }
+                }
+                $item['base_options'] = $unserializeOptions;
+                $resultItems[] = $item;
+            }
+        }
+
+        if (!empty($resultItems)) {
+            $searchResults->setItems($resultItems);
+        }
 
         return $searchResults->getItems();
     }

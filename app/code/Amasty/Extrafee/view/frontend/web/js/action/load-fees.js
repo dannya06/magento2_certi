@@ -1,6 +1,5 @@
 define(
     [
-        'jquery',
         'underscore',
         'Amasty_Extrafee/js/model/resource-url-manager',
         'Magento_Checkout/js/model/quote',
@@ -8,14 +7,13 @@ define(
         'Amasty_Extrafee/js/model/fees',
         'Magento_Checkout/js/model/error-processor'
     ],
-    function ($, _, resourceUrlManager, quote, storage, feesService, errorProcessor) {
+    function (_, resourceUrlManager, quote, storage, feesService, errorProcessor) {
         "use strict";
         return function () {
             if (!feesService.rejectFeesLoading()) {
                 var serviceUrl, payload;
                 var requiredFields = ['countryId', 'region', 'regionId', 'postcode'];
                 feesService.isLoading(true);
-                $('body').trigger('processStart'); // show loader
                 serviceUrl = resourceUrlManager.getUrlForFetchFees(quote),
                     payload = {
                         addressInformation: {
@@ -52,7 +50,6 @@ define(
                 ).always(
                     function () {
                         feesService.isLoading(false);
-                        $('body').trigger('processStop'); // hide loader
                     }
                 );
             }

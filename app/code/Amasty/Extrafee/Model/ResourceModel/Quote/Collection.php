@@ -1,17 +1,12 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
-namespace Amasty\Extrafee\Model\ResourceModel\Quote;
 
-/**
- * Class Collection
- *
- * @author Artem Brunevski
- */
+namespace Amasty\Extrafee\Model\ResourceModel\Quote;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
@@ -23,7 +18,7 @@ class Collection extends AbstractCollection
     protected $_idFieldName = 'entity_id';
 
     protected function _construct()
-{
-    $this->_init('Amasty\Extrafee\Model\Quote', 'Amasty\Extrafee\Model\ResourceModel\Quote');
-}
+    {
+        $this->_init('Amasty\Extrafee\Model\Quote', 'Amasty\Extrafee\Model\ResourceModel\Quote');
+    }
 }

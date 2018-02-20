@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -57,14 +57,13 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
-    ){
+    ) {
         $this->extrafeeHelper = $extrafeeHelper;
         $this->taxCalculation = $calculation;
         return parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
-
-        /**
+    /**
      * Initialize resource model
      *
      * @return void
@@ -164,7 +163,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     {
         $value = parent::getData(self::DISCOUNT_IN_SUBTOTAL);
 
-        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT){
+        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT) {
             $value = $this->extrafeeHelper->getScopeValue(
                 'calculation/discount_in_subtotal'
             );
@@ -180,7 +179,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     {
         $value = parent::getData(self::TAX_IN_SUBTOTAL);
 
-        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT){
+        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT) {
             $value = $this->extrafeeHelper->getScopeValue(
                 'calculation/tax_in_subtotal'
             );
@@ -196,7 +195,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     {
         $value = parent::getData(self::SHIPPING_IN_SUBTOTAL);
 
-        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT){
+        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT) {
             $value = $this->extrafeeHelper->getScopeValue(
                 'calculation/shipping_in_subtotal'
             );
@@ -328,24 +327,27 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Address\Total $total
-     * @return float|int
+     * @param \Magento\Quote\Model\Quote $quote
+     * @return int|float
      */
-    protected function getBaseQuoteTotal(
-        \Magento\Quote\Model\Quote\Address\Total $total
-    ){
-        $baseQuoteTotals = $total->getBaseTotalAmount('subtotal');
+    protected function getBaseQuoteTotal(\Magento\Quote\Model\Quote $quote)
+    {
+        $baseQuoteTotals = $quote->getTotals()['subtotal']->getValue();
 
-        if ($this->getDiscountInSubtotal()){
-            $baseQuoteTotals += $total->getBaseTotalAmount('discount');
+        if ($this->getTaxInSubtotal()) {
+            $baseQuoteTotals += $quote->getTotals()['tax']->getValue();
         }
 
-        if ($this->getTaxInSubtotal()){
-            $baseQuoteTotals += $total->getBaseTotalAmount('tax');
+        if ($this->getShippingInSubtotal()) {
+            $baseQuoteTotals += $quote->getTotals()['shipping']->getValue();
         }
 
-        if ($this->getShippingInSubtotal()){
-            $baseQuoteTotals += $total->getBaseTotalAmount('shipping');
+        if ($this->getDiscountInSubtotal()) {
+            $discountTotal = 0;
+            foreach ($quote->getAllItems() as $item) {
+                $discountTotal -= $item->getDiscountAmount();
+            }
+            $baseQuoteTotals += $discountTotal;
         }
 
         return $baseQuoteTotals;
@@ -353,59 +355,50 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param \Magento\Quote\Model\Quote $quote
-     * @param \Magento\Quote\Model\Quote\Address\Total $total
      * @return array
      */
     public function fetchBaseOptions(
-        \Magento\Quote\Model\Quote $quote,
-        \Magento\Quote\Model\Quote\Address\Total $total
-    ){
+        \Magento\Quote\Model\Quote $quote
+    ) {
         $storeId = $quote->getStoreId();
         $rate = $quote->getBaseToQuoteRate();
 
         $options = [];
 
-        $baseQuoteTotals = $this->getBaseQuoteTotal($total);
+        $baseQuoteTotals = $this->getBaseQuoteTotal($quote);
 
         $taxRate = $this->getTaxRate($quote);
 
-        foreach($this->getOptions() as $idx => $item){
+        foreach ($this->getOptions() as $idx => $item) {
 
             /**
              * calculate base price
              */
             $basePrice = $item['price_type'] === self::PRICE_TYPE_FIXED ?
-                floatval($item['price']) :
-                floatval($item['price'] * $baseQuoteTotals / 100);
-            $unicode = mt_rand(1,500);    
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $resource = $objectManager->create('Magento\Framework\App\ResourceConnection');
-            $connection = $resource->getConnection();
-
-            $sql = "Select * FROM icube_quote_fee where quote_id = ".$quote->getId();
-            $result = $connection->fetchRow($sql); 
-            if ($result['quote_id'] && $result['quote_id']>0) {
-                $basePrice = $result['fee'];
-            }else{
-                $sql = "INSERT INTO icube_quote_fee  (quote_id, fee) VALUES (".$quote->getId().",".$unicode." )";
-                $connection->query($sql);
-                $basePrice = $unicode;
+                $this->priceToFloat($item['price']) :
+                $this->priceToFloat($item['price']) * $baseQuoteTotals / 100;
+            if ($item['price_type'] === self::PRICE_TYPE_FIXED) {
+                $price = $basePrice * $rate;
+            } else {
+                $price = $basePrice;
             }
-
-            $price = $basePrice * $rate;
 
             /**
              * apply tax class from module settings
              */
-            if ($taxRate){
-                $price += $price * $taxRate / 100;
-                $basePrice += $basePrice * $taxRate / 100;
+            $tax = 0;
+            $baseTax = 0;
+            if ($taxRate) {
+                $tax += $price * $taxRate / 100;
+                $baseTax += $basePrice * $taxRate / 100;
             }
 
             $options[] = [
                 'index' => $item['entity_id'],
                 'price' => $price,
                 'base_price' => $basePrice,
+                'tax' => $tax,
+                'base_tax' => $baseTax,
                 'default' => $item['default'],
                 'label' => $this->getOptionLabel($storeId, $item['options'])
             ];
@@ -443,13 +436,29 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     }
 
     /**
+     * @param $price
+     * @return float
+     */
+    protected function priceToFloat($price)
+    {
+        // convert "," to "."
+        $price = str_replace(',', '.', $price);
+        // remove everything except numbers and dot "."
+        $price = preg_replace("/[^0-9\.]/", "", $price);
+        // remove all seperators from first part and keep the end
+        $price = str_replace('.', '', substr($price, 0, -3)) . substr($price, -3);
+        // return float
+        return (float) $price;
+    }
+
+    /**
      * @param $optionId
      * @return array
      */
     public function getOption($optionId)
     {
         $ret = [];
-        foreach($this->getOptions() as $idx => $item) {
+        foreach ($this->getOptions() as $idx => $item) {
             if ($item['entity_id'] === $optionId) {
                 $ret = $item;
                 break;
@@ -464,7 +473,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     public function getOptionsIds()
     {
         $ids = [];
-        foreach($this->getOptions() as $idx => $item) {
+        foreach ($this->getOptions() as $idx => $item) {
             $ids[] = $item['entity_id'];
         }
         return $ids;
