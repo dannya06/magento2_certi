@@ -1,0 +1,1 @@
+UPDATE `cms_page` SET `custom_js`= NULL WHERE `custom_js` = 'NULL';
