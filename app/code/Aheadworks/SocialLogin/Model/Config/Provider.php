@@ -1,6 +1,7 @@
 <?php
 namespace Aheadworks\SocialLogin\Model\Config;
 
+use Aheadworks\SocialLogin\Model\Serialize\Serializer;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
@@ -19,15 +20,17 @@ class Provider extends AbstractConfig implements ProviderInterface
 
     /**
      * @param ScopeConfigInterface $scopeConfig
+     * @param Serializer $serializer
      * @param string $code
      * @param string $pathPrefix
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
+        Serializer $serializer,
         $code = '',
         $pathPrefix = ''
     ) {
-        parent::__construct($scopeConfig, $pathPrefix);
+        parent::__construct($scopeConfig, $serializer, $pathPrefix);
         $this->code = $code;
     }
 
