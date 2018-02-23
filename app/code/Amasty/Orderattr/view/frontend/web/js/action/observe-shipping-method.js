@@ -10,7 +10,7 @@ define([
     'mageUtils',
     'uiClass',
     'Magento_Checkout/js/model/shipping-service',
-    'Magento_Checkout/js/model/quote',
+    'Magento_Checkout/js/model/quote'
 ], function (ko, _, utils, Class, shippingService, quote) {
     'use strict';
 
@@ -24,8 +24,14 @@ define([
 
         observeShippingMethods: function () {
 
-            shippingService.getShippingRates().subscribe(this.toggleVisibility, this);
+            /* re-comment for showing all elements as default*/
+            //shippingService.getShippingRates().subscribe(this.toggleVisibility, this);
             quote.shippingMethod.subscribe(this.toggleVisibilityForRate, this);
+
+            /* hide element if no shipping method is selected*/
+            if (this.getShippingMethods().length > 0) {
+                this.element.visible = 0;
+            }
 
             return this;
         },
@@ -37,16 +43,24 @@ define([
         },
 
         toggleVisibilityForRate: function (rate) {
-            if (rate.carrier_code && rate.method_code && this.getShippingMethods().length > 0) {
+            this.element.hidedByRate = false;
+            this.element.visible(false);
+            if (!quote.shippingMethod()) {
+                return false;
+            }
+            if (rate.carrier_code && rate.method_code) {
                 var shippingMethodCode = rate.carrier_code + '_' + rate.method_code;
-                var visible = this.getShippingMethods().indexOf(shippingMethodCode) > -1;
+                var visible = (this.getShippingMethods().indexOf(shippingMethodCode) > -1) || this.getShippingMethods().length <= 0;
                 this.element.hidedByRate = !visible;
-                if (this.element.hidedByDepend && visible) {
-                    return visible;
+
+                if (!(this.element.hidedByDepend && visible)) {
+                    this.element.visible(visible);
                 }
-                this.element.visible(visible);
+
                 return visible;
             }
+
+            return false;
         },
 
         getShippingMethods: function() {

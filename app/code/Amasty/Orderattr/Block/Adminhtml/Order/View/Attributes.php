@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -12,7 +12,6 @@ use Magento\Sales\Model\Order;
 
 class Attributes extends \Magento\Backend\Block\Widget
 {
-
     /**
      * @var \Amasty\Orderattr\Helper\Config
      */
@@ -23,11 +22,12 @@ class Attributes extends \Magento\Backend\Block\Widget
      */
     protected $orderAttributeValue;
 
-    public function __construct(Context $context,
+    public function __construct(
+        Context $context,
         \Amasty\Orderattr\Model\Order\Attribute\Value $orderAttributeValue,
         \Amasty\Orderattr\Helper\Config $config,
-        array $data = [])
-    {
+        array $data = []
+    ) {
         parent::__construct($context, $data);
         $this->config = $config;
         $this->orderAttributeValue = $orderAttributeValue;
@@ -63,7 +63,8 @@ class Attributes extends \Magento\Backend\Block\Widget
 
     public function getOrderAttributeEditUrl()
     {
-        return $this->getUrl('amorderattr/order_attributes/edit',
+        return $this->getUrl(
+            'amorderattr/order_attributes/edit',
             ['order_id' => $this->getOrder()->getId()]
         );
     }

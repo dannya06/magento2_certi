@@ -1,10 +1,9 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
-
 
 namespace Amasty\Orderattr\Component\Form;
 
@@ -16,26 +15,33 @@ class AttributeMapper extends \Magento\Ui\Component\Form\AttributeMapper
     /**
      * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
      */
-    protected $localeDate;
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $_objectManager;
+    private $localeDate;
 
     /**
      * @var \Amasty\Orderattr\Model\ResourceModel\RelationDetails\CollectionFactory
      */
     private $relationCollectionFactory;
 
+    /**
+     * @var \Amasty\Orderattr\Block\Data\Form\Element\BooleanFactory
+     */
+    private $booleanFactory;
+
+    /**
+     * @var \Amasty\Orderattr\Helper\Config
+     */
+    private $config;
+
     public function __construct(
         TimezoneInterface $localeData,
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Amasty\Orderattr\Model\ResourceModel\RelationDetails\CollectionFactory $relationCollectionFactory
+        \Amasty\Orderattr\Block\Data\Form\Element\BooleanFactory $booleanFactory,
+        \Amasty\Orderattr\Model\ResourceModel\RelationDetails\CollectionFactory $relationCollectionFactory,
+        \Amasty\Orderattr\Helper\Config $config
     ) {
         $this->localeDate = $localeData;
-        $this->_objectManager = $objectManager;
         $this->relationCollectionFactory = $relationCollectionFactory;
+        $this->booleanFactory = $booleanFactory;
+        $this->config = $config;
     }
 
     /**
@@ -76,6 +82,7 @@ class AttributeMapper extends \Magento\Ui\Component\Form\AttributeMapper
      */
     public function map($attribute)
     {
+        $meta = [];
         foreach ($this->metaPropertiesMap as $metaName => $methodName) {
             $value = $attribute->$methodName();
             $meta[$metaName] = $value;
@@ -93,8 +100,8 @@ class AttributeMapper extends \Magento\Ui\Component\Form\AttributeMapper
                 $displayEmptyOption
             );
             foreach ($allOptions as $key => $option) {
-                if ($option['label'] == "") {
-                    $allOptions[$key]['label'] = " ";
+                if ($option['label'] == " ") {
+                    $allOptions[$key]['label'] = "";
                 }
                 break;
             }
@@ -125,13 +132,22 @@ class AttributeMapper extends \Magento\Ui\Component\Form\AttributeMapper
                 'timeFormat' => $this->localeDate->getTimeFormat(),
             ];
         }
+        if ($attribute->getFrontendInput() == 'date') {
+            $meta['options'] = [
+                'dateFormat' => $this->config->getCheckoutDateFormat()
+            ];
+        }
         if ($attribute->getFrontendInput() == 'boolean') {
-            $meta['options'] = $this->_objectManager->get('Amasty\Orderattr\Block\Data\Form\Element\Boolean')->getValues();
+            $meta['options'] = $this->booleanFactory->create()->getValues();
         }
 
         $meta['shipping_methods'] = $attribute->getShippingMethods()
             ? explode(',', $attribute->getShippingMethods())
             : [];
+
+        if ($tooltip = $attribute->getData('tooltip')) {
+            $meta['config']['tooltip']['description'] = $tooltip;
+        }
 
         $meta['config']['relations'] = $this->getElementRelations($attribute);
 

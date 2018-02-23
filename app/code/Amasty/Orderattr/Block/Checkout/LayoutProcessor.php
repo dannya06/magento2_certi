@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -48,6 +48,11 @@ class LayoutProcessor implements \Magento\Checkout\Block\Checkout\LayoutProcesso
     private $configHelper;
 
     /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
      * LayoutProcessor constructor.
      *
      * @param AttributeMetadataDataProvider $attributeMetadataDataProvider
@@ -68,8 +73,8 @@ class LayoutProcessor implements \Magento\Checkout\Block\Checkout\LayoutProcesso
         $this->attributeMapper = $attributeMapper;
         $this->merger = $merger;
         $this->customerSession = $customerSession;
-        $this->_storeManager = $storeManager;
         $this->configHelper = $configHelper;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -84,7 +89,7 @@ class LayoutProcessor implements \Magento\Checkout\Block\Checkout\LayoutProcesso
     {
         $attributes = $this->attributeMetadataDataProvider
             ->loadAttributesFrontendCollection(
-                $this->_storeManager->getStore()->getId()
+                $this->storeManager->getStore()->getId()
             );
 
         $this->addToShippingStep($jsLayout, $attributes);

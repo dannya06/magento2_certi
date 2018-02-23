@@ -10,9 +10,10 @@ define(
         'jquery',
         'ko',
         'underscore',
-        'Magento_Checkout/js/model/quote'
+        'Magento_Checkout/js/model/quote',
+        'uiRegistry'
     ],
-    function ($, ko, _, quote) {
+    function ($, ko, _, quote, uiRegistry) {
         'use strict';
         return function (orderAttributes) {
             for (var propertyName in orderAttributes) {
@@ -28,6 +29,13 @@ define(
 
             var shippingAddress = quote.shippingAddress();
             if (shippingAddress) {
+                var onLoadAttributes = uiRegistry.get('amastyOrderAttributesOnLoad');
+                if (onLoadAttributes !== void(0) && onLoadAttributes !== null
+                    && (orderAttributes === null || orderAttributes === void(0))) {
+                    orderAttributes = uiRegistry.get('amastyOrderAttributesOnLoad');
+                }
+                orderAttributes = merge(orderAttributes, onLoadAttributes);
+                uiRegistry.set('amastyOrderAttributesOnLoad', orderAttributes);
                 if (window.attributesBeforeLoading &&  window.attributesBeforeLoading.length) {
                     shippingAddress.custom_attributes = $.extend(
                         {}, shippingAddress.custom_attributes, window.attributesBeforeLoading
@@ -37,9 +45,18 @@ define(
                 shippingAddress.custom_attributes = $.extend(
                     {}, shippingAddress.custom_attributes, orderAttributes
                 );
+
+                if (shippingAddress.hasOwnProperty('custom_attributes') && orderAttributes) {
+                    Object.keys(shippingAddress.custom_attributes).map(function (key, index) {
+                        if (shippingAddress.custom_attributes[key] != orderAttributes[key]) {
+                            shippingAddress.custom_attributes[key] = orderAttributes[key];
+                        }
+                    });
+                }
+
                 quote.shippingAddress(shippingAddress);
             }
-            else{
+            else {
                 /*save values before initialization shipping methods*/
                 if(!window.attributesBeforeLoading){
                     window.attributesBeforeLoading = [];
@@ -47,6 +64,7 @@ define(
                 for (var propertyName in orderAttributes) {
                     window.attributesBeforeLoading[propertyName] = orderAttributes[propertyName];
                 }
+                uiRegistry.set('amastyOrderAttributesOnLoad', orderAttributes);
             }
 
             var billingAddress = quote.billingAddress();
@@ -54,7 +72,26 @@ define(
                 billingAddress.custom_attributes = $.extend(
                     {}, billingAddress.custom_attributes, orderAttributes
                 );
+
+                if (billingAddress.hasOwnProperty('custom_attributes') && orderAttributes) {
+                    Object.keys(billingAddress.custom_attributes).map(function (key, index) {
+                        if (billingAddress.custom_attributes[key] != orderAttributes[key]) {
+                            billingAddress.custom_attributes[key] = orderAttributes[key];
+                        }
+                    });
+                }
+
                 quote.billingAddress(billingAddress);
+            }
+
+            function merge(obj1, obj2) {
+                _.each(obj2, function (value, index) {
+                    if(!obj1.hasOwnProperty(index)) {
+                        obj1[index] = obj2[index];
+                    }
+                });
+
+                return obj1;
             }
         };
     }

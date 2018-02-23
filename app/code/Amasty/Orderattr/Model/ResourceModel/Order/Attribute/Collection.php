@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -85,6 +85,23 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Attribute\
              ->where(
                  'additional_table.store_ids LIKE ? OR additional_table.store_ids = 0',
                  sprintf('%%%s,%%', $storeId)
+             );
+
+        return $this;
+    }
+
+    /**
+     * Add customer group filter
+     *
+     * @param int $groupId
+     * @return $this
+     */
+    public function addCustomerGroupFilter($groupId)
+    {
+        $this->getSelect()
+             ->where(
+                 'find_in_set(?, customer_groups)',
+                 (int)$groupId
              );
 
         return $this;

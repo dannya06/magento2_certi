@@ -32,7 +32,7 @@ define([
         onUpdate: function (data) {
             this._super();
 
-            reloadOptions(this.update_url.replace(":aid", data));
+            reloadOptions(this.update_url.replace("__aid__", data));
         }
     });
 });

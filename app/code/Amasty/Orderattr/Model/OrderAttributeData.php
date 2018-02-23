@@ -1,14 +1,16 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
 
 namespace Amasty\Orderattr\Model;
 
-class OrderAttributeData extends \Magento\Framework\DataObject
+use Amasty\Orderattr\Api\Data\OrderAttributeDataInterface;
+
+class OrderAttributeData extends \Magento\Framework\DataObject implements OrderAttributeDataInterface
 {
     /**
      * {@inheritdoc}
@@ -76,5 +78,22 @@ class OrderAttributeData extends \Magento\Framework\DataObject
     public function getValueOutput()
     {
         return $this->getData('value_output');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setValueOutputAdmin($value)
+    {
+        $this->setData('value_output_admin', $value);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValueOutputAdmin()
+    {
+        return $this->getData('value_output_admin');
     }
 }
