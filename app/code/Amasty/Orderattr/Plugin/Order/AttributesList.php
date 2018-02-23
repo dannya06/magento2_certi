@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -12,12 +12,18 @@ use Magento\Quote\Model\QuoteManagement;
 
 class AttributesList
 {
+    private $validator;
+
+    public function __construct(
+        \Amasty\Orderattr\Model\Validator $validator
+    ) {
+        $this->validator = $validator;
+    }
 
     public function beforeSetCustomAttributes(
         \Magento\Quote\Model\Quote\Address $subject,
         array $attributes
-    )
-    {
+    ) {
         $orderAttributes = $this->filterOrderAttributesFromCheckout($attributes);
 
         $subject->setData('order_attributes', $orderAttributes);
@@ -26,11 +32,26 @@ class AttributesList
     protected function filterOrderAttributesFromCheckout($orderAttributes)
     {
         $orderAttributesList = [];
+        $orderAttributesData = $this->prepareAttributeData($orderAttributes);
+
+        $orderAttributesData = $this->validator->validateAttributeRelations($orderAttributesData);
         foreach ($orderAttributes as $attributeCode => $attributeValue) {
             if (strpos($attributeCode, 'amorderattr_') !== false) {
-                $orderAttributesList[str_replace('amorderattr_', '', $attributeCode)] = $attributeValue;
+                $newCode = str_replace('amorderattr_', '', $attributeCode);
+                if (isset($orderAttributesData[$newCode])) {
+                    $orderAttributesList[$newCode] = $attributeValue;
+                }
             }
         }
         return $orderAttributesList;
+    }
+
+    private function prepareAttributeData($orderAttributes)
+    {
+        $attributesData = [];
+        foreach ($orderAttributes as $code => $data) {
+            $attributesData[str_replace('amorderattr_', '', $code)] = $data->getValue();
+        }
+        return $attributesData;
     }
 }

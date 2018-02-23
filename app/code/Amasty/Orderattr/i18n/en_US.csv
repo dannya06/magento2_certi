@@ -9,6 +9,9 @@
 "Store View","Store View"
 "Visible on Front-end","Visible on Front-end"
 "Visible on Back-end","Visible on Back-end"
+Tooltip,Tooltip
+"Attribute tooltip","Attribute tooltip"
+"This is help text for customers that is displayed on checkout page","This is help text for customers that is displayed on checkout page"
 "On the Frontend Only","On the Frontend Only"
 "Length less than or equal to","Length less than or equal to"
 "Validate Length","Validate Length"
@@ -29,10 +32,13 @@
 Properties,Properties
 "Manage Label / Options","Manage Label / Options"
 Conditions,Conditions
-"Delete Relation","Delete Relation"
-"Are you sure you want to do this?","Are you sure you want to do this?"
+Attributes,Attributes
+Change,Change
+Back,Back
 Reset,Reset
 Save,Save
+"Delete Relation","Delete Relation"
+"Are you sure you want to do this?","Are you sure you want to do this?"
 Edit,Edit
 "-- no value--","-- no value--"
 "Save Order Attributes","Save Order Attributes"
@@ -50,11 +56,16 @@ Order,Order
 "Edit Order Attribute","Edit Order Attribute"
 "Order Attribute","Order Attribute"
 "Manage Order Attributes","Manage Order Attributes"
-"You cannot update this attribute","You cannot update this attribute"
+"You can`t create attribute with this ""Attribute Code"": %1","You can`t create attribute with this ""Attribute Code"": %1"
+"You can`t update this attribute","You can`t update this attribute"
 "Order attribute was successfully saved.","Order attribute was successfully saved."
 " Note. Please Flush ""Cache Storage"" on Cache Management page."," Note. Please Flush ""Cache Storage"" on Cache Management page."
 "An attribute with this code already exists.","An attribute with this code already exists."
 "An attribute with the same code (%1) already exists.","An attribute with the same code (%1) already exists."
+"Update Attributes","Update Attributes"
+"Please select orders.","Please select orders."
+"Order attributes was successfully saved.","Order attributes was successfully saved."
+"Something went wrong while saving the item data.","Something went wrong while saving the item data."
 "Edit Attributes For The Order #%1","Edit Attributes For The Order #%1"
 "The order attributes have been updated.","The order attributes have been updated."
 "An error occurred while updating the order attributes.","An error occurred while updating the order attributes."
@@ -85,6 +96,7 @@ Shipping,Shipping
 "Attribute with specified ID ""%1"" not found.","Attribute with specified ID ""%1"" not found."
 "Unable to remove attribute %1","Unable to remove attribute %1"
 "Invoice # ","Invoice # "
+"Packing Slip # ","Packing Slip # "
 "Data is incorrect.","Data is incorrect."
 "Not Visible","Not Visible"
 "Unable to save relation %1","Unable to save relation %1"
@@ -104,6 +116,8 @@ Delete,Delete
 "Checkout Settings","Checkout Settings"
 "Display Attribute Values in the Progress Sidebar","Display Attribute Values in the Progress Sidebar"
 "Hide Empty Values in the Progress Sidebar","Hide Empty Values in the Progress Sidebar"
+"Date Format","Date Format"
+"Format of date for outputting values","Format of date for outputting values"
 "PDF Documents","PDF Documents"
 "Include Order Attributes into Shipment (packing slip)","Include Order Attributes into Shipment (packing slip)"
 "Include Order Attributes into Invoice","Include Order Attributes into Invoice"
@@ -114,7 +128,6 @@ Delete,Delete
 "Display Order Attributes on Shipments View","Display Order Attributes on Shipments View"
 shipment,shipment
 invoice,invoice
-order,order
 "Add New Order Attribute","Add New Order Attribute"
 "Attribute Code","Attribute Code"
 "Attribute Label","Attribute Label"
@@ -125,7 +138,6 @@ Visible,Visible
 "Show on Grid","Show on Grid"
 Position,Position
 "Customer Group Catalog Relation","Customer Group Catalog Relation"
-Back,Back
 "Relation Information","Relation Information"
 "Relation Name","Relation Name"
 "For internal use","For internal use"
@@ -135,3 +147,4 @@ Back,Back
 "Dependent attributes should be configured on the same checkout step as the parent attribute","Dependent attributes should be configured on the same checkout step as the parent attribute"
 "Add New Relation","Add New Relation"
 "Attribute Codes","Attribute Codes"
+"Edit Order Attributes","Edit Order Attributes"

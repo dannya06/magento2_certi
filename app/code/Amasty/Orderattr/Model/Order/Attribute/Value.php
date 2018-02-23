@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -33,12 +33,24 @@ class Value extends \Magento\Framework\Model\AbstractModel implements OrderAttri
      */
     private $attributeDataFactory;
 
+    /**
+     * @var \Amasty\Orderattr\Helper\Config
+     */
+    private $config;
+
+    /**
+     * @var \Magento\Framework\Data\Form\Filter\DateFactory
+     */
+    private $dateFactory;
+
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Amasty\Orderattr\Model\AttributeMetadataDataProvider $attributeMetadataDataProvider,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         \Amasty\Orderattr\Model\OrderAttributeDataFactory $attributeDataFactory,
+        \Amasty\Orderattr\Helper\Config $config,
+        \Magento\Framework\Data\Form\Filter\DateFactory $dateFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -54,6 +66,8 @@ class Value extends \Magento\Framework\Model\AbstractModel implements OrderAttri
         $this->attributeMetadataDataProvider = $attributeMetadataDataProvider;
         $this->state                         = $context->getAppState();
         $this->attributeDataFactory = $attributeDataFactory;
+        $this->config = $config;
+        $this->dateFactory = $dateFactory;
     }
 
     protected function _construct()
@@ -138,13 +152,31 @@ class Value extends \Magento\Framework\Model\AbstractModel implements OrderAttri
                 }
 
                 $value = $this->prepareAttributeValue($attribute);
-                if ($attribute->getStoreLabel() && $value !== null) {
-                    $list[$attribute->getStoreLabel()] = str_replace('$', '\$', $value);
+                $storeLabel = (string)$attribute->getStoreLabel();
+                if ($storeLabel && $value !== null) {
+                    $list[$storeLabel] = str_replace('$', '\$', $value);
                 }
             }
         }
 
         return $list;
+    }
+
+    /**
+     * Return Attribute Value Output for Admin scope
+     *
+     * @param $attribute
+     *
+     * @return int|null|string
+     */
+    public function getAdminAttributeValue($attribute)
+    {
+        $oldStore = $attribute->getStoreId();
+        $attribute->setStoreId(\Magento\Store\Model\Store::DEFAULT_STORE_ID);
+        $result = $this->prepareAttributeValue($attribute);
+        $attribute->setStoreId($oldStore);
+
+        return $result;
     }
 
     /**
@@ -168,11 +200,13 @@ class Value extends \Magento\Framework\Model\AbstractModel implements OrderAttri
                 break;
             case 'date':
                 if ($value) {
-                    $value = $this->localeDate->formatDate($value);
+                    $value = $this->dateFactory->create(['format' => $this->config->getCheckoutDateFormat()])
+                        ->outputFilter($value);
                 }
                 break;
             case 'datetime':
                 if ($value) {
+                    $value = new \DateTime($value, new \DateTimeZone($this->localeDate->getConfigTimezone()));
                     $value = $this->localeDate->formatDateTime($value);
                 }
                 break;

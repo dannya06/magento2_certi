@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 -->
@@ -89,7 +89,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Amasty_Orderattr/js/relation/edit/parent_attribute</item>
-                    <item name="update_url" xsi:type="url" path="amorderattr/relation/UpdateParentAttribute/attribute_id/:aid"/>
+                    <item name="update_url" xsi:type="url" path="amorderattr/relation/UpdateParentAttribute/attribute_id/__aid__"/>
                     <item name="label" xsi:type="string" translate="true">Parent Attribute</item>
                     <item name="visible" xsi:type="boolean">true</item>
                     <item name="showSpinner" xsi:type="boolean">true</item>
