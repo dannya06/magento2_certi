@@ -18,22 +18,6 @@ shr_dir=$site_dir$shared
 read_repo=""
 read_branch=""
 
-# Identify repository & branch
-if [ -z "$read_repo" ]
-then
-	read -p "Repository name (example: git@github.com:icubeus/swift.git): " read_repo
-fi
-if [ -z "$read_branch" ]
-then
-	read -p "Branch to be deployed (example: master): " read_branch
-fi
-
-echo "Clone latest code"
-cd $site_dir$releases 
-git clone $read_repo $release_version
-cd $web_dir
-git checkout $read_branch
-
 COMBI=`getopt -o h --long fix-permission,full,composer-install,help -- "$@"` 
 eval set -- "$COMBI"
 
@@ -54,6 +38,22 @@ case "$1" in
 	# --full
 	--full) CASE_FULL='Full deployment WITHOUT composer install'; shift
 	echo "$CASE_FULL"
+
+		# Identify repository & branch
+		if [ -z "$read_repo" ]
+		then
+			read -p "Repository name (example: git@github.com:icubeus/swift.git): " read_repo
+		fi
+		if [ -z "$read_branch" ]
+		then
+			read -p "Branch to be deployed (example: master): " read_branch
+		fi
+
+		echo "Clone latest code"
+		cd $site_dir$releases 
+		git clone $read_repo $release_version
+		cd $web_dir
+		git checkout $read_branch
 
 		cd $web_dir
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
@@ -76,6 +76,22 @@ case "$1" in
 	# --composer-install
 	--composer-install) CASE_CI='Full deployment WITH composer install'; shift
 	echo "$CASE_CI"
+
+		# Identify repository & branch
+		if [ -z "$read_repo" ]
+		then
+			read -p "Repository name (example: git@github.com:icubeus/swift.git): " read_repo
+		fi
+		if [ -z "$read_branch" ]
+		then
+			read -p "Branch to be deployed (example: master): " read_branch
+		fi
+
+		echo "Clone latest code"
+		cd $site_dir$releases 
+		git clone $read_repo $release_version
+		cd $web_dir
+		git checkout $read_branch
 
 		cd $web_dir
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
@@ -107,8 +123,8 @@ case "$1" in
 		printf "Deployment with all options enabled WITH composer install:\n"
 		printf "  bash deploy_prd.sh --composer-install\n\n"
 		printf "Deployment with fixing file & folder permission in pub/ & var/log/ directory:\n"
-		printf "  bash deploy_prd.sh --full --fix-permission\t\t OR\n"
-		printf "  bash deploy_prd.sh --composer-install --fix-permission\t OR\n"
+		printf "  bash deploy_prd.sh --full --fix-permission\t\t\t OR\n"
+		printf "  bash deploy_prd.sh --composer-install --fix-permission\n\n"
 		exit 0 ;;
 
 	--) shift; break ;;
