@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.3.7)
- * ID:            vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=
- * Packaged:      2017-10-04T08:30:08+00:00
- * Last Modified: 2017-07-11T18:15:43+00:00
+ * Product:       Xtento_OrderExport (2.4.9)
+ * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
+ * Packaged:      2018-02-26T09:11:23+00:00
+ * Last Modified: 2018-01-18T21:55:42+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model;
@@ -113,6 +113,11 @@ class Export extends \Magento\Framework\Model\AbstractModel
     protected $emulation;
 
     /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
+    /**
      * Export constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -133,6 +138,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
      * @param \Xtento\OrderExport\Logger\Logger $xtentoLogger
      * @param \Magento\Sales\Model\Order\ShipmentFactory $shipmentFactory
      * @param \Magento\Store\Model\App\Emulation $emulation
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -156,6 +162,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         \Xtento\OrderExport\Logger\Logger $xtentoLogger,
         \Magento\Sales\Model\Order\ShipmentFactory $shipmentFactory,
         \Magento\Store\Model\App\Emulation $emulation,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -176,6 +183,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->transactionFactory = $transactionFactory;
         $this->xtentoLogger = $xtentoLogger;
         $this->shipmentFactory = $shipmentFactory;
+        $this->scopeConfig = $scopeConfig;
         $this->emulation = $emulation;
     }
 
@@ -299,7 +307,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->setExportType(self::EXPORT_TYPE_EVENT);
         $this->beforeExport();
         $generatedFiles = $this->runExport($filters, $forcedCollectionItem);
-        if (empty($generatedFiles) && $this->getLogEntry()->getResult() === Log::RESULT_SUCCESSFUL) {
+        if (empty($generatedFiles) && ($this->getLogEntry()->getResult() === NULL || $this->getLogEntry()->getResult() === Log::RESULT_SUCCESSFUL)) {
             $this->getLogEntry()->delete();
             return false;
         }
@@ -321,7 +329,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->setExportType(self::EXPORT_TYPE_CRONJOB);
         $this->beforeExport();
         $generatedFiles = $this->runExport($filters);
-        if (empty($generatedFiles) && $this->getLogEntry()->getResult() === Log::RESULT_SUCCESSFUL) {
+        if (empty($generatedFiles) && ($this->getLogEntry()->getResult() === NULL || $this->getLogEntry()->getResult() === Log::RESULT_SUCCESSFUL)) {
             $this->getLogEntry()->delete();
             return false;
         }
@@ -746,8 +754,12 @@ class Export extends \Magento\Framework\Model\AbstractModel
                     }*/
                     // Ship order
                     if ($this->getProfile()->getExportActionShipOrder() && $order->canShip()) {
+                        $items = [];
+                        foreach ($order->getAllItems() as $orderItem) {
+                            $items[$orderItem->getId()] = $orderItem->getQtyToShip();
+                        }
                         /** @var \Magento\Sales\Model\Order\Shipment $shipment */
-                        $shipment = $this->shipmentFactory->create($order);
+                        $shipment = $this->shipmentFactory->create($order, $items);
                         $shipment->register();
                         $shipment->setCustomerNoteNotify($doNotifyShipment);
                         $shipment->getOrder()->setIsInProcess(true);
@@ -972,14 +984,14 @@ class Export extends \Magento\Framework\Model\AbstractModel
             try {
                 /** @var \Magento\Framework\Mail\Message $message */
                 $message = $this->objectManager->create('Magento\Framework\Mail\MessageInterface');
-                $message->setFrom('store@' . $this->request->getServer('SERVER_NAME'), $this->request->getServer('SERVER_NAME'));
+                $message->setFrom($this->scopeConfig->getValue('trans_email/ident_general/email'), $this->scopeConfig->getValue('trans_email/ident_general/name'));
                 foreach (explode(",", $this->moduleHelper->getDebugEmail()) as $emailAddress) {
                     $emailAddress = trim($emailAddress);
                     $message->addTo($emailAddress, $emailAddress);
                 }
                 $message->setSubject('Magento Order Export Module @ ' . $this->request->getServer('SERVER_NAME'));
                 $message->setBody('Warning/Error/Message(s): ' . $this->getLogEntry()->getResultMessages());
-                $message->send($this->objectManager->create('\Magento\Framework\Mail\TransportInterfaceFactory')->create(['message' => clone $message]));
+                $this->objectManager->create('\Magento\Framework\Mail\TransportInterfaceFactory')->create(['message' => clone $message])->sendMessage();
             } catch (\Exception $e) {
                 $this->getLogEntry()->addResultMessage('Exception: ' . $e->getMessage());
                 $this->getLogEntry()->setResult(Log::RESULT_WARNING);

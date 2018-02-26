@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.3.7)
- * ID:            vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=
- * Packaged:      2017-10-04T08:30:08+00:00
- * Last Modified: 2017-03-06T13:10:17+00:00
- * File:          app/code/Xtento/OrderExport/Model/Export/Config/SchemaLocator.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Product:       Xtento_OrderExport (2.4.9)
+ * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
+ * Packaged:      2018-02-26T09:11:23+00:00
+ * Last Modified: 2017-11-27T20:02:26+00:00
+ * File:          app/code/Xtento/OrderExport/Model/Export/Data/Config/SchemaLocator.php
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
-namespace Xtento\OrderExport\Model\Export\Config;
+namespace Xtento\OrderExport\Model\Export\Data\Config;
 
 use Magento\Framework\Module\Dir;
 

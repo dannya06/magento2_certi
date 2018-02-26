@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.3.7)
- * ID:            vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=
- * Packaged:      2017-10-04T08:30:08+00:00
- * Last Modified: 2016-05-02T18:33:07+00:00
+ * Product:       Xtento_OrderExport (2.4.9)
+ * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
+ * Packaged:      2018-02-26T09:11:23+00:00
+ * Last Modified: 2018-01-29T16:57:30+00:00
  * File:          app/code/Xtento/OrderExport/Helper/Xsl.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Helper;
@@ -16,6 +16,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Xsl extends \Magento\Framework\App\Helper\AbstractHelper
 {
+    // IMPORTANT: Remember to add your custom function into allowed functions in etc/xtento/orderexport_settings.xml!
+
     // Static functions which can be called in the XSL Template, example:
     // <xsl:value-of select="php:functionString('Xtento\OrderExport\Helper\Xsl::mb_sprintf', '%015.0f', grand_total)"/>
 
@@ -129,5 +131,22 @@ class Xsl extends \Magento\Framework\App\Helper\AbstractHelper
         // Convert new format back from UTF-8 to the original encoding
         $newformat = mb_convert_encoding($newformat, $encoding, 'UTF-8');
         return vsprintf($newformat, $newargv);
+    }
+
+    /**
+     * (Sample code) Load order via repository and get specific data such as extension attributes
+     *
+     * @param $orderId
+     *
+     * @return string
+     */
+    public static function loadOrderAndDoSomething($orderId)
+    {
+        // Needs to use the object manager as this is a static function (which is required for XSL)
+        $value = '';
+        /** @var \Magento\Sales\Api\Data\OrderInterface $order */
+        $order = ObjectManager::getInstance()->create('\Magento\Sales\Api\OrderRepositoryInterface')->get($orderId);
+        $value = $order->getExtensionAttributes()->getFieldXyz();
+        return $value;
     }
 }
