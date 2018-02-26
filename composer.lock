@@ -894,7 +894,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "fc43cbe8d7b7b444f3e4010724c867110629e35b"
+                "reference": "f841b97878ed96f5fb12a3c85b46be13ee8c6375"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -951,7 +951,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2017-12-20T08:25:00+00:00"
+            "time": "2018-02-22T07:26:59+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -6381,12 +6381,12 @@
             "version": "v0.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jjriv/emogrifier.git",
+                "url": "https://github.com/MyIntervals/emogrifier.git",
                 "reference": "ed72bcd6a3c7014862ff86d026193667a172fedf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jjriv/emogrifier/zipball/ed72bcd6a3c7014862ff86d026193667a172fedf",
+                "url": "https://api.github.com/repos/MyIntervals/emogrifier/zipball/ed72bcd6a3c7014862ff86d026193667a172fedf",
                 "reference": "ed72bcd6a3c7014862ff86d026193667a172fedf",
                 "shasum": ""
             },
