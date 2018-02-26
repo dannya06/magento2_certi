@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2016-05-30T11:09:51+00:00
+ * Packaged:      2018-02-26T09:11:39+00:00
+ * Last Modified: 2017-11-21T18:48:04+00:00
  * File:          app/code/Xtento/ProductExport/Model/Destination/Email.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Destination;
@@ -69,7 +69,7 @@ class Email extends AbstractClass
             ->setBody(nl2br($this->replaceVariables($this->getDestination()->getEmailBody(), implode("\n\n", $bodyFiles))));
 
         try {
-            $mail->send($this->objectManager->create('\Magento\Framework\Mail\TransportInterfaceFactory')->create(['message' => clone $mail]));
+            $this->objectManager->create('\Magento\Framework\Mail\TransportInterfaceFactory')->create(['message' => clone $mail])->sendMessage();
         } catch (\Exception $e) {
             $this->getTestResult()->setSuccess(false)->setMessage(__('Error while sending email: %1', $e->getMessage()));
             return false;

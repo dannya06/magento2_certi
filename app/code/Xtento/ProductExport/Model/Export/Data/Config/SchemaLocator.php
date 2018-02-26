@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2017-03-06T13:52:53+00:00
- * File:          app/code/Xtento/ProductExport/Model/Export/Config/SchemaLocator.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Packaged:      2018-02-26T09:11:39+00:00
+ * Last Modified: 2017-11-28T10:56:23+00:00
+ * File:          app/code/Xtento/ProductExport/Model/Export/Data/Config/SchemaLocator.php
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
-namespace Xtento\ProductExport\Model\Export\Config;
+namespace Xtento\ProductExport\Model\Export\Data\Config;
 
 use Magento\Framework\Module\Dir;
 

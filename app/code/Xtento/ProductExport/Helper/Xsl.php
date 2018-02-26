@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2017-05-24T11:40:58+00:00
+ * Packaged:      2018-02-26T09:11:38+00:00
+ * Last Modified: 2017-11-28T11:37:18+00:00
  * File:          app/code/Xtento/ProductExport/Helper/Xsl.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Helper;
@@ -16,6 +16,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Xsl extends \Magento\Framework\App\Helper\AbstractHelper
 {
+    // IMPORTANT: Remember to add your custom function into allowed functions in etc/xtento/productexport_settings.xml!
+
     // Static functions which can be called in the XSL Template, example:
     // <xsl:value-of select="php:functionString('Xtento\ProductExport\Helper\Xsl::mb_sprintf', '%015.0f', grand_total)"/>
 
@@ -34,6 +36,22 @@ class Xsl extends \Magento\Framework\App\Helper\AbstractHelper
         /** @var \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig */
         $scopeConfig = ObjectManager::getInstance()->create('\Magento\Framework\App\Config\ScopeConfigInterface');
         return $scopeConfig->getValue($path, $scopeType, $scopeCode);
+    }
+
+    // Resize image
+    // Sample: <xsl:value-of select="php:functionString('Xtento\ProductExport\Helper\Xsl::resizeImage', entity_id, store_id, image_raw, 100, 100)"/>
+    public static function resizeImage($productId, $storeId = null, $imageFile, $width, $height = null)
+    {
+        $productRepository = ObjectManager::getInstance()->create('\Magento\Catalog\Api\ProductRepositoryInterface');
+        try {
+            $product = $productRepository->getById($productId, false, $storeId);
+            if ($product->getId()) {
+                return ObjectManager::getInstance()->get('\Magento\Catalog\Helper\Image')->init($product, 'product_page_image_small')->setImageFile($imageFile)->resize($width, $height)->getUrl();
+            }
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            return "";
+        }
+        return "";
     }
 
     // Get product price for customer group

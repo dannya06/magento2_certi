@@ -136,3 +136,37 @@ Xtento_ProductExport
 
 ===== 2.3.9 =====
  * Improved export performance: Index for entity_id in profile history table added
+
+===== 2.4.0 =====
+ * Fixed issue that empty exports are showing up in Execution Log
+
+===== 2.4.1 =====
+ * Updated Xtento_XtCore to version 2.1
+
+===== 2.4.2 =====
+ + Added syntax highlighting for XSL Template editor in export profile section
+
+===== 2.4.3 =====
+ + Added "resizeImage" helper to Helper/Xsl.php for easy image resizing
+
+===== 2.4.4 =====
+ * Fixed email sending for email destinations/error notification on Magento 2.2+ (Error: "Call to undefined method Magento\Email\Model\Transport\Interceptor::send()")
+
+===== 2.4.5 =====
+ * Fixed "option_parameters_in_url" field being empty/null
+
+===== 2.4.6 =====
+ * This is a potentially breaking change: Improved XSL security - PHP functions that can be executed via XSL are restricted now. Read more here: https://support.xtento.com/wiki/Magento_2_Extensions:Magento_Product_Export_Module#Calling_PHP_functions_in_XSL_Templates
+
+===== 2.4.7 =====
+ * Fixed "Show fields available for export" showing "<strong>" for nodes
+ * Fixed "Mass Download" functionality in "Execution Log" that previously returned "Please select log entries to download".
+
+===== 2.4.8 =====
+ * Fixed error email notification: From email is now retrieved from system configuration ("ident_general/email")
+
+===== 2.4.9 =====
+ + Added ability to access parent_item when exporting data from a product for "Product Review" export profiles
+
+===== 2.5.0 =====
+ + Added ability to export average rating percentage for product for "Product Review" export profiles

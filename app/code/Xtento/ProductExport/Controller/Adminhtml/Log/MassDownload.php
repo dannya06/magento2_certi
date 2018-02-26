@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2016-04-21T11:05:27+00:00
+ * Packaged:      2018-02-26T09:11:39+00:00
+ * Last Modified: 2017-12-29T16:08:15+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Log/MassDownload.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Controller\Adminhtml\Log;
@@ -64,7 +64,7 @@ class MassDownload extends \Xtento\ProductExport\Controller\Adminhtml\Log
     public function execute()
     {
 
-        $logIds = intval($this->getRequest()->getParam('log', false));
+        $logIds = $this->getRequest()->getParam('log', false);
         if (!is_array($logIds)) {
             $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);
             $this->messageManager->addWarningMessage(__('Please select log entries to download.'));
