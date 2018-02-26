@@ -108,3 +108,22 @@ Xtento_TrackingImport
 
 ===== 2.3.0 =====
  * Fix: If only a comment is imported into order status history, and "send order update email" is enabled, "Customer Notified" is set to "Yes" in order status history
+
+===== 2.3.1 =====
+ * Updated Xtento_XtCore to version 2.1
+
+===== 2.3.2 =====
+ * Fixed issue "Unable to unserialize" when updating to Magento 2.2+
+
+===== 2.3.3 =====
+ * Fixed bug for loopable XML fields that are not item-level related
+
+===== 2.3.4 =====
+ * Fixed email sending for email error notification on Magento 2.2+ (Error: "Call to undefined method Magento\Email\Model\Transport\Interceptor::send()")
+
+===== 2.3.5 =====
+ * Established compatibility with Magento 2.2.2: Fixed "We cannot create an empty shipment" error
+ * Improved credit memo import: Refunds should be made against correct invoice now, if there are multiple invoices
+
+===== 2.3.6 =====
+ * Fixed issue for credit memo import: Parent/simple items should be refunded correct now.

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.0)
- * ID:            HdWKOY0KdgGaRx+26HyONH06+SvSVZH7A2yQmSKRHJU=
- * Packaged:      2017-10-04T08:30:20+00:00
+ * Product:       Xtento_TrackingImport (2.3.6)
+ * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
+ * Packaged:      2018-02-26T09:10:55+00:00
  * Last Modified: 2017-03-22T12:17:45+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Profile.php
  * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
