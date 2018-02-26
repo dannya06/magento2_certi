@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -235,6 +235,13 @@ class InstallSchema implements InstallSchemaInterface
                 1,
                 ['nullable' => false, 'unsigned' => true],
                 'Enable customer group'
+            )
+            ->addColumn(
+                'tooltip',
+                Table::TYPE_TEXT,
+                512,
+                ['nullable' => false, 'default' => ''],
+                'Tooltip'
             )
             ->addForeignKey(
                 $installer->getFkName(

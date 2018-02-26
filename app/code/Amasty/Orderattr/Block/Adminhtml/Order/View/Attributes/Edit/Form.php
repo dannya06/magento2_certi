@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -33,6 +33,22 @@ class Form extends Generic
      */
     protected $_sessionQuote;
 
+    /**
+     * @var \Magento\Backend\Model\Session
+     */
+    protected $backendSession;
+
+    /**
+     * Form constructor.
+     * @param \Magento\Backend\Block\Template\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Framework\Data\FormFactory $formFactory
+     * @param \Amasty\Orderattr\Model\Order\Attribute\ValueFactory $valueFactory
+     * @param \Amasty\Orderattr\Model\AttributeMetadataDataProvider $attributeMetadataDataProvider
+     * @param \Magento\Backend\Model\Session\Quote $sessionQuote
+     * @param \Magento\Backend\Model\Session $backendSession
+     * @param array $data
+     */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Registry $registry,
@@ -46,6 +62,7 @@ class Form extends Generic
         $this->attributeMetadataDataProvider = $attributeMetadataDataProvider;
         parent::__construct($context, $registry, $formFactory, $data);
         $this->_sessionQuote = $sessionQuote;
+        $this->backendSession = $context->getBackendSession();
     }
 
     protected function _prepareForm()

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -64,6 +64,20 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 $setup->getIdxName('amasty_orderattr_order_attribute_value', 'order_entity_id'),
                 'order_entity_id',
                 \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+            );
+        }
+
+        if ($context->getVersion() && version_compare($context->getVersion(), '2.3.0', '<')) {
+            $setup->getConnection()->addColumn(
+                $setup->getTable('amasty_orderattr_order_eav_attribute'),
+                'tooltip',
+                [
+                    'type' => Table::TYPE_TEXT,
+                    'nullable' => false,
+                    'default' => '',
+                    'size' => 512,
+                    'comment' => 'Tooltip'
+                ]
             );
         }
 

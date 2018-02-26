@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -85,7 +85,7 @@ class Shipment extends \Magento\Sales\Model\Order\Pdf\Shipment
     public function getPdf($invoices = [])
     {
         $this->_beforeGetPdf();
-        $this->_initRenderer('invoice');
+        $this->_initRenderer('shipment');
 
         $pdf = new \Zend_Pdf();
         $this->_setPdf($pdf);
@@ -114,7 +114,7 @@ class Shipment extends \Magento\Sales\Model\Order\Pdf\Shipment
                 )
             );
             /* Add document text and number */
-            $this->insertDocumentNumber($page, __('Invoice # ') . $invoice->getIncrementId());
+            $this->insertDocumentNumber($page, __('Packing Slip # ') . $invoice->getIncrementId());
 
             $orderAttributesList = $this->getOrderAttributeList(
                 $order->getId(), $order->getStoreId()
@@ -134,11 +134,6 @@ class Shipment extends \Magento\Sales\Model\Order\Pdf\Shipment
                 /* Draw item */
                  $this->_drawItem($item, $page, $order);
                 $page = end($pdf->pages);
-            }
-            /* Add totals */
-            $this->insertTotals($page, $invoice);
-            if ($invoice->getStoreId()) {
-                $this->_localeResolver->revert();
             }
         }
         $this->_afterGetPdf();

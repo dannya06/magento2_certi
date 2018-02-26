@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -11,6 +11,10 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 
 class Attribute extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
+    /**
+     * @var bool
+     */
+    private $isOurAttributesExists;
 
     protected function _construct()
     {
@@ -72,6 +76,22 @@ class Attribute extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             );
             $this->getConnection()->query($sql);
         } catch (\Exception $e) {}
+    }
+
+    /**
+     * Check if at least one attribute exists in amasty_orderattr_order_eav_attribute
+     *
+     * @return bool
+     */
+    public function isOurAttributesExists()
+    {
+        if (empty($this->isOurAttributesExists)) {
+            $tableName = $this->getTable('amasty_orderattr_order_eav_attribute');
+            $sql = $this->getConnection()->select()->from($tableName, ['attribute_id'])->limit(1);
+            $this->isOurAttributesExists = (bool)$this->getConnection()->fetchCol($sql);
+        }
+
+        return $this->isOurAttributesExists;
     }
 
     protected function getAttributeFieldTableName()

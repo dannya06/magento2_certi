@@ -1,9 +1,10 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
- */ 
+ */
+
 
 namespace Amasty\Orderattr\Controller\Adminhtml;
 
@@ -12,7 +13,6 @@ use Magento\Framework\View\Result\PageFactory;
 
 abstract class Attribute extends \Magento\Backend\App\Action
 {
-
     /**
      * @var string
      */
@@ -23,7 +23,8 @@ abstract class Attribute extends \Magento\Backend\App\Action
      */
     protected $resultPageFactory;
 
-    public function __construct(Context $context,
+    public function __construct(
+        Context $context,
         PageFactory $resultPageFactory
     ) {
         parent::__construct($context);

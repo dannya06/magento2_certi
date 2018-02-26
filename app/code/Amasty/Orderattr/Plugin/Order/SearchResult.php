@@ -1,12 +1,11 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
 namespace Amasty\Orderattr\Plugin\Order;
-
 
 class SearchResult
 {
@@ -77,7 +76,7 @@ class SearchResult
 
         if ($collection->getResource() instanceof \Magento\Sales\Model\ResourceModel\Order\Shipment) {
             if ($this->config->getShowShipmentGrid()
-                && !array_key_exists('amorderattr', $select->getPart('from')) && strpos($select, 'COUNT') === FALSE) {
+                && !array_key_exists('amorderattr', $select->getPart('from')) && strpos($select, 'COUNT') === false) {
                 $select->joinLeft(
                     ['amorderattr' => $attributeFieldTableName],
                     'main_table.order_id = amorderattr.order_entity_id',
@@ -88,10 +87,10 @@ class SearchResult
 
         $where = $select->getPart('where');
         foreach ($where as &$item) {
-            if(strpos($item, '(`created_at`') !== false) {
+            if (strpos($item, '(`created_at`') !== false) {
                 $item = str_replace('`created_at`', '`main_table`.`created_at`', $item);
             }
-            if(strpos($item, '(`customer_id`') !== false) {
+            if (strpos($item, '(`customer_id`') !== false) {
                 $item = str_replace('`customer_id`', '`main_table`.`customer_id`', $item);
             }
         }
@@ -99,10 +98,11 @@ class SearchResult
 
         $order = $select->getPart('order');
         foreach ($order as &$item) {
-            if (strpos($item, 'created_at') !== false
-                && strpos($item, 'main_table.created_at') === false
+            if (is_string($item)
+                && strpos($item, 'created_at') !== false
+                && strpos($item, 'order_main_table.created_at') === false
             ) {
-                $item = str_replace('created_at', 'main_table.created_at', $item);
+                $item = str_replace('main_table.created_at', 'order_main_table.created_at', $item);
                 $item = new \Zend_Db_Expr($item);
             }
         }

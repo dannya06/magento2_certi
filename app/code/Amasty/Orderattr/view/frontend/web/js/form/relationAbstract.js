@@ -1,9 +1,9 @@
-
 define([
     'ko',
     'underscore',
-    'uiRegistry'
-], function (ko, _, registry) {
+    'uiRegistry',
+    'Amasty_Orderattr/js/form/relationRegistry'
+], function (ko, _, registry, relationRegistry) {
     'use strict';
 
     /**
@@ -21,22 +21,42 @@ define([
         /**
          * check attribute dependencies on value change
          */
-        onUpdate         : function () {
+        onUpdate: function () {
             this._super();
-            this.checkDependencies();
+            this.initCheck();
         },
+
+        /**
+         * run check dependency and clear relations
+         */
+        initCheck: function () {
+            if (this.relations && this.relations.length) {
+                relationRegistry.clear();
+                this.checkDependencies();
+            }
+        },
+
         checkDependencies: function () {
             if (this.relations && this.relations.length) {
-                this.dependsToShow = [];
                 var fieldset = registry.get(this.parentName);
+                var localRegitry = registry;
+                var localRelationRegistry = relationRegistry;
                 this.relations.map(function (relation) {
                     var dependElement = fieldset.getChild(relation.dependent_name);
+                    if (!dependElement) {
+                        // get element by full name if in fieldset element is not ready
+                        var elementFullNme = fieldset.name + '.' + relation.dependent_name;
+                        dependElement = localRegitry.get(elementFullNme);
+                    }
                     if (dependElement) {
-                        if (this.isCanShow(relation)) {
-                            this.showDepend(dependElement);
-                        } else if (this.dependsToShow.indexOf(relation.dependent_name) < 0) {
-                            /** hide element only if no relation rules to show. On one check */
-                            this.hideDepend(dependElement);
+                        dependElement.hidedByDepend = false;
+                        if (!localRelationRegistry.isExist(relation.dependent_name)) {
+                            if (this.isCanShow(relation)) {
+                                this.showDepend(dependElement);
+                            } else {
+                                /** hide element only if no relation rules to show. On one check */
+                                this.hideDepend(dependElement);
+                            }
                         }
                     }
                 }.bind(this));
@@ -49,10 +69,10 @@ define([
          * @param relation
          * @returns {boolean}
          */
-        isCanShow: function(relation) {
+        isCanShow: function (relation) {
             return (this.value() == relation.option_value && this.visible());
         },
-        showDepend       : function (dependElement) {
+        showDepend: function (dependElement) {
             if (dependElement.hidedByDepend && dependElement.hidedByDepend != this.index) {
                 return;
             }
@@ -61,14 +81,15 @@ define([
                 return false;
             }
             dependElement.show();
-            this.dependsToShow.push(dependElement.index);
+            relationRegistry.add(dependElement.index);
             if (_.isFunction(dependElement.checkDependencies)) {
                 dependElement.checkDependencies();
             }
         },
-        hideDepend       : function (dependElement) {
+        hideDepend: function (dependElement) {
             dependElement.hidedByDepend = this.index;
             dependElement.hide();
+            dependElement.value(void(0));
             if (_.isFunction(dependElement.checkDependencies)) {
                 dependElement.checkDependencies();
             }
