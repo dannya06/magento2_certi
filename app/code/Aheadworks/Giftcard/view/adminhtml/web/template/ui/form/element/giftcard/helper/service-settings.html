@@ -7,5 +7,7 @@
                 'data-form-part': $data.ns
            "
            ko-checked="isUseDefault">
-    <label translate="'Use '" attr="for: $data.uid + '_default'" class="admin__field-label" /> <a attr="href: $data.service.configSettingsUrl" target="_blank"><span translate="'Config Settings'" /></a>
+    <label attr="for: $data.uid + '_default'" class="admin__field-label" >
+        <text args="$data.service.label ? $data.service.label \: $t('Use')"/> <a attr="href: $data.service.configSettingsUrl" target="_blank"><span translate="'Config Settings'" /></a>
+    </label>
 </div>

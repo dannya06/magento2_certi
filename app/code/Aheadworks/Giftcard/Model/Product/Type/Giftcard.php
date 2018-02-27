@@ -10,6 +10,7 @@ use Aheadworks\Giftcard\Api\Data\OptionInterface;
 use Aheadworks\Giftcard\Api\Data\OptionInterfaceFactory;
 use Aheadworks\Giftcard\Api\Data\ProductAttributeInterface;
 use Aheadworks\Giftcard\Model\Product\Option;
+use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardCustomMessage;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -297,7 +298,11 @@ class Giftcard extends AbstractType
         $options = $optionObject->getData();
         $info = $product->getCustomOption('info_buyRequest');
         if ($info) {
-            $options['info_buyRequest'] = unserialize($info->getValue());
+            if (property_exists($this, 'serializer')) {
+                $options['info_buyRequest'] = $this->serializer->unserialize($info->getValue());
+            } else {
+                $options['info_buyRequest'] = unserialize($info->getValue());
+            }
             if (!$resultValidDeliveryDate['success']
                 && isset($options['info_buyRequest'][OptionInterface::DELIVERY_DATE])
             ) {
@@ -359,6 +364,51 @@ class Giftcard extends AbstractType
     }
 
     /**
+     * Check is allowed headline or not
+     *
+     * @param int $state
+     * @return bool
+     */
+    public function headlineIsAllowed($state)
+    {
+        $allowedState = [
+            GiftcardCustomMessage::SHOW_HEADLINE_AND_MESSAGE,
+            GiftcardCustomMessage::SHOW_HEADLINE_ONLY
+        ];
+        return in_array($state, $allowedState);
+    }
+
+    /**
+     * Check is allowed message or not
+     *
+     * @param int $state
+     * @return bool
+     */
+    public function messageIsAllowed($state)
+    {
+        $allowedState = [
+            GiftcardCustomMessage::SHOW_HEADLINE_AND_MESSAGE,
+            GiftcardCustomMessage::SHOW_MESSAGE_ONLY
+        ];
+        return in_array($state, $allowedState);
+    }
+
+    /**
+     * Retrieve product attribute by code
+     *
+     * @param Product $product
+     * @param string $code
+     * @return mixed
+     */
+    public function getAttribute(Product $product, $code)
+    {
+        if (!$product->hasData($code)) {
+            $product->getResource()->load($product, $product->getId());
+        }
+        return $product->getData($code);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function _prepareProduct(DataObject $buyRequest, $product, $processMode)
@@ -412,8 +462,10 @@ class Giftcard extends AbstractType
         }
         $headlineValue = null;
         $messageValue = null;
-        if ($product->getData(ProductAttributeInterface::CODE_AW_GC_ALLOW_MESSAGE)) {
+        if ($this->headlineIsAllowed($product->getData(ProductAttributeInterface::CODE_AW_GC_CUSTOM_MESSAGE_FIELDS))) {
             $headlineValue = $buyRequest->getData(OptionInterface::HEADLINE);
+        }
+        if ($this->messageIsAllowed($product->getData(ProductAttributeInterface::CODE_AW_GC_CUSTOM_MESSAGE_FIELDS))) {
             $messageValue = $buyRequest->getData(OptionInterface::MESSAGE);
         }
         $deliveryDateValue = null;
@@ -594,20 +646,5 @@ class Giftcard extends AbstractType
                 );
             }
         }
-    }
-
-    /**
-     * Retrieve product attribute by code
-     *
-     * @param Product $product
-     * @param string $code
-     * @return mixed
-     */
-    private function getAttribute(Product $product, $code)
-    {
-        if (!$product->hasData($code)) {
-            $product->getResource()->load($product, $product->getId());
-        }
-        return $product->getData($code);
     }
 }

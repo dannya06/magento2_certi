@@ -51,10 +51,6 @@ class LoadHandlerPlugin
      */
     public function afterLoad($subject, $quote)
     {
-        if (!$quote->getIsActive()) {
-            return $quote;
-        }
-
         $giftcardQuoteItems = $this->giftcardQuoteCollectionFactory->create()
             ->addFieldToFilter('quote_id', $quote->getId())
             ->addOrder('balance', Collection::SORT_ORDER_ASC)

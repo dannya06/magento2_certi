@@ -49,7 +49,7 @@ $giftcard = $block->getGiftcard()
                                     <?php echo $block->escapeHtml(__('Expire At')) ?>
                                 </td>
                                 <td class="giftcard-expire-at">
-                                    <?php /* @noEscape */ echo $block->dateFormat($giftcard->getExpireAt()) ?>
+                                    <?php /* @noEscape */ echo $block->formatDate($giftcard->getExpireAt(), \IntlDateFormatter::MEDIUM) ?>
                                 </td>
                             </tr>
                         <?php endif;?>

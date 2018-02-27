@@ -17,7 +17,7 @@ use Magento\Framework\View\Element\Template\Context;
  *
  * @package Aheadworks\Giftcard\Test\Unit\Block\Checkout\Cart
  */
-class GiftcardTest extends \PHPUnit_Framework_TestCase
+class GiftcardTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Giftcard

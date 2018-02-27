@@ -51,6 +51,7 @@ class Save implements ButtonProviderInterface
             'data_attribute' => [
                 'mage-init' => ['button' => ['event' => 'save']],
                 'form-role' => 'save',
+                'new-entity' => $id ? '' : 'save-button'
             ],
             'sort_order' => $id ? 70 : 60,
         ];

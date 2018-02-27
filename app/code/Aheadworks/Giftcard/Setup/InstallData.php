@@ -6,6 +6,8 @@
 
 namespace Aheadworks\Giftcard\Setup;
 
+use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardCustomMessage;
+use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardPool;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -205,14 +207,14 @@ class InstallData implements InstallDataInterface
                 ]
             )->addAttribute(
                 $this->entityTypeId,
-                ProductAttributeInterface::CODE_AW_GC_ALLOW_MESSAGE,
+                ProductAttributeInterface::CODE_AW_GC_CUSTOM_MESSAGE_FIELDS,
                 [
                     'type' => 'int',
-                    'label' => 'Allow Message',
+                    'label' => 'Custom Message Fields',
                     'input' => 'select',
                     'required' => false,
-                    'source' => \Magento\Eav\Model\Entity\Attribute\Source\Boolean::class,
-                    'default' => \Magento\Eav\Model\Entity\Attribute\Source\Boolean::VALUE_YES,
+                    'source' => GiftcardCustomMessage::class,
+                    'default' => GiftcardCustomMessage::SHOW_HEADLINE_AND_MESSAGE,
                     'global' => CatalogEavAttribute::SCOPE_STORE,
                     'user_defined' => false,
                     'searchable' => false,
@@ -365,6 +367,28 @@ class InstallData implements InstallDataInterface
                     'apply_to' => $this->giftCardTypeCode,
                     'group' => $this->giftCardInfoGroupName,
                     'sort_order' => 11,
+                ]
+            )->addAttribute(
+                $this->entityTypeId,
+                ProductAttributeInterface::CODE_AW_GC_POOL,
+                [
+                    'type' => 'int',
+                    'label' => 'Pool',
+                    'input' => 'select',
+                    'required' => false,
+                    'frontend' => '',
+                    'source' => GiftcardPool::class,
+                    'global' => CatalogEavAttribute::SCOPE_GLOBAL,
+                    'user_defined' => false,
+                    'searchable' => false,
+                    'filterable' => false,
+                    'visible_in_advanced_search' => false,
+                    'used_in_product_listing' => false,
+                    'used_for_sort_by' => false,
+                    'apply_to' => $this->giftCardTypeCode,
+                    'group' => $this->giftCardInfoGroupName,
+                    'sort_order' => 1,
+                    'note' => 'if selected pool is empty a new code will be generated as per pool configuration'
                 ]
             );
 

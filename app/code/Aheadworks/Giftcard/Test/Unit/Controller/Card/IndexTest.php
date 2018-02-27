@@ -19,7 +19,7 @@ use Magento\Framework\View\Page\Title;
  *
  * @package Aheadworks\Giftcard\Controller\Card
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Index
@@ -39,7 +39,10 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->resultPageFactoryMock = $this->getMock(PageFactory::class, ['create'], [], '', false);
+        $this->resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->object = $objectManager->getObject(
             Index::class,
@@ -54,9 +57,18 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $titleMock = $this->getMock(Title::class, ['set'], [], '', false);
-        $pageConfigMock = $this->getMock(Config::class, ['getTitle'], [], '', false);
-        $resultPageMock = $this->getMock(Page::class, ['getConfig'], [], '', false);
+        $titleMock = $this->getMockBuilder(Title::class)
+            ->setMethods(['set'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pageConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getTitle'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultPageMock = $this->getMockBuilder(Page::class)
+            ->setMethods(['getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultPageMock->expects($this->once())
             ->method('getConfig')
             ->willReturn($pageConfigMock);

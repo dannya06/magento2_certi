@@ -8,6 +8,7 @@ namespace Aheadworks\Giftcard\Plugin\Model\Quote\QuoteRepository;
 
 use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface as GiftcardQuoteInterface;
 use Magento\Quote\Api\Data\CartInterface;
+use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteRepository\SaveHandler;
 use Magento\Framework\EntityManager\EntityManager;
 
@@ -42,6 +43,17 @@ class SaveHandlerPlugin
      */
     public function afterSave($subject, $quote)
     {
+        return $this->saveGiftcardToQuote($quote);
+    }
+
+    /**
+     * Save Gift Card codes to Gift Card quote table
+     *
+     * @param Quote $quote
+     * @return Quote
+     */
+    public function saveGiftcardToQuote($quote)
+    {
         if ($quote->getExtensionAttributes() && $quote->getExtensionAttributes()->getAwGiftcardCodes()) {
             $giftcards = $quote->getExtensionAttributes()->getAwGiftcardCodes();
             /** @var GiftcardQuoteInterface $giftcard */
@@ -53,6 +65,7 @@ class SaveHandlerPlugin
                 }
             }
         }
+
         return $quote;
     }
 }

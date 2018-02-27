@@ -9,6 +9,7 @@ namespace Aheadworks\Giftcard\Model\Service;
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Api\GiftcardManagementInterface;
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
+use Aheadworks\Giftcard\Model\Giftcard\CodeGenerator;
 use Aheadworks\Giftcard\Model\Source\Giftcard\EmailTemplate;
 use Aheadworks\Giftcard\Model\Source\Giftcard\Status;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -29,6 +30,7 @@ use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\Data\OrderStatusHistoryInterface;
 use Magento\Sales\Api\Data\OrderStatusHistoryInterfaceFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Aheadworks\Giftcard\Model\Import\GiftcardCode as ImportGiftcardCode;
 
 /**
  * Class GiftcardService
@@ -103,6 +105,16 @@ class GiftcardService implements GiftcardManagementInterface
     private $orderRepository;
 
     /**
+     * CodeGenerator
+     */
+    private $codeGenerator;
+
+    /**
+     * ImportGiftcardCode
+     */
+    private $importGiftcardCode;
+
+    /**
      * @param GiftcardRepositoryInterface $giftcardRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param PriceCurrencyInterface $priceCurrency
@@ -116,6 +128,8 @@ class GiftcardService implements GiftcardManagementInterface
      * @param OrderManagementInterface $orderManagement
      * @param OrderStatusHistoryInterfaceFactory $orderStatusHistoryFactory
      * @param OrderRepositoryInterface $orderRepository
+     * @param CodeGenerator $codeGenerator
+     * @param ImportGiftcardCode $importGiftcardCode
      */
     public function __construct(
         GiftcardRepositoryInterface $giftcardRepository,
@@ -130,7 +144,9 @@ class GiftcardService implements GiftcardManagementInterface
         EmailStatus $sourceEmailStatus,
         OrderManagementInterface $orderManagement,
         OrderStatusHistoryInterfaceFactory $orderStatusHistoryFactory,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        CodeGenerator $codeGenerator,
+        ImportGiftcardCode $importGiftcardCode
     ) {
         $this->giftcardRepository = $giftcardRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -145,6 +161,8 @@ class GiftcardService implements GiftcardManagementInterface
         $this->orderManagement = $orderManagement;
         $this->orderStatusHistoryFactory = $orderStatusHistoryFactory;
         $this->orderRepository = $orderRepository;
+        $this->codeGenerator = $codeGenerator;
+        $this->importGiftcardCode = $importGiftcardCode;
     }
 
     /**
@@ -259,6 +277,32 @@ class GiftcardService implements GiftcardManagementInterface
             }
         }
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodes($websiteId = null, $codeGenerationSettings = null)
+    {
+        return $this->codeGenerator->generate($codeGenerationSettings, $websiteId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function importCodes($codesRawData)
+    {
+        $giftcardCodes = [];
+        if (!$codesRawData) {
+            return $giftcardCodes;
+        }
+        $giftcardCodes = $this->importGiftcardCode->process($codesRawData);
+        foreach ($giftcardCodes as $giftcardCode) {
+            /** @var GiftcardInterface $giftcardCode */
+            $this->giftcardRepository->save($giftcardCode);
+        }
+
+        return $giftcardCodes;
     }
 
     /**

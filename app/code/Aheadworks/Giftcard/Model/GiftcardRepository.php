@@ -199,6 +199,10 @@ class GiftcardRepository implements GiftcardRepositoryInterface
                     && $filter->getConditionType() == 'expired'
                 ) {
                     $collection->addExpiredFilter($filter->getValue());
+                } elseif ($filter->getField() == GiftcardInterface::DELIVERY_DATE
+                    && $filter->getConditionType() == 'checkDeliveryDate'
+                ) {
+                    $collection->addCheckDeliveryDateFilter($filter->getValue());
                 } else {
                     $condition = $filter->getConditionType() ? $filter->getConditionType() : 'eq';
                     $fields[] = $filter->getField();

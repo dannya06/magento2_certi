@@ -20,7 +20,7 @@ use Magento\Framework\Controller\Result\Json;
  *
  * @package Aheadworks\Giftcard\Controller\Product
  */
-class PreviewTest extends \PHPUnit_Framework_TestCase
+class PreviewTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Preview
@@ -50,8 +50,14 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->resultJsonFactoryMock = $this->getMock(JsonFactory::class, ['create'], [], '', false);
-        $this->previewerMock = $this->getMock(Previewer::class, ['getPreview'], [], '', false);
+        $this->resultJsonFactoryMock = $this->getMockBuilder(JsonFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->previewerMock = $this->getMockBuilder(Previewer::class)
+            ->setMethods(['getPreview'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(
             RequestInterface::class,
             [],
@@ -105,7 +111,10 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
             ->with($data, $storeId, $productId)
             ->willReturn($content);
 
-        $resultJsonMock = $this->getMock(Json::class, ['setData'], [], '', false);
+        $resultJsonMock = $this->getMockBuilder(Json::class)
+            ->setMethods(['setData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultJsonMock->expects($this->once())
             ->method('setData')
             ->willReturnSelf();

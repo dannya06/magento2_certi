@@ -17,7 +17,7 @@ use Magento\Store\Model\ScopeInterface;
  *
  * @package Aheadworks\Giftcard\Test\Unit\Model
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -99,5 +99,69 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             ->willReturn($expectedValue);
 
         $this->assertEquals($expectedValue, $this->object->getEmailSenderName($storeId));
+    }
+
+    /**
+     * Testing of getGiftcardCodeLength method
+     */
+    public function testGetGiftcardCodeLength()
+    {
+        $websiteId = 1;
+        $expectedValue = 12;
+
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(Config::XML_PATH_GIFTCARD_CODE_LENGTH, ScopeInterface::SCOPE_WEBSITE, $websiteId)
+            ->willReturn($expectedValue);
+
+        $this->assertEquals($expectedValue, $this->object->getGiftcardCodeLength($websiteId));
+    }
+
+    /**
+     * Testing of getGiftcardCodePrefix method
+     */
+    public function testGetGiftcardCodePrefix()
+    {
+        $websiteId = 1;
+        $expectedValue = 'aw';
+
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(Config::XML_PATH_GIFTCARD_CODE_PREFIX, ScopeInterface::SCOPE_WEBSITE, $websiteId)
+            ->willReturn($expectedValue);
+
+        $this->assertEquals($expectedValue, $this->object->getGiftcardCodePrefix($websiteId));
+    }
+
+    /**
+     * Testing of getGiftcardCodeSuffix method
+     */
+    public function testGetGiftcardCodeSuffix()
+    {
+        $websiteId = 1;
+        $expectedValue = 'aw';
+
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(Config::XML_PATH_GIFTCARD_CODE_SUFFIX, ScopeInterface::SCOPE_WEBSITE, $websiteId)
+            ->willReturn($expectedValue);
+
+        $this->assertEquals($expectedValue, $this->object->getGiftcardCodeSuffix($websiteId));
+    }
+
+    /**
+     * Testing of getGiftcardCodeDashAtEvery method
+     */
+    public function testGetGiftcardCodeDashAtEvery()
+    {
+        $websiteId = 1;
+        $expectedValue = 2;
+
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(Config::XML_PATH_GIFTCARD_CODE_DASH_EVERY_X_CHARACTERS, ScopeInterface::SCOPE_WEBSITE, $websiteId)
+            ->willReturn($expectedValue);
+
+        $this->assertEquals($expectedValue, $this->object->getGiftcardCodeDashAtEvery($websiteId));
     }
 }

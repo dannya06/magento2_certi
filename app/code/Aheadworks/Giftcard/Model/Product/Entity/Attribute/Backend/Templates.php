@@ -27,7 +27,7 @@ class Templates extends AbstractBackend
             return $this;
         }
 
-        $templatesRows = $object->getData($this->getAttribute()->getName());
+        $templatesRows = $object->getData($this->getAttribute()->getName()) ? : [];
         $templatesKeys = [];
         foreach ($templatesRows as $data) {
             if (!isset($data['template']) || !empty($data['delete'])) {

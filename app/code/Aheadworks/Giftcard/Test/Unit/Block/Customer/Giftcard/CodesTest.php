@@ -23,7 +23,7 @@ use Magento\Checkout\Model\Session as CheckoutSession;
  *
  * @package Aheadworks\Giftcard\Test\Unit\Block\Customer\Giftcard
  */
-class CodesTest extends \PHPUnit_Framework_TestCase
+class CodesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Codes
@@ -86,14 +86,14 @@ class CodesTest extends \PHPUnit_Framework_TestCase
             ]
         );
         $this->giftcardManagementMock = $this->getMockForAbstractClass(GiftcardManagementInterface::class);
-        $this->customerSessionMock = $this->getMock(
-            CustomerSession::class,
-            ['isLoggedIn', 'getCustomer'],
-            [],
-            '',
-            false
-        );
-        $this->checkoutSessionMock = $this->getMock(CheckoutSession::class, ['getQuoteId'], [], '', false);
+        $this->customerSessionMock = $this->getMockBuilder(CustomerSession::class)
+            ->setMethods(['isLoggedIn', 'getCustomer'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->checkoutSessionMock = $this->getMockBuilder(CheckoutSession::class)
+            ->setMethods(['getQuoteId'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
 
         $this->object = $objectManager->getObject(
@@ -160,7 +160,10 @@ class CodesTest extends \PHPUnit_Framework_TestCase
             ->method('getQuoteId')
             ->willReturn($quoteId);
 
-        $customerMock = $this->getMock(Customer::class, ['getEmail'], [], '', false);
+        $customerMock = $this->getMockBuilder(Customer::class)
+            ->setMethods(['getEmail'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $customerMock->expects($this->once())
             ->method('getEmail')
             ->willReturn($customerEmail);
@@ -197,14 +200,13 @@ class CodesTest extends \PHPUnit_Framework_TestCase
     public function testGetCheckCodeUrl()
     {
         $url = 'http://example.com/awgiftcard/card/checkCode';
-        $code = 'gccode';
 
         $this->urlBuilderMock->expects($this->once())
             ->method('getUrl')
-            ->with('awgiftcard/card/checkCode', ['code' => $code])
+            ->with('awgiftcard/card/checkCode')
             ->willReturn($url);
 
-        $this->assertEquals($url, $this->object->getCheckCodeUrl($code));
+        $this->assertEquals($url, $this->object->getCheckCodeUrl());
     }
 
     /**
@@ -213,13 +215,12 @@ class CodesTest extends \PHPUnit_Framework_TestCase
     public function testGetApplyUrl()
     {
         $url = 'http://example.com/awgiftcard/cart/apply';
-        $code = 'gccode';
 
         $this->urlBuilderMock->expects($this->once())
             ->method('getUrl')
-            ->with('awgiftcard/cart/apply', ['code' => $code])
+            ->with('awgiftcard/cart/apply')
             ->willReturn($url);
 
-        $this->assertEquals($url, $this->object->getApplyUrl($code));
+        $this->assertEquals($url, $this->object->getApplyUrl());
     }
 }

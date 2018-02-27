@@ -4,7 +4,7 @@
 * See LICENSE.txt for license details.
 */
 
-namespace Aheadworks\Giftcard\Test\Unit\Model\ResourceModel;
+namespace Aheadworks\Giftcard\Test\Unit\Model;
 
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Api\Data\GiftcardSearchResultsInterface;
@@ -32,7 +32,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
  * @package Aheadworks\Giftcard\Test\Unit\Model
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GiftcardRepositoryTest extends \PHPUnit_Framework_TestCase
+class GiftcardRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GiftcardRepository
@@ -95,62 +95,38 @@ class GiftcardRepositoryTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->entityManagerMock = $this->getMock(
-            EntityManager::class,
-            ['load', 'delete', 'save'],
-            [],
-            '',
-            false
-        );
-        $this->giftcardFactoryMock = $this->getMock(
-            GiftcardFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->giftcardDataFactoryMock = $this->getMock(
-            GiftcardInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->searchResultsFactoryMock = $this->getMock(
-            GiftcardSearchResultsInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->dataObjectHelperMock = $this->getMock(
-            DataObjectHelper::class,
-            ['populateWithArray'],
-            [],
-            '',
-            false
-        );
-        $this->dataObjectProcessorMock = $this->getMock(
-            DataObjectProcessor::class,
-            ['buildOutputDataArray'],
-            [],
-            '',
-            false
-        );
-        $this->extensionAttributesJoinProcessorMock = $this->getMock(
-            JoinProcessorInterface::class,
-            [],
-            [],
-            '',
-            false
-        );
-        $this->searchCriteriaBuilderMock = $this->getMock(
-            SearchCriteriaBuilder::class,
-            [],
-            [],
-            '',
-            false
-        );
+        $this->entityManagerMock = $this->getMockBuilder(EntityManager::class)
+            ->setMethods(['load', 'delete', 'save'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->giftcardFactoryMock = $this->getMockBuilder(GiftcardFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->giftcardDataFactoryMock = $this->getMockBuilder(GiftcardInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->searchResultsFactoryMock = $this->getMockBuilder(GiftcardSearchResultsInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->dataObjectHelperMock = $this->getMockBuilder(DataObjectHelper::class)
+            ->setMethods(['populateWithArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->dataObjectProcessorMock = $this->getMockBuilder(DataObjectProcessor::class)
+            ->setMethods(['buildOutputDataArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->extensionAttributesJoinProcessorMock = $this->getMockBuilder(JoinProcessorInterface::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->object = $objectManager->getObject(
             GiftcardRepository::class,
@@ -172,13 +148,10 @@ class GiftcardRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testSave()
     {
-        $giftcardModelMock = $this->getMock(
-            Giftcard::class,
-            ['setOrigData', 'getData', 'beforeSave'],
-            [],
-            '',
-            false
-        );
+        $giftcardModelMock = $this->getMockBuilder(Giftcard::class)
+            ->setMethods(['setOrigData', 'getData', 'beforeSave'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->giftcardFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($giftcardModelMock);
@@ -290,14 +263,14 @@ class GiftcardRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->willReturn($searchResultsMock);
 
-        $collectionMock = $this->getMock(GiftcardCollection::class, [], [], '', false);
-        $giftcardModelMock = $this->getMock(
-            Giftcard::class,
-            ['getCollection', 'getData'],
-            [],
-            '',
-            false
-        );
+        $collectionMock = $this->getMockBuilder(GiftcardCollection::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $giftcardModelMock = $this->getMockBuilder(Giftcard::class)
+            ->setMethods(['getCollection', 'getData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $giftcardModelMock->expects($this->once())
             ->method('getCollection')
             ->willReturn($collectionMock);
@@ -312,8 +285,14 @@ class GiftcardRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('process')
             ->with($collectionMock, GiftcardInterface::class);
 
-        $filterGroupMock = $this->getMock(FilterGroup::class, [], [], '', false);
-        $filterMock = $this->getMock(Filter::class, [], [], '', false);
+        $filterGroupMock = $this->getMockBuilder(FilterGroup::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filterMock = $this->getMockBuilder(Filter::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchCriteriaMock->expects($this->once())
             ->method('getFilterGroups')
             ->willReturn([$filterGroupMock]);
@@ -323,7 +302,7 @@ class GiftcardRepositoryTest extends \PHPUnit_Framework_TestCase
         $filterMock->expects($this->once())
             ->method('getConditionType')
             ->willReturn(false);
-        $filterMock->expects($this->exactly(3))
+        $filterMock->expects($this->exactly(4))
             ->method('getField')
             ->willReturn($filterName);
         $filterMock->expects($this->atLeastOnce())
@@ -340,7 +319,10 @@ class GiftcardRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('setTotalCount')
             ->with($collectionSize);
 
-        $sortOrderMock = $this->getMock(SortOrder::class, [], [], '', false);
+        $sortOrderMock = $this->getMockBuilder(SortOrder::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchCriteriaMock->expects($this->atLeastOnce())
             ->method('getSortOrders')
             ->willReturn([$sortOrderMock]);

@@ -16,6 +16,9 @@
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="aw-giftcard-customer-data" type="Aheadworks\Giftcard\Plugin\CustomerData\CustomerPlugin" />
     </type>
+    <type name="Magento\Framework\Data\Structure">
+        <plugin name="aw-giftcard-set-as-child" type="Aheadworks\Giftcard\Plugin\Data\StructurePlugin" />
+    </type>
     <type name="Magento\Framework\Url\SecurityInfo">
         <arguments>
             <argument name="secureUrlList" xsi:type="array">

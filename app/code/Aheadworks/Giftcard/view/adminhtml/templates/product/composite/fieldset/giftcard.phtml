@@ -173,7 +173,7 @@ $product = $block->getProduct();
                 </div>
             </div>
         <?php endif; ?>
-        <?php if ($block->isAllowMessage()): ?>
+        <?php if ($block->isAllowHeadline()): ?>
             <div class="field admin__field">
                 <label class="label admin__field-label" for="aw_gc_headline">
                     <span><?php echo $block->escapeHtml(__('Headline')) ?></span>
@@ -185,6 +185,8 @@ $product = $block->getProduct();
                            value="<?php /* @noEscape */ echo $block->getHeadlineValue() ?>" />
                 </div>
             </div>
+        <?php endif; ?>
+        <?php if ($block->isAllowMessage()): ?>
             <div class="field admin__field">
                 <label class="label admin__field-label" for="aw_gc_message">
                     <span><?php echo $block->escapeHtml(__('Message')) ?></span>

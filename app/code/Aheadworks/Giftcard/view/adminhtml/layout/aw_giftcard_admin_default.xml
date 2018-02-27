@@ -14,6 +14,14 @@
     <body>
         <referenceContainer name="page.main.actions">
             <block class="Aheadworks\Giftcard\Block\Adminhtml\Page\Menu" name="aw_giftcard_menu">
+                <block class="Aheadworks\Giftcard\Block\Adminhtml\Page\Menu\Item" name="aw_giftcard_menu_item.code_pools">
+                    <arguments>
+                        <argument name="path" xsi:type="string">*/pool/index</argument>
+                        <argument name="label" xsi:type="string">Code Pools</argument>
+                        <argument name="resource" xsi:type="string">Aheadworks_Giftcard::code_pools</argument>
+                        <argument name="controller" xsi:type="string">pool</argument>
+                    </arguments>
+                </block>
                 <block class="Aheadworks\Giftcard\Block\Adminhtml\Page\Menu\Item" name="aw_giftcard_menu_item.giftcard_codes">
                     <arguments>
                         <argument name="path" xsi:type="string">*/giftcard/index</argument>

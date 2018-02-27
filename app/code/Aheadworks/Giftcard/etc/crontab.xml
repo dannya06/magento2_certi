@@ -12,7 +12,7 @@
             <schedule>0 0 * * *</schedule>
         </job>
         <job name="aw_giftcard_delivery_date_check" instance="Aheadworks\Giftcard\Cron\DeliveryDateCheck" method="execute">
-            <schedule>0 */1 * * *</schedule>
+            <schedule>*/5 * * * *</schedule>
         </job>
     </group>
 </config>
