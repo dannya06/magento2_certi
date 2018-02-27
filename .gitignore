@@ -58,5 +58,10 @@ atlassian*
 /app/code/WeltPixel/FrontendOptions/view/frontend/web/*
 /app/code/WeltPixel/ProductPage/view/frontend/web/css/*
 /app/code/WeltPixel/QuickCart/view/frontend/web/css/*
+/app/code/WeltPixel/ProductPage/view/frontend/web/css/weltpixel_product_store_default.less
+/app/code/WeltPixel/FrontendOptions/view/frontend/web/css/source/_module.less
+/app/code/WeltPixel/FrontendOptions/view/frontend/web/css/source/_extend.less
+/app/code/WeltPixel/CustomHeader/view/frontend/web/css/weltpixel_custom_header_default.less
+/app/code/WeltPixel/CategoryPage/view/frontend/web/css/weltpixel_category_store_default.less
 
 /generated
