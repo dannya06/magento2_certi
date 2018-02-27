@@ -6,7 +6,9 @@
 */
 -->
 
-<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Ui/etc/ui_configuration.xsd">
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:framework:Ui/etc/ui_configuration.xsd"
+         class="Aheadworks\AdvancedReports\Ui\Component\Listing\Listing">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">aw_arep_customersales_customers_grid.aw_arep_customersales_customers_grid_data_source</item>
@@ -16,7 +18,7 @@
     </argument>
     <dataSource name="aw_arep_customersales_customers_grid_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">Aheadworks\AdvancedReports\Ui\DataProvider\CustomerSales\Customers\DataProvider</argument>
+            <argument name="class" xsi:type="string">AwArepDataProvider</argument>
             <argument name="name" xsi:type="string">aw_arep_customersales_customers_grid_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">id</argument>
             <argument name="requestFieldName" xsi:type="string">id</argument>
@@ -34,6 +36,67 @@
             </argument>
         </argument>
     </dataSource>
+    <container name="toolbar">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="template" xsi:type="string">Aheadworks_AdvancedReports/ui/toolbar</item>
+            </item>
+        </argument>
+        <container name="menu" class="Aheadworks\AdvancedReports\Ui\Component\Toolbar\Menu">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/dropdown</item>
+                    <item name="displayArea" xsi:type="string">leftPosition</item>
+                    <item name="isAjax" xsi:type="boolean">false</item>
+                    <item name="allowUpdateUrl" xsi:type="boolean">false</item>
+                    <item name="exports" xsi:type="array"/>
+                    <item name="additionalClasses" xsi:type="array">
+                        <item name="extension-menu" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </container>
+        <container name="customer_group_filter" class="Aheadworks\AdvancedReports\Ui\Component\Toolbar\CustomerGroup">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/dropdown</item>
+                    <item name="options" xsi:type="object">Aheadworks\AdvancedReports\Model\Source\CustomerGroup</item>
+                    <item name="displayArea" xsi:type="string">rightPosition</item>
+                    <item name="filterScope" xsi:type="string">customer_group_id</item>
+                    <item name="additionalClasses" xsi:type="array">
+                        <item name="left" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </container>
+        <container name="store_view_filter" class="Aheadworks\AdvancedReports\Ui\Component\Toolbar\Store">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/dropdown</item>
+                    <item name="displayArea" xsi:type="string">rightPosition</item>
+                    <item name="filterScope" xsi:type="string">report_scope</item>
+                    <item name="additionalClasses" xsi:type="array">
+                        <item name="left" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </container>
+        <container name="date_range_filter" class="Aheadworks\AdvancedReports\Ui\Component\Toolbar\PeriodRange">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="displayArea" xsi:type="string">rightPosition</item>
+                    <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/period-range</item>
+                </item>
+            </argument>
+        </container>
+    </container>
+    <container name="breadcrumbs" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Breadcrumbs">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/breadcrumbs</item>
+            </item>
+        </argument>
+    </container>
     <container name="listing_totals">
          <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
@@ -131,6 +194,7 @@
                         <argument name="data" xsi:type="array">
                             <item name="options" xsi:type="object">Aheadworks\AdvancedReports\Model\Source\OrderStatus</item>
                             <item name="config" xsi:type="array">
+                                <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/form/element/multiselect</item>
                                 <item name="provider" xsi:type="string">${ $.parentName }</item>
                                 <item name="dataType" xsi:type="string">text</item>
                                 <item name="formElement" xsi:type="string">multiselect</item>
@@ -149,6 +213,7 @@
             </fieldset>
         </modal>
     </container>
+    <container name="container_data_merger" class="Aheadworks\AdvancedReports\Ui\Component\Listing\DataMerger"/>
     <columns name="grid_columns">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
@@ -165,6 +230,7 @@
                     <item name="sortOrder" xsi:type="number">10</item>
                     <item name="viewUrlPath" xsi:type="string">customer/index/edit</item>
                     <item name="urlEntityParamValue" xsi:type="string">customer_id</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -175,6 +241,7 @@
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">Customer Email</item>
                     <item name="sortOrder" xsi:type="number">20</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -185,6 +252,7 @@
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">Customer Group</item>
                     <item name="sortOrder" xsi:type="number">30</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -196,6 +264,7 @@
                     <item name="filter" xsi:type="string">select</item>
                     <item name="label" xsi:type="string" translate="true">Country</item>
                     <item name="sortOrder" xsi:type="number">40</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -206,6 +275,7 @@
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">State/Region</item>
                     <item name="sortOrder" xsi:type="number">50</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -216,6 +286,7 @@
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">Phone Number</item>
                     <item name="sortOrder" xsi:type="number">60</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -264,6 +335,7 @@
                     <item name="label" xsi:type="string" translate="true">Total Sales (Lifetime)</item>
                     <item name="sortOrder" xsi:type="number">100</item>
                     <item name="totalsVisible" xsi:type="boolean">true</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -276,6 +348,7 @@
                     <item name="label" xsi:type="string" translate="true">Total Orders (Lifetime)</item>
                     <item name="sortOrder" xsi:type="number">110</item>
                     <item name="totalsVisible" xsi:type="boolean">true</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -288,6 +361,7 @@
                     <item name="label" xsi:type="string" translate="true">Total Items (Lifetime)</item>
                     <item name="sortOrder" xsi:type="number">120</item>
                     <item name="totalsVisible" xsi:type="boolean">true</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -298,6 +372,7 @@
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">Account Created On</item>
                     <item name="sortOrder" xsi:type="number">130</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -309,6 +384,7 @@
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
                     <item name="label" xsi:type="string" translate="true">Last Login Date</item>
                     <item name="dateFormat" xsi:type="string">MMM dd, YYYY, H:MM:SS A</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -320,6 +396,7 @@
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
                     <item name="label" xsi:type="string" translate="true">Last Order Date</item>
                     <item name="dateFormat" xsi:type="string">MMM dd, YYYY, H:MM:SS A</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>

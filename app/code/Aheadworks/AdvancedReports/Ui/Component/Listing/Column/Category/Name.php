@@ -57,6 +57,8 @@ class Name extends \Magento\Ui\Component\Listing\Columns\Column
                     $item['row_url'] = $this->urlModel->getUrl(
                         'category',
                         'productperformance',
+                        $dataSource['data']['periodFromFilter'],
+                        $dataSource['data']['periodToFilter'],
                         $params
                     );
                 }

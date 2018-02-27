@@ -54,4 +54,36 @@ class OrderStatus implements \Magento\Framework\Data\OptionSourceInterface
         }
         return $options;
     }
+
+    /**
+     * Get options
+     *
+     * @return []
+     */
+    public function getOptions()
+    {
+        $options = $this->toOptionArray();
+        $result = [];
+
+        foreach ($options as $option) {
+            $result[$option['value']] = $option['label'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get option by value
+     *
+     * @param int $value
+     * @return null
+     */
+    public function getOptionByValue($value)
+    {
+        $options = $this->getOptions();
+        if (array_key_exists($value, $options)) {
+            return $options[$value];
+        }
+        return null;
+    }
 }

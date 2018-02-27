@@ -130,12 +130,14 @@ class Product extends \Magento\Framework\App\Action\Action
                     $customer = $this->customerRepository->getById($visitor->getCustomerId());
                     $productViewLog->setCustomerId($customer->getId());
                     $productViewLog->setCustomerGroupId($customer->getGroupId());
-                } catch (NoSuchEntityException $e) {
-
+                } catch (\Exception $e) {
                 }
             }
 
-            $logResource->save($productViewLog);
+            try {
+                $logResource->save($productViewLog);
+            } catch (\Exception $e) {
+            }
         }
     }
 }

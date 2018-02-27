@@ -57,6 +57,7 @@ class Day extends AbstractResource
      * Retrieve min date from table
      *
      * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getMinDate()
     {

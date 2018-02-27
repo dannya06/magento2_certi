@@ -8,26 +8,15 @@ namespace Aheadworks\AdvancedReports\Model\ResourceModel\Conversion;
 
 use Magento\Framework\DataObject;
 use Aheadworks\AdvancedReports\Model\ResourceModel\Conversion as ResourceConversion;
+use Aheadworks\AdvancedReports\Model\ResourceModel\AbstractPeriodBasedCollection;
 
 /**
  * Class Collection
  *
  * @package Aheadworks\AdvancedReports\Model\ResourceModel\Conversion
  */
-class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\AbstractCollection
+class Collection extends AbstractPeriodBasedCollection
 {
-    /**
-     * Name of object id field
-     *
-     * @var string
-     */
-    protected $_idFieldName = 'id';
-
-    /**
-     * @var bool
-     */
-    protected $periodBased = true;
-
     /**
      * {@inheritdoc}
      */
@@ -42,10 +31,18 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     protected function _initSelect()
     {
         $this->getSelect()
-            ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(false));
+            ->from(['main_table' => $this->getMainTable()], []);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns());
+        parent::_renderFiltersBefore();
     }
 
     /**
@@ -63,17 +60,6 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
                 'IF(' . $viewsCount . ' < ' . $ordersCount . ', 100, ' .
                 $ordersCount . ' / ' . $viewsCount . ' * 100), 0)',
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addFieldToFilter($field, $condition = null)
-    {
-        if ($field == 'periodFilter') {
-            return $this->addGroupByFilter();
-        }
-        return parent::addFieldToFilter($field, $condition);
     }
 
     /**

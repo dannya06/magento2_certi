@@ -7,29 +7,26 @@
 namespace Aheadworks\AdvancedReports\Test\Unit\Model;
 
 use Aheadworks\AdvancedReports\Model\Period;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\App\CacheInterface;
-use Aheadworks\AdvancedReports\Model\Filter;
-use Aheadworks\AdvancedReports\Model\Url as UrlModel;
 use Aheadworks\AdvancedReports\Model\ResourceModel\DatesGrouping\Factory as DatesGroupingFactory;
 use Aheadworks\AdvancedReports\Model\Source\Groupby;
-use Aheadworks\AdvancedReports\Model\ResourceModel\DatesGrouping;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Aheadworks\AdvancedReports\Model\Source\Groupby as GroupbySource;
+use \Aheadworks\AdvancedReports\Model\ResourceModel\DatesGrouping\AbstractResource;
 
 /**
  * Test for \Aheadworks\AdvancedReports\Model\Period
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PeriodTest extends \PHPUnit_Framework_TestCase
+class PeriodTest extends \PHPUnit\Framework\TestCase
 {
+    private $defaultConfigTimezoneCode = 'UTC';
     /**
      * @var Period
      */
     private $model;
-
-    /**
-     * @var CacheInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $cacheMock;
 
     /**
      * @var DatesGroupingFactory|\PHPUnit_Framework_MockObject_MockObject
@@ -37,14 +34,9 @@ class PeriodTest extends \PHPUnit_Framework_TestCase
     private $datesGroupingFactoryMock;
 
     /**
-     * @var Filter\Groupby|\PHPUnit_Framework_MockObject_MockObject
+     * @var TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $groupbyFilterMock;
-
-    /**
-     * @var UrlModel|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $urlModelMock;
+    private $localeDateMock;
 
     /**
      * Init mocks for tests
@@ -54,71 +46,138 @@ class PeriodTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->cacheMock = $this->getMockForAbstractClass(CacheInterface::class);
-        $this->datesGroupingFactoryMock = $this->getMock(DatesGroupingFactory::class, ['create'], [], '', false);
-        $this->groupbyFilterMock = $this->getMock(Filter\Groupby::class, ['getCurrentGroupByKey'], [], '', false);
-        $this->urlModelMock = $this->getMock(UrlModel::class, ['getUrlByPeriod'], [], '', false);
+        $this->datesGroupingFactoryMock = $this->getMockBuilder(DatesGroupingFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->localeDateMock = $this->getMockBuilder(TimezoneInterface::class)
+            ->setMethods(['getConfigTimezone'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
         $this->model = $objectManager->getObject(
             Period::class,
             [
-                'cache' => $this->cacheMock,
                 'datesGroupingFactory' => $this->datesGroupingFactoryMock,
-                'groupbyFilter' => $this->groupbyFilterMock,
-                'urlModel' => $this->urlModelMock
+                'localeDate' => $this->localeDateMock,
             ]
         );
     }
 
     /**
-     * Testing of getFirstAvailableDateAsString method
+     * Testing of periodDatesResolve method
+     * @dataProvider periodDatesResolveDataProvider
+     *
+     * @param array $item
+     * @param string $groupBy
+     * @param \DateTime $periodFrom
+     * @param \DateTime $periodTo
+     * @param bool $isCompare
+     * @param array $expected
      */
-    public function testGetFirstAvailableDateAsString()
+    public function testPeriodDatesResolve($item, $groupBy, $periodFrom, $periodTo, $isCompare, $expected)
     {
-        $minDate = '2016-10-01';
+        $this->localeDateMock->expects($this->once())
+            ->method('getConfigTimezone')
+            ->with(ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+            ->willReturn($this->defaultConfigTimezoneCode);
 
-        $this->cacheMock->expects($this->once())
-            ->method('load')
-            ->with(Period::MIN_DATE_CACHE_KEY)
-            ->willReturn(null);
-        $dayMock = $this->getMock(DatesGrouping\Day::class, ['getMinDate'], [], '', false);
-        $dayMock->expects($this->once())
-            ->method('getMinDate')
-            ->willReturn($minDate);
-        $this->datesGroupingFactoryMock->expects($this->once())
-            ->method('create')
-            ->with(DatesGrouping\Day::KEY)
-            ->willReturn($dayMock);
-        $this->cacheMock->expects($this->once())
-            ->method('save')
-            ->with($minDate, Period::MIN_DATE_CACHE_KEY, [], null)
-            ->willReturnSelf();
-
-        $this->assertEquals($minDate, $this->model->getFirstAvailableDateAsString());
+        $this->assertEquals(
+            $expected,
+            $this->model->periodDatesResolve($item, $groupBy, $periodFrom, $periodTo, $isCompare)
+        );
     }
 
     /**
-     * Testing of getPeriod method
+     * Data provider for testPeriodDatesResolve method
+     *
+     * @return array
      */
-    public function testGetPeriod()
+    public function periodDatesResolveDataProvider()
     {
-        $item = [];
-        $periodLabel = 'Dec 12, 2016';
-        $period = [
-            'start_date' => new \DateTime('2016-12-12'),
-            'end_date' => new \DateTime('2016-12-12'),
-            'url' => 'http://mydomain.com'
+        $dateTimeZone = new \DateTimeZone($this->defaultConfigTimezoneCode);
+        return [
+            [
+                [
+                    'date' => '2018-01-06',
+                ],
+                GroupbySource::TYPE_DAY,
+                new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone),
+                false,
+                [
+                    'start_date' => new \DateTime('2018-01-06 00:00:00.000000', $dateTimeZone),
+                    'end_date' => new \DateTime('2018-01-06 00:00:00.000000', $dateTimeZone)
+                ]
+            ],
+            [
+                [
+                    'test_key' => 'test_value',
+                ],
+                GroupbySource::TYPE_DAY,
+                new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone),
+                false,
+                null
+            ],
+            [
+                [
+                    'start_date' => '2018-01-01',
+                    'end_date' => '2018-01-31'
+                ],
+                GroupbySource::TYPE_WEEK,
+                new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone),
+                false,
+                [
+                    'start_date' => new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                    'end_date' => new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone)
+                ]
+            ],
+            [
+                [
+                    'start_date' => '2018-01-01',
+                    'end_date' => '2018-01-31'
+                ],
+                GroupbySource::TYPE_MONTH,
+                new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone),
+                false,
+                [
+                    'start_date' => new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                    'end_date' => new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone)
+                ]
+            ],
+            [
+                [
+                    'start_date' => '2018-01-01',
+                    'end_date' => '2018-01-31'
+                ],
+                GroupbySource::TYPE_QUARTER,
+                new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone),
+                false,
+                [
+                    'start_date' => new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                    'end_date' => new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone)
+                ]
+            ],
+            [
+                [
+                    'start_date' => '2018-01-01',
+                    'end_date' => '2018-01-31'
+                ],
+                GroupbySource::TYPE_YEAR,
+                new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone),
+                false,
+                [
+                    'start_date' => new \DateTime('2018-01-01 15:24:04.000000', $dateTimeZone),
+                    'end_date' => new \DateTime('2018-01-16 15:24:04.000000', $dateTimeZone)
+                ]
+            ],
         ];
-        $expected = ['period_url' => $period['url'], 'period_label' => $periodLabel];
-
-        $this->urlModelMock->expects($this->once())
-            ->method('getUrlByPeriod')
-            ->willReturn($period);
-        $this->groupbyFilterMock->expects($this->once())
-            ->method('getCurrentGroupByKey')
-            ->willReturn(Groupby::TYPE_DAY);
-
-        $this->assertEquals($expected, $this->model->getPeriod($item));
     }
 
     /**
@@ -132,13 +191,9 @@ class PeriodTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPeriodAsString($from, $to, $groupType, $expected)
     {
-        $class = new \ReflectionClass($this->model);
-        $method = $class->getMethod('getPeriodAsString');
-        $method->setAccessible(true);
-
         $this->assertEquals(
             $expected,
-            $method->invokeArgs($this->model, [$from, $to, $groupType])
+            $this->model->getPeriodAsString($from, $to, $groupType)
         );
     }
 
@@ -160,5 +215,87 @@ class PeriodTest extends \PHPUnit_Framework_TestCase
             [new \DateTime('2016-07-01'), new \DateTime('2016-09-30'), Groupby::TYPE_QUARTER, 'Q3 2016'],
             [new \DateTime('2016-12-12'), new \DateTime('2016-12-12'), Groupby::TYPE_YEAR, '2016']
         ];
+    }
+
+    /**
+     * Testing of getPeriods method with exception throwing
+     */
+    public function testGetPeriodsException()
+    {
+        $from = new \DateTime('2018-01-01');
+        $intervalsCount = 5;
+        $groupBy = Groupby::TYPE_DAY;
+        $expected = ['period' => $groupBy, 'intervals' => []];
+        $this->datesGroupingFactoryMock->expects($this->once())
+            ->method('create')
+            ->with($groupBy)
+            ->willThrowException(new LocalizedException(__('Error!')));
+
+        $this->assertEquals($expected, $this->model->getPeriods($from, $intervalsCount, $groupBy));
+    }
+
+    /**
+     * Testing of getPeriods method with exception throwing on intervals getting
+     */
+    public function testGetPeriodsGettingIntervalsWithException()
+    {
+        $from = new \DateTime('2018-01-01');
+        $intervalsCount = 5;
+        $groupBy = Groupby::TYPE_DAY;
+        $expected = ['period' => $groupBy, 'intervals' => []];
+
+        $datePeriodMock = $this->getMockBuilder(AbstractResource::class)
+            ->disableOriginalConstructor()
+            ->setMethods(
+                [
+                    'getPeriods'
+                ]
+            )->getMockForAbstractClass();
+        $datePeriodMock->expects($this->once())
+            ->method('getPeriods')
+            ->with($from, $intervalsCount)
+            ->willThrowException(new LocalizedException(__('Error!')));
+
+        $this->datesGroupingFactoryMock->expects($this->once())
+            ->method('create')
+            ->with($groupBy)
+            ->willReturn($datePeriodMock);
+
+        $this->assertEquals($expected, $this->model->getPeriods($from, $intervalsCount, $groupBy));
+    }
+
+    /**
+     * Testing of getPeriods method
+     */
+    public function testGetPeriods()
+    {
+        $from = new \DateTime('2018-01-01');
+        $intervalsCount = 3;
+        $groupBy = Groupby::TYPE_DAY;
+        $intervals = [
+            ['date' => '2018-01-01'],
+            ['date' => '2018-01-02'],
+            ['date' => '2018-01-03'],
+        ];
+        $expected = ['period' => $groupBy, 'intervals' => $intervals];
+
+        $datePeriodMock = $this->getMockBuilder(AbstractResource::class)
+            ->disableOriginalConstructor()
+            ->setMethods(
+                [
+                    'getPeriods'
+                ]
+            )->getMockForAbstractClass();
+        $datePeriodMock->expects($this->once())
+            ->method('getPeriods')
+            ->with($from, $intervalsCount)
+            ->willReturn($intervals);
+
+        $this->datesGroupingFactoryMock->expects($this->once())
+            ->method('create')
+            ->with($groupBy)
+            ->willReturn($datePeriodMock);
+
+        $this->assertEquals($expected, $this->model->getPeriods($from, $intervalsCount, $groupBy));
     }
 }

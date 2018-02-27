@@ -11,8 +11,6 @@ use Magento\Framework\Api\Search\SearchResultInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Aheadworks\AdvancedReports\Ui\DataProvider\Document;
 use Aheadworks\AdvancedReports\Model\ResourceModel\ProductAttributes\Collection as ProductAttributesCollection;
-use Aheadworks\AdvancedReports\Model\Config;
-use Aheadworks\AdvancedReports\Model\Filter;
 use Magento\Eav\Api\AttributeRepositoryInterface;
 
 /**
@@ -37,15 +35,10 @@ class Collection extends ProductAttributesCollection implements SearchResultInte
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $eventPrefix
      * @param mixed $eventObject
      * @param mixed $resourceModel
-     * @param Config $config
-     * @param Filter\Store $storeFilter
-     * @param Filter\CustomerGroup $customerGroupFilter
-     * @param Filter\Groupby $groupbyFilter
-     * @param Filter\Period $periodFilter
      * @param AttributeRepositoryInterface $attributeRepository
      * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
      * @param string $model
-     * @param string|null $connection
+     * @param \Magento\Framework\DB\Adapter\AdapterInterface|null $connection
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -59,11 +52,6 @@ class Collection extends ProductAttributesCollection implements SearchResultInte
         $eventPrefix,
         $eventObject,
         $resourceModel,
-        Config $config,
-        Filter\Store $storeFilter,
-        Filter\CustomerGroup $customerGroupFilter,
-        Filter\Groupby $groupbyFilter,
-        Filter\Period $periodFilter,
         AttributeRepositoryInterface $attributeRepository,
         \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         $model = Document::class,
@@ -75,11 +63,6 @@ class Collection extends ProductAttributesCollection implements SearchResultInte
             $logger,
             $fetchStrategy,
             $eventManager,
-            $config,
-            $storeFilter,
-            $customerGroupFilter,
-            $groupbyFilter,
-            $periodFilter,
             $attributeRepository,
             $metadataPool,
             $connection,

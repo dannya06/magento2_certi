@@ -6,15 +6,14 @@
 
 namespace Aheadworks\AdvancedReports\Ui\DataProvider;
 
+use Aheadworks\AdvancedReports\Model\Filter\FilterPool;
+use Aheadworks\AdvancedReports\Ui\ScopeCurrency;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\Search\SearchCriteriaBuilder;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\View\Element\UiComponent\DataProvider\Reporting;
 use Magento\Framework\Api\Search\SearchResultInterface;
 use Magento\Framework\Locale\FormatInterface;
-use Aheadworks\AdvancedReports\Model\Filter;
-use Aheadworks\AdvancedReports\Model\Period as PeriodModel;
-use Aheadworks\AdvancedReports\Model\Source\Groupby as GroupbySource;
+use Magento\Framework\Api\Search\ReportingInterface;
 
 /**
  * Class DataProvider
@@ -24,68 +23,59 @@ use Aheadworks\AdvancedReports\Model\Source\Groupby as GroupbySource;
 class DataProvider extends \Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider
 {
     /**
-     * @var []
+     * @var FormatInterface
      */
-    protected $exportParams = [];
+    private $localeFormat;
 
     /**
-     * @var []
+     * @var ScopeCurrency
+     */
+    private $scopeCurrency;
+
+    /**
+     * @var SearchResultInterface
+     */
+    private $compareSearchResultCached;
+
+    /**
+     * @var SearchResultInterface
+     */
+    private $searchResultCached;
+
+    /**
+     * @var array
+     */
+    private $exportParams = [];
+
+    /**
+     * @var array
      */
     private $allowedRequestParams = [];
 
     /**
-     * bool
-     */
-    private $compareEnabled = false;
-
-    /**
-     * @var FormatInterface
-     */
-    protected $localeFormat;
-
-    /**
-     * @var Filter\Store
-     */
-    protected $storeFilter;
-
-    /**
-     * @var Filter\Period
-     */
-    private $periodFilter;
-
-    /**
-     * @var PeriodModel
-     */
-    private $periodModel;
-
-    /**
-     * @param string                $name
-     * @param string                $primaryFieldName
-     * @param string                $requestFieldName
-     * @param Reporting             $reporting
+     * @param string $name
+     * @param string $primaryFieldName
+     * @param string $requestFieldName
+     * @param ReportingInterface $reporting
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param RequestInterface      $request
-     * @param FilterBuilder         $filterBuilder
-     * @param FormatInterface       $localeFormat
-     * @param Filter\Store          $storeFilter
-     * @param Filter\Period         $periodFilter
-     * @param PeriodModel           $periodModel
-     * @param array                 $meta
-     * @param array                 $data
+     * @param RequestInterface $request
+     * @param FilterBuilder $filterBuilder
+     * @param FormatInterface $localeFormat
+     * @param ScopeCurrency $scopeCurrency
+     * @param array $meta
+     * @param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         $name,
         $primaryFieldName,
         $requestFieldName,
-        Reporting $reporting,
+        ReportingInterface $reporting,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         RequestInterface $request,
         FilterBuilder $filterBuilder,
         FormatInterface $localeFormat,
-        Filter\Store $storeFilter,
-        Filter\Period $periodFilter,
-        PeriodModel $periodModel,
+        ScopeCurrency $scopeCurrency,
         array $meta = [],
         array $data = []
     ) {
@@ -101,23 +91,81 @@ class DataProvider extends \Magento\Framework\View\Element\UiComponent\DataProvi
             $data
         );
         $this->localeFormat = $localeFormat;
-        $this->storeFilter = $storeFilter;
-        $this->periodFilter = $periodFilter;
-        $this->periodModel = $periodModel;
-        $this->applyReportFilters();
-        $this->applyReportSettingFilters();
-        $this->applyDefaultFilters();
-        $this->prepareCompare();
+        $this->scopeCurrency = $scopeCurrency;
     }
 
     /**
      * Retrieve allowed params from request
      *
-     * @return []
+     * @return array
      */
     public function getAllowedRequestParams()
     {
         return $this->allowedRequestParams;
+    }
+
+    /**
+     * Retrieve provider data
+     *
+     * @return array
+     */
+    public function getProviderData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * Retrieve cached Search Result
+     *
+     * @return SearchResultInterface
+     */
+    public function getSearchResultCached()
+    {
+        return $this->searchResultCached;
+    }
+
+    /**
+     * Retrieve cached compare Search Result
+     *
+     * @return SearchResultInterface
+     */
+    public function getCompareSearchResultCached()
+    {
+        return $this->compareSearchResultCached;
+    }
+
+    /**
+     * Retrieve default filter pool
+     *
+     * @return FilterPool
+     */
+    public function getDefaultFilterPool()
+    {
+        return $this->reporting->getDefaultFilterPool();
+    }
+
+    /**
+     * Check if enabled compare to
+     *
+     * @return bool
+     */
+    public function isEnabledCompareTo()
+    {
+        $periodFilter = $this->getDefaultFilterPool()->getFilter('period');
+
+        return $this->isAvailableCompareTo() ? $periodFilter->isCompareEnabled() : false;
+    }
+
+    /**
+     * Check if compare to available
+     *
+     * @return bool
+     */
+    public function isAvailableCompareTo()
+    {
+        $config = $this->getConfigData();
+
+        return isset($config['compareToAvailable']) && !$config['compareToAvailable'] ? false : true;
     }
 
     /**
@@ -189,155 +237,105 @@ class DataProvider extends \Magento\Framework\View\Element\UiComponent\DataProvi
      */
     protected function searchResultToOutput(SearchResultInterface $searchResult)
     {
-        $arrItems = [];
-        $arrItems['items'] = [];
+        $this->cachedCompareSearchResult($searchResult);
 
-        $compareSearchResult = clone $searchResult;
-        $compareSearchResult->enableCompareMode();
-
-        foreach ($searchResult->getItems() as $item) {
-            $itemData = [];
-            foreach ($item->getCustomAttributes() as $attribute) {
-                $itemData[$attribute->getAttributeCode()] = $attribute->getValue();
-            }
-            $arrItems['items'][] = $itemData;
-        }
-        $arrItems['totalRecords'] = $searchResult->getTotalCount();
+        $arrItems = parent::searchResultToOutput($searchResult);
+        $this->cachedSearchResult($searchResult);
         $arrItems['totals'][] = $searchResult->getTotals();
-        $arrItems['priceFormat'] = $this->localeFormat->getPriceFormat(null, $this->storeFilter->getCurrencyCode());
+        $arrItems['priceFormat'] = $this->localeFormat->getPriceFormat(null, $this->getCurrencyCode());
         $arrItems['exportParams'] = $this->exportParams;
+        $this->attachFilterData($arrItems);
 
-        $config = $this->data['config'];
-        if (isset($config['displayChart']) && $config['displayChart']) {
-            $rows = $searchResult->getChartRows();
-            $arrItems['compareEnabled'] = $this->compareEnabled;
-            if ($this->compareEnabled && count($rows) > 1) {
-                $compareSearchResult->getData();
-                $compareRows = $compareSearchResult->getChartRows();
-                if (count($compareRows) > count($rows)) {
-                    $arrItems['chart']['additional_rows'] = true;
-                }
-                $rows = $this->mergeChartRows($rows, $compareRows);
-            }
-            $arrItems['chart']['rows'] = $rows;
+        if ($arrItems['compareEnabled']) {
+            $this->attachCompareData($arrItems);
         }
 
         return $arrItems;
     }
 
     /**
-     * Add report filters to SearchCriteria
+     * Cached compare search result
      *
+     * @param SearchResultInterface $searchResult
      * @return $this
      */
-    protected function applyReportFilters()
+    private function cachedCompareSearchResult($searchResult)
     {
+        $this->compareSearchResultCached = clone $searchResult;
+
         return $this;
     }
 
     /**
-     * Add filters to SearchCriteria
+     * Cached search result
      *
-     * @return void
+     * @param SearchResultInterface $searchResult
+     * @return $this
      */
-    private function applyDefaultFilters()
+    private function cachedSearchResult($searchResult)
     {
-        $filter = $this->filterBuilder->setField('storeFilter')->create();
-        $this->addFilter($filter);
-        $filter = $this->filterBuilder->setField('customerGroupFilter')->create();
-        $this->addFilter($filter);
-        $filter = $this->filterBuilder->setField('periodFilter')->create();
-        $this->addFilter($filter);
+        $this->searchResultCached = $searchResult;
+
+        return $this;
     }
 
     /**
-     * Add report settings filters to SearchCriteria
+     * Attach filters data
      *
-     * @return void
+     * @param array $arrItems
+     * @return $this
      */
-    private function applyReportSettingFilters()
+    private function attachFilterData(&$arrItems)
     {
-        if ($reportSettings = $this->request->getParam('report_settings')) {
-            foreach ($reportSettings as $settingName => $settingValue) {
-                $filter = $this->filterBuilder
-                    ->setField($settingName)
-                    ->setValue($settingValue)
-                    ->setConditionType('eq')
-                    ->create();
-                $this->addFilter($filter);
-            }
-        }
+        $groupByFilter = $this->getDefaultFilterPool()->getFilter('group_by');
+        $customerGroupFilter = $this->getDefaultFilterPool()->getFilter('customer_group');
+        $periodFilter = $this->getDefaultFilterPool()->getFilter('period');
+
+        $arrItems['groupByFilter'] = $groupByFilter->getValue();
+        $arrItems['customerGroupFilter'] = $customerGroupFilter->getValue();
+        $arrItems['periodFromFilter'] = $periodFilter->getPeriodFrom();
+        $arrItems['periodToFilter'] = $periodFilter->getPeriodTo();
+        $arrItems['comparePeriodFromFilter'] = $periodFilter->getCompareFrom();
+        $arrItems['comparePeriodToFilter'] = $periodFilter->getCompareTo();
+        $arrItems['compareEnabled'] = $this->isEnabledCompareTo();
+
+        return $this;
     }
 
     /**
-     * Check if compare is available for the report
+     * Attach compare data
      *
-     * @return void
+     * @param array $arrItems
+     * @return $this
      */
-    private function prepareCompare()
+    private function attachCompareData(&$arrItems)
     {
-        $config = $this->data['config'];
-        if (isset($config['displayChart']) && $config['displayChart']) {
-            if (!isset($config['chartType'])) {
-                $this->periodFilter->setIsCompareAvailable(true);
-                $this->compareEnabled = $this->periodFilter->isCompareEnabled();
-            } else {
-                $this->periodFilter->setIsCompareAvailable(false);
-                $this->compareEnabled = false;
+        $compareSearchResult = $this->getCompareSearchResultCached();
+        $compareSearchResult->enableCompareMode()->getData();
+
+        /*
+        $arrItems['compare_items'] = [];
+        foreach ($compareSearchResult->getItems() as $item) {
+            $itemData = [];
+            foreach ($item->getCustomAttributes() as $attribute) {
+                $itemData[$attribute->getAttributeCode()] = $attribute->getValue();
             }
-        } else {
-            $this->periodFilter->setIsCompareAvailable(false);
-            $this->compareEnabled = false;
-        }
+            $arrItems['compare_items'][] = $itemData;
+        }*/
+        $arrItems['compare_totals'][] = $compareSearchResult->getTotals();
+
+        return $this;
     }
 
     /**
-     * Merge chart rows with compare rows
+     * Get currency code
      *
-     * @param [] $rows
-     * @param [] $compareRows
-     * @return []
+     * @return string
      */
-    private function mergeChartRows($rows, $compareRows)
+    private function getCurrencyCode()
     {
-        $result = $rows;
-        if (count($rows) >= count($compareRows)) {
-            foreach ($compareRows as $compareRowIndex => $compareRowValue) {
-                foreach ($compareRowValue as $index => $value) {
-                    $result[$compareRowIndex]['c_' . $index] = $value;
-                }
-            }
-        } else {
-            $intervalsCount = count($compareRows);
-            $periodFrom = $this->periodFilter->getPeriodFrom();
-            $periods = $this->periodModel->getPeriods($periodFrom, $intervalsCount);
+        $storeFilter = $this->getDefaultFilterPool()->getFilter('store');
 
-            if ($periods['period'] == GroupbySource::TYPE_DAY) {
-                foreach ($periods['intervals'] as $index => $interval) {
-                    if (isset($result[$index]['date']) && $result[$index]['date'] == $interval['date']) {
-                        continue;
-                    }
-                    $result[$index]['date'] = $interval['date'];
-                }
-            } else {
-                foreach ($periods['intervals'] as $index => $interval) {
-                    if (
-                        isset($result[$index]['start_date']) &&
-                        $result[$index]['start_date'] == $interval['start_date']
-                    ) {
-                        continue;
-                    }
-                    $result[$index]['start_date'] = $interval['start_date'];
-                    $result[$index]['end_date'] = $interval['end_date'];
-                }
-            }
-
-            foreach ($compareRows as $compareRowIndex => $compareRowValue) {
-                foreach ($compareRowValue as $index => $value) {
-                    $result[$compareRowIndex]['c_' . $index] = $value;
-                }
-            }
-        }
-        return $result;
+        return $this->scopeCurrency->getCurrencyCode($storeFilter->getStoreIds());
     }
 }

@@ -11,19 +11,19 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\UrlInterface;
-use Magento\Store\Model\Website;
-use Magento\Store\Model\Group;
-use Magento\Store\Model\Store as StoreModel;
+use Aheadworks\AdvancedReports\Model\Filter\Store\Encoder as FilterStoreEncoder;
+use Magento\Store\Api\Data\WebsiteInterface;
+use Magento\Store\Api\Data\GroupInterface;
+use Magento\Store\Api\Data\StoreInterface;
 
 /**
  * Test for \Aheadworks\AdvancedReports\Model\Filter\Store
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class StoreTest extends \PHPUnit_Framework_TestCase
+class StoreTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Period
+     * @var Store
      */
     private $model;
 
@@ -43,9 +43,9 @@ class StoreTest extends \PHPUnit_Framework_TestCase
     private $storeManagerMock;
 
     /**
-     * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var FilterStoreEncoder|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $urlBuilderMock;
+    private $filterStoreEncoderMock;
 
     /**
      * Init mocks for tests
@@ -66,192 +66,442 @@ class StoreTest extends \PHPUnit_Framework_TestCase
             ['setData', 'getData']
         );
         $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->filterStoreEncoderMock = $this->getMockBuilder(FilterStoreEncoder::class)
+            ->disableOriginalConstructor()
+            ->setMethods(
+                [
+                    'encode',
+                    'decode',
+                ]
+            )->getMock();
         $this->model = $objectManager->getObject(
             Store::class,
             [
-                'request' => $this->requestMock,
                 'session' => $this->sessionMock,
                 'storeManager' => $this->storeManagerMock,
-                'urlBuilder' => $this->urlBuilderMock
+                'filterStoreEncoder' => $this->filterStoreEncoderMock,
+                'request' => $this->requestMock,
             ]
         );
     }
 
     /**
-     * Testing of getItems method
+     * Testing of getWebsiteId method
      */
-    public function testGetItems()
+    public function testGetWebsiteIdFromDefault()
     {
-        $url = 'http://mydomain.com';
-        $storeId = 1;
-        $storeName = 'Store 1';
-        $groupId = 1;
-        $groupName = 'Group 1';
-        $websiteId = 1;
-        $websiteName = 'Website 1';
-
-        $storeModelMock = $this->getMock(StoreModel::class, ['getId', 'getName'], [], '', false);
-        $storeModelMock->expects($this->exactly(2))
-            ->method('getId')
-            ->willReturn($storeId);
-        $storeModelMock->expects($this->once())
-            ->method('getName')
-            ->willReturn($storeName);
-
-        $groupModelMock = $this->getMock(Group::class, ['getId', 'getName', 'getStores'], [], '', false);
-        $groupModelMock->expects($this->exactly(2))
-            ->method('getId')
-            ->willReturn($groupId);
-        $groupModelMock->expects($this->once())
-            ->method('getName')
-            ->willReturn($groupName);
-        $groupModelMock->expects($this->once())
-            ->method('getStores')
-            ->willReturn([$storeModelMock]);
-
-        $websiteModelMock = $this->getMock(Website::class, ['getId', 'getName', 'getGroups'], [], '', false);
-        $websiteModelMock->expects($this->exactly(2))
-            ->method('getId')
-            ->willReturn($websiteId);
-        $websiteModelMock->expects($this->once())
-            ->method('getName')
-            ->willReturn($websiteName);
-        $websiteModelMock->expects($this->once())
-            ->method('getGroups')
-            ->willReturn([$groupModelMock]);
-        $this->storeManagerMock->expects($this->once())
-            ->method('getWebsites')
-            ->willReturn([$websiteModelMock]);
-
-        $this->urlBuilderMock->expects($this->at(0))
-            ->method('getUrl')
-            ->with(
-                '*/*/*',
-                ['_query' => ['website_id' => -1, 'group_id' => '', 'store_id' => ''], '_current' => true]
-            )->willReturn($url);
-        $this->urlBuilderMock->expects($this->at(1))
-            ->method('getUrl')
-            ->with(
-                '*/*/*',
-                ['_query' => ['website_id' => $websiteId, 'group_id' => '', 'store_id' => ''], '_current' => true]
-            )->willReturn($url);
-        $this->urlBuilderMock->expects($this->at(2))
-            ->method('getUrl')
-            ->with(
-                '*/*/*',
-                ['_query' => ['website_id' => '', 'group_id' => $groupId, 'store_id' => ''], '_current' => true]
-            )->willReturn($url);
-        $this->urlBuilderMock->expects($this->at(3))
-            ->method('getUrl')
-            ->with(
-                '*/*/*',
-                ['_query' => ['website_id' => '', 'group_id' => '', 'store_id' => $storeId], '_current' => true]
-            )->willReturn($url);
-
-        $this->assertTrue(is_array($this->model->getItems()));
+        $defaultValueEncoded = Store::DEFAULT_TYPE . FilterStoreEncoder::DELIMITER . Store::DEFAULT_TYPE;
+        $defaultValueDecoded = [
+            Store::DEFAULT_TYPE,
+            Store::DEFAULT_TYPE
+        ];
+        $expected = 0;
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('report_scope')
+            ->willReturn(null);
+        $this->sessionMock->expects($this->once())
+            ->method('getData')
+            ->with(Store::SESSION_KEY)
+            ->willReturn(null);
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE)
+            ->willReturn($defaultValueEncoded);
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($defaultValueEncoded)
+            ->willReturn($defaultValueDecoded);
+        $this->assertEquals($expected, $this->model->getWebsiteId());
     }
 
     /**
-     * Testing of getCurrentItemKey method from request
-     * @dataProvider getCurrentItemKeyFromRequestDataProvider
-     *
-     * @param [] $params
-     * @param string $expected
+     * Testing of getWebsiteId method
      */
-    public function testGetCurrentItemKeyFromRequest($params, $expected)
+    public function testGetWebsiteIdFromRequestDefault()
     {
-        $this->requestMock->expects($this->atLeastOnce())
+        $valueEncoded = Store::DEFAULT_TYPE . FilterStoreEncoder::DELIMITER . Store::DEFAULT_TYPE;
+        $valueDecoded = [
+            Store::DEFAULT_TYPE,
+            Store::DEFAULT_TYPE
+        ];
+        $expected = 0;
+        $this->requestMock->expects($this->once())
             ->method('getParam')
-            ->willReturnMap($params);
+            ->with('report_scope')
+            ->willReturn($valueEncoded);
+
         $this->sessionMock->expects($this->once())
             ->method('setData')
-            ->with(Store::SESSION_KEY, $expected)
+            ->with(Store::SESSION_KEY, $valueEncoded)
             ->willReturnSelf();
+        $this->sessionMock->expects($this->never())
+            ->method('getData')
+            ->with(Store::SESSION_KEY);
 
-        $this->assertEquals($expected, $this->model->getCurrentItemKey());
+        $this->filterStoreEncoderMock->expects($this->never())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE);
+
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($valueEncoded)
+            ->willReturn($valueDecoded);
+        $this->assertEquals($expected, $this->model->getWebsiteId());
     }
 
     /**
-     * Data provider for testGetCurrentItemKeyFromRequest method
-     *
-     * @return array
+     * Testing of getWebsiteId method
      */
-    public function getCurrentItemKeyFromRequestDataProvider()
+    public function testGetWebsiteIdFromRequestWebsite()
     {
-        return [
-            [
-                [['website_id', null, -1], ['group_id', null, null], ['store_id', null, null]],
-                Store::DEFAULT_TYPE
-            ],
-            [
-                [['website_id', null, 1], ['group_id', null, null], ['store_id', null, null]],
-                Store::WEBSITE_TYPE . '_1'
-            ],
-            [
-                [['website_id', null, null], ['group_id', null, 1], ['store_id', null, null]],
-                Store::GROUP_TYPE . '_1'
-            ],
-            [
-                [['website_id', null, null], ['group_id', null, null], ['store_id', null, 1]],
-                Store::STORE_TYPE . '_1'
-            ]
+        $valueEncoded = Store::WEBSITE_TYPE . FilterStoreEncoder::DELIMITER . '1';
+        $valueDecoded = [
+            Store::WEBSITE_TYPE,
+            '1'
         ];
-    }
-
-    /**
-     * Testing of getCurrentItemKey method from session
-     */
-    public function testGetCurrentItemKeyFromSession()
-    {
-        $params = [
-            ['website_id', null, null],
-            ['group_id', null, null],
-            ['store_id', null, null]
-        ];
-        $value = Store::STORE_TYPE . '_1';
-
-        $this->requestMock->expects($this->exactly(3))
+        $expected = 4;
+        $this->requestMock->expects($this->once())
             ->method('getParam')
-            ->willReturnMap($params);
+            ->with('report_scope')
+            ->willReturn($valueEncoded);
+
+        $this->sessionMock->expects($this->once())
+            ->method('setData')
+            ->with(Store::SESSION_KEY, $valueEncoded)
+            ->willReturnSelf();
+        $this->sessionMock->expects($this->never())
+            ->method('getData')
+            ->with(Store::SESSION_KEY);
+
+        $this->filterStoreEncoderMock->expects($this->never())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE);
+
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($valueEncoded)
+            ->willReturn($valueDecoded);
+
+        $websiteMock = $this->getMockBuilder(WebsiteInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getId'])
+            ->getMockForAbstractClass();
+        $websiteMock->expects($this->once())
+            ->method('getId')
+            ->willReturn($expected);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getWebsite')
+            ->with($valueDecoded[1])
+            ->willReturn($websiteMock);
+
+        $this->assertEquals($expected, $this->model->getWebsiteId());
+    }
+
+    /**
+     * Testing of getWebsiteId method
+     */
+    public function testGetWebsiteIdFromRequestGroup()
+    {
+        $valueEncoded = Store::GROUP_TYPE . FilterStoreEncoder::DELIMITER . '1';
+        $valueDecoded = [
+            Store::GROUP_TYPE,
+            '1'
+        ];
+        $expected = 4;
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('report_scope')
+            ->willReturn($valueEncoded);
+
+        $this->sessionMock->expects($this->once())
+            ->method('setData')
+            ->with(Store::SESSION_KEY, $valueEncoded)
+            ->willReturnSelf();
+        $this->sessionMock->expects($this->never())
+            ->method('getData')
+            ->with(Store::SESSION_KEY);
+
+        $this->filterStoreEncoderMock->expects($this->never())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE);
+
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($valueEncoded)
+            ->willReturn($valueDecoded);
+
+        $groupMock = $this->getMockBuilder(GroupInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getWebsiteId'])
+            ->getMockForAbstractClass();
+        $groupMock->expects($this->once())
+            ->method('getWebsiteId')
+            ->willReturn($expected);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getGroup')
+            ->with($valueDecoded[1])
+            ->willReturn($groupMock);
+
+        $this->assertEquals($expected, $this->model->getWebsiteId());
+    }
+
+    /**
+     * Testing of getWebsiteId method
+     */
+    public function testGetWebsiteIdFromRequestStore()
+    {
+        $valueEncoded = Store::STORE_TYPE . FilterStoreEncoder::DELIMITER . '1';
+        $valueDecoded = [
+            Store::STORE_TYPE,
+            '1'
+        ];
+        $expected = 4;
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('report_scope')
+            ->willReturn($valueEncoded);
+
+        $this->sessionMock->expects($this->once())
+            ->method('setData')
+            ->with(Store::SESSION_KEY, $valueEncoded)
+            ->willReturnSelf();
+        $this->sessionMock->expects($this->never())
+            ->method('getData')
+            ->with(Store::SESSION_KEY);
+
+        $this->filterStoreEncoderMock->expects($this->never())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE);
+
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($valueEncoded)
+            ->willReturn($valueDecoded);
+
+        $storeMock = $this->getMockBuilder(StoreInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getWebsiteId'])
+            ->getMockForAbstractClass();
+        $storeMock->expects($this->once())
+            ->method('getWebsiteId')
+            ->willReturn($expected);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getStore')
+            ->with($valueDecoded[1])
+            ->willReturn($storeMock);
+
+        $this->assertEquals($expected, $this->model->getWebsiteId());
+    }
+
+    /**
+     * Testing of getWebsiteId method
+     */
+    public function testGetWebsiteIdFromSession()
+    {
+        $valueEncoded = Store::DEFAULT_TYPE . FilterStoreEncoder::DELIMITER . Store::DEFAULT_TYPE;
+        $valueDecoded = [
+            Store::DEFAULT_TYPE,
+            Store::DEFAULT_TYPE
+        ];
+        $expected = 0;
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('report_scope')
+            ->willReturn(null);
+
+        $this->sessionMock->expects($this->never())
+            ->method('setData')
+            ->with(Store::SESSION_KEY, $valueEncoded)
+            ->willReturnSelf();
         $this->sessionMock->expects($this->once())
             ->method('getData')
             ->with(Store::SESSION_KEY)
-            ->willReturn($value);
+            ->willReturn($valueEncoded);
 
-        $this->assertEquals($value, $this->model->getCurrentItemKey());
+        $this->filterStoreEncoderMock->expects($this->never())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE);
+
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($valueEncoded)
+            ->willReturn($valueDecoded);
+        $this->assertEquals($expected, $this->model->getWebsiteId());
     }
 
     /**
-     * Testing of getStoreIds method from session
+     * Testing of getStoreIds method
      */
-    public function testGetStoreIds()
+    public function testGetStoreIdsFromDefault()
     {
-        $params = [
-            ['website_id', null, null],
-            ['group_id', null, null],
-            ['store_id', null, null]
+        $defaultValueEncoded = Store::DEFAULT_TYPE . FilterStoreEncoder::DELIMITER . Store::DEFAULT_TYPE;
+        $defaultValueDecoded = [
+            Store::DEFAULT_TYPE,
+            Store::DEFAULT_TYPE
         ];
-        $storeId = 1;
-        $value = Store::STORE_TYPE . '_' . $storeId;
-
-        $this->requestMock->expects($this->exactly(3))
+        $expected = null;
+        $this->requestMock->expects($this->once())
             ->method('getParam')
-            ->willReturnMap($params);
+            ->with('report_scope')
+            ->willReturn(null);
         $this->sessionMock->expects($this->once())
             ->method('getData')
             ->with(Store::SESSION_KEY)
-            ->willReturn($value);
+            ->willReturn(null);
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE)
+            ->willReturn($defaultValueEncoded);
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($defaultValueEncoded)
+            ->willReturn($defaultValueDecoded);
+        $this->assertEquals($expected, $this->model->getStoreIds());
+    }
 
-        $storeModelMock = $this->getMock(StoreModel::class, ['getId'], [], '', false);
-        $storeModelMock->expects($this->once())
+    /**
+     * Testing of getStoreIds method
+     */
+    public function testGetStoreIdsFromRequestWebsite()
+    {
+        $valueEncoded = Store::WEBSITE_TYPE . FilterStoreEncoder::DELIMITER . '1';
+        $valueDecoded = [
+            Store::WEBSITE_TYPE,
+            '1'
+        ];
+        $expected = ['1', '2'];
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('report_scope')
+            ->willReturn($valueEncoded);
+
+        $this->sessionMock->expects($this->once())
+            ->method('setData')
+            ->with(Store::SESSION_KEY, $valueEncoded)
+            ->willReturnSelf();
+        $this->sessionMock->expects($this->never())
+            ->method('getData')
+            ->with(Store::SESSION_KEY);
+
+        $this->filterStoreEncoderMock->expects($this->never())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE);
+
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($valueEncoded)
+            ->willReturn($valueDecoded);
+
+        $websiteMock = $this->getMockBuilder(WebsiteInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStoreIds'])
+            ->getMockForAbstractClass();
+        $websiteMock->expects($this->once())
+            ->method('getStoreIds')
+            ->willReturn($expected);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getWebsite')
+            ->with($valueDecoded[1])
+            ->willReturn($websiteMock);
+
+        $this->assertEquals($expected, $this->model->getStoreIds());
+    }
+
+    /**
+     * Testing of getStoreIds method
+     */
+    public function testGetStoreIdsFromRequestGroup()
+    {
+        $valueEncoded = Store::GROUP_TYPE . FilterStoreEncoder::DELIMITER . '1';
+        $valueDecoded = [
+            Store::GROUP_TYPE,
+            '1'
+        ];
+        $expected = ['1', '2'];
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('report_scope')
+            ->willReturn($valueEncoded);
+
+        $this->sessionMock->expects($this->once())
+            ->method('setData')
+            ->with(Store::SESSION_KEY, $valueEncoded)
+            ->willReturnSelf();
+        $this->sessionMock->expects($this->never())
+            ->method('getData')
+            ->with(Store::SESSION_KEY);
+
+        $this->filterStoreEncoderMock->expects($this->never())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE);
+
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($valueEncoded)
+            ->willReturn($valueDecoded);
+
+        $groupMock = $this->getMockBuilder(GroupInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStoreIds'])
+            ->getMockForAbstractClass();
+        $groupMock->expects($this->once())
+            ->method('getStoreIds')
+            ->willReturn($expected);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getGroup')
+            ->with($valueDecoded[1])
+            ->willReturn($groupMock);
+
+        $this->assertEquals($expected, $this->model->getStoreIds());
+    }
+
+    /**
+     * Testing of getStoreIds method
+     */
+    public function testGetStoreIdsFromRequestStore()
+    {
+        $storeId = '1';
+        $valueEncoded = Store::STORE_TYPE . FilterStoreEncoder::DELIMITER . $storeId;
+        $valueDecoded = [
+            Store::STORE_TYPE,
+            $storeId
+        ];
+        $expected = [$storeId];
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('report_scope')
+            ->willReturn($valueEncoded);
+
+        $this->sessionMock->expects($this->once())
+            ->method('setData')
+            ->with(Store::SESSION_KEY, $valueEncoded)
+            ->willReturnSelf();
+        $this->sessionMock->expects($this->never())
+            ->method('getData')
+            ->with(Store::SESSION_KEY);
+
+        $this->filterStoreEncoderMock->expects($this->never())
+            ->method('encode')
+            ->with(Store::DEFAULT_TYPE, Store::DEFAULT_TYPE);
+
+        $this->filterStoreEncoderMock->expects($this->once())
+            ->method('decode')
+            ->with($valueEncoded)
+            ->willReturn($valueDecoded);
+
+        $storeMock = $this->getMockBuilder(StoreInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getId'])
+            ->getMockForAbstractClass();
+        $storeMock->expects($this->once())
             ->method('getId')
             ->willReturn($storeId);
         $this->storeManagerMock->expects($this->once())
             ->method('getStore')
-            ->with($storeId)
-            ->willReturn($storeModelMock);
+            ->with($valueDecoded[1])
+            ->willReturn($storeMock);
 
-        $this->assertEquals([$storeId], $this->model->getStoreIds());
+        $this->assertEquals($expected, $this->model->getStoreIds());
     }
 }

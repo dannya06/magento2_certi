@@ -18,7 +18,7 @@ use Magento\Catalog\Api\Data\ProductAttributeSearchResultsInterface;
 /**
  * Test for \Aheadworks\AdvancedReports\Model\Source\ProductAttributes\Attributes
  */
-class AttributesTest extends \PHPUnit_Framework_TestCase
+class AttributesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Attributes
@@ -46,7 +46,10 @@ class AttributesTest extends \PHPUnit_Framework_TestCase
         $this->productAttributeRepositoryMock = $this->getMockForAbstractClass(
             ProductAttributeRepositoryInterface::class
         );
-        $this->searchCriteriaBuilderMock = $this->getMock(SearchCriteriaBuilder::class, ['create'], [], '', false);
+        $this->searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->model = $objectManager->getObject(
             Attributes::class,
@@ -62,24 +65,26 @@ class AttributesTest extends \PHPUnit_Framework_TestCase
      */
     public function testToOptionArray()
     {
-        $searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
+        $searchCriteriaMock = $this->getMockBuilder(SearchCriteria::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->searchCriteriaBuilderMock->expects($this->once())
             ->method('create')
             ->will($this->returnValue($searchCriteriaMock));
-        $attributeMock = $this->getMock(
-            Attribute::class,
-            [
-                'isAllowedForRuleCondition',
-                'getIsUsedForPromoRules',
-                'getAttributeCode',
-                'getFrontendLabel',
-                'getFrontendInput',
-                'getSource'
-            ],
-            [],
-            '',
-            false
-        );
+        $attributeMock = $this->getMockBuilder(Attribute::class)
+            ->setMethods(
+                [
+                    'isAllowedForRuleCondition',
+                    'getIsUsedForPromoRules',
+                    'getAttributeCode',
+                    'getFrontendLabel',
+                    'getFrontendInput',
+                    'getSource'
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $attributeMock->expects($this->once())
             ->method('isAllowedForRuleCondition')
             ->willReturn(true);
@@ -95,7 +100,10 @@ class AttributesTest extends \PHPUnit_Framework_TestCase
         $attributeMock->expects($this->exactly(2))
             ->method('getFrontendInput')
             ->willReturn('text');
-        $abstractSourceMock = $this->getMock(AbstractSource::class, ['getAllOptions'], [], '', false);
+        $abstractSourceMock = $this->getMockBuilder(AbstractSource::class)
+            ->setMethods(['getAllOptions'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $abstractSourceMock->expects($this->once())
             ->method('getAllOptions')
             ->willReturn([['label' => 'label', 'value' => 'value']]);

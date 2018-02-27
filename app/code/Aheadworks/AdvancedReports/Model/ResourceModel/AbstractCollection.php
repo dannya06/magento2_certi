@@ -6,16 +6,15 @@
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel;
 
-use Aheadworks\AdvancedReports\Model\Config;
-use Aheadworks\AdvancedReports\Model\Filter;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection as DbAbstractCollection;
+use Magento\Framework\DB\Select;
 
 /**
  * Class AbstractCollection
  *
  * @package Aheadworks\AdvancedReports\Model\ResourceModel
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+abstract class AbstractCollection extends DbAbstractCollection
 {
     /**#@+
      * Period filter placeholders
@@ -24,45 +23,17 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
     const PERIOD_TO_PLACEHOLDER = '%PERIOD_TO%';
     /**#@-*/
 
-    /**
-     * @var string
+    /**#@+
+     * Custom filters key
      */
-    const GROUP_TABLE_ALIAS = 'group_table';
-
-    /**
-     * @var string
-     */
-    protected $timeField = 'period';
-
-    /**
-     * @var bool
-     */
-    protected $periodBased = false;
-
-    /**
-     * @var bool
-     */
-    protected $topFilterForChart = false;
-
-    /**
-     * @var []
-     */
-    protected $conditionsForGroupBy = [];
-
-    /**
-     * @var []
-     */
-    protected $reportSettings = [];
-
-    /**
-     * @var bool
-     */
-    protected $compareMode = false;
-
-    /**
-     * @var []
-     */
-    protected $conditionsForPeriod = [];
+    const GROUP_BY_FILTER_KEY = 'group_by';
+    const ORDER_STATUSES_FILTER_KEY = 'order_statuses';
+    const STORE_IDS_FILTER_KEY = 'store_ids';
+    const PERIOD_FROM_FILTER_KEY = 'period_from';
+    const PERIOD_TO_FILTER_KEY = 'period_to';
+    const COMPARE_PERIOD_FROM_FILTER_KEY = 'compare_period_from';
+    const COMPARE_PERIOD_TO_FILTER_KEY = 'compare_period_to';
+    /**#@-*/
 
     /**
      * @var AbstractCollection
@@ -70,117 +41,56 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
     protected $collectionSelect;
 
     /**
-     * @var Filter\Store
+     * @var string
      */
-    protected $storeFilter;
+    protected $_idFieldName = 'id';
 
     /**
-     * @var Filter\CustomerGroup
+     * @var array
      */
-    protected $customerGroupFilter;
+    protected $customFiltersCache = [];
 
     /**
-     * @var Filter\Groupby
+     * @var bool
      */
-    protected $groupbyFilter;
+    private $compareMode = false;
 
     /**
-     * @var Filter\Period
-     */
-    protected $periodFilter;
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
-     * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param Config $config
-     * @param Filter\Store $storeFilter
-     * @param Filter\CustomerGroup $customerGroupFilter
-     * @param Filter\Groupby $groupbyFilter
-     * @param Filter\Period $periodFilter
-     * @param \Magento\Framework\DB\Adapter\AdapterInterface $connection
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     */
-    public function __construct(
-        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        Config $config,
-        Filter\Store $storeFilter,
-        Filter\CustomerGroup $customerGroupFilter,
-        Filter\Groupby $groupbyFilter,
-        Filter\Period $periodFilter,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
-    ) {
-        $this->config = $config;
-        $this->groupbyFilter = $groupbyFilter;
-        $this->periodFilter = $periodFilter;
-        $this->customerGroupFilter = $customerGroupFilter;
-        $this->storeFilter = $storeFilter;
-        parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
-    }
-
-    /**
-     * Add group filter to collection
+     * Set order statuses
      *
+     * @param array $orderStatuses
      * @return $this
      */
-    public function addGroupByFilter()
+    public function setOrderStatuses(array $orderStatuses)
     {
-        $periodFrom = $this->periodFilter->getPeriodFrom();
-        $periodTo = $this->periodFilter->getPeriodTo();
-        $compareFrom = $this->periodFilter->getCompareFrom();
-        $compareTo = $this->periodFilter->getCompareTo();
-        switch($this->groupbyFilter->getCurrentGroupByKey()) {
-            case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_DAY:
-                $this->addGroupByDay($periodFrom, $periodTo, $compareFrom, $compareTo);
-                break;
-            case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_WEEK:
-                $table = $this->getTable('aw_arep_weeks');
-                $this->groupByTable($table, $periodFrom, $periodTo, $compareFrom, $compareTo);
-                break;
-            case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_MONTH:
-                $table = $this->getTable('aw_arep_month');
-                $this->groupByTable($table, $periodFrom, $periodTo, $compareFrom, $compareTo);
-                break;
-            case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_QUARTER:
-                $table = $this->getTable('aw_arep_quarter');
-                $this->groupByTable($table, $periodFrom, $periodTo, $compareFrom, $compareTo);
-                break;
-            case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_YEAR:
-                $table = $this->getTable('aw_arep_year');
-                $this->groupByTable($table, $periodFrom, $periodTo, $compareFrom, $compareTo);
-                break;
-        }
+        $this->saveCustomFilterValue(self::ORDER_STATUSES_FILTER_KEY, $orderStatuses);
+
         return $this;
     }
 
     /**
      * Add period filter to collection
      *
+     * @param \DateTime $periodFrom
+     * @param \DateTime $periodTo
+     * @param \DateTime $compareFrom
+     * @param \DateTime $compareTo
      * @return $this
      */
-    public function addPeriodFilter()
+    public function addPeriodFilter($periodFrom, $periodTo, $compareFrom, $compareTo)
     {
-        $from = $this->periodFilter->getPeriodFrom();
-        $to = $this->periodFilter->getPeriodTo();
-        $compareFrom = $this->periodFilter->getCompareFrom();
-        $compareTo = $this->periodFilter->getCompareTo();
+        $this->saveCustomFilterValue(self::PERIOD_FROM_FILTER_KEY, $periodFrom);
+        $this->saveCustomFilterValue(self::PERIOD_TO_FILTER_KEY, $periodTo);
+        $this->saveCustomFilterValue(self::COMPARE_PERIOD_FROM_FILTER_KEY, $compareFrom);
+        $this->saveCustomFilterValue(self::COMPARE_PERIOD_TO_FILTER_KEY, $compareTo);
 
-        $this->savePeriodFilterValues($from, $to, $compareFrom, $compareTo);
-        $this->addFieldToFilter($this->timeField, [
-            'from' => self::PERIOD_FROM_PLACEHOLDER,
-            'to' => self::PERIOD_TO_PLACEHOLDER
-        ]);
+        $this
+            ->addFieldToFilter('period', [
+                'from' => self::PERIOD_FROM_PLACEHOLDER,
+                'to' => self::PERIOD_TO_PLACEHOLDER
+            ])
+            ->addOrderStatusFilter();
+
         return $this;
     }
 
@@ -189,7 +99,7 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
      *
      * @return $this
      */
-    public function addOrderStatusFilter()
+    protected function addOrderStatusFilter()
     {
         $this->addFieldToFilter('order_status', ['in' => $this->getOrderStatuses()]);
         return $this;
@@ -198,46 +108,27 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
     /**
      * Add customer group filter to collection
      *
+     * @param int $customerGroupsId
      * @return $this
      */
-    public function addCustomerGroupFilter()
+    public function addCustomerGroupFilter($customerGroupsId)
     {
-        $customerGroupsId = $this->customerGroupFilter->getCustomerGroupId();
-        if ($this->periodBased) {
-            if (null != $customerGroupsId) {
-                $this->conditionsForGroupBy[] = [
-                    'field' => 'main_table.customer_group_id',
-                    'condition' => ['in' => $customerGroupsId]
-                ];
-            }
-        } else {
-            if (null != $customerGroupsId) {
-                $this->addFieldToFilter('customer_group_id', ['in' => $customerGroupsId]);
-            }
-        }
+        $this->addFieldToFilter('customer_group_id', ['in' => $customerGroupsId]);
+
         return $this;
     }
 
     /**
      * Add store filter to collection
      *
+     * @param int[] $storeIds
      * @return $this
      */
-    public function addStoreFilter()
+    public function addStoreFilter($storeIds)
     {
-        $storeIds = $this->storeFilter->getStoreIds();
-        if ($this->periodBased) {
-            if (null != $storeIds) {
-                $this->conditionsForGroupBy[] = [
-                    'field' => 'main_table.store_id',
-                    'condition' => ['in' => $storeIds]
-                ];
-            }
-        } else {
-            if (null != $storeIds) {
-                $this->addFieldToFilter('store_id', ['in' => $storeIds]);
-            }
-        }
+        $this->saveCustomFilterValue(self::STORE_IDS_FILTER_KEY, $storeIds);
+        $this->addFieldToFilter('store_id', ['in' => $storeIds]);
+
         return $this;
     }
 
@@ -248,108 +139,118 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
      */
     public function addFilterForChart()
     {
+        // no implementation, should be overridden in children classes
+
         return $this;
     }
 
     /**
      * {@inheritdoc}
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function addFieldToFilter($field, $condition = null)
     {
-        if ($field == 'report_settings_order_status') {
-            if ($condition['eq']) {
-                $this->reportSettings[$field] = $condition['eq'];
-            }
-            return $this;
-        }
-        if ($field == 'customerGroupFilter') {
-            $this->addCustomerGroupFilter();
-            return $this;
-        }
-        if ($field == 'storeFilter') {
-            return $this->addStoreFilter();
-        }
-        if ($field == 'periodFilter') {
-            $this->addPeriodFilter();
-            $this->addOrderStatusFilter();
-            return $this;
-        }
-        if (
-            $field == 'store_id' ||
-            $field == 'customer_group_id' ||
-            $field == 'order_status' ||
-            $field == $this->timeField
-        ) {
+        if (in_array($field, ['store_id', 'customer_group_id', 'order_status', 'period'])) {
             return parent::addFieldToFilter($field, $condition);
         }
+
         // Apply filters for grid query
         return $this->addFilter($field, $condition, 'public');
     }
 
     /**
+     * Enable compare mode
+     *
+     * @return $this
+     */
+    public function enableCompareMode()
+    {
+        $this->compareMode = true;
+
+        return $this;
+    }
+
+    /**
      * Retrieve totals
      *
-     * @return []
+     * @return array
      */
     public function getTotals()
     {
         $collectionSelect = clone $this->collectionSelect->getSelect();
-        $collectionSelect->reset(\Magento\Framework\DB\Select::LIMIT_COUNT)
-            ->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET);
+        $collectionSelect->reset(Select::LIMIT_COUNT)
+            ->reset(Select::LIMIT_OFFSET);
 
         $totalSelect = clone $this->getSelect();
-        $totalSelect->reset(\Magento\Framework\DB\Select::COLUMNS)
-            ->reset(\Magento\Framework\DB\Select::FROM)
-            ->reset(\Magento\Framework\DB\Select::GROUP)
-            ->reset(\Magento\Framework\DB\Select::LIMIT_COUNT)
-            ->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET)
+        $totalSelect->reset(Select::COLUMNS)
+            ->reset(Select::FROM)
+            ->reset(Select::GROUP)
+            ->reset(Select::LIMIT_COUNT)
+            ->reset(Select::LIMIT_OFFSET)
             ->from(
                 ['main_table' => new \Zend_Db_Expr(sprintf('(%s)', $collectionSelect))],
                 $this->getTotalColumns()
             );
-        return $this->getConnection()->fetchRow($totalSelect) ?: [];
+        $totals = $this->getConnection()->fetchRow($totalSelect);
+
+        return $totals ?: [];
     }
 
     /**
      * Retrieve chart rows
      *
-     * @return []
+     * @return array
      */
     public function getChartRows()
     {
-        $collectionSelect = clone $this->collectionSelect;
+        $chartSelect = $this->getChartQuery();
+        $chartItems = $this->getConnection()->fetchAll($chartSelect);
 
-        $collectionSelect
-            ->addFilterForChart();
-        $collectionSelect->getSelect()
-            ->reset(\Zend_Db_Select::LIMIT_COUNT)
-            ->reset(\Zend_Db_Select::LIMIT_OFFSET);
+        return $chartItems ?: [];
+    }
 
-        $chartSelect = clone $this->getSelect();
-        $chartSelect->reset(\Magento\Framework\DB\Select::COLUMNS)
-            ->reset(\Magento\Framework\DB\Select::FROM)
-            ->reset(\Magento\Framework\DB\Select::GROUP)
-            ->reset(\Magento\Framework\DB\Select::LIMIT_COUNT)
-            ->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET)
-            ->reset(\Magento\Framework\DB\Select::ORDER)
-            ->from(
-                ['main_table' => new \Zend_Db_Expr(sprintf('(%s)', $collectionSelect->getSelect()))],
-                ['*']
-            );
-        if ($this->topFilterForChart) {
-            $chartSelect->order('order_items_count ' . self::SORT_ORDER_DESC)
-                ->limit(10);
+    /**
+     * Retrieve top chart rows
+     *
+     * @param string $topByColumn
+     * @param string $compareColumn
+     * @param array $compareEntityIds
+     * @return array
+     */
+    public function getTopChartRows($topByColumn, $compareColumn = null, $compareEntityIds = [])
+    {
+        $chartSelect = $this->getChartQuery()
+            ->limit(10)
+            ->order($topByColumn . ' ' . self::SORT_ORDER_DESC);
+
+        if ($this->compareMode) {
+            $chartSelect->where($compareColumn . ' in(?)', $compareEntityIds);
         }
 
-        return $this->getConnection()->fetchAll($chartSelect) ?: [];
+        $chartItems = $this->getConnection()->fetchAll($chartSelect);
+        return $chartItems ?: [];
+    }
+
+    /**
+     * Get custom filter value
+     *
+     * @param string $key
+     * @param mixed|null $default
+     * @return mixed|null
+     */
+    public function getCustomFilterValue($key, $default = null)
+    {
+        if (isset($this->customFiltersCache[$key])) {
+            return $this->customFiltersCache[$key];
+        };
+
+        return $default;
     }
 
     /**
      * Retrieve report columns
      *
      * @param boolean $addRate
-     * @return []
+     * @return array
      */
     abstract protected function getColumns($addRate = false);
 
@@ -357,11 +258,54 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
      * Retrieve report total columns
      *
      * @param boolean $addRate
-     * @return []
+     * @return array
      */
     protected function getTotalColumns($addRate = false)
     {
         return $this->getColumns($addRate);
+    }
+
+    /**
+     * Retrieve chart query
+     *
+     * @return Select
+     */
+    protected function getChartQuery()
+    {
+        $collectionSelect = clone $this->collectionSelect;
+
+        $collectionSelect->addFilterForChart();
+        $collectionSelect->getSelect()
+            ->reset(\Zend_Db_Select::LIMIT_COUNT)
+            ->reset(\Zend_Db_Select::LIMIT_OFFSET);
+
+        $chartSelect = clone $this->getSelect();
+        $chartSelect->reset(Select::COLUMNS)
+            ->reset(Select::FROM)
+            ->reset(Select::GROUP)
+            ->reset(Select::LIMIT_COUNT)
+            ->reset(Select::LIMIT_OFFSET)
+            ->reset(Select::ORDER)
+            ->from(
+                ['main_table' => new \Zend_Db_Expr(sprintf('(%s)', $collectionSelect->getSelect()))],
+                ['*']
+            );
+
+        return $chartSelect;
+    }
+
+    /**
+     * Save custom filter value
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return $this
+     */
+    protected function saveCustomFilterValue($key, $value)
+    {
+        $this->customFiltersCache[$key] = $value;
+
+        return $this;
     }
 
     /**
@@ -393,187 +337,55 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
     }
 
     /**
-     * Add group by day to collection
-     *
-     * @param \DateTime $periodFrom
-     * @param \DateTime $periodTo
-     * @param \DateTime $compareFrom
-     * @param \DateTime $compareTo
-     * @return $this
-     */
-    protected function addGroupByDay($periodFrom, $periodTo, $compareFrom, $compareTo)
-    {
-        $table = $this->getTable('aw_arep_days');
-        if ($periodFrom && $periodTo) {
-            $this->savePeriodFilterValues($periodFrom, $periodTo, $compareFrom, $compareTo);
-            $this->getSelect()->where(
-                '(' . self::GROUP_TABLE_ALIAS . '.date BETWEEN "' . self::PERIOD_FROM_PLACEHOLDER . '" AND "'
-                . self::PERIOD_TO_PLACEHOLDER . '")'
-            );
-        }
-
-        $this->getSelect()
-            ->joinRight(
-                [self::GROUP_TABLE_ALIAS => $table],
-                $this->getConditionForGroupBy() . ' AND ' .
-                $this->timeField . ' = ' . self::GROUP_TABLE_ALIAS . '.date AND ' .
-                $this->_getConditionSql('main_table.order_status', ['in' => $this->getOrderStatuses()])
-            );
-        $this->getSelect()->group(self::GROUP_TABLE_ALIAS . '.date');
-        return $this;
-    }
-
-    /**
-     * Add group by table to collection
-     *
-     * @param string $table
-     * @param \DateTime $periodFrom
-     * @param \DateTime $periodTo
-     * @param \DateTime $compareFrom
-     * @param \DateTime $compareTo
-     * @return $this
-     */
-    protected function groupByTable($table, $periodFrom, $periodTo, $compareFrom, $compareTo)
-    {
-        if ($periodFrom && $periodTo) {
-            $this->savePeriodFilterValues($periodFrom, $periodTo, $compareFrom, $compareTo);
-            $this->getSelect()->where(
-                self::GROUP_TABLE_ALIAS . '.start_date <= "' . self::PERIOD_TO_PLACEHOLDER . '"'
-            );
-            $this->getSelect()->where(
-                self::GROUP_TABLE_ALIAS . '.end_date >= "' . self::PERIOD_FROM_PLACEHOLDER . '"'
-            );
-        }
-        $this->getSelect()
-            ->joinRight(
-                [self::GROUP_TABLE_ALIAS => $table],
-                $this->getConditionForGroupBy() . ' AND ' .
-                $this->timeField . ' >= "' . self::PERIOD_FROM_PLACEHOLDER . '" AND '
-                . $this->timeField . ' <= "' . self::PERIOD_TO_PLACEHOLDER . '"'
-                . ' AND ' . $this->timeField . ' BETWEEN group_table.start_date AND group_table.end_date '
-                . ' AND ' . $this->_getConditionSql('main_table.order_status', ['in' => $this->getOrderStatuses()])
-            )
-            ->group(self::GROUP_TABLE_ALIAS . '.start_date');
-        return $this;
-    }
-
-    /**
      * Retrieve rate field if necessary
      *
      * @param boolean $addRate
-     * @return $string
+     * @return string
      */
     protected function getRateField($addRate = true)
     {
-        return (null === $this->storeFilter->getStoreIds() && $addRate) ? ' * main_table.to_global_rate' : '';
+        return (empty($this->getCustomFilterValue(self::STORE_IDS_FILTER_KEY)) && $addRate)
+            ? ' * main_table.to_global_rate'
+            : '';
     }
 
     /**
-     * Get condition for group by day, week, month, quarter, year
+     * Retrieve order statuses
      *
-     * @return string
-     */
-    protected function getConditionForGroupBy()
-    {
-        $joinCondition = '1=1';
-        foreach ($this->conditionsForGroupBy as $condition) {
-            $joinCondition .= ' AND ' . ($condition['condition']
-                ? $this->_getConditionSql($condition['field'], $condition['condition'])
-                : $condition['field']);
-        }
-        return $joinCondition;
-    }
-
-    /**
-     * Retrieve order statuses from config
-     *
-     * @return []
+     * @return array
      */
     protected function getOrderStatuses()
     {
-        if (isset($this->reportSettings['report_settings_order_status'])) {
-            return $this->reportSettings['report_settings_order_status'];
-        }
-        return explode(',', $this->config->getOrderStatus());
-    }
+        $orderStatuses = $this->getCustomFilterValue(self::ORDER_STATUSES_FILTER_KEY);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOrder($field, $direction = self::SORT_ORDER_DESC)
-    {
-        if ($field == 'period') {
-            switch($this->groupbyFilter->getCurrentGroupByKey()) {
-                case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_DAY:
-                    $field = 'date';
-                    break;
-                case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_WEEK:
-                case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_MONTH:
-                case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_QUARTER:
-                case \Aheadworks\AdvancedReports\Model\Source\Groupby::TYPE_YEAR:
-                    $field = 'start_date';
-                    break;
-            }
-        }
-        return parent::setOrder($field, $direction);
-    }
-
-    /**
-     * Enable compare mode
-     *
-     * @return void
-     */
-    public function enableCompareMode()
-    {
-        $this->compareMode = true;
-    }
-
-    /**
-     * Save period filter values
-     *
-     * @param \DateTime $periodFrom
-     * @param \DateTime $periodTo
-     * @param \DateTime|null $compareFrom
-     * @param \DateTime|null $compareTo
-     * @return $this
-     */
-    protected function savePeriodFilterValues($periodFrom, $periodTo, $compareFrom = null, $compareTo = null)
-    {
-        $this->conditionsForPeriod['period_from'] = $periodFrom->format('Y-m-d');
-        $this->conditionsForPeriod['period_to'] = $periodTo->format('Y-m-d');
-        if ($compareFrom && $compareTo) {
-            $this->conditionsForPeriod['compare_from'] = $compareFrom->format('Y-m-d');
-            $this->conditionsForPeriod['compare_to'] = $compareTo->format('Y-m-d');
-        }
-        return $this;
+        return is_array($orderStatuses) ? $orderStatuses : [];
     }
 
     /**
      * Render select
      *
-     * @param \Zend_Db_Select $select
-     * @return \Zend_Db_Select
+     * @param Select $select
+     * @return Select
+     * @throws \Zend_Db_Select_Exception
      */
     protected function renderSelect($select)
     {
-        if (
-            $this->compareMode &&
-            isset($this->conditionsForPeriod['compare_from']) &&
-            isset($this->conditionsForPeriod['compare_to'])
+        if ($this->compareMode &&
+            !empty($this->getCustomFilterValue(self::COMPARE_PERIOD_FROM_FILTER_KEY)) &&
+            !empty($this->getCustomFilterValue(self::COMPARE_PERIOD_TO_FILTER_KEY))
         ) {
             $this->renderPeriodFilterValues(
                 $select,
-                $this->conditionsForPeriod['compare_from'],
-                $this->conditionsForPeriod['compare_to']
+                $this->getCustomFilterValue(self::COMPARE_PERIOD_FROM_FILTER_KEY)->format('Y-m-d'),
+                $this->getCustomFilterValue(self::COMPARE_PERIOD_TO_FILTER_KEY)->format('Y-m-d')
             );
-        } else if (
-            isset($this->conditionsForPeriod['period_from']) &&
-            isset($this->conditionsForPeriod['period_to'])
+        } else if (!empty($this->getCustomFilterValue(self::PERIOD_FROM_FILTER_KEY)) &&
+            !empty($this->getCustomFilterValue(self::PERIOD_TO_FILTER_KEY))
         ) {
             $this->renderPeriodFilterValues(
                 $select,
-                $this->conditionsForPeriod['period_from'],
-                $this->conditionsForPeriod['period_to']
+                $this->getCustomFilterValue(self::PERIOD_FROM_FILTER_KEY)->format('Y-m-d'),
+                $this->getCustomFilterValue(self::PERIOD_TO_FILTER_KEY)->format('Y-m-d')
             );
         }
         return $select;
@@ -582,14 +394,15 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
     /**
      * Render period filter values
      *
-     * @param \Zend_Db_Select $select
+     * @param Select $select
      * @param string $periodFrom
      * @param string $periodTo
-     * @return \Zend_Db_Select
+     * @return Select
+     * @throws \Zend_Db_Select_Exception
      */
-    private function renderPeriodFilterValues($select, $periodFrom, $periodTo)
+    protected function renderPeriodFilterValues($select, $periodFrom, $periodTo)
     {
-        $where = $select->getPart(\Zend_Db_Select::WHERE);
+        $where = $select->getPart(Select::WHERE);
         foreach ($where as $key => $value) {
             $where[$key] = str_replace(
                 self::PERIOD_FROM_PLACEHOLDER,
@@ -601,9 +414,9 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
                 )
             );
         }
-        $select->setPart(\Zend_Db_Select::WHERE, $where);
+        $select->setPart(Select::WHERE, $where);
 
-        $from = $select->getPart(\Zend_Db_Select::FROM);
+        $from = $select->getPart(Select::FROM);
         foreach ($from as $key => $value) {
             if (isset($value['joinCondition']) && $value['joinCondition']) {
                 $from[$key]['joinCondition'] = str_replace(
@@ -617,7 +430,7 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
                 );
             }
         }
-        $select->setPart(\Zend_Db_Select::FROM, $from);
+        $select->setPart(Select::FROM, $from);
 
         return $select;
     }

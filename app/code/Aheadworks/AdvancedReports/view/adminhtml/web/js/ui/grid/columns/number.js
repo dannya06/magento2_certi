@@ -5,8 +5,9 @@
 
 define([
     'mage/utils/strings',
-    'Magento_Ui/js/grid/columns/column'
-], function (stringUtils, Column) {
+    'underscore',
+    'Aheadworks_AdvancedReports/js/ui/grid/columns/column'
+], function (stringUtils, _, Column) {
     'use strict';
 
     return Column.extend({
@@ -18,10 +19,12 @@ define([
          * @returns {String}
          */
         getLabel: function (row, index) {
-            if (typeof index != 'undefined') {
-                var number = row[index];
+            var number;
+
+            if (!_.isUndefined(index)) {
+                number = row[index];
             } else {
-                var number = this._super(row);
+                number = this._super(row);
             }
 
             if (stringUtils.isEmpty(number)) {

@@ -240,8 +240,7 @@ class Range extends \Magento\Framework\App\Config\Value
                     $checkRow['range_to'] = $maxTo;
                 }
                 if ($valueIndex != $checkIndex) {
-                    if (
-                        (
+                    if ((
                             $valueRow['range_from'] >= $checkRow['range_from']
                             && $valueRow['range_from'] <= $checkRow['range_to'])
                         || (
@@ -257,7 +256,6 @@ class Range extends \Magento\Framework\App\Config\Value
                     }
                 }
             }
-
         }
         return $this;
     }

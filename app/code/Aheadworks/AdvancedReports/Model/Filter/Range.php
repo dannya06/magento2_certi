@@ -14,7 +14,7 @@ use Magento\Framework\Session\SessionManagerInterface;
  *
  * @package Aheadworks\AdvancedReports\Model\Filter
  */
-class Range
+class Range implements FilterInterface
 {
     /**
      * @var string
@@ -27,7 +27,7 @@ class Range
     const SESSION_RANGE_TO_KEY = 'aw_rep_range_to_key';
 
     /**
-     * @var []
+     * @var array
      */
     private $rangeCache;
 
@@ -54,12 +54,9 @@ class Range
     }
 
     /**
-     * Retrieve current range
-     *
-     * @return []|null
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * {@inheritdoc}
      */
-    public function getRange()
+    public function getValue()
     {
         if (null == $this->rangeCache) {
             $from = $this->request->getParam('range_from');
@@ -80,5 +77,16 @@ class Range
             ];
         }
         return $this->rangeCache;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultValue()
+    {
+        return [
+            'from' => null,
+            'to' => null,
+        ];
     }
 }

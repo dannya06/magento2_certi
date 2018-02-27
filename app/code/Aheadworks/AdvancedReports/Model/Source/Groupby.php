@@ -24,16 +24,11 @@ class Groupby implements \Magento\Framework\Option\ArrayInterface
     /**#@-*/
 
     /**
-     * @var []
-     */
-    private $options;
-
-    /**
-     * Get options
+     * To option array
      *
      * @return []
      */
-    public function getOptions()
+    public function toOptionArray()
     {
         return [
             ['value' => self::TYPE_DAY, 'label' => __('Day')],
@@ -42,21 +37,5 @@ class Groupby implements \Magento\Framework\Option\ArrayInterface
             ['value' => self::TYPE_QUARTER, 'label' => __('Quarter')],
             ['value' => self::TYPE_YEAR, 'label' => __('Year')],
         ];
-    }
-
-    /**
-     * To option array
-     *
-     * @return []
-     */
-    public function toOptionArray()
-    {
-        if ($this->options == null) {
-            $this->options = [];
-            foreach ($this->getOptions() as $value => $label) {
-                $this->options[] = ['value' => $value, 'label' => $label];
-            }
-        }
-        return $this->options;
     }
 }

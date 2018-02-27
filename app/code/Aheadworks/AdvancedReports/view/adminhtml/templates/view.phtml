@@ -8,30 +8,9 @@
 
 /** @var \Aheadworks\AdvancedReports\Block\Adminhtml\View $block */
 ?>
-<div class="messages">
-    <div class="message message-notice notice">
-        <div data-ui-id="messages-message-notice">
-            <?php echo $block->escapeHtml($block->showLastIndexUpdate()) ?>
-            <?php if($block->canShowScheduleMessage()): ?>
-                <?php echo $block->escapeHtml(__('To schedule Advanced Reports index update click')); ?>
-                <a href="<?php echo $block->escapeUrl($block->getIndexUpdateUrl()); ?>"><?php echo $block->escapeHtml(__('here')) ?></a>
-            <?php endif; ?>
-        </div>
-    </div>
-</div>
-<div class="page-main-actions">
-    <div class="aw-arep-report_left-position">
-        <?php echo /* @noEscape */ $block->getChildHtml('menu') ?>
-        <?php echo /* @noEscape */ $block->getChildHtml('customer-group') ?>
-    </div>
-    <div class="aw-arep-report_right-position">
-        <?php /* @noEscape */ echo $block->getChildHtml('store') ?>
-        <?php /* @noEscape */ echo $block->getChildHtml('period') ?>
-    </div>
-</div>
+<?php /* @noEscape */ echo $block->getChildHtml('index-info') ?>
 <div class="aw-arep-report_content-top">
     <div class="aw-arep-report_left-position"><?php /* @noEscape */ echo $block->getChildHtml('breadcrumbs') ?></div>
-    <div class="aw-arep-report_right-position"><?php /* @noEscape */ echo $block->getChildHtml('groupby') ?></div>
     <div class="aw-arep-report_clear"></div>
 </div>
 <div class="aw-arep-report_grid">

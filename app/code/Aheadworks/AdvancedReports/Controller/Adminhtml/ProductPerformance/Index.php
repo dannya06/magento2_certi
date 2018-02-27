@@ -6,6 +6,7 @@
 
 namespace Aheadworks\AdvancedReports\Controller\Adminhtml\ProductPerformance;
 
+use Aheadworks\AdvancedReports\Ui\Component\Listing\Breadcrumbs;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
@@ -62,6 +63,7 @@ class Index extends \Magento\Backend\App\Action
         } else {
             $title = __('Product Performance');
         }
+        $this->_session->setData(Breadcrumbs::BREADCRUMBS_CONTROLLER_TITLE, $title);
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Aheadworks_AdvancedReports::reports_productperformance');

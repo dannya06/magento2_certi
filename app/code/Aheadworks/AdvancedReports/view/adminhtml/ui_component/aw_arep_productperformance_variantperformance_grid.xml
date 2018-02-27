@@ -6,7 +6,9 @@
 */
 -->
 
-<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Ui/etc/ui_configuration.xsd">
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:framework:Ui/etc/ui_configuration.xsd"
+         class="Aheadworks\AdvancedReports\Ui\Component\Listing\Listing">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">aw_arep_productperformance_variantperformance_grid.aw_arep_productperformance_variantperformance_grid_data_source</item>
@@ -16,7 +18,7 @@
     </argument>
     <dataSource name="aw_arep_productperformance_variantperformance_grid_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">Aheadworks\AdvancedReports\Ui\DataProvider\DataProvider</argument>
+            <argument name="class" xsi:type="string">AwArepDataProvider</argument>
             <argument name="name" xsi:type="string">aw_arep_productperformance_variantperformance_grid_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">id</argument>
             <argument name="requestFieldName" xsi:type="string">id</argument>
@@ -30,6 +32,10 @@
                             <item name="value" xsi:type="string">*</item>
                             <item name="addToFilter" xsi:type="boolean">false</item>
                         </item>
+                        <item name="parent_id" xsi:type="array">
+                            <item name="value" xsi:type="string">*</item>
+                            <item name="addToFilter" xsi:type="boolean">false</item>
+                        </item>
                         <item name="brc" xsi:type="array">
                             <item name="value" xsi:type="string">*</item>
                             <item name="addToFilter" xsi:type="boolean">false</item>
@@ -38,18 +44,93 @@
                     <item name="storageConfig" xsi:type="array">
                         <item name="cacheRequests" xsi:type="boolean">false</item>
                     </item>
-                    <item name="displayChart" xsi:type="boolean">true</item>
                 </item>
             </argument>
         </argument>
     </dataSource>
-    <container name="chart">
+    <container name="toolbar">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="template" xsi:type="string">Aheadworks_AdvancedReports/ui/toolbar</item>
+            </item>
+        </argument>
+        <container name="menu" class="Aheadworks\AdvancedReports\Ui\Component\Toolbar\Menu">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/dropdown</item>
+                    <item name="displayArea" xsi:type="string">leftPosition</item>
+                    <item name="isAjax" xsi:type="boolean">false</item>
+                    <item name="allowUpdateUrl" xsi:type="boolean">false</item>
+                    <item name="exports" xsi:type="array"/>
+                    <item name="additionalClasses" xsi:type="array">
+                        <item name="extension-menu" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </container>
+        <container name="customer_group_filter" class="Aheadworks\AdvancedReports\Ui\Component\Toolbar\CustomerGroup">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/dropdown</item>
+                    <item name="options" xsi:type="object">Aheadworks\AdvancedReports\Model\Source\CustomerGroup</item>
+                    <item name="displayArea" xsi:type="string">rightPosition</item>
+                    <item name="filterScope" xsi:type="string">customer_group_id</item>
+                    <item name="additionalClasses" xsi:type="array">
+                        <item name="left" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </container>
+        <container name="store_view_filter" class="Aheadworks\AdvancedReports\Ui\Component\Toolbar\Store">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/dropdown</item>
+                    <item name="displayArea" xsi:type="string">rightPosition</item>
+                    <item name="filterScope" xsi:type="string">report_scope</item>
+                    <item name="additionalClasses" xsi:type="array">
+                        <item name="left" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </container>
+        <container name="date_range_filter" class="Aheadworks\AdvancedReports\Ui\Component\Toolbar\PeriodRange">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="displayArea" xsi:type="string">rightPosition</item>
+                    <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/period-range</item>
+                </item>
+            </argument>
+        </container>
+    </container>
+    <container name="breadcrumbs" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Breadcrumbs">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/breadcrumbs</item>
+            </item>
+        </argument>
+    </container>
+    <container name="group_by" class="Aheadworks\AdvancedReports\Ui\Component\Listing\GroupBy">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/toolbar/dropdown</item>
+                <item name="template" xsi:type="string">Aheadworks_AdvancedReports/ui/grid/group-by</item>
+                <item name="options" xsi:type="object">Aheadworks\AdvancedReports\Model\Source\Groupby</item>
+                <item name="filterScope" xsi:type="string">group_by</item>
+            </item>
+        </argument>
+    </container>
+    <container name="chart" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Chart\Chart">
          <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
                 <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/chart</item>
                 <item name="storageConfig" xsi:type="array">
                     <item name="provider" xsi:type="string">ns = ${ $.ns }, index = bookmarks</item>
                     <item name="namespace" xsi:type="string">current.chart</item>
+                </item>
+                <item name="chartType" xsi:type="string">ComboChart</item>
+                <item name="serieDefaultOptions" xsi:type="array">
+                    <item name="targetAxisIndex" xsi:type="number">0</item>
+                    <item name="type" xsi:type="string">line</item>
                 </item>
             </item>
         </argument>
@@ -151,6 +232,7 @@
                         <argument name="data" xsi:type="array">
                             <item name="options" xsi:type="object">Aheadworks\AdvancedReports\Model\Source\OrderStatus</item>
                             <item name="config" xsi:type="array">
+                                <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/form/element/multiselect</item>
                                 <item name="provider" xsi:type="string">${ $.parentName }</item>
                                 <item name="dataType" xsi:type="string">text</item>
                                 <item name="formElement" xsi:type="string">multiselect</item>
@@ -169,13 +251,14 @@
             </fieldset>
         </modal>
     </container>
+    <container name="container_data_merger" class="Aheadworks\AdvancedReports\Ui\Component\Listing\DataMerger"/>
     <columns name="grid_columns">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
                 <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/listing</item>
             </item>
         </argument>
-        <column name="period" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column\ProductPerformance\VariantPerformance\Period">
+        <column name="period" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column\Period">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="dataType" xsi:type="string">actions</item>
@@ -188,6 +271,10 @@
                     <item name="chartLabel" xsi:type="string">Time Unit</item>
                     <item name="visible" xsi:type="boolean">false</item>
                     <item name="controlVisibility" xsi:type="boolean">false</item>
+                    <item name="detailGroup" xsi:type="boolean">true</item>
+                    <item name="fieldClass" xsi:type="array">
+                        <item name="one-line-text" xsi:type="boolean">true</item>
+                    </item>
                 </item>
             </argument>
         </column>
@@ -199,6 +286,7 @@
                     <item name="align" xsi:type="string">left</item>
                     <item name="label" xsi:type="string" translate="true">Product Name</item>
                     <item name="sortOrder" xsi:type="number">15</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
@@ -208,10 +296,11 @@
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">Sku</item>
                     <item name="sortOrder" xsi:type="number">20</item>
+                    <item name="displayCompareValue" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>
-        <column name="order_items_count">
+        <column name="order_items_count" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/columns/number</item>
@@ -222,11 +311,14 @@
                     <item name="topTotalsVisible" xsi:type="boolean">true</item>
                     <item name="visibleOnChart" xsi:type="boolean">true</item>
                     <item name="chartType" xsi:type="string">number</item>
-                    <item name="color" xsi:type="string">#A58900</item>
+                    <item name="chartSerieOptions" xsi:type="array">
+                        <item name="targetAxisIndex" xsi:type="number">1</item>
+                        <item name="type" xsi:type="string">bars</item>
+                    </item>
                 </item>
             </argument>
         </column>
-        <column name="subtotal">
+        <column name="subtotal" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/columns/price</item>
@@ -236,11 +328,10 @@
                     <item name="totalsVisible" xsi:type="boolean">true</item>
                     <item name="visibleOnChart" xsi:type="boolean">true</item>
                     <item name="chartType" xsi:type="string">number</item>
-                    <item name="color" xsi:type="string">#a65628</item>
                 </item>
             </argument>
         </column>
-        <column name="tax">
+        <column name="tax" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/columns/price</item>
@@ -250,11 +341,10 @@
                     <item name="totalsVisible" xsi:type="boolean">true</item>
                     <item name="visibleOnChart" xsi:type="boolean">true</item>
                     <item name="chartType" xsi:type="string">number</item>
-                    <item name="color" xsi:type="string">#332288</item>
                 </item>
             </argument>
         </column>
-        <column name="discount">
+        <column name="discount" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/columns/price</item>
@@ -264,11 +354,10 @@
                     <item name="totalsVisible" xsi:type="boolean">true</item>
                     <item name="visibleOnChart" xsi:type="boolean">true</item>
                     <item name="chartType" xsi:type="string">number</item>
-                    <item name="color" xsi:type="string">#984ea3</item>
                 </item>
             </argument>
         </column>
-        <column name="invoiced">
+        <column name="invoiced" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/columns/price</item>
@@ -279,11 +368,10 @@
                     <item name="topTotalsVisible" xsi:type="boolean">true</item>
                     <item name="visibleOnChart" xsi:type="boolean">true</item>
                     <item name="chartType" xsi:type="string">number</item>
-                    <item name="color" xsi:type="string">#00A2FF</item>
                 </item>
             </argument>
         </column>
-        <column name="total">
+        <column name="total" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/columns/price</item>
@@ -295,11 +383,10 @@
                     <item name="visibleOnChart" xsi:type="boolean">true</item>
                     <item name="chartType" xsi:type="string">number</item>
                     <item name="displayOnChartAfterLoad" xsi:type="boolean">true</item>
-                    <item name="color" xsi:type="string">#4daf4a</item>
                 </item>
             </argument>
         </column>
-        <column name="refunded">
+        <column name="refunded" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="component" xsi:type="string">Aheadworks_AdvancedReports/js/ui/grid/columns/price</item>
@@ -309,7 +396,6 @@
                     <item name="totalsVisible" xsi:type="boolean">true</item>
                     <item name="visibleOnChart" xsi:type="boolean">true</item>
                     <item name="chartType" xsi:type="string">number</item>
-                    <item name="color" xsi:type="string">#e41a1c</item>
                 </item>
             </argument>
         </column>

@@ -11,11 +11,11 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Aheadworks\AdvancedReports\Model\Source\Groupby as GroupbySource;
 
 /**
- * Class Groupby
+ * Class GroupBy
  *
  * @package Aheadworks\AdvancedReports\Model\Filter
  */
-class Groupby
+class GroupBy implements FilterInterface
 {
     /**
      * @var string
@@ -25,12 +25,7 @@ class Groupby
     /**
      * @var string
      */
-    const DEFAULT_GROUP_BY = GroupbySource::TYPE_MONTH;
-
-    /**
-     * @var string
-     */
-    private $groupbyKey;
+    private $groupBy;
 
     /**
      * @var RequestInterface
@@ -55,22 +50,28 @@ class Groupby
     }
 
     /**
-     * Retrieve current group by type
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getCurrentGroupByKey()
+    public function getValue()
     {
-        if (!$this->groupbyKey) {
-            $this->groupbyKey = $this->request->getParam('group_by');
-            if (!$this->groupbyKey) {
-                $this->groupbyKey = $this->session->getData(self::SESSION_KEY);
+        if (!$this->groupBy) {
+            $this->groupBy = $this->request->getParam('group_by');
+            if (!$this->groupBy) {
+                $this->groupBy = $this->session->getData(self::SESSION_KEY);
             }
-            if (!$this->groupbyKey) {
-                $this->groupbyKey = self::DEFAULT_GROUP_BY;
+            if (!$this->groupBy) {
+                $this->groupBy = $this->getDefaultValue();
             }
-            $this->session->setData(self::SESSION_KEY, $this->groupbyKey);
+            $this->session->setData(self::SESSION_KEY, $this->groupBy);
         }
-        return $this->groupbyKey;
+        return $this->groupBy;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultValue()
+    {
+        return GroupbySource::TYPE_MONTH;
     }
 }

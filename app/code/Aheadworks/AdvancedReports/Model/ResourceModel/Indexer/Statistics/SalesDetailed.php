@@ -31,18 +31,74 @@ class SalesDetailed extends AbstractResource
      */
     protected function process()
     {
+        $columns = $this->getColumns();
+
+        $orderItemTable = $this->getTable('sales_order_item');
+        $salesOrderAddress = $this->getTable('sales_order_address');
+        $select = $this->getConnection()->select()
+            ->from(['main_table' => $this->getTable('sales_order')], [])
+            ->join(
+                ['item' => $orderItemTable],
+                '(item.order_id = main_table.entity_id AND item.parent_item_id IS NULL)',
+                []
+            )->joinLeft(
+                ['item2' => $orderItemTable],
+                '(item2.order_id = main_table.entity_id AND item2.parent_item_id IS NOT NULL AND '
+                . 'item2.parent_item_id = item.item_id AND item.product_type IN ("configurable", "bundle"))',
+                []
+            )->joinLeft(
+                ['bundle_item_price' => $this->getBundleItemsPrice()],
+                '(main_table.entity_id = bundle_item_price.order_id AND '
+                . 'item.item_id = bundle_item_price.parent_item_id)',
+                []
+            )->joinLeft(
+                ['catalog_product' => $this->getTable('catalog_product_entity')],
+                'item.product_id = catalog_product.entity_id',
+                []
+            )->joinLeft(
+                ['c_group' => $this->getTable('customer_group')],
+                'IFNULL(main_table.customer_group_id, ' .
+                CustomerGroup::NOT_LOGGED_IN_ID . ') = c_group.customer_group_id',
+                []
+            )->joinLeft(
+                ['shipping_address' => $salesOrderAddress],
+                'shipping_address.parent_id = main_table.entity_id AND shipping_address.address_type = "shipping"',
+                []
+            )->joinLeft(
+                ['billing_address' => $salesOrderAddress],
+                'billing_address.parent_id = main_table.entity_id AND billing_address.address_type = "billing"',
+                []
+            )->columns($columns)
+            ->group('item.item_id');
+
+        $select = $this->addManufacturer($select);
+
+        $select = $this->addFilterByCreatedAt($select, 'main_table');
+
+        $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+    }
+
+    /**
+     * Get columns
+     *
+     * @return array
+     */
+    private function getColumns()
+    {
         $period = $this->getPeriod('main_table.created_at');
         $columns = [
             'period' => $period,
             'store_id' => 'main_table.store_id',
-            'order_status' => 'order_statuses.label',
+            'order_status' => 'main_table.status',
             'order_id' => 'main_table.entity_id',
             'order_increment_id' => 'main_table.increment_id',
             'order_date' => 'main_table.created_at',
             'product_id' => 'IFNULL(item.product_id, item2.product_id)',
             'product_name' => 'item.name',
             'sku' => 'IFNULL(item.sku, catalog_product.sku)',
-            'manufacturer' => 'IFNULL(manufacturer_value.value, "Not Set")',
+            'manufacturer' => $this->getManufacturerAttribute() ?
+                'IFNULL(manufacturer_value.value, "Not Set")' :
+                'COALESCE("Not Set")',
             'customer_id' => 'main_table.customer_id',
             'customer_email' => 'main_table.customer_email',
             'customer_name' => 'IFNULL(CONCAT(main_table.customer_firstname, " ", main_table.customer_lastname), '
@@ -125,62 +181,35 @@ class SalesDetailed extends AbstractResource
             'to_global_rate' => 'main_table.base_to_global_rate'
         ];
 
+        return $columns;
+    }
+
+    /**
+     * Add manufacturer
+     *
+     * @param \Magento\Framework\DB\Select $select
+     * @return \Magento\Framework\DB\Select
+     */
+    private function addManufacturer($select)
+    {
         /* @var $manufacturerAttr \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
-        $manufacturerAttr = $this->attributeRepository->get('catalog_product', 'manufacturer');
-        $manufacturerTable = $manufacturerAttr->getBackendTable();
+        $manufacturerAttr = $this->getManufacturerAttribute();
+        if ($manufacturerAttr) {
+            $manufacturerTable = $manufacturerAttr->getBackendTable();
+            $select
+                ->joinLeft(
+                    ['item_manufacturer' => $manufacturerTable],
+                    'item_manufacturer.' . $this->getCatalogLinkField() . ' = item.product_id '
+                    . 'AND item_manufacturer.attribute_id = ' . $manufacturerAttr->getId(),
+                    []
+                )
+                ->joinLeft(
+                    ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],
+                    'item_manufacturer.value = manufacturer_value.option_id AND manufacturer_value.store_id = 0',
+                    []
+                );
+        }
 
-        $orderItemTable = $this->getTable('sales_order_item');
-        $salesOrderAddress = $this->getTable('sales_order_address');
-        $select = $this->getConnection()->select()
-            ->from(['main_table' => $this->getTable('sales_order')], [])
-            ->joinLeft(
-                ['order_statuses' => $this->getTable('sales_order_status')],
-                '(main_table.status = order_statuses.status)',
-                []
-            )->join(
-                ['item' => $orderItemTable],
-                '(item.order_id = main_table.entity_id AND item.parent_item_id IS NULL)',
-                []
-            )->joinLeft(
-                ['item2' => $orderItemTable],
-                '(item2.order_id = main_table.entity_id AND item2.parent_item_id IS NOT NULL AND '
-                . 'item2.parent_item_id = item.item_id AND item.product_type IN ("configurable", "bundle"))',
-                []
-            )->joinLeft(
-                ['bundle_item_price' => $this->getBundleItemsPrice()],
-                '(main_table.entity_id = bundle_item_price.order_id AND '
-                . 'item.item_id = bundle_item_price.parent_item_id)',
-                []
-            )->joinLeft(
-                ['catalog_product' => $this->getTable('catalog_product_entity')],
-                'item.product_id = catalog_product.entity_id',
-                []
-            )->joinLeft(
-                ['c_group' => $this->getTable('customer_group')],
-                'IFNULL(main_table.customer_group_id, ' .
-                CustomerGroup::NOT_LOGGED_IN_ID . ') = c_group.customer_group_id',
-                []
-            )->joinLeft(
-                ['shipping_address' => $salesOrderAddress],
-                'shipping_address.parent_id = main_table.entity_id AND shipping_address.address_type = "shipping"',
-                []
-            )->joinLeft(
-                ['billing_address' => $salesOrderAddress],
-                'billing_address.parent_id = main_table.entity_id AND billing_address.address_type = "billing"',
-                []
-            )->joinLeft(
-                ['item_manufacturer' => $manufacturerTable],
-                'item_manufacturer.' . $this->getCatalogLinkField() . ' = item.product_id '
-                . 'AND item_manufacturer.attribute_id = ' . $manufacturerAttr->getId(),
-                []
-            )->joinLeft(
-                ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],
-                'item_manufacturer.value = manufacturer_value.option_id AND manufacturer_value.store_id = 0',
-                []
-            )->columns($columns)
-            ->group('item.item_id');
-        $select = $this->addFilterByCreatedAt($select, 'main_table');
-
-        $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+        return $select;
     }
 }

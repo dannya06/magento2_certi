@@ -7,10 +7,7 @@
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\CustomerSales;
 
 use Magento\Framework\DataObject;
-use Aheadworks\AdvancedReports\Model\Config;
-use Aheadworks\AdvancedReports\Model\Filter;
 use Aheadworks\AdvancedReports\Model\ResourceModel\CustomerSales as ResourceCustomerSales;
-use Aheadworks\AdvancedReports\Model\ResourceModel\CustomerSales\Range as CustomerSalesRangeResource;
 
 /**
  * Class Collection
@@ -35,69 +32,11 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     private $excludeRefunded;
 
     /**
-     * Name of object id field
-     *
-     * @var string
-     */
-    protected $_idFieldName = 'id';
-
-    /**
      * {@inheritdoc}
      */
     public function _construct()
     {
         $this->_init(DataObject::class, ResourceCustomerSales::class);
-    }
-
-    /**
-     * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
-     * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param Config $config
-     * @param Filter\Store $storeFilter
-     * @param Filter\CustomerGroup $customerGroupFilter
-     * @param Filter\Groupby $groupbyFilter
-     * @param Filter\Period $periodFilter
-     * @param CustomerSalesRangeResource $customerSalesRangeResource
-     * @param \Magento\Framework\DB\Adapter\AdapterInterface $connection
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     */
-    public function __construct(
-        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        Config $config,
-        Filter\Store $storeFilter,
-        Filter\CustomerGroup $customerGroupFilter,
-        Filter\Groupby $groupbyFilter,
-        Filter\Period $periodFilter,
-        CustomerSalesRangeResource $customerSalesRangeResource,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
-    ) {
-        $websiteId = $storeFilter->getWebsiteId();
-        if ($customerSalesRangeResource->hasConfigValuesForWebsite($websiteId)) {
-            $this->websiteId = $websiteId;
-        } else {
-            $this->websiteId = 0;
-        }
-
-        parent::__construct(
-            $entityFactory,
-            $logger,
-            $fetchStrategy,
-            $eventManager,
-            $config,
-            $storeFilter,
-            $customerGroupFilter,
-            $groupbyFilter,
-            $periodFilter,
-            $connection,
-            $resource
-        );
     }
 
     /**
@@ -107,7 +46,6 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     {
         $this->getSelect()
             ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(true))
             ->group([
                 'main_table.customer_id',
                 'main_table.customer_email'
@@ -157,32 +95,26 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     }
 
     /**
-     * {@inheritdoc}
+     * Set website id
+     *
+     * @param int  $websiteId
+     * @return $this
      */
-    public function addFieldToFilter($field, $condition = null)
+    public function setWebsiteId($websiteId)
     {
-        if ($field == 'include_refunded_items') {
-            if ((int)$condition['eq'] == 1) {
-                return $this;
-            } else {
-                return $this->addExcludeRefundedItemsFilter();
-            }
-        }
-        return parent::addFieldToFilter($field, $condition);
+        $this->websiteId = $websiteId;
+
+        return $this;
     }
 
     /**
-     * Add exclude refunded items filters to collection
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    private function addExcludeRefundedItemsFilter()
+    public function addExcludeRefundedItemsFilter()
     {
         $this->excludeRefunded = true;
-        $this->getSelect()
-            ->reset(\Magento\Framework\DB\Select::COLUMNS)
-            ->columns($this->getColumns(true))
-            ->where('? > 0', new \Zend_Db_Expr('(qty_ordered - qty_refunded)'));
+        $this->getSelect()->where('? > 0', new \Zend_Db_Expr('(qty_ordered - qty_refunded)'));
+
         return $this;
     }
 
@@ -209,6 +141,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             ->reset(\Magento\Framework\DB\Select::FROM)
             ->reset(\Magento\Framework\DB\Select::GROUP)
             ->reset(\Magento\Framework\DB\Select::WHERE)
+            ->reset(\Magento\Framework\DB\Select::ORDER)
             ->reset(\Magento\Framework\DB\Select::LIMIT_COUNT)
             ->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET)
             ->from(
@@ -229,6 +162,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      */
     protected function _renderFiltersBefore()
     {
+        $this->getSelect()->columns($this->getColumns(true));
         if (!$this->collectionSelect) {
             $this->collectionSelect = clone $this;
             $this->renderSelect($this->collectionSelect->getSelect());
@@ -282,9 +216,10 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * Retrieve chart rows
      *
-     * @return []
+     * @param array $additional
+     * @return array
      */
-    public function getChartRows()
+    public function getChartRows($additional = [])
     {
         $chartSelect = clone $this->getSelect();
         $chartSelect
@@ -335,15 +270,5 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             ->group('ranges.range_id')
         ;
         return $rangesSelect;
-    }
-
-    /**
-     * Get exclude refunded
-     *
-     * @return bool
-     */
-    public function getExcludeRefunded()
-    {
-        return $this->excludeRefunded;
     }
 }
