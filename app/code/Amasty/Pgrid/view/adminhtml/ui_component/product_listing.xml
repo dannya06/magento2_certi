@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Pgrid
  */
 -->
@@ -227,6 +227,17 @@
                 </item>
             </argument>
         </column>
-
+        <column name="amasty_tier_price" class="Amasty\Pgrid\Ui\Component\Listing\Column\TierPrice">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="tab" xsi:type="string">general</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                    <item name="amastyExtra" xsi:type="boolean">true</item>
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
+                    <item name="sortable" xsi:type="boolean">false</item>
+                    <item name="label" xsi:type="string" translate="true">Tier Price</item>
+                </item>
+            </argument>
+        </column>
     </columns>
 </listing>
