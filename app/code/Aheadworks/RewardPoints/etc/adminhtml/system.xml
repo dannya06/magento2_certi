@@ -129,8 +129,8 @@
                     <label>Reward program explainer page</label>
                     <source_model>Magento\Cms\Model\Config\Source\Page</source_model>
                 </field>
-                <field id="is_display_prices_by_points" translate="label,comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Display prices discounted by available points</label>
+                <field id="is_display_discount_info" translate="label,comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Display block with discount information</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="is_display_social_button" translate="label,comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">

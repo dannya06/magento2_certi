@@ -15,7 +15,7 @@ use Magento\Backend\Block\Template\Context;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Block\Html\PagerTest
  */
-class PagerTest extends \PHPUnit_Framework_TestCase
+class PagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var  \PHPUnit_Framework_MockObject_MockObject|SearchResultsInterface

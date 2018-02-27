@@ -7,6 +7,9 @@
 -->
 
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="checkout" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Aheadworks_RewardPoints::css/one-step.css"/>
+    </head>
     <body>
         <referenceContainer name="content">
             <referenceBlock name="checkout.root">
@@ -15,23 +18,18 @@
                         <item name="components" xsi:type="array">
                             <item name="checkout" xsi:type="array">
                                 <item name="children" xsi:type="array">
-                                    <item name="sidebar" xsi:type="array">
+                                    <item name="totals" xsi:type="array">
                                         <item name="children" xsi:type="array">
-                                            <item name="totals" xsi:type="array">
-                                                <item name="children" xsi:type="array">
-                                                    <item name="aw-reward-points" xsi:type="array">
-                                                        <item name="component"  xsi:type="string">Aheadworks_RewardPoints/js/view/payment/reward-points</item>
-                                                        <item name="config" xsi:type="array">
-                                                            <item name="title" xsi:type="string" translate="true">Reward Points</item>
-                                                        </item>
-                                                        <item name="children" xsi:type="array">
-                                                            <item name="errors" xsi:type="array">
-                                                                <item name="sortOrder" xsi:type="string">0</item>
-                                                                <item name="component" xsi:type="string">Aheadworks_RewardPoints/js/view/payment/reward-points-messages</item>
-                                                                <item name="displayArea" xsi:type="string">messages</item>
-                                                            </item>
-                                                        </item>
-                                                    </item>
+                                            <item name="aw-reward-points" xsi:type="array">
+                                                <item name="component" xsi:type="string">Aheadworks_RewardPoints/js/view/summary/one-step/reward-points</item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                    <item name="payment-options" xsi:type="array">
+                                        <item name="children" xsi:type="array">
+                                            <item name="aw-reward-points" xsi:type="array">
+                                                <item name="config" xsi:type="array">
+                                                    <item name="template" xsi:type="string">Aheadworks_RewardPoints/payment/one-step/reward-points</item>
                                                 </item>
                                             </item>
                                         </item>

@@ -19,7 +19,7 @@ use Magento\Framework\DB\Select;
  * Class Aheadworks\RewardPoints\Test\Unit\Model\ResourceModel\SpendRateTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SpendRateTest extends \PHPUnit_Framework_TestCase
+class SpendRateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SpendRate
@@ -523,13 +523,10 @@ class SpendRateTest extends \PHPUnit_Framework_TestCase
             ->with('aw_rp_spend_rate', 'default')
             ->will($this->returnArgument(0));
 
-        $selectMock = $this->getMock(
-            Select::class,
-            ['from', 'where', 'order', 'orWhere'],
-            [],
-            '',
-            false
-        );
+        $selectMock = $this->getMockBuilder(Select::class)
+            ->setMethods(['from', 'where', 'order', 'orWhere'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->connectionMock->expects($this->once())
             ->method('select')

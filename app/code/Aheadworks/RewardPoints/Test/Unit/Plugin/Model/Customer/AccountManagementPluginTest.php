@@ -17,7 +17,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Unit\Test\Plugin\Model\Customer\AccountManagementPluginTest
  */
-class AccountManagementPluginTest extends \PHPUnit_Framework_TestCase
+class AccountManagementPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AccountManagementPlugin

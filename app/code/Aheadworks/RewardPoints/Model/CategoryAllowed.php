@@ -112,7 +112,8 @@ class CategoryAllowed
      */
     private function isAllowCategory($allowSpendingPointsValue)
     {
-        return $allowSpendingPointsValue == AllowSpendingPoints::CATEGORY_SPENDING_OPTION_CATEGORY_ONLY;
+        return ($allowSpendingPointsValue == AllowSpendingPoints::CATEGORY_SPENDING_OPTION_CATEGORY_ONLY)
+            || ($allowSpendingPointsValue == AllowSpendingPoints::CATEGORY_SPENDING_OPTION_CATEGORY_WITH_SUB);
     }
 
     /**

@@ -107,7 +107,7 @@ class Discount extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Retrieve config value for Display prices discounted by available points
+     * Retrieve config value for Display block with discount information
      *
      * @return boolean
      */
@@ -120,7 +120,7 @@ class Discount extends \Magento\Framework\View\Element\Template
         $customerRewardPointsSpendRateByGroup = $this->customerRewardPointsService
             ->isCustomerRewardPointsSpendRateByGroup($this->customerSession->getId());
 
-        return $this->config->isDisplayPriceWithDiscount() && $this->isAllowedCategoriesForSpend()
+        return $this->config->isDisplayDiscountInfoBlock() && $this->isAllowedCategoriesForSpend()
             && $customerRewardPointsOnceMinBalance == 0
             && $customerRewardPointsSpendRateByGroup && $customerRewardPointsSpendRate;
     }

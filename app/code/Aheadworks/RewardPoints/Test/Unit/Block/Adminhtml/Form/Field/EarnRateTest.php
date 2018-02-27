@@ -17,7 +17,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Block\System\Config\Form\Field\EarnRateTest
  */
-class EarnRateTest extends \PHPUnit_Framework_TestCase
+class EarnRateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array
@@ -80,29 +80,20 @@ class EarnRateTest extends \PHPUnit_Framework_TestCase
             ])
             ->getMock();
 
-        $this->systemStoreMock = $this->getMock(
-            Store::class,
-            ['getWebsiteValuesForForm'],
-            [],
-            '',
-            false
-        );
+        $this->systemStoreMock = $this->getMockBuilder(Store::class)
+            ->setMethods(['getWebsiteValuesForForm'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->customerGroupMock = $this->getMock(
-            CustomerGroup::class,
-            ['toOptionArray'],
-            [],
-            '',
-            false
-        );
+        $this->customerGroupMock = $this->getMockBuilder(CustomerGroup::class)
+            ->setMethods(['toOptionArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->jsonHelperDataMock = $this->getMock(
-            JsonHelperData::class,
-            ['jsonEncode'],
-            [],
-            '',
-            false
-        );
+        $this->jsonHelperDataMock = $this->getMockBuilder(JsonHelperData::class)
+            ->setMethods(['jsonEncode'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $data = [
             'elementFactory' => $this->elementFactoryMock,
@@ -220,6 +211,9 @@ class EarnRateTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test renderCellTemplate method for wrong column name
+     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Wrong column name specified.
      */
     public function testRenderCellTemplateWrongColumnName()
     {
@@ -227,8 +221,6 @@ class EarnRateTest extends \PHPUnit_Framework_TestCase
         $wrongColumnName = 'wrongTestCellName';
 
         $this->object->addColumn($wrongColumnName, $this->cellParameters);
-
-        $this->setExpectedException('\Exception', 'Wrong column name specified.');
 
         $this->object->renderCellTemplate($columnName);
     }

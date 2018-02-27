@@ -20,7 +20,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Service\PointsSummaryServiceTest
  */
-class PointsSummaryServiceTest extends \PHPUnit_Framework_TestCase
+class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PointsSummaryService

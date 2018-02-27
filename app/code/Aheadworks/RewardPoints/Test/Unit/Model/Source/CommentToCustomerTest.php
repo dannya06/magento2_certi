@@ -15,7 +15,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Source\CommentToCustomerTest
  */
-class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
+class CommentToCustomerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CommentToCustomer
@@ -56,16 +56,16 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
      */
     public function testToOptionArrayMethod()
     {
-        $commentForPurchaseMock = $this->getMock(
-            CommentForOrder::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'reward_for_order',
-                'label' => 'Reward points for order',
-            ],
-            '',
-            false
-        );
+        $commentForPurchaseMock = $this->getMockBuilder(CommentForOrder::class)
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'comment' => 'reward_for_order',
+                    'label' => 'Reward points for order',
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $commentForPurchaseMock->expects($this->once())
             ->method('getLabel')
             ->willReturn('Reward points for order');
@@ -73,16 +73,16 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
             ->method('getComment')
             ->willReturn('reward_for_order');
 
-        $commentForRegistrationMock = $this->getMock(
-            CommentDefault::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'reward_for_registration',
-                'label' => 'Reward points for registration',
-            ],
-            '',
-            false
-        );
+        $commentForRegistrationMock = $this->getMockBuilder(CommentDefault::class)
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'comment' => 'reward_for_registration',
+                    'label' => 'Reward points for registration',
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $commentForRegistrationMock->expects($this->once())
             ->method('getLabel')
             ->willReturn('Reward points for registration');
@@ -90,16 +90,16 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
             ->method('getComment')
             ->willReturn('reward_for_registration');
 
-        $commentForReview = $this->getMock(
-            CommentDefault::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'reward_for_review',
-                'label' => 'Reward points for review',
-            ],
-            '',
-            false
-        );
+        $commentForReview = $this->getMockBuilder(CommentDefault::class)
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'comment' => 'reward_for_review',
+                    'label' => 'Reward points for review',
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $commentForReview->expects($this->once())
             ->method('getLabel')
             ->willReturn('Reward points for review');
@@ -107,16 +107,16 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
             ->method('getComment')
             ->willReturn('reward_for_review');
 
-        $commentForNewsletterSignup = $this->getMock(
-            CommentDefault::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'reward_for_newsletter_signup',
-                'label' => 'Reward points for newsletter signup',
-            ],
-            '',
-            false
-        );
+        $commentForNewsletterSignup = $this->getMockBuilder(CommentDefault::class)
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'comment' => 'reward_for_newsletter_signup',
+                    'label' => 'Reward points for newsletter signup',
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $commentForNewsletterSignup->expects($this->once())
             ->method('getLabel')
             ->willReturn('Reward points for newsletter signup');
@@ -124,16 +124,16 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
             ->method('getComment')
             ->willReturn('reward_for_newsletter_signup');
 
-        $commentSpendOnCheckout = $this->getMock(
-            CommentForOrder::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'spent_for_order',
-                'label' => 'Spent reward points on order',
-            ],
-            '',
-            false
-        );
+        $commentSpendOnCheckout = $this->getMockBuilder(CommentForOrder::class)
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'comment' => 'spent_for_order',
+                    'label' => 'Spent reward points on order',
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $commentSpendOnCheckout->expects($this->once())
             ->method('getLabel')
             ->willReturn('Spent reward points on order');
@@ -141,16 +141,16 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
             ->method('getComment')
             ->willReturn('spent_for_order');
 
-        $commentExpired = $this->getMock(
-            CommentDefault::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'expired_points',
-                'label' => 'Expired reward points',
-            ],
-            '',
-            false
-        );
+        $commentExpired = $this->getMockBuilder(CommentDefault::class)
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'comment' => 'expired_points',
+                    'label' => 'Expired reward points',
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $commentExpired->expects($this->once())
             ->method('getLabel')
             ->willReturn('Expired reward points');

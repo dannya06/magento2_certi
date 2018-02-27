@@ -61,7 +61,6 @@ class CustomerName extends Column
     {
         if (isset($dataSource['data']['items']) && is_array($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-
                 if (isset($item['customer_id'])) {
                     $customerName = isset($item[$this->getName()])
                         ? $item[$this->getName()]

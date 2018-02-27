@@ -124,6 +124,5 @@ class RewardPointsBalance extends Template
         return $this->customerRewardPointsService->getCustomerRewardPointsBalanceBaseCurrency(
             $this->currentCustomer->getCustomerId()
         );
-
     }
 }

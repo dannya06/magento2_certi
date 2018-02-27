@@ -24,7 +24,7 @@ use Aheadworks\RewardPoints\Api\CustomerRewardPointsManagementInterface;
  * Class Aheadworks\RewardPoints\Test\Unit\Controller\Adminhtml\Transactions\SaveTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends \PHPUnit_Framework_TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Save
@@ -188,6 +188,22 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             'expire_in_days' => 10,
             'expire' => 'expire_in_x_days',
             'expiration_date' => '',
+            'customer_selections' => json_encode([
+                [
+                    'customer_id' => 1,
+                    'customer_name' => 'Veronica Costello',
+                    'customer_email' => 'roni_cost@example.com',
+                ],
+            ])
+        ];
+        $preparedData = [
+            'website_id' => 1,
+            'balance' => 50,
+            'comment_to_customer' => 'comment to customer',
+            'comment_to_admin' => 'comment to admin',
+            'expire_in_days' => 10,
+            'expire' => 'expire_in_x_days',
+            'expiration_date' => '',
             'customer_selections' => [
                 [
                     'customer_id' => 1,
@@ -236,12 +252,12 @@ class SaveTest extends \PHPUnit_Framework_TestCase
 
         $this->dataPersistorMock->expects($this->once())
             ->method('set')
-            ->with('transaction', $postData)
+            ->with('transaction', $preparedData)
             ->willReturnSelf();
 
         $this->dataProcessorMock->expects($this->once())
             ->method('filter')
-            ->with($postData)
+            ->with($preparedData)
             ->willReturn($filterPostData);
 
         $this->dataProcessorMock->expects($this->once())

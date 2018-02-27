@@ -17,7 +17,7 @@ use Magento\Sales\Api\Data\OrderExtensionInterface;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Observer\RedeemForOrderTest
  */
-class RedeemForOrderTest extends \PHPUnit_Framework_TestCase
+class RedeemForOrderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RedeemForOrder

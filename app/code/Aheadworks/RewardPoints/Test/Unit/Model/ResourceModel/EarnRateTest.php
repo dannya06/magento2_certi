@@ -20,7 +20,7 @@ use Magento\Framework\DB\Select;
  * Class Aheadworks\RewardPoints\Test\Unit\Model\ResourceModel\EarnRateTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class EarnRateTest extends \PHPUnit_Framework_TestCase
+class EarnRateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var EarnRate
@@ -524,13 +524,10 @@ class EarnRateTest extends \PHPUnit_Framework_TestCase
             ->with('aw_rp_earn_rate', 'default')
             ->will($this->returnArgument(0));
 
-        $selectMock = $this->getMock(
-            Select::class,
-            ['from', 'where', 'order', 'orWhere'],
-            [],
-            '',
-            false
-        );
+        $selectMock = $this->getMockBuilder(Select::class)
+            ->setMethods(['from', 'where', 'order', 'orWhere'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->connectionMock->expects($this->once())
             ->method('select')

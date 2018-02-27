@@ -191,7 +191,7 @@ class Sender
                 ->scopeDate($store, $data['expire_date'], true)
                 ->format('d M Y');
 
-            if (($expireInDays = $expireInDays->format('%d')) > 0) {
+            if (($expireInDays = $expireInDays->format('%a')) > 0) {
                 $templateVars['expire_in_days'] = $expireInDays;
             }
         }

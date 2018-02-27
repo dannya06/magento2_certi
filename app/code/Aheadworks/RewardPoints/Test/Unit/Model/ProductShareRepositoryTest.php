@@ -17,7 +17,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\ProductShareRepositoryTest
  */
-class ProductShareRepositoryTest extends \PHPUnit_Framework_TestCase
+class ProductShareRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProductShareRepository

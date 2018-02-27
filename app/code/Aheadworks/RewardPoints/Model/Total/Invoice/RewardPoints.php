@@ -46,8 +46,7 @@ class RewardPoints extends AbstractTotal
         $order = $invoice->getOrder();
         $customerId = $order->getCustomerId();
         $websiteId = $order->getStore()->getWebsiteId();
-        if (
-            $order->getBaseAwRewardPointsAmount()
+        if ($order->getBaseAwRewardPointsAmount()
             && $order->getBaseAwRewardPointsInvoiced() != $order->getBaseAwRewardPointsAmount()
         ) {
             // Checking if Reward Points shipping amount was added in previous invoices

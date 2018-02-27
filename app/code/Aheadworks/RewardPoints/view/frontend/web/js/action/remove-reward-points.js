@@ -40,7 +40,7 @@ define(
 
             return storage.delete(
                 url,
-                false
+                true
             ).done(
                 function () {
                     var totalsDeferred = $.Deferred();

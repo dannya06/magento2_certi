@@ -16,7 +16,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Controller\Adminhtml\Transactions\Index\IndexTest
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TransactionsIndexController

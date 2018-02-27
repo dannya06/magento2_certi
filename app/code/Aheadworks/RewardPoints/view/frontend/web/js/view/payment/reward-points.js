@@ -15,6 +15,7 @@ define(
         'Aheadworks_RewardPoints/js/action/remove-reward-points',
         'Aheadworks_RewardPoints/js/action/get-customer-reward-points-balance',
         'Aheadworks_RewardPoints/js/model/reward-points-balance',
+        'Aheadworks_RewardPoints/js/model/is-applied-flag',
         'mage/translate'
      ],
     function (
@@ -28,12 +29,11 @@ define(
             removeRewardPoints, 
             getCustomerRewardPointsBalanceAction,
             rewardPointsBalance,
+            isAppliedFlag,
             $t
         ){
         'use strict';
         
-        var rewardPoints = totals.getSegment('aw_reward_points');
-        var isApplied = ko.observable((rewardPoints != null && rewardPoints.value != 0));
         var isLoading = ko.observable(false);
         
         return Component.extend({
@@ -46,7 +46,7 @@ define(
              * 
              * @return {boolean}
              */
-            isApplied: isApplied,
+            isApplied: isAppliedFlag,
             
             /**
              * Is loading
@@ -88,7 +88,7 @@ define(
             apply: function() {
                 if (this.validate()) {
                     isLoading(true);
-                    applyRewardPoints(isApplied, isLoading);
+                    applyRewardPoints(isAppliedFlag, isLoading);
                 }
             },
             
@@ -100,7 +100,7 @@ define(
             remove: function() {
                 if (this.validate()) {
                     isLoading(true);
-                    removeRewardPoints(isApplied, isLoading);
+                    removeRewardPoints(isAppliedFlag, isLoading);
                 }
             },
             
@@ -141,12 +141,12 @@ define(
                 }
             },
             /**
-             * Formated price
+             * Format price
              * 
              * @return {String}
              */
             getFormattedPrice: function(price) {
                 return priceUtils.formatPrice(price, window.checkoutConfig.priceFormat);
-            },
+            }
         });
 });

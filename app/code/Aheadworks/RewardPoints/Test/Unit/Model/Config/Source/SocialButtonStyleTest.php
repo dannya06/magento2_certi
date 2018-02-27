@@ -12,7 +12,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Config\Source\SocialButtonStyleTest
  */
-class SocialButtonStyleTest extends \PHPUnit_Framework_TestCase
+class SocialButtonStyleTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SocialButtonStyle

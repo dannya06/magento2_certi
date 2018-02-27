@@ -145,7 +145,6 @@ class InstallData implements InstallDataInterface
         try {
             $this->pageFactory->create()->setData($cmsPage)->save();
         } catch (\Exception $e) {
-
         }
     }
 }

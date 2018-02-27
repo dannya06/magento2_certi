@@ -17,7 +17,7 @@ use Magento\Framework\Registry;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Block\Product\View\ShareTest
  */
-class ShareTest extends \PHPUnit_Framework_TestCase
+class ShareTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  Context|\PHPUnit_Framework_MockObject_MockObject */
     private $context;

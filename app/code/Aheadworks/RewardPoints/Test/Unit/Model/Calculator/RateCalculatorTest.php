@@ -31,7 +31,7 @@ use Magento\Store\Api\Data\WebsiteInterface;
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Calculator$RateCalculatorTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RateCalculatorTest extends \PHPUnit_Framework_TestCase
+class RateCalculatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RateCalculator

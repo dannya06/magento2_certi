@@ -25,7 +25,7 @@ use Magento\Framework\View\LayoutInterface;
  * Class Aheadworks\RewardPoints\Test\Unit\Block\Customer\RewardPointsBalance\Account\TransactionTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TransactionTest extends \PHPUnit_Framework_TestCase
+class TransactionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Transaction

@@ -11,7 +11,7 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Backend::marketing">
-                    <resource id="Aheadworks_RewardPoints::aw_reward_points" title="Reward Points by aheadWorks">
+                    <resource id="Aheadworks_RewardPoints::aw_reward_points" title="Reward Points by Aheadworks">
                         <resource id="Aheadworks_RewardPoints::aw_reward_points_transaction" title="Transactions" translate="title" sortOrder="10" >
                             <resource id="Aheadworks_RewardPoints::aw_reward_points_transaction_save" title="Save Transactions" translate="title" sortOrder="10" />
                         </resource>
@@ -21,7 +21,7 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="Aheadworks_RewardPoints::config_aw_rewardpoints" title="Reward Points by aheadWorks" />
+                            <resource id="Aheadworks_RewardPoints::config_aw_rewardpoints" title="Reward Points by Aheadworks" />
                         </resource>
                     </resource>
                 </resource>
