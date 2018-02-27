@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -11,12 +11,28 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 
 class Price extends \Amasty\Ogrid\Model\Column\Product
 {
+    /**
+     * @var PriceCurrencyInterface
+     */
     protected $_priceFormatter;
 
+    /**
+     * BasePrice constructor.
+     * @param $fieldKey
+     * @param $resourceModel
+     * @param \Amasty\Base\Model\Serializer $serializer
+     * @param PriceCurrencyInterface $priceFormatter
+     * @param \Magento\Framework\DB\Helper $dbHelper
+     * @param array $columns
+     * @param string $primaryKey
+     * @param string $foreignKey
+     */
     public function __construct(
         $fieldKey,
         $resourceModel,
+        \Amasty\Base\Model\Serializer $serializer,
         PriceCurrencyInterface $priceFormatter,
+        \Magento\Framework\DB\Helper $dbHelper,
         $columns = [],
         $primaryKey = 'entity_id',
         $foreignKey = 'entity_id'
@@ -26,6 +42,8 @@ class Price extends \Amasty\Ogrid\Model\Column\Product
         parent::__construct(
             $fieldKey,
             $resourceModel,
+            $serializer,
+            $dbHelper,
             $columns,
             $primaryKey,
             $foreignKey

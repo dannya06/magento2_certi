@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -19,18 +19,29 @@ class Column
     protected $_foreignKey;
     protected $_columns = [];
 
+    /**
+     * @var \Amasty\Base\Model\Serializer
+     */
+    protected $serializer;
+
+    protected $dbHelper;
+
     public function __construct(
         $fieldKey,
         $resourceModel,
+        \Amasty\Base\Model\Serializer $serializer,
+        \Magento\Framework\DB\Helper $dbHelper,
         $columns = [],
         $primaryKey = 'entity_id',
         $foreignKey = 'entity_id'
-    ){
+    ) {
         $this->_fieldKey = $fieldKey;
         $this->_resourceModelName = $resourceModel;
         $this->_primaryKey = $primaryKey;
         $this->_foreignKey = $foreignKey;
         $this->_columns = $columns;
+        $this->serializer = $serializer;
+        $this->dbHelper = $dbHelper;
     }
 
     /**

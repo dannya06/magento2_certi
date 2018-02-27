@@ -37,6 +37,8 @@ Options,Options
 "Row Total (Base)","Row Total (Base)"
 "Row Total (Purchased)","Row Total (Purchased)"
 "Coupon Code","Coupon Code"
+"Order Tax","Order Tax"
+"Order Comments","Order Comments"
 "Shipping Method","Shipping Method"
 "Subtotal (Base)","Subtotal (Base)"
 "Subtotal (Purchased)","Subtotal (Purchased)"
@@ -46,6 +48,7 @@ Fax,Fax
 Region,Region
 Postcode,Postcode
 City,City
+Company,Company
 Telephone,Telephone
 Country,Country
 "Product Details","Product Details"

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -185,23 +185,21 @@ class IndexerHandler implements IndexerInterface
             $this->getIndexName(),
             $this->_objectConverter->toOptionHash(
                 $this->getAttributeCollection()->getItems(),
-                'attribute_id', 'attribute_code'
+                'attribute_id',
+                'attribute_code'
             ),
             $dimensions
         );
     }
 
-    public function getNoneIndexedAttributesHash($dimensions)
+    public function getNoneIndexedAttributesHash()
     {
-        return $this->_indexStructure->getNoneIndexedAttributes(
-                $this->getIndexName(),
-                $this->_objectConverter->toOptionHash(
-                    $this->getAttributeCollection()->getItems(),
-                    'attribute_id', 'attribute_code'
-                ),
-                $dimensions
-            );
-        }
+        return $this->_objectConverter->toOptionHash(
+            $this->getAttributeCollection()->getItems(),
+            'attribute_id',
+            'attribute_code'
+        );
+    }
 
     public function setAttributeHash($attributesHash)
     {

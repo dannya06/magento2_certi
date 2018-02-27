@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 -->
@@ -13,6 +13,19 @@
     <virtualType name="Amasty\Ogrid\Model\Column\Order\ShippingMethod" type="Amasty\Ogrid\Model\Column\Order">
         <arguments>
             <argument name="fieldKey" xsi:type="string">shipping_description</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Amasty\Ogrid\Model\Column\Order\Comments" type="Amasty\Ogrid\Model\Column\Order\Comment">
+        <arguments>
+            <argument name="fieldKey" xsi:type="string">comment</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order\Status\History</argument>
+            <argument name="foreignKey" xsi:type="string">parent_id</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Amasty\Ogrid\Model\Column\Order\OrderTax" type="Amasty\Ogrid\Model\Column\Order">
+        <arguments>
+            <argument name="fieldKey" xsi:type="string">tax_amount</argument>
             <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order</argument>
         </arguments>
     </virtualType>
@@ -75,6 +88,14 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="Amasty\Ogrid\Model\Column\Address\Shipping\Company" type="Amasty\Ogrid\Model\Column\Address\Shipping">
+        <arguments>
+            <argument name="fieldKey" xsi:type="string">company</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order\Address</argument>
+            <argument name="foreignKey" xsi:type="string">parent_id</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="Amasty\Ogrid\Model\Column\Address\Shipping\Telephone" type="Amasty\Ogrid\Model\Column\Address\Shipping">
         <arguments>
             <argument name="fieldKey" xsi:type="string">telephone</argument>
@@ -87,6 +108,7 @@
         <arguments>
             <argument name="fieldKey" xsi:type="string">country_id</argument>
             <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order\Address</argument>
+            <argument name="foreignKey" xsi:type="string">parent_id</argument>
         </arguments>
     </virtualType>
 
@@ -117,6 +139,14 @@
     <virtualType name="Amasty\Ogrid\Model\Column\Address\Billing\City" type="Amasty\Ogrid\Model\Column\Address\Billing">
         <arguments>
             <argument name="fieldKey" xsi:type="string">city</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order\Address</argument>
+            <argument name="foreignKey" xsi:type="string">parent_id</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Amasty\Ogrid\Model\Column\Address\Billing\Company" type="Amasty\Ogrid\Model\Column\Address\Billing">
+        <arguments>
+            <argument name="fieldKey" xsi:type="string">company</argument>
             <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order\Address</argument>
             <argument name="foreignKey" xsi:type="string">parent_id</argument>
         </arguments>
@@ -329,8 +359,8 @@
     </type>
 
     <!--<virtualType name="Amasty\Ogrid\Controller\Adminhtml\Export\GridToCsv" type="Magento\Ui\Controller\Adminhtml\Export\GridToCsv">-->
-        <!--&lt;!&ndash;<arguments>&ndash;&gt;-->
-        <!--&lt;!&ndash;</arguments>&ndash;&gt;-->
+    <!--&lt;!&ndash;<arguments>&ndash;&gt;-->
+    <!--&lt;!&ndash;</arguments>&ndash;&gt;-->
     <!--</virtualType>-->
 
 </config>
