@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -24,7 +24,7 @@ class EachnFixprice extends AbstractRule
         \Amasty\Rules\Helper\Data $rulesDataHelper,
         \Amasty\Rules\Helper\Discount $rulesDiscountHelper,
         \Magento\Customer\Model\Session $customerSession,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Amasty\Rules\Model\ConfigModel $configModel
     ) {
         parent::__construct(
             $validator,
@@ -36,7 +36,7 @@ class EachnFixprice extends AbstractRule
             $rulesDataHelper,
             $rulesDiscountHelper,
             $customerSession,
-            $scopeConfig
+            $configModel
         );
     }
 

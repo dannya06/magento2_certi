@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -46,10 +46,10 @@ class EachnPerc extends AbstractRule
         /** @var \Magento\Quote\Model\Quote\Item\AbstractItem $allItem */
         foreach ($allItems as $i => $allItem) {
             if (in_array($item->getAmrulesId(), $itemsId) && $allItem->getAmrulesId()===$item->getAmrulesId()) {
-                $itemPrice = $this->validator->getItemPrice($item);
-                $baseItemPrice = $this->validator->getItemBasePrice($item);
-                $itemOriginalPrice = $this->validator->getItemOriginalPrice($item);
-                $baseItemOriginalPrice = $this->validator->getItemBaseOriginalPrice($item);
+                $itemPrice = $this->rulesProductHelper->getItemPrice($item);
+                $baseItemPrice = $this->rulesProductHelper->getItemBasePrice($item);
+                $itemOriginalPrice = $this->rulesProductHelper->getItemOriginalPrice($item);
+                $baseItemOriginalPrice = $this->rulesProductHelper->getItemBaseOriginalPrice($item);
                 $itemQty = $this->getArrayValueCount($itemsId, $item->getAmrulesId());
                 $discountData->setAmount($itemQty * $itemPrice * $_rulePct);
                 $discountData->setBaseAmount($itemQty * $baseItemPrice * $_rulePct);

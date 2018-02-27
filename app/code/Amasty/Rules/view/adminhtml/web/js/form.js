@@ -1,6 +1,7 @@
 define([
     'jquery',
-    'uiRegistry'
+    'uiRegistry',
+    'mage/translate',
 ], function ($, registry) {
     var amrulesForm = {
         update: function (type) {
@@ -23,6 +24,8 @@ define([
                 action = selector.val();
             }
 
+            this.renameRulesSetting(action);
+
             switch (action) {
                 case 'thecheapest':
                 case 'themostexpencive':
@@ -42,28 +45,35 @@ define([
                 case 'eachmaftn_fixprice':
                     this.showFields(['amrulesrule[eachm]', 'amrulesrule[skip_rule]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
                     break;
-                case 'buyxgety_perc':
-                case 'buyxgety_fixprice':
-                case 'buyxgety_fixdisc':
-                    this.showFields(['amrulesrule[promo_skus]', 'amrulesrule[promo_cats]', 'amrulesrule[skip_rule]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
-                    break;
                 case 'buyxgetn_perc':
                 case 'buyxgetn_fixprice':
                 case 'buyxgetn_fixdisc':
-                    this.showFields(['amrulesrule[promo_skus]', 'amrulesrule[nqty]', 'amrulesrule[promo_cats]', 'amrulesrule[skip_rule]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[nqty]', 'amrulesrule[skip_rule]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
+                    this.showPromoItems();
+                    this.showNote();
                     break;
                 case 'setof_percent':
                 case 'setof_fixed':
                     actionFieldset.hide();
                     window.amRulesHide = 1;
-                    this.showFields(['amrulesrule[promo_skus]', 'amrulesrule[promo_skus]', 'amrulesrule[promo_cats]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[max_discount]'], type);
+                    this.showPromoItems();
 
                     //this.hideFields(['discount_step']);
                     break;
             }
+        },
 
+        showPromoItems: function () {
+            $('[data-index="promo_items"]').show();
+        },
 
+        hidePromoItems: function () {
+            $('[data-index="promo_items"], [data-index="discount_step"] .admin__field-note').hide();
+        },
 
+        showNote: function () {
+            $('[data-index="discount_step"] .admin__field-note').show();
         },
 
         resetFields: function (type) {
@@ -74,11 +84,10 @@ define([
                 'amrulesrule[skip_rule]',
                 'amrulesrule[max_discount]',
                 'amrulesrule[nqty]',
-                'amrulesrule[promo_skus]',
-                'amrulesrule[promo_cats]',
                 'amrulesrule[priceselector]',
                 'amrulesrule[eachm]'
             ], type);
+            this.hidePromoItems();
         },
 
         hideFields: function (names, type) {
@@ -103,8 +112,37 @@ define([
                     arguments[i][method]();
                 }
             });
-        }
+        },
 
+        renameRulesSetting: function (action) {
+            var discountStep = $('[data-index="discount_step"] label span'),
+                discountAmount = $('[data-index="discount_amount"] label span');
+            switch (action) {
+                case 'buy_x_get_y':
+                    discountStep.text($.mage.__("Buy N Products"));
+                    discountAmount.text($.mage.__("Number of Products with Discount"));
+                    break;
+                case 'eachn_perc':
+                case 'eachn_fixdisc':
+                case 'eachn_fixprice':
+                    discountStep.text($.mage.__("Each N-th"));
+                    break;
+                case 'eachmaftn_perc':
+                case 'eachmaftn_fixdisc':
+                case 'eachmaftn_fixprice':
+                    discountStep.text($.mage.__("Each Product (step)"));
+                    break;
+                case 'buyxgetn_perc':
+                case 'buyxgetn_fixprice':
+                case 'buyxgetn_fixdisc':
+                    discountStep.text($.mage.__("Number of X Products"));
+                    break;
+                default:
+                    discountStep.text($.mage.__("Discount Qty Step (Buy X)"));
+                    discountAmount.text($.mage.__("Discount Amount"));
+                    break;
+            }
+        }
     };
 
     return amrulesForm;

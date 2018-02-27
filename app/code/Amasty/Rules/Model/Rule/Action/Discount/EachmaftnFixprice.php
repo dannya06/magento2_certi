@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -44,8 +44,10 @@ class EachmaftnFixprice extends AbstractRule
         } else {
             $qty = count($allItems);
         }
-        $step = (int)$rule->getDiscountStep();
-        $offset = max(0, $step);
+        $offset = (int)$rule->getAmrulesRule()->getEachm();
+        if ($offset < 0) {
+            $offset = 0;
+        }
         $offset = min($offset, count($allItems));
         $allItems = array_slice($allItems, $offset, $qty);
         $allItems = $this->skipEachN($allItems, $rule);
