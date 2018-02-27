@@ -10,6 +10,7 @@ use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface as GiftcardQuoteInterfa
 use Magento\Quote\Model\Quote;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Quote\CollectionFactory as GiftcardQuoteCollectionFactory;
 use Magento\Framework\EntityManager\EntityManager;
+use Aheadworks\Giftcard\Plugin\Model\Quote\QuoteRepository\SaveHandlerPlugin;
 
 /**
  * Class QuotePlugin
@@ -29,15 +30,23 @@ class QuotePlugin
     private $entityManager;
 
     /**
+     * @var SaveHandlerPlugin
+     */
+    private $saveHandlerPlugin;
+
+    /**
      * @param GiftcardQuoteCollectionFactory $giftcardQuoteCollectionFactory
      * @param EntityManager $entityManager
+     * @param SaveHandlerPlugin $saveHandlerPlugin
      */
     public function __construct(
         GiftcardQuoteCollectionFactory $giftcardQuoteCollectionFactory,
-        EntityManager $entityManager
+        EntityManager $entityManager,
+        SaveHandlerPlugin $saveHandlerPlugin
     ) {
         $this->giftcardQuoteCollectionFactory = $giftcardQuoteCollectionFactory;
         $this->entityManager = $entityManager;
+        $this->saveHandlerPlugin = $saveHandlerPlugin;
     }
 
     /**
@@ -70,5 +79,17 @@ class QuotePlugin
         }
 
         return $quoteAfterMerge;
+    }
+
+    /**
+     * Save Gift Card codes to Gift Card quote table (Compatible with EE Customer Balance)
+     *
+     * @param Quote $subject
+     * @param Quote $quote
+     * @return Quote
+     */
+    public function afterSave($subject, $quote)
+    {
+        return $this->saveHandlerPlugin->saveGiftcardToQuote($quote);
     }
 }

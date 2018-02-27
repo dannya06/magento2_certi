@@ -17,7 +17,7 @@ use Magento\Store\Api\Data\StoreInterface;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Plugin\Model\Service\InvoicePluginTest
  */
-class InvoicePluginTest extends \PHPUnit_Framework_TestCase
+class InvoicePluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var InvoicePlugin
@@ -75,7 +75,10 @@ class InvoicePluginTest extends \PHPUnit_Framework_TestCase
             ->with($entityId)
             ->willReturnSelf();
 
-        $invoiceMock = $this->getMock(Invoice::class, [], [], '', false);
+        $invoiceMock = $this->getMockBuilder(Invoice::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->afterPay($invoiceMock);
 
         $this->object->afterAfterSave($this->invoiceMock);

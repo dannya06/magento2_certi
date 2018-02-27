@@ -82,6 +82,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_filesystem     = $filesystem;
         $this->_coreRegistry   = $registry;
         $this->_license        = $licnese;
+        $this->_remoteAddress = $context->getRemoteAddress();
         $this->_moduleReader  = $moduleReader;
     }
 

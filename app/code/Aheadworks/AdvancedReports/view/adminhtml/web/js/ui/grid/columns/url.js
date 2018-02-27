@@ -4,21 +4,36 @@
 */
 
 define([
-    'Magento_Ui/js/grid/columns/column'
-], function (Column) {
+    'underscore',
+    'Aheadworks_AdvancedReports/js/ui/grid/columns/column'
+], function (_, Column) {
     'use strict';
 
     return Column.extend({
         defaults: {
             bodyTmpl: 'Aheadworks_AdvancedReports/ui/grid/cells/url'
         },
+
+        /**
+         * Retrieve row label
+         *
+         * @param {Array} row
+         * @return {String}
+         */
         getRowLabel: function(row) {
-            return (typeof(row['row_label_' + this.index]) != 'undefined')
+            return (!_.isUndefined(row['row_label_' + this.index]))
                 ? row['row_label_' + this.index]
                 : row['row_label'];
         },
+
+        /**
+         * Retrieve row url
+         *
+         * @param {Array} row
+         * @return {String}
+         */
         getRowUrl: function(row) {
-            return (typeof(row['row_url_' + this.index]) != 'undefined')
+            return (!_.isUndefined(row['row_url_' + this.index]))
                 ? row['row_url_' + this.index]
                 : row['row_url'];
         }

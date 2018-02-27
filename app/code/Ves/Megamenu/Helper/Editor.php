@@ -94,6 +94,10 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_animationsOut;
 
     /**
+     * @var \Ves\Megamenu\Model\Config\Source\ListCmsPage
+     */
+    protected $listCmsPage;
+    /**
      * @param \Magento\Framework\App\Helper\Context             $context         
      * @param \Magento\Framework\Registry                       $registry        
      * @param \Magento\Backend\Helper\Data                      $backendData     
@@ -115,6 +119,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Store\Model\StoreManagerInterface        $storeManager    
      * @param \Magento\Cms\Model\Wysiwyg\Config                 $wysiwygConfig   
      * @param \Ves\Megamenu\Model\Config\Source\StoreCategories $storeCategories 
+     * @param  \Ves\Megamenu\Model\Config\Source\ListCmsPage $listCmsPage
      * @param \Magento\Framework\Url                            $url             
      */
     public function __construct(
@@ -139,6 +144,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
         \Ves\Megamenu\Model\Config\Source\StoreCategories $storeCategories,
+        \Ves\Megamenu\Model\Config\Source\ListCmsPage $listCmsPage,
         \Magento\Framework\Url $url
     ) {
         parent::__construct($context);
@@ -163,14 +169,20 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_animationsIn      = $animationsIn->toOptionArray();
         $this->_systemStore       = $systemStore;
         $this->storeCategories    = $storeCategories;
+        $this->listCmsPage        = $listCmsPage;
         $this->prepareFields();
     }
 
     public function getCategoriesHtml() {
         $categories = $this->storeCategories->getCategoryList();
         $html = '<select data-bind="value: loadcategory">';
+        $exists_categories = [];
         foreach ($categories as $category) {
-            $html .= $this->_optionToHtml($category);
+            if(!isset($exists_categories[$category['value']])) {
+                $html .= $this->_optionToHtml($category);
+                $exists_categories[$category['value']] = $category['value'];
+            }
+            
         }
         $html .= '</select>';
         return $html;
@@ -178,6 +190,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function prepareFields() {
         $categoryList = $this->storeCategories->getCategoryList();
+        $cmsList =  $this->listCmsPage->toOptionArray();
 
         $this->addField("label1", [
                 'label' => __('General Information'),
@@ -207,6 +220,17 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'value'  => 'custom_link',
                 'values' => $this->_linkType
             ]);
+
+        $this->addField("cms_page", [
+        'label'  => __('Cms Page'),
+        'type'   => 'select',
+        'values' => $cmsList,
+        'note'   => __('Choose a cms page to generate link for it.'),
+        'depend' => [
+        'field' => 'link_type',
+        'value' => 'custom_link'
+        ]
+        ]);
 
         $this->addField("link", [
                 'label'  => __('Custom Link'),

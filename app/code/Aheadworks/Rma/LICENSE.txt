@@ -1,6 +1,6 @@
 END USER LICENSE AGREEMENT
 
-Last updated: September 2016
+Last updated: January 2017
 
 IMPORTANT: Please read this End-User License Agreement (the "Agreement") carefully
 before clicking the "I AGREE" button, downloading or using software product (the
@@ -77,6 +77,9 @@ installation;
 
 (j)	sell or otherwise alienate any device on which the software is installed or stored as
 backup before deleting all copies of the Software.
+
+(k)	Use the Software on Magento edition other than it was specified during purchase.
+
 
 1.5.	Exceptions: The following exceptions to the restrictions listed above shall apply:
 

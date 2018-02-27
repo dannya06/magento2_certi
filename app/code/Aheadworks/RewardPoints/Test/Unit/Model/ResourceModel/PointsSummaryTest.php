@@ -15,7 +15,7 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\Pdo\Mysql;
 use Magento\Framework\DB\Select;
 
-class PointsSummaryTest extends \PHPUnit_Framework_TestCase
+class PointsSummaryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PointsSummary
@@ -116,13 +116,10 @@ class PointsSummaryTest extends \PHPUnit_Framework_TestCase
             ->with('aw_rp_points_summary.customer_id')
             ->willReturn('`aw_rp_points_summary`.`customer_id`');
 
-        $selectMock = $this->getMock(
-            Select::class,
-            ['from', 'where', 'order'],
-            [],
-            '',
-            false
-        );
+        $selectMock = $this->getMockBuilder(Select::class)
+            ->setMethods(['from', 'where', 'order'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->connectionMock->expects($this->once())
             ->method('select')
@@ -166,13 +163,10 @@ class PointsSummaryTest extends \PHPUnit_Framework_TestCase
             ->with('default')
             ->willReturn($this->connectionMock);
 
-        $selectMock = $this->getMock(
-            Select::class,
-            ['from', 'where', 'order'],
-            [],
-            '',
-            false
-        );
+        $selectMock = $this->getMockBuilder(Select::class)
+            ->setMethods(['from', 'where', 'order'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->connectionMock->expects($this->once())
             ->method('select')

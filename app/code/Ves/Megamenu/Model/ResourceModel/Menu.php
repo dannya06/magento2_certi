@@ -68,7 +68,7 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      * @param \Magento\Store\Model\StoreManagerInterface        $storeManager   
      * @param \Magento\Framework\Filesystem                     $filesystem     
      * @param \Ves\Megamenu\Helper\Editor                       $editor         
-     * @param [type]                                            $connectionName 
+     * @param null                                            $connectionName 
      */
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
@@ -125,7 +125,7 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                 $structure = json_decode($object->getStructure(), true);
                 $this->getAllItems($structure);
 
-                $where = '';
+                $where = [];
                 $i     = 0;
 
                 $where[] = 'menu_id = ' . (int)$object->getId();

@@ -113,6 +113,12 @@ class Comment implements CommentInterface
                     case SourceHistoryEntityType::EMAIL_STATUS:
                         $labelArguments['status'] = $entity->getEntityLabel();
                         break;
+                    case SourceHistoryEntityType::FROM:
+                        $labelArguments['from'] = $entity->getEntityLabel();
+                        break;
+                    case SourceHistoryEntityType::TO:
+                        $labelArguments['to'] = $entity->getEntityLabel();
+                        break;
                 }
             }
         }

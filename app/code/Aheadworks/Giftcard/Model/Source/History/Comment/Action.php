@@ -24,5 +24,6 @@ class Action
     const REIMBURSED_FOR_REFUNDED_ORDER = 6;
     const EXPIRED = 7;
     const DELIVERY_DATE_EMAIL_STATUS = 8;
+    const TYPE_CHANGED = 9;
     /**#@-*/
 }

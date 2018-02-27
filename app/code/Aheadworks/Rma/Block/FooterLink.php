@@ -6,42 +6,70 @@
 
 namespace Aheadworks\Rma\Block;
 
-use Magento\Store\Model\ScopeInterface;
+use Aheadworks\Rma\Model\Config;
+use Magento\Framework\View\Element\Html\Link\Current;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\App\DefaultPathInterface;
+use Magento\Customer\Model\Session as CustomerSession;
 
 /**
  * Class FooterLink
+ *
  * @package Aheadworks\Rma\Block
  */
-class FooterLink extends \Magento\Framework\View\Element\Html\Link\Current
+class FooterLink extends Current
 {
     /**
-     * FooterLink constructor.
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Framework\App\DefaultPathInterface $defaultPath
-     * @param \Magento\Customer\Model\Session $customerSession
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @var CustomerSession
+     */
+    private $customerSession;
+
+    /**
+     * @param Context $context
+     * @param DefaultPathInterface $defaultPath
+     * @param CustomerSession $customerSession
+     * @param Config $config
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Framework\App\DefaultPathInterface $defaultPath,
-        \Magento\Customer\Model\Session $customerSession,
+        Context $context,
+        DefaultPathInterface $defaultPath,
+        CustomerSession $customerSession,
+        Config $config,
         array $data = []
     ) {
+        $this->config = $config;
+        $this->customerSession = $customerSession;
+        $data = $this->addLink($data);
+        parent::__construct($context, $defaultPath, $data);
+    }
+
+    /**
+     * Add link
+     *
+     * @param array $data
+     * @return array
+     */
+    private function addLink($data)
+    {
         if (!isset($data['label'])) {
             $data['label'] = __('Create New Return');
         }
         if (!isset($data['path'])) {
-            if ($customerSession->isLoggedIn()) {
+            if ($this->customerSession->isLoggedIn()) {
                 $data['path'] = 'aw_rma/customer/index';
             } else {
-                $allowGuestRma = (bool)$context->getScopeConfig()
-                    ->getValue(
-                        'aw_rma/general/allow_guest_requests',
-                        ScopeInterface::SCOPE_STORE
-                    );
-                $data['path'] = $allowGuestRma ? 'aw_rma/guest/index' : 'customer/account/login';
+                $data['path'] = $this->config->isAllowGuestsCreateRequest()
+                    ? 'aw_rma/guest/index'
+                    : 'customer/account/login';
             }
         }
-        parent::__construct($context, $defaultPath, $data);
+
+        return $data;
     }
 }

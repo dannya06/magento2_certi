@@ -41,7 +41,7 @@ define(
             return storage.put(
                 url,
                 {},
-                false
+                true
             ).done(
                 function (response) {
                     if (response[0] != 'undefined' && response[0].success) {

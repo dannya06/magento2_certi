@@ -14,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Plugin\Model\Newsletter\SubscriberPluginTest
  */
-class SubscriberPluginTest extends \PHPUnit_Framework_TestCase
+class SubscriberPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SubscriberPlugin

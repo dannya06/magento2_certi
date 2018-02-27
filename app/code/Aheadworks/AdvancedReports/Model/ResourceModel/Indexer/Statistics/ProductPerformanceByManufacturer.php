@@ -28,30 +28,32 @@ class ProductPerformanceByManufacturer extends ProductPerformance
      */
     protected function process()
     {
-        $columns = $this->getColumns('children');
-        $columns['manufacturer'] = 'manufacturer_value.value';
+        if ($this->getManufacturerAttribute()) {
+            $columns = $this->getColumns('children');
+            $columns['manufacturer'] = 'manufacturer_value.value';
 
-        /* @var $manufacturerAttr \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
-        $manufacturerAttr = $this->attributeRepository->get('catalog_product', 'manufacturer');
-        $manufacturerTable = $manufacturerAttr->getBackendTable();
+            /* @var $manufacturerAttr \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
+            $manufacturerAttr = $this->getManufacturerAttribute();
+            $manufacturerTable = $manufacturerAttr->getBackendTable();
 
-        $select =
-            $this->joinChildrenItems()
-            ->columns($columns)
-            ->joinLeft(
-                ['item_manufacturer' => $manufacturerTable],
-                'item_manufacturer. ' . $this->getCatalogLinkField() . ' = main_table.product_id AND 
+            $select =
+                $this->joinChildrenItems()
+                    ->columns($columns)
+                    ->joinLeft(
+                        ['item_manufacturer' => $manufacturerTable],
+                        'item_manufacturer. ' . $this->getCatalogLinkField() . ' = main_table.product_id AND 
                 item_manufacturer.attribute_id = ' . $manufacturerAttr->getId(),
-                []
-            )->joinLeft(
-                ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],
-                'item_manufacturer.value = manufacturer_value.option_id AND manufacturer_value.store_id = 0',
-                []
-            )
-            ->where('manufacturer_value.value IS NOT NULL')
-            ->group($this->getGroupByFields(['manufacturer_value.value']));
-        $select = $this->addFilterByCreatedAt($select, 'order');
+                        []
+                    )->joinLeft(
+                        ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],
+                        'item_manufacturer.value = manufacturer_value.option_id AND manufacturer_value.store_id = 0',
+                        []
+                    )
+                    ->where('manufacturer_value.value IS NOT NULL')
+                    ->group($this->getGroupByFields(['manufacturer_value.value']));
+            $select = $this->addFilterByCreatedAt($select, 'order');
 
-        $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+            $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+        }
     }
 }

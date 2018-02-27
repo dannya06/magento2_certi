@@ -45,7 +45,7 @@ class Config
         'aw_rewardpoints/frontend/is_display_invitation_to_newsletter';
     const XML_PATH_AW_REWARDPOINTS_FRONTEND_IS_DISPLAY_INVITATION_TO_REGISTER =
         'aw_rewardpoints/frontend/is_display_invitation_to_register';
-    const XML_PATH_AW_REWARDPOINTS_IS_DISPLAY_DISCOUNT_PRICE = 'aw_rewardpoints/frontend/is_display_prices_by_points';
+    const XML_PATH_AW_REWARDPOINTS_IS_DISPLAY_DISCOUNT_INFO = 'aw_rewardpoints/frontend/is_display_discount_info';
     const XML_PATH_AW_REWARDPOINTS_IS_DISPLAY_SHARE_LINKS = 'aw_rewardpoints/frontend/is_display_social_button';
     const XML_PATH_AW_REWARDPOINTS_FRONTED_EXPLAINER_PAGE = 'aw_rewardpoints/frontend/rewardpoints_program_page';
     const XML_PATH_AW_REWARDPOINTS_SENDER_IDENTITY =
@@ -342,14 +342,14 @@ class Config
     }
 
     /**
-     * Retrieve config value for Display prices discounted by available points on Frontend
+     * Retrieve config value for Display block with discount information on Frontend
      *
      * @return boolean
      */
-    public function isDisplayPriceWithDiscount()
+    public function isDisplayDiscountInfoBlock()
     {
         return (boolean) $this->scopeConfig->isSetFlag(
-            self::XML_PATH_AW_REWARDPOINTS_IS_DISPLAY_DISCOUNT_PRICE,
+            self::XML_PATH_AW_REWARDPOINTS_IS_DISPLAY_DISCOUNT_INFO,
             ScopeInterface::SCOPE_WEBSITE
         );
     }

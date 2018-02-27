@@ -1,9 +1,14 @@
+"No Categories","No Categories"
 "Single Cell","Single Cell"
 "Multi Cell","Multi Cell"
 "In Stock","In Stock"
 "Ouf Of Stock","Ouf Of Stock"
 Yes,Yes
 No,No
+"This item has weight","This item has weight"
+"This item has no weight","This item has no weight"
+"For Qty","For Qty"
+" Price"," Price"
 Columns,Columns
 Extra,Extra
 Attribute,Attribute
@@ -34,3 +39,4 @@ Availability,Availability
 "Up Sells","Up Sells"
 "Cross Sells","Cross Sells"
 "Low Stock","Low Stock"
+"Tier Price","Tier Price"

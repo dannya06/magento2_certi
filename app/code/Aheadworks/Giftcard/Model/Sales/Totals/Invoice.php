@@ -40,7 +40,7 @@ class Invoice extends AbstractTotal
      * @param InvoiceExtensionFactory $invoiceExtensionFactory
      * @param GiftcardInvoiceInterfaceFactory $giftcardInvoiceFactory
      * @param DataObjectHelper $dataObjectHelper
-     * @param [] $data
+     * @param array $data
      */
     public function __construct(
         InvoiceExtensionFactory $invoiceExtensionFactory,
@@ -64,8 +64,7 @@ class Invoice extends AbstractTotal
         $invoice->setBaseAwGiftcardAmount(0);
 
         $order = $invoice->getOrder();
-        if (
-            $order->getBaseAwGiftcardAmount()
+        if ($order->getBaseAwGiftcardAmount()
             && $order->getBaseAwGiftcardInvoiced() != $order->getBaseAwGiftcardAmount()
             && $order->getExtensionAttributes() && $order->getExtensionAttributes()->getAwGiftcardCodes()
         ) {

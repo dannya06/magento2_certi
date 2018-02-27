@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -11,6 +11,11 @@ abstract class Buyxgety extends AbstractRule
 {
     protected $_passedItems = [];
 
+    /**
+     * @param $address
+     * @param $rule
+     * @return array
+     */
     public function getTriggerElements($address, $rule)
     {
         // find all X (trigger) elements
@@ -48,6 +53,10 @@ abstract class Buyxgety extends AbstractRule
         return $arrX;
     }
 
+    /**
+     * @param $arrX
+     * @return int
+     */
     public function getTriggerElementQty($arrX)
     {
         $realQty = 0;
@@ -58,6 +67,11 @@ abstract class Buyxgety extends AbstractRule
         return $realQty;
     }
 
+    /**
+     * @param $rule
+     * @param $item
+     * @return bool
+     */
     public function isDiscountedItem($rule, $item)
     {
         $product = $item->getProduct();
@@ -97,6 +111,12 @@ abstract class Buyxgety extends AbstractRule
         return true;
     }
 
+    /**
+     * @param $item
+     * @param $arrX
+     * @param $passed
+     * @return bool
+     */
     public function canProcessItem($item, $arrX, $passed)
     {
         if (!$item->getAmrulesId()) {
@@ -114,21 +134,28 @@ abstract class Buyxgety extends AbstractRule
         return true;
     }
 
+    /**
+     * @param \Magento\SalesRule\Model\Rule $rule
+     * @param $realQty
+     * @return float|int|mixed
+     */
     protected function getNQty($rule, $realQty)
     {
         if ($rule->getDiscountStep() > $realQty) {
             return 0;
         } else {
-            $qty = $rule->getDiscountQty();
-            if (!$qty) {
-                $qty = 0;
-            }
-            $rule->getDiscountStep() == 0 ? $step = 1 : $step = $rule->getDiscountStep();
+            $step = $rule->getDiscountStep();
+            $step = max(1, $step);
             $count = floor($realQty / $step) * $rule->getAmrulesRule()->getData('nqty');
-            if ($rule->getDiscountQty()) {
-                $nqty = min($count, $rule->getDiscountQty());
+            $discountQty = $rule->getDiscountQty();
+            if ($discountQty) {
+                $nqty = min($count, $discountQty);
             } else {
                 $nqty = $count;
+            }
+
+            if ($nqty <= 0) {
+                $nqty = 1;
             }
 
             return $nqty;

@@ -33,6 +33,7 @@ class ListLicense extends \Magento\Config\Block\System\Config\Form\Field
      * @var \Magento\Framework\App\ResourceConnection
      */
     protected $_resource;
+    private $_list_files = [];
 
     /**
      * [__construct description]
@@ -55,6 +56,34 @@ class ListLicense extends \Magento\Config\Block\System\Config\Form\Field
         $this->_license       = $license;
     }
 
+    public function getListLicenseFiles() {
+        if(!$this->_list_files) {
+            $path = $this->_filesystem->getDirectoryRead(DirectoryList::APP)->getAbsolutePath('code/Ves/');
+            $files = glob($path . '*/*/license.xml');
+            $path2 = $this->_filesystem->getDirectoryRead(DirectoryList::ROOT)->getAbsolutePath('vendor/Ves/');
+            $files2 = glob($path2 . '*/*/license.xml');
+            $path3 = $this->_filesystem->getDirectoryRead(DirectoryList::ROOT)->getAbsolutePath('vendor/venustheme/');
+            $files3 = glob($path3 . '*/*/license.xml');
+            $path4 = $this->_filesystem->getDirectoryRead(DirectoryList::ROOT)->getAbsolutePath('vendor/ves/');
+            $files4 = glob($path4 . '*/*/license.xml');
+
+
+            if(is_array($files) && $files) {
+                $this->_list_files = array_merge($this->_list_files, $files);
+            }
+            if(is_array($files2) && $files2) {
+                $this->_list_files = array_merge($this->_list_files, $files2);
+            }
+            if(is_array($files3) && $files3) {
+                $this->_list_files = array_merge($this->_list_files, $files3);
+            }
+            if(is_array($files4) && $files4) {
+                $this->_list_files = array_merge($this->_list_files, $files4);
+            }
+        }
+        return $this->_list_files;
+    }
+
     /**
      * Retrieve HTML markup for given form element
      *
@@ -63,9 +92,8 @@ class ListLicense extends \Magento\Config\Block\System\Config\Form\Field
      */
     public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
+        $files = $this->getListLicenseFiles();
         if (!extension_loaded('soap')) {
-            $path = $this->_filesystem->getDirectoryRead(DirectoryList::APP)->getAbsolutePath('code/Ves/');
-            $files = glob($path . '*/*/license.xml');
             $extensions = [];
             foreach ($files as $file) {
                 $xmlObj = new \Magento\Framework\Simplexml\Config($file);
@@ -123,8 +151,6 @@ class ListLicense extends \Magento\Config\Block\System\Config\Form\Field
 
         }
 
-        $path = $this->_filesystem->getDirectoryRead(DirectoryList::APP)->getAbsolutePath('code/Ves/');
-        $files = glob($path . '*/*/license.xml');
         $extensions = [];
         foreach ($files as $file) {
             $xmlObj = new \Magento\Framework\Simplexml\Config($file);
@@ -195,7 +221,7 @@ class ListLicense extends \Magento\Config\Block\System\Config\Form\Field
                 if(!empty($license) && $license['is_valid']){
                     $html .= '<p><strong>Status: </strong><span class="pvalid">Valid</span></p>';
                 }else{
-                    $html .= '<p><strong>Status: </strong><span class="pinvalid">In Valid</span></p>';
+                    $html .= '<p><strong>Status: </strong><span class="pinvalid">Invalid</span></p>';
                 }
                 if(!empty($license) && isset($license['description'])){
                     $html .= $license['description'];

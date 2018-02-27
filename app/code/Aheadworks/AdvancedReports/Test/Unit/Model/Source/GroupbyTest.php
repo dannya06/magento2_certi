@@ -12,7 +12,7 @@ use Aheadworks\AdvancedReports\Model\Source\Groupby;
 /**
  * Test for \Aheadworks\AdvancedReports\Model\Source\Groupby
  */
-class GroupbyTest extends \PHPUnit_Framework_TestCase
+class GroupbyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Groupby
@@ -36,13 +36,5 @@ class GroupbyTest extends \PHPUnit_Framework_TestCase
     public function testToOptionArray()
     {
         $this->assertTrue(is_array($this->model->toOptionArray()));
-    }
-
-    /**
-     * Testing of getOptions method
-     */
-    public function testGetOptions()
-    {
-        $this->assertTrue(is_array($this->model->getOptions()));
     }
 }

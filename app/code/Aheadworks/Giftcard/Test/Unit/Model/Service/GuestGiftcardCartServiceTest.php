@@ -18,7 +18,7 @@ use Magento\Quote\Model\QuoteIdMask;
  *
  * @package Aheadworks\Giftcard\Test\Unit\Model\Service
  */
-class GuestGiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
+class GuestGiftcardCartServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GuestGiftcardCartService
@@ -44,7 +44,10 @@ class GuestGiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
         $this->giftcardCartManagementMock = $this->getMockForAbstractClass(GiftcardCartManagementInterface::class);
-        $this->quoteIdMaskFactoryMock = $this->getMock(QuoteIdMaskFactory::class, ['create'], [], '', false);
+        $this->quoteIdMaskFactoryMock = $this->getMockBuilder(QuoteIdMaskFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->object = $objectManager->getObject(
             GuestGiftcardCartService::class,
@@ -64,7 +67,10 @@ class GuestGiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
         $quoteId = 1;
         $expectedValue = [];
 
-        $quoteIdMaskMock = $this->getMock(QuoteIdMask::class, ['load', 'getQuoteId'], [], '', false);
+        $quoteIdMaskMock = $this->getMockBuilder(QuoteIdMask::class)
+            ->setMethods(['load', 'getQuoteId'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $quoteIdMaskMock->expects($this->once())
             ->method('load')
             ->with($cartId, 'masked_id')
@@ -95,7 +101,10 @@ class GuestGiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
         $quoteId = 1;
         $expectedValue = true;
 
-        $quoteIdMaskMock = $this->getMock(QuoteIdMask::class, ['load', 'getQuoteId'], [], '', false);
+        $quoteIdMaskMock = $this->getMockBuilder(QuoteIdMask::class)
+            ->setMethods(['load', 'getQuoteId'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $quoteIdMaskMock->expects($this->once())
             ->method('load')
             ->with($cartId, 'masked_id')
@@ -126,7 +135,10 @@ class GuestGiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
         $quoteId = 1;
         $expectedValue = true;
 
-        $quoteIdMaskMock = $this->getMock(QuoteIdMask::class, ['load', 'getQuoteId'], [], '', false);
+        $quoteIdMaskMock = $this->getMockBuilder(QuoteIdMask::class)
+            ->setMethods(['load', 'getQuoteId'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $quoteIdMaskMock->expects($this->once())
             ->method('load')
             ->with($cartId, 'masked_id')

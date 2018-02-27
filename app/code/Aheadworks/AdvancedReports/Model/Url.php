@@ -8,7 +8,7 @@ namespace Aheadworks\AdvancedReports\Model;
 
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\UrlInterface;
-use Aheadworks\AdvancedReports\Model\Filter;
+use Aheadworks\AdvancedReports\Model\Source\Period as PeriodSource;
 use Aheadworks\AdvancedReports\Model\Source\Groupby as GroupbySource;
 
 /**
@@ -29,31 +29,15 @@ class Url
     private $urlBuilder;
 
     /**
-     * @var Filter\Period
-     */
-    private $periodFilter;
-
-    /**
-     * @var Filter\Groupby
-     */
-    private $groupbyFilter;
-
-    /**
      * @param RequestInterface $request
      * @param UrlInterface $urlBuilder
-     * @param Filter\Period $periodFilter
-     * @param Filter\Groupby $groupbyFilter
      */
     public function __construct(
         RequestInterface $request,
-        UrlInterface $urlBuilder,
-        Filter\Period $periodFilter,
-        Filter\Groupby $groupbyFilter
+        UrlInterface $urlBuilder
     ) {
         $this->request = $request;
         $this->urlBuilder = $urlBuilder;
-        $this->periodFilter = $periodFilter;
-        $this->groupbyFilter = $groupbyFilter;
     }
 
     /**
@@ -61,17 +45,19 @@ class Url
      *
      * @param string $report
      * @param string $reportTo
-     * @param [] $params
+     * @param \DateTime $periodFrom
+     * @param \DateTime $periodTo
+     * @param array $params
      * @return string
      */
-    public function getUrl($report, $reportTo, $params = [])
+    public function getUrl($report, $reportTo, $periodFrom, $periodTo, $params = [])
     {
         $params = array_merge(
             $params,
             [
-                'period_from' => $this->periodFilter->getPeriodFrom()->format('Y-m-d'),
-                'period_to'   => $this->periodFilter->getPeriodTo()->format('Y-m-d'),
-                'period_type' => Filter\Period::PERIOD_TYPE_CUSTOM,
+                'period_from' => $periodFrom->format('Y-m-d'),
+                'period_to'   => $periodTo->format('Y-m-d'),
+                'period_type' => PeriodSource::PERIOD_TYPE_CUSTOM,
                 'brc' => $this->getBrcParam($report, $reportTo)
             ]
         );
@@ -82,99 +68,58 @@ class Url
     /**
      * Retrieve url for report by period
      *
-     * @param [] $item
-     * @param string $report
+     * @param string $reportFrom
      * @param string $reportTo
-     * @param [] $paramsFromRequest
+     * @param array $paramsFromRequest
      * @param bool $detailGroup
-     * @return []
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @param string $groupBy
+     * @return string
      */
-    public function getUrlByPeriod($item, $report, $reportTo, $paramsFromRequest = [], $detailGroup = true)
-    {
-        if ($detailGroup) {
-            switch ($this->groupbyFilter->getCurrentGroupByKey()) {
-                case GroupbySource::TYPE_DAY:
-                    $startDate = $endDate = new \DateTime($item['date'], $this->periodFilter->getLocaleTimezone());
-                    $params = [
-                        'group_by' => GroupbySource::TYPE_DAY
-                    ];
-                    break;
-                case GroupbySource::TYPE_WEEK:
-                    $startDate = new \DateTime($item['start_date'], $this->periodFilter->getLocaleTimezone());
-                    $endDate = new \DateTime($item['end_date'], $this->periodFilter->getLocaleTimezone());
-                    $params = [
-                        'group_by' => GroupbySource::TYPE_DAY
-                    ];
-                    break;
-                case GroupbySource::TYPE_MONTH:
-                    $startDate = new \DateTime($item['start_date'], $this->periodFilter->getLocaleTimezone());
-                    $endDate = new \DateTime($item['end_date'], $this->periodFilter->getLocaleTimezone());
-                    $params = [
-                        'group_by' => GroupbySource::TYPE_WEEK
-                    ];
-                    break;
-                case GroupbySource::TYPE_QUARTER:
-                    $startDate = new \DateTime($item['start_date'], $this->periodFilter->getLocaleTimezone());
-                    $endDate = new \DateTime($item['end_date'], $this->periodFilter->getLocaleTimezone());
-                    $params = [
-                        'group_by' => GroupbySource::TYPE_MONTH
-                    ];
-                    break;
-                case GroupbySource::TYPE_YEAR:
-                    $startDate = new \DateTime($item['start_date'], $this->periodFilter->getLocaleTimezone());
-                    $endDate = new \DateTime($item['end_date'], $this->periodFilter->getLocaleTimezone());
-                    $params = [
-                        'group_by' => GroupbySource::TYPE_QUARTER
-                    ];
-                    break;
-            }
-        } else {
-            switch ($this->groupbyFilter->getCurrentGroupByKey()) {
-                case GroupbySource::TYPE_DAY:
-                    $startDate = $endDate = new \DateTime($item['date'], $this->periodFilter->getLocaleTimezone());
-                    $params = [
-                        'group_by' => GroupbySource::TYPE_DAY
-                    ];
-                    break;
-                case GroupbySource::TYPE_WEEK:
-                case GroupbySource::TYPE_MONTH:
-                case GroupbySource::TYPE_QUARTER:
-                case GroupbySource::TYPE_YEAR:
-                    $startDate = new \DateTime($item['start_date'], $this->periodFilter->getLocaleTimezone());
-                    $endDate = new \DateTime($item['end_date'], $this->periodFilter->getLocaleTimezone());
-                    $params = [
-                        'group_by' => $this->groupbyFilter->getCurrentGroupByKey()
-                    ];
-                    break;
-            }
-        }
-
-        $periodFrom = $this->periodFilter->getPeriodFrom();
-        $periodTo = $this->periodFilter->getPeriodTo();
-        if ($startDate < $periodFrom) {
-            $startDate = $periodFrom;
-        }
-        if ($endDate > $periodTo) {
-            $endDate = $periodTo;
+    public function getUrlByPeriod(
+        $reportFrom,
+        $reportTo,
+        $paramsFromRequest = [],
+        $detailGroup = true,
+        $groupBy = GroupbySource::TYPE_MONTH
+    ) {
+        $params = [];
+        switch ($groupBy) {
+            case GroupbySource::TYPE_DAY:
+                $params = [
+                    'group_by' => GroupbySource::TYPE_DAY
+                ];
+                break;
+            case GroupbySource::TYPE_WEEK:
+                $params = [
+                    'group_by' => $detailGroup ? GroupbySource::TYPE_DAY : $groupBy
+                ];
+                break;
+            case GroupbySource::TYPE_MONTH:
+                $params = [
+                    'group_by' => $detailGroup ? GroupbySource::TYPE_WEEK : $groupBy
+                ];
+                break;
+            case GroupbySource::TYPE_QUARTER:
+                $params = [
+                    'group_by' => $detailGroup ? GroupbySource::TYPE_MONTH : $groupBy
+                ];
+                break;
+            case GroupbySource::TYPE_YEAR:
+                $params = [
+                    'group_by' => $detailGroup ? GroupbySource::TYPE_QUARTER : $groupBy
+                ];
+                break;
         }
 
         $params = array_merge(
             $params,
             $paramsFromRequest,
             [
-                'period_from' => $startDate->format('Y-m-d'),
-                'period_to'   => $endDate->format('Y-m-d'),
-                'period_type' => Filter\Period::PERIOD_TYPE_CUSTOM,
-                'brc' => $this->getBrcParam($report, $reportTo)
+                'brc' => $this->getBrcParam($reportFrom, $reportTo)
             ]
         );
 
-        return [
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'url' => $this->urlBuilder->getUrl('advancedreports/' . $reportTo . '/index', ['_query' => $params])
-        ];
+        return $this->urlBuilder->getUrl('advancedreports/' . $reportTo . '/index', ['_query' => $params]);
     }
 
     /**

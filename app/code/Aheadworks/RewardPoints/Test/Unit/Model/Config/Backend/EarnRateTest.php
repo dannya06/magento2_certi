@@ -15,7 +15,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Config\Backend\EarnRateTest
  */
-class EarnRateTest extends \PHPUnit_Framework_TestCase
+class EarnRateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|EarnRateResource
@@ -68,7 +68,6 @@ class EarnRateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->object = $objectManager->getObject(EarnRate::class, $data);
-
     }
 
     /**

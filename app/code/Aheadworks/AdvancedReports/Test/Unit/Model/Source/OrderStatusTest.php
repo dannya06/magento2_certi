@@ -14,7 +14,7 @@ use Magento\Sales\Model\Order\Config;
 /**
  * Test for \Aheadworks\AdvancedReports\Model\Source\OrderStatus
  */
-class OrderStatusTest extends \PHPUnit_Framework_TestCase
+class OrderStatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OrderStatus
@@ -34,7 +34,10 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->orderConfigMock = $this->getMock(Config::class, ['getStateStatuses'], [], '', false);
+        $this->orderConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getStateStatuses'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->model = $objectManager->getObject(
             OrderStatus::class,
             ['orderConfig' => $this->orderConfigMock]

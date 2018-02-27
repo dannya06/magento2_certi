@@ -15,7 +15,7 @@ use Aheadworks\RewardPoints\Model\ResourceModel\Order as OrderResource;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Plugin\Model\Service\OrderServicePluginTest
  */
-class ReviewPluginTest extends \PHPUnit_Framework_TestCase
+class ReviewPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReviewPlugin

@@ -31,7 +31,7 @@ class Order extends \Magento\Sales\Model\ResourceModel\Order
                 ['product_id' => 'product_id']
             )
             ->where('customer_id = '. $customerId)
-            ->where('sales_order.state IN (?)', [SalesOrder::STATE_COMPLETE]);
+            ->where($this->getMainTable() . '.state IN (?)', [SalesOrder::STATE_COMPLETE]);
         return (bool) $connection->fetchOne($select);
     }
 }

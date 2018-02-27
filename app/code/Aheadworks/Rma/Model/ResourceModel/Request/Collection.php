@@ -4,72 +4,222 @@
 * See LICENSE.txt for license details.
 */
 
-
 namespace Aheadworks\Rma\Model\ResourceModel\Request;
+
+use Aheadworks\Rma\Api\Data\RequestCustomFieldValueInterface;
+use Aheadworks\Rma\Api\Data\RequestInterface;
+use Aheadworks\Rma\Api\Data\RequestItemInterface;
+use Aheadworks\Rma\Model\ResourceModel\AbstractCollection;
+use Aheadworks\Rma\Model\Request;
+use Aheadworks\Rma\Model\ResourceModel\Request as ResourceRequest;
+use Magento\Framework\DataObject;
+use Aheadworks\Rma\Model\CustomField\Processor\ReadHandler as CustomFieldReadHandlerProcessor;
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Aheadworks\Rma\Model\Request\PrintLabel\Mapper as PrintLabelMapper;
 
 /**
  * Class Collection
+ *
  * @package Aheadworks\Rma\Model\ResourceModel\Request
  */
-class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+class Collection extends AbstractCollection
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected $_idFieldName = 'id';
+
+    /**
+     * @var CustomFieldReadHandlerProcessor
+     */
+    private $customFieldReadHandlerProcessor;
+
+    /**
+     * @var PrintLabelMapper
+     */
+    private $printLabelMapper;
+
+    /**
+     * @param EntityFactoryInterface $entityFactory
+     * @param LoggerInterface $logger
+     * @param FetchStrategyInterface $fetchStrategy
+     * @param ManagerInterface $eventManager
+     * @param AdapterInterface $connection
+     * @param AbstractDb $resource
+     * @param CustomFieldReadHandlerProcessor $customFieldReadHandlerProcessor
+     * @param PrintLabelMapper $printLabelMapper
+     */
+    public function __construct(
+        EntityFactoryInterface $entityFactory,
+        LoggerInterface $logger,
+        FetchStrategyInterface $fetchStrategy,
+        ManagerInterface $eventManager,
+        CustomFieldReadHandlerProcessor $customFieldReadHandlerProcessor,
+        PrintLabelMapper $printLabelMapper,
+        AdapterInterface $connection = null,
+        AbstractDb $resource = null
+    ) {
+        parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
+        $this->customFieldReadHandlerProcessor = $customFieldReadHandlerProcessor;
+        $this->printLabelMapper = $printLabelMapper;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function _construct()
     {
-        $this->_init('Aheadworks\Rma\Model\Request', 'Aheadworks\Rma\Model\ResourceModel\Request');
+        $this->_init(Request::class, ResourceRequest::class);
     }
 
-    public function addCustomerFilter($customerId)
+    /**
+     * {@inheritdoc}
+     */
+    public function addFieldToFilter($field, $condition = null)
     {
-        return $this->addFieldToFilter('main_table.customer_id', ['eq' => $customerId]);
+        if ($field == RequestItemInterface::ITEM_ID) {
+            $this->addFilter($field, $condition, 'public');
+            return $this;
+        }
+        if (strpos($field, 'custom_field_') !== false) {
+            $this->addFilter($field, $condition, 'public');
+            return $this;
+        }
+        return parent::addFieldToFilter($field, $condition);
     }
 
-    public function joinCustomFieldValues($customFieldCollection) {
-        foreach ($customFieldCollection as $customField) {
-            $tableName = 'cf' . $customField->getId();
-            $this->getSelect()
-                ->joinLeft(
-                    [$tableName => $this->getTable('aw_rma_request_custom_field_value')],
-                    "main_table.id = {$tableName}.entity_id AND {$tableName}.field_id = {$customField->getId()}",
-                    "{$tableName}.value as {$tableName}_value"
+    /**
+     * {@inheritdoc}
+     */
+    protected function _initSelect()
+    {
+        parent::_initSelect();
+        $this->addFilterToMap('store_id', 'main_table.store_id');
+        $this->addFilterToMap('increment_id', 'main_table.increment_id');
+        $this->addFilterToMap('created_at', 'main_table.created_at');
+        $this->addFilterToMap('updated_at', 'main_table.updated_at');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->joinLinkageTable(
+            'aw_rma_request_item',
+            'id',
+            'request_id',
+            'item_id',
+            'item_id'
+        );
+
+        foreach ($this->_filters as $filter) {
+            if (strpos($filter['field'], 'custom_field_') !== false) {
+                $fieldId = (int)str_replace('custom_field_', '', $filter['field']);
+                $this->joinLinkageTable(
+                    'aw_rma_request_custom_field_value',
+                    'id',
+                    'entity_id',
+                    $filter['field'],
+                    'value',
+                    [['field' => 'field_id', 'condition' => '=', 'value' => $fieldId]]
                 );
+            }
         }
+
+        parent::_renderFiltersBefore();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _afterLoad()
+    {
+        $this->attachRelationTable(
+            'aw_rma_request_custom_field_value',
+            'id',
+            'entity_id',
+            ['field_id', 'value'],
+            'custom_fields'
+        );
+        /** @var \Magento\Framework\DataObject $item */
+        foreach ($this as $item) {
+            $item->setData(
+                RequestInterface::CUSTOM_FIELDS,
+                $this->customFieldReadHandlerProcessor->preparedCustomFieldsData(
+                    $item->getData(RequestInterface::CUSTOM_FIELDS)
+                )
+            );
+            $this->attachOrderItems($item);
+            $this->convertPrintLabel($item);
+        }
+    }
+
+    /**
+     * Attach order items
+     *
+     * @param DataObject $item
+     * @return $this
+     */
+    private function attachOrderItems($item)
+    {
+        $connection = $this->getConnection();
+        $requestId = (int)$item->getData(RequestInterface::ID);
+        $select = $connection->select()
+            ->from($this->getTable('aw_rma_request_item'))
+            ->where('request_id = :id');
+        $itemsData = $connection->fetchAll($select, ['id' => $requestId]);
+
+        $items = [];
+        foreach ($itemsData as $itemData) {
+            $itemData = $this->attachOrderItemCustomFields($itemData);
+            $items[] = $itemData;
+        }
+        $item->setData(RequestInterface::ORDER_ITEMS, $items);
+
         return $this;
     }
 
     /**
-     * @param array $attributes
-     * @return $this
+     * Attach order item custom fields
+     *
+     * @param array $itemData
+     * @return array
      */
-    public function joinStatusAttributeValues($attributes)
+    private function attachOrderItemCustomFields($itemData)
     {
-        foreach ($attributes as $attrCode) {
-            $conditions = [
-                "main_table.status_id = {$attrCode}.status_id",
-                "main_table.store_id = {$attrCode}.store_id",
-                 $this->getConnection()->quoteInto("attribute_code = ?", $attrCode)
-            ];
-            $this->getSelect()
-                ->joinLeft(
-                    [$attrCode => $this->getTable('aw_rma_status_attr_value')],
-                    implode(' AND ', $conditions),
-                    [
-                        'status_' . $attrCode => $attrCode.'.value'
-                    ]
-                );
-        }
-        return $this;
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from(
+                $this->getTable('aw_rma_request_item_custom_field_value'),
+                [RequestCustomFieldValueInterface::FIELD_ID, RequestCustomFieldValueInterface::VALUE]
+            )->where('entity_id = :id');
+        $itemCustomFieldsData = $connection->fetchAll($select, ['id' => $itemData[RequestItemInterface::ID]]);
+        $itemData[RequestItemInterface::CUSTOM_FIELDS] = $this->customFieldReadHandlerProcessor
+            ->preparedCustomFieldsData($itemCustomFieldsData);
+
+        return $itemData;
     }
 
-    public function joinOrders()
+    /**
+     * Attach order items
+     *
+     * @param DataObject $item
+     * @return $this
+     */
+    private function convertPrintLabel($item)
     {
-        $this->getSelect()
-            ->joinLeft(
-                ['order_table' => $this->getTable('sales_order')],
-                'main_table.order_id = order_table.entity_id',
-                [
-                    'order_increment_id' => 'order_table.increment_id'
-                ]
-            );
+        $itemData = $this->printLabelMapper->databaseToEntity(
+            RequestInterface::class,
+            $item->getData()
+        );
+        $item->setData(RequestInterface::PRINT_LABEL, $itemData[RequestInterface::PRINT_LABEL]);
+
         return $this;
     }
 }

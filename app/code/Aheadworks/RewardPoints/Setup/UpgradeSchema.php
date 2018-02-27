@@ -21,7 +21,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Aheadworks\RewardPoints\Model\DateTime;
 use Aheadworks\RewardPoints\Model\Config;
-use Magento\Customer\Api\CustomerRepositoryInterface;
 
 /**
  * Class UpgradeSchema
@@ -52,38 +51,27 @@ class UpgradeSchema implements UpgradeSchemaInterface
     private $config;
 
     /**
-     * @var CustomerRepositoryInterface
-     */
-    private $customerRepository;
-
-    /**
      * @param State $appState
      * @param CommentPoolInterface $commentPool
      * @param OrderRepositoryInterface $orderRepository
      * @param DateTime $dateTime
      * @param Config $config
-     * @param CustomerRepositoryInterface $customerRepository
      */
     public function __construct(
         State $appState,
         CommentPoolInterface $commentPool,
         OrderRepositoryInterface $orderRepository,
         DateTime $dateTime,
-        Config $config,
-        CustomerRepositoryInterface $customerRepository
+        Config $config
     ) {
         try {
-            if (!$appState->getAreaCode()) {
-                $appState->setAreaCode('adminhtml');
-            }
-        } catch (LocalizedException $e) {
             $appState->setAreaCode('adminhtml');
+        } catch (LocalizedException $e) {
         }
         $this->commentPool = $commentPool;
         $this->orderRepository = $orderRepository;
         $this->dateTime = $dateTime;
         $this->config = $config;
-        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -443,13 +431,23 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'transaction_id IN(' . implode(',', array_values($transactionIds)) . ')'
                 );
                 if ($summary['points'] > 0) {
-                    $customer = $this->customerRepository->getById($summary['customer_id']);
+                    $customerSelect = $connection->select()
+                        ->from(
+                            $installer->getTable('customer_entity'),
+                            [
+                                'email',
+                                'firstname',
+                                'lastname'
+                            ]
+                        )
+                        ->where('entity_id = ?', $summary['customer_id']);
+                    $customer = $connection->fetchRow($customerSelect);
                     $connection->insert(
                         $installer->getTable('aw_rp_transaction'),
                         [
                             'customer_id' => $summary['customer_id'],
-                            'customer_name' => $customer->getFirstname() . ' ' . $customer->getLastname(),
-                            'customer_email' => $customer->getEmail(),
+                            'customer_name' => $customer['firstname'] . ' ' . $customer['lastname'],
+                            'customer_email' => $customer['email'],
                             'comment_to_customer' => null,
                             'comment_to_customer_placeholder' => null,
                             'comment_to_admin' =>

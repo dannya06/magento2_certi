@@ -6,6 +6,7 @@
 
 namespace Aheadworks\AdvancedReports\Controller\Adminhtml\ProductConversion;
 
+use Aheadworks\AdvancedReports\Ui\Component\Listing\Breadcrumbs;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
@@ -47,10 +48,12 @@ class Index extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        $title = __('Product Conversion');
+        $this->_session->setData(Breadcrumbs::BREADCRUMBS_CONTROLLER_TITLE, $title);
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Aheadworks_AdvancedReports::reports_conversion');
-        $resultPage->getConfig()->getTitle()->prepend(__('Product Conversion'));
+        $resultPage->getConfig()->getTitle()->prepend($title);
         return $resultPage;
     }
 }

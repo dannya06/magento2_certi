@@ -54,6 +54,8 @@ class Code extends \Magento\Ui\Component\Listing\Columns\Column
                     $item['row_url'] = $this->urlModel->getUrl(
                         'couponcode',
                         'salesoverview',
+                        $dataSource['data']['periodFromFilter'],
+                        $dataSource['data']['periodToFilter'],
                         $params
                     );
                 }

@@ -6,54 +6,68 @@
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Rma;
 
+use Aheadworks\Rma\Api\ThreadMessageManagementInterface;
+use Aheadworks\Rma\Model\ThreadMessage\Attachment\FileDownloader;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Backend\App\Action;
-use Magento\Framework\App\Filesystem\DirectoryList;
 
-
-class Download extends \Aheadworks\Rma\Controller\Adminhtml\Rma
+/**
+ * Class Download
+ *
+ * @package Aheadworks\Rma\Controller\Adminhtml\Rma
+ */
+class Download extends Action
 {
     /**
-     * @var \Aheadworks\Rma\Model\AttachmentFactory
+     * {@inheritdoc}
      */
-    private $attachmentFactory;
+    const ADMIN_RESOURCE = 'Aheadworks_Rma::manage_rma';
 
     /**
-     * @var \Magento\Framework\App\Response\Http\FileFactory
+     * @var ThreadMessageManagementInterface
      */
-    protected $fileFactory;
+    private $threadMessageManagement;
 
+    /**
+     * @var FileDownloader
+     */
+    private $fileDownloader;
+
+    /**
+     * @param Context $context
+     * @param ThreadMessageManagementInterface $threadMessageManagement
+     * @param FileDownloader $fileDownloader
+     */
     public function __construct(
-        Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Framework\App\Response\Http\FileFactory $fileFactory,
-        \Aheadworks\Rma\Model\AttachmentFactory $attachmentFactory
+        Context $context,
+        ThreadMessageManagementInterface $threadMessageManagement,
+        FileDownloader $fileDownloader
     ) {
-        $this->attachmentFactory = $attachmentFactory;
-        $this->fileFactory = $fileFactory;
-        parent::__construct($context, $resultPageFactory);
+        parent::__construct($context);
+        $this->threadMessageManagement = $threadMessageManagement;
+        $this->fileDownloader = $fileDownloader;
     }
 
     /**
-     * Download action
-     *
-     * @return \Magento\Backend\Model\View\Result\Page
+     * {@inheritdoc}
      */
     public function execute()
     {
-        $attachmentId = $this->getRequest()->getParam('attachment_id');
-        $attachment = $this->attachmentFactory->create();
-        if (!$attachmentId || !$attachment->load($attachmentId)->getId()) {
-            $resultRedirect = $this->resultRedirectFactory->create();
-            $this->messageManager->addError(__('File not found'));
-            return $resultRedirect->setPath('*/*');
+        $resultRedirect = $this->resultRedirectFactory->create();
+        try {
+            // @todo refactoring use ParamEncryptor class
+            $attachment = $this->threadMessageManagement->getAttachment(
+                $this->getRequest()->getParam('file'),
+                $this->getRequest()->getParam('message'),
+                $this->getRequest()->getParam('id')
+            );
+            return $this->fileDownloader->download($attachment);
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
         }
-
-        $this->fileFactory->create(
-            $attachment->getName(),
-            $attachment->getContent(),
-            DirectoryList::MEDIA,
-            'application/octet-stream',
-            $attachment->getContentLength()
-        );
+        return $resultRedirect->setPath('*/*/');
     }
 }

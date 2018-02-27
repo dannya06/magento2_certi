@@ -6,65 +6,144 @@
 
 namespace Aheadworks\Rma\Ui\Component\Listing;
 
-class Columns extends \Magento\Ui\Component\Listing\Columns
+use Aheadworks\Rma\Api\CustomFieldRepositoryInterface;
+use Aheadworks\Rma\Api\Data\CustomFieldInterface;
+use Aheadworks\Rma\Model\CustomField\Renderer\Backend\Grid\Mapper;
+use Aheadworks\Rma\Model\Source\CustomField\Refers;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Ui\Component\Listing\Columns as UiColumns;
+use Magento\Framework\View\Element\UiComponentFactory;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+
+/**
+ * Class Columns
+ *
+ * @package Aheadworks\Rma\Ui\Component\Listing
+ */
+class Columns extends UiColumns
 {
     /**
-     * @var \Magento\Framework\View\Element\UiComponentFactory
+     * @var UiComponentFactory
      */
-    protected $componentFactory;
+    private $componentFactory;
 
     /**
-     * @var \Aheadworks\Rma\Model\ResourceModel\CustomField\Collection
+     * @var CustomFieldRepositoryInterface
      */
-    protected $customFieldCollection;
+    private $customFieldRepository;
 
     /**
-     * @param \Magento\Framework\View\Element\UiComponent\ContextInterface $context
-     * @param \Magento\Framework\View\Element\UiComponentFactory $componentFactory
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
+
+    /**
+     * @var Mapper
+     */
+    private $mapper;
+
+    /**
+     * @param ContextInterface $context
+     * @param UiComponentFactory $componentFactory
+     * @param CustomFieldRepositoryInterface $customFieldRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param Mapper $mapper
      * @param array $components
      * @param array $data
      */
     public function __construct(
-        \Aheadworks\Rma\Model\ResourceModel\CustomField\Collection $customFieldCollection,
-        \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
-        \Magento\Framework\View\Element\UiComponentFactory $componentFactory,
+        ContextInterface $context,
+        UiComponentFactory $componentFactory,
+        CustomFieldRepositoryInterface $customFieldRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        Mapper $mapper,
         array $components = [],
         array $data = []
     ) {
-        $this->customFieldCollection = $customFieldCollection->setFilterForRmaGrid();
-        $this->componentFactory = $componentFactory;
         parent::__construct($context, $components, $data);
+        $this->componentFactory = $componentFactory;
+        $this->customFieldRepository = $customFieldRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->mapper = $mapper;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function prepare()
     {
-        foreach ($this->customFieldCollection as $customField) {
-            /** @var \Aheadworks\Rma\Model\CustomField $customField */
-            $fieldConfig = [
-                'filter'        => $customField->getType(),
-                'label'         => __($customField->getName()),
-                'dataType'      => $customField->getType(),
-                'visible'       => false
-            ];
-            if ($customField->getName() == 'Resolution') {
-                $fieldConfig['visible'] = true;
-                $fieldConfig['sortOrder'] = 6;
-            }
-            if ($customField->getType() == \Aheadworks\Rma\Model\Source\CustomField\Type::SELECT_VALUE) {
-                $fieldConfig['component'] = 'Magento_Ui/js/grid/columns/select';
-                $fieldConfig['options'] = $customField->toOptionArray();
-            }
-            $arguments = [
-                'data' => [
-                    'config' => $fieldConfig
-                ],
-                'context' => $this->getContext()
-            ];
-            $columnName = "cf{$customField->getId()}_value";
-            $column = $this->componentFactory->create($columnName, 'column', $arguments);
-            $column->prepare();
-            $this->addComponent($columnName, $column);
+        $customFields = $this->getCustomFields();
+        foreach ($customFields as $customField) {
+            $config = $this->mapper->map($customField);
+            $this->createComponent(
+                $this->getCustomFieldName($customField->getId()),
+                'column',
+                $config
+            );
         }
         parent::prepare();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepareDataSource(array $dataSource)
+    {
+        parent::prepareDataSource($dataSource);
+        foreach ($dataSource['data']['items'] as &$item) {
+            if (!isset($item['custom_fields']) || !is_array($item['custom_fields'])) {
+                continue;
+            }
+            foreach ($item['custom_fields'] as $customField) {
+                $item[$this->getCustomFieldName($customField['field_id'])] = $customField['value'];
+            }
+        }
+
+        return $dataSource;
+    }
+
+    /**
+     * Retrieve custom field name
+     *
+     * @param int $fieldId
+     * @return string
+     */
+    private function getCustomFieldName($fieldId)
+    {
+        return 'custom_field_' . $fieldId;
+    }
+
+    /**
+     * Retrieve custom fields
+     *
+     * @return CustomFieldInterface[]
+     */
+    private function getCustomFields()
+    {
+        $this->searchCriteriaBuilder->addFilter(CustomFieldInterface::REFERS, Refers::REQUEST);
+
+        return $this->customFieldRepository->getList($this->searchCriteriaBuilder->create())->getItems();
+    }
+
+    /**
+     * Create component
+     *
+     * @param string $columnName
+     * @param string $type
+     * @param array $config
+     * @return $this
+     */
+    private function createComponent($columnName, $type, $config)
+    {
+        $component = $this->componentFactory->create(
+            $columnName,
+            $type,
+            ['context' => $this->getContext()]
+        );
+        $component->setData('config', $config);
+        $component->prepare();
+        $this->addComponent($columnName, $component);
+
+        return $this;
     }
 }

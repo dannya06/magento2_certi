@@ -26,8 +26,10 @@ define([
                 addColumns: '${ $.columnsProvider }:elems',
                 chartOptions: '${ $.provider }:data.chart.options',
                 rows: '${ $.provider }:data.chart.rows',
+                priceFormat: '${ $.provider }:data.priceFormat'
             },
             listens: {
+                priceFormat: 'drawChart',
                 elems: 'drawChart',
                 rows: 'drawChart',
                 chartOptions: 'drawChart',
@@ -152,6 +154,8 @@ define([
          * @returns {Void}
          */
         drawChart: function () {
+            $('#' + this.chartContainerId).html('');
+            $(this.chartLegendSelector).html('');
             if (!this.canDrawChart()) {
                 return;
             }

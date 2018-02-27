@@ -32,10 +32,18 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     {
         $this->getSelect()
             ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(false))
             ->group('product_id');
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns());
+        parent::_renderFiltersBefore();
     }
 
     /**
@@ -60,27 +68,11 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    public function addFieldToFilter($field, $condition = null)
-    {
-        if ($field == 'include_refunded_items') {
-            if ((int)$condition['eq'] == 1) {
-                return $this;
-            } else {
-                return $this->addExcludeRefundedItemsFilter();
-            }
-        }
-        return parent::addFieldToFilter($field, $condition);
-    }
-
-    /**
-     * Add exclude refunded items filters to collection
-     *
-     * @return $this
-     */
-    protected function addExcludeRefundedItemsFilter()
+    public function addExcludeRefundedItemsFilter()
     {
         $this->getSelect()
             ->where('(is_refunded = 0 OR is_refunded IS NULL)');
+
         return $this;
     }
 

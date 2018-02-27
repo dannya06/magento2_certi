@@ -6,11 +6,9 @@
 
 namespace Aheadworks\AdvancedReports\Controller\Adminhtml\CustomerSales\Customers;
 
+use Aheadworks\AdvancedReports\Ui\Component\Listing\Breadcrumbs;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
-use Magento\Framework\Locale\FormatInterface as LocaleFormat;
-use Aheadworks\AdvancedReports\Model\Filter\Store as StoreFilter;
-use Aheadworks\AdvancedReports\Model\Filter\Range as RangeFilter;
 
 /**
  * Class Index
@@ -32,39 +30,15 @@ class Index extends \Magento\Backend\App\Action
     private $resultPageFactory;
 
     /**
-     * @var LocaleFormat
-     */
-    private $localeFormat;
-
-    /**
-     * @var StoreFilter
-     */
-    private $storeFilter;
-
-    /**
-     * @var RangeFilter
-     */
-    private $rangeFilter;
-
-    /**
      * @param Context $context
      * @param PageFactory $resultPageFactory
-     * @param LocaleFormat $localeFormat
-     * @param StoreFilter $storeFilter
-     * @param RangeFilter $rangeFilter
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        LocaleFormat $localeFormat,
-        StoreFilter $storeFilter,
-        RangeFilter $rangeFilter
+        PageFactory $resultPageFactory
     ) {
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
-        $this->localeFormat = $localeFormat;
-        $this->storeFilter = $storeFilter;
-        $this->rangeFilter = $rangeFilter;
     }
 
     /**
@@ -74,42 +48,17 @@ class Index extends \Magento\Backend\App\Action
      */
     public function execute()
     {
-        $rangeTitle = $this->getRangeTitle();
+        $rangeTitle = $this->_request->getParam('range_title');
+        if ($rangeTitle) {
+            $title = __('Customers (%1)', base64_decode($rangeTitle));
+        } else {
+            $title = __('Customers');
+        }
+        $this->_session->setData(Breadcrumbs::BREADCRUMBS_CONTROLLER_TITLE, $title);
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Aheadworks_AdvancedReports::reports_customersales');
-        $resultPage->getConfig()->getTitle()->prepend(__('Customers (%1)', $rangeTitle));
+        $resultPage->getConfig()->getTitle()->prepend($title);
         return $resultPage;
-    }
-
-    /**
-     * Get range title
-     *
-     * @return \Magento\Framework\Phrase
-     */
-    private function getRangeTitle()
-    {
-        $range = $this->rangeFilter->getRange();
-        $format = $this->localeFormat->getPriceFormat(null, $this->storeFilter->getCurrencyCode());
-        $rangeFrom = number_format(
-            $range['from'],
-            $format['precision'],
-            $format['decimalSymbol'],
-            $format['groupSymbol']
-        );
-        $rangeTo = number_format(
-            $range['to'],
-            $format['precision'],
-            $format['decimalSymbol'],
-            $format['groupSymbol']
-        );
-        $fromPattern = str_replace('%s', '%1', $format['pattern']);
-        $toPattern = str_replace('%s', '%2', $format['pattern']);
-        if ($range['to']) {
-            $rangeTitle = __($fromPattern . ' - ' . $toPattern, [$rangeFrom, $rangeTo]);
-        } else {
-            $rangeTitle = __($fromPattern . '+', [$rangeFrom]);
-        }
-        return $rangeTitle;
     }
 }

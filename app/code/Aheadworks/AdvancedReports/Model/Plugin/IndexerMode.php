@@ -25,8 +25,7 @@ class IndexerMode
     public function afterSetMode(
         \Magento\Indexer\Model\Mview\View\State\Interceptor $mode
     ) {
-        if (
-            $mode->getViewId() == AdvancedReportsIndexer::INDEXER_ID
+        if ($mode->getViewId() == AdvancedReportsIndexer::INDEXER_ID
             && StateInterface::MODE_DISABLED == $mode->getMode()
         ) {
             $mode->setMode(StateInterface::MODE_ENABLED);

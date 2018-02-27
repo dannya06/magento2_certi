@@ -12,6 +12,7 @@
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Catalog::catalog">
                     <resource id="Aheadworks_Giftcard::home" title="GiftCard by aheadWorks" sortOrder="100">
+                        <resource id="Aheadworks_Giftcard::code_pools" title="Manage Code Pools" />
                         <resource id="Aheadworks_Giftcard::giftcard_codes" title="Manage Gift Card Codes" />
                         <resource id="Aheadworks_Giftcard::giftcard_products" title="Manage Gift Card Products" />
                     </resource>

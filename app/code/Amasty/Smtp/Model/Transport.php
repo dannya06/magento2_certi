@@ -140,4 +140,9 @@ class Transport extends \Zend_Mail_Transport_Smtp implements TransportInterface
             throw new \Exception(__('Connection failed'));
         }
     }
+
+    public function getMessage()
+    {
+        return $this->_message;
+    }
 }

@@ -14,14 +14,27 @@
             <xs:element name="is_email_customer" type="xs:integer" minOccurs="1" maxOccurs="1"/>
             <xs:element name="is_email_admin" type="xs:integer" minOccurs="1" maxOccurs="1"/>
             <xs:element name="is_thread" type="xs:integer" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="attribute" type="attribute" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="attributes" type="attributes" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="attributes">
+        <xs:sequence>
+            <xs:element name="frontend_label" type="attribute" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="email_template" type="email_template" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="thread_template" type="attribute" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="attribute">
         <xs:sequence>
-            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="email_template">
+        <xs:sequence>
+            <xs:element name="template_type" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="custom_text" type="xs:string" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

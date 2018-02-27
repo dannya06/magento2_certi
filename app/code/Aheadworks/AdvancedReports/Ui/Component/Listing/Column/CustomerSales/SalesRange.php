@@ -9,8 +9,6 @@ namespace Aheadworks\AdvancedReports\Ui\Component\Listing\Column\CustomerSales;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Aheadworks\AdvancedReports\Model\Url as UrlModel;
-use Aheadworks\AdvancedReports\Model\Filter\Store as StoreFilter;
-use Magento\Framework\Locale\FormatInterface as LocaleFormat;
 
 /**
  * Class SalesRange
@@ -25,21 +23,9 @@ class SalesRange extends \Magento\Ui\Component\Listing\Columns\Column
     private $urlModel;
 
     /**
-     * @var StoreFilter
-     */
-    private $storeFilter;
-
-    /**
-     * @var LocaleFormat
-     */
-    private $localeFormat;
-
-    /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param UrlModel $urlModel
-     * @param StoreFilter $storeFilter
-     * @param LocaleFormat $localeFormat
      * @param array $components
      * @param array $data
      */
@@ -47,15 +33,11 @@ class SalesRange extends \Magento\Ui\Component\Listing\Columns\Column
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         UrlModel $urlModel,
-        StoreFilter $storeFilter,
-        LocaleFormat $localeFormat,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
         $this->urlModel = $urlModel;
-        $this->storeFilter = $storeFilter;
-        $this->localeFormat = $localeFormat;
     }
 
     /**
@@ -63,14 +45,11 @@ class SalesRange extends \Magento\Ui\Component\Listing\Columns\Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        $excludeRefunded = false;
-        if (isset($dataSource['data']['excludeRefunded']) && $dataSource['data']['excludeRefunded']) {
-            $excludeRefunded = true;
-        }
+        $excludeRefunded = $this->getExcludeRefunded();
+        $format = $dataSource['data']['priceFormat'];
 
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                $format = $this->localeFormat->getPriceFormat(null, $this->storeFilter->getCurrencyCode());
                 $rangeFrom = number_format(
                     $item['range_from'],
                     $format['precision'],
@@ -94,6 +73,7 @@ class SalesRange extends \Magento\Ui\Component\Listing\Columns\Column
                 $params = [
                     'range_from' => $item['range_from'],
                     'range_to' => $item['range_to'],
+                    'range_title' => base64_encode($item['row_label'])
                 ];
                 if ($excludeRefunded) {
                     $params['exclude_refunded'] = $excludeRefunded;
@@ -101,6 +81,8 @@ class SalesRange extends \Magento\Ui\Component\Listing\Columns\Column
                 $item['row_url'] = $this->urlModel->getUrl(
                     'customersales',
                     'customersales_customers',
+                    $dataSource['data']['periodFromFilter'],
+                    $dataSource['data']['periodToFilter'],
                     $params
                 );
             }
@@ -115,6 +97,7 @@ class SalesRange extends \Magento\Ui\Component\Listing\Columns\Column
                 $total['row_label'] = __('All Sales (%1)', __($fromPattern . '+', [$rangeFrom]));
                 $params = [
                     'range_from' => 0,
+                    'range_title' => base64_encode($total['row_label'])
                 ];
                 if ($excludeRefunded) {
                     $params['exclude_refunded'] = $excludeRefunded;
@@ -122,10 +105,25 @@ class SalesRange extends \Magento\Ui\Component\Listing\Columns\Column
                 $total['row_url'] = $this->urlModel->getUrl(
                     'customersales',
                     'customersales_customers',
+                    $dataSource['data']['periodFromFilter'],
+                    $dataSource['data']['periodToFilter'],
                     $params
                 );
             }
         }
         return $dataSource;
+    }
+
+    /**
+     * Get exclude refunded
+     *
+     * @return bool
+     */
+    private function getExcludeRefunded()
+    {
+        $reportSettingsFilter = $this->context->getDataProvider()->getDefaultFilterPool()->getFilter('report_settings');
+        $includeRefunded = $reportSettingsFilter->getReportSettingParam('include_refunded_items') == 1;
+
+        return !$includeRefunded;
     }
 }

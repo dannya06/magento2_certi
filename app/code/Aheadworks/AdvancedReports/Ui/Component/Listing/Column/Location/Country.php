@@ -64,6 +64,8 @@ class Country extends \Magento\Ui\Component\Listing\Columns\Column
                 $item['row_url'] = $this->urlModel->getUrl(
                     'location',
                     'location_region',
+                    $dataSource['data']['periodFromFilter'],
+                    $dataSource['data']['periodToFilter'],
                     $params
                 );
             }

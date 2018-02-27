@@ -6,84 +6,77 @@
 
 namespace Aheadworks\Rma\Controller\Guest;
 
+use Aheadworks\Rma\Model\Config;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\Result\Json;
+use Aheadworks\Rma\Model\ThreadMessage\Attachment\FileUploader;
+use Magento\Framework\Exception\NotFoundException;
+use Aheadworks\Rma\Controller\Customer\Upload as CustomerUpload;
 
-class Upload extends \Aheadworks\Rma\Controller\Guest
+/**
+ * Class Upload
+ *
+ * @package Aheadworks\Rma\Controller\Guest
+ */
+class Upload extends Action
 {
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var FileUploader
      */
-    private $resultJsonFactory;
+    private $fileUploader;
 
     /**
-     * @var \Magento\Framework\Filesystem
+     * @var Config
      */
-    private $filesystem;
-
-    /**
-     * @var \Aheadworks\Rma\Model\Attachment\FileUploaderFactory
-     */
-    private $fileUploaderFactory;
+    private $config;
 
     /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Aheadworks\Rma\Model\RequestManager $requestManager
-     * @param \Aheadworks\Rma\Model\RequestFactory $requestFactory
-     * @param JsonFactory $resultJsonFactory
-     * @param \Magento\Framework\Filesystem $filesystem
-     * @param \Aheadworks\Rma\Model\Attachment\FileUploaderFactory $fileUploaderFactory
+     * @param FileUploader $fileUploader
+     * @param Config $config
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Aheadworks\Rma\Model\RequestManager $requestManager,
-        \Aheadworks\Rma\Model\RequestFactory $requestFactory,
-        JsonFactory $resultJsonFactory,
-        \Magento\Framework\Filesystem $filesystem,
-        \Aheadworks\Rma\Model\Attachment\FileUploaderFactory $fileUploaderFactory
+        FileUploader $fileUploader,
+        Config $config
     ) {
-        $this->resultJsonFactory = $resultJsonFactory;
-        $this->filesystem = $filesystem;
-        $this->fileUploaderFactory = $fileUploaderFactory;
-        parent::__construct(
-            $context,
-            $resultPageFactory,
-            $coreRegistry,
-            $formKeyValidator,
-            $scopeConfig,
-            $requestManager,
-            $requestFactory
-        );
+        parent::__construct($context);
+        $this->fileUploader = $fileUploader;
+        $this->config = $config;
     }
 
     /**
-     * @return $this
+     * {@inheritdoc}
+     */
+    public function dispatch(RequestInterface $request)
+    {
+        if (!$this->config->isAllowGuestsCreateRequest() || !$this->config->isAllowCustomerAttachFiles()) {
+            throw new NotFoundException(__('Page not found.'));
+        }
+
+        return parent::dispatch($request);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function execute()
     {
+        /** @var Json $resultJson */
+        $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         try {
-            /** @var \Aheadworks\Rma\Model\Attachment\FileUploader $fileUploader */
-            $fileUploader = $this->fileUploaderFactory->create(['fileId' => 'file[0]']);
-            /** @var \Magento\Framework\Filesystem\Directory\Read $mediaDirectory */
-            $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-            $result = $fileUploader->save($mediaDirectory->getAbsolutePath(\Aheadworks\Rma\Model\Attachment::TMP_PATH));
-
-        } catch (\Exception $e) {
-            $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
+            $result = $this->fileUploader
+                ->setAllowedExtensions($this->config->getAllowFileExtensions())
+                ->saveToTmpFolder(CustomerUpload::FILE_ID);
+        } catch (\Exception $exception) {
+            $result = [
+                'error' => $exception->getMessage(),
+                'errorcode' => $exception->getCode()
+            ];
         }
-
-        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
-        $resultJson = $this->resultJsonFactory->create();
         return $resultJson->setData($result);
     }
 }

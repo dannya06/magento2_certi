@@ -6,31 +6,60 @@
 
 namespace Aheadworks\Rma\Controller\Guest;
 
+use Aheadworks\Rma\Controller\GuestAction;
+use Aheadworks\Rma\Model\Config;
+use Aheadworks\Rma\Api\RequestRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
 
 /**
  * Class View
+ *
  * @package Aheadworks\Rma\Controller\Guest
  */
-class View extends \Aheadworks\Rma\Controller\Guest
+class View extends GuestAction
 {
     /**
-     * @return \Magento\Framework\View\Result\Page
+     * @var PageFactory
+     */
+    private $resultPageFactory;
+
+    /**
+     * @param Context $context
+     * @param RequestRepositoryInterface $requestRepository
+     * @param Config $config
+     * @param PageFactory $resultPageFactory
+     */
+    public function __construct(
+        Context $context,
+        RequestRepositoryInterface $requestRepository,
+        Config $config,
+        PageFactory $resultPageFactory
+    ) {
+        parent::__construct($context, $requestRepository, $config);
+        $this->resultPageFactory = $resultPageFactory;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function execute()
     {
+        $resultRedirect = $this->resultRedirectFactory->create();
         try {
-            $rmaRequest = $this->getRmaRequest();
-            if ($this->isRequestValid($rmaRequest)) {
-                $this->coreRegistry->register('aw_rma_request', $rmaRequest);
-            }
+            $requestEntity = $this->getRmaRequest();
+            /** @var \Magento\Framework\View\Result\Page $resultPage */
+            $resultPage = $this->resultPageFactory->create();
+            $resultPage
+                ->getConfig()
+                ->getTitle()
+                ->set(__('Manage RMA Request #%1', $requestEntity->getIncrementId()));
+            return $resultPage;
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
-            return $this->goBack();
         }
-        return $this->getResultPage([
-            'title' => __('Manage RMA Request %1', $rmaRequest->getIncrementId()),
-            'link_back' => ['name' => 'guest.link.back', 'route_path' => 'aw_rma/guest']
-        ]);
+
+        return $resultRedirect->setUrl($this->_redirect->getRefererUrl());
     }
 }

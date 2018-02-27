@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Pgrid
  */
 
@@ -9,7 +9,7 @@ namespace Amasty\Pgrid\Plugin\Catalog\Ui\DataProvider\Product;
 
 class ProductDataProvider
 {
-    protected $_columns = array(
+    protected $_columns = [
         'amasty_categories',
         'amasty_link',
         'amasty_availability',
@@ -19,33 +19,34 @@ class ProductDataProvider
         'amasty_up_sells',
         'amasty_cross_sells',
         'amasty_low_stock'
-    );
+    ];
     protected $_categoryColFactory;
     protected $_url;
     protected $_categoriesPath;
     protected $_bookmarkManagement;
+    protected $_http;
 
 
     public function __construct(
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryColFactory,
         \Magento\Framework\UrlInterface $url,
         \Magento\Ui\Api\BookmarkManagementInterface $bookmarkManagement,
-        \Amasty\Pgrid\Helper\Data $helper
-    ){
+        \Amasty\Pgrid\Helper\Data $helper,
+        \Magento\Framework\App\Request\Http $http
+    ) {
         $this->_categoryColFactory = $categoryColFactory;
         $this->_url = $url;
         $this->_bookmarkManagement = $bookmarkManagement;
         $this->_helper = $helper;
+        $this->_http = $http;
     }
 
     protected function _getCategories($row)
     {
         $categoriesHtml = '';
         $categories     = $row->getCategoryCollection()->addNameToResult();
-        if ($categories)
-        {
-            foreach ($categories as $category)
-            {
+        if ($categories) {
+            foreach ($categories as $category) {
                 $path        = '';
                 $pathInStore = $category->getPathInStore();
                 $pathIds     = array_reverse(explode(',', $pathInStore));
@@ -58,8 +59,7 @@ class ProductDataProvider
                     }
                 }
 
-                if ($path)
-                {
+                if ($path) {
                     $path = substr($path, 0, -1);
                     $path = '<div style="font-size: 90%; margin-bottom: 8px; border-bottom: 1px dotted #bcbcbc;">' . $path . '</div>';
                 }
@@ -72,9 +72,7 @@ class ProductDataProvider
 
     protected function _getVisibleColumns($configData)
     {
-        $ret = array(
-            'price'
-        );
+        $ret = ['price', 'qty'];
 
         if (isset($configData['amasty_columns']) && is_array($configData['amasty_columns'])) {
             foreach ($configData['amasty_columns'] as $key) {
@@ -97,7 +95,8 @@ class ProductDataProvider
         return $ret;
     }
 
-    protected function _getActiveBookmark(){
+    protected function _getActiveBookmark()
+    {
         $bookmarks = $this->_bookmarkManagement->loadByNamespace('product_listing');
 
 
@@ -116,17 +115,30 @@ class ProductDataProvider
         return $activeBookmark;
     }
 
-    public function beforeGetData(
-            \Magento\Catalog\Ui\DataProvider\Product\ProductDataProvider $subject
-    ){
+    public function beforeGetData(\Magento\Catalog\Ui\DataProvider\Product\ProductDataProvider $subject)
+    {
         $activeBookmark = $this->_getActiveBookmark();
+        $request = $this->_http->getParams();
+        if (isset($request['sorting']['field']) || isset($request['sorting']['field'])) {
+            $sortingField = htmlspecialchars($request['sorting']['field']);
+            $sortingDirection = htmlspecialchars($request['sorting']['direction']);
+
+            switch ($sortingField) {
+                case 'amasty_updated_at':
+                    $subject->getCollection()->setOrder('updated_at', $sortingDirection);
+                    break;
+                case 'amasty_created_at':
+                    $subject->getCollection()->setOrder('created_at', $sortingDirection);
+                    break;
+            }
+        }
 
         if ($this->_isColumnVisible($activeBookmark, 'amasty_categories') ||
-            $this->_isColumnVisible($activeBookmark, 'amasty_link')){
+            $this->_isColumnVisible($activeBookmark, 'amasty_link')) {
             $subject->getCollection()->addUrlRewrite();
         }
 
-        if ($this->_isColumnVisible($activeBookmark, 'amasty_availability')){
+        if ($this->_isColumnVisible($activeBookmark, 'amasty_availability')) {
             $subject->getCollection()->joinField(
                 'amasty_availability',
                 'cataloginventory_stock_item',
@@ -137,17 +149,18 @@ class ProductDataProvider
             );
         }
 
-        if ($this->_isColumnVisible($activeBookmark, 'amasty_low_stock')){
+        if ($this->_isColumnVisible($activeBookmark, 'amasty_low_stock')) {
             $this->_addLowStock($subject->getCollection());
         }
     }
 
-    protected function _addLowStock($collection){
+    protected function _addLowStock($collection)
+    {
         $configManageStock = (int) $this->_helper->getScopeValue(\Magento\CatalogInventory\Model\Configuration::XML_PATH_MANAGE_STOCK);
 
         $globalNotifyStockQty = (float) $this->_helper->getScopeValue(
-            \Magento\CatalogInventory\Model\Configuration::XML_PATH_NOTIFY_STOCK_QTY);
-
+            \Magento\CatalogInventory\Model\Configuration::XML_PATH_NOTIFY_STOCK_QTY
+        );
 
         $stockItemWhere = '({{table}}.low_stock_date is not null) '
             . " AND ( ({{table}}.use_config_manage_stock=1 AND {$configManageStock}=1)"
@@ -157,17 +170,18 @@ class ProductDataProvider
 
         $collection
             ->addAttributeToSelect('name', true)
-            ->joinTable(array(
-                'amasty_low_stock_item' => 'cataloginventory_stock_item'
-                ), 'product_id=entity_id',
-                array(
-                     'if(amasty_low_stock_item.item_id IS NULL, 0 , 1) as amasty_low_stock'
-                    ),
-                $stockItemWhere, 'left')
+            ->joinTable(
+                ['amasty_low_stock_item' => 'cataloginventory_stock_item'],
+                'product_id=entity_id',
+                ['if(amasty_low_stock_item.item_id IS NULL, 0 , 1) as amasty_low_stock'],
+                $stockItemWhere,
+                'left'
+            )
             ->setOrder('amasty_low_stock_item.low_stock_date');
     }
 
-    protected function _isColumnVisible($bookmark, $column){
+    protected function _isColumnVisible($bookmark, $column)
+    {
         return isset($bookmark['current']['columns']) &&
             isset($bookmark['current']['columns'][$column]) &&
             isset($bookmark['current']['columns'][$column]['visible']) &&
@@ -178,11 +192,11 @@ class ProductDataProvider
     {
         $idx = 0;
 
-        foreach($collection as $product){
+        foreach ($collection as $product) {
 
             $amastyCategories = null;
 
-            if (isset($result['items']) && isset($result['items'][$idx])){
+            if (isset($result['items']) && isset($result['items'][$idx])) {
                 $amastyCategories = $this->_getCategories($product);
             }
 
@@ -191,13 +205,12 @@ class ProductDataProvider
         }
     }
 
-    protected function _initExtra(&$row, $column){
-        switch($column){
+    protected function _initExtra(&$row, $column)
+    {
+        switch ($column) {
             case "amasty_link":
-                if (isset($row['request_path'])){
-                    $row[$column] = $this->_url->getUrl('', array(
-                        '_direct' => $row['request_path']
-                    ));
+                if (isset($row['request_path'])) {
+                    $row[$column] = $this->_url->getUrl('', ['_direct' => $row['request_path']]);
                 }
                 break;
             case "amasty_created_at":
@@ -213,11 +226,11 @@ class ProductDataProvider
     {
         $idx = 0;
 
-        foreach($productsCollection as $product){
+        foreach ($productsCollection as $product) {
             $ret = '';
-            $collection = NULL;
+            $collection = null;
 
-            switch ($column){
+            switch ($column) {
                 case "amasty_related_products":
                     $collection = $product->getRelatedProductCollection();
                     break;
@@ -236,9 +249,9 @@ class ProductDataProvider
 
             $items = $collection->getItems();
 
-            if ($items){
+            if ($items) {
 
-                foreach ($collection->getItems() as $item){
+                foreach ($collection->getItems() as $item) {
                     $ret .= '<div style="font-size: 90%; margin-bottom: 8px; border-bottom: 1px dotted #bcbcbc;">' . $item->getName() . '</div>';
                 }
             }
@@ -251,12 +264,12 @@ class ProductDataProvider
     public function afterGetData(
         \Magento\Catalog\Ui\DataProvider\Product\ProductDataProvider $subject,
         $result
-    ){
+    ) {
 
         $columns = $this->_getVisibleColumns($subject->getConfigData());
 
-        foreach($columns as $column){
-            switch ($column){
+        foreach ($columns as $column) {
+            switch ($column) {
                 case "amasty_categories":
                     $this->_initCategories($subject->getCollection(), $result);
                     break;
@@ -275,8 +288,17 @@ class ProductDataProvider
                 case "price":
                     if (isset($result['items'])) {
                         foreach ($result['items'] as $idx => $item) {
-                            if (isset($item['price'])){
+                            if (isset($item['price'])) {
                                 $result['items'][$idx]['amasty_price'] = $item['price'];
+                            }
+                        }
+                    }
+                    break;
+                case "qty":
+                    if (isset($result['items'])) {
+                        foreach ($result['items'] as $idx => $item) {
+                            if (isset($item['qty'])) {
+                                $result['items'][$idx]['qty'] = (int)$item['qty'];
                             }
                         }
                     }

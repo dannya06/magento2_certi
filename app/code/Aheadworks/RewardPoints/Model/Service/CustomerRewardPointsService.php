@@ -41,6 +41,9 @@ use Aheadworks\RewardPoints\Model\Calculator\Earning as EarningCalculator;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Sales\Api\InvoiceRepositoryInterface;
+use Aheadworks\RewardPoints\Model\Import\PointsSummary as ImportPointsSummary;
+use Aheadworks\RewardPoints\Api\Data\PointsSummaryInterface;
+use Magento\Framework\DataObject;
 
 /**
  * Class Aheadworks\RewardPoints\Model\Service\CustomerRewardPointsManagement
@@ -156,6 +159,16 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
     private $storeManager;
 
     /**
+     * @var ImportPointsSummary
+     */
+    private $importPointsSummary;
+
+    /**
+     * @var DataObject
+     */
+    private $dataObject;
+
+    /**
      * @param CustomerRewardPointsDetailsInterfaceFactory $customerRewardPointsDetailsFactory
      * @param TransactionManagementInterface $transactionService
      * @param PointsSummaryService $pointsSummaryService
@@ -174,6 +187,8 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
      * @param Sender $sender
      * @param EarningCalculator $earningCalculator
      * @param StoreManagerInterface $storeManager
+     * @param ImportPointsSummary $importPointsSummary
+     * @param DataObject $dataObject
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -194,7 +209,9 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
         PriceCurrencyInterface $priceCurrency,
         Sender $sender,
         EarningCalculator $earningCalculator,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        ImportPointsSummary $importPointsSummary,
+        DataObject $dataObject
     ) {
         $this->customerRewardPointsDetailsFactory = $customerRewardPointsDetailsFactory;
         $this->transactionService = $transactionService;
@@ -214,6 +231,8 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
         $this->sender = $sender;
         $this->earningCalculator = $earningCalculator;
         $this->storeManager = $storeManager;
+        $this->importPointsSummary = $importPointsSummary;
+        $this->dataObject = $dataObject;
     }
 
     /**
@@ -909,6 +928,107 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function importPointsSummary($importRawData)
+    {
+        $importedRecords = [];
+        if (empty($importRawData)) {
+            return $importedRecords;
+        }
+        $pointsSummaryToImport = $this->importPointsSummary->process($importRawData);
+        $importedRecords = $this->adjustPointsSummary($pointsSummaryToImport);
+        return $importedRecords;
+    }
+
+    /**
+     * Adjust points summary
+     *
+     * @param array $pointsSummaryToImport
+     * @return array
+     */
+    private function adjustPointsSummary($pointsSummaryToImport)
+    {
+        $importedRecords = [];
+        foreach ($pointsSummaryToImport as $pointsSummaryData) {
+            $importedRecords[] = $this->adjustPointsBalance($pointsSummaryData);
+            $this->adjustPointsSummaryNotificationStatuses($pointsSummaryData);
+        }
+        return $importedRecords;
+    }
+
+    /**
+     * Adjust points balance by corresponding transactions
+     *
+     * @param array $pointsSummaryData
+     * @return TransactionInterface
+     */
+    private function adjustPointsBalance($pointsSummaryData)
+    {
+        $transactionData = $this->getTransactionDataForImport($pointsSummaryData);
+        $this->resetCustomer();
+        $this->setCustomerId($transactionData[TransactionInterface::CUSTOMER_ID]);
+        return $this->createTransaction(
+            $transactionData[TransactionInterface::BALANCE],
+            $transactionData[TransactionInterface::EXPIRATION_DATE],
+            $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER],
+            $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER_PLACEHOLDER],
+            $transactionData[TransactionInterface::COMMENT_TO_ADMIN],
+            $transactionData[TransactionInterface::WEBSITE_ID],
+            $transactionData[TransactionInterface::TYPE]
+        );
+    }
+
+    /**
+     * Retrieves data for creating new transaction
+     *
+     * @param array $pointsSummaryData
+     * @return array
+     */
+    private function getTransactionDataForImport($pointsSummaryData)
+    {
+        $transactionData = [];
+        $customerId = $pointsSummaryData[PointsSummaryInterface::CUSTOMER_ID];
+        $websiteId = $pointsSummaryData[PointsSummaryInterface::WEBSITE_ID];
+        $points = $pointsSummaryData[PointsSummaryInterface::POINTS];
+        $currentBalance = $this->getCustomerRewardPointsBalance($customerId, $websiteId);
+        $transactionData[TransactionInterface::CUSTOMER_ID] = $customerId;
+        $transactionData[TransactionInterface::BALANCE] = $points - $currentBalance;
+        $transactionData[TransactionInterface::EXPIRATION_DATE] = $this->getExpirationDate($websiteId);
+        $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER] = null;
+        $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER_PLACEHOLDER] = null;
+        $transactionData[TransactionInterface::COMMENT_TO_ADMIN] = __("IMPORT: Balance adjusted");
+        $transactionData[TransactionInterface::WEBSITE_ID] = $websiteId;
+        $transactionData[TransactionInterface::TYPE] = TransactionType::BALANCE_IMPORTED_BY_ADMIN;
+
+        return $transactionData;
+    }
+
+    /**
+     * Adjust points summary notification statuses
+     *
+     * @param array $pointsSummaryData
+     * @return bool
+     */
+    private function adjustPointsSummaryNotificationStatuses($pointsSummaryData)
+    {
+        $summaryDataToAdjust = [
+            PointsSummaryInterface::CUSTOMER_ID => $pointsSummaryData[PointsSummaryInterface::CUSTOMER_ID],
+            PointsSummaryInterface::WEBSITE_ID => $pointsSummaryData[PointsSummaryInterface::WEBSITE_ID]
+        ];
+        if (isset($pointsSummaryData[PointsSummaryInterface::BALANCE_UPDATE_NOTIFICATION_STATUS])) {
+            $summaryDataToAdjust[PointsSummaryInterface::BALANCE_UPDATE_NOTIFICATION_STATUS] =
+                $pointsSummaryData[PointsSummaryInterface::BALANCE_UPDATE_NOTIFICATION_STATUS];
+        }
+        if (isset($pointsSummaryData[PointsSummaryInterface::EXPIRATION_NOTIFICATION_STATUS])) {
+            $summaryDataToAdjust[PointsSummaryInterface::EXPIRATION_NOTIFICATION_STATUS] =
+                $pointsSummaryData[PointsSummaryInterface::EXPIRATION_NOTIFICATION_STATUS];
+        }
+        $summaryData = $this->dataObject->setData($summaryDataToAdjust);
+        return $this->pointsSummaryService->updateCustomerSummary($summaryData);
+    }
+
+    /**
      * Retrieve once min balance
      *
      * @param int $balance
@@ -1023,29 +1143,50 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
      */
     private function getRewardPointsForShare($customerId)
     {
+        $rewardPointsForShare = 0;
+        if ($this->isCustomerCanGetRewardPointsForShare($customerId)) {
+            $rewardPointsForShare = $this->getRewardPointsForShareForCustomer($customerId);
+        }
+        return $rewardPointsForShare;
+    }
+
+    private function isCustomerCanGetRewardPointsForShare($customerId)
+    {
+        $flag = true;
+        $dailyLimitPointsForShare = $this->config->getDailyLimitPointsForShare();
+        $monthlyLimitPointsForShare = $this->config->getMonthlyLimitPointsForShare();
+        $customerDailySharePoints = $this->getCustomerDailySharePoints($customerId);
+        $customerMonthlySharePoints = $this->getCustomerMonthlySharePoints($customerId);
+        if ((!empty($dailyLimitPointsForShare)) && ($customerDailySharePoints >= $dailyLimitPointsForShare)) {
+            $flag = false;
+        }
+        if ((!empty($monthlyLimitPointsForShare)) && ($customerMonthlySharePoints >= $monthlyLimitPointsForShare)) {
+            $flag = false;
+        }
+        return $flag;
+    }
+
+    private function getRewardPointsForShareForCustomer($customerId)
+    {
+        $rewardPointsForShare = 0;
         $rewardPointsForShare = $this->config->getAwardedPointsForShare();
-        if ($rewardPointsForShare > 0) {
-            $dailyLimitPointsForShare = $this->config->getDailyLimitPointsForShare();
-            $monthlyLimitPointsForShare = $this->config->getMonthlyLimitPointsForShare();
-            if (!empty($dailyLimitPointsForShare)) {
-                $customerDailySharePoints = $this->getCustomerDailySharePoints($customerId);
-                $customerMonthlySharePoints = $this->getCustomerMonthlySharePoints($customerId);
-                if ($customerDailySharePoints < $dailyLimitPointsForShare &&
-                    $customerMonthlySharePoints < $monthlyLimitPointsForShare) {
-                    $deltaDailyShareLimit = ($dailyLimitPointsForShare - $customerDailySharePoints);
-                    $deltaMonthlyShareLimit = ($monthlyLimitPointsForShare - $customerMonthlySharePoints);
-                    if ($deltaMonthlyShareLimit > $deltaDailyShareLimit) {
-                        if ($rewardPointsForShare > $deltaDailyShareLimit) {
-                            $rewardPointsForShare = $deltaDailyShareLimit;
-                        }
-                    } else {
-                        if ($rewardPointsForShare > $deltaMonthlyShareLimit) {
-                            $rewardPointsForShare = $deltaMonthlyShareLimit;
-                        }
-                    }
-                } else {
-                    $rewardPointsForShare = 0;
-                }
+        $dailyLimitPointsForShare = $this->config->getDailyLimitPointsForShare();
+        $monthlyLimitPointsForShare = $this->config->getMonthlyLimitPointsForShare();
+        $customerDailySharePoints = $this->getCustomerDailySharePoints($customerId);
+        $customerMonthlySharePoints = $this->getCustomerMonthlySharePoints($customerId);
+        $deltaDailyShareLimit = (empty($dailyLimitPointsForShare)) ?
+            ($rewardPointsForShare) :
+            ($dailyLimitPointsForShare - $customerDailySharePoints);
+        $deltaMonthlyShareLimit = (empty($monthlyLimitPointsForShare)) ?
+            ($rewardPointsForShare) :
+            ($monthlyLimitPointsForShare - $customerMonthlySharePoints);
+        if ($deltaMonthlyShareLimit > $deltaDailyShareLimit) {
+            if ($rewardPointsForShare > $deltaDailyShareLimit) {
+                $rewardPointsForShare = $deltaDailyShareLimit;
+            }
+        } else {
+            if ($rewardPointsForShare > $deltaMonthlyShareLimit) {
+                $rewardPointsForShare = $deltaMonthlyShareLimit;
             }
         }
         return $rewardPointsForShare;
@@ -1118,7 +1259,8 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
 
             $correctBalanceTransactionsType = [
                 TransactionType::BALANCE_ADJUSTED_BY_ADMIN,
-                TransactionType::CANCEL_EARNED_POINTS_FOR_REFUND_ORDER
+                TransactionType::CANCEL_EARNED_POINTS_FOR_REFUND_ORDER,
+                TransactionType::BALANCE_IMPORTED_BY_ADMIN
             ];
             // Correct the transaction balance if the admin has adjusted the balance > balance of customer points
             if ((int)$balance < 0 && in_array($transactionType, $correctBalanceTransactionsType)) {
@@ -1128,8 +1270,10 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     $balance = -$pointsBalance;
                 }
             }
-            // Don't create empty transactions
-            if ((int)$balance == 0) {
+            // Don't create empty transactions, except import
+            if (((int)$balance == 0)
+                && ($transactionType != TransactionType::BALANCE_IMPORTED_BY_ADMIN)
+            ) {
                 return false;
             }
 

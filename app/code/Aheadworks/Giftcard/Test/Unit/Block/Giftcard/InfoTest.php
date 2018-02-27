@@ -21,7 +21,7 @@ use Magento\Framework\Message\Collection as MessageCollection;
  *
  * @package Aheadworks\Giftcard\Test\Unit\Block\Giftcard
  */
-class InfoTest extends \PHPUnit_Framework_TestCase
+class InfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Info
@@ -56,7 +56,10 @@ class InfoTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->sourceStatusMock = $this->getMock(Status::class, ['getOptionByValue'], [], '', false);
+        $this->sourceStatusMock = $this->getMockBuilder(Status::class)
+            ->setMethods(['getOptionByValue'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
         $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
         $this->localeDateMock = $this->getMockForAbstractClass(TimezoneInterface::class);
@@ -95,22 +98,6 @@ class InfoTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Testing of dateFormat method
-     */
-    public function testDateFormat()
-    {
-        $date = '2017-07-02 03:00:00';
-        $expectedValue = 'Jul 2, 2017';
-
-        $this->localeDateMock->expects($this->once())
-            ->method('formatDateTime')
-            ->with(new \DateTime($date), \IntlDateFormatter::MEDIUM, \IntlDateFormatter::NONE, null, null)
-            ->willReturn($expectedValue);
-
-        $this->assertEquals($expectedValue, $this->object->dateFormat($date));
-    }
-
-    /**
      * Testing of formatState method
      */
     public function testFormatState()
@@ -134,7 +121,10 @@ class InfoTest extends \PHPUnit_Framework_TestCase
         $state = Status::ACTIVE;
         $expectedValue = [];
 
-        $messageCollection = $this->getMock(MessageCollection::class, ['getItems'], [], '', false);
+        $messageCollection = $this->getMockBuilder(MessageCollection::class)
+            ->setMethods(['getItems'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $messageCollection->expects($this->once())
             ->method('getItems')
             ->willReturn($expectedValue);

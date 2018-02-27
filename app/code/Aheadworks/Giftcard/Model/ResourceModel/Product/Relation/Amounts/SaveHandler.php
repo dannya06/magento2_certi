@@ -83,19 +83,19 @@ class SaveHandler implements ExtensionInterface
      */
     public function execute($entity, $arguments = [])
     {
-        $metadata = $this->metadataPool->getMetadata(ProductInterface::class);
         $hydrator = $this->hydratorPool->getHydrator(ProductInterface::class);
         $entityData = $hydrator->extract($entity);
         if ($entityData['type_id'] !== ProductGiftcard::TYPE_CODE) {
             return $entity;
         }
 
-        $amounts = $entity->getExtensionAttributes()->getAwGiftcardAmounts();
-        if (!empty($amounts)) {
-            $entityId = $entityData[$metadata->getLinkField()];
-            $this->removeAmountsByProduct($entityId);
-            $this->saveNewProductAmounts($amounts, $entityId);
-        }
+        $amounts = !empty($entity->getExtensionAttributes()->getAwGiftcardAmounts())
+            ? $entity->getExtensionAttributes()->getAwGiftcardAmounts()
+            : [];
+        $entityId = $entityData['entity_id'];
+        $this->removeAmountsByProduct($entityId);
+        $this->saveNewProductAmounts($amounts, $entityId);
+
         return $entity;
     }
 

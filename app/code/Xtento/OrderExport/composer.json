@@ -6,7 +6,7 @@
         "xtento/module-xtcore": "~2.0"
     },
     "type": "magento2-module",
-    "version": "2.3.7",
+    "version": "2.4.9",
     "license": [
         "proprietary"
     ],

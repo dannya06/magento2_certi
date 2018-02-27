@@ -4,81 +4,136 @@
 * See LICENSE.txt for license details.
 */
 
-namespace Aheadworks\Rma\Controller\Adminhtml\Customfield;
+namespace Aheadworks\Rma\Controller\Adminhtml\CustomField;
 
+use Aheadworks\Rma\Api\CustomFieldRepositoryInterface;
+use Aheadworks\Rma\Api\Data\CustomFieldInterface;
+use Aheadworks\Rma\Api\Data\CustomFieldInterfaceFactory;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Backend\App\Action;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\App\Request\DataPersistorInterface;
 
 /**
  * Class Save
- * @package Aheadworks\Rma\Controller\Adminhtml\Customfield
+ *
+ * @package Aheadworks\Rma\Controller\Adminhtml\CustomField
  */
-class Save extends \Aheadworks\Rma\Controller\Adminhtml\Customfield
+class Save extends Action
 {
     /**
-     * @var \Magento\Framework\Registry
+     * {@inheritdoc}
      */
-    protected $coreRegistry;
+    const ADMIN_RESOURCE = 'Aheadworks_Rma::custom_fields';
 
     /**
-     * @var \Aheadworks\Rma\Model\CustomFieldFactory
+     * @var CustomFieldRepositoryInterface
      */
-    protected $customFieldFactory;
+    private $customFieldRepository;
+
+    /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * @var DataPersistorInterface
+     */
+    private $dataPersistor;
+
+    /**
+     * @var CustomFieldInterfaceFactory
+     */
+    private $customFieldFactory;
+
+    /**
+     * @var PostDataProcessor
+     */
+    private $postDataProcessor;
 
     /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Aheadworks\Rma\Model\CustomFieldFactory $customFieldFactory
+     * @param CustomFieldRepositoryInterface $customFieldRepository
+     * @param CustomFieldInterfaceFactory $customFieldFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param DataPersistorInterface $dataPersistor
+     * @param PostDataProcessor $postDataProcessor
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        \Magento\Framework\Registry $coreRegistry,
-        \Aheadworks\Rma\Model\CustomFieldFactory $customFieldFactory
+        CustomFieldRepositoryInterface $customFieldRepository,
+        CustomFieldInterfaceFactory $customFieldFactory,
+        DataObjectHelper $dataObjectHelper,
+        DataPersistorInterface $dataPersistor,
+        PostDataProcessor $postDataProcessor
     ) {
-        parent::__construct($context, $resultPageFactory);
-        $this->coreRegistry = $coreRegistry;
+        parent::__construct($context);
         $this->customFieldFactory = $customFieldFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->dataPersistor = $dataPersistor;
+        $this->customFieldRepository = $customFieldRepository;
+        $this->postDataProcessor = $postDataProcessor;
     }
 
     /**
-     * Index action
+     * Save action
      *
-     * @return \Magento\Backend\Model\View\Result\Page
+     * @return \Magento\Framework\Controller\Result\Redirect
      */
     public function execute()
     {
-        $data = $this->getRequest()->getPostValue();
         $resultRedirect = $this->resultRedirectFactory->create();
-        if ($data) {
-            /** @var \Aheadworks\Rma\Model\CustomField $customField */
-            $customField = $this->customFieldFactory->create();
-            $id = $this->getRequest()->getParam('id');
-            $customField
-                ->load($id)
-                ->setData($data)
-            ;
-            $back = $this->getRequest()->getParam('back');
+        if ($data = $this->getRequest()->getPostValue()) {
             try {
-                $customField->save();
-                $this->messageManager->addSuccess(__('Custom field was successfully saved.'));
-                $this->_getSession()->setFormData(false);
-                if ($back == 'edit') {
-                    return $resultRedirect->setPath('*/*/' . $back, ['id' => $customField->getId(), '_current' => true]);
+                $data = $this->postDataProcessor->prepareEntityData($data);
+                $customField = $this->performSave($data);
+
+                $this->dataPersistor->clear('aw_rma_custom_field');
+                $this->messageManager->addSuccessMessage(__('Custom field was successfully saved.'));
+
+                if ($this->getRequest()->getParam('back') == 'edit') {
+                    return $resultRedirect->setPath('*/*/edit', ['id' => $customField->getId()]);
                 }
                 return $resultRedirect->setPath('*/*/');
             } catch (LocalizedException $e) {
-                $this->messageManager->addError($e->getMessage());
+                $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\RuntimeException $e) {
-                $this->messageManager->addError($e->getMessage());
+                $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the custom field.'));
+                $this->messageManager->addExceptionMessage(
+                    $e,
+                    __('Something went wrong while saving the custom field.')
+                );
             }
-            $this->_getSession()->setFormData($data);
-            return $resultRedirect->setPath('*/*/edit', ['id' => $id]);
+            $this->dataPersistor->set('aw_rma_custom_field', $data);
+            $id = isset($data['id']) ? $data['id'] : false;
+            if ($id) {
+                return $resultRedirect->setPath('*/*/edit', ['id' => $id, '_current' => true]);
+            }
+            return $resultRedirect->setPath('*/*/new', ['_current' => true]);
         }
         return $resultRedirect->setPath('*/*/');
+    }
+
+    /**
+     * Perform save
+     *
+     * @param array $data
+     * @return CustomFieldInterface
+     */
+    private function performSave($data)
+    {
+        $id = isset($data['id']) ? $data['id'] : false;
+        $dataObject = $id
+            ? $this->customFieldRepository->get($id)
+            : $this->customFieldFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $dataObject,
+            $data,
+            CustomFieldInterface::class
+        );
+
+        return $this->customFieldRepository->save($dataObject);
     }
 }

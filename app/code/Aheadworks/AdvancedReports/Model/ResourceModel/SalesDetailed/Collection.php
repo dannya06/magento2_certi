@@ -27,16 +27,12 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    public function addFieldToFilter($field, $condition = null)
+    public function addExcludeRefundedItemsFilter()
     {
-        if ($field == 'include_refunded_items') {
-            if ((int)$condition['eq'] == 1) {
-                return $this;
-            } else {
-                return $this->addExcludeRefundedItemsFilter();
-            }
-        }
-        return parent::addFieldToFilter($field, $condition);
+        $this->getSelect()
+            ->where('? > 0', new \Zend_Db_Expr('(qty_ordered - qty_refunded)'));
+
+        return $this;
     }
 
     /**
@@ -45,10 +41,18 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     protected function _initSelect()
     {
         $this->getSelect()
-            ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(true));
+            ->from(['main_table' => $this->getMainTable()], []);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns(true));
+        parent::_renderFiltersBefore();
     }
 
     /**
@@ -130,17 +134,5 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             'phone',
             'coupon_code'
         ];
-    }
-
-    /**
-     * Add exclude refunded items filters to collection
-     *
-     * @return $this
-     */
-    private function addExcludeRefundedItemsFilter()
-    {
-        $this->getSelect()
-            ->where('? > 0', new \Zend_Db_Expr('(qty_ordered - qty_refunded)'));
-        return $this;
     }
 }

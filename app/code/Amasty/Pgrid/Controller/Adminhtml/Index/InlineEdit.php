@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Pgrid
  */
 
@@ -132,7 +132,7 @@ class InlineEdit extends \Amasty\Pgrid\Controller\Adminhtml\Index
             }
 
             if (!in_array($key, $this->skipAttributeUpdate)){
-                $product->addAttributeUpdate($key, $val, $this->store);
+                $product->addAttributeUpdate($key, $val, $this->store->getId());
             }
             $product->setData($key, $val);
         } else if ($key == 'qty'){
@@ -188,15 +188,16 @@ class InlineEdit extends \Amasty\Pgrid\Controller\Adminhtml\Index
                 }
             }
 
+            $product->setCanSaveCustomOptions(true);
             $product->save();
         } catch (\Magento\Framework\Exception\InputException $e) {
-            $this->getMessageManager()->addError($this->getErrorWithProductId($product, $e->getMessage()));
+            $this->getMessageManager()->addErrorMessage($this->getErrorWithProductId($product, $e->getMessage()));
             $this->logger->critical($e);
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            $this->getMessageManager()->addError($this->getErrorWithProductId($product, $e->getMessage()));
+            $this->getMessageManager()->addErrorMessage($this->getErrorWithProductId($product, $e->getMessage()));
             $this->logger->critical($e);
         } catch (\Exception $e) {
-            $this->getMessageManager()->addError($this->getErrorWithProductId($product, 'We can\'t save the product.'));
+            $this->getMessageManager()->addErrorMessage($this->getErrorWithProductId($product, 'We can\'t save the product.'));
             $this->logger->critical($e);
         }
     }

@@ -5,8 +5,9 @@
 
 define([
     'mage/utils/strings',
+    'underscore',
     'Aheadworks_AdvancedReports/js/ui/grid/columns/number'
-], function (stringUtils, Column) {
+], function (stringUtils, _, Column) {
     'use strict';
 
     return Column.extend({
@@ -30,29 +31,49 @@ define([
         /**
          * Return not formatted value of a current columns' field
          *
-         * @param {Object} row
+         * @param {Array} row
+         * @param {String} index
          * @returns {String}
          */
-        getValue: function (row) {
-            var number = row[this.index];
+        getValue: function (row, index) {
+            var number;
+
+            if (!_.isUndefined(index)) {
+                number = row[index];
+            } else {
+                number = row[this.index];
+            }
+
             if (stringUtils.isEmpty(number)) {
                 number = '0';
             }
+
             return number;
         },
 
         /**
          * Retrieve width for percent bar
          *
+         * @param {Array} row
+         * @param {String} index
          * @returns {Integer}
          */
-        getPercentBarWidth: function (row) {
-            var width = Math.round(this.getValue(row) / 2);
+        getPercentBarWidth: function (row, index) {
+            var width = Math.round(this.getValue(row, index) / 2);
 
             if (width > 50) {
                 width = 50;
             }
             return width;
+        },
+
+        /**
+         * Check is display percent bar
+         *
+         * @return {Boolean}
+         */
+        isDisplayPircentBar: function () {
+            return this.displayPercentBar;
         }
     });
 });

@@ -47,7 +47,7 @@ class DeliveryDateCheck extends CronAbstract
             ->addFilter(GiftcardInterface::EMAIL_TEMPLATE, EmailTemplate::DO_NOT_SEND, 'neq')
             ->addFilter(GiftcardInterface::TYPE, [GiftcardType::VALUE_COMBINED, GiftcardType::VALUE_VIRTUAL], 'in')
             ->addFilter(GiftcardInterface::EMAIL_SENT, [EmailStatus::AWAITING, EmailStatus::FAILED], 'in')
-            ->addFilter(GiftcardInterface::DELIVERY_DATE, $currentDateTime, 'lteq');
+            ->addFilter(GiftcardInterface::DELIVERY_DATE, $currentDateTime, 'checkDeliveryDate');
 
         $sendNowGiftcards = $this->giftcardRepository
             ->getList($this->searchCriteriaBuilder->create())

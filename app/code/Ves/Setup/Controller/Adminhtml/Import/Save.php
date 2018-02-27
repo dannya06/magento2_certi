@@ -144,22 +144,24 @@ class Save extends \Magento\Backend\App\Action
                         foreach ($tables as $tablename => $rows) {
                             $table_name = $this->_resource->getTableName($tablename);
                             $connection->query("SET FOREIGN_KEY_CHECKS=0;");
-                            $exist = false;
-                            $check_query = "SHOW TABLES LIKE '".$table_name."'";
-                            $total = $connection->fetchAll($check_query);
-                            if(count($total) > 0) {
-                                $exist = true;
-                            }
-                            if(!$overwrite && $exist) {
-                                $connection->query("TRUNCATE `".$table_name."`");
+                            if(false !== strpos($table_name, "ves_")){
+                                $exist = false;
+                                $check_query = "SHOW TABLES LIKE '".$table_name."'";
+                                $total = $connection->fetchAll($check_query);
+                                if(count($total) > 0) {
+                                    $exist = true;
+                                }
+                                if(!$overwrite && $exist) {
+                                    //$connection->query("TRUNCATE `".$table_name."`");
+                                }
                             }
                             if($overwrite) {
                                 // Overide CMS Page, Static Block
                                 if($table_name == 'cms_page_store' ) {
-                                    $connection->query(" DELETE FROM ".$table_name." WHERE page_id = ".$row['page_id']);
+                                    //$connection->query(" DELETE FROM ".$table_name." WHERE page_id = ".$row['page_id']);
                                 }
                                 if($table_name == 'cms_block_store' ) {
-                                    $connection->query(" DELETE FROM ".$table_name." WHERE block_id = ".$row['block_id']);
+                                    //$connection->query(" DELETE FROM ".$table_name." WHERE block_id = ".$row['block_id']);
                                 }
                             }
                             foreach ($rows as $row) {

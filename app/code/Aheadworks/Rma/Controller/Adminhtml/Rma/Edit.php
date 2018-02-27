@@ -6,58 +6,75 @@
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Rma;
 
+use Aheadworks\Rma\Api\RequestRepositoryInterface;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action;
 
-class Edit extends \Aheadworks\Rma\Controller\Adminhtml\Rma
+/**
+ * Class Edit
+ *
+ * @package Aheadworks\Rma\Controller\Adminhtml\Rma
+ */
+class Edit extends Action
 {
     /**
-     * Core registry
-     *
-     * @var \Magento\Framework\Registry
+     * {@inheritdoc}
      */
-    protected $coreRegistry = null;
+    const ADMIN_RESOURCE = 'Aheadworks_Rma::manage_rma';
 
     /**
-     * @var \Aheadworks\Rma\Model\RequestFactory
+     * @var RequestRepositoryInterface
      */
-    protected $requestModelFactory;
+    private $requestRepository;
 
+    /**
+     * @var PageFactory
+     */
+    private $resultPageFactory;
+
+    /**
+     * @param Context $context
+     * @param RequestRepositoryInterface $requestRepository
+     * @param PageFactory $resultPageFactory
+     */
     public function __construct(
-        Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Aheadworks\Rma\Model\RequestFactory $requestModelFactory,
-        \Magento\Framework\Registry $registry
+        Context $context,
+        RequestRepositoryInterface $requestRepository,
+        PageFactory $resultPageFactory
     ) {
-        $this->requestModelFactory = $requestModelFactory;
-        $this->coreRegistry = $registry;
-        parent::__construct($context, $resultPageFactory);
+        parent::__construct($context);
+        $this->requestRepository = $requestRepository;
+        $this->resultPageFactory = $resultPageFactory;
     }
 
     /**
-     * Edit action
-     *
-     * @return \Magento\Backend\Model\View\Result\Page
+     * {@inheritdoc}
      */
     public function execute()
     {
-        /** @var $request \Aheadworks\Rma\Model\Request */
-        $request = $this->requestModelFactory->create();
-        $id = $this->getRequest()->getParam('id');
-        if ($id) {
-            $request->load($id);
+        $requestId = (int)$this->getRequest()->getParam('id');
+        if ($requestId) {
+            try {
+                $request = $this->requestRepository->get($requestId);
+            } catch (NoSuchEntityException $exception) {
+                $this->messageManager->addExceptionMessage(
+                    $exception,
+                    __('This request no longer exists.')
+                );
+                $resultRedirect = $this->resultRedirectFactory->create();
+                $resultRedirect->setPath('*/*/');
+                return $resultRedirect;
+            }
         }
-        if (!$id || !$request->getId()) {
-            $this->messageManager->addError(__('This request no longer exists.'));
-            /** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
-            $resultRedirect = $this->resultRedirectFactory->create();
-            return $resultRedirect->setPath('*/*/*');
-        }
-
-        $this->coreRegistry->register('aw_rma_request', $request);
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
-        $resultPage = $this->_getResultPage();
-        $resultPage->setActiveMenu('Aheadworks_Rma::manage_rma');
-        $resultPage->getConfig()->getTitle()->prepend(__('Manage Request'));
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage
+            ->setActiveMenu('Aheadworks_Rma::manage_rma')
+            ->getConfig()->getTitle()->prepend(
+                $requestId ? __('Manage Request #%1', $request->getIncrementId()) : __('New request')
+            );
         return $resultPage;
     }
 }

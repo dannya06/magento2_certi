@@ -243,4 +243,13 @@ interface CustomerRewardPointsManagementInterface
      * @return int
      */
     public function sendNotification($customerId, $notifiedType, $data, $websiteId = null);
+
+    /**
+     * Import points summary
+     *
+     * @param mixed $importRawData
+     * @return mixed
+     * @throws \Aheadworks\RewardPoints\Api\Exception\ImportValidatorExceptionInterface
+     */
+    public function importPointsSummary($importRawData);
 }

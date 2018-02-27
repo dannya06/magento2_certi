@@ -18,7 +18,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Service\TransactionServiceTest
  */
-class TransactionServiceTest extends \PHPUnit_Framework_TestCase
+class TransactionServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TransactionService

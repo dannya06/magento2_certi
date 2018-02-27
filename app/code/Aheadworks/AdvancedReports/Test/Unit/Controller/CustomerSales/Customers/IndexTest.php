@@ -13,11 +13,14 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Backend\Model\View\Result\Page;
 use Magento\Framework\View\Page\Config;
 use Magento\Framework\View\Page\Title;
+use Magento\Framework\App\RequestInterface;
+use Magento\Backend\Model\Session;
+use Aheadworks\AdvancedReports\Ui\Component\Listing\Breadcrumbs;
 
 /**
  * Test for \Aheadworks\AdvancedReports\Controller\Adminhtml\CustomerSales\Customers\Index
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Index
@@ -30,6 +33,16 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     private $resultPageFactoryMock;
 
     /**
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $requestMock;
+
+    /**
+     * @var Session|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $sessionMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
@@ -38,10 +51,24 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->resultPageFactoryMock = $this->getMock(PageFactory::class, ['create'], [], '', false);
+        $this->resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+            ->setMethods(['getParam'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+        $this->sessionMock = $this->getMockBuilder(Session::class)
+            ->setMethods(['setData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $contextMock = $objectManager->getObject(
             Context::class,
-            []
+            [
+                'request' => $this->requestMock,
+                'session' => $this->sessionMock,
+            ]
         );
 
         $this->controller = $objectManager->getObject(
@@ -58,18 +85,98 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $titleMock = $this->getMock(Title::class, ['prepend'], [], '', false);
-        $pageConfigMock = $this->getMock(Config::class, ['getTitle'], [], '', false);
+        $activeMenuItemId = 'Aheadworks_AdvancedReports::reports_customersales';
+        $title = __('Customers');
+
+        $this->sessionMock->expects($this->once())
+            ->method('setData')
+            ->with(Breadcrumbs::BREADCRUMBS_CONTROLLER_TITLE, $title)
+            ->willReturnSelf();
+
+        $titleMock = $this->getMockBuilder(Title::class)
+            ->setMethods(['prepend'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $titleMock->expects($this->once())
+            ->method('prepend')
+            ->with($title)
+            ->willReturn(null);
+
+        $pageConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getTitle'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $pageConfigMock->expects($this->once())
             ->method('getTitle')
             ->willReturn($titleMock);
-        $resultPageMock = $this->getMock(Page::class, ['setActiveMenu', 'getConfig'], [], '', false);
+
+        $resultPageMock = $this->getMockBuilder(Page::class)
+            ->setMethods(['setActiveMenu', 'getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultPageMock->expects($this->any())
             ->method('setActiveMenu')
+            ->with($activeMenuItemId)
             ->willReturnSelf();
         $resultPageMock->expects($this->any())
             ->method('getConfig')
             ->willReturn($pageConfigMock);
+
+        $this->resultPageFactoryMock->expects($this->once())
+            ->method('create')
+            ->willReturn($resultPageMock);
+
+        $this->assertSame($resultPageMock, $this->controller->execute());
+    }
+
+    /**
+     * Testing of execute method when range_title parameter is set
+     */
+    public function testExecuteWitRangeTitle()
+    {
+        $activeMenuItemId = 'Aheadworks_AdvancedReports::reports_customersales';
+        $rangeTitle = '$100.00 - $249.99';
+        $title = __('Customers (%1)', $rangeTitle);
+
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('range_title')
+            ->willReturn(base64_encode($rangeTitle));
+
+        $this->sessionMock->expects($this->once())
+            ->method('setData')
+            ->with(Breadcrumbs::BREADCRUMBS_CONTROLLER_TITLE, $title)
+            ->willReturnSelf();
+
+        $titleMock = $this->getMockBuilder(Title::class)
+            ->setMethods(['prepend'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $titleMock->expects($this->once())
+            ->method('prepend')
+            ->with($title)
+            ->willReturn(null);
+
+        $pageConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getTitle'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pageConfigMock->expects($this->once())
+            ->method('getTitle')
+            ->willReturn($titleMock);
+
+        $resultPageMock = $this->getMockBuilder(Page::class)
+            ->setMethods(['setActiveMenu', 'getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultPageMock->expects($this->any())
+            ->method('setActiveMenu')
+            ->with($activeMenuItemId)
+            ->willReturnSelf();
+        $resultPageMock->expects($this->any())
+            ->method('getConfig')
+            ->willReturn($pageConfigMock);
+
         $this->resultPageFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($resultPageMock);

@@ -40,7 +40,7 @@ class CustomerSales extends AbstractResource
         $columns = [
             'period' => $this->period,
             'store_id' => 'main_table.store_id',
-            'order_status' => 'order_statuses.label',
+            'order_status' => 'main_table.status',
             'customer_id' => 'main_table.customer_id',
             'customer_email' => 'IF(main_table.customer_id IS NULL, main_table.customer_email, customer.email)',
             'customer_name' => 'IFNULL(CONCAT(customer.firstname, " ", customer.lastname), '
@@ -69,11 +69,7 @@ class CustomerSales extends AbstractResource
         $customerLog = $this->getTable('customer_log');
         $select = $this->getConnection()->select()
             ->from(['main_table' => $this->getTable('sales_order')], [])
-            ->joinLeft(
-                ['order_statuses' => $this->getTable('sales_order_status')],
-                '(main_table.status = order_statuses.status)',
-                []
-            )->join(
+            ->join(
                 ['order_items' => new \Zend_Db_Expr(
                     '(SELECT order_id, SUM(qty_ordered) as qty_ordered, SUM(qty_invoiced) as qty_invoiced, 
                     SUM(qty_shipped) as qty_shipped, SUM(qty_refunded) as qty_refunded 

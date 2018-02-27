@@ -6,42 +6,42 @@
 
 namespace Aheadworks\Rma\Test\Unit\Model\Source\CustomField;
 
-use Aheadworks\Rma\Model\Source\CustomField\Refers as CustomFieldRefers;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use PHPUnit\Framework\TestCase;
+use Aheadworks\Rma\Model\Source\CustomField\Refers;
 
-class RefersTest extends \PHPUnit_Framework_TestCase
+/**
+ * Class RefersTest
+ * Test for \Aheadworks\Rma\Model\Source\CustomField\Refers
+ *
+ * @package Aheadworks\Rma\Test\Unit\Model\Source\CustomField
+ */
+class RefersTest extends TestCase
 {
     /**
-     * @var \Aheadworks\Rma\Model\Source\CustomField\Type
+     * @var Refers
      */
-    protected $model;
+    private $model;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    public function setUp()
     {
-        $this->model = new \Aheadworks\Rma\Model\Source\CustomField\Refers();
+        $objectManager = new ObjectManager($this);
+        $this->model = $objectManager->getObject(
+            Refers::class,
+            []
+        );
     }
 
-    public function testGetOptions()
-    {
-        $options = $this->model->getOptions();
-        $this->assertEquals(true, is_array($options));
-        $this->assertInstanceOf('Magento\Framework\Phrase', $options[CustomFieldRefers::REQUEST_VALUE]);
-        $this->assertEquals(CustomFieldRefers::REQUEST_LABEL, $options[CustomFieldRefers::REQUEST_VALUE]->getText());
-        $this->assertEquals(CustomFieldRefers::ITEM_LABEL, $options[CustomFieldRefers::ITEM_VALUE]->getText());
-
-    }
-
+    /**
+     * Test toOptionArray method
+     */
     public function testToOptionArray()
     {
-        $optionArray = $this->model->toOptionArray();
-        $this->assertEquals(true, is_array($optionArray));
-        $this->assertInstanceOf('Magento\Framework\Phrase', $optionArray[1]['label']);
-    }
-
-    public function testGetOptionLabelByValue()
-    {
-        $this->assertInstanceOf('Magento\Framework\Phrase', $this->model->getOptionLabelByValue(CustomFieldRefers::REQUEST_VALUE));
-        $this->assertEquals(CustomFieldRefers::REQUEST_LABEL, $this->model->getOptionLabelByValue(CustomFieldRefers::REQUEST_VALUE)->getText());
-        $this->assertEquals(CustomFieldRefers::ITEM_LABEL, $this->model->getOptionLabelByValue(CustomFieldRefers::ITEM_VALUE)->getText());
-        $this->assertNull($this->model->getOptionLabelByValue('unknown'));
+        $this->assertTrue(is_array($this->model->toOptionArray()));
     }
 }

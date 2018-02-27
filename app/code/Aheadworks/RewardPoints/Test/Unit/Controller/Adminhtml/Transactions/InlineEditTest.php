@@ -20,7 +20,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Controller\Adminhtml\Transactions\Index\InlineEditTest
  */
-class InlineEditTest extends \PHPUnit_Framework_TestCase
+class InlineEditTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var InlineEdit

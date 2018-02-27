@@ -15,7 +15,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Ui\Component\Listing\Columns\Transaction\CustomerNameTest
  */
-class CustomerNameTest extends \PHPUnit_Framework_TestCase
+class CustomerNameTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CustomerName

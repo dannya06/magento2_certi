@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -161,16 +161,18 @@ class OrderRepository
         $attributeModel->loadByOrderId($order->getId());
         $attributes = $this->attributeProvider->loadAttributesForApi($order->getStoreId());
 
+        /** @var \Amasty\Orderattr\Model\ResourceModel\Eav\Attribute $attribute */
         foreach ($attributes as $attribute) {
             if ($attributeModel->prepareAttributeValue($attribute)) {
                 /** @var \Amasty\Orderattr\Model\OrderAttributeData $data */
                 $data                                             = $this->dataFactory->create();
                 $customAttributes[$attribute->getAttributeCode()] = $data->addData(
                     [
-                        'attribute_code' => $attribute->getAttributeCode(),
-                        'label'          => $attribute->getFrontendLabel(),
-                        'value'          => $attributeModel->getData($attribute->getAttributeCode()),
-                        'value_output'   => $attributeModel->prepareAttributeValue($attribute)
+                        'attribute_code'     => $attribute->getAttributeCode(),
+                        'label'              => $attribute->getFrontendLabel(),
+                        'value'              => $attributeModel->getData($attribute->getAttributeCode()),
+                        'value_output'       => $attributeModel->prepareAttributeValue($attribute),
+                        'value_output_admin' => $attributeModel->getAdminAttributeValue($attribute)
                     ]
                 );
             }

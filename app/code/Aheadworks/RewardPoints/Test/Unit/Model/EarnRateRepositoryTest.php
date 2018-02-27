@@ -18,7 +18,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\EarnRateRepositoryTest
  */
-class EarnRateRepositoryTest extends \PHPUnit_Framework_TestCase
+class EarnRateRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var EarnRateRepository

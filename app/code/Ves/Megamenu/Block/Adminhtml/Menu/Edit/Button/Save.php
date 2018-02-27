@@ -60,7 +60,7 @@ class Save extends \Magento\Backend\Block\Widget\Container
     protected function _prepareLayout()
     {
         $this->buttonList->remove('save');
-        if ($this->_isAllowedAction('Ves_Megamenu::album_save')) {
+        if ($this->_isAllowedAction('Ves_Megamenu::menu_save')) {
             $addButtonProps = [
                 'id'           => 'save',
                 'label'        => __('Save Menu'),

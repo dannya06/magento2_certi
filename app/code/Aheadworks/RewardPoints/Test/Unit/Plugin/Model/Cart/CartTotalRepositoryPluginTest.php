@@ -19,7 +19,7 @@ use Magento\Quote\Model\Quote\Address;
 /**
  * Class Aheadworks\RewardPoints\Unit\Test\Plugin\Model\Cart\CartTotalRepositoryPluginTest
  */
-class CartTotalRepositoryPluginTest extends \PHPUnit_Framework_TestCase
+class CartTotalRepositoryPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CartTotalRepositoryPlugin
@@ -89,7 +89,10 @@ class CartTotalRepositoryPluginTest extends \PHPUnit_Framework_TestCase
         $quoteMock->expects($this->once())
             ->method('isVirtual')
             ->willReturn(true);
-        $billingAddressMock = $this->getMock(Address::class, ['getData'], [], '', false);
+        $billingAddressMock = $this->getMockBuilder(Address::class)
+            ->setMethods(['getData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $billingAddressMock->expects($this->once())
             ->method('getData')
             ->willReturn($billingAddressData);

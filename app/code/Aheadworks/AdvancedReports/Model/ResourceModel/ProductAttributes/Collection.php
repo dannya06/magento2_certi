@@ -6,35 +6,19 @@
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\ProductAttributes;
 
+use Aheadworks\AdvancedReports\Model\ResourceModel\AbstractPeriodBasedCollection;
 use Magento\Framework\DataObject;
 use Aheadworks\AdvancedReports\Model\ResourceModel\ProductAttributes as ResourceProductAttributes;
 use Magento\Eav\Api\AttributeRepositoryInterface;
-use Aheadworks\AdvancedReports\Model\Config;
-use Aheadworks\AdvancedReports\Model\Filter;
 use Magento\Catalog\Api\Data\CategoryInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Config\Model\Config\Backend\Admin\Custom;
 
 /**
  * Class Collection
  *
  * @package Aheadworks\AdvancedReports\Model\ResourceModel\ProductAttributes
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\AbstractCollection
+class Collection extends AbstractPeriodBasedCollection
 {
-    /**
-     * Name of object id field
-     *
-     * @var string
-     */
-    protected $_idFieldName = 'id';
-
-    /**
-     * @var bool
-     */
-    protected $periodBased = true;
-
     /**
      * @var \Magento\Framework\EntityManager\MetadataPool
      */
@@ -50,27 +34,16 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param Config $config
-     * @param Filter\Store $storeFilter
-     * @param Filter\CustomerGroup $customerGroupFilter
-     * @param Filter\Groupby $groupbyFilter
-     * @param Filter\Period $periodFilter
      * @param AttributeRepositoryInterface $attributeRepository
      * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
      * @param \Magento\Framework\DB\Adapter\AdapterInterface $connection
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        Config $config,
-        Filter\Store $storeFilter,
-        Filter\CustomerGroup $customerGroupFilter,
-        Filter\Groupby $groupbyFilter,
-        Filter\Period $periodFilter,
         AttributeRepositoryInterface $attributeRepository,
         \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
@@ -83,11 +56,6 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             $logger,
             $fetchStrategy,
             $eventManager,
-            $config,
-            $storeFilter,
-            $customerGroupFilter,
-            $groupbyFilter,
-            $periodFilter,
             $connection,
             $resource
         );
@@ -107,9 +75,17 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     protected function _initSelect()
     {
         $this->getSelect()
-            ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(true));
+            ->from(['main_table' => $this->getMainTable()], []);
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns(true));
+        parent::_renderFiltersBefore();
     }
 
     /**
@@ -129,50 +105,38 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function addFieldToFilter($field, $condition = null)
-    {
-        if ($field == 'periodFilter') {
-            return $this->addGroupByFilter();
-        }
-        if ($field == 'attributeFilter') {
-            return $this->addAttributeFilter($condition['eq']);
-        }
-        return parent::addFieldToFilter($field, $condition);
-    }
-
-    /**
      * Add attribute filter to collection
      *
-     * @param [] $conditions
+     * @param array $conditions
      * @return $this
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function addAttributeFilter($conditions)
+    public function addAttributeFilter(array $conditions)
     {
-        if ($conditions) {
-            $this->getSelect()
-                ->joinLeft(
-                    ['e' => 'catalog_product_entity'],
-                    'main_table.product_id = e.' . $this->getCatalogLinkField(),
-                    []
-                );
+        $this->getSelect()
+            ->joinLeft(
+                ['e' => 'catalog_product_entity'],
+                'main_table.product_id = e.' . $this->getCatalogLinkField(),
+                []
+            );
 
-            $conditionSql = '';
-            foreach ($conditions as $key => $condition) {
-                if ($key > 0) {
-                    $conditionSql .= ' ' . $condition['operator'] . ' ';
-                }
-                $conditionSql .=
-                    '(' . $this->getAttributeConditionSql($condition['attribute'], $condition['condition']) . ')';
+        $conditionSql = '';
+        foreach ($conditions as $key => $condition) {
+            if ($key > 0) {
+                $conditionSql .= ' ' . $condition['operator'] . ' ';
             }
-            if (!empty($conditionSql)) {
-                $this->conditionsForGroupBy[] = [
-                    'field' => '(' . $conditionSql . ')',
-                    'condition' => []
-                ];
-            }
+            $conditionSql .=
+                '(' . $this->getAttributeConditionSql($condition['attribute'], $condition['condition']) . ')';
         }
+        if (!empty($conditionSql)) {
+            $this->conditionsForGroupBy[] = [
+                'field' => '(' . $conditionSql . ')',
+                'condition' => []
+            ];
+        }
+
         return $this;
     }
 
@@ -180,8 +144,11 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      * Get condition sql for the attribute
      *
      * @param string $attributeCode
-     * @param [] $condition
+     * @param array $condition
      * @return string
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function getAttributeConditionSql($attributeCode, $condition)
     {
@@ -195,11 +162,13 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             $table = $attribute->getBackendTable();
             $tableAlias = 'at_' . $attribute->getAttributeCode();
             $tableAliasDefault = '';
+            $onDefaultField = '';
 
             if (!$this->getFlag($tableAlias . '_joined')) {
                 $storeConditions = $tableAlias . '.store_id = 0';
                 if (!$attribute->isScopeGlobal()) {
-                    if ($storeIds = $this->storeFilter->getStoreIds()) {
+                    $storeIds = $this->getCustomFilterValue(self::STORE_IDS_FILTER_KEY);
+                    if (is_array($storeIds)) {
                         $storeConditions = $tableAlias . '.store_id IN (' . implode($storeIds) . ')';
                         $tableAliasDefault = $tableAlias . '_d';
                         $defaultStoreConditions = $tableAliasDefault . '.store_id = 0';
@@ -213,7 +182,6 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
                         . ' AND ' . $storeConditions,
                         []
                     );
-                $onDefaultField = '';
                 if ($tableAliasDefault) {
                     $this->getSelect()
                         ->joinLeft(
@@ -240,8 +208,8 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      * Retrieve sql condition
      *
      * @param string $field
-     * @param [] $condition
-     * @param string $condition
+     * @param array $condition
+     * @param string $onDefaultField
      * @return string $onDefaultField
      */
     private function prepareSqlCondition($field, $condition, $onDefaultField = '')
@@ -284,6 +252,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      * Retrieve catalog link field
      *
      * @return string
+     * @throws \Exception
      */
     private function getCatalogLinkField()
     {

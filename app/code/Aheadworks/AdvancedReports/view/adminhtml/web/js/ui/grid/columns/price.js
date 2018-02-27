@@ -12,8 +12,22 @@ define([
     return Column.extend({
         defaults: {
             imports: {
-                priceFormat: '${ $.provider }:data.priceFormat',
+                priceFormat: '${ $.provider }:data.priceFormat'
             }
+        },
+
+        /**
+         * Initializes observable properties
+         *
+         * @returns {Widget} Chainable
+         */
+        initObservable: function () {
+            this._super()
+                .track([
+                    'priceFormat'
+                ]);
+
+            return this;
         },
 
         /**

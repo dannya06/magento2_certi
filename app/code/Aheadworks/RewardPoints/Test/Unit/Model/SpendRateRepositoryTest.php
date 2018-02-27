@@ -18,7 +18,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\SpendRateRepositoryTest
  */
-class SpendRateRepositoryTest extends \PHPUnit_Framework_TestCase
+class SpendRateRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SpendRateRepository

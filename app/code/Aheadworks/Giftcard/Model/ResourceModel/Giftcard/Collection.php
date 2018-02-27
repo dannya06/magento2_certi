@@ -152,6 +152,20 @@ class Collection extends AbstractCollection
     }
 
     /**
+     * Add check delivery date filter to collection
+     *
+     * @param string $deliveryDate
+     * @return $this
+     */
+    public function addCheckDeliveryDateFilter($deliveryDate)
+    {
+        $this
+            ->getSelect()
+            ->where('(`main_table`.`delivery_date` IS NULL OR `main_table`.`delivery_date` <= ?)', $deliveryDate);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function _afterLoad()

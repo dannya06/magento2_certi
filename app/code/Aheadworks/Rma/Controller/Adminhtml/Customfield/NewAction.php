@@ -4,39 +4,45 @@
 * See LICENSE.txt for license details.
 */
 
-namespace Aheadworks\Rma\Controller\Adminhtml\Customfield;
+namespace Aheadworks\Rma\Controller\Adminhtml\CustomField;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Controller\Result\ForwardFactory;
+use Magento\Backend\App\Action;
 
 /**
  * Class NewAction
- * @package Aheadworks\Rma\Controller\Adminhtml\Customfield
+ *
+ * @package Aheadworks\Rma\Controller\Adminhtml\CustomField
  */
-class NewAction extends \Aheadworks\Rma\Controller\Adminhtml\Customfield
+class NewAction extends Action
 {
+    /**
+     * {@inheritdoc}
+     */
+    const ADMIN_RESOURCE = 'Aheadworks_Rma::custom_fields';
+
     /**
      * @var ForwardFactory
      */
-    protected $resultForwardFactory;
+    private $resultForwardFactory;
 
     /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
      * @param ForwardFactory $resultForwardFactory
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
         ForwardFactory $resultForwardFactory
     ) {
-        parent::__construct($context, $resultPageFactory);
+        parent::__construct($context);
         $this->resultForwardFactory = $resultForwardFactory;
     }
 
-   /**
-     * @return \Magento\Backend\Model\View\Result\Forward
+    /**
+     * Create new action
+     *
+     * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {

@@ -6,8 +6,6 @@
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\DatesGrouping;
 
-use Aheadworks\AdvancedReports\Model\ResourceModel\DatesGrouping\AbstractResource;
-
 /**
  * Class Week
  *
@@ -42,7 +40,7 @@ class Week extends AbstractResource
 
         // If main table is empty
         if (!$maxWeekDateStr) {
-            $firstWeekDay = $this->config->getLocaleFirstday();
+            $firstWeekDay = $this->getLocaleFirstDay();
             $curWeekDay = $fromDate->format('N');
             if ($curWeekDay > $firstWeekDay) {
                 $firstWeekDay += 6;
@@ -71,5 +69,15 @@ class Week extends AbstractResource
             $intervals[] = ['start_date' => $startDate, 'end_date' => $endDate];
         }
         $this->addPeriodToTable($this->getMainTable(), $intervals);
+    }
+
+    /**
+     * Get locale first day
+     *
+     * @return string
+     */
+    private function getLocaleFirstDay()
+    {
+        return $this->scopeConfig->getValue('general/locale/firstday');
     }
 }

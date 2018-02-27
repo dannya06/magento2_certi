@@ -6,71 +6,53 @@
 
 namespace Aheadworks\Rma\Model\Source\Config\Cms;
 
+use Magento\Framework\Option\ArrayInterface;
+use Magento\Cms\Model\ResourceModel\Block\Collection as BlockCollection;
+use Magento\Cms\Model\ResourceModel\Block\CollectionFactory as BlockCollectionFactory;
+
 /**
  * Class Block
+ *
  * @package Aheadworks\Rma\Model\Source\Config\Cms
  */
-class Block implements \Magento\Framework\Option\ArrayInterface
+class Block implements ArrayInterface
 {
-    const DONT_DISPLAY          = -1;
-
-    const DONT_DISPLAY_LABEL    = 'Don\'t display';
+    /**
+     * @var int
+     */
+    const DONT_DISPLAY = -1;
 
     /**
-     * @var \Magento\Cms\Model\ResourceModel\Block\Collection
+     * @var BlockCollection
      */
     private $blockCollection;
 
     /**
-     * @var null|array
+     * @var array
      */
-    protected $optionArray = null;
+    private $options;
 
     /**
-     * @param \Magento\Cms\Model\ResourceModel\Block\CollectionFactory $blockCollectionFactory
+     * @param BlockCollectionFactory $blockCollectionFactory
      */
     public function __construct(
-        \Magento\Cms\Model\ResourceModel\Block\CollectionFactory $blockCollectionFactory
+        BlockCollectionFactory $blockCollectionFactory
     ) {
         $this->blockCollection = $blockCollectionFactory->create();
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function toOptionArray()
     {
-        if ($this->optionArray === null) {
-            $this->optionArray = array_merge(
-                [self::DONT_DISPLAY => __(self::DONT_DISPLAY_LABEL)],
+        if (!$this->options) {
+            $this->options = array_merge(
+                [self::DONT_DISPLAY => __('Don\'t display')],
                 $this->blockCollection->toOptionArray()
             );
         }
-        return $this->optionArray;
-    }
 
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        $options = [];
-        foreach ($this->toOptionArray() as $option) {
-            $options[$option['value']] = $option['label'];
-        }
-        return $options;
-    }
-
-    /**
-     * @param int $value
-     * @return null|\Magento\Framework\Phrase
-     */
-    public function getOptionLabelByValue($value)
-    {
-        $options = $this->getOptions();
-        if (array_key_exists($value, $options)) {
-            return $options[$value];
-        }
-        return null;
+        return $this->options;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -69,7 +69,7 @@ interface OrderAttributeValueInterface
     /**
      * @param null|int $storeId
      *
-     * @return OrderAttributeDataInterface[]
+     * @return \Amasty\Orderattr\Api\Data\OrderAttributeDataInterface[]
      */
     public function getAttributes($storeId = null);
 

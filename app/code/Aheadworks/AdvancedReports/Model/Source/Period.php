@@ -7,14 +7,15 @@
 namespace Aheadworks\AdvancedReports\Model\Source;
 
 use Magento\Framework\Locale\ListsInterface;
-use Aheadworks\AdvancedReports\Model\Config;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
 /**
  * Class Period
  *
  * @package Aheadworks\AdvancedReports\Model\Source
  */
-class Period
+class Period implements OptionSourceInterface
 {
     /**#@+
      * Constants defined for the source model
@@ -24,215 +25,110 @@ class Period
     const TYPE_LAST_7_DAYS = 'last_7_days';
     const TYPE_LAST_WEEK = 'last_week';
     const TYPE_LAST_BUSINESS_WEEK = 'last_business_week';
-    const TYPE_THIS_MONTH = 'this_month';
+    const TYPE_WEEK_TO_DATE = 'week_to_date';
+    const TYPE_MONTH_TO_DATE = 'month_to_date';
     const TYPE_LAST_MONTH = 'last_month';
+    const PERIOD_TYPE_CUSTOM = 'custom';
     /**#@-*/
 
     /**
-     * @var []
+     * @var array
      */
-    private $weekdays;
+    private $options;
 
     /**
-     * @var []
+     * @var ScopeConfigInterface
      */
-    private $rangeCache;
-
-    /**
-     * @var Config
-     */
-    private $config;
+    private $scopeConfig;
 
     /**
      * @var ListsInterface
      */
-    private $localeLists;
+    private $localeList;
 
     /**
-     * @param Config $config
+     * @param ScopeConfigInterface $scopeConfig
      * @param ListsInterface $localeList
      */
     public function __construct(
-        Config $config,
+        ScopeConfigInterface $scopeConfig,
         ListsInterface $localeList
     ) {
-        $this->config = $config;
-        $this->localeLists = $localeList;
+        $this->scopeConfig = $scopeConfig;
+        $this->localeList = $localeList;
     }
 
     /**
-     * Get options
-     *
-     * @return []
+     * {@inheritdoc}
      */
-    public function getOptions()
+    public function toOptionArray()
     {
-        return [
-            ['value' => self::TYPE_TODAY, 'label' => __('Today')],
-            ['value' => self::TYPE_YESTERDAY, 'label' => __('Yesterday')],
-            ['value' => self::TYPE_LAST_7_DAYS, 'label' => __('Last 7 days')],
-            ['value' => self::TYPE_LAST_WEEK, 'label' => $this->getLastWeekLabel()],
-            ['value' => self::TYPE_LAST_BUSINESS_WEEK, 'label' => $this->getLastBusinessWeekLabel()],
-            ['value' => self::TYPE_THIS_MONTH, 'label' => __('This month')],
-            ['value' => self::TYPE_LAST_MONTH, 'label' => __('Last month')],
-        ];
+        if (!$this->options) {
+            $firstDayOfWeek = $this->scopeConfig->getValue('general/locale/firstday');
+            $lastDayOfWeek = $firstDayOfWeek + 6 > 6
+                ? 0
+                : $firstDayOfWeek + 6;
+            $businessWeekdays = $this->getBusinessWeekdays();
+
+            $this->options = [
+                ['value' => self::TYPE_TODAY, 'label' => __('Today')],
+                ['value' => self::TYPE_YESTERDAY, 'label' => __('Yesterday')],
+                ['value' => self::TYPE_WEEK_TO_DATE, 'label' => __('Week to Date')],
+                ['value' => self::TYPE_LAST_7_DAYS, 'label' => __('Last 7 Days')],
+                [
+                    'value' => self::TYPE_LAST_WEEK,
+                    'label' => __('Last Week')
+                        . ' (' . $this->getWeekdaysRangeLabel($firstDayOfWeek, $lastDayOfWeek) . ')'
+                ],
+                [
+                    'value' => self::TYPE_LAST_BUSINESS_WEEK,
+                    'label' => __('Last Business Week')
+                        . ' (' . $this->getWeekdaysRangeLabel(reset($businessWeekdays), end($businessWeekdays)) . ')'
+                ],
+                ['value' => self::TYPE_MONTH_TO_DATE, 'label' => __('Month to Date')],
+                ['value' => self::TYPE_LAST_MONTH, 'label' => __('Last Month')],
+            ];
+        }
+
+        return $this->options;
     }
 
     /**
-     * Get range list
+     * Get weekdays keyed by index
      *
-     * @param \DateTimeZone $timezone
-     * @return []
+     * @return array
      */
-    public function getRangeList(\DateTimeZone $timezone)
+    private function getWeekdaysKeyedByIndex()
     {
-        if (null != $this->rangeCache) {
-            return $this->rangeCache;
+        $weekdaysKeyedByIndex = [];
+        foreach ($this->localeList->getOptionWeekdays() as $weekday) {
+            $weekdaysKeyedByIndex[$weekday['value']] = $weekday['label'];
         }
-        $result = [];
-        $result[self::TYPE_TODAY] = [
-            'from' => new \DateTime('now', $timezone), 'to' => new \DateTime('now', $timezone)
-        ];
-        $result[self::TYPE_YESTERDAY] = [
-            'from' => new \DateTime('yesterday', $timezone), 'to' => new \DateTime('yesterday', $timezone)
-        ];
-        $result[self::TYPE_LAST_7_DAYS] = [
-            'from' => new \DateTime('6 days ago', $timezone), 'to' => new \DateTime('now', $timezone)
-        ];
-
-        $firstWeekDay = $this->getWeekdayKeyByNum($this->getFirstWeekDay());
-        $lastWeekDay = $this->getWeekdayKeyByNum($this->getLastWeekDay());
-        $from = new \DateTime("previous $firstWeekDay", $timezone);
-        $to = new \DateTime("previous $lastWeekDay", $timezone);
-        if ($to->getTimestamp() < $from->getTimestamp()) {
-            $from->modify('-7 days');
-        }
-        $result[self::TYPE_LAST_WEEK] = [
-            'from' => $from, 'to' => $to
-        ];
-
-        $bWeek = $this->getBusinessWeekDays();
-        $firstBusinessWeekDay = $this->getWeekdayKeyByNum($bWeek[0]);
-        $lastBusinessWeekDay = $this->getWeekdayKeyByNum(end($bWeek));
-        $from = new \DateTime("previous $firstBusinessWeekDay", $timezone);
-        $to = new \DateTime("previous $lastBusinessWeekDay", $timezone);
-        if ($to->getTimestamp() < $from->getTimestamp()) {
-            $from->modify('-7 days');
-        }
-        $result[self::TYPE_LAST_BUSINESS_WEEK] = [
-            'from' => $from, 'to' => $to
-        ];
-
-        $result[self::TYPE_THIS_MONTH] = [
-            'from' => new \DateTime('first day of this month', $timezone), 'to' => new \DateTime('now', $timezone)
-        ];
-        $result[self::TYPE_LAST_MONTH] = [
-            'from' => new \DateTime('first day of last month', $timezone),
-            'to' => new \DateTime('last day of last month', $timezone)
-        ];
-        $this->rangeCache = $result;
-        return $this->rangeCache;
+        return $weekdaysKeyedByIndex;
     }
 
     /**
-     * Get last week label
+     * Get business weekdays
      *
+     * @return array
+     */
+    private function getBusinessWeekdays()
+    {
+        $weekdays = array_keys($this->getWeekdaysKeyedByIndex());
+        $weekendDays = explode(',', $this->scopeConfig->getValue('general/locale/weekend'));
+        return array_diff($weekdays, $weekendDays);
+    }
+
+    /**
+     * Get weekdays range label
+     *
+     * @param int $first
+     * @param int $last
      * @return string
      */
-    private function getLastWeekLabel()
+    private function getWeekdaysRangeLabel($first, $last)
     {
-        $firstDayNum = $this->getFirstWeekDay();
-        $lastDayNum = $this->getLastWeekDay();
-        return __('Last week')
-            . ' (' . substr($this->getWeekdayByDayNum($firstDayNum), 0, 3) . ' - '
-            . substr($this->getWeekdayByDayNum($lastDayNum), 0, 3) . ')';
-    }
-
-    /**
-     * Get last business week label
-     *
-     * @return string
-     */
-    private function getLastBusinessWeekLabel()
-    {
-        $bWeek = $this->getBusinessWeekDays();
-
-        $fWD = ucfirst($this->getWeekdayKeyByNum($bWeek[0]));
-        $lWD = ucfirst($this->getWeekdayKeyByNum(end($bWeek)));
-        return __('Last business week') . ' (' . $fWD . ' - ' . $lWD . ')';
-    }
-
-    /**
-     * Get business week days
-     *
-     * @return []
-     */
-    private function getBusinessWeekDays()
-    {
-        $week = [0, 1, 2, 3, 4, 5, 6];
-        $week = array_diff($week, explode(',', $this->config->getLocaleWeekend()));
-        return array_values($week);
-    }
-
-    /**
-     * Get weekday by day num
-     *
-     * @param int $dayNum
-     * @return string
-     */
-    private function getWeekdayByDayNum($dayNum)
-    {
-        if (null == $this->weekdays) {
-            $this->weekdays = $this->localeLists->getOptionWeekdays();
-        }
-        foreach ($this->weekdays as $day) {
-            if ($day['value'] == $dayNum) {
-                return $day['label'];
-            }
-        }
-        return '';
-    }
-
-    /**
-     * Get weekday key by num
-     *
-     * @param int $index
-     * @return string|null
-     */
-    private function getWeekdayKeyByNum($index)
-    {
-        $days = [
-            0 => 'sun',
-            1 => 'mon',
-            2 => 'tue',
-            3 => 'wed',
-            4 => 'thu',
-            5 => 'fri',
-            6 => 'sat',
-        ];
-        return isset($days[$index]) ? $days[$index] : null;
-    }
-
-    /**
-     * Get first week day
-     *
-     * @return int
-     */
-    private function getFirstWeekDay()
-    {
-        $firstDay = $this->config->getLocaleFirstday();
-        return $firstDay ? $firstDay : 0;
-    }
-
-    /**
-     * Get last week day
-     *
-     * @return int
-     */
-    private function getLastWeekDay()
-    {
-        $firstDayNum = $this->getFirstWeekDay();
-        $lastDayNum = $firstDayNum + 6;
-        return $lastDayNum > 6 ? $lastDayNum - 7 : $lastDayNum;
+        $weekdays = $this->getWeekdaysKeyedByIndex();
+        return substr($weekdays[$first], 0, 3) . ' - ' . substr($weekdays[$last], 0, 3);
     }
 }

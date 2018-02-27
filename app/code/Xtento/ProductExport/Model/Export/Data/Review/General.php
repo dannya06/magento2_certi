@@ -1,17 +1,20 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2017-05-24T11:44:42+00:00
+ * Packaged:      2018-02-26T09:11:39+00:00
+ * Last Modified: 2018-01-29T15:13:19+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Review/General.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Review;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\DataObject;
+use Xtento\ProductExport\Model\Export\Data\Product\ParentProduct;
+use Xtento\ProductExport\Model\Export;
 
 class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
 {
@@ -24,6 +27,11 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
      * @var \Magento\Review\Model\ResourceModel\Review\CollectionFactory
      */
     protected $reviewCollectionFactory;
+
+    /**
+     * @var ParentProduct
+     */
+    protected $parentProduct;
 
     /**
      * General constructor.
@@ -43,6 +51,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param \Magento\Review\Model\ResourceModel\Review\CollectionFactory $reviewCollectionFactory
+     * @param ParentProduct $parentProduct
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -63,6 +72,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Review\Model\ResourceModel\Review\CollectionFactory $reviewCollectionFactory,
+        ParentProduct $parentProduct,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -71,6 +81,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
 
         $this->url = $urlBuilder;
         $this->reviewCollectionFactory = $reviewCollectionFactory;
+        $this->parentProduct = $parentProduct;
     }
 
     public function getConfiguration()
@@ -123,7 +134,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
 
             $averageRating = 0;
             if (count($voteValues) > 0) {
-                $averageRating = array_sum($voteValues) / count($voteValues);
+                $averageRating = round(array_sum($voteValues) / count($voteValues), 2);
             }
             $this->writeValue('product_rating', $averageRating);
         }
@@ -140,15 +151,18 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
             $this->writeValue('review_link', $reviewLink);
         }
 
-        // Total reviews
+        //Total Rating Percentage & Review Count
         if ($this->fieldLoadingRequired('total_reviews')) {
             $collection = $this->reviewCollectionFactory->create()
+                ->join('review_entity_summary', 'main_table.entity_pk_value = review_entity_summary.entity_pk_value and detail.store_id = review_entity_summary.store_id')
                 ->addFieldToFilter('main_table.entity_pk_value', $review->getEntityPkValue())
+                ->addFieldToFilter('main_table.review_id', $review->getReviewId())
                 ->addStatusFilter(\Magento\Review\Model\Review::STATUS_APPROVED);
             if ($this->getStoreId()) {
                 $collection->addStoreFilter($this->getStoreId());
             }
-            $this->writeValue('total_reviews', $collection->count());
+            $this->writeValue('total_product_rating_percentage', $collection->getColumnValues('rating_summary')[0]);
+            $this->writeValue('total_reviews', $collection->getColumnValues('reviews_count')[0]);
         }
 
         $originalWriteArray = & $this->writeArray;
@@ -165,6 +179,19 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
                     $this->exportProductData($product, $this->writeArray);
                     $this->writeValue('entity_id', $product->getId());
                     $this->writeArray = & $originalWriteArray;
+                    // Add parent item
+                    if ($this->fieldLoadingRequired('parent_item')) {
+                        // Export categories for parent product
+                        $fakedCollectionItem = new DataObject();
+                        $fakedCollectionItem->setProduct($product);
+                        $exportClass = $this->parentProduct;
+                        $exportClass->setProfile($this->getProfile());
+                        $exportClass->setShowEmptyFields($this->getShowEmptyFields());
+                        $returnData = $exportClass->getExportData(Export::ENTITY_PRODUCT, $fakedCollectionItem);
+                        if (is_array($returnData) && !empty($returnData)) {
+                            $this->writeArray = array_merge_recursive($this->writeArray, $returnData);
+                        }
+                    }
                 }
             } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {}
         }

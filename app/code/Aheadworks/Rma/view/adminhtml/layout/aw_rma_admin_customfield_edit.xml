@@ -10,7 +10,7 @@
     <update handle="aw_rma_admin_default"/>
     <body>
         <referenceContainer name="content">
-            <block class="Aheadworks\Rma\Block\Adminhtml\CustomField\Edit" name="aw_rma_custom_field_edit"/>
+            <uiComponent name="aw_rma_custom_field_form"/>
         </referenceContainer>
     </body>
 </page>

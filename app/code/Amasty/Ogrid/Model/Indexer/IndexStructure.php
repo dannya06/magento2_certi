@@ -1,16 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
+
 
 namespace Amasty\Ogrid\Model\Indexer;
 
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\Search\Request\Dimension;
 use Magento\Framework\Indexer\IndexStructureInterface;
 use Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver;
 use \Magento\Catalog\Model\ResourceModel\ConfigFactory;
@@ -18,17 +16,29 @@ use \Magento\Eav\Model\Config as EavConfig;
 
 class IndexStructure implements IndexStructureInterface
 {
-    protected $_resource;
-    protected $_indexScopeResolver;
-    protected $_entityTypeId;
-    protected $_configFactory;
-    protected $_eavConfig;
-    protected $_attributes;
-    protected $_columns;
-    protected $_indexes;
-    protected $_logger;
+    protected $resource;
+    protected $indexScopeResolver;
+    protected $entityTypeId;
+    protected $configFactory;
+    protected $eavConfig;
+    protected $attributes;
+    protected $columns;
+    protected $indexes;
+    protected $logger;
+    protected $defaultAttributesStructure = [
+        'category_ids',
+    ];
 
-    protected $_staticColumns = [
+    protected $defaultStructure = [
+        'type' => 'text',
+        'unsigned' => false,
+        'nullable' => true,
+        'default' => null,
+        'extra' => null,
+        'length' => 1024
+    ];
+
+    protected $staticColumns = [
         'entity_id', 'order_item_id'
     ];
 
@@ -39,26 +49,26 @@ class IndexStructure implements IndexStructureInterface
         ConfigFactory $configFactory,
         EavConfig $eavConfig
     ) {
-        $this->_resource = $resource;
-        $this->_indexScopeResolver = $indexScopeResolver;
-        $this->_eavConfig = $eavConfig;
-        $this->_logger = $context->getLogger();
+        $this->resource = $resource;
+        $this->indexScopeResolver = $indexScopeResolver;
+        $this->eavConfig = $eavConfig;
+        $this->logger = $context->getLogger();
     }
 
     public function delete($index, array $dimensions = [])
     {
-        $tableName = $this->_indexScopeResolver->resolve($index, $dimensions);
-        if ($this->_resource->getConnection()->isTableExists($tableName)) {
-            $this->_resource->getConnection()->dropTable($tableName);
+        $tableName = $this->indexScopeResolver->resolve($index, $dimensions);
+        if ($this->resource->getConnection()->isTableExists($tableName)) {
+            $this->resource->getConnection()->dropTable($tableName);
         }
     }
 
     public function getEntityTypeId()
     {
-        if ($this->_entityTypeId === null) {
-            $this->_entityTypeId = $this->_configFactory->create()->getEntityTypeId();
+        if ($this->entityTypeId === null) {
+            $this->entityTypeId = $this->configFactory->create()->getEntityTypeId();
         }
-        return $this->_entityTypeId;
+        return $this->entityTypeId;
     }
 
     public function getEntityType()
@@ -68,20 +78,20 @@ class IndexStructure implements IndexStructureInterface
 
     public function getAttributes(array $attributeCodes)
     {
-        if ($this->_attributes === null) {
-            $this->_attributes = [];
+        if ($this->attributes === null) {
+            $this->attributes = [];
 
-            $entity = $this->_eavConfig->getEntityType($this->getEntityType())->getEntity();
+            $entity = $this->eavConfig->getEntityType($this->getEntityType())->getEntity();
 
             foreach ($attributeCodes as $attributeCode) {
-                $attribute = $this->_eavConfig->getAttribute(
+                $attribute = $this->eavConfig->getAttribute(
                     $this->getEntityType(),
                     $attributeCode
                 )->setEntity(
                     $entity
                 );
 
-                if ($attribute->getId()){
+                if ($attribute->getId()) {
                     try {
                         // check if exists source and backend model.
                         // To prevent exception when some module was disabled
@@ -92,48 +102,50 @@ class IndexStructure implements IndexStructureInterface
                             ->setFlatAddFilterableAttributes(true)
                             ->setIsFilterable(true);
 
-                        if (in_array($attribute->getFrontendInput(), ['select', 'multiselect', 'boolean'])){
+                        if (in_array($attribute->getFrontendInput(), ['select', 'multiselect', 'boolean'])) {
                             $attribute->setFrontendInput('text');
                             $attribute->setBackendType('varchar');
 
                         }
 
-                        if ($attribute->getData('source_model') != ''){
+                        if ($attribute->getData('source_model') != '') {
                             $attribute->setData('source_model', '');
                         }
 
-                        $this->_attributes[$attributeCode] = $attribute;
+                        $this->attributes[$attributeCode] = $attribute;
                     } catch (\Exception $e) {
-                        $this->_logger->critical($e);
+                        $this->logger->critical($e);
                     }
                 }
             }
         }
-        return $this->_attributes;
+        return $this->attributes;
     }
-
 
     public function getAttributesFlatColumns(array $attributeCodes)
     {
-        if ($this->_columns === null) {
-            $this->_columns = [];
+        if ($this->columns === null) {
+            $this->columns = [];
             foreach ($this->getAttributes($attributeCodes) as $attribute) {
                 /** @var $attribute \Magento\Eav\Model\Entity\Attribute */
                 $columns = $attribute->getFlatColumns();
+                if (in_array($attribute->getAttributeCode(), $this->defaultAttributesStructure)) {
+                    $columns['category_ids'] = $this->defaultStructure;
+                }
 
-                if ($columns !== null) {
-                    $this->_columns = array_merge($this->_columns, $columns);
+                if ($columns) {
+                    $this->columns = array_merge($this->columns, $columns);
                 }
             }
         }
 
-        return $this->_columns;
+        return $this->columns;
     }
 
     public function getAttributesFlatIndexes(array $attributeCodes)
     {
-        if ($this->_indexes === null){
-            $this->_indexes = [];
+        if ($this->indexes === null) {
+            $this->indexes = [];
 
             foreach ($this->getAttributes($attributeCodes) as $attribute) {
                 /** @var $attribute \Magento\Eav\Model\Entity\Attribute */
@@ -141,29 +153,39 @@ class IndexStructure implements IndexStructureInterface
                     ->getFlatIndexes();
 
                 if ($indexes !== null) {
-                    $this->_indexes = array_merge($this->_indexes, $indexes);
+                    $this->indexes = array_merge($this->indexes, $indexes);
                 }
             }
         }
 
-        return $this->_indexes;
+        return $this->indexes;
     }
 
     public function create($index, array $fields, array $dimensions = [])
     {
-        $tableName = $this->_indexScopeResolver->resolve($index, $dimensions);
+        $tableName = $this->indexScopeResolver->resolve($index, $dimensions);
 
         $attributesFlatColumns = $this->getAttributesFlatColumns($fields);
         $attributesFlatIndexes = $this->getAttributesFlatIndexes($fields);
 
-        $columns = $this->_resource->getConnection()->describeTable($tableName);
+        $columns = $this->resource->getConnection()->describeTable($tableName);
 
-        foreach($columns as $columnCode => $columnSchema){
-            if (!in_array($columnCode, array_merge($this->_staticColumns, $fields))){
-                $this->_resource->getConnection()->dropColumn($tableName, $columnCode);
+        $this->dropColumns($columns, $fields, $tableName);
+        $this->addColumns($attributesFlatColumns, $tableName);
+        $this->addIndexes($attributesFlatIndexes, $tableName);
+    }
+
+    public function dropColumns($columns, $fields, $tableName)
+    {
+        foreach ($columns as $columnCode => $columnSchema) {
+            if (!in_array($columnCode, array_merge($this->staticColumns, $fields))) {
+                $this->resource->getConnection()->dropColumn($tableName, $columnCode);
             }
         }
+    }
 
+    public function addColumns($attributesFlatColumns, $tableName)
+    {
         foreach ($attributesFlatColumns as $fieldName => $fieldProp) {
             $columnDefinition = [
                 'type' => $fieldProp['type'],
@@ -175,18 +197,21 @@ class IndexStructure implements IndexStructureInterface
                 'comment' => isset($fieldProp['comment']) ? $fieldProp['comment'] : $fieldName
             ];
 
-            $this->_resource->getConnection()
+            $this->resource->getConnection()
                 ->addColumn($tableName, $fieldName, $columnDefinition);
         }
+    }
 
+    public function addIndexes($attributesFlatIndexes, $tableName)
+    {
         foreach ($attributesFlatIndexes as $indexProp) {
-            $indexName = $this->_resource->getConnection()->getIndexName(
+            $indexName = $this->resource->getConnection()->getIndexName(
                 $tableName,
                 $indexProp['fields'],
                 $indexProp['type']
             );
 
-            $this->_resource->getConnection()->addIndex(
+            $this->resource->getConnection()->addIndex(
                 $tableName,
                 $indexName,
                 $indexProp['fields'],
@@ -195,29 +220,14 @@ class IndexStructure implements IndexStructureInterface
         }
     }
 
-    public function getNoneIndexedAttributes($index, array $attributesHash, array $dimensions = [])
-    {
-        $tableName = $this->_indexScopeResolver->resolve($index, $dimensions);
-
-        $columns = $this->_resource->getConnection()->describeTable($tableName);
-
-        foreach($attributesHash as $attributeId => $attributeCode){
-            if (array_key_exists($attributeCode, $columns)){
-                unset($attributesHash[$attributeId]);
-            }
-        }
-
-        return $attributesHash;
-    }
-
     public function getIndexedAttributes($index, array $attributesHash, array $dimensions = [])
     {
-        $tableName = $this->_indexScopeResolver->resolve($index, $dimensions);
+        $tableName = $this->indexScopeResolver->resolve($index, $dimensions);
 
-        $columns = $this->_resource->getConnection()->describeTable($tableName);
+        $columns = $this->resource->getConnection()->describeTable($tableName);
 
-        foreach($attributesHash as $attributeId => $attributeCode){
-            if (!array_key_exists($attributeCode, $columns)){
+        foreach ($attributesHash as $attributeId => $attributeCode) {
+            if (!array_key_exists($attributeCode, $columns)) {
                 unset($attributesHash[$attributeId]);
             }
         }

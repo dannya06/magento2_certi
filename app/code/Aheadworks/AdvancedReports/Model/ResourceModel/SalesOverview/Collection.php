@@ -8,26 +8,15 @@ namespace Aheadworks\AdvancedReports\Model\ResourceModel\SalesOverview;
 
 use Magento\Framework\DataObject;
 use Aheadworks\AdvancedReports\Model\ResourceModel\SalesOverview as ResourceSalesOverview;
+use Aheadworks\AdvancedReports\Model\ResourceModel\AbstractPeriodBasedCollection;
 
 /**
  * Class Collection
  *
  * @package Aheadworks\AdvancedReports\Model\ResourceModel\SalesOverview
  */
-class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\AbstractCollection
+class Collection extends AbstractPeriodBasedCollection
 {
-    /**
-     * Name of object id field
-     *
-     * @var string
-     */
-    protected $_idFieldName = 'id';
-
-    /**
-     * @var bool
-     */
-    protected $periodBased = true;
-
     /**
      * {@inheritdoc}
      */
@@ -42,9 +31,17 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     protected function _initSelect()
     {
         $this->getSelect()
-            ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(true));
+            ->from(['main_table' => $this->getMainTable()], []);
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns(true));
+        parent::_renderFiltersBefore();
     }
 
     /**
@@ -82,9 +79,6 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
         }
         if ($field == 'payment_type') {
             return $this->addPaymentCodeFilter($condition);
-        }
-        if ($field == 'periodFilter') {
-            return $this->addGroupByFilter();
         }
         return parent::addFieldToFilter($field, $condition);
     }

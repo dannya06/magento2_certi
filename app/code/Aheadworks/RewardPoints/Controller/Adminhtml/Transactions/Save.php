@@ -77,6 +77,7 @@ class Save extends \Magento\Backend\App\Action
 
         if ($data) {
             try {
+                $data = $this->prepareData($data);
                 $this->dataPersistor->set('transaction', $data);
                 $data = $this->dataProcessor->filter($data);
                 $this->processSave($data);
@@ -117,5 +118,19 @@ class Save extends \Magento\Backend\App\Action
                 __('Please select customers or confirm that they belong to the website of the current transaction')
             );
         }
+    }
+
+    /**
+     * Prepare form data
+     *
+     * @param array $data
+     * @return array
+     */
+    private function prepareData($data)
+    {
+        if (isset($data['customer_selections'])) {
+            $data['customer_selections'] = json_decode($data['customer_selections'], true);
+        }
+        return $data;
     }
 }

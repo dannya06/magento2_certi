@@ -12,7 +12,7 @@ use Aheadworks\AdvancedReports\Model\Source\ProductAttributes\Operators;
 /**
  * Test for \Aheadworks\AdvancedReports\Model\Source\ProductAttributes\Operators
  */
-class OperatorsTest extends \PHPUnit_Framework_TestCase
+class OperatorsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Operators

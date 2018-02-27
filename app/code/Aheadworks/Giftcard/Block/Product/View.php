@@ -338,13 +338,27 @@ class View extends \Magento\Catalog\Block\Product\View
     }
 
     /**
+     * Check is allow headline
+     *
+     * @return bool
+     */
+    public function isAllowHeadline()
+    {
+        return $this->getProduct()->getTypeInstance()->headlineIsAllowed(
+            $this->getProduct()->getData(ProductAttributeInterface::CODE_AW_GC_CUSTOM_MESSAGE_FIELDS)
+        );
+    }
+
+    /**
      * Check is allow message
      *
      * @return bool
      */
     public function isAllowMessage()
     {
-        return (bool)$this->getProduct()->getData(ProductAttributeInterface::CODE_AW_GC_ALLOW_MESSAGE);
+        return $this->getProduct()->getTypeInstance()->messageIsAllowed(
+            $this->getProduct()->getData(ProductAttributeInterface::CODE_AW_GC_CUSTOM_MESSAGE_FIELDS)
+        );
     }
 
     /**

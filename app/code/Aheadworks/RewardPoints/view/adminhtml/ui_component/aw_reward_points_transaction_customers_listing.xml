@@ -46,7 +46,13 @@
                 </item>
             </argument>
         </filters>
-        <paging name="listing_paging"/>
+        <paging name="listing_paging">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_RewardPoints/js/ui/grid/paging/paging</item>
+                </item>
+            </argument>
+        </paging>
     </listingToolbar>
     <columns name="customer_columns" class="Magento\Customer\Ui\Component\Listing\Columns">
         <argument name="data" xsi:type="array">

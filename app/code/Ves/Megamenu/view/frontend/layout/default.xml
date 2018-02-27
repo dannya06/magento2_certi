@@ -29,9 +29,12 @@
 		<css src="Ves_Megamenu::css/bootstrap-tiny.css" />
 		<css src="Ves_Megamenu::css/carousel.css" />
 		<!-- Enable the code to fix directly style css for custom template if it dont extend from base magento 2 theme -->
-		<!--
+		
 		<css src="Ves_Megamenu::css/styles-m.css"/>
         <css src="Ves_Megamenu::css/styles-l.css" media="screen and (min-width: 768px)"/>
+    
+		<!-- Enable Off canvas menu css
+    	<css src="Ves_Megamenu::css/megamenu-offcanvas.css" />
     -->
 	</head>
 	<body>

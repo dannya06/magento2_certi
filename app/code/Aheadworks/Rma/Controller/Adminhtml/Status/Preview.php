@@ -6,74 +6,174 @@
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Status;
 
+use Aheadworks\Rma\Api\Data\StatusInterface;
+use Aheadworks\Rma\Api\Data\StatusInterfaceFactory;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Framework\Controller\Result\ForwardFactory;
+use Magento\Backend\App\Action;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Data\Form\FormKey;
+use Aheadworks\Rma\Block\Adminhtml\Status\Edit\Preview as BlockPreview;
+use Magento\Framework\View\LayoutFactory;
+use Aheadworks\Rma\Model\Status\PostDataProcessor\PreviewEmail as PreviewEmailPostDataProcessor;
+use Aheadworks\Rma\Model\StorefrontValueResolver;
 
 /**
  * Class Preview
+ *
  * @package Aheadworks\Rma\Controller\Adminhtml\Status
  */
-class Preview extends \Aheadworks\Rma\Controller\Adminhtml\Status
+class Preview extends Action
 {
     /**
-     * @var \Magento\Framework\Registry
+     * {@inheritdoc}
      */
-    protected $coreRegistry;
+    const ADMIN_RESOURCE = 'Aheadworks_Rma::statuses';
 
     /**
-     * @var \Magento\Framework\Data\Form\FormKey
+     * @var JsonFactory
      */
-    protected $formKey;
+    private $resultJsonFactory;
 
     /**
-     * @var ForwardFactory
+     * @var LayoutFactory
      */
-    protected $resultForwardFactory;
+    private $layoutFactory;
+
+    /**
+     * @var FormKey
+     */
+    private $formKey;
+
+    /**
+     * @var StatusInterfaceFactory
+     */
+    private $statusFactory;
+
+    /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * @var PreviewEmailPostDataProcessor
+     */
+    private $previewEmailPostDataProcessor;
+
+    /**
+     * StorefrontValueResolver
+     */
+    private $storefrontValueResolver;
 
     /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
-     * @param ForwardFactory $resultForwardFactory
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Data\Form\FormKey $formKey
+     * @param JsonFactory $resultJsonFactory
+     * @param LayoutFactory $layoutFactory
+     * @param FormKey $formKey
+     * @param StatusInterfaceFactory $statusFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param PreviewEmailPostDataProcessor $previewEmailPostDataProcessor
+     * @param StorefrontValueResolver $storefrontValueResolver
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        ForwardFactory $resultForwardFactory,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Data\Form\FormKey $formKey
+        JsonFactory $resultJsonFactory,
+        LayoutFactory $layoutFactory,
+        FormKey $formKey,
+        StatusInterfaceFactory $statusFactory,
+        DataObjectHelper $dataObjectHelper,
+        PreviewEmailPostDataProcessor $previewEmailPostDataProcessor,
+        StorefrontValueResolver $storefrontValueResolver
     ) {
-        parent::__construct($context, $resultPageFactory);
-        $this->resultForwardFactory = $resultForwardFactory;
-        $this->coreRegistry = $registry;
+        parent::__construct($context);
+        $this->resultJsonFactory = $resultJsonFactory;
         $this->formKey = $formKey;
+        $this->layoutFactory = $layoutFactory;
+        $this->statusFactory = $statusFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->previewEmailPostDataProcessor = $previewEmailPostDataProcessor;
+        $this->storefrontValueResolver = $storefrontValueResolver;
     }
 
     /**
-     * @return $this
+     * Preview action
+     *
+     * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
     {
-        if ($this->getRequest()->isAjax()) {
-            $this->_getSession()->setPreviewData($this->getRequest()->getPostValue());
-        } else {
-            $this->_view->loadLayout(['aw_rma_admin_preview'], true, true, false);
-            $data = $this->_getSession()->getPreviewData();
-            if (
-                empty($data) ||
-                !isset($data['form_key']) || $data['form_key'] !== $this->formKey->getFormKey()
-            ) {
-                /** @var \Magento\Framework\Controller\Result\Forward $resultForward */
-                $resultForward = $this->resultForwardFactory->create();
-                return $resultForward->forward('noroute');
-            } else {
-                $this->coreRegistry->register('template_id', $data['template']);
-                $this->coreRegistry->register('status_id', $data['status']);
-                $this->coreRegistry->register('to_admin', (bool)$data['to_admin']);
-                $this->_view->renderLayout();
-            }
+        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
+        $resultJson = $this->resultJsonFactory->create();
+        $result = ['error' => true, 'message' => __('Invalid response data.')];
+
+        $previewData = $this->getRequest()->getParam('request_data');
+        if (!$this->isValidRequestData($previewData)) {
+            return $resultJson->setData($result);
         }
+
+        try {
+            $previewData = $this->previewEmailPostDataProcessor->prepareEntityData($previewData);
+            $storeId = $previewData['store_id'];
+            /** @var BlockPreview $previewBlock */
+            $previewBlock = $this->layoutFactory->create()->createBlock(BlockPreview::class);
+            $previewHtml = $previewBlock
+                ->setStoreId($storeId)
+                ->setStatus($this->prepareStatus($previewData, $storeId))
+                ->setToAdmin($previewData['to_admin'])
+                ->toHtml();
+            $result = ['error' => false, 'content' => $previewHtml];
+        } catch (\Exception $e) {
+            $result = ['error' => true, 'message' => __($e->getMessage())];
+        }
+
+        return $resultJson->setData($result);
+    }
+
+    /**
+     * Is valid request data
+     *
+     * @param array $previewData
+     * @return bool
+     */
+    private function isValidRequestData($previewData)
+    {
+        return $this->getRequest()->isAjax() && isset($previewData['form_key'])
+            && $previewData['form_key'] == $this->formKey->getFormKey();
+    }
+
+    /**
+     * Prepare status data
+     *
+     * @param array $previewData
+     * @param int $storeId
+     * @return StatusInterface
+     */
+    private function prepareStatus($previewData, $storeId)
+    {
+        $statusObject = $this->statusFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $statusObject,
+            $previewData,
+            StatusInterface::class
+        );
+        $statusObject
+            ->setStorefrontAdminTemplate(
+                $this->storefrontValueResolver->getStorefrontValueEmailTemplate(
+                    $statusObject->getAdminTemplates(),
+                    $storeId
+                )
+            )->setStorefrontCustomerTemplate(
+                $this->storefrontValueResolver->getStorefrontValueEmailTemplate(
+                    $statusObject->getCustomerTemplates(),
+                    $storeId
+                )
+            )->setStorefrontThreadTemplate(
+                $this->storefrontValueResolver->getStorefrontValue(
+                    $statusObject->getThreadTemplates(),
+                    $storeId
+                )
+            );
+
+        return $statusObject;
     }
 }

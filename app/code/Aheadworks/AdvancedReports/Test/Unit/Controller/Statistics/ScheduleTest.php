@@ -20,7 +20,7 @@ use Magento\Backend\Model\View\Result\RedirectFactory;
  * Test for \Aheadworks\AdvancedReports\Controller\Adminhtml\Statistics\ScheduleTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ScheduleTest extends \PHPUnit_Framework_TestCase
+class ScheduleTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Schedule
@@ -46,16 +46,19 @@ class ScheduleTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->statisticsProcessorMock = $this->getMock(
-            StatisticsProcessor::class,
-            ['markIndexerAsInvalid'],
-            [],
-            '',
-            false
-        );
+        $this->statisticsProcessorMock = $this->getMockBuilder(StatisticsProcessor::class)
+            ->setMethods(['markIndexerAsInvalid'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->resultRedirectMock = $this->getMock(Redirect::class, ['setRefererUrl'], [], '', false);
-        $resultRedirectFactoryMock = $this->getMock(RedirectFactory::class, ['create'], [], '', false);
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->setMethods(['setRefererUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($this->resultRedirectMock);

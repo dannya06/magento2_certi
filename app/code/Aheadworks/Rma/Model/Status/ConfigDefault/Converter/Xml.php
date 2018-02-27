@@ -6,7 +6,14 @@
 
 namespace Aheadworks\Rma\Model\Status\ConfigDefault\Converter;
 
-class Xml implements \Magento\Framework\Config\ConverterInterface
+use Magento\Framework\Config\ConverterInterface;
+
+/**
+ * Class Xml
+ *
+ * @package Aheadworks\Rma\Model\Status\ConfigDefault\Converter
+ */
+class Xml implements ConverterInterface
 {
     /**
      * Converting data to array type
@@ -14,6 +21,7 @@ class Xml implements \Magento\Framework\Config\ConverterInterface
      * @param mixed $source
      * @return array
      * @throws \InvalidArgumentException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function convert($source)
     {
@@ -30,19 +38,26 @@ class Xml implements \Magento\Framework\Config\ConverterInterface
                 if (!$child instanceof \DOMElement) {
                     continue;
                 }
-                /** @var $status \DOMElement */
-                if ($child->nodeName == 'attribute') {
-                    $attrData = [];
+                /** @var $child \DOMElement */
+                if ($child->nodeName == 'attributes') {
                     foreach ($child->childNodes as $attrNode) {
-                        if (!$attrNode instanceof \DOMElement || !in_array($attrNode->nodeName, ['name', 'value'])) {
+                        if (!$attrNode instanceof \DOMElement) {
                             continue;
                         }
-                        $attrData[$attrNode->nodeName] = $attrNode->nodeValue;
+                        $params = [];
+                        /** @var $attrNode \DOMElement */
+                        foreach ($attrNode->childNodes as $attrParam) {
+                            if (!$attrParam instanceof \DOMElement) {
+                                continue;
+                            }
+                            $params[$attrParam->nodeName] = trim($attrParam->nodeValue);
+                        }
+                        if ($attrNode->nodeName == 'email_template') {
+                            $statusData[$attrNode->nodeName][] = $params;
+                        } else {
+                            $statusData[$attrNode->nodeName] = $params;
+                        }
                     }
-                    if (!array_key_exists('name', $attrData) || !array_key_exists('value', $attrData)) {
-                        continue;
-                    }
-                    $statusData[$child->nodeName][$attrData['name']] = $attrData['value'];
                 } else {
                     $statusData[$child->nodeName] = $child->nodeValue;
                 }

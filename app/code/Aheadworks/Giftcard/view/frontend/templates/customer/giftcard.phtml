@@ -13,7 +13,8 @@
 <form id="aw_giftcard__check_code_form"
       class="form"
       action=""
-      method="post">
+      method="post"
+      data-mage-init='{"awGiftCardManagement":{}}'>
     <fieldset class="fieldset aw_giftcard__check">
         <?php echo $block->getBlockHtml('formkey')?>
         <div class="field required">
@@ -35,10 +36,8 @@
             <button type="button"
                     class="action primary"
                     title="<?php echo $block->escapeHtml(__('Check Status and Balance')) ?>"
-                    data-mage-init='{"awGiftCardCheckCode":{
-                        "url": "<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getCheckCodeUrl()) ?>",
-                        "formSelector": "#aw_giftcard__check_code_form"
-                    }}'>
+                    data-role="aw-giftcard-check-code-action"
+                    data-url="<?php /* @noEscape */ echo $block->escapeUrl($block->getCheckCodeUrl()) ?>">
                 <span><?php echo $block->escapeHtml(__('Check Status and Balance')) ?></span>
             </button>
         </div>

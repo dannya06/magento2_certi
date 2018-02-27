@@ -6,9 +6,7 @@
 
 namespace Aheadworks\Giftcard\Ui\Component\Form;
 
-use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
-use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardType;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponentInterface;
@@ -51,32 +49,33 @@ class Field extends \Magento\Ui\Component\Form\Field
     {
         parent::prepare();
         $config = $this->getData('config');
-        $giftcard = $this->getGiftcard();
-        $giftcardId = $giftcard && $giftcard->getId() ? $giftcard->getId() : null;
-        $giftcardTypePhysical = $giftcard && $giftcard->getType() == GiftcardType::VALUE_PHYSICAL ? true : false;
+        $giftcardId = $this->getGiftcardId();
 
         if ((isset($config['visibleIsSetGcId']) && !$config['visibleIsSetGcId'] && $giftcardId) ||
-            (isset($config['visibleIsSetGcId']) && $config['visibleIsSetGcId'] && !$giftcardId) ||
-            (isset($config['visibleOnPhysicalGc']) && !$config['visibleOnPhysicalGc'] && $giftcardTypePhysical)
+            (isset($config['visibleIsSetGcId']) && $config['visibleIsSetGcId'] && !$giftcardId)
         ) {
             $config['componentDisabled'] = true;
+        }
+
+        if ($configSettingsUrl = $this->getData('config/service/configSettingsUrl')) {
+            $config['service']['configSettingsUrl'] = $this->getContext()->getUrl($configSettingsUrl);
         }
         $this->setData('config', $config);
     }
 
     /**
-     * Retrieve current gift card
+     * Retrieve current gift card id
      *
-     * @return GiftcardInterface|null
+     * @return int|null
      */
-    public function getGiftCard()
+    public function getGiftcardId()
     {
         $giftcardId = $this->getContext()->getRequestParam(
             $this->getContext()->getDataProvider()->getRequestFieldName(),
             null
         );
         try {
-            return $this->giftcardRepository->get($giftcardId);
+            return $this->giftcardRepository->get($giftcardId)->getId();
         } catch (NoSuchEntityException $e) {
         }
         return null;

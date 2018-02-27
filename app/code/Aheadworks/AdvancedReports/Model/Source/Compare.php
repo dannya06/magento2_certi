@@ -19,18 +19,8 @@ class Compare implements OptionSourceInterface
      * Constants defined for the source model
      */
     const TYPE_PREVIOUS_PERIOD  = 'previous_period';
-    const TYPE_PREVIOUS_YEAR    = 'previous_year';
+    const TYPE_PREVIOUS_YEAR = 'previous_year';
     /**#@-*/
-
-    /**
-     * Get options
-     *
-     * @return []
-     */
-    public function getOptions()
-    {
-        return $this->toOptionArray();
-    }
 
     /**
      * {@inheritdoc}

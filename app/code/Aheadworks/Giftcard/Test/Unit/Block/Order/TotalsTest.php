@@ -23,7 +23,7 @@ use Aheadworks\Giftcard\Api\Data\Giftcard\OrderInterface as GiftcardOrderInterfa
  *
  * @package Aheadworks\Giftcard\Test\Unit\Block\Order
  */
-class TotalsTest extends \PHPUnit_Framework_TestCase
+class TotalsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Totals
@@ -48,7 +48,10 @@ class TotalsTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->factoryMock = $this->getMock(Factory::class, ['create'], [], '', false);
+        $this->factoryMock = $this->getMockBuilder(Factory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
         $contextMock = $objectManager->getObject(
             Context::class,
@@ -81,7 +84,10 @@ class TotalsTest extends \PHPUnit_Framework_TestCase
             ->willReturn($parentName);
 
         $orderMock = $this->getMockForAbstractClass(OrderInterface::class);
-        $blockSalesOrderTotalsMock = $this->getMock(SalesTotals::class, ['getSource', 'addTotal'], [], '', false);
+        $blockSalesOrderTotalsMock = $this->getMockBuilder(SalesTotals::class)
+            ->setMethods(['getSource', 'addTotal'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $blockSalesOrderTotalsMock->expects($this->once())
             ->method('getSource')
             ->willReturn($orderMock);
@@ -107,7 +113,10 @@ class TotalsTest extends \PHPUnit_Framework_TestCase
             ->method('getExtensionAttributes')
             ->willReturn($orderExtensionAttributesMock);
 
-        $dataObjectMock = $this->getMock(DataObject::class, [], [], '', false);
+        $dataObjectMock = $this->getMockBuilder(DataObject::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->factoryMock->expects($this->once())
             ->method('create')
             ->willReturn($dataObjectMock);

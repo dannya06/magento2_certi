@@ -21,7 +21,7 @@
 
 namespace Ves\Megamenu\Model\Config\Source;
 
-class Yesno implements \Magento\Framework\Option\ArrayInterface
+class ProductSource implements \Magento\Framework\Option\ArrayInterface
 {
     /**
      * Options getter

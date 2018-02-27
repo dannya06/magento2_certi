@@ -6,54 +6,30 @@
 
 namespace Aheadworks\Rma\Model\Source\ThreadMessage;
 
-class Owner implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Option\ArrayInterface;
+
+/**
+ * Class Owner
+ *
+ * @package Aheadworks\Rma\Model\Source\ThreadMessage
+ */
+class Owner implements ArrayInterface
 {
-    const ADMIN_VALUE       = '1';
-    const CUSTOMER_VALUE    = '2';
-
-    const ADMIN_LABEL       = 'Admin';
-    const CUSTOMER_LABEL    = 'Customer';
-
-    /**
-     * @var null|array
+    /**#@+
+     * Constants defined for RMA status types
      */
-    protected $optionArray = null;
+    const ADMIN = '1';
+    const CUSTOMER = '2';
+    /**#@-*/
 
     /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            self::ADMIN_VALUE       => __(self::ADMIN_LABEL),
-            self::CUSTOMER_VALUE    => __(self::CUSTOMER_LABEL)
-        ];
-    }
-
-    /**
-     * @return array
+     * {@inheritdoc}
      */
     public function toOptionArray()
     {
-        if ($this->optionArray === null) {
-            $this->optionArray = [];
-            foreach ($this->getOptions() as $value => $label) {
-                $this->optionArray[] = ['value' => $value, 'label' => $label];
-            }
-        }
-        return $this->optionArray;
-    }
-
-    /**
-     * @param int $value
-     * @return null|\Magento\Framework\Phrase
-     */
-    public function getOptionLabelByValue($value)
-    {
-        $options = $this->getOptions();
-        if (array_key_exists($value, $options)) {
-            return $options[$value];
-        }
-        return null;
+        return [
+            ['value' => self::ADMIN, 'label' => __('Admin')],
+            ['value' => self::CUSTOMER, 'label' => __('Customer')]
+        ];
     }
 }

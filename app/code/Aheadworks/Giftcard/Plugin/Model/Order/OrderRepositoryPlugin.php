@@ -9,6 +9,7 @@ namespace Aheadworks\Giftcard\Plugin\Model\Order;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
+use Magento\Sales\Api\Data\OrderSearchResultInterface;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Order\CollectionFactory as GiftcardOrderCollectionFactory;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Invoice\CollectionFactory as GiftcardInvoiceCollectionFactory;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Creditmemo\CollectionFactory
@@ -77,11 +78,11 @@ class OrderRepositoryPlugin
      * Add Gift Card data to order object
      *
      * @param OrderRepositoryInterface $subject
-     * @param OrderCollection $orders
+     * @param OrderSearchResultInterface $orders
      * @return OrderCollection
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function afterGetList(OrderRepositoryInterface $subject, OrderCollection $orders)
+    public function afterGetList(OrderRepositoryInterface $subject, OrderSearchResultInterface $orders)
     {
         /** @var OrderInterface $order */
         foreach ($orders->getItems() as $order) {

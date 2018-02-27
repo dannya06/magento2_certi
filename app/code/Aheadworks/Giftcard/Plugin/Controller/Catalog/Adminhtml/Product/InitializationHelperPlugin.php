@@ -57,34 +57,47 @@ class InitializationHelperPlugin
      * Add Gift card extension attributes after initialize product
      *
      * @param InitializationHelper $subject
-     * @param Product              $product
-     *
+     * @param \Closure $proceed
+     * @param Product $product
+     * @param array $productData
      * @return Product
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function afterInitialize(InitializationHelper $subject, Product $product)
-    {
+    public function aroundInitializeFromData(
+        InitializationHelper $subject,
+        \Closure $proceed,
+        Product $product,
+        array $productData
+    ) {
         if ($product->getTypeId() != ProductGiftcard::TYPE_CODE) {
-            return $product;
+            return $proceed($product, $productData);
         }
 
         $extension = $product->getExtensionAttributes();
-        $extension->setAwGiftcardAmounts($this->getAmounts($product));
-        $extension->setAwGiftcardTemplates($this->getTemplates($product));
+        $extension
+            ->setAwGiftcardAmounts($this->getAmounts($productData))
+            ->setAwGiftcardTemplates($this->getTemplates($productData));
+        $product
+            ->setData(ProductAttributeInterface::CODE_AW_GC_AMOUNTS, $extension->getAwGiftcardAmounts())
+            ->setData(ProductAttributeInterface::CODE_AW_GC_EMAIL_TEMPLATES, $extension->getAwGiftcardTemplates());
         $product->setExtensionAttributes($extension);
-        return $product;
+
+        return $proceed($product, $productData);
     }
 
     /**
      * Retrieve Gift Card amounts
      *
-     * @param Product $product
+     * @param array $productData
      * @return AmountInterface[]
      */
-    private function getAmounts($product)
+    private function getAmounts($productData)
     {
-        $amountsData = $product->getData(ProductAttributeInterface::CODE_AW_GC_AMOUNTS) ;
         $amounts = [];
+        $amountsData = isset($productData[ProductAttributeInterface::CODE_AW_GC_AMOUNTS])
+            ? $productData[ProductAttributeInterface::CODE_AW_GC_AMOUNTS]
+            : null;
+
         if (!is_array($amountsData)) {
             return $amounts;
         }
@@ -108,13 +121,16 @@ class InitializationHelperPlugin
     /**
      * Retrieve Gift Card templates
      *
-     * @param Product $product
+     * @param array $productData
      * @return TemplateInterface[]
      */
-    private function getTemplates($product)
+    private function getTemplates($productData)
     {
-        $templatesData = $product->getData(ProductAttributeInterface::CODE_AW_GC_EMAIL_TEMPLATES);
         $templates = [];
+        $templatesData = isset($productData[ProductAttributeInterface::CODE_AW_GC_EMAIL_TEMPLATES])
+            ? $productData[ProductAttributeInterface::CODE_AW_GC_EMAIL_TEMPLATES]
+            : null;
+
         if (!is_array($templatesData)) {
             return $templates;
         }

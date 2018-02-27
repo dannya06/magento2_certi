@@ -11,7 +11,10 @@ define(
     function (Component) {
         "use strict";
 
-        var awRewardPointsRemoveUrl  = window.checkoutConfig.payment.awRewardPoints.removeUrl;
+        var removePostData = JSON.stringify({
+            'action': window.checkoutConfig.payment.awRewardPoints.removeUrl,
+            'data': {}
+        });
 
         return Component.extend({
             defaults: {
@@ -32,8 +35,8 @@ define(
              *
              * @returns {String}
              */
-            getRemoveUrl: function () {
-                return awRewardPointsRemoveUrl;
+            getRemoveRpData: function () {
+                return removePostData;
             }
         });
     }

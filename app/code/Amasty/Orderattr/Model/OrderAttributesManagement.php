@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -97,7 +97,7 @@ class OrderAttributesManagement
 
         $attributes = $this->validateAttributes($order, $orderAttributesData);
 
-        $valuesToInsert = array_merge($this->getDefaultValues(), $orderAttributesData);
+        $valuesToInsert = array_merge($this->getDefaultValues($order), $orderAttributesData);
         if ($valuesToInsert) {
             foreach ($valuesToInsert as $key => $value) {
                 if (strpos($key, '_output') !== false) {
@@ -157,13 +157,21 @@ class OrderAttributesManagement
     }
 
     /**
+     * @param \Magento\Sales\Model\Order\Interceptor|null $order
      * @return array
      */
-    protected function getDefaultValues()
+    protected function getDefaultValues($order)
     {
         $defaultValues = [];
         $orderAttributesWithDefaultValues = $this->attributeMetadataDataProvider
             ->loadAttributesWithDefaultValueCollection();
+
+        if ($order !== null && $order->getIsVirtual() == true) {
+            $orderAttributesWithDefaultValues->addFieldToFilter(
+                'checkout_step',
+                ['eq' => \Amasty\Orderattr\Model\Config\Source\CheckoutStep::PAYMENT_STEP]
+            );
+        }
 
         foreach ($orderAttributesWithDefaultValues as $orderAttribute) {
             /**

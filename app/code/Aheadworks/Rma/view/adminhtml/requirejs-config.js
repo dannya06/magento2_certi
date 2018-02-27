@@ -6,10 +6,7 @@
 var config = {
     map: {
         '*': {
-            awRmaStatusFormCheckbox:        'Aheadworks_Rma/js/status/form/template-checkbox',
-            awRmaStatusFormPreview:         'Aheadworks_Rma/js/status/form/preview',
-            awRmaCustomFieldTypeSelect:     'Aheadworks_Rma/js/customfield/form/type-select',
-            awRmaCustomFieldOptions:        'Aheadworks_Rma/js/customfield/form/options'
+            awRmaCustomFieldOptions: 'Aheadworks_Rma/js/customfield/form/options'
         }
     }
 };

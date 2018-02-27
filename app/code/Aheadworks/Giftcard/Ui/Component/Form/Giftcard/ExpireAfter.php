@@ -52,9 +52,6 @@ class ExpireAfter extends \Aheadworks\Giftcard\Ui\Component\Form\Field
         parent::prepare();
         $config = $this->getData('config');
         $config['value'] = $this->config->getGiftcardExpireDays();
-        $config['service']['configSettingsUrl'] = $this->getContext()->getUrl(
-            'adminhtml/system_config/edit/section/aw_giftcard'
-        );
         $this->setData('config', $config);
     }
 }

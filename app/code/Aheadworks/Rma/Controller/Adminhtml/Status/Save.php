@@ -6,69 +6,135 @@
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Status;
 
+use Aheadworks\Rma\Api\StatusRepositoryInterface;
+use Aheadworks\Rma\Api\Data\StatusInterface;
+use Aheadworks\Rma\Api\Data\StatusInterfaceFactory;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Backend\App\Action;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Aheadworks\Rma\Model\Status\PostDataProcessor\Status as PostDataProcessor;
 
-class Save extends \Aheadworks\Rma\Controller\Adminhtml\Status
+/**
+ * Class Save
+ *
+ * @package Aheadworks\Rma\Controller\Adminhtml\Status
+ */
+class Save extends Action
 {
     /**
-     * @var \Magento\Framework\Registry
+     * {@inheritdoc}
      */
-    protected $coreRegistry;
+    const ADMIN_RESOURCE = 'Aheadworks_Rma::statuses';
 
     /**
-     * @var \Aheadworks\Rma\Model\StatusFactory
+     * @var StatusRepositoryInterface
      */
-    protected $statusFactory;
+    private $statusRepository;
 
+    /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * @var DataPersistorInterface
+     */
+    private $dataPersistor;
+
+    /**
+     * @var StatusInterfaceFactory
+     */
+    private $statusFactory;
+
+    /**
+     * @var PostDataProcessor
+     */
+    private $postDataProcessor;
+
+    /**
+     * @param Context $context
+     * @param StatusRepositoryInterface $statusRepository
+     * @param StatusInterfaceFactory $statusFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param DataPersistorInterface $dataPersistor
+     * @param PostDataProcessor $postDataProcessor
+     */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        \Magento\Framework\Registry $coreRegistry,
-        \Aheadworks\Rma\Model\StatusFactory $statusFactory
+        StatusRepositoryInterface $statusRepository,
+        StatusInterfaceFactory $statusFactory,
+        DataObjectHelper $dataObjectHelper,
+        DataPersistorInterface $dataPersistor,
+        PostDataProcessor $postDataProcessor
     ) {
-        parent::__construct($context, $resultPageFactory);
-        $this->coreRegistry = $coreRegistry;
+        parent::__construct($context);
         $this->statusFactory = $statusFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->dataPersistor = $dataPersistor;
+        $this->statusRepository = $statusRepository;
+        $this->postDataProcessor = $postDataProcessor;
     }
 
     /**
-     * Index action
+     * Save action
      *
-     * @return \Magento\Backend\Model\View\Result\Page
+     * @return \Magento\Framework\Controller\Result\Redirect
      */
     public function execute()
     {
-        $data = $this->getRequest()->getPostValue();
         $resultRedirect = $this->resultRedirectFactory->create();
-        if ($data) {
-            /** @var \Aheadworks\Rma\Model\Status $status */
-            $status = $this->statusFactory->create();
-            $id = $this->getRequest()->getParam('id');
-            $status
-                ->load($id)
-                ->setData($data)
-            ;
-            $back = $this->getRequest()->getParam('back');
+        if ($data = $this->getRequest()->getPostValue()) {
             try {
-                $status->save();
-                $this->messageManager->addSuccess(__('Status was successfully saved.'));
-                $this->_getSession()->setFormData(false);
-                if ($back == 'edit') {
-                    return $resultRedirect->setPath('*/*/' . $back, ['id' => $status->getId(), '_current' => true]);
+                $data = $this->postDataProcessor->prepareEntityData($data);
+                $status = $this->performSave($data);
+
+                $this->dataPersistor->clear('aw_rma_status');
+                $this->messageManager->addSuccessMessage(__('Status was successfully saved.'));
+
+                if ($this->getRequest()->getParam('back') == 'edit') {
+                    return $resultRedirect->setPath('*/*/edit', ['id' => $status->getId()]);
                 }
                 return $resultRedirect->setPath('*/*/');
             } catch (LocalizedException $e) {
-                $this->messageManager->addError($e->getMessage());
+                $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\RuntimeException $e) {
-                $this->messageManager->addError($e->getMessage());
+                $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the status.'));
+                $this->messageManager->addExceptionMessage(
+                    $e,
+                    __('Something went wrong while saving the status.')
+                );
             }
-            $this->_getSession()->setFormData($data);
-            return $resultRedirect->setPath('*/*/edit', ['id' => $id]);
+            $this->dataPersistor->set('aw_rma_status', $data);
+            $id = isset($data['id']) ? $data['id'] : false;
+            if ($id) {
+                return $resultRedirect->setPath('*/*/edit', ['id' => $id, '_current' => true]);
+            }
+            return $resultRedirect->setPath('*/*/new', ['_current' => true]);
         }
         return $resultRedirect->setPath('*/*/');
+    }
+
+    /**
+     * Perform save
+     *
+     * @param array $data
+     * @return StatusInterface
+     */
+    private function performSave($data)
+    {
+        $id = isset($data['id']) ? $data['id'] : false;
+        $dataObject = $id
+            ? $this->statusRepository->get($id)
+            : $this->statusFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $dataObject,
+            $data,
+            StatusInterface::class
+        );
+
+        return $this->statusRepository->save($dataObject);
     }
 }

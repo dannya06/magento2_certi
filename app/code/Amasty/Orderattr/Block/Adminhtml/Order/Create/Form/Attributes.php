@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -33,8 +33,15 @@ class Attributes extends Form
      */
     protected function getOrderEavAttributes()
     {
-        return $this->attributeMetadataDataProvider
+        $attributesCollection = $this->attributeMetadataDataProvider
             ->loadAttributesForCreateOrderFormByStoreId($this->getStoreId());
+
+        $groupId = $this->getCurrentGroupId();
+        if (isset($groupId)) {
+            $attributesCollection->addCustomerGroupFilter($groupId);
+        }
+
+        return $attributesCollection;
     }
 
     /**
@@ -58,4 +65,27 @@ class Attributes extends Form
        // return $this->getForm()->getElement('base_fieldset')->toHtml();
     }
 
+    /**
+     * @return null|int
+     */
+    private function getCurrentGroupId()
+    {
+        $groupId = null;
+
+        if (isset($this->backendSession->getData()['customer_data']['account']['group_id'])) {
+            $groupId = $this->backendSession->getData()['customer_data']['account']['group_id'];
+
+            if (isset($this->_request->getParams()['customer_id'])
+                && $this->_request->getParams()['customer_id'] == 'false'
+            ) {
+                $groupId = null;
+            }
+        }
+
+        if (isset($this->_request->getParams()['order']['account']['group_id'])) {
+            $groupId = $this->_request->getParams()['order']['account']['group_id'];
+        }
+
+        return $groupId;
+    }
 }

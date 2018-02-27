@@ -1,13 +1,11 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
 namespace Amasty\Ogrid\Model\Column;
-
-use Magento\Framework\Data\Collection;
 
 class Product extends \Amasty\Ogrid\Model\Column
 {

@@ -15,7 +15,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Config\Backend\SpendRateTest
  */
-class SpendRateTest extends \PHPUnit_Framework_TestCase
+class SpendRateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|SpendRateResource

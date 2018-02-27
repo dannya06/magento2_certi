@@ -41,7 +41,7 @@ class Renderer extends CartItemRenderer
      * @param ModuleManager $moduleManager
      * @param MessageInterpretationStrategy $messageInterpretationStrategy
      * @param GiftcardProductConfiguration $giftcardProductConfiguration
-     * @param [] $data
+     * @param array $data
      */
     public function __construct(
         Context $context,

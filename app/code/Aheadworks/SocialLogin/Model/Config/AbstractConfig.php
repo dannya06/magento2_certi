@@ -1,7 +1,9 @@
 <?php
 namespace Aheadworks\SocialLogin\Model\Config;
 
+use Aheadworks\SocialLogin\Model\Serialize\Serializer;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * Class AbstractConfig
@@ -14,19 +16,27 @@ abstract class AbstractConfig
     protected $scopeConfig;
 
     /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
      * @var string
      */
     protected $pathPrefix;
 
     /**
      * @param ScopeConfigInterface $scopeConfig
+     * @param Serializer $serializer
      * @param string $pathPrefix
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
+        Serializer $serializer,
         $pathPrefix = ''
     ) {
         $this->scopeConfig = $scopeConfig;
+        $this->serializer = $serializer;
         $this->pathPrefix = $pathPrefix;
     }
 
@@ -40,7 +50,7 @@ abstract class AbstractConfig
      */
     protected function getValue(
         $path,
-        $scopeType = \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+        $scopeType = ScopeInterface::SCOPE_STORE,
         $scopeCode = null
     ) {
         return $this->scopeConfig->getValue($this->preparePath($path), $scopeType, $scopeCode);
@@ -52,15 +62,24 @@ abstract class AbstractConfig
      * @param string $path
      * @param string $scopeType
      * @param null|string $scopeCode
+     * @param mixed $default
      * @return array
      */
     protected function getSerializedValue(
         $path,
-        $scopeType = \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-        $scopeCode = null
+        $scopeType = ScopeInterface::SCOPE_STORE,
+        $scopeCode = null,
+        $default = null
     ) {
         $serializedValue = $this->getValue($path, $scopeType, $scopeCode);
-        return unserialize($serializedValue);
+
+        try {
+            $value = $this->serializer->unserialize($serializedValue);
+        } catch (\Exception $e) {
+            $value = $default;
+        }
+
+        return $value;
     }
 
     /**
@@ -73,7 +92,7 @@ abstract class AbstractConfig
      */
     protected function isSetFlag(
         $path,
-        $scopeType = \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+        $scopeType = ScopeInterface::SCOPE_STORE,
         $scopeCode = null
     ) {
         return $this->scopeConfig->isSetFlag($this->preparePath($path), $scopeType, $scopeCode);

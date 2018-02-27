@@ -23,7 +23,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Service\ProductShareServiceTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProductShareServiceTest extends \PHPUnit_Framework_TestCase
+class ProductShareServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProductShareService

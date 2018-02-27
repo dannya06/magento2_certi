@@ -25,7 +25,7 @@ class Order extends Column
             if ($orderId = $item['order_id']) {
                 if ($orderIncrementId = $item[$fieldName]) {
                     $item[$fieldName . '_url'] = $this->context->getUrl('sales/order/view', ['order_id' => $orderId]);
-                    $item[$fieldName . '_label'] = '#' . $orderIncrementId;
+                    $item[$fieldName . '_label'] = $orderIncrementId;
                 } else {
                     $item[$fieldName . '_label'] = $orderId;
                 }

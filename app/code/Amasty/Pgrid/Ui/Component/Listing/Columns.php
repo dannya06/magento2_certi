@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Pgrid
  */
 
@@ -95,7 +95,10 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
 
         foreach ($this->attributeRepository->getList() as $attribute) {
             $config = [];
-            if (!isset($this->components[$attribute->getAttributeCode()]) && !in_array($attribute->getAttributeCode(), $this->skipAttributes)) {
+            if (!isset($this->components[$attribute->getAttributeCode()]) &&
+                !in_array($attribute->getAttributeCode(), $this->skipAttributes) &&
+                $attribute->getIsUsedInGrid()
+            ) {
                 $config['sortOrder'] = ++$columnSortOrder;
                 $config['filter'] = $this->getFilterType($attribute->getFrontendInput());
                 $config['isFilterableInGrid'] = $attribute->getIsFilterableInGrid();
@@ -134,8 +137,10 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
             $config = $bookmark->getConfig();
             if (isset($config['current']['columns']) && is_array($config['current']['columns'])) {
                 foreach ($config['current']['columns'] as $key => $column) {
-                    if ($column['visible'] == true) {
-                        $visibleColumns[$key] = $column;
+                    if (isset($column['visible'])) {
+                        if ($column['visible'] == true) {
+                            $visibleColumns[$key] = $column;
+                        }
                     }
                 }
             }

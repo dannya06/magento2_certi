@@ -6,6 +6,7 @@
 
 namespace Aheadworks\Giftcard\Setup;
 
+use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardCustomMessage;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -20,6 +21,7 @@ use Magento\Sales\Setup\SalesSetup;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute as CatalogEavAttribute;
 use Aheadworks\Giftcard\Model\Product\Type\Giftcard as ProductGiftcard;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardPool;
 
 /**
  * Class UpgradeData
@@ -81,6 +83,9 @@ class UpgradeData implements UpgradeDataInterface
         $setup->startSetup();
         if ($context->getVersion() && version_compare($context->getVersion(), '1.1.0', '<')) {
             $this->updateAttributesForVersion110($setup);
+        }
+        if ($context->getVersion() && version_compare($context->getVersion(), '1.2.0', '<')) {
+            $this->updateAttributesForVersion120($setup);
         }
         $setup->endSetup();
     }
@@ -337,5 +342,56 @@ class UpgradeData implements UpgradeDataInterface
                 );
             }
         }
+    }
+
+    /**
+     * Update attributes for version 1.2.0
+     *
+     * @param ModuleDataSetupInterface $setup
+     * @return void
+     */
+    private function updateAttributesForVersion120($setup)
+    {
+        $this->eavSetup->updateAttribute(
+            $this->entityTypeId,
+            'aw_gc_allow_message',
+            'attribute_code',
+            ProductAttributeInterface::CODE_AW_GC_CUSTOM_MESSAGE_FIELDS
+        );
+        $this->eavSetup->updateAttribute(
+            $this->entityTypeId,
+            ProductAttributeInterface::CODE_AW_GC_CUSTOM_MESSAGE_FIELDS,
+            'frontend_label',
+            'Custom Message Fields'
+        );
+        $this->eavSetup->updateAttribute(
+            $this->entityTypeId,
+            ProductAttributeInterface::CODE_AW_GC_CUSTOM_MESSAGE_FIELDS,
+            'source_model',
+            GiftcardCustomMessage::class
+        );
+        $this->eavSetup->addAttribute(
+            $this->entityTypeId,
+            ProductAttributeInterface::CODE_AW_GC_POOL,
+            [
+                'type' => 'int',
+                'label' => 'Pool',
+                'input' => 'select',
+                'required' => false,
+                'frontend' => '',
+                'source' => GiftcardPool::class,
+                'global' => CatalogEavAttribute::SCOPE_GLOBAL,
+                'user_defined' => false,
+                'searchable' => false,
+                'filterable' => false,
+                'visible_in_advanced_search' => false,
+                'used_in_product_listing' => false,
+                'used_for_sort_by' => false,
+                'apply_to' => $this->giftCardTypeCode,
+                'group' => $this->giftCardInfoGroupName,
+                'sort_order' => 1,
+                'note' => 'if selected pool is empty a new code will be generated as per pool configuration'
+            ]
+        );
     }
 }

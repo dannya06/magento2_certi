@@ -22,6 +22,15 @@
     <preference for="Aheadworks\Giftcard\Api\Data\Giftcard\CreditmemoInterface" type="Aheadworks\Giftcard\Model\Giftcard\Creditmemo" />
     <preference for="Aheadworks\Giftcard\Api\Data\Giftcard\HistoryActionInterface" type="Aheadworks\Giftcard\Model\Giftcard\History" />
     <preference for="Aheadworks\Giftcard\Api\Data\Giftcard\History\EntityInterface" type="Aheadworks\Giftcard\Model\Giftcard\History\Entity" />
+    <preference for="Aheadworks\Giftcard\Api\Data\CodeGenerationSettingsInterface" type="Aheadworks\Giftcard\Model\CodeGenerationSettings" />
+    <preference for="Aheadworks\Giftcard\Api\PoolRepositoryInterface" type="Aheadworks\Giftcard\Model\PoolRepository" />
+    <preference for="Aheadworks\Giftcard\Api\Data\PoolInterface" type="Aheadworks\Giftcard\Model\Pool" />
+    <preference for="Aheadworks\Giftcard\Api\Data\PoolSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    <preference for="Aheadworks\Giftcard\Api\PoolManagementInterface" type="Aheadworks\Giftcard\Model\Service\PoolService" />
+    <preference for="Aheadworks\Giftcard\Api\PoolCodeRepositoryInterface" type="Aheadworks\Giftcard\Model\Pool\CodeRepository" />
+    <preference for="Aheadworks\Giftcard\Api\Data\Pool\CodeInterface" type="Aheadworks\Giftcard\Model\Pool\Code" />
+    <preference for="Aheadworks\Giftcard\Api\Data\Pool\CodeSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    <preference for="Aheadworks\Giftcard\Api\Exception\ImportValidatorExceptionInterface" type="Aheadworks\Giftcard\Model\Import\Exception\ImportValidatorException" />
     <type name="Aheadworks\Giftcard\Model\Giftcard\History\CommentPool">
         <arguments>
             <argument name="comments" xsi:type="array">
@@ -34,6 +43,7 @@
                 <item name="reimbursed_for_refunded_order" xsi:type="string">Aheadworks\Giftcard\Model\Giftcard\History\ReimbursedForRefundedOrder</item>
                 <item name="expired" xsi:type="string">Aheadworks\Giftcard\Model\Giftcard\History\Expired</item>
                 <item name="send" xsi:type="string">Aheadworks\Giftcard\Model\Giftcard\History\Send</item>
+                <item name="type_changed" xsi:type="string">Aheadworks\Giftcard\Model\Giftcard\History\TypeChanged</item>
             </argument>
         </arguments>
     </type>
@@ -85,6 +95,12 @@
             <argument name="label" xsi:type="string">Gift Cart email delivery status: %status</argument>
         </arguments>
     </virtualType>
+    <virtualType name="Aheadworks\Giftcard\Model\Giftcard\History\TypeChanged" type="Aheadworks\Giftcard\Model\Giftcard\History\Comment">
+        <arguments>
+            <argument name="type" xsi:type="const">Aheadworks\Giftcard\Model\Source\History\Comment\Action::TYPE_CHANGED</argument>
+            <argument name="label" xsi:type="string">Gift Cart type has been changed from %from to %to by %name</argument>
+        </arguments>
+    </virtualType>
     <type name="Magento\Framework\EntityManager\MetadataPool">
         <arguments>
             <argument name="metadata" xsi:type="array">
@@ -122,6 +138,14 @@
                 </item>
                 <item name="Aheadworks\Giftcard\Api\Data\Giftcard\History\EntityInterface" xsi:type="array">
                     <item name="entityTableName" xsi:type="string">aw_giftcard_history_entity</item>
+                    <item name="identifierField" xsi:type="string">id</item>
+                </item>
+                <item name="Aheadworks\Giftcard\Api\Data\PoolInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">aw_giftcard_pool</item>
+                    <item name="identifierField" xsi:type="string">id</item>
+                </item>
+                <item name="Aheadworks\Giftcard\Api\Data\Pool\CodeInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">aw_giftcard_pool_code</item>
                     <item name="identifierField" xsi:type="string">id</item>
                 </item>
             </argument>
@@ -183,6 +207,100 @@
             </argument>
         </arguments>
     </type>
+    <type name="Aheadworks\Giftcard\Model\Giftcard\CodeGenerator">
+        <arguments>
+            <argument name="codeParameters" xsi:type="array">
+                <item name="delimiter" xsi:type="string">-</item>
+                <item name="charset" xsi:type="array">
+                    <item name="alphanumeric" xsi:type="string">0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ</item>
+                    <item name="alphabetic" xsi:type="string">ABCDEFGHIJKLMNOPQRSTUVWXYZ</item>
+                    <item name="numeric" xsi:type="string">0123456789</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="aw_giftcard_pool_code_listing_data_source" xsi:type="string">Aheadworks\Giftcard\Model\ResourceModel\Pool\Code\Grid\Collection</item>
+                <item name="aw_giftcard_pool_listing_data_source" xsi:type="string">Aheadworks\Giftcard\Model\ResourceModel\Pool\Grid\Collection</item>
+                <item name="aw_giftcard_listing_data_source" xsi:type="string">Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\Giftcard\Model\ResourceModel\Pool\Code\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">aw_giftcard_pool_code</argument>
+            <argument name="eventPrefix" xsi:type="string">aw_giftcard_pool_code_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">pool_code_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Aheadworks\Giftcard\Model\ResourceModel\Pool\Code</argument>
+        </arguments>
+    </type>
+    <virtualType name="AwGiftcardPoolCodeGridFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
+        <arguments>
+            <argument name="appliers" xsi:type="array">
+                <item name="regular" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\RegularFilter</item>
+                <item name="fulltext" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\FulltextFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AwGiftcardPoolCodeGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Aheadworks\Giftcard\Model\ResourceModel\Pool\Code\Collection</argument>
+            <argument name="filterPool" xsi:type="object" shared="false">AwGiftcardPoolCodeGridFilterPool</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Aheadworks\Giftcard\Model\ResourceModel\Pool\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">aw_giftcard_pool</argument>
+            <argument name="eventPrefix" xsi:type="string">aw_giftcard_pool_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">pool_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Aheadworks\Giftcard\Model\ResourceModel\Pool</argument>
+        </arguments>
+    </type>
+    <virtualType name="AwGiftcardPoolGridFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
+        <arguments>
+            <argument name="appliers" xsi:type="array">
+                <item name="regular" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\RegularFilter</item>
+                <item name="fulltext" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\FulltextFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AwGiftcardPoolGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Aheadworks\Giftcard\Model\ResourceModel\Pool\Collection</argument>
+            <argument name="filterPool" xsi:type="object" shared="false">AwGiftcardPoolGridFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <type name="Aheadworks\Giftcard\Controller\Adminhtml\Product\ImageUpload">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">Aheadworks\Giftcard\ImageUploader</argument>
+        </arguments>
+    </type>
+
+    <type name="Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">aw_giftcard</argument>
+            <argument name="eventPrefix" xsi:type="string">aw_giftcard_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">giftcard_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Aheadworks\Giftcard\Model\ResourceModel\Giftcard</argument>
+        </arguments>
+    </type>
+    <virtualType name="AwGiftcardGridFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
+        <arguments>
+            <argument name="appliers" xsi:type="array">
+                <item name="regular" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\RegularFilter</item>
+                <item name="fulltext" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\FulltextFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AwGiftcardGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Collection</argument>
+            <argument name="filterPool" xsi:type="object" shared="false">AwGiftcardGridFilterPool</argument>
+        </arguments>
+    </virtualType>
     <type name="Aheadworks\Giftcard\Controller\Adminhtml\Product\ImageUpload">
         <arguments>
             <argument name="imageUploader" xsi:type="object">Aheadworks\Giftcard\ImageUploader</argument>

@@ -4,10 +4,11 @@
 */
 
 define([
+    'jquery',
     'Magento_Checkout/js/view/summary/abstract-total',
     'Magento_Checkout/js/model/totals',
     'Aheadworks_Giftcard/js/action/remove-giftcard-code',
-], function (Component, totals, removeAction) {
+], function ($, Component, totals, removeAction) {
     'use strict';
 
     var giftcardRemoveUrl = window.checkoutConfig.awGiftcard.removeUrl;
@@ -37,7 +38,13 @@ define([
          */
         getGiftcardCodes: function () {
             if (this.totals && totals.getSegment(this.code)) {
-                return totals.getSegment(this.code).extension_attributes.aw_giftcard_codes;
+                var giftcardCodes = totals.getSegment(this.code).extension_attributes.aw_giftcard_codes;
+                giftcardCodes.forEach(function(giftcardCode, index) {
+                    if (typeof giftcardCode == 'string') {
+                        giftcardCodes[index] = JSON.parse(giftcardCode);
+                    }
+                });
+                return giftcardCodes;
             }
             return [];
         },
@@ -55,14 +62,36 @@ define([
         /**
          * Remove Gift Card by code
          *
-         * @param {String} giftcardCode
+         * @param {String} form
          */
-        removeByCode: function (giftcardCode) {
+        removeByCode: function (form) {
             if (this.isAjaxRemoveLink) {
+                var giftcardCode = this._getGiftCardCodeFromForm(form);
+
                 removeAction(giftcardCode)
             } else {
-                window.location.href = giftcardRemoveUrl + 'code/' + giftcardCode;
+                $(form).attr('action', giftcardRemoveUrl);
+                return true;
             }
+        },
+
+        /**
+         * Retrieve Gift Card code from form
+         *
+         * @param {String} form
+         * @return {String|null}
+         */
+        _getGiftCardCodeFromForm: function(form) {
+            var formDataArray = $(form).serializeArray(),
+                giftcardCode = null;
+
+            formDataArray.forEach(function (entry) {
+                if (entry.name === 'code') {
+                    giftcardCode = entry.value;
+                }
+            });
+
+            return giftcardCode;
         }
     });
 });

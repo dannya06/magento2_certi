@@ -21,7 +21,7 @@ use Magento\Backend\Model\View\Result\RedirectFactory;
  * Test for \Aheadworks\AdvancedReports\Controller\Adminhtml\Location\Region\Index
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Index
@@ -52,11 +52,20 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->resultPageFactoryMock = $this->getMock(PageFactory::class, ['create'], [], '', false);
+        $this->resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
 
-        $this->resultRedirectMock = $this->getMock(Redirect::class, ['setPath'], [], '', false);
-        $resultRedirectFactoryMock = $this->getMock(RedirectFactory::class, ['create'], [], '', false);
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->setMethods(['setPath'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($this->resultRedirectMock);
@@ -95,15 +104,24 @@ class IndexTest extends \PHPUnit_Framework_TestCase
             ->with('country_name')
             ->willReturn($countryName);
 
-        $titleMock = $this->getMock(Title::class, ['prepend'], [], '', false);
+        $titleMock = $this->getMockBuilder(Title::class)
+            ->setMethods(['prepend'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $titleMock->expects($this->once())
             ->method('prepend')
             ->willReturnSelf();
-        $pageConfigMock = $this->getMock(Config::class, ['getTitle'], [], '', false);
+        $pageConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getTitle'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $pageConfigMock->expects($this->once())
             ->method('getTitle')
             ->willReturn($titleMock);
-        $resultPageMock = $this->getMock(Page::class, ['setActiveMenu', 'getConfig'], [], '', false);
+        $resultPageMock = $this->getMockBuilder(Page::class)
+            ->setMethods(['setActiveMenu', 'getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultPageMock->expects($this->any())
             ->method('setActiveMenu')
             ->willReturnSelf();

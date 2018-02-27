@@ -8,13 +8,14 @@ namespace Aheadworks\AdvancedReports\Model\Source;
 
 use Magento\Customer\Api\GroupManagementInterface;
 use Magento\Customer\Api\Data\GroupInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
 /**
  * Class CustomerGroup
  *
  * @package Aheadworks\AdvancedReports\Model\Source
  */
-class CustomerGroup implements \Magento\Framework\Data\OptionSourceInterface
+class CustomerGroup implements OptionSourceInterface
 {
     /**
      * @var GroupManagementInterface
@@ -22,7 +23,7 @@ class CustomerGroup implements \Magento\Framework\Data\OptionSourceInterface
     private $groupManagement;
 
     /**
-     * @var []
+     * @var array
      */
     private $options;
 
@@ -36,13 +37,15 @@ class CustomerGroup implements \Magento\Framework\Data\OptionSourceInterface
     }
 
     /**
-     * Get options
-     *
-     * @return []
+     * {@inheritdoc}
      */
     public function toOptionArray()
     {
         if (!$this->options) {
+            /** @var GroupInterface $allGroup */
+            $allGroup = $this->groupManagement->getAllCustomersGroup();
+            $this->options[] = ['value' => $allGroup->getId(), 'label' => __('All Groups')];
+
             /** @var GroupInterface $notLoggedInGroup */
             $notLoggedInGroup = $this->groupManagement->getNotLoggedInGroup();
             $this->options[] = ['value' => $notLoggedInGroup->getId(), 'label' => $notLoggedInGroup->getCode()];
@@ -53,37 +56,5 @@ class CustomerGroup implements \Magento\Framework\Data\OptionSourceInterface
             }
         }
         return $this->options;
-    }
-
-    /**
-     * Get options
-     *
-     * @return []
-     */
-    public function getOptions()
-    {
-        $options = $this->toOptionArray();
-        $result = [];
-
-        foreach ($options as $option) {
-            $result[$option['value']] = $option['label'];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get option by value
-     *
-     * @param int $value
-     * @return null
-     */
-    public function getOptionByValue($value)
-    {
-        $options = $this->getOptions();
-        if (array_key_exists($value, $options)) {
-            return $options[$value];
-        }
-        return null;
     }
 }

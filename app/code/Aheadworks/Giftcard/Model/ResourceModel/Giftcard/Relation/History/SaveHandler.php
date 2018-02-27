@@ -21,6 +21,7 @@ use Aheadworks\Giftcard\Api\Data\Giftcard\History\EntityInterface as HistoryEnti
 use Aheadworks\Giftcard\Api\Data\Giftcard\History\EntityInterfaceFactory as HistoryEntityInterfaceFactory;
 use Aheadworks\Giftcard\Model\Source\History\Comment\Action as SourceHistoryCommentAction;
 use Aheadworks\Giftcard\Model\Source\History\EntityType as SourceHistoryEntityType;
+use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardType;
 
 /**
  * Class SaveHandler
@@ -64,6 +65,11 @@ class SaveHandler implements ExtensionInterface
     private $historyEntityFactory;
 
     /**
+     * @var GiftcardType
+     */
+    private $sourceGiftcardType;
+
+    /**
      * @param MetadataPool $metadataPool
      * @param ResourceConnection $resourceConnection
      * @param AuthSession $adminSession
@@ -71,6 +77,7 @@ class SaveHandler implements ExtensionInterface
      * @param EntityManager $entityManager
      * @param HistoryActionInterfaceFactory $historyActionFactory
      * @param HistoryEntityInterfaceFactory $historyEntityFactory
+     * @param GiftcardType $sourceGiftcardType
      */
     public function __construct(
         MetadataPool $metadataPool,
@@ -79,7 +86,8 @@ class SaveHandler implements ExtensionInterface
         CommentPool $commentPool,
         EntityManager $entityManager,
         HistoryActionInterfaceFactory $historyActionFactory,
-        HistoryEntityInterfaceFactory $historyEntityFactory
+        HistoryEntityInterfaceFactory $historyEntityFactory,
+        GiftcardType $sourceGiftcardType
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->metadataPool = $metadataPool;
@@ -88,6 +96,7 @@ class SaveHandler implements ExtensionInterface
         $this->entityManager = $entityManager;
         $this->historyActionFactory = $historyActionFactory;
         $this->historyEntityFactory = $historyEntityFactory;
+        $this->sourceGiftcardType = $sourceGiftcardType;
     }
 
     /**
@@ -108,21 +117,7 @@ class SaveHandler implements ExtensionInterface
      */
     private function registerAction($entity)
     {
-        if (!$entity->getCurrentHistoryAction()) {
-            /** @var HistoryEntityInterface $adminHistoryEntityObject */
-            $adminHistoryEntityObject = $this->historyEntityFactory->create();
-            $adminHistoryEntityObject
-                ->setEntityType(SourceHistoryEntityType::ADMIN_ID)
-                ->setEntityId($this->getAdminUserId())
-                ->setEntityLabel($this->getAdminUserName());
-
-            /** @var HistoryActionInterface $historyObject */
-            $historyObject = $this->historyActionFactory->create();
-            $historyObject
-                ->setActionType(SourceHistoryCommentAction::BY_ADMIN)
-                ->setEntities([$adminHistoryEntityObject]);
-            $entity->setCurrentHistoryAction($historyObject);
-        }
+        $this->prepareCurrentHistoryAction($entity);
         /** @var HistoryActionInterface $historyAction */
         $historyAction = $entity->getCurrentHistoryAction();
 
@@ -145,9 +140,7 @@ class SaveHandler implements ExtensionInterface
                 && $entity->getState() != Status::DEACTIVATED
             ) {
                 $historyAction->setAction(SourceHistoryAction::ACTIVATED);
-            } elseif ($entity->getOrigData('balance') != $entity->getBalance()
-                || $historyAction->getActionType() != SourceHistoryCommentAction::BY_ADMIN
-            ) {
+            } elseif ($this->isEntityUpdated($entity, $historyAction)) {
                 $historyAction->setAction(SourceHistoryAction::UPDATED);
             }
         }
@@ -177,6 +170,76 @@ class SaveHandler implements ExtensionInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * Check is entity updated
+     *
+     * @param GiftcardModel $entity
+     * @param HistoryActionInterface $historyAction
+     * @return bool
+     */
+    private function isEntityUpdated($entity, $historyAction)
+    {
+        return $entity->getOrigData('balance') != $entity->getBalance()
+            || $this->isGiftcardTypeChanged($entity)
+            || $historyAction->getActionType() != SourceHistoryCommentAction::BY_ADMIN;
+    }
+
+    /**
+     * Prepare current history action
+     *
+     * @param GiftcardModel $entity
+     * @return void
+     */
+    private function prepareCurrentHistoryAction($entity)
+    {
+        if (!$entity->getCurrentHistoryAction()) {
+            /** @var HistoryEntityInterface $adminHistoryEntityObject */
+            $adminHistoryEntityObject = $this->historyEntityFactory->create();
+            $adminHistoryEntityObject
+                ->setEntityType(SourceHistoryEntityType::ADMIN_ID)
+                ->setEntityId($this->getAdminUserId())
+                ->setEntityLabel($this->getAdminUserName());
+
+            /** @var HistoryActionInterface $historyObject */
+            $historyObject = $this->historyActionFactory->create();
+
+            if ($this->isGiftcardTypeChanged($entity)) {
+                /** @var HistoryEntityInterface $fromHistoryEntityObject */
+                $fromHistoryEntityObject = $this->historyEntityFactory->create();
+                $fromHistoryEntityObject
+                    ->setEntityType(SourceHistoryEntityType::FROM)
+                    ->setEntityId($entity->getOrigData('type'))
+                    ->setEntityLabel($this->sourceGiftcardType->getOptionText($entity->getOrigData('type')));
+                /** @var HistoryEntityInterface $toHistoryEntityObject */
+                $toHistoryEntityObject = $this->historyEntityFactory->create();
+                $toHistoryEntityObject
+                    ->setEntityType(SourceHistoryEntityType::TO)
+                    ->setEntityId($entity->getType())
+                    ->setEntityLabel($this->sourceGiftcardType->getOptionText($entity->getType()));
+
+                $historyObject
+                    ->setActionType(SourceHistoryCommentAction::TYPE_CHANGED)
+                    ->setEntities([$fromHistoryEntityObject, $toHistoryEntityObject, $adminHistoryEntityObject]);
+            } else {
+                $historyObject
+                    ->setActionType(SourceHistoryCommentAction::BY_ADMIN)
+                    ->setEntities([$adminHistoryEntityObject]);
+            }
+            $entity->setCurrentHistoryAction($historyObject);
+        }
+    }
+
+    /**
+     * Check is Gift Card type changed
+     *
+     * @param GiftcardModel $entity
+     * @return bool
+     */
+    private function isGiftcardTypeChanged($entity)
+    {
+        return $entity->getOrigData('id') && $entity->getOrigData('type') != $entity->getType();
     }
 
     /**

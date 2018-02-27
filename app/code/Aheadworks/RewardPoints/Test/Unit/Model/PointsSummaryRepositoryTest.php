@@ -16,7 +16,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\PointsSummaryRepositoryTest
  */
-class PointsSummaryRepositoryTest extends \PHPUnit_Framework_TestCase
+class PointsSummaryRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PointsSummaryRepository

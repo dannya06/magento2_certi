@@ -35,3 +35,10 @@ Xtento_XtCore
 
 ===== 2.0.8 =====
  + Added method getMagentoVersion (as a wrapper) in Helper\Utils.
+
+===== 2.0.9 =====
+ + Compatibility with Magento 2.2 established
+
+===== 2.1.0 =====
+ * Switched to 2.x.0 version schema so composer upgrades XtCore to "next-significant-release" version (applies for composer upgrades)
+ * Next release: 2.2.0

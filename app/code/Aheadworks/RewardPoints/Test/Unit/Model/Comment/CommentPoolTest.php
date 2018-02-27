@@ -16,7 +16,7 @@ use Aheadworks\RewardPoints\Model\Source\Transaction\Type as TransactionType;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Comment\CommentPoolTest
  */
-class CommentPoolTest extends \PHPUnit_Framework_TestCase
+class CommentPoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CommentPool
@@ -165,42 +165,25 @@ class CommentPoolTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests get method, retrieve default instance
      */
-    public function testGetMethodRetrievDefaultInsatnce()
+    public function testGetMethodRetrievDefaultInstance()
     {
         $this->initCommentPool();
 
         $commentDefaultInstanceMock = $this->getMockForAbstractClass(
             CommentInterface::class,
-            ['getComment'],
+            [],
             '',
             false
         );
 
         $commentDefaultInstanceMock->expects($this->any())
-            ->method('getComment')
-            ->willReturn('default_comment');
-
-        $commentForPurchaseInstanceMock = $this->getMockForAbstractClass(
-            CommentInterface::class,
-            ['getComment'],
-            '',
-            false
-        );
-
-        $commentForPurchaseInstanceMock->expects($this->any())
-            ->method('getComment')
-            ->willReturn('comment_for_purchases');
+            ->method('getType')
+            ->willReturn('default');
 
         $this->objectManagerMock->expects($this->exactly(2))
             ->method('get')
-            ->withConsecutive(
-                [CommentInterface::class],
-                [CommentInterface::class]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $commentDefaultInstanceMock,
-                $commentForPurchaseInstanceMock
-            );
+            ->with(CommentInterface::class)
+            ->willReturn($commentDefaultInstanceMock);
 
         $this->assertSame($commentDefaultInstanceMock, $this->object->get('test_comment'));
     }

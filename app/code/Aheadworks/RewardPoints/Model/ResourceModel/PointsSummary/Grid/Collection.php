@@ -75,11 +75,13 @@ class Collection extends SearchResult
                 'customer_id' => 'main_table.entity_id',
                 'website_id' => 'main_table.website_id',
                 'firstname',
-                'lastname'
+                'lastname',
+                'email'
             ]
         );
 
         $this->addNameToSelect();
+        $this->addCustomerEmailToSelect();
         $this->joinPointsSummaryTable();
         $this->joinLifetimeSales();
         $this->joinNootificationStatuses();
@@ -102,6 +104,21 @@ class Collection extends SearchResult
         $select = $this->getSelect();
         $select->columns(
             ['customer_name' => $nameExpr]
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add Customer email to select
+     *
+     * @return $this
+     */
+    private function addCustomerEmailToSelect()
+    {
+        $select = $this->getSelect();
+        $select->columns(
+            ['customer_email' => 'email']
         );
 
         return $this;
@@ -252,6 +269,8 @@ class Collection extends SearchResult
                 $field = [$field, $field];
                 $condition = [['null' => null], $condition];
             }
+        } elseif ($field == 'customer_email') {
+            $field = 'email';
         }
 
         return parent::addFieldToFilter($field, $condition);

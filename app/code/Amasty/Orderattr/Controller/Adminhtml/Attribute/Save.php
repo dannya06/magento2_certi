@@ -1,16 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
 namespace Amasty\Orderattr\Controller\Adminhtml\Attribute;
 
-
 class Save extends \Amasty\Orderattr\Controller\Adminhtml\Attribute
 {
-
     /**
      * @var \Amasty\Orderattr\Helper\Config
      */
@@ -40,8 +38,16 @@ class Save extends \Amasty\Orderattr\Controller\Adminhtml\Attribute
         $data = $this->getRequest()->getPostValue();
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($data) {
-
             $redirectBack = $this->getRequest()->getParam('back', false);
+            if (isset($data['attribute_code'])
+                && in_array($data['attribute_code'], ['quote_id', 'id', 'order_entity_id', 'customer_id', 'create_at'])
+            ) {
+                $this->messageManager->addErrorMessage(
+                    __('You can`t create attribute with this "Attribute Code": %1', $data['attribute_code'])
+                );
+                $this->_session->setAttributeData($data);
+                return $resultRedirect->setPath('*/*/edit', ['_current' => true]);
+            }
             $model = $this->createEavAttributeModel();
             $attributeId = $this->getRequest()->getParam('attribute_id', null);
 
@@ -49,9 +55,9 @@ class Save extends \Amasty\Orderattr\Controller\Adminhtml\Attribute
                 $model->load($attributeId);
 
                 if (!$this->isOrderAttribute($model)) {
-                    $this->messageManager->addError(__('You cannot update this attribute'));
-                    $this->messageManager->setAttributeData($data);
-                    return $resultRedirect->setPath('*/*/', ['_current' => true]);
+                    $this->messageManager->addErrorMessage(__('You can`t update this attribute'));
+                    $this->_session->setAttributeData($data);
+                    return $resultRedirect->setPath('*/*/edit', ['_current' => true]);
                 }
 
                 $data['attribute_code'] = $model->getAttributeCode();

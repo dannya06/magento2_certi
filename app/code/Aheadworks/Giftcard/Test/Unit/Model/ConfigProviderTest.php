@@ -16,7 +16,7 @@ use Magento\Framework\UrlInterface;
  *
  * @package Aheadworks\Giftcard\Test\Unit\Model
  */
-class ConfigProviderTest extends \PHPUnit_Framework_TestCase
+class ConfigProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConfigProvider

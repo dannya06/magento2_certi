@@ -8,7 +8,6 @@ namespace Aheadworks\Giftcard\Ui\Component\Form;
 
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
-use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardType;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
@@ -59,14 +58,12 @@ class Fieldset extends \Magento\Ui\Component\Form\Fieldset
         $config = $this->getData('config');
         $orderId = $this->getGiftCardOrderId();
         $giftcard = $this->getGiftcard();
-        $giftcardId = $giftcard && $giftcard->getId() ? $giftcard->getId() : null;
-        $giftcardTypePhysical = $giftcard && $giftcard->getType() == GiftcardType::VALUE_PHYSICAL ? true : false;
+        $giftcardId = !$giftcard ? : $giftcard->getId();
 
         if ((isset($config['visibleIsSetGcId']) && !$config['visibleIsSetGcId'] && $giftcardId) ||
             (isset($config['visibleIsSetGcId']) && $config['visibleIsSetGcId'] && !$giftcardId) ||
             (isset($config['visibleIsSetOrderId']) && !$config['visibleIsSetOrderId'] && $orderId) ||
-            (isset($config['visibleIsSetOrderId']) && $config['visibleIsSetOrderId'] && !$orderId) ||
-            (isset($config['visibleOnPhysicalGc']) && !$config['visibleOnPhysicalGc'] && $giftcardTypePhysical)
+            (isset($config['visibleIsSetOrderId']) && $config['visibleIsSetOrderId'] && !$orderId)
         ) {
             $config['componentDisabled'] = true;
         }
@@ -74,11 +71,11 @@ class Fieldset extends \Magento\Ui\Component\Form\Fieldset
     }
 
     /**
-     * Retrieve current gift card
+     * Retrieve current gift card id
      *
      * @return GiftcardInterface|null
      */
-    public function getGiftCard()
+    public function getGiftcard()
     {
         $giftcardId = $this->getContext()->getRequestParam(
             $this->getContext()->getDataProvider()->getRequestFieldName(),

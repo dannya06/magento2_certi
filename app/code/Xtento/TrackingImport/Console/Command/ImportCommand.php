@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.0)
- * ID:            HdWKOY0KdgGaRx+26HyONH06+SvSVZH7A2yQmSKRHJU=
- * Packaged:      2017-10-04T08:30:20+00:00
- * Last Modified: 2017-07-11T13:03:24+00:00
+ * Product:       Xtento_TrackingImport (2.3.6)
+ * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
+ * Packaged:      2018-02-26T09:10:55+00:00
+ * Last Modified: 2017-09-20T19:16:19+00:00
  * File:          app/code/Xtento/TrackingImport/Console/Command/ImportCommand.php
  * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -45,6 +45,12 @@ class ImportCommand extends Command
         \Xtento\TrackingImport\Model\ProfileFactory $profileFactory,
         \Xtento\TrackingImport\Model\ImportFactory $importFactory
     ) {
+        /*try {
+            //https://magento.stackexchange.com/questions/152089/magento2-command-line-sending-email-using-block-templates-error-missing-r
+            $appState->setAreaCode('adminhtml');
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            // intentionally left empty
+        }*/
         $this->appState = $appState;
         $this->profileFactory = $profileFactory;
         $this->importFactory = $importFactory;

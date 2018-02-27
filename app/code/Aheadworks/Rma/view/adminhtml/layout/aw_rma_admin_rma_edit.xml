@@ -6,22 +6,12 @@
 */
 -->
 
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="aw_rma_admin_default"/>
-    <head>
-        <css src="Aheadworks_Rma::css/thread.css"/>
-    </head>
+    <update handle="editor"/>
     <body>
-        <referenceContainer name="admin.scope.col.wrap" htmlClass="admin__old" />
-
-        <referenceContainer name="page.content">
-            <block class="Aheadworks\Rma\Block\Adminhtml\Request\Edit\Tabs" name="aheadworks_rma_request_edit_tabs" before="page.main.container"/>
-        </referenceContainer>
-        <referenceContainer name="left">
-            <block class="Aheadworks\Rma\Block\Adminhtml\Request\Edit\Thread" name="aheadworks_rma_request_thread"/>
-        </referenceContainer>
         <referenceContainer name="content">
-            <block class="Aheadworks\Rma\Block\Adminhtml\Request\Edit" name="aheadworks_rma_request_edit"/>
+            <uiComponent name="aw_rma_request_form"/>
         </referenceContainer>
     </body>
 </page>

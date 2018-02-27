@@ -6,53 +6,50 @@
 
 namespace Aheadworks\Rma\Model;
 
-class Request extends \Magento\Framework\Model\AbstractModel
+use Aheadworks\Rma\Api\Data\RequestInterface;
+use Aheadworks\Rma\Model\Request\IncrementIdGenerator;
+use Magento\Framework\Model\AbstractModel;
+use Aheadworks\Rma\Model\Request\Validator as RequestValidator;
+use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Registry;
+use Aheadworks\Rma\Model\ResourceModel\Request as ResourceRequest;
+use Magento\Framework\Stdlib\DateTime;
+
+/**
+ * Class Request
+ *
+ * @package Aheadworks\Rma\Model
+ */
+class Request extends AbstractModel implements RequestInterface
 {
     /**
-     * @var \Aheadworks\Rma\Model\ResourceModel\RequestItem\Collection
+     * @var RequestValidator
      */
-    protected $itemsCollection;
+    private $validator;
 
     /**
-     * @var \Aheadworks\Rma\Model\ResourceModel\RequestItem\CollectionFactory
+     * @var IncrementIdGenerator
      */
-    protected $itemsCollectionFactory;
+    private $incrementIdGenerator;
 
     /**
-     * @var \Aheadworks\Rma\Model\ResourceModel\ThreadMessage\Collection
-     */
-    protected $thread;
-
-    /**
-     * @var \Magento\Sales\Model\OrderFactory
-     */
-    protected $orderFactory;
-
-    /**
-     * @var \Magento\Customer\Model\CustomerFactory
-     */
-    protected $customerFactory;
-
-    /**
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param ResourceModel\RequestItem\CollectionFactory $itemsCollectionFactory
-     * @param ResourceModel\ThreadMessage\CollectionFactory $threadMessageCollectionFactory
-     * @param \Magento\Sales\Model\OrderFactory $orderFactory
-     * @param \Magento\Customer\Model\CustomerFactory $customerFactory
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
+     * @param Context $context
+     * @param Registry $registry
+     * @param RequestValidator $validator
+     * @param IncrementIdGenerator $incrementIdGenerator
+     * @param AbstractResource|null $resource
+     * @param AbstractDb|null $resourceCollection
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Aheadworks\Rma\Model\ResourceModel\RequestItem\CollectionFactory $itemsCollectionFactory,
-        \Aheadworks\Rma\Model\ResourceModel\ThreadMessage\CollectionFactory $threadMessageCollectionFactory,
-        \Magento\Sales\Model\OrderFactory $orderFactory,
-        \Magento\Customer\Model\CustomerFactory $customerFactory,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        Context $context,
+        Registry $registry,
+        RequestValidator $validator,
+        IncrementIdGenerator $incrementIdGenerator,
+        AbstractResource $resource = null,
+        AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct(
@@ -62,127 +59,328 @@ class Request extends \Magento\Framework\Model\AbstractModel
             $resourceCollection,
             $data
         );
-        $this->itemsCollectionFactory = $itemsCollectionFactory;
-        $this->thread = $threadMessageCollectionFactory->create();
-        $this->orderFactory = $orderFactory;
-        $this->customerFactory = $customerFactory;
+        $this->validator = $validator;
+        $this->incrementIdGenerator = $incrementIdGenerator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function _construct()
     {
-        $this->_init('Aheadworks\Rma\Model\ResourceModel\Request');
+        $this->_init(ResourceRequest::class);
     }
 
     /**
-     * @param string $link
-     * @return $this
+     * {@inheritdoc}
      */
-    public function loadByExternalLink($link)
+    public function getId()
     {
-        return $this->load($link, 'external_link');
+        return $this->getData(self::ID);
     }
 
     /**
-     * @param bool $forceReload
-     * @return ResourceModel\RequestItem\Collection
+     * {@inheritdoc}
      */
-    public function getItemsCollection($forceReload = false)
+    public function setId($id)
     {
-        if (!$this->itemsCollection || $forceReload) {
-            $this->itemsCollection = $this->itemsCollectionFactory
-                ->create()
-                ->addRequestFilter($this->getId())
-                ->joinOrderItem()
-            ;
-        }
-        return $this->itemsCollection;
+        return $this->setData(self::ID, $id);
     }
 
     /**
-     * @return bool
-     */
-    public function isVirtual()
-    {
-        foreach ($this->getItemsCollection() as $item) {
-            if (!$item->getIsVirtual()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function getThread()
-    {
-        if (!$this->thread->isLoaded()) {
-            $this->thread
-                ->getRequestThread($this->getId())
-                ->setOrder('created_at')
-                ->load()
-            ;
-        }
-        return $this->thread;
-    }
-
-    /**
-     * @return string|null
+     * {@inheritdoc}
      */
     public function getIncrementId()
     {
-        if (!$this->hasData('increment_id')) {
-            $this->getResource()->attachIncrementId($this);
-        }
-        return $this->getData('increment_id');
+        return $this->getData(self::INCREMENT_ID);
     }
 
     /**
-     * @param null $index
-     * @return array|null
+     * {@inheritdoc}
      */
-    public function getCustomFields($index = null)
+    public function setIncrementId($incrementId)
     {
-        if ($this->getId() && !$this->hasData('custom_fields')) {
-            $this->getResource()->attachCustomFieldValues($this);
-        }
-        return $this->getData('custom_fields', $index);
+        return $this->setData(self::INCREMENT_ID, $incrementId);
     }
 
     /**
-     * @param int|string $id
-     * @param string $default
-     * @return string
+     * {@inheritdoc}
      */
-    public function getCustomFieldValue($id, $default = '')
+    public function getOrderId()
     {
-        if (is_numeric($id)) {
-            return $this->getCustomFields($id);
-        }
-        $value = $this->getResource()->getCustomFieldValueByName($this, $id);
-        return $value ? : $default;
+        return $this->getData(self::ORDER_ID);
     }
 
     /**
-     * @return \Magento\Sales\Model\Order|null
+     * {@inheritdoc}
      */
-    public function getOrder()
+    public function setOrderId($orderId)
     {
-        if ($this->getId() && !$this->hasData('order')) {
-            $order = $this->orderFactory->create()->load($this->getOrderId());
-            $this->setData('order', $order);
-        }
-        return $this->getData('order');
+        return $this->setData(self::ORDER_ID, $orderId);
     }
 
     /**
-     * @return \Magento\Customer\Model\Customer|null
+     * {@inheritdoc}
      */
-    public function getCustomer()
+    public function getPaymentMethod()
     {
-        if ($this->getCustomerId() && !$this->hasData('customer')) {
-            $customer = $this->customerFactory->create()->load($this->getCustomerId());
-            if ($customer->getId()) {
-                $this->setData('customer', $customer);
-            }
+        return $this->getData(self::PAYMENT_METHOD);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPaymentMethod($paymentMethod)
+    {
+        return $this->setData(self::PAYMENT_METHOD, $paymentMethod);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCreatedAt()
+    {
+        return $this->getData(self::CREATED_AT);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCreatedAt($createdAt)
+    {
+        return $this->setData(self::CREATED_AT, $createdAt);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUpdatedAt()
+    {
+        return $this->getData(self::UPDATED_AT);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        return $this->setData(self::UPDATED_AT, $updatedAt);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStoreId()
+    {
+        return $this->getData(self::STORE_ID);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStoreId($storeId)
+    {
+        return $this->setData(self::STORE_ID, $storeId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLastReplyBy()
+    {
+        return $this->getData(self::LAST_REPLY_BY);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLastReplyBy($lastReplyBy)
+    {
+        return $this->setData(self::LAST_REPLY_BY, $lastReplyBy);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStatusId()
+    {
+        return $this->getData(self::STATUS_ID);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStatusId($statusId)
+    {
+        return $this->setData(self::STATUS_ID, $statusId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomerId()
+    {
+        return $this->getData(self::CUSTOMER_ID);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomerId($customerId)
+    {
+        return $this->setData(self::CUSTOMER_ID, $customerId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomerName()
+    {
+        return $this->getData(self::CUSTOMER_NAME);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomerName($customerName)
+    {
+        return $this->setData(self::CUSTOMER_NAME, $customerName);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomerEmail()
+    {
+        return $this->getData(self::CUSTOMER_EMAIL);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomerEmail($customerEmail)
+    {
+        return $this->setData(self::CUSTOMER_EMAIL, $customerEmail);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPrintLabel()
+    {
+        return $this->getData(self::PRINT_LABEL);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPrintLabel($printLabel)
+    {
+        return $this->setData(self::PRINT_LABEL, $printLabel);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExternalLink()
+    {
+        return $this->getData(self::EXTERNAL_LINK);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setExternalLink($externalLink)
+    {
+        return $this->setData(self::EXTERNAL_LINK, $externalLink);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomFields()
+    {
+        return $this->getData(self::CUSTOM_FIELDS);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomFields($customFields)
+    {
+        return $this->setData(self::CUSTOM_FIELDS, $customFields);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrderItems()
+    {
+        return $this->getData(self::ORDER_ITEMS);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOrderItems($orderItems)
+    {
+        return $this->setData(self::ORDER_ITEMS, $orderItems);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getThreadMessage()
+    {
+        return $this->getData(self::THREAD_MESSAGE);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setThreadMessage($threadMessage)
+    {
+        return $this->setData(self::THREAD_MESSAGE, $threadMessage);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExtensionAttributes()
+    {
+        return $this->getData(self::EXTENSION_ATTRIBUTES_KEY);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setExtensionAttributes(
+        \Aheadworks\Rma\Api\Data\RequestExtensionInterface $extensionAttributes
+    ) {
+        return $this->setData(self::EXTENSION_ATTRIBUTES_KEY, $extensionAttributes);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeSave()
+    {
+        $now = new \DateTime();
+        $now = $now->format(DateTime::DATETIME_PHP_FORMAT);
+        if (!$this->getId()) {
+            $this
+                ->setCreatedAt($now)
+                ->setIncrementId($this->incrementIdGenerator->generate());
         }
-        return $this->getData('customer');
+        $this->setUpdatedAt($now);
+        $this->validateBeforeSave();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _getValidationRulesBeforeSave()
+    {
+        return $this->validator;
     }
 }

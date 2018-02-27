@@ -8,108 +8,103 @@ namespace Aheadworks\AdvancedReports\Model;
 
 use Aheadworks\AdvancedReports\Model\Source\Groupby;
 use Aheadworks\AdvancedReports\Model\ResourceModel\DatesGrouping\Factory as DatesGroupingFactory;
-use Magento\Framework\App\CacheInterface;
-use Aheadworks\AdvancedReports\Model\Filter;
-use Aheadworks\AdvancedReports\Model\Url as UrlModel;
-use Aheadworks\AdvancedReports\Model\ResourceModel\DatesGrouping;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Aheadworks\AdvancedReports\Model\Source\Groupby as GroupbySource;
 
 /**
  * Class Period
  *
  * @package Aheadworks\AdvancedReports\Model
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Period
 {
-    /**
-     * @var string
-     */
-    const MIN_DATE_CACHE_KEY = 'aw_arep_period_firstdate';
-
-    /**
-     * @var CacheInterface
-     */
-    private $cache;
-
     /**
      * @var DatesGroupingFactory
      */
     private $datesGroupingFactory;
 
     /**
-     * @var Filter\Groupby
+     * @var TimezoneInterface
      */
-    private $groupbyFilter;
+    private $localeDate;
 
     /**
-     * @var Filter\Period
-     */
-    private $periodFilter;
-
-    /**
-     * @var UrlModel
-     */
-    private $urlModel;
-
-    /**
-     * @param CacheInterface $cache
      * @param DatesGroupingFactory $datesGroupingFactory
-     * @param Filter\Groupby $groupbyFilter
-     * @param Filter\Period $periodFilter
-     * @param UrlModel $urlModel
+     * @param TimezoneInterface $localeDate
      */
     public function __construct(
-        CacheInterface $cache,
         DatesGroupingFactory $datesGroupingFactory,
-        Filter\Groupby $groupbyFilter,
-        Filter\Period $periodFilter,
-        UrlModel $urlModel
+        TimezoneInterface $localeDate
     ) {
-        $this->cache = $cache;
         $this->datesGroupingFactory = $datesGroupingFactory;
-        $this->groupbyFilter = $groupbyFilter;
-        $this->periodFilter = $periodFilter;
-        $this->urlModel = $urlModel;
+        $this->localeDate = $localeDate;
     }
 
     /**
-     * Retrieve first available date as string
+     * Retrieve resolved period dates
      *
-     * @return string
+     * @param array $item
+     * @param string $groupBy
+     * @param \DateTime $periodFrom
+     * @param \DateTime $periodTo
+     * @param bool $isCompare
+     * @return array|null
      */
-    public function getFirstAvailableDateAsString()
+    public function periodDatesResolve($item, $groupBy, $periodFrom, $periodTo, $isCompare)
     {
-        if (!$minDate = $this->cache->load(self::MIN_DATE_CACHE_KEY)) {
-            $minDate = $this->datesGroupingFactory->create(DatesGrouping\Day::KEY)->getMinDate();
-            $this->cache->save($minDate, self::MIN_DATE_CACHE_KEY, [], null);
+        $prefix = $isCompare ? 'c_' : '';
+        $startDate = $endDate = '';
+        $timezone = $this->localeDate->getConfigTimezone(ScopeConfigInterface::SCOPE_TYPE_DEFAULT);
+        switch ($groupBy) {
+            case GroupbySource::TYPE_DAY:
+                if (isset($item[$prefix . 'date'])) {
+                    $startDate = $endDate = new \DateTime($item[$prefix . 'date'], new \DateTimeZone($timezone));
+                }
+                break;
+            case GroupbySource::TYPE_WEEK:
+            case GroupbySource::TYPE_MONTH:
+            case GroupbySource::TYPE_QUARTER:
+            case GroupbySource::TYPE_YEAR:
+                if (isset($item[$prefix . 'start_date'])) {
+                    $startDate = new \DateTime($item[$prefix . 'start_date'], new \DateTimeZone($timezone));
+                }
+                if (isset($item[$prefix . 'end_date'])) {
+                    $endDate = new \DateTime($item[$prefix . 'end_date'], new \DateTimeZone($timezone));
+                }
+                break;
         }
-        return $minDate;
+        if (empty($startDate) || empty($endDate)) {
+            return null;
+        }
+
+        $notChangeEndDate = isset($item['not_change_end_date']) && $item['not_change_end_date'];
+        $startDate = $startDate < $periodFrom ? $periodFrom : $startDate;
+        $endDate = $endDate > $periodTo && !$notChangeEndDate ? $periodTo : $endDate;
+
+        return ['start_date' => $startDate, 'end_date' => $endDate];
     }
 
     /**
-     * Retrieve period label and url
+     * Get periods between dates
      *
-     * @param [] $item
-     * @param [] $paramsFromRequest
-     * @param string $reportFrom
-     * @param string $reportTo
-     * @param bool $detailGroup
-     * @return []
+     * @param \DateTime $from
+     * @param int $intervalsCount
+     * @param string $groupBy
+     * @return array
      */
-    public function getPeriod(
-        $item,
-        $paramsFromRequest = [],
-        $reportFrom = 'salesoverview',
-        $reportTo = 'productperformance',
-        $detailGroup = true
-    ) {
-        $period = $this->urlModel->getUrlByPeriod($item, $reportFrom, $reportTo, $paramsFromRequest, $detailGroup);
-        $periodLabel = $this->getPeriodAsString(
-            $period['start_date'],
-            $period['end_date'],
-            $this->groupbyFilter->getCurrentGroupByKey()
-        );
-        return ['period_url' => $period['url'], 'period_label' => $periodLabel];
+    public function getPeriods($from, $intervalsCount, $groupBy)
+    {
+        $result = ['period' => $groupBy, 'intervals' => []];
+        try {
+            $datePeriod = $this->datesGroupingFactory->create($groupBy);
+            $intervals = $datePeriod->getPeriods($from, $intervalsCount);
+            $result['intervals'] = $intervals;
+        } catch (LocalizedException $e) {
+            return $result;
+        }
+        return $result;
     }
 
     /**
@@ -117,14 +112,14 @@ class Period
      *
      * @param \DateTime $from
      * @param \DateTime $to
-     * @param string $groupType
-     * @param boolean $isShowYear = true
+     * @param string $groupBy
+     * @param bool $isShowYear
      * @return string
      */
-    public function getPeriodAsString($from, $to, $groupType, $isShowYear = true)
+    public function getPeriodAsString($from, $to, $groupBy, $isShowYear = true)
     {
         $value = '';
-        switch($groupType) {
+        switch ($groupBy) {
             case Groupby::TYPE_DAY:
                 $value = $this->formatDate($from, $isShowYear);
                 break;
@@ -156,83 +151,5 @@ class Period
     {
         $pattern = $isShowYear ? 'M d, Y' : 'M d';
         return $date->format($pattern);
-    }
-
-    /**
-     * Get periods between dates
-     *
-     * @param \DateTime $from
-     * @param int $intervalsCount
-     * @return []
-     */
-    public function getPeriods($from, $intervalsCount)
-    {
-        $groupBy = $this->groupbyFilter->getCurrentGroupByKey();
-        $result['period'] = $groupBy;
-        $result['intervals'] = [];
-        try {
-            $datePeriod = $this->datesGroupingFactory->create($groupBy);
-        } catch (\LocalizedException $e) {
-            return $result;
-        }
-        $result['intervals'] = $datePeriod->getPeriods($from, $intervalsCount);
-        return $result;
-    }
-
-    /**
-     * Get compare period name from string from-to
-     *
-     * @param string $from
-     * @param string $to
-     * @return string
-     */
-    public function getComparePeriodFromString($from, $to)
-    {
-        $startDate = new \DateTime($from, $this->periodFilter->getLocaleTimezone());
-        $compareFrom = $this->periodFilter->getCompareFrom();
-        if ($startDate < $compareFrom) {
-            $startDate = $compareFrom;
-        }
-
-        $endDate = new \DateTime($to, $this->periodFilter->getLocaleTimezone());
-        $compareTo = $this->periodFilter->getCompareTo();
-        if ($endDate > $compareTo) {
-            $endDate = $compareTo;
-        }
-
-        return $this->getPeriodAsString(
-            $startDate,
-            $endDate,
-            $this->groupbyFilter->getCurrentGroupByKey()
-        );
-    }
-
-    /**
-     * Get period name from string from-to
-     *
-     * @param string $from
-     * @param string $to
-     * @param bool $truncEndDate
-     * @return string
-     */
-    public function getPeriodFromString($from, $to, $truncEndDate = true)
-    {
-        $startDate = new \DateTime($from, $this->periodFilter->getLocaleTimezone());
-        $periodFrom = $this->periodFilter->getPeriodFrom();
-        if ($startDate < $periodFrom) {
-            $startDate = $periodFrom;
-        }
-
-        $endDate = new \DateTime($to, $this->periodFilter->getLocaleTimezone());
-        $periodTo = $this->periodFilter->getPeriodTo();
-        if ($endDate > $periodTo && $truncEndDate) {
-            $endDate = $periodTo;
-        }
-
-        return $this->getPeriodAsString(
-            $startDate,
-            $endDate,
-            $this->groupbyFilter->getCurrentGroupByKey()
-        );
     }
 }

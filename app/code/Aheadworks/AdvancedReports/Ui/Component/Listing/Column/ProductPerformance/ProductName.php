@@ -61,6 +61,8 @@ class ProductName extends \Magento\Ui\Component\Listing\Columns\Column
                 $item['row_url'] = $this->urlModel->getUrl(
                     'productperformance',
                     'productperformance_variantperformance',
+                    $dataSource['data']['periodFromFilter'],
+                    $dataSource['data']['periodToFilter'],
                     $params
                 );
                 $item['row_label'] = $item['product_name'];

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -29,7 +29,6 @@ class Attribute implements \Magento\Framework\Indexer\ActionInterface, \Magento\
 
     private $searchRequestConfig;
 
-
     public function __construct(
         FullFactory $fullActionFactory,
         IndexerHandlerFactory $indexerHandlerFactory,
@@ -45,7 +44,6 @@ class Attribute implements \Magento\Framework\Indexer\ActionInterface, \Magento\
         $this->searchRequestConfig = $searchRequestConfig;
         $this->data = $data;
     }
-
 
     public function execute($ids)
     {
@@ -81,7 +79,10 @@ class Attribute implements \Magento\Framework\Indexer\ActionInterface, \Magento\
 
         $dimension = [];
 
-        $attributes = $saveHandler->getNoneIndexedAttributesHash($dimension);
+        $attributes = $saveHandler->getNoneIndexedAttributesHash();
+        if (!$attributes) {
+            return;
+        }
         $saveHandler->setAttributeHash($attributes);
 
         $saveHandler->cleanIndex($dimension);

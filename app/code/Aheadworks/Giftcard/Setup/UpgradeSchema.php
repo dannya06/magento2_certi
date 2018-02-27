@@ -9,6 +9,7 @@ namespace Aheadworks\Giftcard\Setup;
 use Aheadworks\Giftcard\Model\Giftcard\History\CommentInterface;
 use Aheadworks\Giftcard\Model\Source\EmailStatus;
 use Aheadworks\Giftcard\Model\Source\Giftcard\Status;
+use Aheadworks\Giftcard\Model\Source\YesNo;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
@@ -26,6 +27,7 @@ use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
 use Magento\Store\Model\StoreManagerInterface;
 use Aheadworks\Giftcard\Model\Source\History\Action as HistoryAction;
+use Magento\Framework\DB\Ddl\Table;
 
 /**
  * Class UpgradeSchema
@@ -103,6 +105,9 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->addTables110($setup);
             $this->updateTableData110($setup);
         }
+        if ($context->getVersion() && version_compare($context->getVersion(), '1.2.0', '<')) {
+            $this->addTables120($setup);
+        }
     }
 
     /**
@@ -120,35 +125,35 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ->newTable($installer->getTable('aw_giftcard_order'))
             ->addColumn(
                 'id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                Table::TYPE_INTEGER,
                 null,
                 ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Id'
             )
             ->addColumn(
                 'giftcard_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                Table::TYPE_INTEGER,
                 null,
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Giftcard Id'
             )
             ->addColumn(
                 'order_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                Table::TYPE_INTEGER,
                 null,
                 ['unsigned' => true, 'nullable' => false],
                 'Order Id'
             )
             ->addColumn(
                 'base_giftcard_amount',
-                \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                Table::TYPE_DECIMAL,
                 '12,2',
                 ['unsigned' => true, 'default' => null],
                 'Base Giftcard Amount'
             )
             ->addColumn(
                 'giftcard_amount',
-                \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                Table::TYPE_DECIMAL,
                 '12,2',
                 ['unsigned' => true, 'default' => null],
                 'Giftcard Amount'
@@ -167,31 +172,31 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ->newTable($installer->getTable('aw_giftcard_history_entity'))
             ->addColumn(
                 'id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                Table::TYPE_INTEGER,
                 null,
                 ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Id'
             )->addColumn(
                 'history_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                Table::TYPE_INTEGER,
                 null,
                 ['nullable' => false, 'unsigned' => true],
                 'History Id'
             )->addColumn(
                 'entity_type',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                Table::TYPE_SMALLINT,
                 null,
                 ['nullable' => false, 'unsigned' => true],
                 'Entity Type'
             )->addColumn(
                 'entity_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                Table::TYPE_INTEGER,
                 null,
                 ['nullable' => false, 'unsigned' => true],
                 'Entity Id'
             )->addColumn(
                 'entity_label',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                Table::TYPE_TEXT,
                 '255',
                 ['nullable' => true],
                 'Entity Label'
@@ -208,7 +213,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'history_id',
                 $installer->getTable('aw_giftcard_history'),
                 'id',
-                \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
+                Table::ACTION_CASCADE
             )->setComment('Aheadworks Giftcard History Entity');
         $installer->getConnection()->createTable($table);
 
@@ -254,7 +259,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->getTable('aw_giftcard'),
             'delivery_date',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+                'type' => Table::TYPE_DATETIME,
                 'nullable' => true,
                 'comment' => 'Delivery Date'
             ]
@@ -263,7 +268,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->getTable('aw_giftcard'),
             'delivery_date_timezone',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'type' => Table::TYPE_TEXT,
                 'nullable' => true,
                 'length' => 255,
                 'comment' => 'Delivery Date Timezone'
@@ -273,7 +278,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->getTable('aw_giftcard'),
             'email_sent',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                'type' => Table::TYPE_SMALLINT,
                 'nullable' => false,
                 'default' => EmailStatus::SENT,
                 'comment' => 'Email Sent'
@@ -283,7 +288,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->getTable('aw_giftcard'),
             'headline',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'type' => Table::TYPE_TEXT,
                 'length' => 255,
                 'nullable' => true,
                 'comment' => 'Headline'
@@ -293,7 +298,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->getTable('aw_giftcard'),
             'message',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'type' => Table::TYPE_TEXT,
                 'length' => '2M',
                 'nullable' => true,
                 'comment' => 'Message'
@@ -305,7 +310,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->getTable('aw_giftcard_history'),
             'comment',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'type' => Table::TYPE_TEXT,
                 'nullable' => true,
                 'length' => 255,
                 'comment' => 'Comment'
@@ -315,7 +320,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->getTable('aw_giftcard_history'),
             'comment_placeholder',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'type' => Table::TYPE_TEXT,
                 'nullable' => true,
                 'length' => 255,
                 'comment' => 'Comment Placeholder'
@@ -325,7 +330,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->getTable('aw_giftcard_history'),
             'action_type',
             [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                'type' => Table::TYPE_SMALLINT,
                 'nullable' => false,
                 'comment' => 'Comment Action Type'
             ]
@@ -436,5 +441,114 @@ class UpgradeSchema implements UpgradeSchemaInterface
         );
 
         return $this;
+    }
+
+    /**
+     * Add tables for version 1.2.0
+     *
+     * @param SchemaSetupInterface $installer
+     * @return $this
+     */
+    private function addTables120(SchemaSetupInterface $installer)
+    {
+        /**
+         * Create table 'aw_giftcard_pool'
+         */
+        $table = $installer->getConnection()
+            ->newTable($installer->getTable('aw_giftcard_pool'))
+            ->addColumn(
+                'id',
+                Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                'Id'
+            )->addColumn(
+                'name',
+                Table::TYPE_TEXT,
+                100,
+                ['nullable' => false],
+                'Pool Name'
+            )->addColumn(
+                'code_length',
+                Table::TYPE_SMALLINT,
+                null,
+                ['unsigned' => true, 'nullable' => false],
+                'Code Length'
+            )->addColumn(
+                'code_format',
+                Table::TYPE_TEXT,
+                30,
+                ['nullable' => false],
+                'Code Format'
+            )->addColumn(
+                'code_prefix',
+                Table::TYPE_TEXT,
+                10,
+                ['nullable' => true],
+                'Code Prefix'
+            )->addColumn(
+                'code_suffix',
+                Table::TYPE_TEXT,
+                10,
+                ['nullable' => true],
+                'Code Suffix'
+            )->addColumn(
+                'code_delimiter_at_every',
+                Table::TYPE_SMALLINT,
+                null,
+                ['unsigned' => true, 'nullable' => true],
+                'Code Delimiter Every X Characters'
+            )->addIndex(
+                $installer->getIdxName('aw_giftcard_pool', ['id']),
+                ['id']
+            )->addIndex(
+                $installer->getIdxName('aw_giftcard_pool', ['name']),
+                ['name']
+            )->setComment('Giftcard Pool Table');
+        $installer->getConnection()->createTable($table);
+
+        /**
+         * Create table 'aw_giftcard_pool_code'
+         */
+        $table = $installer->getConnection()
+            ->newTable($installer->getTable('aw_giftcard_pool_code'))
+            ->addColumn(
+                'id',
+                Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                'Id'
+            )->addColumn(
+                'pool_id',
+                Table::TYPE_INTEGER,
+                null,
+                ['unsigned' => true, 'nullable' => false],
+                'Pool Id'
+            )->addColumn(
+                'code',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => false],
+                'Code'
+            )->addColumn(
+                'used',
+                Table::TYPE_SMALLINT,
+                null,
+                ['unsigned' => true, 'nullable' => false, 'default' => YesNo::NO],
+                'Used'
+            )->addIndex(
+                $installer->getIdxName('aw_giftcard_pool_code', ['id']),
+                ['id']
+            )->addIndex(
+                $installer->getIdxName('aw_giftcard_pool_code', ['code']),
+                ['code']
+            )->addForeignKey(
+                $installer->getFkName('aw_giftcard_pool', 'id', 'aw_giftcard_pool_code', 'pool_id'),
+                'pool_id',
+                $installer->getTable('aw_giftcard_pool'),
+                'id',
+                Table::ACTION_CASCADE
+            )->setComment('Giftcard Pool Codes Table');
+        $installer->getConnection()->createTable($table);
     }
 }

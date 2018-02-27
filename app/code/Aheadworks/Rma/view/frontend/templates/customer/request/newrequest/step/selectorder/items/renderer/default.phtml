@@ -4,76 +4,65 @@
 * See LICENSE.txt for license details.
 */
 
-/* @var $block \Aheadworks\Rma\Block\Customer\Request\NewRequest\Step\SelectOrder\Items\Renderer */
+// @codingStandardsIgnoreFile
+
+/* @var $block \Aheadworks\Rma\Block\Customer\Request\Order\Item\Renderer\DefaultRenderer */
 ?>
 <?php if ($block->canRender()): ?>
     <?php
-        /** @var \Magento\Sales\Model\Order\Item $item */
         $item = $block->getItem();
         $order = $item->getOrder();
-        $itemMaxCount = $block->getItemMaxCount($item);
     ?>
-    <tr data-order-id="<?php echo $order->getId() ?>"
-        data-order-item-id="<?php echo $item->getId() ?>"
+    <tr data-order-id="<?php /* @noEscape */ echo $order->getId() ?>"
         class="order-item-row"
-        style="display: none;"
-        >
-        <?php $isItemsAvailable = $itemMaxCount && $block->isAllowedForOrder($order); ?>
-        <td data-th="<?php echo $block->escapeHtml(__('Item ID')) ?>" class="col item_id">
-            <?php if ($isItemsAvailable): ?>
-                <input type="checkbox"
-                       name="item_selected"
-                       value="<?php echo $item->getId() ?>"
-                       class="aw-rma-order-item-required order-item-select"
-                       data-order-id="<?php echo $order->getId() ?>"
-                    />
+        style="display: none;" >
+        <td data-th="<?php echo $block->escapeHtml(__('Product')) ?>" class="col product" colspan="3">
+            <?php if ($block->getItemProduct()): ?>
+                <div class="product product-item-image">
+                    <?php /* @noEscape */ echo $block->getItemProductImageHtml(); ?>
+                </div>
             <?php endif; ?>
+            <div class="product details product-item-details">
+                <span><?php echo $block->escapeHtml($block->getItemName()) ?></span>
+            </div>
         </td>
-        <td data-th="<?php echo $block->escapeHtml(__('Product')) ?>" class="col product" colspan="2">
-            <?php if ($item->getProduct()): ?>
-                <a href="<?php echo $block->getProductViewUrl($item) ?>">
-                    <span><?php echo $item->getName() ?></span>
-                </a>
-            <?php else: ?>
-                <?php echo $item->getName() ?>
-            <?php endif; ?>
-        </td>
-        <td data-th="<?php echo $block->escapeHtml(__('Items in order')) ?>" class="col items">
+        <td data-th="<?php echo $block->escapeHtml(__('Items in Order')) ?>" class="col items-info" colspan="2">
             <ul>
-                <li><span class="title"><?php echo __('Ordered') ?></span>&nbsp;<span class="content"><?php echo $item->getQtyOrdered() * 1 ?></span></li>
-                <li><span class="title"><?php echo __('Invoiced') ?></span>&nbsp;<span class="content"><?php echo $item->getQtyInvoiced() * 1 ?></span></li>
-                <li><span class="title"><?php echo __('Shipped') ?></span>&nbsp;<span class="content"><?php echo $item->getQtyShipped() * 1 ?></span></li>
-                <li><span class="title"><?php echo __('Refunded') ?></span>&nbsp;<span class="content"><?php echo $item->getQtyRefunded() * 1 ?></span></li>
+                <li>
+                    <span class="title"><?php echo $block->escapeHtml(__('Ordered')) ?></span>&nbsp;<span class="content"><?php /* @noEscape */ echo $item->getQtyOrdered() * 1 ?></span>
+                </li>
+                <li>
+                    <span class="title"><?php echo $block->escapeHtml(__('Invoiced')) ?></span>&nbsp;<span class="content"><?php /* @noEscape */ echo $item->getQtyInvoiced() * 1 ?></span>
+                </li>
+                <li>
+                    <span class="title"><?php echo $block->escapeHtml(__('Shipped')) ?></span>&nbsp;<span class="content"><?php /* @noEscape */ echo $item->getQtyShipped() * 1 ?></span>
+                </li>
+                <li>
+                    <span class="title"><?php echo $block->escapeHtml(__('Refunded')) ?></span>&nbsp;<span class="content"><?php /* @noEscape */ echo $item->getQtyRefunded() * 1 ?></span>
+                </li>
             </ul>
         </td>
-        <td data-th="<?php echo $block->escapeHtml(__('Items for return available')) ?>" class="col items_for_return" colspan="2">
-            <?php if ($isItemsAvailable): ?>
-                <div class="items_for_return__content">
-                    <div class="control">
-                        <input type="text"
-                               name="item[<?php echo $item->getId() ?>][qty]"
-                               value="<?php echo $itemMaxCount > 1 ? '' : $itemMaxCount ?>"
-                               class="input-qty required-number validate-greater-than-zero integer aw-rma-qty-max"
-                               disabled="disabled"
-                               data-order-id="<?php echo $order->getId() ?>"
-                               data-order-item-id="<?php echo $item->getId() ?>"
-                               data-max-value="<?php echo $itemMaxCount ?>"
-                            />
-                    </div>
-                    <div class="qty-total">
-                        <span>&nbsp;/&nbsp;<?php echo $itemMaxCount ?><?php echo __('available') ?> </span>
-                    </div>
+        <td data-th="<?php echo $block->escapeHtml(__('Items for Return Available')) ?>"
+            class="col items-for-return"
+            colspan="3">
+            <?php if ($block->isItemAvailable($item)): ?>
+                <div class="qty-total">
+                    <span><?php echo $block->escapeHtml(__('%1 available', $block->getItemMaxCount($item))) ?></span>
                 </div>
             <?php else: ?>
-                <div class="item-message"><?php echo __('No items available') ?></div>
+                <div class="item-message">
+                    <span><?php echo $block->escapeHtml(__('No items to return available.')) ?></span>
+                </div>
             <?php endif; ?>
-            <?php if ($requestCount = $block->getRequestsForItem($item)->getSize()): ?>
-                <div class="item-message"><?php echo __('Another Returns for this product') ?>:</div>
-                <?php foreach ($block->getRequestsForItem($item) as $request): ?>
-                    <a class="rma-link" href="<?php echo $block->getRequestViewUrl($request->getId()) ?>">
-                        <span><?php echo $request->getIncrementId() ?></span>
-                    </a>
-                    <?php if (--$requestCount): ?>, <?php endif; ?>
+            <?php if ($requestCount = count($block->getRequestsForItem())): ?>
+                <div class="item-message">
+                    <span><?php echo $block->escapeHtml(__('Another Returns for This Product:')) ?></span>
+                </div>
+                <?php foreach ($block->getRequestsForItem() as $request): ?>
+                    <a class="rma-link"
+                       href="<?php echo $block->escapeUrl($block->getRequestViewUrl($request)) ?>">
+                        <span>#<?php /* @noEscape */ echo $request->getIncrementId() ?></span>
+                    </a><?php if (--$requestCount): ?>, <?php endif; ?>
                 <?php endforeach; ?>
             <?php endif; ?>
         </td>
