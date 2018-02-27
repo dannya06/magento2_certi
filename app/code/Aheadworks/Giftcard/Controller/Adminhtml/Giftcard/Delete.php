@@ -10,6 +10,11 @@ use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
+/**
+ * Class Delete
+ *
+ * @package Aheadworks\Giftcard\Controller\Adminhtml\Giftcard
+ */
 class Delete extends \Magento\Backend\App\Action
 {
     /**

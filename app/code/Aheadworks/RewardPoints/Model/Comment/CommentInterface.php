@@ -44,4 +44,22 @@ interface CommentInterface
         $renderingUrl = false,
         $frontend = false
     );
+
+    /**
+     * Render comment key to comment label with translation
+     *
+     * @param array $arguments
+     * @param string $key
+     * @param string $label
+     * @param bool $renderingUrl
+     * @param bool $frontend
+     * @return array
+     */
+    public function renderTranslatedComment(
+        $arguments = [],
+        $key = null,
+        $label = null,
+        $renderingUrl = false,
+        $frontend = false
+    );
 }

@@ -5,72 +5,53 @@
 
 define([
     'jquery',
-    'jquery/ui'
 ], function($) {
     'use strict';
 
     $.widget("awrma.awRmaRequestItemMassAction", {
-        actionType: 0,
-        actionItemId: 0,
+        _actionType: 0,
         options: {
+            selectAllSelector: '[data-role=select-all]',
+            deselectAllSelector: '[data-role=deselect-all]',
+            itemSelectSelector: '[data-role=item-return-select]'
         },
+
+        /**
+         * Initialize widget
+         */
         _create: function() {
             this._bind();
-            this.changeAction($(this.element).find('.action-type').val());
         },
-        destroy: function() {
-            this._unbind();
-        },
+
+        /**
+         * Event binding
+         */
         _bind: function() {
-            $(this.element).on('click', '.select-all-checkbox', $.proxy(this.onSelectAllClick, this));
-            $(this.element).on('change', '.action-type', $.proxy(this.onSelectActionChange, this));
-            $(this.element).on('click', '.action-apply', $.proxy(this.onApplyClick, this));
+            var handlers = {};
+
+            handlers['click ' + this.options.selectAllSelector] = this._onSelectAllClick;
+            handlers['click ' + this.options.deselectAllSelector] = this._onDeselectAllClick;
+            this._on(handlers);
         },
-        _unbind: function() {
-            $(this.element).off('click', '.select-all-checkbox');
-            $(this.element).off('change', '.action-type');
-            $(this.element).off('click', '.action-apply');
+
+        /**
+         * Click select all event handler
+         *
+         * @param {Object} event
+         */
+        _onSelectAllClick: function (event) {
+            event.preventDefault();
+            $(this.options.itemSelectSelector).prop('checked', true).trigger('change');
         },
-        onSelectAllClick: function (event) {
-            this.actionItemId = $(event.target).data('item');
-            var actions = $(this.element).find('.actions[data-item=' + this.actionItemId + ']');
-            if ($(event.target).prop('checked')) {
-                actions.show();
-            } else {
-                actions.hide();
-            }
-        },
-        onSelectActionChange: function(event) {
-            this.changeAction($(event.target).val());
-        },
-        onApplyClick: function () {
-            var itemDetails = $('.item-details[data-item=' + this.actionItemId + ']');
-            if (this.actionType == 'remove') {
-                if ($(this.element).closest('form').find('.item-details').length > 1) {
-                    itemDetails.closest('.item-container').remove();
-                }
-            } else {
-                var value = $(this.element)
-                    .find('.action-input-field [data-action=' + this.actionType + ']')
-                    .find('input, select, textarea')
-                    .filter('[type!=hidden]')
-                    .val();
-                itemDetails.find('[data-id=' + this.actionType + ']').val(value);
-            }
-        },
-        changeAction: function(actionType) {
-            var toHide = $(this.element).find('.action-input-field [data-action]');
-            var toShow = toHide.filter('[data-action=' + actionType + ']');
-            toHide.hide();
-            toShow.show();
-            this.resetValue(toShow);
-            this.actionType = actionType;
-        },
-        resetValue: function(inputContainer) {
-            inputContainer.find('input, select').val('');
-        },
-        getValue: function(inputContainer) {
-            return inputContainer.find('input, select').val();
+
+        /**
+         * Click deselect all event handler
+         *
+         * @param {Object} event
+         */
+        _onDeselectAllClick: function (event) {
+            event.preventDefault();
+            $(this.options.itemSelectSelector).prop('checked', false).trigger('change');
         }
     });
 

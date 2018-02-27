@@ -18,9 +18,9 @@ use Magento\Framework\DB\Select;
 class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\AbstractCollection
 {
     /**
-     * {@inheritdoc}
+     * @var bool
      */
-    protected $topFilterForChart = true;
+    private $manufacturerFilter;
 
     /**
      * {@inheritdoc}
@@ -37,10 +37,18 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     {
         $this->getSelect()
             ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(true))
             ->group('product_id');
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns(true));
+        parent::_renderFiltersBefore();
     }
 
     /**
@@ -52,7 +60,8 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
         $totalCost = 'SUM(COALESCE(main_table.total_cost' . $rateField . ', 0))';
         $totalRevenueExclTax = 'SUM(COALESCE(main_table.total_revenue_excl_tax' . $rateField . ', 0))';
         $totalProfit = new \Zend_Db_Expr($totalRevenueExclTax . ' - ' . $totalCost);
-        return [
+
+        $columns = [
             'product_id' => 'product_id',
             'product_name' => 'product_name',
             'sku' => 'sku',
@@ -68,6 +77,11 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             'total_profit' => $totalProfit,
             'total_margin' => new \Zend_Db_Expr('Round(((' . $totalProfit . ') / ' . $totalRevenueExclTax .  ') * 100)')
         ];
+
+        if ($this->manufacturerFilter) {
+            $columns['parent_id'] = 'parent_id';
+        }
+        return $columns;
     }
 
     /**
@@ -139,6 +153,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      */
     public function addManufacturerFilter($condition)
     {
+        $this->manufacturerFilter = true;
         $this->changeMainTable('_manufacturer');
         $resultCondition = $this->_getConditionSql('manufacturer', $condition);
         $this->getSelect()->where($resultCondition, null, Select::TYPE_CONDITION);

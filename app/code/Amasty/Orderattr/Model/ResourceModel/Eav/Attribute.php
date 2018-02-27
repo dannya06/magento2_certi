@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -28,6 +28,36 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
      */
     private $customerSession;
 
+    /**
+     * @var \Amasty\Orderattr\Model\ResourceModel\Order\Attribute
+     */
+    private $attributeResource;
+
+    /**
+     * Attribute constructor.
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
+     * @param AttributeValueFactory $customAttributeFactory
+     * @param \Magento\Eav\Model\Config $eavConfig
+     * @param \Magento\Eav\Model\Entity\TypeFactory $eavTypeFactory
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Eav\Model\ResourceModel\Helper $resourceHelper
+     * @param \Magento\Framework\Validator\UniversalFactory $universalFactory
+     * @param \Magento\Eav\Api\Data\AttributeOptionInterfaceFactory $optionDataFactory
+     * @param \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor
+     * @param \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
+     * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
+     * @param \Magento\Catalog\Model\Product\ReservedAttributeList $reservedAttributeList
+     * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
+     * @param DateTimeFormatterInterface $dateTimeFormatter
+     * @param CustomerSession $customerSession
+     * @param \Amasty\Orderattr\Model\Order\Attribute\Value $attributeValue
+     * @param \Amasty\Orderattr\Model\ResourceModel\Order\Attribute $attributeResource
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
+     * @param array $data
+     */
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -47,6 +77,7 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
         DateTimeFormatterInterface $dateTimeFormatter,
         CustomerSession $customerSession,
         \Amasty\Orderattr\Model\Order\Attribute\Value $attributeValue,
+        \Amasty\Orderattr\Model\ResourceModel\Order\Attribute $attributeResource,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -59,8 +90,8 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
             $resource, $resourceCollection, $data);
         $this->attributeValue = $attributeValue;
         $this->customerSession = $customerSession;
+        $this->attributeResource = $attributeResource;
     }
-
 
     protected function _construct()
     {
@@ -92,7 +123,7 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
 
     public function getDefaultOrLastValue()
     {
-        $value = ($this->getSaveSelected() && $this->getLastValue())
+        $value = ($this->getSaveSelected() && $this->getLastValue() && $this->customerSession->getCustomerId())
             ? $this->getLastValue()
             : $this->getDefaultValue();
 
@@ -152,10 +183,14 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
      */
     public function getOrderAttributesCodes()
     {
-        return $this->_eavConfig->getEntityAttributeCodes(
-            \Magento\Sales\Model\Order::ENTITY
-        );
+        $attributeCodes = [];
+        if ($this->attributeResource->isOurAttributesExists()) {
+            $attributeCodes = $this->_eavConfig->getEntityAttributeCodes(
+                \Magento\Sales\Model\Order::ENTITY
+            );
+        }
 
+        return $attributeCodes;
     }
 
     public function usesSource()
@@ -169,6 +204,16 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
         $orderAttributeCodes = $this->getOrderAttributesCodes();
 
         return in_array($attributeCode, $orderAttributeCodes);
+    }
+
+    public function isScopeGlobal()
+    {
+        return true;
+    }
+
+    public function isScopeWebsite()
+    {
+        return false;
     }
 
 }

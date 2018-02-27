@@ -223,33 +223,37 @@
                         }
                     }
                 </script>
-                <?php if ($block->isAllowMessage()): ?>
+                <?php if ($block->isAllowHeadline() || $block->isAllowMessage()): ?>
                     <div class="email body aw-gc-product-form-options__email-content">
                         <div class="fieldset">
-                            <div class="field aw-gc-product-form-options__field-full-width">
-                                <label class="label" for="aw_gc_headline">
-                                    <span><?php echo $block->escapeHtml(__('Headline')) ?></span>
-                                </label>
-                                <div class="control headline">
-                                    <input type="text"
-                                           name="aw_gc_headline"
-                                           placeholder="<?php echo $block->escapeHtml(__('Enter your headline here (optional)')) ?>"
-                                           class="input-text"
-                                           value="<?php /* @noEscape */ echo $block->getHeadlineValue() ?>" />
+                            <?php if ($block->isAllowHeadline()): ?>
+                                <div class="field aw-gc-product-form-options__field-full-width">
+                                    <label class="label" for="aw_gc_headline">
+                                        <span><?php echo $block->escapeHtml(__('Headline')) ?></span>
+                                    </label>
+                                    <div class="control headline">
+                                        <input type="text"
+                                               name="aw_gc_headline"
+                                               placeholder="<?php echo $block->escapeHtml(__('Enter your headline here (optional)')) ?>"
+                                               class="input-text"
+                                               value="<?php /* @noEscape */ echo $block->getHeadlineValue() ?>" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="field aw-gc-product-form-options__field-full-width">
-                                <label class="label" for="aw_gc_message">
-                                    <span><?php echo $block->escapeHtml(__('Message')) ?></span>
-                                </label>
-                                <div class="control message">
-                                    <textarea name="aw_gc_message"
-                                              placeholder="<?php echo $block->escapeHtml(__('Enter your Gift Card message here (optional)')) ?>"
-                                              class="input-text"
-                                              cols="5"
-                                              rows="5"><?php /* @noEscape */ echo $block->getMessageValue() ?></textarea>
+                            <?php endif; ?>
+                            <?php if ($block->isAllowMessage()): ?>
+                                <div class="field aw-gc-product-form-options__field-full-width">
+                                    <label class="label" for="aw_gc_message">
+                                        <span><?php echo $block->escapeHtml(__('Message')) ?></span>
+                                    </label>
+                                    <div class="control message">
+                                        <textarea name="aw_gc_message"
+                                                  placeholder="<?php echo $block->escapeHtml(__('Enter your Gift Card message here (optional)')) ?>"
+                                                  class="input-text"
+                                                  cols="5"
+                                                  rows="5"><?php /* @noEscape */ echo $block->getMessageValue() ?></textarea>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endif; ?>

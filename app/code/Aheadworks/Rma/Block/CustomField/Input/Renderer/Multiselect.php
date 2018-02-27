@@ -6,96 +6,44 @@
 
 namespace Aheadworks\Rma\Block\CustomField\Input\Renderer;
 
+use Magento\Framework\View\Element\Template;
+
 /**
- * Class Multiselect
+ * Class MultiSelect
+ *
+ * @method int[] getValue()
+ * @method array getOptions()
+ * @method array getDefaultOptions()
+ * @method string getFieldName
+ * @method string getUid
+ * @method string getFieldClass
  * @package Aheadworks\Rma\Block\CustomField\Input\Renderer
  */
-class Multiselect extends Select
+class MultiSelect extends Template
 {
     /**
      * @var string
      */
-    protected $_template = 'customfield/input/renderer/multiselect.phtml';
+    protected $_template = 'Aheadworks_Rma::customfield/input/renderer/multiselect.phtml';
 
     /**
-     * @var array
-     */
-    protected $classNames = ['select', 'multiselect'];
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->getOptionArray();
-    }
-
-    /**
-     * @param int $value
-     * @return bool
+     * {@inheritdoc}
      */
     public function isSelected($value)
     {
+        // If set value
         if (is_array($this->getValue())) {
             return in_array($value, $this->getValue());
         }
-        $default = $this->getCustomField()->getOption('default');
-        if (is_array($default)) {
-            return in_array($value, $default);
-        }
-        return false;
-    }
 
-    /**
-     * @return bool
-     */
-    public function isEditable()
-    {
-        $editableForStatusIds = $this->getCustomField()->getEditableForStatusIds();
-        if (!is_array($editableForStatusIds)
-            || !in_array($this->getStatusId(), $editableForStatusIds)
-        ) {
-            return false;
-        }
-        $enable = $this->getCustomField()->getOption('enable');
-        if ($this->getValue() && array_intersect($this->getValue(), $enable) != $this->getValue()) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        if (!$this->hasData('name')) {
-            $this->setData('name', sprintf("custom_fields[%u][]", $this->getCustomField()->getId()));
-        }
-        return $this->getData('name');
-    }
-
-    /**
-     * @return string
-     */
-    public function getHiddenName()
-    {
-        return sprintf("custom_fields[%u]", $this->getCustomField()->getId());
-    }
-
-    /**
-     * @return string
-     */
-    public function getValueLabel()
-    {
-        if (is_array($this->getValue())) {
-            $label = "";
-            foreach ($this->getValue() as $value) {
-                $label .= $this->getCustomField()->getOptionLabelByValue($value);
-                $label .= "<br/>";
+        // If new request
+        $options = $this->getOptions();
+        foreach ($options as $option) {
+            if ($option['value'] == $value && in_array($option['value'], $this->getDefaultOptions())) {
+                return true;
             }
-            return $label;
         }
-        return '';
+
+        return false;
     }
 }

@@ -6,9 +6,8 @@
 var config = {
     map: {
         '*': {
-            timeframe: 'Aheadworks_AdvancedReports/js/timeframe',
+            awArepTimeframe: 'Aheadworks_AdvancedReports/js/lib/timeframe',
             awArepChart: 'Aheadworks_AdvancedReports/js/aw-arep-chart',
-            awArepPeriod: 'Aheadworks_AdvancedReports/js/aw-arep-period',
             googleapi: 'https://www.gstatic.com/charts/loader.js'
         }
     }

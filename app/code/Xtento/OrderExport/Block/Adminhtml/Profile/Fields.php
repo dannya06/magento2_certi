@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.3.7)
- * ID:            vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=
- * Packaged:      2017-10-04T08:30:08+00:00
- * Last Modified: 2017-02-09T10:55:23+00:00
+ * Product:       Xtento_OrderExport (2.4.9)
+ * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
+ * Packaged:      2018-02-26T09:11:23+00:00
+ * Last Modified: 2017-12-13T18:43:42+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Profile/Fields.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Block\Adminhtml\Profile;
@@ -82,7 +82,7 @@ class Fields extends \Magento\Backend\Block\Template
         foreach ($array as $key => $val) {
             if (is_array($val)) {
                 $key = $this->xmlWriter->handleSpecialParentKeys($key, $parentKey);
-                $newArray[] = ['text' => '<strong>' . $key . '</strong>', 'leaf' => false, 'expanded' => true, 'cls' => 'x-tree-noicon', 'children' => $this->prepareJsonArray($val, $key)];
+                $newArray[] = ['text' => $key, 'leaf' => false, 'expanded' => true, 'cls' => 'x-tree-noicon', 'children' => $this->prepareJsonArray($val, $key)];
             } else {
                 if ($val == '') {
                     $val = __('NULL');

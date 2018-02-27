@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Product:       Xtento_XtCore (2.0.9)
- * ID:            vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=
- * Packaged:      2017-10-04T08:30:08+00:00
- * Last Modified: 2017-08-16T08:52:13+00:00
+ * Product:       Xtento_XtCore (2.1.0)
+ * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
+ * Packaged:      2018-02-26T09:10:54+00:00
+ * Last Modified: 2017-11-29T19:10:14+00:00
  * File:          app/code/Xtento/XtCore/Block/System/Config/Form/Xtento/Module.php
  * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -91,7 +91,7 @@ class Module extends \Magento\Config\Block\System\Config\Form\Fieldset
             }
             // Is the response cached?
             $cachedHtml = $cache->load($cacheKey);
-            #$cachedHtml = false; // Test: disable cache
+            //$cachedHtml = false; // Test: disable cache
             if ($cachedHtml !== false && $cachedHtml !== '') {
                 $storeHtml = $cachedHtml;
             } else {

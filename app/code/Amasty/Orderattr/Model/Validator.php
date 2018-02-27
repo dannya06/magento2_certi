@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -23,6 +23,11 @@ class Validator
     private $orderAttributeCollectionFactory;
 
     /**
+     * @var ResourceModel\ShippingMethod\CollectionFactory
+     */
+    private $shippingMethodCollectionFactory;
+
+    /**
      * Validator constructor.
      *
      * @param RelationDetailsCollectionFactory                $relationCollectionFactory
@@ -30,10 +35,12 @@ class Validator
      */
     public function __construct(
         RelationDetailsCollectionFactory $relationCollectionFactory,
-        \Amasty\Orderattr\Model\ResourceModel\Order\Attribute\CollectionFactory $orderAttributeCollectionFactory
+        \Amasty\Orderattr\Model\ResourceModel\Order\Attribute\CollectionFactory $orderAttributeCollectionFactory,
+        \Amasty\Orderattr\Model\ResourceModel\ShippingMethod\CollectionFactory $shippingMethodCollectionFactory
     ) {
         $this->relationCollectionFactory = $relationCollectionFactory;
-        $this->orderAttributeCollectionFactory = $orderAttributeCollectionFactory;
+        $this->orderAttributeCollectionFactory  = $orderAttributeCollectionFactory;
+        $this->shippingMethodCollectionFactory = $shippingMethodCollectionFactory;
     }
 
     /**
@@ -47,11 +54,13 @@ class Validator
     public function validateShippingMethods($order, $orderAttributesData, $attributesCollection)
     {
         $orderMethod = $order->getShippingMethod();
+        $this->shippingMehtodCollection = $this->shippingMethodCollectionFactory->create();
         foreach ($attributesCollection->getItems() as $key => $attribute) {
             $attributeMethods = explode(',', $attribute->getShippingMethods());
 
-            if (is_array($attributeMethods) && in_array($orderMethod, $attributeMethods)) {
-                unset($orderAttributesData[$attribute->getAttributeCode()]);
+            //if (is_array($attributeMethods) && in_array($orderMethod, $attributeMethods)) {
+            if (!$this->_allowShippingMehtod($orderMethod, $key)) {
+                $orderAttributesData[$attribute->getAttributeCode()] = null;
                 $attributesCollection->removeItemByKey($key);
             }
         }
@@ -127,5 +136,24 @@ class Validator
         }
 
         return $isValidArray;
+    }
+
+    protected function _allowShippingMehtod($shippingMethod, $attributeId)
+    {
+        $isAllow = true;
+        foreach ($this->shippingMehtodCollection as $item) {
+            if ($item->getAttributeId() == $attributeId
+                && $item->getShippingMethod() == $shippingMethod
+            ) {
+                $isAllow = true;
+                break;
+            } elseif ($item->getAttributeId() == $attributeId
+                && $item->getShippingMethod() != $shippingMethod
+            ) {
+                $isAllow = false;
+            }
+        }
+
+        return $isAllow;
     }
 }

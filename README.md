@@ -13,7 +13,7 @@ Instalation:
 
     install site using wizard from browser
 
-    git checkout 2.0.7
+    git checkout 2.0.8
 
     composer install
 
@@ -33,7 +33,7 @@ How to update project that base from SWIFT
 
     git fetch swift --tags
 
-    git merge 2.0.7
+    git merge 2.0.8
 
     full deploy : setup upgrade, compile, deploy
 
@@ -47,7 +47,7 @@ How to update project that clone from SWIFT
 
     git fetch origin --tags
 
-    git checkout tags/2.0.7 -b <branch_name>_2.0.7
+    git checkout tags/2.0.8 -b <branch_name>_2.0.8
 
     full deploy : setup upgrade, compile, deploy
 
@@ -74,3 +74,21 @@ To enable share to social media (facabook,twitter,whassap,etc), please follow be
 * Clear all magento cache
 
 
+Update CMS Blocks Sample from Weltpixel
+=============================================================
+
+We strip out contents of CMS Blocks Sample from Weltpixel that has {{widget}} type of "Magento/CatalogWidget",
+
+from : *swift/app/code/WeltPixel/SampleData/fixtures/blocks/blocks.csv*
+
+because it will create error during setup:upgrade process if the project does not have sample data installed.
+Those 5 widgets are  :
+
+* section_content1_v5
+* section_content2_v5
+* section_content3_v5
+* latest_product_v8
+* content5_shopnow_v10
+
+Update them all after Swift installation by running SQL script located on :
+###### sql/weltpixel_samplecmsblock_update_for_catalogwidget.sql

@@ -6,7 +6,7 @@
 
 namespace Aheadworks\Giftcard\Block\Adminhtml\Giftcard\Edit\Button;
 
-use Aheadworks\Giftcard\Model\GiftcardRepository;
+use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 use Magento\Backend\Block\Widget\Context;
 
@@ -23,17 +23,17 @@ class Delete implements ButtonProviderInterface
     private $context;
 
     /**
-     * @var GiftcardRepository
+     * @var GiftcardRepositoryInterface
      */
     private $giftcardRepository;
 
     /**
      * @param Context $context
-     * @param GiftcardRepository $giftcardRepository
+     * @param GiftcardRepositoryInterface $giftcardRepository
      */
     public function __construct(
         Context $context,
-        GiftcardRepository $giftcardRepository
+        GiftcardRepositoryInterface $giftcardRepository
     ) {
         $this->context = $context;
         $this->giftcardRepository = $giftcardRepository;

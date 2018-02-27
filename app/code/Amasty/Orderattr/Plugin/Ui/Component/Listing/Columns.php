@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -46,20 +46,28 @@ class Columns
     protected $config;
 
     /**
+     * @var \Magento\Framework\Registry
+     */
+    protected $registry;
+
+    /**
      * Columns Plugin constructor.
      *
      * @param \Amasty\Orderattr\Ui\Component\ColumnFactory                         $columnFactory
      * @param \Amasty\Orderattr\Ui\Component\Listing\Attribute\RepositoryInterface $attributeRepository
      * @param \Amasty\Orderattr\Helper\Config                                      $config
+     * @param \Magento\Framework\Registry                                          $registry
      */
     public function __construct(
         \Amasty\Orderattr\Ui\Component\ColumnFactory $columnFactory,
         \Amasty\Orderattr\Ui\Component\Listing\Attribute\RepositoryInterface $attributeRepository,
-        \Amasty\Orderattr\Helper\Config $config
+        \Amasty\Orderattr\Helper\Config $config,
+        \Magento\Framework\Registry $registry
     ) {
         $this->columnFactory = $columnFactory;
         $this->attributeRepository = $attributeRepository;
         $this->config = $config;
+        $this->registry = $registry;
     }
 
     /**
@@ -68,11 +76,44 @@ class Columns
      */
     public function aroundPrepare(\Magento\Ui\Component\Listing\Columns $subject, \Closure $proceed)
     {
+        if ($this->allowedInlineEdit($subject)) {
+            $this->addInlineEdit($subject);
+        }
         if ($this->allowToAddAttributes($subject)) {
             $this->prepareOrderAttributes($subject);
         }
 
         $proceed();
+    }
+
+    /**
+     * @param \Magento\Ui\Component\Listing\Columns $columnsComponent
+     *
+     * @return bool
+     */
+    private function allowedInlineEdit($columnsComponent)
+    {
+        return $columnsComponent->getName() == 'sales_order_columns';
+    }
+
+    /**
+     * @param \Magento\Ui\Component\Listing\Columns $columnsComponent
+     */
+    private function addInlineEdit($columnsComponent)
+    {
+        $config = $columnsComponent->getData('config');
+        /* some times xsi:type="boolean" recognizing as string, should be as boolean */
+        /** @see app/code/Amasty/Orderattr/view/adminhtml/ui_component/sales_order_grid.xml */
+        $config['childDefaults']['fieldAction'] = [
+            'provider' => 'sales_order_grid.sales_order_grid.sales_order_columns_editor',
+            'target' => 'startEdit',
+            'params' => [
+                0 => '${ $.$data.rowIndex }',
+                1 => true
+            ]
+        ];
+
+        $columnsComponent->setData('config', $config);
     }
 
     /**
@@ -90,8 +131,13 @@ class Columns
                     'add_field' => false,
                     'visible' => true,
                     'filter' => $this->getFilterType($attribute->getFrontendInput()),
+                    'editor' => $this->getFilterType($attribute->getFrontendInput()),
                 ];
                 $column = $this->columnFactory->create($attribute, $columnsComponent->getContext(), $config);
+                if ($this->registry->registry('am_order_attribute')) {
+                    $this->registry->unregister('am_order_attribute');
+                }
+                $this->registry->register('am_order_attribute', $attributeCode);
                 $column->prepare();
                 $columnsComponent->addComponent($attributeCode, $column);
             }

@@ -15,7 +15,7 @@ use Magento\Framework\DB\Select;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\ResourceModel\EarnRate\CollectionTest
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Collection

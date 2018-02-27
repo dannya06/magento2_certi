@@ -31,10 +31,18 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     {
         $this->getSelect()
             ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(true))
             ->group('main_table.country_id');
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns(true));
+        parent::_renderFiltersBefore();
     }
 
     /**

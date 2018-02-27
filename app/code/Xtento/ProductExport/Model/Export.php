@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2017-07-11T12:58:05+00:00
+ * Packaged:      2018-02-26T09:11:39+00:00
+ * Last Modified: 2018-01-18T21:56:08+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model;
@@ -78,6 +78,11 @@ class Export extends \Magento\Framework\Model\AbstractModel
     protected $xtentoLogger;
 
     /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
+    /**
      * Export constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -91,6 +96,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
      * @param ExportFactory $exportFactory
      * @param LogFactory $logFactory
      * @param HistoryFactory $historyFactory
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Xtento\ProductExport\Logger\Logger $xtentoLogger
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
@@ -108,6 +114,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         ExportFactory $exportFactory,
         LogFactory $logFactory,
         HistoryFactory $historyFactory,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Xtento\ProductExport\Logger\Logger $xtentoLogger,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -123,6 +130,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->exportFactory = $exportFactory;
         $this->logFactory = $logFactory;
         $this->historyFactory = $historyFactory;
+        $this->scopeConfig = $scopeConfig;
         $this->xtentoLogger = $xtentoLogger;
     }
 
@@ -236,7 +244,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->setExportType(self::EXPORT_TYPE_EVENT);
         $this->beforeExport();
         $generatedFiles = $this->runExport($filters, $forcedCollectionItem);
-        if (empty($generatedFiles) && $this->getLogEntry()->getResult() === Log::RESULT_SUCCESSFUL) {
+        if (empty($generatedFiles) && ($this->getLogEntry()->getResult() === NULL || $this->getLogEntry()->getResult() === Log::RESULT_SUCCESSFUL)) {
             $this->getLogEntry()->delete();
             return false;
         }
@@ -258,7 +266,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->setExportType(self::EXPORT_TYPE_CRONJOB);
         $this->beforeExport();
         $generatedFiles = $this->runExport($filters);
-        if (empty($generatedFiles) && $this->getLogEntry()->getResult() === Log::RESULT_SUCCESSFUL) {
+        if (empty($generatedFiles) && ($this->getLogEntry()->getResult() === NULL || $this->getLogEntry()->getResult() === Log::RESULT_SUCCESSFUL)) {
             $this->getLogEntry()->delete();
             return false;
         }
@@ -611,14 +619,14 @@ class Export extends \Magento\Framework\Model\AbstractModel
             try {
                 /** @var \Magento\Framework\Mail\Message $message */
                 $message = $this->objectManager->create('Magento\Framework\Mail\MessageInterface');
-                $message->setFrom('store@' . $this->request->getServer('SERVER_NAME'), $this->request->getServer('SERVER_NAME'));
+                $message->setFrom($this->scopeConfig->getValue('trans_email/ident_general/email'), $this->scopeConfig->getValue('trans_email/ident_general/name'));
                 foreach (explode(",", $this->moduleHelper->getDebugEmail()) as $emailAddress) {
                     $emailAddress = trim($emailAddress);
                     $message->addTo($emailAddress, $emailAddress);
                 }
                 $message->setSubject('Magento Product Export Module @ ' . $this->request->getServer('SERVER_NAME'));
                 $message->setBody('Warning/Error/Message(s): ' . $this->getLogEntry()->getResultMessages());
-                $message->send($this->objectManager->create('\Magento\Framework\Mail\TransportInterfaceFactory')->create(['message' => clone $message]));
+                $this->objectManager->create('\Magento\Framework\Mail\TransportInterfaceFactory')->create(['message' => clone $message])->sendMessage();
             } catch (\Exception $e) {
                 $this->getLogEntry()->addResultMessage('Exception: ' . $e->getMessage());
                 $this->getLogEntry()->setResult(Log::RESULT_WARNING);

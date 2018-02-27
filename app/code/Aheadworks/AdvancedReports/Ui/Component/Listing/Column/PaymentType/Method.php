@@ -6,9 +6,10 @@
 
 namespace Aheadworks\AdvancedReports\Ui\Component\Listing\Column\PaymentType;
 
+use Aheadworks\AdvancedReports\Model\Url as UrlModel;
+use Aheadworks\AdvancedReports\Model\Serializer;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Aheadworks\AdvancedReports\Model\Url as UrlModel;
 
 /**
  * Class Method
@@ -23,9 +24,15 @@ class Method extends \Magento\Ui\Component\Listing\Columns\Column
     private $urlModel;
 
     /**
+     * @var Serializer;
+     */
+    private $serializer;
+
+    /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param UrlModel $urlModel
+     * @param Serializer $serializer
      * @param array $components
      * @param array $data
      */
@@ -33,11 +40,13 @@ class Method extends \Magento\Ui\Component\Listing\Columns\Column
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         UrlModel $urlModel,
+        Serializer $serializer,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
         $this->urlModel = $urlModel;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -49,7 +58,7 @@ class Method extends \Magento\Ui\Component\Listing\Columns\Column
             foreach ($dataSource['data']['items'] as &$item) {
                 $methodName = $item['method'];
                 if (isset($item['additional_info']) && $item['additional_info']) {
-                    $additionalInfo = unserialize($item['additional_info']);
+                    $additionalInfo = $this->serializer->unserialize($item['additional_info']);
                     if (isset($additionalInfo['method_title'])) {
                         $methodName = $additionalInfo['method_title'];
                     }
@@ -62,6 +71,8 @@ class Method extends \Magento\Ui\Component\Listing\Columns\Column
                 $item['row_url'] = $this->urlModel->getUrl(
                     'paymenttype',
                     'salesoverview',
+                    $dataSource['data']['periodFromFilter'],
+                    $dataSource['data']['periodToFilter'],
                     $params
                 );
                 $item['row_label'] = $methodName . ' (' . $item['method'] . ')';

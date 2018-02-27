@@ -6,54 +6,41 @@
 
 namespace Aheadworks\Rma\Model\Source\CustomField;
 
-class Refers implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Phrase;
+
+/**
+ * Class Refers
+ *
+ * @package Aheadworks\Rma\Model\Source\CustomField
+ */
+class Refers implements ArrayInterface
 {
-    const REQUEST_VALUE     = 'request';
-    const ITEM_VALUE        = 'item';
-
-    const REQUEST_LABEL    = 'Request';
-    const ITEM_LABEL       = 'Item';
-
-    /**
-     * @var null|array
+    /**#@+
+     * Constants defined for RMA refers
      */
-    protected $optionArray = null;
+    const REQUEST = 'request';
+    // In version 1.2.0 changed the behavior.
+    // Now RMA is created not by product items, but by products
+    const ITEM = 'item';
+    /**#@-*/
 
     /**
-     * @return array
+     * @var array
      */
-    public function getOptions()
-    {
-        return [
-            self::REQUEST_VALUE    => __(self::REQUEST_LABEL),
-            self::ITEM_VALUE       => __(self::ITEM_LABEL)
-        ];
-    }
+    private $optionArray;
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function toOptionArray()
     {
-        if ($this->optionArray === null) {
-            $this->optionArray = [];
-            foreach ($this->getOptions() as $value => $label) {
-                $this->optionArray[] = ['value' => $value, 'label' => $label];
-            }
+        if (!$this->optionArray) {
+            $this->optionArray = [
+                ['value' => self::REQUEST, 'label' => __('Request')],
+                ['value' => self::ITEM, 'label' => __('Product')]
+            ];
         }
         return $this->optionArray;
-    }
-
-    /**
-     * @param int $value
-     * @return null|\Magento\Framework\Phrase
-     */
-    public function getOptionLabelByValue($value)
-    {
-        $options = $this->getOptions();
-        if (array_key_exists($value, $options)) {
-            return $options[$value];
-        }
-        return null;
     }
 }

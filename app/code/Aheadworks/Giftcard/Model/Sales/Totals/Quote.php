@@ -162,11 +162,15 @@ class Quote extends AbstractTotal
         if ($quote->getExtensionAttributes() && $quote->getExtensionAttributes()->getAwGiftcardCodes()) {
             $giftcards = $quote->getExtensionAttributes()->getAwGiftcardCodes();
         }
-        return [
-            'code' => $this->getCode(),
-            'aw_giftcard_codes' => $giftcards,
-            'title' => __('Gift Card'),
-            'value' => -$total->getAwGiftcardAmount()
-        ];
+        if (!empty($giftcards)) {
+            return [
+                'code' => $this->getCode(),
+                'aw_giftcard_codes' => $giftcards,
+                'title' => __('Gift Card'),
+                'value' => -$total->getAwGiftcardAmount()
+            ];
+        }
+
+        return null;
     }
 }

@@ -9,7 +9,6 @@ namespace Aheadworks\Giftcard\Observer;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
-use Magento\Quote\Model\Quote\Address as QuoteAddress;
 use Aheadworks\Giftcard\Api\Data\Giftcard\OrderInterfaceFactory as GiftcardOrderInterfaceFactory;
 use Aheadworks\Giftcard\Api\Data\Giftcard\OrderInterface as GiftcardOrderInterface;
 use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface as GiftcardQuoteInterface;
@@ -62,7 +61,7 @@ class QuoteSubmitBeforeObserver implements ObserverInterface
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $observer->getEvent()->getQuote();
 
-        if ($quote->getBaseAwGiftcardAmount()) {
+        if ($quote->getBaseAwGiftcardAmount() && $quote->getBaseAwGiftcardAmount() > 0) {
             $order->setBaseAwGiftcardAmount($quote->getBaseAwGiftcardAmount());
             $order->setAwGiftcardAmount($quote->getAwGiftcardAmount());
 

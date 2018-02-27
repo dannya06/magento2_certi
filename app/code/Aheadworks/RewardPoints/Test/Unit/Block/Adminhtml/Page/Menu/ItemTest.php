@@ -16,7 +16,7 @@ use Magento\Framework\UrlInterface;
 /**
  * Test for \Aheadworks\RewardPoints\Block\Adminhtml\Page\Menu\Item
  */
-class ItemTest extends \PHPUnit_Framework_TestCase
+class ItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Item
@@ -46,7 +46,10 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->requestMock = $this->getMock(Http::class, ['getControllerName'], [], '', false);
+        $this->requestMock = $this->getMockBuilder(Http::class)
+            ->setMethods(['getControllerName'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
         $this->authorizationMock = $this->getMockForAbstractClass(AuthorizationInterface::class);
         $contextMock = $objectManager->getObject(

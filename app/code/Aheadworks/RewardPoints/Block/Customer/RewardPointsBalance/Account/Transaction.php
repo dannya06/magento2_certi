@@ -150,10 +150,12 @@ class Transaction extends Dashboard
     public function renderComment($transaction)
     {
         if ($commentInstance = $this->commentPool->get($transaction->getType())) {
-            $commentLabel = $commentInstance->renderComment(
+            $commentLabel = $commentInstance->renderTranslatedComment(
                 $transaction->getEntities(),
                 null,
-                $transaction->getCommentToCustomerPlaceholder(),
+                $transaction->getCommentToCustomerPlaceholder()
+                    ? $transaction->getCommentToCustomerPlaceholder()
+                    : $transaction->getCommentToCustomer(),
                 true,
                 true
             );

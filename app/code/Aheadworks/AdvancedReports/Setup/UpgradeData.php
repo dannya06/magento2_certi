@@ -94,6 +94,11 @@ class UpgradeData implements UpgradeDataInterface
             $arepIndex = $this->indexerRegistry->get(StatisticsProcessor::INDEXER_ID);
             $arepIndex->invalidate();
         }
+
+        if (version_compare($context->getVersion(), '2.5.1', '<')) {
+            $arepIndex = $this->indexerRegistry->get(StatisticsProcessor::INDEXER_ID);
+            $arepIndex->invalidate();
+        }
     }
 
     /**

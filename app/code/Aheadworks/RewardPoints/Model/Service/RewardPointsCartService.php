@@ -97,18 +97,10 @@ class RewardPointsCartService implements RewardPointsCartManagementInterface
             throw new NoSuchEntityException(__('No possibility to use reward points discounts in the cart'));
         }
 
-        $shareCoveredValue = $this->config->getShareCoveredValue($quote->getStore()->getWebsiteId());
-        $message = $shareCoveredValue
-            ? __(
-                'Reward points were successfully applied. '
-                . 'Important: It is allowed to cover only %1% of the purchase with Reward Points.',
-                $shareCoveredValue
-            )
-            : __('Reward points were successfully applied.');
         return [
             CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => [
                 'success' => true,
-                'message' => $message
+                'message' => $this->getMessage($quote)
             ]
         ];
     }
@@ -132,5 +124,26 @@ class RewardPointsCartService implements RewardPointsCartManagementInterface
             throw new CouldNotDeleteException(__('Could not remove reward points'));
         }
         return true;
+    }
+
+    /**
+     * Retrieves message to show customer
+     *
+     * @param \Magento\Quote\Model\Quote $quote
+     * @return string
+     */
+    private function getMessage($quote)
+    {
+        $shareCoveredValue = $this->config->getShareCoveredValue($quote->getStore()->getWebsiteId());
+        if ($shareCoveredValue && ($shareCoveredValue != 100)) {
+            $message = __(
+                'Reward points were successfully applied. '
+                . 'Important: It is allowed to cover only %1% of the purchase with Reward Points.',
+                $shareCoveredValue
+            );
+        } else {
+            $message = __('Reward points were successfully applied.');
+        }
+        return $message;
     }
 }

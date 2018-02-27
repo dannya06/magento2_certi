@@ -6,277 +6,181 @@
 
 namespace Aheadworks\Rma\Block\Customer\Request;
 
-use Aheadworks\Rma\Model\Source\CustomField\Refers;
-use Aheadworks\Rma\Model\Source\CustomField\Type;
+use Aheadworks\Rma\Api\Data\RequestCustomFieldValueInterface;
+use Aheadworks\Rma\Api\Data\RequestInterface;
+use Aheadworks\Rma\Api\StatusRepositoryInterface;
+use Aheadworks\Rma\Block\Customer\Request\View\Items;
+use Aheadworks\Rma\Model\Request\Resolver\Status as StatusResolver;
+use Aheadworks\Rma\Model\Source\Request\Status;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Aheadworks\Rma\Api\RequestRepositoryInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Aheadworks\Rma\Api\CustomFieldRepositoryInterface;
+use Aheadworks\Rma\Block\CustomField\Input\Renderer\Factory as CustomFieldRendererFactory;
+use Aheadworks\Rma\Model\Request\Resolver\Order as OrderResolver;
 
 /**
  * Class View
+ *
  * @package Aheadworks\Rma\Block\Customer\Request
  */
-class View extends \Magento\Framework\View\Element\Template
+class View extends Template
 {
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    protected $_template = 'customer/request/view.phtml';
+    protected $_template = 'Aheadworks_Rma::customer/request/view.phtml';
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var RequestRepositoryInterface
      */
-    protected $coreRegistry;
+    protected $requestRepository;
 
     /**
-     * @var \Magento\Framework\Pricing\PriceCurrencyInterface
+     * @var SearchCriteriaBuilder
      */
-    protected $priceCurrency;
+    private $searchCriteriaBuilder;
 
     /**
-     * @var \Aheadworks\Rma\Model\CustomFieldFactory
+     * @var CustomFieldRepositoryInterface
      */
-    protected $customFieldFactory;
+    private $customFieldRepository;
 
     /**
-     * @var null|\Aheadworks\Rma\Model\ResourceModel\CustomField\Collection
+     * @var OrderResolver
      */
-    protected $customFieldCollection = null;
+    private $orderResolver;
 
     /**
-     * @var \Aheadworks\Rma\Helper\CustomField
+     * @var StatusRepositoryInterface
      */
-    protected $customFieldHelper;
+    private $statusRepository;
 
     /**
-     * @var \Aheadworks\Rma\Helper\File
+     * @var StatusResolver
      */
-    protected $fileHelper;
+    private $statusResolver;
 
     /**
-     * @var \Aheadworks\Rma\Helper\Status
+     * @var CustomFieldRendererFactory
      */
-    protected $statusHelper;
+    private $customFieldRendererFactory;
 
     /**
-     * @var \Aheadworks\Rma\Helper\Order
-     */
-    protected $orderHelper;
-
-    /**
-     * @var null|\Aheadworks\Rma\Model\ResourceModel\ThreadMessage\Collection
-     */
-    protected $threadMessageCollection = null;
-
-    /**
-     * @var \Magento\Catalog\Model\ProductFactory
-     */
-    protected $productFactory;
-
-    /**
-     * @var \Magento\Customer\Model\Session
-     */
-    protected $customerSession;
-
-    /**
-     * @var array
-     */
-    protected $products = [];
-
-    /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
-     * @param \Magento\Catalog\Model\ProductFactory $productFactory
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Aheadworks\Rma\Model\CustomFieldFactory $customFieldFactory
-     * @param \Aheadworks\Rma\Helper\CustomField $customFieldHelper
-     * @param \Aheadworks\Rma\Helper\File $fileHelper
-     * @param \Aheadworks\Rma\Helper\Status $statusHelper
-     * @param \Aheadworks\Rma\Helper\Order $orderHelper
+     * @param Context $context
+     * @param RequestRepositoryInterface $requestRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param CustomFieldRepositoryInterface $customFieldRepository
+     * @param OrderResolver $orderResolver
+     * @param StatusRepositoryInterface $statusRepository
+     * @param StatusResolver $statusResolver
+     * @param CustomFieldRendererFactory $customFieldRendererFactory
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
-        \Magento\Catalog\Model\ProductFactory $productFactory,
-        \Magento\Customer\Model\Session $customerSession,
-        \Aheadworks\Rma\Model\CustomFieldFactory $customFieldFactory,
-        \Aheadworks\Rma\Helper\CustomField $customFieldHelper,
-        \Aheadworks\Rma\Helper\File $fileHelper,
-        \Aheadworks\Rma\Helper\Status $statusHelper,
-        \Aheadworks\Rma\Helper\Order $orderHelper,
+        Context $context,
+        RequestRepositoryInterface $requestRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        CustomFieldRepositoryInterface $customFieldRepository,
+        OrderResolver $orderResolver,
+        StatusRepositoryInterface $statusRepository,
+        StatusResolver $statusResolver,
+        CustomFieldRendererFactory $customFieldRendererFactory,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->coreRegistry = $coreRegistry;
-        $this->priceCurrency = $priceCurrency;
-        $this->productFactory = $productFactory;
-        $this->customerSession = $customerSession;
-        $this->customFieldFactory = $customFieldFactory;
-        $this->customFieldHelper = $customFieldHelper;
-        $this->fileHelper = $fileHelper;
-        $this->statusHelper = $statusHelper;
-        $this->orderHelper = $orderHelper;
+        $this->requestRepository = $requestRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->customFieldRepository = $customFieldRepository;
+        $this->orderResolver = $orderResolver;
+        $this->statusRepository = $statusRepository;
+        $this->statusResolver = $statusResolver;
+        $this->customFieldRendererFactory = $customFieldRendererFactory;
     }
 
     /**
-     * @return \Aheadworks\Rma\Model\Request
+     * Retrieve RMA request
+     *
+     * @return \Aheadworks\Rma\Api\Data\RequestInterface
      */
-    public function getRequestModel()
+    public function getRmaRequest()
     {
-        return $this->coreRegistry->registry('aw_rma_request');
+        $requestId = $this->getRequest()->getParam('id');
+        return $this->requestRepository->get($requestId);
     }
 
     /**
+     * Retrieve request identity value
+     *
      * @return int|string
      */
     public function getRequestIdentityValue()
     {
-        return $this->getRequestModel()->getId();
+        return $this->getRmaRequest()->getId();
     }
 
     /**
-     * @return \Aheadworks\Rma\Model\ResourceModel\CustomField\Collection
-     */
-    public function getCustomFieldCollection()
-    {
-        if ($this->customFieldCollection === null) {
-            $storeId = $this->getRequestModel()->getStoreId();
-            $this->customFieldCollection = $this->customFieldFactory->create()->getCollection()
-                ->addRefersToFilter(Refers::REQUEST_VALUE)
-                ->joinAttributesValues(['frontend_label'], $storeId)
-                ->setStoreId($storeId)
-            ;
-        }
-        return $this->customFieldCollection;
-    }
-
-    /**
-     * @return \Aheadworks\Rma\Model\ResourceModel\ThreadMessage\Collection|null
-     */
-    public function getThreadMessageCollection()
-    {
-        if ($this->threadMessageCollection === null) {
-            $this->threadMessageCollection = $this->getRequestModel()->getThread();
-        }
-        return $this->threadMessageCollection;
-    }
-
-    /**
-     * @param \Aheadworks\Rma\Model\CustomField $customField
-     * @param \Aheadworks\Rma\Model\Request $requestModel
+     * Retrieve update request url
+     *
      * @return string
      */
-    public function getRequestCustomFieldsInputHtml($customField, $requestModel)
+    public function getUpdateRequestUrl()
     {
-        /** @var \Aheadworks\Rma\Block\CustomField\Input\Renderer\RendererAbstract $renderer */
-        $renderer = $this->getLayout()->createBlock(
-            $this->customFieldHelper->getElementRendererClass($customField->getType())
-        );
-        return $renderer
-            ->setCustomField($customField)
-            ->setValue($requestModel->getCustomFields($customField->getId()))
-            ->setStatusId($requestModel->getStatusId())
-            ->render()
-            ;
+        return $this->getUrl('*/*/updateRequest');
     }
 
     /**
-     * @param string $customFieldName
-     * @param \Aheadworks\Rma\Model\RequestItem $requestItem
+     * Retrieve storefront status label by request
+     *
+     * @param RequestInterface $rmaRequest
      * @return string
      */
-    public function getRequestItemCustomFieldHtml($customFieldName, $requestItem)
+    public function getStorefrontStatusLabel($rmaRequest)
     {
-        /** @var \Aheadworks\Rma\Model\CustomField $customField */
-        $customField = $this->customFieldFactory->create()->loadByName($customFieldName);
-        $value = $requestItem->getCustomFieldValue($customField->getId());
-        if (in_array($customField->getType(), [Type::SELECT_VALUE, Type::MULTI_SELECT_VALUE])) {
-            return $customField
-                ->setStoreId($this->getRequestModel()->getStoreId())
-                ->getOptionLabelByValue($value);
-        }
-        return $value;
+        return $this->statusRepository->get($rmaRequest->getStatusId())->getStorefrontLabel();
     }
 
     /**
-     * @param float $amount
+     * Retrieve request custom fields input html
+     *
+     * @param RequestCustomFieldValueInterface $requestCustomField
      * @return string
      */
-    public function convertAndFormatPrice($amount)
+    public function getRequestCustomFieldsInputHtml($requestCustomField)
     {
-        return $this->priceCurrency->convertAndFormat($amount);
+        $customField = $this->customFieldRepository->get($requestCustomField->getFieldId());
+        $fieldName = 'custom_fields.' . $customField->getId();
+        $value = $requestCustomField->getValue();
+        $renderer = $this->customFieldRendererFactory
+            ->create($customField, $this->getRmaRequest()->getStatusId(), $fieldName, $value);
+
+        return $renderer->toHtml();
     }
 
     /**
-     * @return bool
-     */
-    public function canReply()
-    {
-        return $this->statusHelper->isAvailableForReply(
-            $this->getRequestModel()->getStatusId()
-        );
-    }
-
-    /**
+     * Retrieve order increment id by request
+     *
      * @return string
      */
-    public function getDepartmentName()
+    public function getOrderIncrementId()
     {
-        return $this->_scopeConfig->getValue(
-            'aw_rma/contacts/department_name',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $this->_storeManager->getStore()
-        );
+        return $this->orderResolver->getIncrementId($this->getRmaRequest()->getOrderId());
     }
 
     /**
-     * @param $size
+     * Retrieve order date by request
+     *
      * @return string
      */
-    public function formatFileSize($size)
+    public function getOrderCreatedAt()
     {
-        return $this->fileHelper->getTextFileSize($size);
+        return $this->orderResolver->getCreatedAt($this->getRmaRequest()->getOrderId());
     }
 
     /**
-     * @param int $productId
-     * @return \Magento\Catalog\Model\Product
-     */
-    protected function getProduct($productId)
-    {
-        if (!isset($this->products[$productId])) {
-            $this->products[$productId] = $this->productFactory->create()->load($productId);
-        }
-        return $this->products[$productId];
-    }
-
-    /**
-     * @param $productId
-     * @return bool
-     */
-    public function isProductExists($productId)
-    {
-        return (bool)$this->getProduct($productId)->getId();
-    }
-
-    /**
-     * @param $requestItem
-     * @return string
-     */
-    public function getProductViewUrl($requestItem)
-    {
-        $product = $this->getProduct($requestItem->getProductId());
-        $parentProductId = $requestItem->getParentProductId();
-        if ($parentProductId) {
-            $parentProduct = $this->getProduct($parentProductId);
-            if (in_array($parentProduct->getTypeId(), $this->orderHelper->getNotReturnedOrderItemProductTypes())) {
-                return $parentProduct->getProductUrl();
-            }
-        }
-        return $product->getProductUrl();
-    }
-
-    /**
+     * Retrieve order view url
+     *
      * @param int $orderId
      * @return string
      */
@@ -286,41 +190,69 @@ class View extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return string
-     */
-    public function getSubmitReplyUrl()
-    {
-        return $this->getUrl('*/*/reply');
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubmitCustomFieldUrl()
-    {
-        return $this->getUrl('*/*/saveCustomField');
-    }
-
-    /**
-     * @param int $attachmentId
-     * @return string
-     */
-    public function getDownloadUrl($attachmentId)
-    {
-        $params = ['id' => $attachmentId];
-        if ($this->isNeedToAddKeyParam()) {
-            $rmaRequest = $this->getRequestModel();
-            $customerEmail = $rmaRequest->getCustomerEmail();
-            $params['key'] = md5($customerEmail);
-        }
-        return $this->getUrl('*/*/download', $params);
-    }
-
-    /**
+     * Check if can reply
+     *
      * @return bool
      */
-    private function isNeedToAddKeyParam()
+    public function canReply()
     {
-        return !($this->customerSession->isLoggedIn());
+        return $this->statusResolver->isAvailableActionForStatus('update', $this->getRmaRequest(), false);
+    }
+
+    /**
+     * Retrieve items html
+     *
+     * @return string
+     */
+    public function getItemsHtml()
+    {
+        /** @var Items $block */
+        $block = $this->getLayout()->createBlock(Items::class);
+        if (!$block) {
+            return '';
+        }
+        $block
+            ->setOrderItems($this->getRmaRequest()->getOrderItems())
+            ->setStatusId($this->getRmaRequest()->getStatusId());
+
+        return $block->toHtml();
+    }
+
+    /**
+     * Retrieve thread message input html
+     *
+     * @return string
+     */
+    public function getThreadMessageHtml()
+    {
+        $block = $this->getLayout()->getBlock('aw_rma.thread.message');
+
+        return $block->toHtml();
+    }
+
+    /**
+     * Retrieve thread list html
+     *
+     * @return string
+     */
+    public function getThreadListHtml()
+    {
+        /** @var ThreadList $block */
+        $block = $this->getLayout()->getBlock('aw_rma.thread.list');
+        $block
+            ->setRequestId($this->getRmaRequest()->getId())
+            ->setRequestIdentityValue($this->getRequestIdentityValue());
+
+        return $block->toHtml();
+    }
+
+    /**
+     * Check if status approved
+     *
+     * @return bool
+     */
+    public function isStatusApproved()
+    {
+        return $this->getRmaRequest()->getStatusId() == Status::APPROVED;
     }
 }

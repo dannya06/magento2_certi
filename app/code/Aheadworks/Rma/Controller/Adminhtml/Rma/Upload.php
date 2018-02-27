@@ -6,69 +6,68 @@
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Rma;
 
+use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Framework\Controller\Result\JsonFactory;
+use Aheadworks\Rma\Model\ThreadMessage\Attachment\FileUploader;
+use Magento\Framework\Controller\Result\Json;
+use Magento\Framework\Controller\ResultFactory;
+use Aheadworks\Rma\Controller\Customer\Upload as CustomerUpload;
+use Aheadworks\Rma\Model\Config;
 
 /**
  * Class Upload
+ *
  * @package Aheadworks\Rma\Controller\Adminhtml\Rma
  */
-class Upload extends \Aheadworks\Rma\Controller\Adminhtml\Rma
+class Upload extends Action
 {
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * {@inheritdoc}
      */
-    private $resultJsonFactory;
+    const ADMIN_RESOURCE = 'Aheadworks_Rma::manage_rma';
 
     /**
-     * @var \Magento\Framework\Filesystem
+     * @var FileUploader
      */
-    private $filesystem;
+    private $fileUploader;
 
     /**
-     * @var \Aheadworks\Rma\Model\Attachment\FileUploaderFactory
+     * @var Config
      */
-    private $fileUploaderFactory;
+    private $config;
 
     /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
-     * @param JsonFactory $resultJsonFactory
-     * @param \Magento\Framework\Filesystem $filesystem
-     * @param \Aheadworks\Rma\Model\Attachment\FileUploaderFactory $fileUploaderFactory
+     * @param FileUploader $fileUploader
+     * @param Config $config
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        JsonFactory $resultJsonFactory,
-        \Magento\Framework\Filesystem $filesystem,
-        \Aheadworks\Rma\Model\Attachment\FileUploaderFactory $fileUploaderFactory
+        FileUploader $fileUploader,
+        Config $config
     ) {
-        parent::__construct($context, $resultPageFactory);
-        $this->resultJsonFactory = $resultJsonFactory;
-        $this->filesystem = $filesystem;
-        $this->fileUploaderFactory = $fileUploaderFactory;
+        parent::__construct($context);
+        $this->fileUploader = $fileUploader;
+        $this->config = $config;
     }
+
     /**
-     * @return $this
+     * {@inheritdoc}
      */
     public function execute()
     {
+        /** @var Json $resultJson */
+        $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         try {
-            /** @var \Aheadworks\Rma\Model\Attachment\FileUploader $fileUploader */
-            $fileUploader = $this->fileUploaderFactory->create(['fileId' => 'file[0]']);
-            /** @var \Magento\Framework\Filesystem\Directory\Read $mediaDirectory */
-            $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-            $result = $fileUploader->save($mediaDirectory->getAbsolutePath(\Aheadworks\Rma\Model\Attachment::TMP_PATH));
-
+            $result = $this->fileUploader
+                ->setAllowedExtensions($this->config->getAllowFileExtensions())
+                ->saveToTmpFolder(CustomerUpload::FILE_ID);
         } catch (\Exception $e) {
-            $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
+            $result = [
+                'error' => $e->getMessage(),
+                'errorcode' => $e->getCode()
+            ];
         }
-
-        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
-        $resultJson = $this->resultJsonFactory->create();
         return $resultJson->setData($result);
     }
 }

@@ -14,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Block\Adminhtml\Transaction\NewAction\SaveButtonTest
  */
-class SaveButtonTest extends \PHPUnit_Framework_TestCase
+class SaveButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SaveButton

@@ -17,7 +17,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Block\Customer\RewardPointsBalanceTest
  */
-class RewardPointsBalanceTest extends \PHPUnit_Framework_TestCase
+class RewardPointsBalanceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Aheadworks\RewardPoints\Block\Customer\Toplink\RewardPointsBalance

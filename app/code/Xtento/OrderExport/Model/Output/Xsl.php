@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.3.7)
- * ID:            vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=
- * Packaged:      2017-10-04T08:30:08+00:00
- * Last Modified: 2017-05-15T19:07:07+00:00
+ * Product:       Xtento_OrderExport (2.4.9)
+ * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
+ * Packaged:      2018-02-26T09:11:23+00:00
+ * Last Modified: 2017-12-12T13:46:33+00:00
  * File:          app/code/Xtento/OrderExport/Model/Output/Xsl.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Output;
@@ -34,6 +34,11 @@ class Xsl extends AbstractOutput
     protected $pdfShipment;
 
     /**
+     * @var \Magento\Sales\Model\Order\Pdf\Creditmemo
+     */
+    protected $pdfCreditmemo;
+
+    /**
      * @var \Magento\Sales\Model\ResourceModel\Order\Invoice\CollectionFactory
      */
     protected $invoiceCollectionFactory;
@@ -42,6 +47,16 @@ class Xsl extends AbstractOutput
      * @var \Magento\Sales\Model\ResourceModel\Order\Shipment\CollectionFactory
      */
     protected $shipmentCollectionFactory;
+
+    /**
+     * @var \Magento\Sales\Model\ResourceModel\Order\Creditmemo\CollectionFactory
+     */
+    protected $creditmemoCollectionFactory;
+
+    /**
+     * @var \Magento\Framework\Config\DataInterface
+     */
+    protected $exportSettings;
 
     /**
      * Xsl constructor.
@@ -56,8 +71,11 @@ class Xsl extends AbstractOutput
      * @param XmlFactory $outputXmlFactory
      * @param \Magento\Sales\Model\Order\Pdf\Invoice $pdfInvoice
      * @param \Magento\Sales\Model\Order\Pdf\Shipment $pdfShipment
+     * @param \Magento\Sales\Model\Order\Pdf\Creditmemo $pdfCreditmemo
      * @param \Magento\Sales\Model\ResourceModel\Order\Invoice\CollectionFactory $invoiceCollectionFactory
      * @param \Magento\Sales\Model\ResourceModel\Order\Shipment\CollectionFactory $shipmentCollectionFactory
+     * @param \Magento\Sales\Model\ResourceModel\Order\Creditmemo\CollectionFactory $creditmemoCollectionFactory
+     * @param \Magento\Framework\Config\DataInterface $exportSettings
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -73,8 +91,11 @@ class Xsl extends AbstractOutput
         XmlFactory $outputXmlFactory,
         \Magento\Sales\Model\Order\Pdf\Invoice $pdfInvoice,
         \Magento\Sales\Model\Order\Pdf\Shipment $pdfShipment,
+        \Magento\Sales\Model\Order\Pdf\Creditmemo $pdfCreditmemo,
         \Magento\Sales\Model\ResourceModel\Order\Invoice\CollectionFactory $invoiceCollectionFactory,
         \Magento\Sales\Model\ResourceModel\Order\Shipment\CollectionFactory $shipmentCollectionFactory,
+        \Magento\Sales\Model\ResourceModel\Order\Creditmemo\CollectionFactory $creditmemoCollectionFactory,
+        \Magento\Framework\Config\DataInterface $exportSettings,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -94,8 +115,11 @@ class Xsl extends AbstractOutput
         $this->outputXmlFactory = $outputXmlFactory;
         $this->pdfInvoice = $pdfInvoice;
         $this->pdfShipment = $pdfShipment;
+        $this->pdfCreditmemo = $pdfCreditmemo;
         $this->invoiceCollectionFactory = $invoiceCollectionFactory;
         $this->shipmentCollectionFactory = $shipmentCollectionFactory;
+        $this->creditmemoCollectionFactory = $creditmemoCollectionFactory;
+        $this->exportSettings = $exportSettings;
     }
 
 
@@ -164,7 +188,8 @@ class Xsl extends AbstractOutput
 
                 // XSL Template
                 $xslTemplateObj = new \XSLTProcessor();
-                $xslTemplateObj->registerPHPFunctions();
+                $allowedPhpFunctions = array_merge(explode(",", $this->exportSettings->get('allowed_php_functions')), explode(",", $this->exportSettings->get('custom_allowed_php_functions')));
+                $xslTemplateObj->registerPHPFunctions($allowedPhpFunctions);
                 // Add some parameters accessible as $variables in the XSL Template (example: <xsl:value-of select="$exportid"/>)
                 $this->addVariablesToXSLT($xslTemplateObj, $exportArray, $xslTemplate);
                 // Import stylesheet
@@ -227,8 +252,8 @@ class Xsl extends AbstractOutput
                 $outputArray[$filename] = $output;
             }
             if ($this->_registry->registry('is_test_orderexport') !== true) {
-                if ($fileType == 'invoice_pdf' || $fileType == 'packingslip_pdf'
-                    || $fileType == 'creditmemo' || preg_match('/fooman\_/', $fileType)) {
+                if ($fileType == 'invoice_pdf' || $fileType == 'packingslip_pdf' || $fileType == 'creditmemo_pdf'
+                    || preg_match('/fooman\_/', $fileType)) {
                     $orderIds = [];
                     foreach ($exportArray as $exportObject) {
                         if (isset($exportObject['order']) && isset($exportObject['order']['entity_id'])) {
@@ -382,6 +407,13 @@ class Xsl extends AbstractOutput
                 return false;
             }
             return $this->pdfShipment->getPdf($shipmentCollection->getItems())->render();
+        }
+        if ($fileType == 'creditmemo_pdf') {
+            $creditmemoCollection = $this->creditmemoCollectionFactory->create()->setOrderFilter(['in' => $orderIds]);
+            if (!$creditmemoCollection->getSize()) {
+                return false;
+            }
+            return $this->pdfCreditmemo->getPdf($creditmemoCollection->getItems())->render();
         }
         return false;
     }

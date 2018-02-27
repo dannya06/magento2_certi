@@ -148,4 +148,17 @@ class CommentDefault implements CommentInterface
         }
         return $url;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function renderTranslatedComment(
+        $arguments = [],
+        $key = null,
+        $label = null,
+        $renderingUrl = false,
+        $frontend = false
+    ) {
+        return $this->renderComment($arguments, $key, __($label), $renderingUrl, $frontend);
+    }
 }

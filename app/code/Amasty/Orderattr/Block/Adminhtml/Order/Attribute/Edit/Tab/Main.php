@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -149,6 +149,18 @@ class Main extends AbstractMain
             'title'     => __('Visible on Back-end'),
             'values'    => $yesno,
         ], 'is_visible_on_front');
+
+        $fieldset->addField(
+            'tooltip',
+            'text',
+            [
+                'name'      => 'tooltip',
+                'label'     => __('Tooltip'),
+                'title'     => __('Attribute tooltip'),
+                'note'   => __('This is help text for customers that is displayed on checkout page')
+            ],
+            'is_visible_on_back'
+        );
 
         $requiredElm = $form->getElement('is_required');
         $requiredValues = array_merge($requiredElm->getValues(), [[

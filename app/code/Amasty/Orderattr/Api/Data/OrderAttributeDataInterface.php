@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -57,4 +57,18 @@ interface OrderAttributeDataInterface
      * @return string|int|null
      */
     public function getValueOutput();
+
+    /**
+     * @since 2.2.0
+     * @param string|int|null $value
+     *
+     * @return $this
+     */
+    public function setValueOutputAdmin($value);
+
+    /**
+     * @since 2.2.0
+     * @return string|int|null
+     */
+    public function getValueOutputAdmin();
 }

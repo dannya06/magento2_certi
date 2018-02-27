@@ -92,6 +92,9 @@ class SaveItem extends \Magento\Backend\App\Action
         $data = $this->getRequest()->getPostValue(); 
         if ($data && isset($data['item'])) {
             $item       = json_decode($data['item'], true);
+            if(isset($item['cms_page'])){
+                unset($item['cms_page']);
+            }
             $connection = $this->_resource->getConnection();
             $table      = $this->_resource->getTableName('ves_megamenu_item');
             $select     = $connection->select()->from($table)->where('item_id = ?', $item['item_id'])->where('menu_id = ?', $data['menu_id']);

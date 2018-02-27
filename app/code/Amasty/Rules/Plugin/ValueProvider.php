@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -24,8 +24,7 @@ class ValueProvider
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Amasty\Rules\Helper\Data $rulesDataHelper
-    )
-    {
+    ) {
         $this->_objectManager = $objectManager;
         $this->rulesDataHelper = $rulesDataHelper;
     }
@@ -38,8 +37,12 @@ class ValueProvider
         $result = $proceed($rule);
 
         $actions = &$result['actions']['children']['simple_action']['arguments']['data']['config']['options'];
-        
-        //$ruleActions = $this->rulesDataHelper->getDiscountTypes();
+        foreach ($actions as &$action) {
+            if ($action['value'] == \Magento\SalesRule\Model\Rule::BUY_X_GET_Y_ACTION) {
+                $action['label'] = __("Buy N products, and get next products with discount");
+                break;
+            }
+        }
 
         $actions = array_merge($actions, $this->rulesDataHelper->getDiscountTypes());
 
@@ -52,10 +55,10 @@ class ValueProvider
         $result['actions']['children']['amrulesrule[priceselector]']['arguments']['data']['config']['value']
             = $ampromoRule->getData('priceselector');
 
-        $result['actions']['children']['amrulesrule[promo_skus]']['arguments']['data']['config']['value']
+        $result['actions']['children']['promo_items']['children']['amrulesrule[promo_skus]']['arguments']['data']['config']['value']
             = $ampromoRule->getData('promo_skus');
 
-        $result['actions']['children']['amrulesrule[promo_cats]']['arguments']['data']['config']['value']
+        $result['actions']['children']['promo_items']['children']['amrulesrule[promo_cats]']['arguments']['data']['config']['value']
             = $ampromoRule->getData('promo_cats');
 
         $result['actions']['children']['amrulesrule[nqty]']['arguments']['data']['config']['value']

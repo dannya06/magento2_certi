@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -32,6 +32,18 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
      */
     private $directoryList;
 
+    /**
+     * Info constructor.
+     *
+     * @param \Magento\Backend\Block\Context                               $context
+     * @param \Magento\Backend\Model\Auth\Session                          $authSession
+     * @param \Magento\Framework\View\Helper\Js                            $jsHelper
+     * @param \Magento\Framework\View\LayoutFactory                        $layoutFactory
+     * @param \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronFactory
+     * @param \Magento\Framework\App\Filesystem\DirectoryList              $directoryList
+     * @param \Magento\Framework\App\State                                 $appState
+     * @param array                                                        $data
+     */
     public function __construct(
         \Magento\Backend\Block\Context $context,
         \Magento\Backend\Model\Auth\Session $authSession,
@@ -63,6 +75,8 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
 
         $html .= $this->getMagentoMode($element);
         $html .= $this->getMagentoPathInfo($element);
+        $html .= $this->getOwnerInfo($element);
+        $html .= $this->getSystemTime($element);
         $html .= $this->getCronInfo($element);
 
         $html .= $this->_getFooterHtml($element);
@@ -87,48 +101,86 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     private function getMagentoMode($fieldset)
     {
         $label = __("Magento Mode");
         $mode = $this->appState->getMode();
-        $mode = ucfirst($mode);
 
-        $field = $fieldset->addField('magento_mode', 'label', [
-            'name'  => 'dummy',
-            'label' => $label,
-            'value' => $mode,
-        ])->setRenderer($this->_getFieldRenderer());
-
-        return $field->toHtml();
+        return $this->getFieldHtml($fieldset, 'magento_mode', $label, ucfirst($mode));
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     private function getMagentoPathInfo($fieldset)
     {
         $label = __("Magento Path");
         $path = $this->directoryList->getRoot();
 
-        $field = $fieldset->addField('magento_path', 'label', [
-            'name'  => 'magento_path',
-            'label' => $label,
-            'value' => $path,
-        ])->setRenderer($this->_getFieldRenderer());
-
-        return $field->toHtml();
+        return $this->getFieldHtml($fieldset, 'magento_path', $label, $path);
     }
 
     /**
      * @param $fieldset
-     * @return mixed
+     * @return string
+     */
+    private function getOwnerInfo($fieldset)
+    {
+        if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+            $userInfo = posix_getpwuid(posix_geteuid());
+            $userInfo = isset($userInfo['name']) ? $userInfo['name'] : '';
+            return $this->fieldHtml($userInfo, $fieldset);
+        }
+
+        if (function_exists('exec')) {
+            $userInfo = exec('whoami');
+            return $this->fieldHtml($userInfo, $fieldset);
+        }
+
+        return $this->fieldHtml(get_current_user(), $fieldset);
+    }
+
+    /**
+     * @param AbstractElement $fieldset
+     * @return string
+     */
+    private function getSystemTime($fieldset)
+    {
+        return $this->getFieldHtml(
+            $fieldset,
+            'current_time',
+            __("Current Time"),
+            $this->_localeDate->date()->format('H:i:s')
+        );
+    }
+
+    /**
+     * @param $userInfo
+     * @param $fieldset
+     * @return string
+     */
+    private function fieldHtml($userInfo, $fieldset)
+    {
+        $label = __("Server User");
+
+        return $this->getFieldHtml(
+            $fieldset,
+            'magento_user',
+            $label,
+            $userInfo
+        );
+    }
+
+    /**
+     * @param AbstractElement $fieldset
+     * @return string
      */
     private function getCronInfo($fieldset)
     {
         $crontabCollection = $this->cronFactory->create();
-        $crontabCollection->getSelect()->order('schedule_id', 'desc')->limit(5);
+        $crontabCollection->setOrder('schedule_id')->setPageSize(5);
 
         if ($crontabCollection->count() === 0) {
             $value = '<div class="red">';
@@ -153,7 +205,19 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
 
         $label = __('Cron (Last 5)');
 
-        $field = $fieldset->addField('cron_configuration', 'label', [
+        return $this->getFieldHtml($fieldset, 'cron_configuration', $label, $value);
+    }
+
+    /**
+     * @param AbstractElement $fieldset
+     * @param string $fieldName
+     * @param string $label
+     * @param string $value
+     * @return string
+     */
+    private function getFieldHtml($fieldset, $fieldName, $label = '', $value = '')
+    {
+        $field = $fieldset->addField($fieldName, 'label', [
             'name'  => 'dummy',
             'label' => $label,
             'after_element_html' => $value,

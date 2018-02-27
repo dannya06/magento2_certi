@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -23,9 +23,9 @@ namespace Amasty\Orderattr\Helper;
  */
 class Config extends \Magento\Framework\App\Helper\AbstractHelper
 {
-
     const CHECKOUT_PROGRESS = 'amorderattr/checkout/progress';
     const CHECKOUT_HIDE_EMPTY = 'amorderattr/checkout/hide_empty';
+    const CHECKOUT_DATE_FORMAT = 'amorderattr/checkout/format';
     const PDF_SHIPMENT = 'amorderattr/pdf/shipment';
     const PDF_INVOICE = 'amorderattr/pdf/invoice';
     const SHOW_INVOICE_GRID = 'amorderattr/invoices_shipments/invoice_grid';
@@ -42,6 +42,16 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
     public function getRequiredOnFrontOnlyId()
     {
         return 2;
+    }
+
+    public function getCheckoutDateFormat()
+    {
+        $value = $this->getValue(self::CHECKOUT_DATE_FORMAT);
+        if (!$value) {
+            $value = 'yyyy-MM-dd';
+        }
+
+        return $value;
     }
 
     protected function underscore($name)
@@ -72,4 +82,3 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
 }
-

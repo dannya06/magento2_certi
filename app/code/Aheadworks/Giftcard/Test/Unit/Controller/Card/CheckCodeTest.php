@@ -26,7 +26,7 @@ use Aheadworks\Giftcard\Block\Giftcard\Info as GiftcardInfo;
  *
  * @package Aheadworks\Giftcard\Controller\Card
  */
-class CheckCodeTest extends \PHPUnit_Framework_TestCase
+class CheckCodeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CheckCode
@@ -73,7 +73,10 @@ class CheckCodeTest extends \PHPUnit_Framework_TestCase
         $objectManager = new ObjectManager($this);
         $this->giftcardRepositoryMock = $this->getMockForAbstractClass(GiftcardRepositoryInterface::class);
         $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->escaperMock = $this->getMock(Escaper::class, [], [], '', false);
+        $this->escaperMock = $this->getMockBuilder(Escaper::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
         $this->responseMock = $this->getMockForAbstractClass(
             ResponseInterface::class,
@@ -84,7 +87,10 @@ class CheckCodeTest extends \PHPUnit_Framework_TestCase
             true,
             ['appendBody']
         );
-        $this->viewMock = $this->getMock(View::class, ['getLayout'], [], '', false);
+        $this->viewMock = $this->getMockBuilder(View::class)
+            ->setMethods(['getLayout'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $contextMock = $objectManager->getObject(
             Context::class,
@@ -128,11 +134,17 @@ class CheckCodeTest extends \PHPUnit_Framework_TestCase
             ->method('getWebsite')
             ->willReturn($websiteMock);
 
-        $blockInstanceMock = $this->getMock(GiftcardInfo::class, ['toHtml', 'setGiftcard'], [], '', false);
+        $blockInstanceMock = $this->getMockBuilder(GiftcardInfo::class)
+            ->setMethods(['toHtml', 'setGiftcard'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $blockInstanceMock->expects($this->once())
             ->method('toHtml')
             ->willReturn($expectedValue);
-        $layoutMock = $this->getMock(Layout::class, ['createBlock'], [], '', false);
+        $layoutMock = $this->getMockBuilder(Layout::class)
+            ->setMethods(['createBlock'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $layoutMock->expects($this->once())
             ->method('createBlock')
             ->with(GiftcardInfo::class)

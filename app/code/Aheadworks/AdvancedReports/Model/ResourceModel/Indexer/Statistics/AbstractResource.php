@@ -6,11 +6,12 @@
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
+use Aheadworks\AdvancedReports\Model\Flag;
+use Aheadworks\AdvancedReports\Model\FlagFactory;
+use Aheadworks\AdvancedReports\Model\Config;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\Indexer\Table\StrategyInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
-use Aheadworks\AdvancedReports\Model\Flag;
-use Aheadworks\AdvancedReports\Model\FlagFactory;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Eav\Api\AttributeRepositoryInterface;
@@ -23,6 +24,11 @@ use Magento\Eav\Api\AttributeRepositoryInterface;
  */
 abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\AbstractResource
 {
+    /**
+     * @var Config
+     */
+    private $config;
+
     /**
      * @var TimezoneInterface
      */
@@ -60,15 +66,17 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
 
     /**
      * @param Context $context
+     * @param Config $config
      * @param TimezoneInterface $localeDate
      * @param StrategyInterface $tableStrategy
      * @param MetadataPool $metadataPool
      * @param AttributeRepositoryInterface $attributeRepository
      * @param FlagFactory $reportsFlagFactory
-     * @param null $connectionName
+     * @param string|null $connectionName
      */
     public function __construct(
         Context $context,
+        Config $config,
         TimezoneInterface $localeDate,
         StrategyInterface $tableStrategy,
         MetadataPool $metadataPool,
@@ -77,6 +85,7 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
         $connectionName = null
     ) {
         parent::__construct($context, $tableStrategy, $connectionName);
+        $this->config = $config;
         $this->localeDate = $localeDate;
         $this->metadataPool = $metadataPool;
         $this->attributeRepository = $attributeRepository;
@@ -94,6 +103,7 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
      * Reindex all
      *
      * @return $this
+     * @throws \Exception
      */
     public function reindexAll()
     {
@@ -238,5 +248,23 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
             $this->offset = (new \DateTimeZone($timezone))->getOffset(new \DateTime());
         }
         return $this->offset;
+    }
+
+    /**
+     * Get manufacturer attribute
+     *
+     * @return \Magento\Catalog\Model\ResourceModel\Eav\Attribute|null
+     */
+    protected function getManufacturerAttribute()
+    {
+        $manufacturerCode = $this->config->getManufacturerAttribute();
+        /* @var $manufacturerAttr \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
+        try {
+            $manufacturerAttr = $this->attributeRepository->get('catalog_product', $manufacturerCode);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $manufacturerAttr;
     }
 }

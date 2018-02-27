@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2017-08-25T12:07:44+00:00
+ * Packaged:      2018-02-26T09:11:39+00:00
+ * Last Modified: 2017-11-23T13:55:55+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/General.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Product;
@@ -365,8 +365,6 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
                 if ($dateToday > $toDate) {
                     $isSpecialPriceActive = false;
                 }
-            } else {
-                $isSpecialPriceActive = false;
             }
             $this->writeValue('special_price_active', (int)$isSpecialPriceActive);
         }

@@ -19,11 +19,20 @@ define([
             },
             listens: {
                 applied: 'initSettings',
-                elems: 'initAppliedByDefault'
+                elems: 'initAppliedByDefault childrenUpdated'
             },
             exports: {
                 applied: '${ $.provider }:params.report_settings'
             }
+        },
+
+        /**
+         * {@inheritdoc}
+         */
+        initialize: function () {
+            this._super().initSettings();
+
+            return this;
         },
 
         /**
@@ -32,9 +41,7 @@ define([
          * @returns {Settings} Chainable
          */
         apply: function () {
-            this.validateForm();
-
-            if (!this.get('params.invalid')) {
+            if (!this.isValidForm()) {
                 this.set('applied', utils.copy(this.prepareSettingsData()));
             }
 
@@ -47,20 +54,13 @@ define([
          * @returns {Settings} Chainable
          */
         initSettings: function () {
-            if (this.applied == undefined) {
+            if (_.isUndefined(this.applied)) {
                 this.applied = {};
             }
-            this.set('settings', utils.copy(this.applied));
 
-            this.elems().forEach(function (elem, index) {
-                if (this.applied[elem.index] == undefined && elem.service && elem.service.template) {
-                    elem.restoreToDefault();
-                    elem.isUseDefault(true);
-                }
-                if (this.applied[elem.index] != undefined && elem.service && elem.service.template) {
-                    elem.isUseDefault(false);
-                }
-            }, this);
+            this.set('settings', utils.copy(this.applied));
+            this.toggleChildrenUseDefault();
+
             return this;
         },
 
@@ -72,15 +72,7 @@ define([
         initElement: function (elem) {
             this._super();
 
-            elem.on('isUseDefault', function(state) {
-                if (state) {
-                    this.restoreToDefault();
-                }
-            }.bind(elem));
-
-            if (this.applied != undefined && this.applied[elem.index] != undefined && elem.service && elem.service.template) {
-                elem.isUseDefault(false);
-            }
+            elem.on('isUseDefault', this.onChildrenUseDefault.bind(elem));
 
             return this;
         },
@@ -91,7 +83,7 @@ define([
          * @returns {Settings} Chainable
          */
         initAppliedByDefault: function () {
-            if (!_.keys(this.applied).length && this.initChildCount == this.elems().length) {
+            if (!_.keys(this.applied).length && this.initChildCount === this.elems().length) {
                 this.set('applied', utils.copy(this.prepareSettingsData()));
             }
 
@@ -100,28 +92,71 @@ define([
 
         /**
          * Validates each element and returns true, if all elements are valid
+         *
+         * @returns {Boolean}
          */
-        validateForm: function () {
+        isValidForm: function () {
             this.set('params.invalid', false);
             this.trigger('data.validate');
+
+            return this.get('params.invalid');
         },
 
         /**
          * Prepare data
          *
-         * @param {Array} data
+         * @return {Array}
          */
         prepareSettingsData: function() {
             var data = {};
 
-            this.elems().forEach(function (elem, index) {
-                if (elem.service && elem.service.template && elem.isUseDefault()) {
-                } else {
-                    data[elem.index] = elem.value();
+            _.each(this.elems(), function (elem) {
+                if (elem.hasService() && elem.isUseDefault()) {
+                    return;
                 }
+
+                data[elem.index] = elem.value();
             });
 
             return data;
+        },
+
+        /**
+         * Child elements updated in collection
+         */
+        childrenUpdated: function () {
+            if (this.initChildCount === this.elems().length) {
+                this.toggleChildrenUseDefault();
+            }
+        },
+
+        /**
+         * Toggle "Use default value" for child elements
+         */
+        toggleChildrenUseDefault: function() {
+            _.each(this.elems(), function (elem) {
+                if (!elem.hasService()){
+                    return;
+                }
+
+                if (!_.isUndefined(this.applied) && !_.isUndefined(this.applied[elem.index])) {
+                    elem.isUseDefault(false);
+                } else {
+                    elem.restoreToDefault();
+                    elem.isUseDefault(true);
+                }
+            }, this);
+        },
+
+        /**
+         * Is being invoked on children update
+         *
+         * @param  {Boolean} state
+         */
+        onChildrenUseDefault: function(state) {
+            if (state) {
+                this.restoreToDefault();
+            }
         }
     });
 });

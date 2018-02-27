@@ -8,7 +8,6 @@ namespace Aheadworks\Giftcard\Model;
 
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Api\GiftcardManagementInterface;
-use Aheadworks\Giftcard\Model\Giftcard\CodeGenerator;
 use Aheadworks\Giftcard\Model\Source\EmailStatus;
 use Aheadworks\Giftcard\Model\Source\Giftcard\EmailTemplate;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard as ResourceGiftcard;
@@ -33,11 +32,6 @@ use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 class Giftcard extends AbstractModel implements GiftcardInterface
 {
     /**
-     * @var CodeGenerator
-     */
-    private $codeGenerator;
-
-    /**
      * @var GiftcardManagementInterface
      */
     private $giftcardManagement;
@@ -60,7 +54,6 @@ class Giftcard extends AbstractModel implements GiftcardInterface
     /**
      * @param Context $context
      * @param Registry $registry
-     * @param CodeGenerator $codeGenerator
      * @param GiftcardManagementInterface $giftcardManagement
      * @param Statistics $statistics
      * @param StoreManagerInterface $storeManager
@@ -69,13 +62,11 @@ class Giftcard extends AbstractModel implements GiftcardInterface
     public function __construct(
         Context $context,
         Registry $registry,
-        CodeGenerator $codeGenerator,
         GiftcardManagementInterface $giftcardManagement,
         Statistics $statistics,
         StoreManagerInterface $storeManager,
         TimezoneInterface $localeDate
     ) {
-        $this->codeGenerator = $codeGenerator;
         $this->giftcardManagement = $giftcardManagement;
         $this->statistics = $statistics;
         $this->storeManager = $storeManager;
@@ -473,7 +464,10 @@ class Giftcard extends AbstractModel implements GiftcardInterface
                 throw new LocalizedException(__('Expiration date cannot be in the past'));
             }
             $this->setBalance($this->getInitialBalance());
-            $this->setCode($this->codeGenerator->generate());
+            if (null === $this->getCode()) {
+                $codes = $this->giftcardManagement->generateCodes($this->getWebsiteId());
+                $this->setCode(array_shift($codes));
+            }
         }
         $this->attachGiftcardState();
 
@@ -488,31 +482,27 @@ class Giftcard extends AbstractModel implements GiftcardInterface
         if ($this->getState() == Status::ACTIVE && $this->getBalance() <= 0) {
             throw new LocalizedException(__('Unable to activate Gift Card code'));
         }
-        if (
-            ($this->getOrigData('state') == Status::USED || $this->getOrigData('state') == Status::EXPIRED)
+        if (($this->getOrigData('state') == Status::USED || $this->getOrigData('state') == Status::EXPIRED)
             && $this->getState() == Status::DEACTIVATED
         ) {
             throw new LocalizedException(__('Unable to deactivate Gift Card code'));
         }
-        if (
-            $this->getState() == Status::DEACTIVATED
-            && $this->getOrigData('balance') == 0
+        if ($this->getState() == Status::DEACTIVATED
+            && $this->getOrigData('balance') === 0
             && $this->getOrigData('balance') != $this->getBalance()
         ) {
             throw new LocalizedException(__('Unable to change balance of deactivated Gift Card code'));
         }
 
-        if (
-            (($this->getOrigData('state') != Status::DEACTIVATED && $this->getState() == Status::DEACTIVATED)
+        if ((($this->getOrigData('state') != Status::DEACTIVATED && $this->getState() == Status::DEACTIVATED)
                 || ($this->getOrigData('state') != Status::EXPIRED && $this->getState() == Status::EXPIRED)
                 || ($this->getOrigData('state') != Status::USED && $this->getState() == Status::USED)
-                || $this->getEmailTemplate() == EmailTemplate::DO_NOT_SEND)
+                || (empty($this->getEmailTemplate()) || $this->getEmailTemplate() == EmailTemplate::DO_NOT_SEND))
             && $this->getEmailSent() != EmailStatus::SENT
         ) {
             $this->setEmailSent(EmailStatus::NOT_SEND);
         }
-        if (
-            (($this->getOrigData('state')
+        if ((($this->getOrigData('state')
                     && $this->getOrigData('state') != Status::ACTIVE && $this->getState() == Status::ACTIVE)
                 || ($this->getOrigData('email_template') == EmailTemplate::DO_NOT_SEND
                     && $this->getEmailTemplate() != EmailTemplate::DO_NOT_SEND))
@@ -621,8 +611,7 @@ class Giftcard extends AbstractModel implements GiftcardInterface
             if ($this->getOrigData('state') != Status::USED && $this->getState() == Status::USED) {
                 $data = ['used_qty' => 1];
             }
-            if (
-                $this->getOrigData('state') == Status::USED
+            if ($this->getOrigData('state') == Status::USED
                 && ($this->getState() == Status::ACTIVE || $this->getState() == Status::DEACTIVATED)
             ) {
                 $data = ['used_qty' => -1];

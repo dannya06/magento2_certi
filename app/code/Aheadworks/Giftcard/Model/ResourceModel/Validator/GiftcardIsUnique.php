@@ -7,6 +7,8 @@
 namespace Aheadworks\Giftcard\Model\ResourceModel\Validator;
 
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
+use Aheadworks\Giftcard\Api\Data\Pool\CodeInterface as PoolCodeInterface;
+use Aheadworks\Giftcard\Model\Source\YesNo;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\EntityManager\MetadataPool;
 
@@ -47,14 +49,27 @@ class GiftcardIsUnique
      */
     public function validate($code)
     {
-        $metaData = $this->metadataPool->getMetadata(GiftcardInterface::class);
-        $connection = $this->resourceConnection->getConnectionByName($metaData->getEntityConnectionName());
+        $giftcardMetaData = $this->metadataPool->getMetadata(GiftcardInterface::class);
+        $connection = $this->resourceConnection->getConnectionByName($giftcardMetaData->getEntityConnectionName());
 
         $bind = ['code' => $code];
         $select = $connection->select()
-            ->from($this->resourceConnection->getTableName($metaData->getEntityTable()))
+            ->from($this->resourceConnection->getTableName($giftcardMetaData->getEntityTable()))
             ->where('code = :code');
+        if ($connection->fetchRow($select, $bind)) {
+            return false;
+        }
 
+        $bind = [
+            'code' => $code,
+            'used' => YesNo::NO
+        ];
+        $poolCodeMetaData = $this->metadataPool->getMetadata(PoolCodeInterface::class);
+        $connection = $this->resourceConnection->getConnectionByName($poolCodeMetaData->getEntityConnectionName());
+        $select = $connection->select()
+            ->from($this->resourceConnection->getTableName($poolCodeMetaData->getEntityTable()))
+            ->where('code = :code')
+            ->where('used = :used');
         if ($connection->fetchRow($select, $bind)) {
             return false;
         }

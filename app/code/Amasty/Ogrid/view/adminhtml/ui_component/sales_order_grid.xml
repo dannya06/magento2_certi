@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 -->
@@ -13,20 +13,7 @@
                 <item name="tableSelector" xsi:type="string">table.data-grid-draggable</item>
             </item>
         </argument>
-        <exportButton>
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="options" xsi:type="array">
-                        <item name="cvs" xsi:type="array">
-                            <item name="url" xsi:type="string">amasty_ogrid/export/gridToCsv</item>
-                        </item>
-                        <item name="xml" xsi:type="array">
-                            <item name="url" xsi:type="string">amasty_ogrid/export/gridToXml</item>
-                        </item>
-                    </item>
-                </item>
-            </argument>
-        </exportButton>
+        <exportButton name="export_button" class="Amasty\Ogrid\Ui\Component\ExportButton" />
         <columnsControls name="columns_controls" class="Amasty\Ogrid\Ui\Component\Columns">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -293,6 +280,31 @@
             </argument>
         </column>
 
+        <column name="amasty_ogrid_tax_amount" class="Amasty\Ogrid\Ui\Component\Listing\Column\OrderTax">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="tab" xsi:type="string">general</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="label" xsi:type="string" translate="true">Order Tax</item>
+                </item>
+            </argument>
+        </column>
+
+        <column name="amasty_ogrid_order_comments" class="Amasty\Ogrid\Ui\Component\Listing\Column\OrderComments">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="tab" xsi:type="string">general</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
+                    <item name="resizeEnabled" xsi:type="boolean">true</item>
+                    <item name="resizeDefaultWidth" xsi:type="string">200</item>
+                    <item name="label" xsi:type="string" translate="true">Order Comments</item>
+                </item>
+            </argument>
+        </column>
+
         <column name="amasty_ogrid_shipping_description">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -386,6 +398,16 @@
                 </item>
             </argument>
         </column>
+        <column name="amasty_ogrid_shipping_company">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="tab" xsi:type="string">shipping</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Company</item>
+                </item>
+            </argument>
+        </column>
         <column name="amasty_ogrid_shipping_telephone">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -443,6 +465,16 @@
                     <item name="visible" xsi:type="boolean">false</item>
                     <item name="filter" xsi:type="string">text</item>
                     <item name="label" xsi:type="string" translate="true">City</item>
+                </item>
+            </argument>
+        </column>
+        <column name="amasty_ogrid_billing_company">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="tab" xsi:type="string">billing</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Company</item>
                 </item>
             </argument>
         </column>

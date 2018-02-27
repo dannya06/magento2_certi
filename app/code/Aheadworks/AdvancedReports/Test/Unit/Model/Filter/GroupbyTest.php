@@ -4,21 +4,21 @@
 * See LICENSE.txt for license details.
 */
 
-namespace Aheadworks\AdvancedReports\Test\Unit\Model;
+namespace Aheadworks\AdvancedReports\Test\Unit\Model\Filter;
 
-use Aheadworks\AdvancedReports\Model\Filter\Groupby;
+use Aheadworks\AdvancedReports\Model\Filter\GroupBy;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Aheadworks\AdvancedReports\Model\Source\Groupby as GroupbySource;
 
 /**
- * Test for \Aheadworks\AdvancedReports\Model\Filter\Groupby
+ * Test for \Aheadworks\AdvancedReports\Model\Filter\GroupBy
  */
-class GroupbyTest extends \PHPUnit_Framework_TestCase
+class GroupbyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Groupby
+     * @var GroupBy
      */
     private $model;
 
@@ -51,7 +51,7 @@ class GroupbyTest extends \PHPUnit_Framework_TestCase
             ['setData', 'getData']
         );
         $this->model = $objectManager->getObject(
-            Groupby::class,
+            GroupBy::class,
             [
                 'request' => $this->requestMock,
                 'session' => $this->sessionMock
@@ -72,10 +72,10 @@ class GroupbyTest extends \PHPUnit_Framework_TestCase
             ->willReturn($value);
         $this->sessionMock->expects($this->once())
             ->method('setData')
-            ->with(Groupby::SESSION_KEY, $value)
+            ->with(GroupBy::SESSION_KEY, $value)
             ->willReturnSelf();
 
-        $this->assertSame($value, $this->model->getCurrentGroupByKey());
+        $this->assertSame($value, $this->model->getValue());
     }
 
     /**
@@ -91,14 +91,14 @@ class GroupbyTest extends \PHPUnit_Framework_TestCase
             ->willReturn(null);
         $this->sessionMock->expects($this->once())
             ->method('getData')
-            ->with(Groupby::SESSION_KEY)
+            ->with(GroupBy::SESSION_KEY)
             ->willReturn($value);
         $this->sessionMock->expects($this->once())
             ->method('setData')
-            ->with(Groupby::SESSION_KEY, $value)
+            ->with(GroupBy::SESSION_KEY, $value)
             ->willReturnSelf();
 
-        $this->assertSame($value, $this->model->getCurrentGroupByKey());
+        $this->assertSame($value, $this->model->getValue());
     }
 
     /**
@@ -106,7 +106,7 @@ class GroupbyTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCurrentGroupByKeyFromDefault()
     {
-        $value = Groupby::DEFAULT_GROUP_BY;
+        $value = GroupbySource::TYPE_MONTH;
 
         $this->requestMock->expects($this->once())
             ->method('getParam')
@@ -114,13 +114,23 @@ class GroupbyTest extends \PHPUnit_Framework_TestCase
             ->willReturn(null);
         $this->sessionMock->expects($this->once())
             ->method('getData')
-            ->with(Groupby::SESSION_KEY)
+            ->with(GroupBy::SESSION_KEY)
             ->willReturn(null);
         $this->sessionMock->expects($this->once())
             ->method('setData')
-            ->with(Groupby::SESSION_KEY, $value)
+            ->with(GroupBy::SESSION_KEY, $value)
             ->willReturnSelf();
 
-        $this->assertSame($value, $this->model->getCurrentGroupByKey());
+        $this->assertSame($value, $this->model->getValue());
+    }
+
+    /**
+     * Testing of getDefaultValue method
+     */
+    public function testGetDefaultValue()
+    {
+        $value = GroupbySource::TYPE_MONTH;
+
+        $this->assertSame($value, $this->model->getDefaultValue());
     }
 }

@@ -24,7 +24,7 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Block\Product\View\DiscountTest
  */
-class DiscountTest extends \PHPUnit_Framework_TestCase
+class DiscountTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var  Context|\PHPUnit_Framework_MockObject_MockObject

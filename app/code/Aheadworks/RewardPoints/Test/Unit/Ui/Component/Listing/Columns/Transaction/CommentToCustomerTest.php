@@ -18,7 +18,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Ui\Component\Listing\Columns\Transaction\CommentToCustomerTest
  */
-class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
+class CommentToCustomerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CommentToCustomer

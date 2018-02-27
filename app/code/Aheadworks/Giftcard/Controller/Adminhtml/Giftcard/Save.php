@@ -20,6 +20,8 @@ use Magento\Framework\Stdlib\DateTime as StdlibDateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\Request\DataPersistorInterface;
+use Aheadworks\Giftcard\Api\PoolManagementInterface;
+use Aheadworks\Giftcard\Model\ResourceModel\Giftcard as ResourceGiftcard;
 
 /**
  * Class Save
@@ -76,6 +78,16 @@ class Save extends \Magento\Backend\App\Action
     private $giftcardDataFactory;
 
     /**
+     * @var PoolManagementInterface
+     */
+    private $poolManagement;
+
+    /**
+     * @var ResourceGiftcard
+     */
+    private $resourceGiftcard;
+
+    /**
      * @param Context $context
      * @param GiftcardRepositoryInterface $giftcardRepository
      * @param GiftcardManagementInterface $giftcardManagement
@@ -85,6 +97,8 @@ class Save extends \Magento\Backend\App\Action
      * @param DataObjectHelper $dataObjectHelper
      * @param DataPersistorInterface $dataPersistor
      * @param GiftcardInterfaceFactory $giftcardDataFactory
+     * @param PoolManagementInterface $poolManagement
+     * @param ResourceGiftcard $resourceGiftcard
      */
     public function __construct(
         Context $context,
@@ -95,7 +109,9 @@ class Save extends \Magento\Backend\App\Action
         TimezoneInterface $localeDate,
         DataObjectHelper $dataObjectHelper,
         DataPersistorInterface $dataPersistor,
-        GiftcardInterfaceFactory $giftcardDataFactory
+        GiftcardInterfaceFactory $giftcardDataFactory,
+        PoolManagementInterface $poolManagement,
+        ResourceGiftcard $resourceGiftcard
     ) {
         parent::__construct($context);
         $this->giftcardRepository = $giftcardRepository;
@@ -106,6 +122,8 @@ class Save extends \Magento\Backend\App\Action
         $this->dataObjectHelper = $dataObjectHelper;
         $this->dataPersistor = $dataPersistor;
         $this->giftcardDataFactory = $giftcardDataFactory;
+        $this->poolManagement = $poolManagement;
+        $this->resourceGiftcard = $resourceGiftcard;
     }
 
     /**
@@ -117,12 +135,15 @@ class Save extends \Magento\Backend\App\Action
     {
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($data = $this->getRequest()->getPostValue()) {
-            $data = $this->prepareData($data);
             try {
+                $this->resourceGiftcard->beginTransaction();
+                $data = $this->prepareData($data);
                 $giftcard = $this->performSave($data);
 
                 $this->dataPersistor->clear('aw_giftcard_giftcard');
                 $this->messageManager->addSuccessMessage(__('Gift Card Code was successfully saved'));
+
+                $this->resourceGiftcard->commit();
                 if ($this->getRequest()->getParam('back') == 'edit') {
                     return $resultRedirect->setPath('*/*/edit', ['id' => $giftcard->getId()]);
                 }
@@ -137,6 +158,7 @@ class Save extends \Magento\Backend\App\Action
                     __('Something went wrong while saving the Gift Card code')
                 );
             }
+            $this->resourceGiftcard->rollBack();
             $this->dataPersistor->set('aw_giftcard_giftcard', $data);
             $id = isset($data['id']) ? $data['id'] : false;
             if ($id) {
@@ -163,10 +185,14 @@ class Save extends \Magento\Backend\App\Action
         }
         if (!$data['id']) {
             $expireAfter = null;
-            if (isset($data['use_default']) && isset($data['use_default']['expire_after'])
-                && (bool)$data['use_default']['expire_after']
-            ) {
-                $expireAfter = $this->config->getGiftcardExpireDays();
+            $codeFromPool = true;
+            if (isset($data['use_default'])) {
+                if (isset($data['use_default']['expire_after']) && (bool)$data['use_default']['expire_after']) {
+                    $expireAfter = $this->config->getGiftcardExpireDays();
+                }
+                if (isset($data['use_default']['code_pool']) && (bool)$data['use_default']['code_pool']) {
+                    $codeFromPool = false;
+                }
             }
             if (null === $expireAfter && isset($data['expire_after'])) {
                 $expireAfter = $data['expire_after'];
@@ -176,13 +202,21 @@ class Save extends \Magento\Backend\App\Action
                     ->date('+' . $expireAfter . 'days', null, false)
                     ->format(StdlibDateTime::DATETIME_PHP_FORMAT);
             }
+            if ($codeFromPool) {
+                $data['code'] = $this->poolManagement->pullCodeFromPool($data['code_pool']);
+            }
         }
+
         if (isset($data['delivery_date']) && $data['delivery_date']) {
             $deliveryDate = new \DateTime($data['delivery_date'], new \DateTimeZone($data['delivery_date_timezone']));
             $deliveryDate->setTimezone(new \DateTimeZone('UTC'));
             $data['delivery_date'] = $deliveryDate->format(StdlibDateTime::DATETIME_PHP_FORMAT);
         } else {
             $data['delivery_date_timezone'] = null;
+        }
+
+        if (isset($data['created_at'])) {
+            unset($data['created_at']);
         }
         return $data;
     }

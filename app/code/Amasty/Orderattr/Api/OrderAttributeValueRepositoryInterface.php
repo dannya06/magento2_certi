@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 
@@ -19,7 +19,7 @@ interface OrderAttributeValueRepositoryInterface
      *
      * @param int $orderId The order ID.
      *
-     * @return \Magento\Sales\Api\Data\OrderInterface Order interface.
+     * @return \Amasty\Orderattr\Api\Data\OrderAttributeValueInterface
      */
     public function getByOrder($orderId);
 
@@ -31,4 +31,13 @@ interface OrderAttributeValueRepositoryInterface
      * @return \Amasty\Orderattr\Api\Data\OrderAttributeValueInterface|bool
      */
     public function save(\Amasty\Orderattr\Api\Data\OrderAttributeValueInterface $entity);
+
+    /**
+     * Performs persist operations for a specified order.
+     *
+     * @param \Amasty\Orderattr\Api\Data\OrderAttributeValueInterface $entity
+     *
+     * @return \Amasty\Orderattr\Api\Data\OrderAttributeValueInterface|bool
+     */
+    public function saveApi(\Amasty\Orderattr\Api\Data\OrderAttributeValueInterface $entity);
 }

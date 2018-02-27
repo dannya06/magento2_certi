@@ -12,84 +12,34 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Aheadworks\AdvancedReports\Ui\DataProvider\Filters\DefaultFilter\Period\RangeResolver as PeriodRangeResolver;
 
 /**
  * Class Period
  *
  * @package Aheadworks\AdvancedReports\Model\Filter
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Period
+class Period implements FilterInterface
 {
     /**
      * @var string
      */
-    const SESSION_KEY = 'aw_arep_period_type';
+    const PERIOD_SESSION_KEY = 'aw_arep_period';
 
     /**
      * @var string
      */
-    const SESSION_PERIOD_FROM_KEY = 'aw_arep_period_from';
-
-    /**
-     * @var string
-     */
-    const SESSION_PERIOD_TO_KEY = 'aw_arep_period_to';
-
-    /**
-     * @var string
-     */
-    const SESSION_IS_COMPARE_AVAILABLE_KEY = 'aw_arep_compare_available';
-
-    /**
-     * @var string
-     */
-    const SESSION_COMPARE_TYPE_KEY = 'aw_arep_compare_type';
-
-    /**
-     * @var string
-     */
-    const SESSION_COMPARE_FROM_KEY = 'aw_arep_compare_from';
-
-    /**
-     * @var string
-     */
-    const SESSION_COMPARE_TO_KEY = 'aw_arep_compare_to';
-
-    /**
-     * @var string
-     */
-    const PERIOD_TYPE_CUSTOM = 'custom';
-
-    /**
-     * @var string
-     */
-    const DEFAULT_PERIOD_TYPE = PeriodSource::TYPE_THIS_MONTH;
-
-    /**
-     * @var []
-     */
-    private $periodCache;
-
-    /**
-     * @var []
-     */
-    private $comparePeriodCache;
-
-    /**
-     * @var \DateTimeZone
-     */
-    private $localeTimezone;
-
-    /**
-     * @var PeriodSource
-     */
-    private $periodSource;
+    const COMPARE_SESSION_KEY = 'aw_arep_compare_period';
 
     /**
      * @var RequestInterface
      */
-    private $request;
+    protected $request;
+
+    /**
+     * @var PeriodRangeResolver
+     */
+    protected $periodRangeResolver;
 
     /**
      * @var SessionManagerInterface
@@ -102,93 +52,75 @@ class Period
     private $localeDate;
 
     /**
-     * @var ScopeConfigInterface
+     * @var array
      */
-    private $scopeConfig;
+    private $periodCache;
 
     /**
-     * @param PeriodSource $periodSource
+     * @var array
+     */
+    private $comparePeriodCache;
+
+    /**
      * @param RequestInterface $request
+     * @param PeriodRangeResolver $periodRangeResolver
      * @param SessionManagerInterface $session
      * @param TimezoneInterface $localeDate
-     * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        PeriodSource $periodSource,
         RequestInterface $request,
+        PeriodRangeResolver $periodRangeResolver,
         SessionManagerInterface $session,
-        TimezoneInterface $localeDate,
-        ScopeConfigInterface $scopeConfig
+        TimezoneInterface $localeDate
     ) {
-        $this->periodSource = $periodSource;
         $this->request = $request;
+        $this->periodRangeResolver = $periodRangeResolver;
         $this->session = $session;
         $this->localeDate = $localeDate;
-        $this->scopeConfig = $scopeConfig;
     }
 
     /**
-     * Retrieve current period
-     *
-     * @return []
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * {@inheritdoc}
      */
-    public function getPeriod()
+    public function getValue()
     {
-        if (null == $this->periodCache) {
-            if ($periodTypeFromRequest = $this->request->getParam('period_type')) {
-                $periodType = $periodTypeFromRequest;
-            } elseif ($periodTypeFromSession = $this->session->getData(self::SESSION_KEY)) {
-                $periodType = $periodTypeFromSession;
-            } else {
-                $periodType = self::DEFAULT_PERIOD_TYPE;
-            }
+        return [
+            'is_this_month_forecast_enabled' => $this->isThisMonthForecastEnabled(),
+            'type' => $this->getPeriodType(),
+            'from' => $this->getPeriodFrom(),
+            'to' => $this->getPeriodTo(),
+            'is_compare_enabled' => $this->isCompareEnabled(),
+            'compare_type' => $this->getCompareType(),
+            'compare_from' => $this->getCompareFrom(),
+            'compare_to' => $this->getCompareTo(),
+        ];
+    }
 
-            switch ($periodType) {
-                case self::PERIOD_TYPE_CUSTOM:
-                    $from = $this->request->getParam('period_from');
-                    $to = $this->request->getParam('period_to');
-                    if (!$from || !$to) {
-                        $from = $this->session->getData(self::SESSION_PERIOD_FROM_KEY);
-                        $to = $this->session->getData(self::SESSION_PERIOD_TO_KEY);
-                        if (!$from || !$to) {
-                            $this->session->setData(self::SESSION_KEY, self::DEFAULT_PERIOD_TYPE);
-                            return $this->getPeriod();
-                        }
-                    }
-                    $this->session->setData(self::SESSION_PERIOD_FROM_KEY, $from);
-                    $this->session->setData(self::SESSION_PERIOD_TO_KEY, $to);
-                    try {
-                        $from = new \DateTime($from, $this->getLocaleTimezone());
-                        $to = new \DateTime($to, $this->getLocaleTimezone());
-                    } catch (\Exception $e) {
-                        // If not valid date
-                        $this->request->setParams(
-                            [
-                                'period_from' => null,
-                                'period_to', null,
-                                'period_type' => self::DEFAULT_PERIOD_TYPE
-                            ]
-                        );
-                        return $this->getPeriod();
-                    }
-                    break;
-                default:
-                    $range = $this->periodSource->getRangeList($this->getLocaleTimezone());
-                    if (!array_key_exists($periodType, $range)) {
-                        $this->_logger->critical(new \Exception('Unknown period type'));
-                    }
-                    $from = $range[$periodType]['from'];
-                    $to = $range[$periodType]['to'];
-            }
-            $this->session->setData(self::SESSION_KEY, $periodType);
-            $this->periodCache = [
-                'type' => $periodType,
-                'from' => $from,
-                'to'   => $to,
-            ];
-        }
-        return $this->periodCache;
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultValue()
+    {
+        return [
+            'is_this_month_forecast_enabled' => null,
+            'type' => $this->getDefaultPeriodType(),
+            'from' => null,
+            'to' => null,
+            'is_compare_enabled' => false,
+            'compare_type' => $this->getDefaultCompareType(),
+            'compare_from' => null,
+            'compare_to' => null,
+        ];
+    }
+
+    /**
+     * Check if this month forecast enabled
+     *
+     * @return bool
+     */
+    public function isThisMonthForecastEnabled()
+    {
+        return false;
     }
 
     /**
@@ -225,70 +157,13 @@ class Period
     }
 
     /**
-     * Retrieve locale timezone
+     * Retrieve default period type
      *
-     * @return \DateTimeZone
+     * @return string
      */
-    public function getLocaleTimezone()
+    public function getDefaultPeriodType()
     {
-        if (!$this->localeTimezone) {
-            $localeTimezone = $this->scopeConfig->getValue(
-                $this->localeDate->getDefaultTimezonePath(),
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT
-            );
-            $this->localeTimezone = new \DateTimeZone($localeTimezone);
-        }
-        return $this->localeTimezone;
-    }
-
-    /**
-     * Retrieve current compare period
-     *
-     * @return []
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     */
-    public function getComparePeriod()
-    {
-        if (null == $this->comparePeriodCache) {
-            $comparePeriodType = $this->request->getParam('compare_type');
-            $from = $this->request->getParam('compare_from');
-            $to = $this->request->getParam('compare_to');
-            $isAjaxRequest = $this->request->isAjax();
-
-            if ((!$comparePeriodType || !$from || !$to) && $isAjaxRequest) {
-                $comparePeriodType = $this->session->getData(self::SESSION_COMPARE_TYPE_KEY);
-                $from = $this->session->getData(self::SESSION_COMPARE_FROM_KEY);
-                $to = $this->session->getData(self::SESSION_COMPARE_TO_KEY);
-            }
-            $this->session->setData(self::SESSION_COMPARE_TYPE_KEY, $comparePeriodType);
-            $this->session->setData(self::SESSION_COMPARE_FROM_KEY, $from);
-            $this->session->setData(self::SESSION_COMPARE_TO_KEY, $to);
-
-            $compareEnabled = false;
-            if ($comparePeriodType && $from && $to) {
-                $compareEnabled = true;
-            }
-
-            try {
-                $from = new \DateTime($from, $this->getLocaleTimezone());
-                $to = new \DateTime($to, $this->getLocaleTimezone());
-            } catch (\Exception $e) {
-                $comparePeriodType = CompareSource::TYPE_PREVIOUS_PERIOD;
-                $from = null;
-                $to = null;
-                $compareEnabled = false;
-
-            }
-            $this->comparePeriodCache = [
-                'enabled'       => $compareEnabled,
-                'default_type'  => CompareSource::TYPE_PREVIOUS_PERIOD,
-                'type'          => $comparePeriodType,
-                'from'          => $from,
-                'to'            => $to,
-            ];
-
-        }
-        return $this->comparePeriodCache;
+        return PeriodSource::TYPE_MONTH_TO_DATE;
     }
 
     /**
@@ -336,23 +211,161 @@ class Period
     }
 
     /**
-     * Is compare available (should be set previously using setIsCompareAvailable)
+     * Retrieve default period type
      *
-     * @return bool
+     * @return string
      */
-    public function isCompareAvailable()
+    public function getDefaultCompareType()
     {
-        return (bool)$this->session->getData(self::SESSION_IS_COMPARE_AVAILABLE_KEY);
+        return CompareSource::TYPE_PREVIOUS_PERIOD;
     }
 
     /**
-     * Set is compare available flag
+     * Retrieve current compare period
      *
-     * @param bool $isCompareAvailable
-     * @return $this
+     * @return array
      */
-    public function setIsCompareAvailable($isCompareAvailable)
+    protected function getComparePeriod()
     {
-        return $this->session->setData(self::SESSION_IS_COMPARE_AVAILABLE_KEY, $isCompareAvailable);
+        if (null !== $this->comparePeriodCache) {
+            return $this->comparePeriodCache;
+        }
+
+        $this->comparePeriodCache = [
+            'enabled' => false,
+            'type' => $this->getDefaultCompareType(),
+            'from' => null,
+            'to' => null,
+        ];
+        $comparePeriodType = 'disabled';
+        $sessionData = $this->session->getData(self::COMPARE_SESSION_KEY);
+
+        $requestPeriodTypeParamValue = $this->request->getParam('compare_type');
+        if ($requestPeriodTypeParamValue !== null) {
+            $comparePeriodType = $requestPeriodTypeParamValue;
+        } else {
+            if ($sessionData !== null) {
+                $comparePeriodType = $sessionData['type'];
+            }
+        }
+
+        if ($comparePeriodType == 'disabled') {
+            $this->comparePeriodCache['type'] = 'disabled';
+            $this->session->setData(self::COMPARE_SESSION_KEY, $this->comparePeriodCache);
+            $this->comparePeriodCache['type'] = $this->getDefaultCompareType();
+            return $this->comparePeriodCache;
+        }
+
+        $this->comparePeriodCache['enabled'] = true;
+        $this->comparePeriodCache['type'] = $comparePeriodType;
+        $periodType = $this->getPeriodType();
+        if ($comparePeriodType != PeriodSource::PERIOD_TYPE_CUSTOM
+            && $periodType != PeriodSource::PERIOD_TYPE_CUSTOM) {
+            $this->comparePeriodCache = array_merge(
+                $this->comparePeriodCache,
+                $this->resolveCompareRange($periodType, $comparePeriodType)
+            );
+        } else {
+            $timezone = new \DateTimeZone($this->getLocaleTimezone());
+
+            $requestFromParamValue = $this->request->getParam('compare_from');
+            if ($requestFromParamValue !== null) {
+                $this->comparePeriodCache['from'] = new \DateTime($requestFromParamValue, $timezone);
+            } elseif (isset($sessionData['from'])) {
+                $this->comparePeriodCache['from'] = $sessionData['from'];
+            }
+            $requestToParamValue = $this->request->getParam('compare_to');
+            if ($requestToParamValue !== null) {
+                $this->comparePeriodCache['to'] = new \DateTime($requestToParamValue, $timezone);
+            } elseif (isset($sessionData['to'])) {
+                $this->comparePeriodCache['to'] = $sessionData['to'];
+            }
+        }
+        $this->session->setData(self::COMPARE_SESSION_KEY, $this->comparePeriodCache);
+
+        return $this->comparePeriodCache;
+    }
+
+    /**
+     * Resolve compare range
+     *
+     * @param string $periodType
+     * @param string $comparePeriodType
+     * @return array
+     */
+    private function resolveCompareRange($periodType, $comparePeriodType)
+    {
+        $comparePeriod = [];
+        $periodRange = $this->periodRangeResolver->resolve($periodType);
+        if ($comparePeriodType == CompareSource::TYPE_PREVIOUS_PERIOD) {
+            $comparePeriod['from'] = $periodRange['c_from'];
+            $comparePeriod['to'] = $periodRange['c_to'];
+        } elseif ($comparePeriodType == CompareSource::TYPE_PREVIOUS_YEAR) {
+            $comparePeriod['from'] = $periodRange['c_year_from'];
+            $comparePeriod['to'] = $periodRange['c_year_to'];
+        }
+
+        return $comparePeriod;
+    }
+
+    /**
+     * Retrieve current period
+     *
+     * @return array
+     */
+    protected function getPeriod()
+    {
+        if (null !== $this->periodCache) {
+            return $this->periodCache;
+        }
+
+        $this->periodCache = [];
+        $periodType = $this->getDefaultPeriodType();
+        $sessionData = $this->session->getData(self::PERIOD_SESSION_KEY);
+
+        $requestPeriodTypeParamValue = $this->request->getParam('period_type');
+        if ($requestPeriodTypeParamValue !== null) {
+            $periodType = $requestPeriodTypeParamValue;
+        } else {
+            if ($sessionData !== null) {
+                $periodType = $sessionData['type'];
+            }
+        }
+
+        $this->periodCache['type'] = $periodType;
+        if ($periodType == PeriodSource::PERIOD_TYPE_CUSTOM) {
+            $timezone = new \DateTimeZone($this->getLocaleTimezone());
+
+            $requestFromParamValue = $this->request->getParam('period_from');
+            if ($requestFromParamValue !== null) {
+                $this->periodCache['from'] = new \DateTime($requestFromParamValue, $timezone);
+            } elseif (isset($sessionData['from'])) {
+                $this->periodCache['from'] = $sessionData['from'];
+            }
+            $requestToParamValue = $this->request->getParam('period_to');
+            if ($requestToParamValue !== null) {
+                $this->periodCache['to'] = new \DateTime($requestToParamValue, $timezone);
+            } elseif (isset($sessionData['to'])) {
+                $this->periodCache['to'] = $sessionData['to'];
+            }
+        } else {
+            $this->periodCache = array_merge(
+                $this->periodCache,
+                $this->periodRangeResolver->resolve($this->periodCache['type'])
+            );
+        }
+        $this->session->setData(self::PERIOD_SESSION_KEY, $this->periodCache);
+
+        return $this->periodCache;
+    }
+
+    /**
+     * Retrieve locale timezone
+     *
+     * @return string
+     */
+    private function getLocaleTimezone()
+    {
+        return $this->localeDate->getConfigTimezone(ScopeConfigInterface::SCOPE_TYPE_DEFAULT);
     }
 }

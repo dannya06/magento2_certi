@@ -18,9 +18,10 @@ interface ProductAttributeInterface extends CatalogProductAttributeInterface
      * Constants defined for keys of the data array. Identical to the name of the getter in snake case
      */
     const CODE_AW_GC_TYPE = 'aw_gc_type';
+    const CODE_AW_GC_POOL = 'aw_gc_pool';
     const CODE_AW_GC_DESCRIPTION = 'aw_gc_description';
     const CODE_AW_GC_EXPIRE = 'aw_gc_expire';
-    const CODE_AW_GC_ALLOW_MESSAGE = 'aw_gc_allow_message';
+    const CODE_AW_GC_CUSTOM_MESSAGE_FIELDS = 'aw_gc_custom_message_fields';
     const CODE_AW_GC_EMAIL_TEMPLATES = 'aw_gc_email_templates';
     const CODE_AW_GC_AMOUNTS = 'aw_gc_amounts';
     const CODE_AW_GC_ALLOW_OPEN_AMOUNT = 'aw_gc_allow_open_amount';

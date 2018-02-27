@@ -6,55 +6,72 @@
 
 namespace Aheadworks\Rma\Block\Guest\Request;
 
+use Aheadworks\Rma\Model\Renderer\CmsBlock;
+use Aheadworks\Rma\Model\Config;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Customer\Model\Url as CustomerUrl;
+
 /**
  * Class NewRequest
+ *
  * @package Aheadworks\Rma\Block\Guest\Request
  */
-class NewRequest extends \Magento\Framework\View\Element\Template
+class NewRequest extends Template
 {
-    const XML_PATH_TEXT_PAGE_BLOCK = 'aw_rma/blocks_and_policy/guest_rma_block';
-
     /**
      * @var string
      */
-    protected $_template = 'guest/request/newrequest.phtml';
+    protected $_template = 'Aheadworks_Rma::guest/request/newrequest.phtml';
 
     /**
-     * @var \Magento\Customer\Model\Url
+     * @var CmsBlock
      */
-    protected $customerUrl;
+    private $cmsBlockRenderer;
 
     /**
-     * @var \Aheadworks\Rma\Helper\CmsBlock
+     * @var Config
      */
-    protected $cmsBlockHelper;
+    private $config;
 
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Customer\Model\Url $customerUrl
-     * @param \Aheadworks\Rma\Helper\CmsBlock $cmsBlockHelper
+     * @var CustomerUrl
+     */
+    private $customerUrl;
+
+    /**
+     * @param Context $context
+     * @param CmsBlock $cmsBlockRenderer
+     * @param Config $config
+     * @param CustomerUrl $customerUrl
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Customer\Model\Url $customerUrl,
-        \Aheadworks\Rma\Helper\CmsBlock $cmsBlockHelper,
+        Context $context,
+        CmsBlock $cmsBlockRenderer,
+        Config $config,
+        CustomerUrl $customerUrl,
         array $data = []
     ) {
         parent::__construct($context, $data);
+        $this->cmsBlockRenderer = $cmsBlockRenderer;
+        $this->config = $config;
         $this->customerUrl = $customerUrl;
-        $this->cmsBlockHelper = $cmsBlockHelper;
     }
 
     /**
+     * Retrieve guest RMA page block
+     *
      * @return string
      */
-    public function getTextCmsBlockHtml()
+    public function getGuestPageBlock()
     {
-        return $this->cmsBlockHelper->getBlockHtml(self::XML_PATH_TEXT_PAGE_BLOCK);
+        return $this->cmsBlockRenderer->render($this->config->getGuestPageBlock());
     }
 
     /**
+     * Retrieve login post url
+     *
      * @return string
      */
     public function getLoginPostUrl()
@@ -63,6 +80,8 @@ class NewRequest extends \Magento\Framework\View\Element\Template
     }
 
     /**
+     * Retrieve forgot password url
+     *
      * @return string
      */
     public function getForgotPasswordUrl()
@@ -71,6 +90,8 @@ class NewRequest extends \Magento\Framework\View\Element\Template
     }
 
     /**
+     * Retrieve next post url
+     *
      * @return string
      */
     public function getNextPostUrl()

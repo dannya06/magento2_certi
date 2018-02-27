@@ -34,7 +34,9 @@ class Manufacturer extends AbstractResource
             'store_id' => 'order.store_id',
             'order_status' => 'order.status',
             'customer_group_id' => 'order.customer_group_id',
-            'manufacturer' => 'IFNULL(manufacturer_value.value, "Not Set")',
+            'manufacturer' => $this->getManufacturerAttribute() ?
+                'IFNULL(manufacturer_value.value, "Not Set")' :
+                'COALESCE("Not Set")',
             'order_items_count' => 'SUM(COALESCE(main_table.qty_ordered, 0))',
             'subtotal' => 'SUM(COALESCE(configurable.base_row_total, main_table.base_row_total, 0.0))',
             'tax' => 'SUM(COALESCE(configurable.base_tax_amount, main_table.base_tax_amount, 0.0))',
@@ -53,23 +55,10 @@ class Manufacturer extends AbstractResource
 
         $orderItemTable = $this->getTable('sales_order_item');
 
-        /* @var $manufacturerAttr \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
-        $manufacturerAttr = $this->attributeRepository->get('catalog_product', 'manufacturer');
-        $manufacturerTable = $manufacturerAttr->getBackendTable();
-
         $select = $this->getConnection()->select()
             ->from(['main_table' => $orderItemTable], [])
             ->columns($columns)
             ->joinLeft(
-                ['item_manufacturer' => $manufacturerTable],
-                'item_manufacturer.' . $this->getCatalogLinkField() . ' = main_table.product_id '
-                . 'AND item_manufacturer.attribute_id = ' . $manufacturerAttr->getId(),
-                []
-            )->joinLeft(
-                ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],
-                'item_manufacturer.value = manufacturer_value.option_id AND manufacturer_value.store_id = 0',
-                []
-            )->joinLeft(
                 ['order' => $this->getTable('sales_order')],
                 'order.entity_id = main_table.order_id',
                 []
@@ -91,18 +80,64 @@ class Manufacturer extends AbstractResource
             )
             ->where('(main_table.product_type <> "bundle" OR bundle_item_price.price = 0)')
             ->where('(main_table.product_type <> "configurable")')
-            ->group(
-                [
-                    'order.status',
-                    $period,
-                    'order.store_id',
-                    'item_manufacturer.value',
-                    'order.base_to_global_rate',
-                    'order.customer_group_id'
-                ]
-            );
+            ->group($this->getGroupBy($period));
+
+        $select = $this->addManufacturer($select);
+
         $select = $this->addFilterByCreatedAt($select, 'order');
 
         $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+    }
+
+    private function getGroupBy($period)
+    {
+        if ($this->getManufacturerAttribute()) {
+            $groupBy = [
+                'order.status',
+                $period,
+                'order.store_id',
+                'item_manufacturer.value',
+                'order.base_to_global_rate',
+                'order.customer_group_id'
+            ];
+        } else {
+            $groupBy = [
+                'order.status',
+                $period,
+                'order.store_id',
+                'order.base_to_global_rate',
+                'order.customer_group_id'
+            ];
+        }
+
+        return $groupBy;
+    }
+
+    /**
+     * Add manufacturer
+     *
+     * @param \Magento\Framework\DB\Select $select
+     * @return \Magento\Framework\DB\Select
+     */
+    private function addManufacturer($select)
+    {
+        /* @var $manufacturerAttr \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
+        $manufacturerAttr = $this->getManufacturerAttribute();
+        if ($manufacturerAttr) {
+            $manufacturerTable = $manufacturerAttr->getBackendTable();
+            $select
+                ->joinLeft(
+                    ['item_manufacturer' => $manufacturerTable],
+                    'item_manufacturer.' . $this->getCatalogLinkField() . ' = main_table.product_id '
+                    . 'AND item_manufacturer.attribute_id = ' . $manufacturerAttr->getId(),
+                    []
+                )->joinLeft(
+                    ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],
+                    'item_manufacturer.value = manufacturer_value.option_id AND manufacturer_value.store_id = 0',
+                    []
+                );
+        }
+
+        return $select;
     }
 }

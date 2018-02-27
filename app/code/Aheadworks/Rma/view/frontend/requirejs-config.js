@@ -8,9 +8,16 @@ var config = {
         '*': {
             awRmaSelectOrderForm:       'Aheadworks_Rma/js/customer/request/new/select-order-form',
             awRmaRequestItemMassAction: 'Aheadworks_Rma/js/customer/request/new/request-item-massaction',
-            awRmaRequestItemRemove:     'Aheadworks_Rma/js/customer/request/new/request-item-remove',
+            awRmaRequestItemManagement: 'Aheadworks_Rma/js/customer/request/new/request-item-management',
             awRmaPolicyLink:            'Aheadworks_Rma/js/customer/request/new/policy-link',
-            awRmaButtonControl:         'Aheadworks_Rma/js/button-redirect'
+            awRmaButtonControl:         'Aheadworks_Rma/js/button-control'
+        }
+    },
+    config: {
+        mixins: {
+            'mage/validation': {
+                'Aheadworks_Rma/js/validation-mixin': true
+            }
         }
     }
 };

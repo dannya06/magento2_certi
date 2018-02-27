@@ -5,14 +5,16 @@
 
 define([
     'uiCollection',
-    'uiRegistry'
-], function (Collection, registry) {
+    'uiRegistry',
+    'mage/translate'
+], function (Collection, registry, $t) {
     'use strict';
 
     return Collection.extend({
         defaults: {
             template: 'Aheadworks_AdvancedReports/ui/grid/controls/report/settings/button',
-            displayArea: 'dataGridActions'
+            displayArea: 'dataGridActions',
+            title: $t('Report Settings')
         },
 
         /**

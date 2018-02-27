@@ -7,15 +7,17 @@
 namespace Aheadworks\Rma\Controller\Customer;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Controller\Result\ForwardFactory;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\RequestInterface;
+use Magento\Customer\Model\Session as CustomerSession;
 
 /**
  * Class NewAction
+ *
  * @package Aheadworks\Rma\Controller\Customer
  */
-class NewAction extends \Aheadworks\Rma\Controller\Customer
+class NewAction extends Action
 {
     /**
      * @var ForwardFactory
@@ -23,50 +25,44 @@ class NewAction extends \Aheadworks\Rma\Controller\Customer
     private $resultForwardFactory;
 
     /**
+     * @var CustomerSession
+     */
+    private $customerSession;
+
+    /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Aheadworks\Rma\Model\RequestManager $requestManager
-     * @param \Aheadworks\Rma\Model\RequestFactory $requestFactory
      * @param ForwardFactory $resultForwardFactory
+     * @param CustomerSession $customerSession
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        \Magento\Customer\Model\Session $customerSession,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Aheadworks\Rma\Model\RequestManager $requestManager,
-        \Aheadworks\Rma\Model\RequestFactory $requestFactory,
-        ForwardFactory $resultForwardFactory
-
+        ForwardFactory $resultForwardFactory,
+        CustomerSession $customerSession
     ) {
+        parent::__construct($context);
         $this->resultForwardFactory = $resultForwardFactory;
-        parent::__construct(
-            $context,
-            $resultPageFactory,
-            $coreRegistry,
-            $formKeyValidator,
-            $scopeConfig,
-            $requestManager,
-            $requestFactory,
-            $customerSession
-        );
+        $this->customerSession = $customerSession;
     }
 
     /**
-     * @return \Magento\Framework\View\Result\Page
+     * {@inheritdoc}
+     */
+    public function dispatch(RequestInterface $request)
+    {
+        if (!$this->customerSession->authenticate()) {
+            $this->_actionFlag->set('', 'no-dispatch', true);
+        }
+        return parent::dispatch($request);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function execute()
     {
         /** @var \Magento\Framework\Controller\Result\Forward $resultForward */
         $resultForward = $this->resultForwardFactory->create();
-        $orderId = $this->getRequest()->getParam('id');
-        if ($orderId) {
+        if ($this->getRequest()->getParam('order_id')) {
             return $resultForward->forward('createRequestStep');
         }
         return $resultForward->forward('selectOrderStep');

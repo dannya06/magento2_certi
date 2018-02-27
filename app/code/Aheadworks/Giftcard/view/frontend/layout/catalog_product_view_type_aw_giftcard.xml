@@ -11,7 +11,6 @@
         <css src="Aheadworks_Giftcard::css/style.css"/>
     </head>
     <body>
-        <remove name="product.info.price"/>
         <attribute name="class" value="page-product-giftcard"/>
         <referenceContainer name="product.info.type">
             <block class="Magento\Catalog\Block\Product\View\Type\Simple" name="product.info.simple" as="product_type_data" template="product/view/type/default.phtml"/>

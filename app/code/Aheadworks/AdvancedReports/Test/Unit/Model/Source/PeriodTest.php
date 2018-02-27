@@ -9,12 +9,12 @@ namespace Aheadworks\AdvancedReports\Test\Unit\Model\Source;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Aheadworks\AdvancedReports\Model\Source\Period;
 use Magento\Framework\Locale\ListsInterface;
-use Aheadworks\AdvancedReports\Model\Config;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
  * Test for \Aheadworks\AdvancedReports\Model\Source\Period
  */
-class PeriodTest extends \PHPUnit_Framework_TestCase
+class PeriodTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Period
@@ -22,14 +22,14 @@ class PeriodTest extends \PHPUnit_Framework_TestCase
     private $model;
 
     /**
-     * @var Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $configMock;
+    private $scopeConfigMock;
 
     /**
      * @var ListsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $localeListsMock;
+    private $localeListMock;
 
     /**
      * Init mocks for tests
@@ -39,51 +39,74 @@ class PeriodTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->configMock = $this->getMock(Config::class, ['getLocaleFirstday', 'getLocaleWeekend'], [], '', false);
-        $this->localeListsMock = $this->getMockForAbstractClass(ListsInterface::class);
+        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getValue'])
+            ->getMockForAbstractClass();
+        $this->localeListMock = $this->getMockBuilder(ListsInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getOptionWeekdays'])
+            ->getMockForAbstractClass();
 
         $this->model = $objectManager->getObject(
             Period::class,
             [
-                'config' => $this->configMock,
-                'localeLists' => $this->localeListsMock
+                'scopeConfig' => $this->scopeConfigMock,
+                'localeList' => $this->localeListMock
             ]
         );
     }
 
     /**
-     * Testing of getOptions method
+     * Testing of toOptionArray method
      */
-    public function testGetOptions()
+    public function testToOptionArray()
     {
         $localeFirstday = 0;
         $localeWeekend = '0,6';
+        $optionWeekdays = [
+            [
+                'label' => 'Sunday',
+                'value' => 0,
+            ],
+            [
+                'label' => 'Monday',
+                'value' => 1,
+            ],
+            [
+                'label' => 'Tuesday',
+                'value' => 2,
+            ],
+            [
+                'label' => 'Wednesday',
+                'value' => 3,
+            ],
+            [
+                'label' => 'Thursday',
+                'value' => 4,
+            ],
+            [
+                'label' => 'Friday',
+                'value' => 5,
+            ],
+            [
+                'label' => 'Saturday',
+                'value' => 6,
+            ],
+        ];
 
-        $this->configMock->expects($this->exactly(2))
-            ->method('getLocaleFirstday')
+        $this->scopeConfigMock->expects($this->at(0))
+            ->method('getValue')
+            ->with('general/locale/firstday')
             ->willReturn($localeFirstday);
-        $this->configMock->expects($this->once())
-            ->method('getLocaleWeekend')
+        $this->scopeConfigMock->expects($this->at(1))
+            ->method('getValue')
+            ->with('general/locale/weekend')
             ->willReturn($localeWeekend);
-        $this->localeListsMock->expects($this->exactly(2))
+        $this->localeListMock->expects($this->exactly(3))
             ->method('getOptionWeekdays')
-            ->willReturn([]);
+            ->willReturn($optionWeekdays);
 
-        $this->assertTrue(is_array($this->model->getOptions()));
-    }
-
-    /**
-     * Testing of getRangeList method
-     */
-    public function testGetRangeList()
-    {
-        $localeFirstday = 0;
-        $localeTimezone = new \DateTimeZone('Europe/Minsk');
-
-        $this->configMock->expects($this->exactly(2))
-            ->method('getLocaleFirstday')
-            ->willReturn($localeFirstday);
-
-        $this->assertTrue(is_array($this->model->getRangeList($localeTimezone)));
+        $this->assertTrue(is_array($this->model->toOptionArray()));
     }
 }

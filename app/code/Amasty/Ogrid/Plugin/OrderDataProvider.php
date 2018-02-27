@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -12,38 +12,90 @@ class OrderDataProvider
 {
     const SALES_ORDER_GRID_DATA_SOURCE = 'sales_order_grid_data_source';
 
-    protected $_bookmarkManagement;
+    /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    private $request;
 
-    protected $_export;
+    /**
+     * @var \Magento\Ui\Api\BookmarkManagementInterface
+     */
+    protected $bookmarkManagement;
 
-    protected $_columnsForceLoad
-        = [
-            'amasty_ogrid_base_subtotal',
-            'amasty_ogrid_subtotal'
-        ];
+    /**
+     * @var bool|null
+     */
+    protected $export;
 
-    protected $_orderItemCollectionFactory;
+    /**
+     * @var array
+     */
+    protected $columnsForceLoad = [
+        'amasty_ogrid_base_subtotal',
+        'amasty_ogrid_subtotal'
+    ];
 
-    protected $_columns = [];
+    /**
+     * @var \Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory
+     */
+    protected $orderItemCollectionFactory;
 
-    protected $_helper;
+    /**
+     * @var array
+     */
+    protected $columns = [];
 
-    protected $_orderConfig = [];
+    /**
+     * @var \Amasty\Ogrid\Helper\Data
+     */
+    protected $helper;
 
-    protected $_filterData = [];
+    /**
+     * @var array
+     */
+    protected $orderConfig = [];
 
+    /**
+     * @var array
+     */
+    protected $filterData = [];
+
+    /**
+     * @var \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\CollectionFactory
+     */
+    protected $shipmentTrackCollectionFactory;
+
+    /**
+     * @var \Magento\Framework\Registry
+     */
+    protected $registry;
+
+    /**
+     * OrderDataProvider constructor.
+     * @param \Magento\Framework\View\Element\UiComponent\ContextInterface $context
+     * @param \Magento\Ui\Api\BookmarkManagementInterface $bookmarkManagement
+     * @param \Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory $orderItemCollectionFactory
+     * @param \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\CollectionFactory $shipmentTrackCollectionFactory
+     * @param \Amasty\Ogrid\Helper\Data $helper
+     * @param \Magento\Framework\App\RequestInterface $request
+     * @param \Magento\Framework\Registry $registry
+     */
     public function __construct(
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
         \Magento\Ui\Api\BookmarkManagementInterface $bookmarkManagement,
         \Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory $orderItemCollectionFactory,
         \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\CollectionFactory $shipmentTrackCollectionFactory,
-        \Amasty\Ogrid\Helper\Data $helper
+        \Amasty\Ogrid\Helper\Data $helper,
+        \Magento\Framework\App\RequestInterface $request,
+        \Magento\Framework\Registry $registry
     ) {
-        $this->_bookmarkManagement             = $bookmarkManagement;
-        $this->_orderItemCollectionFactory     = $orderItemCollectionFactory;
-        $this->_shipmentTrackCollectionFactory = $shipmentTrackCollectionFactory;
-        $this->_helper                         = $helper;
-        $this->_filterData                     = $context->getFiltersParams();
+        $this->bookmarkManagement = $bookmarkManagement;
+        $this->orderItemCollectionFactory = $orderItemCollectionFactory;
+        $this->shipmentTrackCollectionFactory = $shipmentTrackCollectionFactory;
+        $this->helper = $helper;
+        $this->filterData = $context->getFiltersParams();
+        $this->request = $request;
+        $this->registry = $registry;
     }
 
     protected function isOrderGrid(\Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider $dataProvider)
@@ -51,16 +103,16 @@ class OrderDataProvider
         return $dataProvider->getName() == self::SALES_ORDER_GRID_DATA_SOURCE;
     }
 
-    protected function _getActiveBookmark()
+    protected function getActiveBookmark()
     {
-        $bookmarks      = $this->_bookmarkManagement->loadByNamespace('sales_order_grid');
+        $bookmarks = $this->bookmarkManagement->loadByNamespace('sales_order_grid');
         $activeBookmark = [];
-        $config         = [];
+        $config = [];
         /** @var \Magento\Ui\Api\Data\BookmarkInterface $bookmark */
         foreach ($bookmarks->getItems() as $bookmark) {
             if ($bookmark->isCurrent()) {
                 $config['activeIndex'] = $bookmark->getIdentifier();
-                $activeBookmark        = $config;
+                $activeBookmark = $config;
             }
             $config = array_merge_recursive($config, $bookmark->getConfig());
         }
@@ -68,10 +120,9 @@ class OrderDataProvider
         return $activeBookmark;
     }
 
-    protected function _isColumnVisible($bookmark, $column)
+    protected function isColumnVisible($bookmark, $column)
     {
-        $visible = false;
-        if ($this->_isExport()) {
+        if ($this->isExport()) {
             $visible = !in_array($column, ['amasty_ogrid_items_ordered']);
         } else {
             $visible = isset($bookmark['current']['columns']) && isset($bookmark['current']['columns'][$column])
@@ -88,12 +139,12 @@ class OrderDataProvider
         \Magento\Framework\Api\Filter $filter
     ) {
         if ($this->isOrderGrid($dataProvider)) {
-            if (array_key_exists($filter->getField(), $this->_helper->getOrderFields())) {
+            if (array_key_exists($filter->getField(), $this->helper->getOrderFields())) {
 
-                $activeBookmark = $this->_getActiveBookmark();
+                $activeBookmark = $this->getActiveBookmark();
 
-                if (in_array($filter->getField(), $this->_columnsForceLoad)
-                    || $this->_isColumnVisible(
+                if (in_array($filter->getField(), $this->columnsForceLoad)
+                    || $this->isColumnVisible(
                         $activeBookmark,
                         $filter->getField()
                     )
@@ -102,21 +153,30 @@ class OrderDataProvider
                     $this->_getColumn($filter->getField())->changeFilter($filter);
                 }
             } else {
-                $filter->setField('main_table.' . $filter->getField());
+                if ($filter->getField() != 'is_preorder') {
+                    if (strpos($filter->getField(), '.') !== false) {
+                        $filter->setField($filter->getField());
+                    } else {
+                        if ($this->registry->registry('am_order_attribute') &&
+                            $filter->getField() == $this->registry->registry('am_order_attribute')) {
+                            $filter->setField('amorderattr.' . $filter->getField());
+                        } else {
+                            $filter->setField('main_table.' . $filter->getField());
+                        }
+                    }
+
+                }
             }
         }
     }
 
-    protected function _isExport()
+    protected function isExport()
     {
-        if ($this->_export === null) {
-            $objectManager    = \Magento\Framework\App\ObjectManager::getInstance();
-            $requestInterface = $objectManager->get('Magento\Framework\App\RequestInterface');
-
-            $this->_export = $requestInterface->getControllerName() === 'export';
+        if ($this->export === null) {
+            $this->export = $this->request->getControllerName() === 'export';
         }
 
-        return $this->_export;
+        return $this->export;
     }
 
     public function afterGetSearchResult(
@@ -124,54 +184,58 @@ class OrderDataProvider
         $collection
     ) {
         if ($this->isOrderGrid($dataProvider)) {
-            $activeBookmark = $this->_getActiveBookmark();
+            $activeBookmark = $this->getActiveBookmark();
 
-            foreach ($this->_helper->getOrderFields() as $key => $value) {
-                if (in_array($key, $this->_columnsForceLoad) || $this->_isColumnVisible($activeBookmark, $key)
+            foreach ($this->helper->getOrderFields() as $key => $value) {
+                if (in_array($key, $this->columnsForceLoad) || $this->isColumnVisible($activeBookmark, $key)
                 ) {
-                    $this->_getColumn($key)->addField($collection);
+                    $this->getColumn($key)->addField($collection);
                 }
             }
 
-            $collection->getSelect()->columns(
-                ['amasty_ogrid_sales_order_protect_code' => 'amasty_ogrid_sales_order.protect_code']
-            );
-            $collection->getSelect()->columns(
-                ['amasty_ogrid_sales_order_store_id' => 'amasty_ogrid_sales_order.store_id']
-            );
-
-
-            if (count($this->_helper->getHideStatuses()) > 0) {
-                $collection->addFieldToFilter('main_table.status', ['nin' => $this->_helper->getHideStatuses()]);
+            if ($this->isColumnVisible($activeBookmark, 'amasty_ogrid_sales_order_protect_code')) {
+                $collection->getSelect()->columns(
+                    ['amasty_ogrid_sales_order_protect_code' => 'amasty_ogrid_sales_order.protect_code']
+                );
             }
 
-            $this->_applyOrderItemFilters($collection);
+            if ($this->isColumnVisible($activeBookmark, 'amasty_ogrid_sales_order_store_id')) {
+                $collection->getSelect()->columns(
+                    ['amasty_ogrid_sales_order_store_id' => 'amasty_ogrid_sales_order.store_id']
+                );
+            }
+
+            if (count($this->helper->getHideStatuses()) > 0) {
+                $collection->addFieldToFilter('main_table.status', ['nin' => $this->helper->getHideStatuses()]);
+            }
+
+            $this->applyOrderItemFilters($collection);
 
         }
 
         return $collection;
     }
 
-    protected function _applyOrderItemFilters($collection)
+    protected function applyOrderItemFilters($collection)
     {
-        $applyFilter         = false;
-        $orderItemCollection = $this->_getOrderItemCollection(['items' => []]);
+        $applyFilter = false;
+        $orderItemCollection = $this->getOrderItemCollection(['items' => []]);
 
-        $this->_prepareOrderItemCollection($orderItemCollection);
+        $this->prepareOrderItemCollection($orderItemCollection);
 
-        foreach ($this->_helper->getOrderItemFields() as $key => $value) {
-            if (array_key_exists($key, $this->_filterData)) {
+        foreach ($this->helper->getOrderItemFields() as $key => $value) {
+            if (array_key_exists($key, $this->filterData)) {
                 $applyFilter = true;
-                $this->_getColumn($key)->addFieldToFilter($orderItemCollection, $this->_filterData[$key]);
+                $this->getColumn($key)->addFieldToFilter($orderItemCollection, $this->filterData[$key]);
             }
         }
 
-        foreach ($this->_helper->getAttributesFields() as $key => $attribute) {
-            if (array_key_exists($attribute->getAttributeDbAlias(), $this->_filterData)) {
+        foreach ($this->helper->getAttributesFields() as $key => $attribute) {
+            if (array_key_exists($attribute->getAttributeDbAlias(), $this->filterData)) {
                 $applyFilter = true;
                 $attribute->addFieldToFilter(
                     $orderItemCollection,
-                    $this->_filterData[$attribute->getAttributeDbAlias()]
+                    $this->filterData[$attribute->getAttributeDbAlias()]
                 );
             }
         }
@@ -179,45 +243,38 @@ class OrderDataProvider
         if ($applyFilter) {
             $idsSelect = "select DISTINCT order_id " .
                 "from (" . $orderItemCollection->getSelect()->__toString() . ") as tmp";
-
-            $from = $collection->getSelect()->getPart(\Zend_Db_Select::FROM);
-
-            $from['amasty_ogrid_order_item_filter'] = [
-                'joinType'      => 'inner join',
-                'schema'        => null,
-                'tableName'     => new \Zend_Db_Expr('(' . $idsSelect . ')'),
-                'joinCondition' => 'main_table.entity_id = order_id'
-            ];
-
-            $collection->getSelect()->setPart(\Zend_Db_Select::FROM, $from);
+            $collection->getSelect()->where(
+                'main_table.entity_id IN (?)',
+                [new \Zend_Db_Expr('(' . $idsSelect . ')')]
+            );
         }
     }
 
-    protected function _getColumn($key)
+    protected function getColumn($key)
     {
-        if (!array_key_exists($key, $this->_columns)) {
-            $this->_columns[$key] = \Magento\Framework\App\ObjectManager::getInstance()->create(
-                'Amasty\\Ogrid\\Model\\Column\\' . $this->_helper->getOrderField($key)
+        if (!array_key_exists($key, $this->columns)) {
+            $this->columns[$key] = \Magento\Framework\App\ObjectManager::getInstance()->create(
+                'Amasty\\Ogrid\\Model\\Column\\' . $this->helper->getOrderField($key)
             );
         }
 
-        return $this->_columns[$key];
+        return $this->columns[$key];
     }
 
-    protected function _getOrderItemCollection($data)
+    protected function getOrderItemCollection($data)
     {
         $orderItemCollection = null;
         if (array_key_exists('items', $data)) {
             $orderIds = [];
             foreach ($data['items'] as $item) {
-                $orderIds[]                             = $item['entity_id'];
-                $this->_orderConfig[$item['entity_id']] = [
+                $orderIds[] = $item['entity_id'];
+                $this->orderConfig[$item['entity_id']] = [
                     'order_currency_code' => $item['order_currency_code'],
-                    'base_currency_code'  => $item['base_currency_code']
+                    'base_currency_code' => $item['base_currency_code']
                 ];
             }
 
-            $orderItemCollection = $this->_orderItemCollectionFactory->create();
+            $orderItemCollection = $this->orderItemCollectionFactory->create();
 
             if (count($orderIds) > 0) {
                 $orderItemCollection
@@ -240,7 +297,7 @@ class OrderDataProvider
         return $orderItemCollection;
     }
 
-    protected function _getOrderShipmentTrackCollection($data)
+    protected function getOrderShipmentTrackCollection($data)
     {
         $shipmentTrackCollection = null;
         if (array_key_exists('items', $data)) {
@@ -249,7 +306,7 @@ class OrderDataProvider
                 $orderIds[] = $item['entity_id'];
             }
 
-            $shipmentTrackCollection = $this->_shipmentTrackCollectionFactory->create();
+            $shipmentTrackCollection = $this->shipmentTrackCollectionFactory->create();
 
             if (count($orderIds) > 0) {
                 $shipmentTrackCollection
@@ -262,18 +319,18 @@ class OrderDataProvider
         return $shipmentTrackCollection;
     }
 
-    public function _prepareOrderItemCollection($orderItemCollection)
+    public function prepareOrderItemCollection($orderItemCollection)
     {
-        $activeBookmark = $this->_getActiveBookmark();
+        $activeBookmark = $this->getActiveBookmark();
 
-        foreach ($this->_helper->getOrderItemFields() as $key => $value) {
-            if ($this->_isColumnVisible($activeBookmark, $key)) {
-                $this->_getColumn($key)->addFieldToSelect($orderItemCollection);
+        foreach ($this->helper->getOrderItemFields() as $key => $value) {
+            if ($this->isColumnVisible($activeBookmark, $key)) {
+                $this->getColumn($key)->addFieldToSelect($orderItemCollection);
             }
         }
 
-        foreach ($this->_helper->getAttributeCollection() as $attribute) {
-            if ($this->_isColumnVisible($activeBookmark, $attribute->getAttributeDbAlias())) {
+        foreach ($this->helper->getAttributeCollection() as $attribute) {
+            if ($this->isColumnVisible($activeBookmark, $attribute->getAttributeDbAlias())) {
                 $attribute->addFieldToSelect($orderItemCollection);
             }
         }
@@ -281,78 +338,85 @@ class OrderDataProvider
         $orderItemCollection->getSelect()->columns(['order_id', 'item_id', 'parent_item_id']);
     }
 
-    public function _prepareOrderTrackCollection($trackCollection)
+    public function prepareOrderTrackCollection($trackCollection)
     {
-        $activeBookmark = $this->_getActiveBookmark();
+        $activeBookmark = $this->getActiveBookmark();
 
-        foreach ($this->_helper->getTrackFields() as $key => $value) {
-            if ($this->_isColumnVisible($activeBookmark, $key)) {
-                $this->_getColumn($key)->addFieldToSelect($trackCollection);
+        foreach ($this->helper->getTrackFields() as $key => $value) {
+            if ($this->isColumnVisible($activeBookmark, $key)) {
+                $this->getColumn($key)->addFieldToSelect($trackCollection);
             }
         }
+        $trackCollection->join(
+            ['sales_order' => $trackCollection->getTable('sales_order')],
+            'sales_order.entity_id = main_table.order_id',
+            ['sales_order.protect_code', 'sales_order.store_id']
+        );
 
         $trackCollection->getSelect()->columns(['order_id', 'entity_id']);
     }
 
-    public function _modifyOrderItemData(&$orderItemData)
+    public function modifyOrderItemData(&$orderItemData)
     {
-        $orderItemField       = $this->_helper->getOrderItemFields();
-        $activeBookmark       = $this->_getActiveBookmark();
-        $attributesCollection = $this->_helper->getAttributeCollection();
-
+        $orderItemField = $this->helper->getOrderItemFields();
+        $activeBookmark = $this->getActiveBookmark();
+        $attributesCollection = $this->helper->getAttributeCollection();
 
         $reorderedData = [];
-        $childData     = [];
+        $childData = [];
 
         foreach ($orderItemData as $idx => &$orderItem) {
-            $orderId      = $orderItem['order_id'];
+            $orderId = $orderItem['order_id'];
             $parentItemId = $orderItem['parent_item_id'];
-            $itemId       = $orderItem['item_id'];
+            $itemId = $orderItem['item_id'];
 
             foreach ($orderItemField as $key => $value) {
-                if ($this->_isColumnVisible($activeBookmark, $key)) {
-                    $this->_getColumn($key)->modifyItem($orderItem, $this->_orderConfig);
+                if ($this->isColumnVisible($activeBookmark, $key)) {
+                    $this->getColumn($key)->modifyItem($orderItem, $this->orderConfig);
                 }
             }
 
             foreach ($attributesCollection as $attribute) {
-                if ($this->_isColumnVisible($activeBookmark, $attribute->getAttributeDbAlias())) {
-                    $attribute->modifyItem($orderItem, $this->_orderConfig);
+                if ($this->isColumnVisible($activeBookmark, $attribute->getAttributeDbAlias())) {
+                    $attribute->modifyItem($orderItem, $this->orderConfig);
                 }
             }
 
-            if ($parentItemId === null) {
+            if (!$parentItemId) {
                 $reorderedData[$orderId][$itemId] = $orderItem;
             } else {
                 $childData[$parentItemId] = $orderItem;
             }
         }
 
-        $this->_moveDataFromChildToParent($reorderedData, $childData);
+        $this->moveDataFromChildToParent($reorderedData, $childData);
 
         $orderItemData = $reorderedData;
     }
 
-    public function _modifyOrderTrackData(&$orderTrackData)
+    public function modifyOrderTrackData(&$orderTrackData)
     {
-        $orderTrackField = $this->_helper->getTrackFields();
-        $activeBookmark  = $this->_getActiveBookmark();
+        $orderTrackField = $this->helper->getTrackFields();
+        $activeBookmark = $this->getActiveBookmark();
 
         $reorderedData = [];
 
         foreach ($orderTrackData as $itemId => $orderTrackItem) {
-            $orderId  = $orderTrackItem['order_id'];
+            $orderId = $orderTrackItem['order_id'];
             $entityId = $orderTrackItem['entity_id'];
 
             foreach ($orderTrackField as $key => $value) {
-                if ($this->_isColumnVisible($activeBookmark, $key)) {
+                if ($this->isColumnVisible($activeBookmark, $key)) {
 
                     if (!array_key_exists($orderId, $reorderedData)) {
                         $reorderedData[$orderId] = [];
                     }
 
-                    $reorderedData[$orderId][$this->_getColumn($key)->getAlias()][$entityId]
-                        = $orderTrackItem[$this->_getColumn($key)->getAlias()];
+                    $reorderedData[$orderId][$this->getColumn($key)->getAlias()] = [
+                        $entityId => $orderTrackItem[$this->getColumn($key)->getAlias()],
+                        'protect_code' => $orderTrackItem['protect_code'],
+                        'store_id' => $orderTrackItem['store_id']
+                    ];
                 }
             }
         }
@@ -360,11 +424,10 @@ class OrderDataProvider
         $orderTrackData = $reorderedData;
     }
 
-
-    protected function _moveDataFromChildToParent(&$reorderedData, $childData)
+    protected function moveDataFromChildToParent(&$reorderedData, $childData)
     {
-        $attributesCollection = $this->_helper->getAttributeCollection();
-        $activeBookmark       = $this->_getActiveBookmark();
+        $attributesCollection = $this->helper->getAttributeCollection();
+        $activeBookmark = $this->getActiveBookmark();
 
         foreach ($reorderedData as &$orderData) {
             foreach ($orderData as $orderItemId => &$orderItem) {
@@ -372,27 +435,8 @@ class OrderDataProvider
                     $childItem = $childData[$orderItemId];
 
                     foreach ($attributesCollection as $attribute) {
-                        if ($this->_isColumnVisible($activeBookmark, $attribute->getAttributeDbAlias())) {
-                            $value       = [];
-                            $childValue  = $childItem[$attribute->getAttributeDbAlias()];
-                            $parentValue = $orderItem[$attribute->getAttributeDbAlias()];
-
-                            if (!is_array($parentValue) && $parentValue !== null) {
-                                $value = [$parentValue];
-                            } else {
-                                if (is_array($parentValue)) {
-                                    $value = $parentValue;
-                                }
-                            }
-
-                            if (!is_array($childValue) && $childValue !== null) {
-                                $value = array_merge($value, [$childValue]);
-                            } else {
-                                if (is_array($childValue)) {
-                                    $value = array_merge($value, $childValue);
-                                }
-                            }
-
+                        if ($this->isColumnVisible($activeBookmark, $attribute->getAttributeDbAlias())) {
+                            $value = $this->getValue($childItem, $orderItem, $attribute);
                             $orderItem[$attribute->getAttributeDbAlias()] = $value;
                         }
                     }
@@ -401,27 +445,52 @@ class OrderDataProvider
         }
     }
 
+    public function getValue($childItem, $orderItem, $attribute)
+    {
+        $value = [];
+        $childValue = $childItem[$attribute->getAttributeDbAlias()];
+        $parentValue = $orderItem[$attribute->getAttributeDbAlias()];
+
+        if (!is_array($parentValue) && $parentValue !== null) {
+            $value = [$parentValue];
+        } else {
+            if (is_array($parentValue)) {
+                $value = $parentValue;
+            }
+        }
+
+        if (!is_array($childValue) && $childValue !== null) {
+            $value = array_merge($value, [$childValue]);
+        } else {
+            if (is_array($childValue)) {
+                $value = array_merge($value, $childValue);
+            }
+        }
+
+        return $value;
+    }
+
     public function afterGetData(
         \Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider $dataProvider,
         $data
     ) {
         if ($this->isOrderGrid($dataProvider)) {
-            $orderItemCollection     = $this->_getOrderItemCollection($data);
-            $shipmentTrackCollection = $this->_getOrderShipmentTrackCollection($data);
+            $orderItemCollection = $this->getOrderItemCollection($data);
+            $shipmentTrackCollection = $this->getOrderShipmentTrackCollection($data);
 
-            $this->_prepareOrderItemCollection($orderItemCollection);
-            $this->_prepareOrderTrackCollection($shipmentTrackCollection);
+            $this->prepareOrderItemCollection($orderItemCollection);
+            $this->prepareOrderTrackCollection($shipmentTrackCollection);
 
-            $orderItemData     = $orderItemCollection->getData();
+            $orderItemData = $orderItemCollection->getData();
             $shipmentTrackData = $shipmentTrackCollection->getData();
 
-            $this->_modifyOrderItemData($orderItemData);
-            $this->_modifyOrderTrackData($shipmentTrackData);
+            $this->modifyOrderItemData($orderItemData);
+            $this->modifyOrderTrackData($shipmentTrackData);
 
             $items = &$data['items'];
             foreach ($items as $idx => &$element) {
                 $element['amasty_ogrid_items_ordered'] = [];
-                $itemsOrdered                          = &$element['amasty_ogrid_items_ordered'];
+                $itemsOrdered = &$element['amasty_ogrid_items_ordered'];
 
                 if (array_key_exists($element['entity_id'], $orderItemData)) {
                     $itemsOrdered = $orderItemData[$element['entity_id']];

@@ -120,7 +120,8 @@
                     s.onload = function () {
                         if (typeof ace !== 'undefined' && typeof ace.edit !== 'undefined') {
                             $('#xsl_template').hide();
-                            ace.aceBaseUrl = "<?php echo $block->getJs('productexport/ace')?>";
+                            //ace.aceBaseUrl = "<?php echo $block->getJs('ace')?>";
+                            ace.config.set("basePath", "<?php echo $block->getJs('ace')?>");
                             editor = ace.edit("editor");
                             if (typeof editor !== 'undefined') {
                                 editor.setTheme("ace/theme/eclipse");

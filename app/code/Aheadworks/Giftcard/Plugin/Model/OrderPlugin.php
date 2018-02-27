@@ -50,8 +50,7 @@ class OrderPlugin
      */
     public function beforeCanCreditmemo($order)
     {
-        if (
-            !$order->canUnhold() && !$order->isCanceled() && $order->getState() != Order::STATE_CLOSED
+        if (!$order->canUnhold() && !$order->isCanceled() && $order->getState() != Order::STATE_CLOSED
             && $order->getAwGiftcardInvoiced() - $order->getAwGiftcardRefunded() > 0
         ) {
             $order->setForcedCanCreditmemo(true);

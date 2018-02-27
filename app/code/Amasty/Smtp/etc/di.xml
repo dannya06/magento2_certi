@@ -20,7 +20,7 @@
     </type>
     <virtualType name="AmsmtpLogGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
         <arguments>
-            <argument name="collection" xsi:type="object" shared="false">Amasty\Smtp\Model\ResourceModel\Log\Collection</argument>
+            <argument name="collection" xsi:type="object" shared="false">Amasty\Smtp\Model\ResourceModel\Log\Grid\Collection</argument>
             <argument name="filterPool" xsi:type="object" shared="false">AmsmtpGirdFilterPool</argument>
         </arguments>
     </virtualType>
@@ -32,15 +32,6 @@
             </argument>
         </arguments>
     </virtualType>
-    <type name="Amasty\Smtp\Model\ResourceModel\Log\Grid\Collection">
-        <arguments>
-            <argument name="mainTable" xsi:type="string">amasty_amsmtp_log</argument>
-            <argument name="eventPrefix" xsi:type="string">amasty_amsmtp_log_grid_collection</argument>
-            <argument name="eventObject" xsi:type="string">log_grid_collection</argument>
-            <argument name="resourceModel" xsi:type="string">Amasty\Smtp\Model\ResourceModel\Log</argument>
-        </arguments>
-    </type>
-
     <virtualType name="AmsmtpDebugGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
         <arguments>
             <argument name="collection" xsi:type="object" shared="false">Amasty\Smtp\Model\ResourceModel\Debug\Collection</argument>

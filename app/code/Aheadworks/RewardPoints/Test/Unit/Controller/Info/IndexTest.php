@@ -22,7 +22,7 @@ use Magento\Framework\View\Page\Title;
  * Class Aheadworks\RewardPoints\Test\Unit\Controller\Info\Index$IndexTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Cms\Controller\Index\Index

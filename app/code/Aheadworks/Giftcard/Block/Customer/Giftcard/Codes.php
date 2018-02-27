@@ -113,22 +113,20 @@ class Codes extends Template
     /**
      * Retrieve check Gift Card code url
      *
-     * @param string $code
      * @return string
      */
-    public function getCheckCodeUrl($code)
+    public function getCheckCodeUrl()
     {
-        return $this->getUrl('awgiftcard/card/checkCode', ['code' => $code]);
+        return $this->getUrl('awgiftcard/card/checkCode');
     }
 
     /**
      * Retrieve apply url
      *
-     * @param string $code
      * @return string
      */
-    public function getApplyUrl($code)
+    public function getApplyUrl()
     {
-        return $this->getUrl('awgiftcard/cart/apply', ['code' => $code]);
+        return $this->getUrl('awgiftcard/cart/apply');
     }
 }

@@ -6,6 +6,7 @@
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\ProductVariantPerformance;
 
+use Aheadworks\AdvancedReports\Model\ResourceModel\AbstractPeriodBasedCollection;
 use Magento\Framework\DataObject;
 use Aheadworks\AdvancedReports\Model\ResourceModel\ProductVariantPerformance as ResourceProductVariantPerformance;
 use Magento\Framework\DB\Select;
@@ -15,8 +16,13 @@ use Magento\Framework\DB\Select;
  *
  * @package Aheadworks\AdvancedReports\Model\ResourceModel\ProductVariantPerformance
  */
-class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\AbstractCollection
+class Collection extends AbstractPeriodBasedCollection
 {
+    /**
+     * @var bool
+     */
+    private $isApplyGroupByFilter = false;
+
     /**
      * {@inheritdoc}
      */
@@ -32,10 +38,18 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     {
         $this->getSelect()
             ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(true))
             ->group(['product_id', 'sku']);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns(true));
+        parent::_renderFiltersBefore();
     }
 
     /**
@@ -56,6 +70,18 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
                 'invoiced' => 'SUM(COALESCE(main_table.invoiced' . $rateField . ', 0))',
                 'refunded' => 'SUM(COALESCE(main_table.refunded' . $rateField . ', 0))'
             ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyGroupByFilter()
+    {
+        if ($this->isApplyGroupByFilter) {
+            return parent::applyGroupByFilter();
+        }
+
+        return $this;
     }
 
     /**
@@ -121,7 +147,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * Add product name filter to collection
      *
-     * @param [] $condition
+     * @param array $condition
      * @return $this
      */
     public function addProductNameFilter($condition)
@@ -138,32 +164,42 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    public function addCustomerGroupFilter()
+    public function addCustomerGroupFilter($customerGroupsId)
     {
-        $customerGroupsId = $this->customerGroupFilter->getCustomerGroupId();
-        if (null != $customerGroupsId) {
-            $this->conditionsForGroupBy[] = [
-                'field' => 'main_table.customer_group_id',
-                'condition' => ['in' => $customerGroupsId]
-            ];
-            $this->addFieldToFilter('customer_group_id', ['in' => $customerGroupsId]);
-        }
+        $this->conditionsForGroupBy[] = [
+            'field' => 'main_table.customer_group_id',
+            'condition' => ['in' => $customerGroupsId]
+        ];
+        $this->addFieldToFilter('customer_group_id', ['in' => $customerGroupsId]);
+
         return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addStoreFilter()
+    public function addStoreFilter($storeIds)
     {
-        $storeIds = $this->storeFilter->getStoreIds();
-        if (null != $storeIds) {
-            $this->conditionsForGroupBy[] = [
-                'field' => 'main_table.store_id',
-                'condition' => ['in' => $storeIds]
-            ];
-            $this->addFieldToFilter('store_id', ['in' => $storeIds]);
-        }
+        $this->saveCustomFilterValue(self::STORE_IDS_FILTER_KEY, $storeIds);
+        $this->conditionsForGroupBy[] = [
+            'field' => 'main_table.store_id',
+            'condition' => ['in' => $storeIds]
+        ];
+        $this->addFieldToFilter('store_id', ['in' => $storeIds]);
+
+        return $this;
+    }
+
+    /**
+     * Add group by filter for chart
+     *
+     * @param int $groupBy
+     * @return $this
+     */
+    public function addGroupByFilterForChart($groupBy)
+    {
+        $this->saveCustomFilterValue(self::GROUP_BY_FILTER_KEY, $groupBy);
+
         return $this;
     }
 
@@ -175,8 +211,10 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
         $this->getSelect()
             ->reset(\Magento\Framework\DB\Select::GROUP)
             ->reset(\Magento\Framework\DB\Select::WHERE);
+        $this->isApplyGroupByFilter = true;
+        $this->applyGroupByFilter();
+        $this->isApplyGroupByFilter = false;
 
-        $this->addGroupByFilter();
         $this->renderSelect($this->getSelect());
         return $this;
     }

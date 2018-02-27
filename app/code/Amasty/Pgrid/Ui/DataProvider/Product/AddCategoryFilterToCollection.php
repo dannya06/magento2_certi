@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Pgrid
  */
 
@@ -12,6 +12,7 @@
 namespace Amasty\Pgrid\Ui\DataProvider\Product;
 
 use Magento\Framework\Data\Collection;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Ui\DataProvider\AddFilterToCollectionInterface;
 
 /**
@@ -19,25 +20,31 @@ use Magento\Ui\DataProvider\AddFilterToCollectionInterface;
  */
 class AddCategoryFilterToCollection implements AddFilterToCollectionInterface
 {
+    /**
+     * @var \Magento\Framework\App\ResourceConnection
+     */
+    private $resource;
+
+    public function __construct(
+        ResourceConnection $resource
+    ) {
+        $this->resource = $resource;
+    }
 
     public function addFilter(Collection $collection, $field, $condition = null)
     {
-        if (isset($condition['eq']) && $condition['eq'] == 0){
-            $categorySelect = $collection->getConnection()->select();
+        if (isset($condition['eq']) && $condition['eq'] === 'no_category') {
+            $categoryTableName = 'amasty_category';
+            $from = $collection->getSelect()->getPart('from');
+            if (!isset($from[$categoryTableName])) {
+                $collection->getSelect()->joinLeft(
+                    [$categoryTableName => $this->resource->getTableName('catalog_category_product')],
+                    'e.entity_id=amasty_category.product_id',
+                    ['category_id']
+                );
 
-            $categorySelect->joinLeft(array('nocat_idx' => $collection->getTable('catalog_category_product_index')),
-                '(nocat_idx.product_id = e.entity_id)',
-                array(
-                    'nocat_idx.product_id',
-                )
-            );
-            $categorySelect->where('nocat_idx.category_id IS NULL');
-
-            $selectCondition = [
-                'in' => $categorySelect
-            ];
-
-            $collection->getSelect()->where($collection->getConnection()->prepareSqlCondition('e.entity_id' , $selectCondition));
+                $collection->getSelect()->where('amasty_category.category_id IS NULL');
+            }
         } else {
             $collection->addCategoriesFilter($condition);
         }

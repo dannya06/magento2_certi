@@ -13,5 +13,13 @@ var config = {
 	"deps": [
 		"js/theme",
         "mage/adminhtml/globals"
-    ]
+    ],
+    shim: {
+        'nestable': {
+            'deps': ['jquery']
+        },
+        'Ves_Megamenu/js/jquery.nestable': {
+            'deps': ['jquery']
+        }
+    }
 };

@@ -144,3 +144,44 @@ Xtento_OrderExport
 
 ===== 2.3.7 =====
  * Improved export performance: Index for entity_id in profile history table added
+
+===== 2.3.8 =====
+ * Fixed issue that empty exports are showing up in Execution Log
+
+===== 2.3.9 =====
+ * Updated Xtento_XtCore to version 2.1
+
+===== 2.4.0 =====
+ * Fixed an issue issue for custom option export and Magento 2.2+ where the export crashed
+
+===== 2.4.1 =====
+ * Fixed an issue for bundle export, error was "Uncaught Error: Cannot use object of type stdClass as array"
+
+===== 2.4.2 =====
+ + Added syntax highlighting for XSL Template editor in export profile section
+
+===== 2.4.3 =====
+ * Fixed email sending for email destinations/error notification on Magento 2.2+ (Error: "Call to undefined method Magento\Email\Model\Transport\Interceptor::send()")
+
+===== 2.4.4 =====
+ * This is a potentially breaking change: Improved XSL security - PHP functions that can be executed via XSL are restricted now. Read more here: https://support.xtento.com/wiki/Magento_2_Extensions:Magento_Order_Export_Module#Calling_PHP_functions_in_XSL_Templates
+
+===== 2.4.5 =====
+ + Added ability to export credit memo PDF using "creditmemo_pdf" file "type" in XSL Template. Works for credit memo export profiles only.
+
+===== 2.4.6 =====
+ * Improved credit memo PDF export
+
+===== 2.4.7 =====
+ * Established compatibility with Magento 2.2.2: Fixed "We cannot create an empty shipment" error
+ * Fixed "Show fields available for export" showing "<strong>" for nodes
+
+===== 2.4.8 =====
+ + Added exception handler for "Unable to unserialize value" exception that occurs for some items where product options haven't been stored properly.
+ * Fixed "Mass Download" functionality in "Execution Log" that previously returned "Please select log entries to download".
+
+===== 2.4.9 =====
+ + Added ability to export data related to orders stored by the "Amasty Gift Cards" module
+ + Added ability to export "Pakje Gemak" address and order data of "TIG_PostNL" extension
+ + Added sample helper in Helper\Xsl that can be called from XSL to retrieve extension attributes or other custom order data
+ * Fixed error email notification: "From" email is now retrieved from system configuration ("ident_general/email")

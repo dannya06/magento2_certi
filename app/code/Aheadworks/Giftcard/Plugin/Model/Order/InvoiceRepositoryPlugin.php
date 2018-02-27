@@ -9,6 +9,7 @@ namespace Aheadworks\Giftcard\Plugin\Model\Order;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Api\InvoiceRepositoryInterface;
 use Magento\Sales\Api\Data\InvoiceExtensionFactory;
+use Magento\Sales\Api\Data\InvoiceSearchResultInterface;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Invoice\CollectionFactory as GiftcardInvoiceCollectionFactory;
 
 /**
@@ -57,11 +58,11 @@ class InvoiceRepositoryPlugin
      * Add Gift Card data to order object
      *
      * @param InvoiceRepositoryInterface $subject
-     * @param InvoiceInterface $invoices
+     * @param InvoiceSearchResultInterface $invoices
      * @return InvoiceInterface
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function afterGetList(InvoiceRepositoryInterface $subject, InvoiceInterface $invoices)
+    public function afterGetList(InvoiceRepositoryInterface $subject, InvoiceSearchResultInterface $invoices)
     {
         /** @var InvoiceInterface $order */
         foreach ($invoices->getItems() as $invoice) {

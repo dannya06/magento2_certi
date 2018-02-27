@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -59,11 +59,11 @@ class IndexIterator implements \Iterator
             foreach ($this->_items as $itemData) {
                 $this->_lastItemId = $itemData['item_id'];
 
-                if (!array_key_exists($itemData['store_id'], $productsItems)){
+                if (!array_key_exists($itemData['store_id'], $productsItems)) {
                     $productsItems[$itemData['store_id']] = [];
                 }
 
-                if (!array_key_exists($itemData['product_id'], $productsItems[$itemData['store_id']])){
+                if (!array_key_exists($itemData['product_id'], $productsItems[$itemData['store_id']])) {
                     $productsItems[$itemData['store_id']][$itemData['product_id']] = [];
                 }
 
@@ -80,9 +80,9 @@ class IndexIterator implements \Iterator
 
         $itemData = \current($this->_items);
 
-        foreach($this->_staticFields as $attributeId => $attributeCode){
-            if (array_key_exists($attributeCode, $itemData)){
-                if (!array_key_exists($itemData['item_id'], $this->_itemAttributes)){
+        foreach ($this->_staticFields as $attributeId => $attributeCode) {
+            if (array_key_exists($attributeCode, $itemData)) {
+                if (!array_key_exists($itemData['item_id'], $this->_itemAttributes)) {
                     $this->_itemAttributes[$itemData['item_id']] = [];
                 }
 

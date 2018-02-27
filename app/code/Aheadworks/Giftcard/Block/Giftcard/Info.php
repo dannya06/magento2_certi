@@ -74,17 +74,6 @@ class Info extends Template
     }
 
     /**
-     * Format date in short format
-     *
-     * @param string $date
-     * @return string
-     */
-    public function dateFormat($date)
-    {
-        return $this->formatDate($date, \IntlDateFormatter::MEDIUM);
-    }
-
-    /**
      * Format Gift Card code status
      *
      * @param int $state

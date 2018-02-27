@@ -33,6 +33,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="submit_url" xsi:type="url" path="aw_reward_points/transactions/save"/>
+                    <item name="component" xsi:type="string">Aheadworks_RewardPoints/js/ui/form/provider</item>
                 </item>
             </argument>
         </argument>
@@ -236,6 +237,7 @@
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
                         <item name="autoRender" xsi:type="boolean" >false</item>
+                        <item name="component" xsi:type="string">Aheadworks_RewardPoints/js/ui/form/components/insert-listing</item>
                         <item name="componentType" xsi:type="string">insertListing</item>
                         <item name="dataScope" xsi:type="string">customers_listing</item>
                         <item name="externalProvider" xsi:type="string">aw_reward_points_transaction_customers_listing.aw_reward_points_transaction_customers_listing_data_source</item>
@@ -251,6 +253,7 @@
                         </item>
                         <item name="behaviourType" xsi:type="string">simple</item>
                         <item name="externalFilterMode" xsi:type="boolean">true</item>
+                        <item name="maxTotalSelected" xsi:type="number">200</item>
                     </item>
                 </argument>
             </insertListing>

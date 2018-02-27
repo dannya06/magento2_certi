@@ -11,8 +11,6 @@ use Magento\Framework\Api\Search\SearchResultInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Aheadworks\AdvancedReports\Ui\DataProvider\Document;
 use Aheadworks\AdvancedReports\Model\ResourceModel\ProductPerformance\Collection as ProductPerformanceCollection;
-use Aheadworks\AdvancedReports\Model\Config;
-use Aheadworks\AdvancedReports\Model\Filter;
 
 /**
  * Class Collection
@@ -35,13 +33,8 @@ class Collection extends ProductPerformanceCollection implements SearchResultInt
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $eventPrefix
      * @param mixed $eventObject
      * @param mixed $resourceModel
-     * @param Config $config
-     * @param Filter\Store $storeFilter
-     * @param Filter\CustomerGroup $customerGroupFilter
-     * @param Filter\Groupby $groupbyFilter
-     * @param Filter\Period $periodFilter
      * @param string $model
-     * @param string|null $connection
+     * @param \Magento\Framework\DB\Adapter\AdapterInterface|null $connection
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -55,13 +48,8 @@ class Collection extends ProductPerformanceCollection implements SearchResultInt
         $eventPrefix,
         $eventObject,
         $resourceModel,
-        Config $config,
-        Filter\Store $storeFilter,
-        Filter\CustomerGroup $customerGroupFilter,
-        Filter\Groupby $groupbyFilter,
-        Filter\Period $periodFilter,
         $model = Document::class,
-        $connection = null,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
         parent::__construct(
@@ -69,11 +57,6 @@ class Collection extends ProductPerformanceCollection implements SearchResultInt
             $logger,
             $fetchStrategy,
             $eventManager,
-            $config,
-            $storeFilter,
-            $customerGroupFilter,
-            $groupbyFilter,
-            $periodFilter,
             $connection,
             $resource
         );

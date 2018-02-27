@@ -2,7 +2,7 @@
 <tr class="totals">
     <th colspan="1" style="" class="mark" scope="row">
         <span class="title" data-bind="text: getTitle()"/>
-        <a data-bind="attr: { 'href': getRemoveUrl(), 'title': $t('Cancel') }" class="action delete">
+        <a href="#" data-bind="attr: { 'data-post': getRemoveRpData(), 'title': $t('Cancel') }" class="action delete">
             <span data-bind="text: $t('Cancel')"/>
         </a>
     </th>

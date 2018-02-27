@@ -30,6 +30,7 @@ class Type implements ArrayInterface
     const POINTS_REWARDED_FOR_SHARES = 10;
     const POINTS_EXPIRED = 11;
     const CANCEL_EARNED_POINTS_FOR_REFUND_ORDER = 12;
+    const BALANCE_IMPORTED_BY_ADMIN = 13;
     /**#@-*/
 
     /**
@@ -98,6 +99,10 @@ class Type implements ArrayInterface
             [
                 'value' => self::POINTS_EXPIRED,
                 'label' => __('Points expired')
+            ],
+            [
+                'value' => self::BALANCE_IMPORTED_BY_ADMIN,
+                'label' => __('Balance adjusted while import')
             ]
         ];
     }

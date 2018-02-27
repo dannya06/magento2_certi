@@ -18,7 +18,7 @@ use Magento\Sales\Model\Order as SalesOrder;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\ResourceModel\OrderTest
  */
-class OrderTest extends \PHPUnit_Framework_TestCase
+class OrderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Order

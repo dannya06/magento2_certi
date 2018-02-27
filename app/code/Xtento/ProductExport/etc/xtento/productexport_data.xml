@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Xtento_ProductExport:etc/xtento/export_data.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Xtento_ProductExport:etc/xtento/productexport_data.xsd">
     <data>
         <!-- General product data -->
         <export id="product_general" class="\Xtento\ProductExport\Model\Export\Data\Product\General"/>
@@ -16,11 +16,11 @@
 </config>
 <!--
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2017-03-06T13:42:06+00:00
+ * Packaged:      2018-02-26T09:11:39+00:00
+ * Last Modified: 2017-11-28T11:23:40+00:00
  * File:          app/code/Xtento/ProductExport/etc/xtento/productexport_data.xml
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 -->

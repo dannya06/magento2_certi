@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.3.7)
- * ID:            vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=
- * Packaged:      2017-10-04T08:30:08+00:00
- * Last Modified: 2017-08-10T11:13:28+00:00
+ * Product:       Xtento_OrderExport (2.4.9)
+ * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
+ * Packaged:      2018-02-26T09:11:23+00:00
+ * Last Modified: 2017-12-20T10:57:06+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Shared/Items.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Export\Data\Shared;
@@ -273,9 +273,16 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                 }
                 $this->writeArray = & $this->origWriteArray;
                 $tempOrigArray = & $this->writeArray;
-                if ($this->fieldLoadingRequired('custom_options') && $options = $orderItem->getProductOptions()) {
-                    // Export custom options
-                    $this->writeCustomOptions($options, $this->origWriteArray, $object, $orderItem->getProductId());
+                if ($this->fieldLoadingRequired('custom_options')) {
+                    try {
+                        $options = $orderItem->getProductOptions();
+                    } catch (\Exception $e) {
+                        $options = false;
+                    }
+                    if ($options !== false) {
+                        // Export custom options
+                        $this->writeCustomOptions($options, $this->origWriteArray, $object, $orderItem->getProductId());
+                    }
                 }
                 $this->writeArray =& $tempOrigArray;
             } else {
@@ -312,20 +319,36 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             // (M1 code): $parentItem = Mage::getModel('sales/order_creditmemo_item')->load($parentItem->getOrderItemId(), 'order_item_id’);
 
             // Get bundle price
-            $productOptions = $item->getProductOptions();
+            try {
+                $productOptions = $item->getProductOptions();
+            } catch (\Exception $e) {
+                $productOptions = false;
+            }
             if ($parentItem && $parentItem->getProductType() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
-                if (!isset($productOptions['bundle_selection_attributes']) && $parentItem) {
-                    $productOptions = $parentItem->getProductOptions();
+                if (is_array($productOptions) && !isset($productOptions['bundle_selection_attributes']) && $parentItem) {
+                    try {
+                        $productOptions = $parentItem->getProductOptions();
+                    } catch (\Exception $e) {
+                        $productOptions = false;
+                    }
                 }
-                if (isset($productOptions['bundle_selection_attributes'])) {
+                if (is_array($productOptions) && isset($productOptions['bundle_selection_attributes'])) {
                     if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
                         $bundleOptions = @json_decode($productOptions['bundle_selection_attributes']);
                     } else {
                         $bundleOptions = @unserialize($productOptions['bundle_selection_attributes']);
                     }
-                    if (isset($bundleOptions['price'])) {
-                        $this->writeValue('is_bundle', true);
-                        $this->writeValue('bundle_price', $bundleOptions['price']);
+                    if (is_array($bundleOptions)) {
+                        if (isset($bundleOptions['price'])) {
+                            $this->writeValue('is_bundle', true);
+                            $this->writeValue('bundle_price', $bundleOptions['price']);
+                        }
+                    }
+                    if (is_object($bundleOptions)) {
+                        if (isset($bundleOptions->price)) {
+                            $this->writeValue('is_bundle', true);
+                            $this->writeValue('bundle_price', $bundleOptions->price);
+                        }
                     }
                 }
             }
@@ -382,6 +405,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                 // End "Swatch Data"
             }*/
 
+            // Old M1 code - needs to be ported
             /*if ($item->getProductType() == \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE && $this->fieldLoadingRequired('downloadable_links')) {
                 $productOptions = $item->getProductOptions();
                 if ($productOptions) {
@@ -441,8 +465,15 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     }
                 }
                 // Export parent product options
-                if ($this->fieldLoadingRequired('custom_options') && $options = $parentItem->getProductOptions()) {
-                    $this->writeCustomOptions($options, $this->writeArray, $object, $parentItem->getProductId());
+                if ($this->fieldLoadingRequired('custom_options')) {
+                    try {
+                        $options = $parentItem->getProductOptions();
+                    } catch (\Exception $e) {
+                        $options = false;
+                    }
+                    if ($options !== false) {
+                        $this->writeCustomOptions($options, $this->writeArray, $object, $parentItem->getProductId());
+                    }
                 }
                 $this->writeArray =& $tempOrigArray;
                 if ($this->fieldLoadingRequired('product_attributes')) {
@@ -458,10 +489,17 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
 
             $this->writeArray = & $this->origWriteArray;
             // Export product options
-            if ($this->fieldLoadingRequired('custom_options') && $options = $item->getProductOptions()) {
-                // Export custom options
-                $this->writeCustomOptions($options, $this->origWriteArray, $object, $item->getProductId());
-                // Export $options["attributes_info"].. maybe?
+            if ($this->fieldLoadingRequired('custom_options')) {
+                try {
+                    $options = $item->getProductOptions();
+                } catch (\Exception $e) {
+                    $options = false;
+                }
+                if ($options !== false) {
+                    // Export custom options
+                    $this->writeCustomOptions($options, $this->origWriteArray, $object, $item->getProductId());
+                    // Export $options["attributes_info"].. maybe?
+                }
             }
 
             // Sample code to get ugiftcert gift certificate information:
@@ -685,7 +723,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     } else {
                         $unserializedOptionValues = @unserialize($customOption['option_value']);
                     }
-                    if ($unserializedOptionValues !== false) {
+                    if ($unserializedOptionValues !== false && (is_array($unserializedOptionValues) || is_object($unserializedOptionValues))) {
                         foreach ($unserializedOptionValues as $unserializedOptionKey => $unserializedOptionValue) {
                             $this->writeValue($unserializedOptionKey, $unserializedOptionValue);
                         }

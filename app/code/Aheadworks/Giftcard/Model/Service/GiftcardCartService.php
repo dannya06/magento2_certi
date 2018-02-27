@@ -84,10 +84,12 @@ class GiftcardCartService implements GiftcardCartManagementInterface
     /**
      * {@inheritdoc}
      */
-    public function get($cartId)
+    public function get($cartId, $activeQuote = true)
     {
         /** @var $quote QuoteModel */
-        $quote = $this->quoteRepository->getActive($cartId);
+        $quote = $activeQuote
+            ? $this->quoteRepository->getActive($cartId)
+            : $this->quoteRepository->get($cartId);
         if (!$quote->getItemsCount()) {
             throw new NoSuchEntityException(__('Cart %1 doesn\'t contain products', $cartId));
         }
@@ -101,11 +103,13 @@ class GiftcardCartService implements GiftcardCartManagementInterface
     /**
      * {@inheritdoc}
      */
-    public function set($cartId, $giftcardCode)
+    public function set($cartId, $giftcardCode, $activeQuote = true)
     {
         $giftcardCode = trim($giftcardCode);
         /** @var $quote QuoteModel */
-        $quote = $this->quoteRepository->getActive($cartId);
+        $quote = $activeQuote
+            ? $this->quoteRepository->getActive($cartId)
+            : $this->quoteRepository->get($cartId);
         if (!$quote->getItemsCount()) {
             throw new NoSuchEntityException(__('Cart %1 doesn\'t contain products', $cartId));
         }
@@ -153,11 +157,13 @@ class GiftcardCartService implements GiftcardCartManagementInterface
     /**
      * {@inheritdoc}
      */
-    public function remove($cartId, $giftcardCode)
+    public function remove($cartId, $giftcardCode, $activeQuote = true)
     {
         $giftcardCode = trim($giftcardCode);
         /** @var $quote QuoteModel */
-        $quote = $this->quoteRepository->getActive($cartId);
+        $quote = $activeQuote
+            ? $this->quoteRepository->getActive($cartId)
+            : $this->quoteRepository->get($cartId);
         if (!$quote->getItemsCount()) {
             throw new NoSuchEntityException(__('Cart %1 doesn\'t contain products', $cartId));
         }

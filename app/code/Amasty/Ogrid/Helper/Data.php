@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -23,17 +23,21 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         'amasty_ogrid_subtotal' => 'Order\\Subtotal',
         'amasty_ogrid_coupon_code' => 'Order\\CouponCode',
         'amasty_ogrid_weight' => 'Order\\Weight',
+        'amasty_ogrid_tax_amount' => 'Order\\OrderTax',
+        'amasty_ogrid_order_comments' => 'Order\\Comments',
 
         'amasty_ogrid_shipping_fax' => 'Address\\Shipping\\Fax',
         'amasty_ogrid_shipping_region' => 'Address\\Shipping\\Region',
         'amasty_ogrid_shipping_postcode' => 'Address\\Shipping\\Postcode',
         'amasty_ogrid_shipping_city' => 'Address\\Shipping\\City',
+        'amasty_ogrid_shipping_company' => 'Address\\Shipping\\Company',
         'amasty_ogrid_shipping_telephone' => 'Address\\Shipping\\Telephone',
         'amasty_ogrid_shipping_country_id' => 'Address\\Shipping\\CountryId',
         'amasty_ogrid_billing_fax' => 'Address\\Billing\\Fax',
         'amasty_ogrid_billing_region' => 'Address\\Billing\\Region',
         'amasty_ogrid_billing_postcode' => 'Address\\Billing\\Postcode',
         'amasty_ogrid_billing_city' => 'Address\\Billing\\City',
+        'amasty_ogrid_billing_company' => 'Address\\Billing\\Company',
         'amasty_ogrid_billing_telephone' => 'Address\\Billing\\Telephone',
         'amasty_ogrid_billing_country_id' => 'Address\\Billing\\CountryId',
         'amasty_ogrid_customer_group_code' => 'Customer\\Group',

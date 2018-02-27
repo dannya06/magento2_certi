@@ -1,3 +1,7 @@
+1.4.2
+=============
+* Fix compatibility with 2.2 JSON-serialized configs
+
 1.4.0
 =============
 * Added Paypal social provider

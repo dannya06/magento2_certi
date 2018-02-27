@@ -26,7 +26,7 @@
                 <is_hide_if_rewardpoints_balance_empty>0</is_hide_if_rewardpoints_balance_empty>
                 <is_apply_automatically>0</is_apply_automatically>
                 <rewardpoints_program_page>aw-reward-points</rewardpoints_program_page>
-                <is_display_prices_by_points>1</is_display_prices_by_points>
+                <is_display_discount_info>1</is_display_discount_info>
                 <is_display_social_button>1</is_display_social_button>
                 <social_button_style></social_button_style>
                 <is_display_invitation_to_newsletter>1</is_display_invitation_to_newsletter>

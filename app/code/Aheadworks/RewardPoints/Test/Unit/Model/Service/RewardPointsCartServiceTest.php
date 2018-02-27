@@ -17,7 +17,7 @@ use Magento\Store\Api\Data\StoreInterface;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Service$RewardPointsCartServiceTest
  */
-class RewardPointsCartServiceTest extends \PHPUnit_Framework_TestCase
+class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RewardPointsCartService

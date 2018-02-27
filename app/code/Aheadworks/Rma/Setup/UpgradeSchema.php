@@ -6,16 +6,29 @@
 
 namespace Aheadworks\Rma\Setup;
 
-/*use Magento\Framework\Setup\UpgradeDataInterface;
-use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\ModuleDataSetupInterface;*/
-
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 
+/**
+ * Class UpgradeSchema
+ *
+ * @package Aheadworks\Rma\Setup
+ */
 class UpgradeSchema implements UpgradeSchemaInterface
 {
+    /** @var UpgradeSchema120 */
+    private $upgradeSchema120;
+
+    /**
+     * @param UpgradeSchema120 $upgradeSchema120
+     */
+    public function __construct(
+        UpgradeSchema120 $upgradeSchema120
+    ) {
+        $this->upgradeSchema120 = $upgradeSchema120;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -26,11 +39,16 @@ class UpgradeSchema implements UpgradeSchemaInterface
         if (version_compare($context->getVersion(), '1.0.5', '<')) {
             $this->removeCustomerIdForeignKey($setup);
         }
+        if ($context->getVersion() && version_compare($context->getVersion(), '1.2.0', '<')) {
+            $this->upgradeSchema120->upgrade($setup);
+        }
 
         $setup->endSetup();
     }
 
     /**
+     * Remove customer id foreign key
+     *
      * @param SchemaSetupInterface $setup
      */
     private function removeCustomerIdForeignKey(SchemaSetupInterface $setup)

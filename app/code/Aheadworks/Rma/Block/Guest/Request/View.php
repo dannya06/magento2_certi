@@ -6,17 +6,29 @@
 
 namespace Aheadworks\Rma\Block\Guest\Request;
 
+use Aheadworks\Rma\Block\Customer\Request\View as CustomerRequestView;
+
 /**
  * Class View
+ *
  * @package Aheadworks\Rma\Block\Guest\Request
  */
-class View extends \Aheadworks\Rma\Block\Customer\Request\View
+class View extends CustomerRequestView
 {
     /**
-     * @return int|string
+     * {@inheritdoc}
+     */
+    public function getRmaRequest()
+    {
+        $requestId = $this->getRequest()->getParam('id');
+        return $this->requestRepository->getByExternalLink($requestId);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getRequestIdentityValue()
     {
-        return $this->getRequestModel()->getExternalLink();
+        return $this->getRmaRequest()->getExternalLink();
     }
 }

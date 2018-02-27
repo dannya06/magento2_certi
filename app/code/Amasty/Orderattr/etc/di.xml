@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Orderattr
  */
 -->
@@ -27,21 +27,6 @@
         <plugin name="AmorderattrSetQuoteCustomAttributes" type="Amasty\Orderattr\Plugin\Order\AttributesList" />
     </type>
 
-    <!-- Save TMP order attributes -->
-    <type name="Magento\Checkout\Model\ShippingInformationManagement">
-        <plugin name="AmorderattrSaveQuoteCustomAttributes" type="Amasty\Orderattr\Plugin\Order\ShippingInformationManagement" />
-    </type>
-    <type name="Magento\Checkout\Model\PaymentInformationManagement">
-        <plugin name="AmorderattrSavePaymentCustomAttributes" type="Amasty\Orderattr\Plugin\Order\PaymentInformationManagement" />
-    </type>
-    <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
-        <plugin name="AmorderattrGuestSavePaymentCustomAttributes" type="Amasty\Orderattr\Plugin\Order\GuestPaymentInformationManagement" />
-    </type>
-    <type name="Magento\Quote\Model\PaymentMethodManagement">
-        <plugin name="Amorderattr-save-attributes-with-paypal" type="Amasty\Orderattr\Plugin\Quote\PaymentMethodManagement" />
-    </type>
-    <!-- Save TMP order attributes end-->
-
     <type name="Magento\Sales\Block\Items\AbstractItems">
         <plugin name="Amasty_Orderattr::OrderEmailAttributesList" type="Amasty\Orderattr\Plugin\Order\Email\Attributes" />
     </type>
@@ -59,5 +44,22 @@
     <type name="Magento\Sales\Model\Order">
         <plugin name="Amasty_Orderattr::getData" type="Amasty\Orderattr\Plugin\Order" />
     </type>
+
+    <!-- Save attributes start -->
+    <type name="Magento\Quote\Model\Quote\Address\CustomAttributeList">
+        <plugin name="Amasty_Orderattr:saveCustomAttributeList" type="Amasty\Orderattr\Plugin\Quote\Model\Quote\Address\CustomAttributeList"/>
+    </type>
+    <type name="Magento\Quote\Model\Quote\Address">
+        <plugin name="Amasty_Orderattr:saveQuoteAddress" type="Amasty\Orderattr\Plugin\Quote\Model\Quote\Address"/>
+    </type>
+    <!-- Save attributes end -->
+
+    <virtualType name="QuoteAddressRelationsComposite" type="Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite">
+        <arguments>
+            <argument name="relationProcessors" xsi:type="array">
+                <item name="amasty_attribute_quote_save" xsi:type="object">Amasty\Orderattr\Model\ResourceModel\Quote\Address\Relation</item>
+            </argument>
+        </arguments>
+    </virtualType>
 
 </config>

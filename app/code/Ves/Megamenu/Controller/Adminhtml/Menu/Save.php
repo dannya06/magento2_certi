@@ -76,6 +76,9 @@ class Save extends \Magento\Backend\App\Action
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($data) {
+            if(isset($data['cms_page'])){
+                unset($data['cms_page']);
+            }
             $model = $this->_objectManager->create('Ves\Megamenu\Model\Menu');
             $id = $this->getRequest()->getParam('menu_id');
             if ($id) {

@@ -6,163 +6,189 @@
 
 namespace Aheadworks\Rma\Block\Customer\Request\NewRequest\Step;
 
+use Aheadworks\Rma\Model\Config;
+use Aheadworks\Rma\Model\Renderer\CmsBlock;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Aheadworks\Rma\Model\Request\Order as RequestOrder;
+use Aheadworks\Rma\Model\Request\Order\Item as RequestOrderItem;
+use Magento\Sales\Api\Data\OrderItemInterface;
+use Magento\Sales\Model\Order;
+use \Magento\Sales\Model\Order\Item as OrderItem;
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Aheadworks\Rma\Block\Customer\Request\Order\Item\Renderer\Factory as ItemRendererFactory;
+
 /**
  * Class SelectOrder
+ *
  * @package Aheadworks\Rma\Block\Customer\Request
  */
-class SelectOrder extends \Magento\Framework\View\Element\Template
+class SelectOrder extends Template
 {
-    const XML_PATH_TEXT_PAGE_BLOCK = 'aw_rma/blocks_and_policy/product_selection_block';
-
     /**
      * @var string
      */
     protected $_template = 'customer/request/newrequest/step/selectorder.phtml';
 
     /**
-     * @var \Magento\Customer\Model\Session
+     * @var CmsBlock
+     */
+    private $cmsBlockRenderer;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @var RequestOrder
+     */
+    private $requestOrder;
+
+    /**
+     * @var RequestOrderItem
+     */
+    private $requestOrderItem;
+
+    /**
+     * @var CustomerSession
      */
     private $customerSession;
 
     /**
-     * @var \Magento\Framework\Pricing\PriceCurrencyInterface
+     * @var PriceCurrencyInterface
      */
     private $priceCurrency;
 
     /**
-     * @var \Aheadworks\Rma\Helper\CmsBlock
+     * @var ItemRendererFactory
      */
-    private $cmsBlockHelper;
+    private $itemRendererFactory;
 
     /**
-     * @var \Aheadworks\Rma\Helper\Order
-     */
-    private $orderHelper;
-
-    /**
-     * @var \Magento\Sales\Model\ResourceModel\Order\Collection
-     */
-    private $orderCollectionFactory;
-
-    /**
-     * @var \Magento\Sales\Model\ResourceModel\Order\Collection|null
-     */
-    private $orderCollection;
-
-    /**
-     * @var \Magento\Framework\Registry
-     */
-    private $coreRegistry;
-
-    /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory
-     * @param \Aheadworks\Rma\Helper\CmsBlock $cmsBlockHelper
-     * @param \Aheadworks\Rma\Helper\Order $orderHelper
+     * @param Context $context
+     * @param CmsBlock $cmsBlockRenderer
+     * @param Config $config
+     * @param RequestOrder $requestOrder
+     * @param RequestOrderItem $requestOrderItem
+     * @param CustomerSession $customerSession
+     * @param PriceCurrencyInterface $priceCurrency
+     * @param ItemRendererFactory $itemRendererFactory
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Customer\Model\Session $customerSession,
-        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
-        \Aheadworks\Rma\Helper\CmsBlock $cmsBlockHelper,
-        \Aheadworks\Rma\Helper\Order $orderHelper,
+        Context $context,
+        CmsBlock $cmsBlockRenderer,
+        Config $config,
+        RequestOrder $requestOrder,
+        RequestOrderItem $requestOrderItem,
+        CustomerSession $customerSession,
+        PriceCurrencyInterface $priceCurrency,
+        ItemRendererFactory $itemRendererFactory,
         array $data = []
     ) {
         parent::__construct($context, $data);
+        $this->cmsBlockRenderer = $cmsBlockRenderer;
+        $this->config = $config;
+        $this->requestOrder = $requestOrder;
+        $this->requestOrderItem = $requestOrderItem;
         $this->customerSession = $customerSession;
         $this->priceCurrency = $priceCurrency;
-        $this->orderCollectionFactory = $orderCollectionFactory;
-        $this->cmsBlockHelper = $cmsBlockHelper;
-        $this->orderHelper = $orderHelper;
-        $this->coreRegistry = $coreRegistry;
+        $this->itemRendererFactory = $itemRendererFactory;
     }
 
     /**
+     * Retrieve order items to request
+     *
+     * @param int $orderId
+     * @return \Magento\Sales\Model\Order\Item[]|OrderItemInterface[]
+     */
+    public function getOrderItemsToRequest($orderId)
+    {
+        return $this->requestOrderItem->getParentOrderItemsToRequest($orderId);
+    }
+
+    /**
+     * Retrieve product selection block html
+     *
      * @return string
      */
-    public function getTextCmsBlockHtml()
+    public function getProductSelectionBlockHtml()
     {
-        return $this->cmsBlockHelper->getBlockHtml(self::XML_PATH_TEXT_PAGE_BLOCK);
+        return $this->cmsBlockRenderer->render($this->config->getProductSelectionBlock());
     }
 
     /**
-     * @return \Magento\Sales\Model\ResourceModel\Order\Collection
+     * Retrieve customer orders
+     *
+     * @return Order[]
      */
     public function getOrders()
     {
-        if ($this->orderCollection === null) {
-            $this->orderCollection = $this->orderCollectionFactory->create()
-                ->addFieldToFilter('customer_id', ['eq' => $this->customerSession->getCustomerId()])
-                ->setOrder('created_at', 'desc')
-            ;
-            if ($this->getReturnPeriod() > 0) {
-                $this->orderCollection->getSelect()
-                    ->where('updated_at > DATE_SUB(NOW(), INTERVAL ? DAY)', $this->getReturnPeriod())
-                ;
-            }
-        }
-        return $this->orderCollection;
+        return $this->requestOrder->getOrders($this->customerSession->getCustomerId());
     }
 
     /**
-     * @param \Magento\Sales\Model\Order $order
+     * Retrieve order info
+     *
+     * @param Order $order
      * @return string
      */
-    public function getOrderInfo(\Magento\Sales\Model\Order $order)
+    public function getOrderInfo(Order $order)
     {
-        if (!$this->orderHelper->isAllowedForOrder($order)) {
+        if (!$this->isAllowedForOrder($order)) {
             return __('Can\'t create return for this order');
         }
         return '';
     }
 
     /**
-     * @param \Magento\Sales\Model\Order $order
+     * Check is allowed for order or not
+     *
+     * @param Order $order
      * @return bool
      */
-    public function isAllowedForOrder(\Magento\Sales\Model\Order $order)
+    public function isAllowedForOrder(Order $order)
     {
-        return $this->orderHelper->isAllowedForOrder($order);
+        $isAllowedForOrder = $this->requestOrder->isAllowedForOrder($order);
+        if (!$isAllowedForOrder) {
+            return $isAllowedForOrder;
+        }
+
+        $orderItems = $this->requestOrderItem->getOrderItemsToRequest($order->getEntityId());
+        foreach ($orderItems as $orderItem) {
+            if ($this->requestOrderItem->getItemMaxCount($orderItem) > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * @param \Magento\Sales\Model\Order\Item $orderItem
-     * @return \Magento\Framework\View\Element\BlockInterface
+     * Get item renderer html
+     *
+     * @param OrderItem $orderItem
+     * @return string
      */
-    public function getItemRenderer(\Magento\Sales\Model\Order\Item $orderItem)
+    public function getItemRendererHtml(OrderItem $orderItem)
     {
-        return $this->getLayout()
-            ->createBlock('Aheadworks\Rma\Block\Customer\Request\NewRequest\Step\SelectOrder\Items\Renderer')
-            ->setItem($orderItem)
-        ;
+        $block = $this->itemRendererFactory->create($orderItem, 'select_order');
+        return $block->toHtml();
     }
 
     /**
-     * @return int
-     */
-    public function getReturnPeriod()
-    {
-        return $this->_scopeConfig->getValue(
-            \Aheadworks\Rma\Helper\Order::XML_PATH_RETURN_PERIOD,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-    }
-
-    /**
-     * @return int
+     * Retrieve no orders message
+     *
+     * @return \Magento\Framework\Phrase
      */
     public function getNoOrdersMessage()
     {
-        if ($this->getReturnPeriod() > 0) {
+        if ($this->config->getReturnPeriod() > 0) {
             $message = __(
                 'You have no completed orders to request RMA or your orders were placed more than %1 days ago.',
-                $this->getReturnPeriod()
+                $this->config->getReturnPeriod()
             );
         } else {
             $message = __('You have no completed orders to request RMA');
@@ -171,6 +197,8 @@ class SelectOrder extends \Magento\Framework\View\Element\Template
     }
 
     /**
+     * Convert and format price
+     *
      * @param float $amount
      * @return string
      */
@@ -180,30 +208,14 @@ class SelectOrder extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return string
-     */
-    public function getSubmitUrl()
-    {
-        return $this->getUrl('*/*/createRequestStep');
-    }
-
-    /**
+     * Retrieve submit url
+     *
      * @param int $orderId
      * @return string
      */
-    public function getOrderViewUrl($orderId)
+    public function getSubmitUrl($orderId)
     {
-        return $this->getUrl('sales/order/view', ['order_id' => $orderId]);
-    }
-
-    /**
-     * Retrieves saved request data
-     *
-     * @return array
-     */
-    public function getCurrentRequestData()
-    {
-        return $this->customerSession->getOrderSelectData();
+        return $this->getUrl('*/*/createRequestStep', ['order_id' => $orderId]);
     }
 
     /**
@@ -213,25 +225,6 @@ class SelectOrder extends \Magento\Framework\View\Element\Template
      */
     public function getCurrentOrderId()
     {
-        $currentOrderId = 0;
-        if ($requestData = $this->getCurrentRequestData()) {
-            $currentOrderId = $requestData['order_id'];
-        }
-        return $currentOrderId;
-    }
-
-    /**
-     * Retrieves selected order items and its quantities
-     *
-     * @return array|null
-     */
-    public function getCurrentRequestItems()
-    {
-        $currentRequestItems = null;
-        $requestData = $this->getCurrentRequestData();
-        if ($requestData && isset($requestData['item']) && is_array($requestData['item'])) {
-            $currentRequestItems = $requestData['item'];
-        }
-        return $currentRequestItems;
+        return $this->customerSession->getAwRmaRequestOrderId() ? : 0;
     }
 }

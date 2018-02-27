@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -45,7 +45,9 @@ class EachmaftnFixdisc extends AbstractRule
             $qty = count($allItems);
         }
         $offset = (int)$rule->getAmrulesRule()->getEachm();
-        $offset = max(0, $offset);
+        if ($offset < 0) {
+            $offset = 0;
+        }
         $offset = min($offset, count($allItems));
         $allItems = array_slice($allItems, $offset, $qty);
         $allItems = $this->skipEachN($allItems, $rule);

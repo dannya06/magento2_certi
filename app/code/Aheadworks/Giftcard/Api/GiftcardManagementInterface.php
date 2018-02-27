@@ -42,4 +42,23 @@ interface GiftcardManagementInterface
      * @return bool
      */
     public function addCommentToGiftcardOrder($giftcard, $comment, $visibleOnFront = 0, $customerNotified = 0);
+
+    /**
+     * Generate Gift Card code
+     *
+     * @param int|null $websiteId
+     * @param \Aheadworks\Giftcard\Api\Data\CodeGenerationSettingsInterface|null $codeGenerationSettings
+     * @return string[]
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function generateCodes($websiteId = null, $codeGenerationSettings = null);
+
+    /**
+     * Import codes
+     *
+     * @param mixed $codesRawData
+     * @return \Aheadworks\Giftcard\Api\Data\GiftcardInterface[]
+     * @throws \Aheadworks\Giftcard\Api\Exception\ImportValidatorExceptionInterface
+     */
+    public function importCodes($codesRawData);
 }

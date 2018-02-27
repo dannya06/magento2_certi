@@ -83,7 +83,6 @@ class SaveHandler implements ExtensionInterface
      */
     public function execute($entity, $arguments = [])
     {
-        $metadata = $this->metadataPool->getMetadata(ProductInterface::class);
         $hydrator = $this->hydratorPool->getHydrator(ProductInterface::class);
         $entityData = $hydrator->extract($entity);
         if ($entityData['type_id'] !== ProductGiftcard::TYPE_CODE) {
@@ -92,7 +91,7 @@ class SaveHandler implements ExtensionInterface
 
         $templates = $entity->getExtensionAttributes()->getAwGiftcardTemplates();
         if (!empty($templates)) {
-            $entityId = $entityData[$metadata->getLinkField()];
+            $entityId = $entityData['entity_id'];
             $this->removeTemplatesByProduct($entityId);
             $this->saveNewProductTemplates($templates, $entityId);
         }

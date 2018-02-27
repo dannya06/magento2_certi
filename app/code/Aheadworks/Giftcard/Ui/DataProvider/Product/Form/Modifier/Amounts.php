@@ -47,7 +47,6 @@ class Amounts extends AbstractModifier
     private $directoryHelper;
 
     /**
-     * Amounts constructor.
      * @param LocatorInterface $locator
      * @param StoreManagerInterface $storeManager
      * @param ArrayManager $arrayManager
@@ -70,9 +69,33 @@ class Amounts extends AbstractModifier
      */
     public function modifyMeta(array $meta)
     {
+        $this->modifyAmountsContainer($meta);
+        $this->modifyAllowOpenAmountField($meta);
+        $this->modifyOpenAmountMinFields($meta);
+        $this->modifyOpenAmountMaxFields($meta);
+
+        return $meta;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function modifyData(array $data)
+    {
+        return $data;
+    }
+
+    /**
+     * Modify amounts container
+     *
+     * @param array $meta
+     * @return $this
+     */
+    private function modifyAmountsContainer(array &$meta)
+    {
         $fieldName = static::CONTAINER_PREFIX . ProductAttributeInterface::CODE_AW_GC_AMOUNTS;
         if (!$this->getGroupCodeByField($meta, $fieldName)) {
-            return $meta;
+            return $this;
         }
         $containerPath = $this->arrayManager->findPath($fieldName, $meta);
         $meta = $this->arrayManager->set(
@@ -161,62 +184,129 @@ class Amounts extends AbstractModifier
             ]
         );
 
+        return $this;
+    }
+
+    /**
+     * Modify allow open amount field
+     *
+     * @param array $meta
+     * @return $this
+     */
+    private function modifyAllowOpenAmountField(array &$meta)
+    {
         $allowOpenAmountPath = $this->arrayManager->findPath(
             ProductAttributeInterface::CODE_AW_GC_ALLOW_OPEN_AMOUNT,
             $meta,
             null,
             'children'
         );
-        // @codingStandardsIgnoreStart
-        if ($allowOpenAmountPath) {
-            $meta = $this->arrayManager->merge(
-                $allowOpenAmountPath . static::META_CONFIG_PATH,
-                $meta,
-                [
-                    'switcherConfig' => [
-                        'enabled' => true,
-                        'rules' => [
-                            [
-                                'value' => '0',
-                                'actions' => [
-                                    [
-                                        'target' => 'product_form.product_form.gift-card-information.container_aw_gc_open_amount_min.aw_gc_open_amount_min',
-                                        'callback' => 'hide'
-                                    ],
-                                    [
-                                        'target' => 'product_form.product_form.gift-card-information.container_aw_gc_open_amount_max.aw_gc_open_amount_max',
-                                        'callback' => 'hide'
-                                    ]
+        if (!$allowOpenAmountPath) {
+            return $this;
+        }
+        $meta = $this->arrayManager->merge(
+            $allowOpenAmountPath . static::META_CONFIG_PATH,
+            $meta,
+            [
+                'switcherConfig' => [
+                    'enabled' => true,
+                    'rules' => [
+                        [
+                            'value' => '0',
+                            'actions' => [
+                                [
+                                    'target' => 'product_form.product_form.gift-card-information.'
+                                        . 'container_aw_gc_open_amount_min.aw_gc_open_amount_min',
+                                    'callback' => 'hide'
+                                ],
+                                [
+                                    'target' => 'product_form.product_form.gift-card-information.'
+                                        . 'container_aw_gc_open_amount_max.aw_gc_open_amount_max',
+                                    'callback' => 'hide'
                                 ]
-                            ],
-                            [
-                                'value' => '1',
-                                'actions' => [
-                                    [
-                                        'target' => 'product_form.product_form.gift-card-information.container_aw_gc_open_amount_min.aw_gc_open_amount_min',
-                                        'callback' => 'show'
-                                    ],
-                                    [
-                                        'target' => 'product_form.product_form.gift-card-information.container_aw_gc_open_amount_max.aw_gc_open_amount_max',
-                                        'callback' => 'show'
-                                    ]
+                            ]
+                        ],
+                        [
+                            'value' => '1',
+                            'actions' => [
+                                [
+                                    'target' => 'product_form.product_form.gift-card-information.'
+                                        . 'container_aw_gc_open_amount_min.aw_gc_open_amount_min',
+                                    'callback' => 'show'
+                                ],
+                                [
+                                    'target' => 'product_form.product_form.gift-card-information.'
+                                        . 'container_aw_gc_open_amount_max.aw_gc_open_amount_max',
+                                    'callback' => 'show'
                                 ]
                             ]
                         ]
                     ]
                 ]
-            );
-        }
-        // @codingStandardsIgnoreEnd
-        return $meta;
+            ]
+        );
+
+        return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * Modify open amount min fields
+     *
+     * @param array $meta
+     * @return $this
      */
-    public function modifyData(array $data)
+    private function modifyOpenAmountMinFields(array &$meta)
     {
-        return $data;
+        $openAmountMinPath = $this->arrayManager->findPath(
+            ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MIN,
+            $meta,
+            null,
+            'children'
+        );
+        if (!$openAmountMinPath) {
+            return $this;
+        }
+        $meta = $this->arrayManager->merge(
+            $openAmountMinPath . static::META_CONFIG_PATH,
+            $meta,
+            [
+                'validation' => [
+                    'required-entry' => true
+                ]
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * Modify open amount max fields
+     *
+     * @param array $meta
+     * @return $this
+     */
+    private function modifyOpenAmountMaxFields(array &$meta)
+    {
+        $openAmountMaxPath = $this->arrayManager->findPath(
+            ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MAX,
+            $meta,
+            null,
+            'children'
+        );
+        if (!$openAmountMaxPath) {
+            return $this;
+        }
+        $meta = $this->arrayManager->merge(
+            $openAmountMaxPath . static::META_CONFIG_PATH,
+            $meta,
+            [
+                'validation' => [
+                    'required-entry' => true
+                ]
+            ]
+        );
+
+        return $this;
     }
 
     /**

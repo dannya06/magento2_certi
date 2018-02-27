@@ -6,185 +6,81 @@
 
 namespace Aheadworks\Rma\Block\Customer\Request\View;
 
+use Aheadworks\Rma\Api\RequestRepositoryInterface;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Aheadworks\Rma\Model\Request\PrintLabel\Layout\Processor\AddressAttributes;
+
 /**
  * Class Address
+ *
  * @package Aheadworks\Rma\Block\Customer\Request\View
  */
-class Address extends \Magento\Framework\View\Element\Template
+class Address extends Template
 {
     /**
      * @var string
      */
-    protected $_template = 'customer/request/view/address.phtml';
+    protected $_template = 'Aheadworks_Rma::customer/request/view/address.phtml';
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var RequestRepositoryInterface
      */
-    protected $coreRegistry;
+    protected $requestRepository;
 
     /**
-     * @var \Magento\Directory\Api\CountryInformationAcquirerInterface
+     * @var AddressAttributes
      */
-    protected $countryInformation;
+    private $addressAttributes;
 
     /**
-     * @var \Magento\Directory\Model\ResourceModel\Country\CollectionFactory
-     */
-    protected $countryCollectionFactory;
-
-    /**
-     * @var \Magento\Directory\Helper\Data
-     */
-    protected $directoryHelper;
-
-    /**
-     * @var null|array
-     */
-    protected $printLabel = null;
-
-    /**
-     * @var null|array
-     */
-    protected $countryOptions = null;
-
-    /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Directory\Api\CountryInformationAcquirerInterface $countryInformation
-     * @param \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory
-     * @param \Magento\Directory\Helper\Data $directoryHelper
+     * @param Context $context
+     * @param RequestRepositoryInterface $requestRepository
+     * @param AddressAttributes $addressAttributes
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Directory\Api\CountryInformationAcquirerInterface $countryInformation,
-        \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory,
-        \Magento\Directory\Helper\Data $directoryHelper,
+        Context $context,
+        RequestRepositoryInterface $requestRepository,
+        AddressAttributes $addressAttributes,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->coreRegistry = $coreRegistry;
-        $this->countryInformation = $countryInformation;
-        $this->countryCollectionFactory = $countryCollectionFactory;
-        $this->directoryHelper = $directoryHelper;
+        $this->requestRepository = $requestRepository;
+        $this->addressAttributes = $addressAttributes;
+        $this->jsLayout = isset($data['jsLayout']) && is_array($data['jsLayout'])
+            ? $data['jsLayout']
+            : [];
     }
 
     /**
-     * @return \Aheadworks\Rma\Model\Request
+     * {@inheritdoc}
      */
-    public function getRequestModel()
+    public function getJsLayout()
     {
-        return $this->coreRegistry->registry('aw_rma_request');
+        $this->jsLayout = $this->addressAttributes->process($this->jsLayout, $this->getRmaRequest());
+
+        return \Zend_Json::encode($this->jsLayout);
     }
 
     /**
+     * Retrieve RMA request
+     *
+     * @return \Aheadworks\Rma\Api\Data\RequestInterface
+     */
+    public function getRmaRequest()
+    {
+        $requestId = $this->getRequest()->getParam('id');
+        return $this->requestRepository->get($requestId);
+    }
+
+    /**
+     * Retrieve request identity value
+     *
      * @return int|string
      */
     public function getRequestIdentityValue()
     {
-        return $this->getRequestModel()->getId();
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getPrintLabel()
-    {
-        if ($this->printLabel === null) {
-            $this->printLabel = $this->getRequestModel()->getPrintLabel();
-            $this->printLabel['street'] = explode('\n', $this->printLabel['street']);
-        }
-        return $this->printLabel;
-    }
-
-    /**
-     * @param string $countryId
-     * @return string
-     */
-    public function getCountryName($countryId)
-    {
-        return $this->countryInformation->getCountryInfo($countryId)->getFullNameLocale();
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddressJsData()
-    {
-        $printLabel = $this->getPrintLabel();
-        return \Zend_Json::encode([
-            'request_id' => $this->getRequestIdentityValue(),
-            'firstname' => $printLabel['firstname'],
-            'lastname' => $printLabel['lastname'],
-            'street' => $printLabel['street'],
-            'city' => $printLabel['city'],
-            'regionId' => $printLabel['region_id'],
-            'region' => $printLabel['region'],
-            'countryId' => $printLabel['country_id'],
-            'postcode' => $printLabel['postcode'],
-            'telephone' => $printLabel['telephone'],
-            'countryOptions' => $this->getCountryOptions()
-        ]);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getCountryOptions()
-    {
-        if ($this->countryOptions === null) {
-            $this->countryOptions = $this->countryCollectionFactory->create()->loadByStore()
-                ->setForegroundCountries($this->getTopDestinations())
-                ->toOptionArray();
-        }
-        return $this->countryOptions;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isOptionalRegionAllowed()
-    {
-        return $this->_scopeConfig->getValue(
-            'general/region/display_all',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-    }
-
-    /**
-     * @return array
-     */
-    protected function getTopDestinations()
-    {
-        $destinations = (string)$this->_scopeConfig->getValue(
-            'general/country/destinations',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-        return !empty($destinations) ? explode(',', $destinations) : [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getRegionJson()
-    {
-        return $this->directoryHelper->getRegionJson();
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getCountriesWithOptionalZip()
-    {
-        return $this->directoryHelper->getCountriesWithOptionalZip(true);
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubmitUrl()
-    {
-        return $this->getUrl('*/*/saveAddress');
+        return $this->getRmaRequest()->getId();
     }
 }

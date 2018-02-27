@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.3.9)
+ * Product:       Xtento_ProductExport (2.5.0)
  * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2017-10-04T08:29:55+00:00
- * Last Modified: 2017-05-15T20:13:53+00:00
+ * Packaged:      2018-02-26T09:11:39+00:00
+ * Last Modified: 2017-11-28T11:28:05+00:00
  * File:          app/code/Xtento/ProductExport/Model/Output/Xsl.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Output;
@@ -24,6 +24,11 @@ class Xsl extends AbstractOutput
     protected $outputXmlFactory;
 
     /**
+     * @var \Magento\Framework\Config\DataInterface
+     */
+    protected $exportSettings;
+
+    /**
      * Xsl constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -35,6 +40,7 @@ class Xsl extends AbstractOutput
      * @param \Xtento\ProductExport\Model\ResourceModel\History\CollectionFactory $historyCollectionFactory
      * @param \Xtento\ProductExport\Model\ResourceModel\Log\CollectionFactory $logCollectionFactory
      * @param XmlFactory $outputXmlFactory
+     * @param \Magento\Framework\Config\DataInterface $exportSettings
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -49,6 +55,7 @@ class Xsl extends AbstractOutput
         \Xtento\ProductExport\Model\ResourceModel\History\CollectionFactory $historyCollectionFactory,
         \Xtento\ProductExport\Model\ResourceModel\Log\CollectionFactory $logCollectionFactory,
         XmlFactory $outputXmlFactory,
+        \Magento\Framework\Config\DataInterface $exportSettings,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -67,6 +74,7 @@ class Xsl extends AbstractOutput
             $data
         );
         $this->outputXmlFactory = $outputXmlFactory;
+        $this->exportSettings = $exportSettings;
     }
 
 
@@ -140,7 +148,8 @@ class Xsl extends AbstractOutput
 
             // XSL Template
             $xslTemplateObj = new \XSLTProcessor();
-            $xslTemplateObj->registerPHPFunctions();
+            $allowedPhpFunctions = array_merge(explode(",", $this->exportSettings->get('allowed_php_functions')), explode(",", $this->exportSettings->get('custom_allowed_php_functions')));
+            $xslTemplateObj->registerPHPFunctions($allowedPhpFunctions);
             // Add some parameters accessible as $variables in the XSL Template (example: <xsl:value-of select="$exportid"/>)
             $this->addVariablesToXSLT($xslTemplateObj, $exportArray, $xslTemplate);
             // Import stylesheet

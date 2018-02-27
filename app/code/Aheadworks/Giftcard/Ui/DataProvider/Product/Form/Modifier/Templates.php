@@ -57,7 +57,6 @@ class Templates extends AbstractModifier
     private $mediaConfig;
 
     /**
-     * Templates constructor.
      * @param LocatorInterface $locator
      * @param ArrayManager $arrayManager
      * @param SystemStore $systemStore
@@ -270,8 +269,7 @@ class Templates extends AbstractModifier
         /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
         $product = $this->locator->getProduct();
         $modelId = $product->getId();
-        if (
-            isset($data[$modelId][self::DATA_SOURCE_DEFAULT]['aw_gc_email_templates'])
+        if (isset($data[$modelId][self::DATA_SOURCE_DEFAULT]['aw_gc_email_templates'])
             && is_array($data[$modelId][self::DATA_SOURCE_DEFAULT]['aw_gc_email_templates'])
         ) {
             foreach ($data[$modelId][self::DATA_SOURCE_DEFAULT]['aw_gc_email_templates'] as $index => $template) {

@@ -6,33 +6,29 @@
 
 namespace Aheadworks\Rma\Block\Guest\Request\View;
 
+use Aheadworks\Rma\Block\Customer\Request\View\Actions as CustomerRequestActions;
+
 /**
  * Class Actions
+ *
  * @package Aheadworks\Rma\Block\Guest\Request\View
  */
-class Actions extends \Aheadworks\Rma\Block\Customer\Request\View\Actions
+class Actions extends CustomerRequestActions
 {
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getCancelUrl()
+    public function getRmaRequest()
     {
-        return $this->getUrl('*/*/cancel', ['id' => $this->getRequestModel()->getExternalLink()]);
+        $requestId = $this->getRequest()->getParam('id');
+        return $this->requestRepository->getByExternalLink($requestId);
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPrintLabelUrl()
+    public function getRequestIdentityValue()
     {
-        return $this->getUrl('*/*/printLabel', ['id' => $this->getRequestModel()->getExternalLink()]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getConfirmShipping()
-    {
-        return $this->getUrl('*/*/confirmShipping', ['id' => $this->getRequestModel()->getExternalLink()]);
+        return $this->getRmaRequest()->getExternalLink();
     }
 }

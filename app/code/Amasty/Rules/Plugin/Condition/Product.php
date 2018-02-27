@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -26,37 +26,43 @@ class Product
     protected $scopeConfig;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    private $scopeConfigInterface;
-
-    /**
      * @var \Magento\Catalog\Model\Product
      */
     private $productModel;
+    /**
+     * @var \Amasty\Rules\Model\ConfigModel
+     */
+    private $configModel;
 
     /**
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Catalog\Model\Product $productModel
+     * @param \Amasty\Rules\Helper\Data $rulesDataHelper
+     * @param \Amasty\Rules\Model\ConfigModel $configModel
      */
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         \Magento\Catalog\Model\Product $productModel,
-        \Amasty\Rules\Helper\Data $rulesDataHelper
+        \Amasty\Rules\Helper\Data $rulesDataHelper,
+        \Amasty\Rules\Model\ConfigModel $configModel
     ) {
         $this->_objectManager = $objectManager;
         $this->rulesDataHelper = $rulesDataHelper;
-        $this->scopeConfigInterface = $scopeConfigInterface;
         $this->productModel = $productModel;
+        $this->configModel = $configModel;
     }
 
+    /**
+     * @param \Magento\Rule\Model\Condition\Product\AbstractProduct $subject
+     * @return \Magento\Rule\Model\Condition\Product\AbstractProduct
+     */
     public function afterLoadAttributeOptions(
         \Magento\Rule\Model\Condition\Product\AbstractProduct $subject
     ) {
         $attributes = [];
         $attributes['quote_item_sku'] = __('Custom Options SKU');
 
-        if ($this->getConfigOptions()) {
+        if ($this->configModel->getOptionsValue()) {
             $attributes['quote_item_value'] = __('Custom Options Values');
         }
 
@@ -64,6 +70,10 @@ class Product
         return $subject;
     }
 
+    /**
+     * @param \Magento\Rule\Model\Condition\Product\AbstractProduct $subject
+     * @param \Magento\Framework\Model\AbstractModel $object
+     */
     public function beforeValidate(
         \Magento\Rule\Model\Condition\Product\AbstractProduct $subject,
         \Magento\Framework\Model\AbstractModel $object
@@ -75,7 +85,7 @@ class Product
         }
 
         if ($product) {
-            if ($this->getConfigOptions()) {
+            if ($this->configModel->getOptionsValue()) {
                 $options = $product->getTypeInstance(true)->getOrderOptions($product);
                 $values = '';
                 if (isset($options['options'])) {
@@ -88,16 +98,7 @@ class Product
             }
 
             $product->setQuoteItemSku($object->getSku());
-
             $object->setProduct($product);
         }
-    }
-
-    private function getConfigOptions()
-    {
-        return $this->scopeConfigInterface->getValue(
-            'amrules/general/options_values',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
     }
 }

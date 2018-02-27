@@ -6,98 +6,237 @@
 
 namespace Aheadworks\Rma\Model\ResourceModel\CustomField;
 
+use Aheadworks\Rma\Api\Data\CustomFieldInterface;
+use Aheadworks\Rma\Api\Data\CustomFieldOptionInterface;
+use Aheadworks\Rma\Model\Source\CustomField\StatusType;
 use Aheadworks\Rma\Model\Source\CustomField\Type;
+use Aheadworks\Rma\Model\ResourceModel\AbstractCollection;
+use Aheadworks\Rma\Model\CustomField;
+use Aheadworks\Rma\Model\ResourceModel\CustomField as ResourceCustomField;
+use Magento\Framework\Api\SortOrder;
+use Magento\Framework\DataObject;
 
 /**
  * Class Collection
+ *
  * @package Aheadworks\Rma\Model\ResourceModel\CustomField
  */
-class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+class Collection extends AbstractCollection
 {
     /**
-     * @var int|null
+     * {@inheritdoc}
      */
-    protected $storeId = null;
-
     protected function _construct()
     {
-        $this->_init('Aheadworks\Rma\Model\CustomField', 'Aheadworks\Rma\Model\ResourceModel\CustomField');
+        $this->_init(CustomField::class, ResourceCustomField::class);
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function addFieldToFilter($field, $condition = null)
+    {
+        $addPublicFilter = [
+            CustomFieldInterface::WEBSITE_IDS,
+            CustomFieldInterface::EDITABLE_FOR_STATUS_IDS
+        ];
+        if (in_array($field, $addPublicFilter)) {
+            $this->addFilter($field, $condition, 'public');
+            return $this;
+        }
+        return parent::addFieldToFilter($field, $condition);
+    }
+
+    /**
+     * Add enabled options filter to collection
+     *
      * @return $this
+     */
+    public function addEnabledOptionsFilter()
+    {
+        $connection = $this->getConnection();
+        $select = $this->getConnection()->select()
+            ->from(
+                ['cf' => 'aw_rma_custom_field'],
+                ['cf_id' => 'cf.id', 'enabled_count' => new \Zend_Db_Expr('COUNT(cf.id)')]
+            )->joinLeft(
+                ['cfo' => 'aw_rma_custom_field_option'],
+                'cf.id = cfo.field_id'
+            )->where('cf.type IN (?)', [Type::SELECT, Type::MULTI_SELECT])
+            ->where('cfo.enabled = ?', 1)
+            ->group('cf.id');
+
+        $whereCondition = [
+            $connection->quoteInto(
+                '(main_table.type IN (?) AND IFNULL(cfeo.enabled_count, 0) > 0)',
+                [Type::SELECT, Type::MULTI_SELECT]
+            ),
+            $connection->quoteInto(
+                'main_table.type IN (?)',
+                [Type::TEXT, Type::TEXT_AREA]
+            ),
+        ];
+        $whereCondition = implode(' OR ', $whereCondition);
+
+        $this->getSelect()
+            ->joinLeft(
+                ['cfeo' => $select],
+                'main_table.id = cfeo.cf_id',
+                []
+            )->where('(' . $whereCondition . ')');
+
+        return $this;
+    }
+
+    /**
+     * Add editable or visible for status filter to collection
+     *
+     * @return $this
+     */
+    public function addEditableOrVisibleForStatusFilter($status)
+    {
+        $this->getSelect()
+            ->joinLeft(
+                ['cfs' => 'aw_rma_custom_field_status'],
+                'main_table.id = cfs.field_id',
+                []
+            )->where('cfs.status_type in (?)', [StatusType::CUSTOMER_VISIBLE, StatusType::CUSTOMER_EDITABLE])
+            ->where('cfs.status = ?', $status);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function _afterLoad()
     {
-        $this->walk('unserializeFields');
-        if ($this->storeId !== null) {
-            $this->walk('setStoreId', ['storeId' => $this->storeId]);
+        $this->attachRelationTable('aw_rma_custom_field_website', 'id', 'field_id', 'website_id', 'website_ids');
+        $this->attachRelationTable(
+            'aw_rma_custom_field_status',
+            'id',
+            'field_id',
+            'status',
+            'visible_for_status_ids',
+            [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::CUSTOMER_VISIBLE]]
+        );
+        $this->attachRelationTable(
+            'aw_rma_custom_field_status',
+            'id',
+            'field_id',
+            'status',
+            'editable_admin_for_status_ids',
+            [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::ADMIN_EDITABLE]]
+        );
+        $this->attachRelationTable(
+            'aw_rma_custom_field_status',
+            'id',
+            'field_id',
+            'status',
+            'editable_for_status_ids',
+            [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::CUSTOMER_EDITABLE]]
+        );
+        $this->attachRelationTable(
+            'aw_rma_custom_field_frontend_label',
+            'id',
+            'field_id',
+            ['store_id', 'value'],
+            'frontend_labels'
+        );
+
+        /** @var \Magento\Framework\DataObject $item */
+        foreach ($this as $item) {
+            $item->setData(
+                CustomFieldInterface::STOREFRONT_LABEL,
+                $this->getStorefrontValue($item->getData(CustomFieldInterface::FRONTEND_LABELS), true)
+            );
+            $this->attachOptions($item);
         }
+
         return parent::_afterLoad();
     }
 
     /**
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setFilterForRmaGrid()
+    protected function _renderFiltersBefore()
     {
-        $this->addFieldToFilter('refers', \Aheadworks\Rma\Model\Source\CustomField\Refers::REQUEST_VALUE)
-            ->addFieldToFilter('type', ['in' => [Type::TEXT_VALUE, Type::SELECT_VALUE]])
-        ;
-        return $this;
+        $this->joinLinkageTable(
+            'aw_rma_custom_field_website',
+            'id',
+            'field_id',
+            'website_ids',
+            'website_id'
+        );
+        $this->joinLinkageTable(
+            'aw_rma_custom_field_status',
+            'id',
+            'field_id',
+            'visible_for_status_ids',
+            'status',
+            [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::CUSTOMER_VISIBLE]]
+        );
+        $this->joinLinkageTable(
+            'aw_rma_custom_field_status',
+            'id',
+            'field_id',
+            'editable_admin_for_status_ids',
+            'status',
+            [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::ADMIN_EDITABLE]]
+        );
+        $this->joinLinkageTable(
+            'aw_rma_custom_field_status',
+            'id',
+            'field_id',
+            'editable_for_status_ids',
+            'status',
+            [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::CUSTOMER_EDITABLE]]
+        );
+        parent::_renderFiltersBefore();
     }
 
     /**
-     * @param string $refers
-     * @return $this
+     * Attach options
+     *
+     * @param DataObject $item
+     * @return void
      */
-    public function addRefersToFilter($refers)
+    private function attachOptions($item)
     {
-        return $this->addFieldToFilter('refers', ['eq' => $refers]);
-    }
-
-    /**
-     * @param bool $isDisplay
-     * @return $this
-     */
-    public function addDisplayInLabelFilter($isDisplay)
-    {
-        return $this->addFieldToFilter('is_display_in_label', ['eq' => $isDisplay]);
-    }
-
-    /**
-     * @param array $attributes
-     * @param int $storeId
-     * @return $this
-     */
-    public function joinAttributesValues($attributes, $storeId)
-    {
-        foreach ($attributes as $attrCode) {
-            $conditions = [
-                "main_table.id = {$attrCode}.custom_field_id",
-                $this->getConnection()->quoteInto("{$attrCode}.store_id = ?", $storeId),
-                $this->getConnection()->quoteInto("attribute_code = ?", $attrCode)
-            ];
-            $this->getSelect()
-                ->joinLeft(
-                    [$attrCode => $this->getTable('aw_rma_custom_field_attr_value')],
-                    implode(' AND ', $conditions),
-                    [
-                        $attrCode => $attrCode.'.value'
-                    ]
-                )
-            ;
+        $options = [];
+        if (in_array($item->getData(CustomFieldInterface::TYPE), [Type::MULTI_SELECT, Type::SELECT])) {
+            $connection = $this->getConnection();
+            $itemId = (int)$item->getData(CustomFieldInterface::ID);
+            $select = $connection->select()
+                ->from($this->getTable('aw_rma_custom_field_option'))
+                ->where('field_id = :id')
+                ->order('sort_order ' . SortOrder::SORT_ASC);
+            $optionsData = $connection->fetchAll($select, ['id' => $itemId]);
+            foreach ($optionsData as $optionData) {
+                $optionData = $this->attachOptionValues($optionData);
+                $options[] = $optionData;
+            }
         }
-        return $this;
+        $item->setData(CustomFieldInterface::OPTIONS, $options);
     }
 
     /**
-     * @param int $storeId
-     * @return $this
+     * Attach values to option
+     *
+     * @param array $optionData
+     * @return array
      */
-    public function setStoreId($storeId)
+    private function attachOptionValues($optionData)
     {
-        $this->storeId = $storeId;
-        return $this;
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getTable('aw_rma_custom_field_option_value'), ['store_id', 'value'])
+            ->where('option_id = :id');
+        $optionValuesData = $connection->fetchAll($select, ['id' => $optionData[CustomFieldOptionInterface::ID]]);
+
+        $optionData[CustomFieldOptionInterface::STORE_LABELS] = $optionValuesData;
+        $optionData[CustomFieldOptionInterface::STOREFRONT_LABEL] = $this->getStorefrontValue($optionValuesData, true);
+
+        return $optionData;
     }
 }

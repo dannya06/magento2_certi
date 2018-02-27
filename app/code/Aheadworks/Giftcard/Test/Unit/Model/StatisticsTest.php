@@ -19,7 +19,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  *
  * @package Aheadworks\Giftcard\Test\Unit\Model
  */
-class StatisticsTest extends \PHPUnit_Framework_TestCase
+class StatisticsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Statistics
@@ -45,15 +45,18 @@ class StatisticsTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
         $contextMock = $objectManager->getObject(Context::class, []);
-        $registryMock = $this->getMock(Registry::class, [], [], '', false);
-        $this->statisticsFactoryMock = $this->getMock(StatisticsFactory::class, ['create'], [], '', false);
-        $this->resourceMock = $this->getMock(
-            ResourceStatistics::class,
-            ['existsStatistics', 'save', 'setStoreId', 'load', 'getIdFieldName'],
-            [],
-            '',
-            false
-        );
+        $registryMock = $this->getMockBuilder(Registry::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->statisticsFactoryMock = $this->getMockBuilder(StatisticsFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->resourceMock = $this->getMockBuilder(ResourceStatistics::class)
+            ->setMethods(['existsStatistics', 'save', 'setStoreId', 'load', 'getIdFieldName'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->object = $objectManager->getObject(
             Statistics::class,
@@ -79,7 +82,10 @@ class StatisticsTest extends \PHPUnit_Framework_TestCase
             ->method('existsStatistics')
             ->with($productId, $storeId)
             ->willReturn($existsStatisticsResult);
-        $statisticsMock = $this->getMock(Statistics::class, ['setData'], [], '', false);
+        $statisticsMock = $this->getMockBuilder(Statistics::class)
+            ->setMethods(['setData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $statisticsMock->expects($this->once())
             ->method('setData')
             ->with(
@@ -115,7 +121,10 @@ class StatisticsTest extends \PHPUnit_Framework_TestCase
             ->with($productId, $storeId)
             ->willReturn($existsStatisticsResult);
 
-        $statisticsMock = $this->getMock(Statistics::class, ['setData', 'getData'], [], '', false);
+        $statisticsMock = $this->getMockBuilder(Statistics::class)
+            ->setMethods(['setData', 'getData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->statisticsFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($statisticsMock);

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.0)
- * ID:            HdWKOY0KdgGaRx+26HyONH06+SvSVZH7A2yQmSKRHJU=
- * Packaged:      2017-10-04T08:30:20+00:00
- * Last Modified: 2017-05-24T13:01:27+00:00
+ * Product:       Xtento_TrackingImport (2.3.6)
+ * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
+ * Packaged:      2018-02-26T09:10:55+00:00
+ * Last Modified: 2017-12-17T17:45:33+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Import/Action/Order/Creditmemo.php
  * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -20,6 +20,7 @@ use Magento\Framework\Registry;
 use Magento\Sales\Model\Order\Email\Sender\CreditmemoSender;
 use Xtento\TrackingImport\Model\Import\Action\AbstractAction;
 use Xtento\TrackingImport\Model\Processor\Mapping\Action\Configuration;
+use Magento\Catalog\Model\Product\Type;
 
 class Creditmemo extends AbstractAction
 {
@@ -100,150 +101,124 @@ class Creditmemo extends AbstractAction
 
             // Create Credit Memo
             if ($order->canCreditmemo()) {
-                // Get invoice to refund against
-                $invoice = false;
+                $refundsToProcess = [];
                 $invoices = $order->getInvoiceCollection();
-                if ($invoices->getSize() === 1) {
-                    /** @var \Magento\Sales\Model\Order\Invoice $invoice */
-                    $invoice = $invoices->getFirstItem();
-                }
-                // Start creation
-                $creditmemo = false;
-                $doRefundOrder = true;
-                $data = [];
-                if (array_key_exists('creditmemo_shipping_amount', $updateData)
-                    && $updateData['creditmemo_shipping_amount'] != ''
-                ) {
-                    $data['shipping_amount'] = $updateData['creditmemo_shipping_amount'];
-                }
-                if (array_key_exists('creditmemo_adjustment_positive', $updateData)
-                    && $updateData['creditmemo_adjustment_positive'] != ''
-                ) {
-                    $data['adjustment_positive'] = $updateData['creditmemo_adjustment_positive'];
-                }
-                if (array_key_exists('creditmemo_adjustment_negative', $updateData)
-                    && $updateData['creditmemo_adjustment_negative'] != ''
-                ) {
-                    $data['adjustment_negative'] = $updateData['creditmemo_adjustment_negative'];
-                }
-                //$data['do_offline'] = 1;
-                if ($this->getActionSettingByFieldBoolean('creditmemo_partial_import', 'enabled')) {
-                    // Prepare items to invoice for prepareInvoices.. but only if there is SKU info in the import file.
-                    $items = [];
-                    foreach ($order->getAllItems() as $orderItem) {
-                        // How should the item be identified in the import file?
-                        if ($this->getProfileConfiguration()->getProductIdentifier() == 'sku') {
-                            $orderItemSku = strtolower(trim($orderItem->getSku()));
-                        } else {
-                            if ($this->getProfileConfiguration()->getProductIdentifier() == 'entity_id') {
-                                $orderItemSku = trim($orderItem->getProductId());
-                            } else {
-                                if ($this->getProfileConfiguration()->getProductIdentifier() == 'attribute') {
-                                    $product = $this->productFactory->create()->load($orderItem->getProductId());
-                                    if ($product->getId()) {
-                                        $orderItemSku = strtolower(
-                                            trim(
-                                                $product->getData(
-                                                    $this->getProfileConfiguration()->getProductIdentifierAttributeCode(
-                                                    )
-                                                )
-                                            )
-                                        );
-                                    } else {
-                                        $this->addDebugMessage(
-                                            __(
-                                                "Order '%1': Product SKU '%2', product does not exist anymore and cannot be matched for importing.",
-                                                $order->getIncrementId(),
-                                                $orderItem->getSku()
-                                            )
-                                        );
-                                        continue;
-                                    }
-                                } else {
-                                    $this->addDebugMessage(
-                                        __("Order '%1': No method found to match products.", $order->getIncrementId())
-                                    );
-                                    return true;
-                                }
-                            }
-                        }
-                        // Item matched?
-                        if (isset($itemsToProcess[$orderItemSku])) {
-                            if ($itemsToProcess[$orderItemSku]['qty'] == '' || $itemsToProcess[$orderItemSku]['qty'] < 0) {
-                                $qty = $orderItem->getQtyOrdered();
-                            } else {
-                                $qty = round($itemsToProcess[$orderItemSku]['qty']);
-                            }
-                            if ($qty > 0) {
-                                $items[$orderItem->getId()] = ['qty' => round($qty), 'back_to_stock' => true];
-                            } else $items[$orderItem->getId()] = ['qty' => 0];
-                        } else $items[$orderItem->getId()] = ['qty' => 0];
+                if ($invoices->count() === 0) {
+                    // Offline refund, refund against order
+                    $refundsToProcess[] = ['invoice' => false, 'items' => $this->getItemsToRefund($order, 'order', $order->getAllItems(), $itemsToProcess)];
+                } else {
+                    // Refund against correct invoice
+                    foreach ($invoices as $invoice) {
+                        $itemsToRefund = $this->getItemsToRefund($order, 'invoice', $invoice->getAllItems(), $itemsToProcess);
+                        $refundsToProcess[] = ['invoice' => $invoice, 'items' => $itemsToRefund];
                     }
-                    if (!empty($items)) {
-                        $data['items'] = $items;
+                }
+                foreach ($refundsToProcess as $refundToProcess) {
+                    $invoice = false;
+                    $invoiceId = false;
+                    if ($refundToProcess['invoice'] !== false) {
+                        $invoice = $refundToProcess['invoice'];
+                        $invoiceId = $invoice->getId();
+                    }
+                    // Start creation
+                    $creditmemo = false;
+                    $doRefundOrder = true;
+                    $data = [];
+                    if (array_key_exists('creditmemo_shipping_amount', $updateData)
+                        && $updateData['creditmemo_shipping_amount'] != ''
+                    ) {
+                        $data['shipping_amount'] = $updateData['creditmemo_shipping_amount'];
+                    }
+                    if (array_key_exists('creditmemo_adjustment_positive', $updateData)
+                        && $updateData['creditmemo_adjustment_positive'] != ''
+                    ) {
+                        $data['adjustment_positive'] = $updateData['creditmemo_adjustment_positive'];
+                    }
+                    if (array_key_exists('creditmemo_adjustment_negative', $updateData)
+                        && $updateData['creditmemo_adjustment_negative'] != ''
+                    ) {
+                        $data['adjustment_negative'] = $updateData['creditmemo_adjustment_negative'];
+                    }
+                    //$data['do_offline'] = 1;
+                    if ($this->getActionSettingByFieldBoolean('creditmemo_partial_import', 'enabled')) {
+                        // Prepare items to invoice for prepareInvoices.. but only if there is SKU info in the import file.
+                        $items = $refundToProcess['items'];
+                        if (!empty($items)) {
+                            $data['items'] = $items;
+                            $this->creditmemoLoader->setOrderId($order->getId());
+                            if ($invoiceId !== false) {
+                                $this->creditmemoLoader->setInvoiceId($invoiceId);
+                            }
+                            $this->creditmemoLoader->setCreditmemo($data);
+                            $creditmemo = $this->creditmemoLoader->load();
+                            $this->registry->unregister('current_creditmemo');
+                        } else {
+                            // We're supposed to import partial credit memos, but no SKUs were found at all. Do not touch credit memo.
+                            $doRefundOrder = false;
+                            $this->addDebugMessage(
+                                __(
+                                    "Order '%1', no credit memo was created. Partial credit memo creation enabled, however the items specified in the import file couldn't be found in the order.",
+                                    $order->getIncrementId()
+                                )
+                            );
+                        }
+                    } else {
                         $this->creditmemoLoader->setOrderId($order->getId());
-                        if ($invoice !== false) {
-                            $this->creditmemoLoader->setInvoiceId($invoice->getId());
+                        if ($invoiceId !== false) {
+                            $this->creditmemoLoader->setInvoiceId($invoiceId);
                         }
                         $this->creditmemoLoader->setCreditmemo($data);
                         $creditmemo = $this->creditmemoLoader->load();
                         $this->registry->unregister('current_creditmemo');
-                    } else {
-                        // We're supposed to import partial credit memos, but no SKUs were found at all. Do not touch credit memo.
-                        $doRefundOrder = false;
-                        $this->addDebugMessage(
-                            __(
-                                "Order '%1', no credit memo was created. Partial credit memo creation enabled, however the items specified in the import file couldn't be found in the order.",
-                                $order->getIncrementId()
-                            )
-                        );
-                    }
-                } else {
-                    $this->creditmemoLoader->setOrderId($order->getId());
-                    if ($invoice !== false) {
-                        $this->creditmemoLoader->setInvoiceId($invoice->getId());
-                    }
-                    $this->creditmemoLoader->setCreditmemo($data);
-                    $creditmemo = $this->creditmemoLoader->load();
-                    $this->registry->unregister('current_creditmemo');
-                }
-
-                if ($creditmemo && $doRefundOrder) {
-                    if (!$creditmemo->isValidGrandTotal()) {
-                        throw new \Magento\Framework\Exception\LocalizedException(
-                            __('The credit memo\'s total must be positive.')
-                        );
                     }
 
-                    /** @var \Magento\Sales\Api\CreditmemoManagementInterface $creditmemoManagement */
-                    $creditmemoManagement = $this->objectManager->create(
-                        'Magento\Sales\Api\CreditmemoManagementInterface'
-                    );
-                    $refundOffline = true;
-                    if ($invoice !== false && $invoice->getTransactionId()) {
-                        $refundOffline = false;
-                    }
-                    $creditmemoManagement->refund($creditmemo, $refundOffline);
+                    if ($creditmemo && $doRefundOrder) {
+                        if (!$creditmemo->isValidGrandTotal()) {
+                            // No items or amount to refund against this order/invoice, skip it
+                            if ($invoiceId !== false) {
+                                $this->addDebugMessage(__("Order '%1', nothing to refund against invoice ID %d, skipping.", $order->getIncrementId(), $invoiceId));
+                            } else {
+                                $this->addDebugMessage(__("Order '%1', nothing to refund, skipping.", $order->getIncrementId()));
+                            }
+                            continue;
+                        } else {
+                            if ($invoiceId !== false) {
+                                $this->addDebugMessage(__("Order '%1', found something to refund against invoice ID %d, proceeding.", $order->getIncrementId(), $invoiceId));
+                            } else {
+                                $this->addDebugMessage(__("Order '%1', found something to refund, proceeding.", $order->getIncrementId()));
+                            }
+                        }
 
-                    if ($this->getActionSettingByFieldBoolean('creditmemo_send_email', 'enabled')) {
-                        $this->creditmemoSender->send($creditmemo);
-                        $this->addDebugMessage(
-                            __(
-                                "Order '%1' has been refunded and the customer has been notified.",
-                                $order->getIncrementId()
-                            )
+                        /** @var \Magento\Sales\Api\CreditmemoManagementInterface $creditmemoManagement */
+                        $creditmemoManagement = $this->objectManager->create(
+                            'Magento\Sales\Api\CreditmemoManagementInterface'
                         );
-                    } else {
-                        $this->addDebugMessage(
-                            __(
-                                "Order '%1' has been refunded and the customer has NOT been notified.",
-                                $order->getIncrementId()
-                            )
-                        );
-                    }
+                        $refundOffline = true;
+                        if ($invoiceId !== false && $invoice->getTransactionId()) {
+                            $refundOffline = false;
+                        }
+                        $creditmemoManagement->refund($creditmemo, $refundOffline);
 
-                    $this->setHasUpdatedObject(true);
-                    unset($creditmemo);
+                        if ($this->getActionSettingByFieldBoolean('creditmemo_send_email', 'enabled')) {
+                            $this->creditmemoSender->send($creditmemo);
+                            $this->addDebugMessage(
+                                __(
+                                    "Order '%1' has been refunded and the customer has been notified.",
+                                    $order->getIncrementId()
+                                )
+                            );
+                        } else {
+                            $this->addDebugMessage(
+                                __(
+                                    "Order '%1' has been refunded and the customer has NOT been notified.",
+                                    $order->getIncrementId()
+                                )
+                            );
+                        }
+
+                        $this->setHasUpdatedObject(true);
+                        unset($creditmemo);
+                    }
                 }
             } else {
                 $this->addDebugMessage(
@@ -256,5 +231,94 @@ class Creditmemo extends AbstractAction
 
             return true;
         }
+    }
+
+    /**
+     * @param $order
+     * @param $itemType
+     * @param $items
+     * @param $itemsToProcess
+     *
+     * @return array
+     */
+    protected function getItemsToRefund($order, $itemType, $items, &$itemsToProcess)
+    {
+        $itemsToRefund = [];
+        foreach ($items as $item) {
+            // How should the item be identified in the import file?
+            if ($this->getProfileConfiguration()->getProductIdentifier() == 'sku') {
+                $orderItemSku = strtolower(trim($item->getSku()));
+            } else {
+                if ($this->getProfileConfiguration()->getProductIdentifier() == 'entity_id') {
+                    $orderItemSku = trim($item->getProductId());
+                } else {
+                    if ($this->getProfileConfiguration()->getProductIdentifier() == 'attribute') {
+                        $product = $this->productFactory->create()->load($item->getProductId());
+                        if ($product->getId()) {
+                            $orderItemSku = strtolower(
+                                trim(
+                                    $product->getData(
+                                        $this->getProfileConfiguration()->getProductIdentifierAttributeCode()
+                                    )
+                                )
+                            );
+                        } else {
+                            $this->addDebugMessage(
+                                __(
+                                    "Order '%1': Product SKU '%2', product does not exist anymore and cannot be matched for importing.",
+                                    $order->getIncrementId(),
+                                    $item->getSku()
+                                )
+                            );
+                            continue;
+                        }
+                    } else {
+                        $this->addDebugMessage(
+                            __("Order '%1': No method found to match products.", $order->getIncrementId())
+                        );
+                        return $itemsToRefund;
+                    }
+                }
+            }
+            if ($itemType == 'order') {
+                $orderItemId = $item->getId();
+            } else {
+                $orderItemId = $item->getOrderItemId();
+            }
+            // Item matched?
+            if (isset($itemsToProcess[$orderItemSku])) {
+                $qtyToProcess = round($itemsToProcess[$orderItemSku]['qty']);
+                /** @var \Magento\Sales\Model\Order\Item $orderItem */
+                $orderItem = $this->objectManager->create('\Magento\Sales\Model\Order\ItemFactory')->create()->load($orderItemId);
+                $maxQty = $orderItem->getQtyToRefund();
+                if ($qtyToProcess > $maxQty) {
+                    if (($orderItem->getProductType() == Type::TYPE_SIMPLE || $orderItem->getProductType() == Type::TYPE_VIRTUAL)
+                        && $orderItem->getParentItem() && $orderItem->getParentItem()->getQtyToRefund() > 0
+                    ) {
+                        // Has a parent item that must be refunded instead
+                        $orderItemId = $orderItem->getParentItem()->getId();
+                        $maxQty = $orderItem->getParentItem()->getQtyToRefund();
+                        if ($qtyToProcess > $maxQty) {
+                            $qty = round($maxQty);
+                        } else {
+                            $qty = round($qtyToProcess);
+                        }
+                    } else {
+                        $qty = round($maxQty);
+                    }
+                } else {
+                    $qty = round($qtyToProcess);
+                }
+                if ($qty > 0) {
+                    $itemsToProcess[$orderItemSku]['qty'] -= $qty;
+                    $itemsToRefund[$orderItemId] = ['qty' => $qty, 'back_to_stock' => true];
+                } else {
+                    $itemsToRefund[$orderItemId] = ['qty' => 0];
+                }
+            } else {
+                $itemsToRefund[$orderItemId] = ['qty' => 0];
+            }
+        }
+        return $itemsToRefund;
     }
 }

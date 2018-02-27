@@ -12,6 +12,7 @@
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Reports::report">
                     <resource id="Aheadworks_AdvancedReports::main" title="Advanced Reports by Aheadworks" sortOrder="999">
+                        <resource id="Aheadworks_AdvancedReports::reports_dashboard" title="Dashboard" sortOrder="5" />
                         <resource id="Aheadworks_AdvancedReports::reports_salesoverview" title="Sales Overview" sortOrder="10" />
                         <resource id="Aheadworks_AdvancedReports::reports_productperformance" title="Product Performance" sortOrder="20" />
                         <resource id="Aheadworks_AdvancedReports::reports_productvariantperformance" title="Product Variant Performance" sortOrder="30" />

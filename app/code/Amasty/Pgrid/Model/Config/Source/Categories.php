@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Pgrid
  */
 
@@ -26,7 +26,8 @@ class Categories implements \Magento\Framework\Option\ArrayInterface
     {
         $optionArray = [];
         $arr = $this->toArray();
-        foreach($arr as $value => $label){
+        $arr['no_category'] = __('No Categories');
+        foreach ($arr as $value => $label) {
             $optionArray[] = [
                 'value' => $value,
                 'label' => $label

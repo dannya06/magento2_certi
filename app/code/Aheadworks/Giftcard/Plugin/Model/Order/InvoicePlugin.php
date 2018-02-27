@@ -6,6 +6,10 @@
 
 namespace Aheadworks\Giftcard\Plugin\Model\Order;
 
+use Aheadworks\Giftcard\Api\Data\Giftcard\HistoryActionInterface;
+use Aheadworks\Giftcard\Api\Data\Giftcard\HistoryActionInterfaceFactory;
+use Aheadworks\Giftcard\Api\Data\Giftcard\History\EntityInterface as HistoryEntityInterface;
+use Aheadworks\Giftcard\Api\Data\Giftcard\History\EntityInterfaceFactory as HistoryEntityInterfaceFactory;
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Api\Data\OptionInterface;
 use Aheadworks\Giftcard\Api\Data\ProductAttributeInterface;
@@ -13,8 +17,10 @@ use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
 use Aheadworks\Giftcard\Model\Product\Option;
 use Aheadworks\Giftcard\Model\Product\Type\Giftcard as ProductGiftcard;
 use Aheadworks\Giftcard\Api\Data\GiftcardInterfaceFactory;
+use Magento\Catalog\Model\Product;
 use Magento\Framework\Api\DataObjectHelper;
 use Aheadworks\Giftcard\Api\Data\OptionInterfaceFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime as StdlibDateTime;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\EntityManager\EntityManager;
@@ -22,7 +28,10 @@ use Aheadworks\Giftcard\Api\Data\Giftcard\InvoiceInterface as GiftcardInvoiceInt
 use Magento\Sales\Model\Order\Invoice;
 use Aheadworks\Giftcard\Model\Statistics;
 use Magento\Sales\Model\Order\Invoice\Item;
-use Aheadworks\Giftcard\Api\GiftcardManagementInterface;
+use Aheadworks\Giftcard\Api\PoolManagementInterface;
+use Aheadworks\Giftcard\Model\ResourceModel\Giftcard as ResourceGiftcard;
+use Aheadworks\Giftcard\Model\Source\History\EntityType as SourceHistoryEntityType;
+use Aheadworks\Giftcard\Model\Source\History\Comment\Action as SourceHistoryCommentAction;
 
 /**
  * Class InvoicePlugin
@@ -35,11 +44,6 @@ class InvoicePlugin
      * @var GiftcardRepositoryInterface
      */
     private $giftcardRepository;
-
-    /**
-     * @var GiftcardManagementInterface
-     */
-    private $giftcardManagement;
 
     /**
      * @var GiftcardInterfaceFactory
@@ -77,8 +81,27 @@ class InvoicePlugin
     private $statistics;
 
     /**
+     * @var PoolManagementInterface
+     */
+    private $poolManagement;
+
+    /**
+     * @var ResourceGiftcard
+     */
+    private $resourceGiftcard;
+
+    /**
+     * @var HistoryActionInterfaceFactory
+     */
+    private $historyActionFactory;
+
+    /**
+     * @var HistoryEntityInterfaceFactory
+     */
+    private $historyEntityFactory;
+
+    /**
      * @param GiftcardRepositoryInterface $giftcardRepository
-     * @param GiftcardManagementInterface $giftcardManagement
      * @param GiftcardInterfaceFactory $giftcardDataFactory
      * @param DataObjectHelper $dataObjectHelper
      * @param OptionInterfaceFactory $optionFactory
@@ -86,20 +109,26 @@ class InvoicePlugin
      * @param EntityManager $entityManager
      * @param InvoiceRepositoryPlugin $invoiceRepositoryPlugin
      * @param Statistics $statistics
+     * @param PoolManagementInterface $poolManagement
+     * @param ResourceGiftcard $resourceGiftcard
+     * @param HistoryActionInterfaceFactory $historyActionFactory
+     * @param HistoryEntityInterfaceFactory $historyEntityFactory
      */
     public function __construct(
         GiftcardRepositoryInterface $giftcardRepository,
-        GiftcardManagementInterface $giftcardManagement,
         GiftcardInterfaceFactory $giftcardDataFactory,
         OptionInterfaceFactory $optionFactory,
         DataObjectHelper $dataObjectHelper,
         LoggerInterface $logger,
         EntityManager $entityManager,
         InvoiceRepositoryPlugin $invoiceRepositoryPlugin,
-        Statistics $statistics
+        Statistics $statistics,
+        PoolManagementInterface $poolManagement,
+        ResourceGiftcard $resourceGiftcard,
+        HistoryActionInterfaceFactory $historyActionFactory,
+        HistoryEntityInterfaceFactory $historyEntityFactory
     ) {
         $this->giftcardRepository = $giftcardRepository;
-        $this->giftcardManagement = $giftcardManagement;
         $this->giftcardDataFactory = $giftcardDataFactory;
         $this->dataObjectHelper = $dataObjectHelper;
         $this->optionFactory = $optionFactory;
@@ -107,6 +136,10 @@ class InvoicePlugin
         $this->entityManager = $entityManager;
         $this->invoiceRepositoryPlugin = $invoiceRepositoryPlugin;
         $this->statistics = $statistics;
+        $this->poolManagement = $poolManagement;
+        $this->resourceGiftcard = $resourceGiftcard;
+        $this->historyActionFactory = $historyActionFactory;
+        $this->historyEntityFactory = $historyEntityFactory;
     }
 
     /**
@@ -160,13 +193,13 @@ class InvoicePlugin
      *
      * @param Invoice $invoice
      * @return void
+     * @throws LocalizedException
      */
     private function saveGiftcardProduct($invoice)
     {
         if (!$invoice->wasPayCalled()) {
             return;
         }
-        $giftcardCodes = [];
         foreach ($invoice->getAllItems() as $item) {
             /** @var $item \Magento\Sales\Model\Order\Invoice\Item */
             if ($item->getOrderItem()->getProductType() != ProductGiftcard::TYPE_CODE) {
@@ -178,11 +211,17 @@ class InvoicePlugin
             $giftcardCodesByProduct = [];
             while ($qty > 0) {
                 try {
+                    $this->resourceGiftcard->beginTransaction();
+                    $historyObject = $this->createHistoryObject(
+                        $invoice,
+                        SourceHistoryCommentAction::CREATED_BY_ORDER
+                    );
                     /** @var GiftcardInterface $giftcardObject */
                     $giftcardObject = $this->giftcardDataFactory->create();
                     $giftcardObject
                         ->setOrderId($invoice->getOrder()->getId())
                         ->setProductId($item->getOrderItem()->getProductId())
+                        ->setCode($this->getGiftcardCode($item->getOrderItem()->getProduct()))
                         ->setType(
                             $item->getOrderItem()->getProduct()->getData(ProductAttributeInterface::CODE_AW_GC_TYPE)
                         )->setInitialBalance($item->getBasePrice())
@@ -193,7 +232,8 @@ class InvoicePlugin
                         ->setRecipientEmail($options->getAwGcRecipientEmail())
                         ->setEmailTemplate($options->getAwGcTemplate())
                         ->setHeadline($options->getAwGcHeadline())
-                        ->setMessage($options->getAwGcMessage());
+                        ->setMessage($options->getAwGcMessage())
+                        ->setCurrentHistoryAction($historyObject);
 
                     $expireAt = new \DateTime();
                     $expireAt->setTime(0, 0, 0);
@@ -220,14 +260,16 @@ class InvoicePlugin
                         $giftcardObject->setExpireAt($expireAt->format(StdlibDateTime::DATETIME_PHP_FORMAT));
                     }
                     $giftcardCode = $this->giftcardRepository->save($giftcardObject);
+                    $this->resourceGiftcard->commit();
 
                     $giftcardCodesByProduct[] = $giftcardCode->getCode();
                     $qty--;
                 } catch (\Exception $e) {
+                    $this->resourceGiftcard->rollBack();
                     $this->logger->critical($e);
+                    throw new LocalizedException(__($e->getMessage()));
                 }
             }
-            $giftcardCodes = array_merge($giftcardCodes, $giftcardCodesByProduct);
             $giftcardCodesByProduct = $options->getAwGcCreatedCodes()
                 ? array_merge($options->getAwGcCreatedCodes(), $giftcardCodesByProduct)
                 : $giftcardCodesByProduct;
@@ -247,9 +289,21 @@ class InvoicePlugin
                 $this->getPurchasedStatData($item)
             );
         }
-        if ($giftcardCodes) {
-            $this->giftcardManagement->sendGiftcardByCode($giftcardCodes, true, $invoice->getStoreId());
-        }
+    }
+
+    /**
+     * Retrieve Gift Card code from pool or null
+     *
+     * @param Product $product
+     * @return string|null
+     */
+    private function getGiftcardCode($product)
+    {
+        $codePoolId = $product->getData(ProductAttributeInterface::CODE_AW_GC_POOL);
+
+        return $codePoolId
+            ? $this->poolManagement->pullCodeFromPool($codePoolId)
+            : null ;
     }
 
     /**
@@ -280,5 +334,29 @@ class InvoicePlugin
             'purchased_qty' => $item->getQty(),
             'purchased_amount' => $item->getBaseRowTotal()
         ];
+    }
+
+    /**
+     * Create History object
+     *
+     * @param Invoice $invoice
+     * @param int $status
+     * @return HistoryActionInterface
+     */
+    private function createHistoryObject($invoice, $status)
+    {
+        /** @var HistoryEntityInterface $orderHistoryEntityObject */
+        $orderHistoryEntityObject = $this->historyEntityFactory->create();
+        $orderHistoryEntityObject
+            ->setEntityType(SourceHistoryEntityType::ORDER_ID)
+            ->setEntityId($invoice->getOrder()->getEntityId())
+            ->setEntityLabel($invoice->getOrder()->getIncrementId());
+
+        /** @var HistoryActionInterface $historyObject */
+        $historyObject = $this->historyActionFactory->create();
+        $historyObject
+            ->setActionType($status)
+            ->setEntities([$orderHistoryEntityObject]);
+        return $historyObject;
     }
 }

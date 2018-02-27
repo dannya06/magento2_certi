@@ -19,7 +19,7 @@ use Magento\Framework\View\Page\Title;
  * Test for \Aheadworks\AdvancedReports\Controller\Adminhtml\SalesOverview\Index
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Index
@@ -45,7 +45,10 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->resultPageFactoryMock = $this->getMock(PageFactory::class, ['create'], [], '', false);
+        $this->resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
         $contextMock = $objectManager->getObject(
             Context::class,
@@ -78,16 +81,25 @@ class IndexTest extends \PHPUnit_Framework_TestCase
             $title = __('Sales Overview (%1)', base64_decode($params[0][2]));
         }
 
-        $titleMock = $this->getMock(Title::class, ['prepend'], [], '', false);
+        $titleMock = $this->getMockBuilder(Title::class)
+            ->setMethods(['prepend'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $titleMock->expects($this->once())
             ->method('prepend')
             ->with($title)
             ->willReturnSelf();
-        $pageConfigMock = $this->getMock(Config::class, ['getTitle'], [], '', false);
+        $pageConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getTitle'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $pageConfigMock->expects($this->once())
             ->method('getTitle')
             ->willReturn($titleMock);
-        $resultPageMock = $this->getMock(Page::class, ['setActiveMenu', 'getConfig'], [], '', false);
+        $resultPageMock = $this->getMockBuilder(Page::class)
+            ->setMethods(['setActiveMenu', 'getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultPageMock->expects($this->any())
             ->method('setActiveMenu')
             ->willReturnSelf();

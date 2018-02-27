@@ -39,6 +39,7 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $_storeManager;
+    protected $httpContext;
 
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context            
@@ -52,6 +53,7 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
         \Ves\Megamenu\Model\Menu $menu,
         \Magento\Customer\Model\Session $customerSession,
         \Ves\Megamenu\Helper\MobileDetect $mobileDetectHelper,
+        \Magento\Framework\App\Http\Context $httpContext,
         array $data = []
         ) {
         parent::__construct($context);
@@ -59,6 +61,43 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
         $this->_menu            = $menu;
         $this->_mobileDetect    = $mobileDetectHelper;
         $this->_customerSession = $customerSession;
+        $this->httpContext = $httpContext;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->addData([
+            'cache_lifetime' => 86400,
+            'cache_tags' => [\Ves\Megamenu\Model\Menu::CACHE_WIDGET_TAG]]);
+    }
+
+    /**
+     * Get key pieces for caching block content
+     *
+     * @return array
+     */
+    public function getCacheKeyInfo()
+    {
+        $menuId = $this->getData('id');
+        $menuId = $menuId?$menuId:0;
+        $code = $this->getConfig('alias');
+
+        $conditions = $code.".".$menuId;
+        if ($this->getMobileDetect()->isMobile()) {
+            $conditions .= ".mobilemenu";
+        }
+        return [
+        'VES_MEGAMENU_MENU_WIDGET',
+        $this->_storeManager->getStore()->getId(),
+        $this->_design->getDesignTheme()->getId(),
+        $this->httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_GROUP),
+        'template' => $this->getTemplate(),
+        $conditions
+        ];
     }
 
     public function _toHtml() {
@@ -102,5 +141,11 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
             $html = $this->getLayout()->createBlock('Ves\Megamenu\Block\MobileMenu')->setData('alias', $menuAlias)->toHtml();
         }
         return $html;
+    }
+    public function getConfig($key, $default = NULL){
+        if($this->hasData($key)){
+            return $this->getData($key);
+        }
+        return $default;
     }
 }

@@ -22,7 +22,22 @@ class Amounts extends AbstractBackend
      */
     public function validate($object)
     {
-        $amountsRows = $object->getData($this->getAttribute()->getName());
+        $this->validateAmounts($object);
+        $this->validateOpenAmount($object);
+
+        return $this;
+    }
+
+    /**
+     * Validate amounts
+     *
+     * @param \Magento\Framework\DataObject $object
+     * @return $this
+     * @throws LocalizedException
+     */
+    private function validateAmounts($object)
+    {
+        $amountsRows = $object->getData($this->getAttribute()->getName()) ? : [];
         $amountsKeys = [];
         foreach ($amountsRows as $data) {
             if (!isset($data['price']) || !empty($data['delete'])) {
@@ -40,6 +55,7 @@ class Amounts extends AbstractBackend
         if (count($amountsKeys) == 0 && !$object->getData(ProductAttributeInterface::CODE_AW_GC_ALLOW_OPEN_AMOUNT)) {
             throw new LocalizedException(__('Specify amount options'));
         }
+
         return $this;
     }
 
@@ -57,5 +73,28 @@ class Amounts extends AbstractBackend
             throw new LocalizedException(__('Duplicate amount found'));
         }
         return true;
+    }
+
+    /**
+     * Validate open amount
+     *
+     * @param \Magento\Framework\DataObject $object
+     * @return $this
+     * @throws LocalizedException
+     */
+    private function validateOpenAmount($object)
+    {
+        if ((int)$object->getData(ProductAttributeInterface::CODE_AW_GC_ALLOW_OPEN_AMOUNT)) {
+            $minAmount = (int)$object->getData(ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MIN);
+            $maxAmount = (int)$object->getData(ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MAX);
+
+            if ($minAmount > $maxAmount) {
+                throw new LocalizedException(
+                    __('"Open Amount Max Value" must be greater than "Open Amount Min Value".')
+                );
+            }
+        }
+
+        return $this;
     }
 }

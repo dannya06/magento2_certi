@@ -6,18 +6,16 @@
 
 namespace Aheadworks\AdvancedReports\Model\Filter;
 
+use Magento\Customer\Model\GroupManagement;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Customer\Api\GroupManagementInterface;
-use Magento\Customer\Api\Data\GroupInterface;
-use Magento\Framework\UrlInterface;
 
 /**
  * Class CustomerGroup
  *
  * @package Aheadworks\AdvancedReports\Model\Filter
  */
-class CustomerGroup
+class CustomerGroup implements FilterInterface
 {
     /**
      * @var string
@@ -25,19 +23,14 @@ class CustomerGroup
     const SESSION_KEY = 'aw_rep_customer_group_key';
 
     /**
-     * @var []
-     */
-    private $customerGroupItems;
-
-    /**
      * @var string
      */
-    private $currentItemKey;
+    const REQUEST_PARAM = 'customer_group_id';
 
     /**
      * @var RequestInterface
      */
-    private $request;
+    protected $request;
 
     /**
      * @var SessionManagerInterface
@@ -45,124 +38,51 @@ class CustomerGroup
     private $session;
 
     /**
-     * @var GroupManagementInterface
+     * @var string
      */
-    private $groupManagement;
-
-    /**
-     * @var UrlInterface
-     */
-    private $urlBuilder;
+    private $customerGroup;
 
     /**
      * @param RequestInterface $request
      * @param SessionManagerInterface $session
-     * @param GroupManagementInterface $groupManagement
-     * @param UrlInterface $urlBuilder
      */
     public function __construct(
         RequestInterface $request,
-        SessionManagerInterface $session,
-        GroupManagementInterface $groupManagement,
-        UrlInterface $urlBuilder
+        SessionManagerInterface $session
     ) {
         $this->request = $request;
         $this->session = $session;
-        $this->groupManagement = $groupManagement;
-        $this->urlBuilder = $urlBuilder;
     }
 
     /**
-     * Retrieve store items
-     *
-     * @return []
+     * {@inheritdoc}
      */
-    public function getItems()
+    public function getValue()
     {
-        if (!$this->customerGroupItems) {
-            /** @var GroupInterface $allGroup */
-            $allGroup = $this->groupManagement->getAllCustomersGroup();
-            $this->customerGroupItems = [
-                $allGroup->getId() => [
-                    'title' => __('All Groups'),
-                    'url'   => $this->urlBuilder->getUrl(
-                        '*/*/*',
-                        [
-                            '_query' => ['customer_group_id' => $allGroup->getId()],
-                            '_current' => true
-                        ]
-                    )
-                ],
-            ];
-
-            /** @var GroupInterface $notLoggedInGroup */
-            $notLoggedInGroup = $this->groupManagement->getNotLoggedInGroup();
-            $this->customerGroupItems[$notLoggedInGroup->getId()] = [
-                'title' => $notLoggedInGroup->getCode(),
-                'url'   => $this->urlBuilder->getUrl(
-                    '*/*/*',
-                    [
-                        '_query' => ['customer_group_id' => $notLoggedInGroup->getId()],
-                        '_current' => true
-                    ]
-                )
-            ];
-
-            /** @var GroupInterface $group */
-            foreach ($this->groupManagement->getLoggedInGroups() as $group) {
-                $this->customerGroupItems[$group->getId()] = [
-                    'title' => $group->getCode(),
-                    'url'   => $this->urlBuilder->getUrl(
-                        '*/*/*',
-                        [
-                            '_query' => ['customer_group_id' => $group->getId()],
-                            '_current' => true
-                        ]
-                    )
-                ];
-            }
-        }
-        return $this->customerGroupItems;
-    }
-
-    /**
-     * Retrieve current item key
-     *
-     * @return string
-     */
-    public function getCurrentItemKey()
-    {
-        if ($this->currentItemKey == null) {
-            $customerGroupId = $this->request->getParam('customer_group_id');
+        if ($this->customerGroup == null) {
+            $customerGroupId = $this->request->getParam(self::REQUEST_PARAM);
             if ($customerGroupId != null) {
-                $this->currentItemKey = $customerGroupId;
+                $this->customerGroup = $customerGroupId;
             }
-            if ($this->currentItemKey != null) {
-                $this->session->setData(self::SESSION_KEY, $this->currentItemKey);
-                return $this->currentItemKey;
+            if ($this->customerGroup != null) {
+                $this->session->setData(self::SESSION_KEY, $this->customerGroup);
+                return $this->customerGroup;
             }
             $keyFromSession = $this->session->getData(self::SESSION_KEY);
             if ($keyFromSession != null) {
-                $this->currentItemKey = $keyFromSession;
-                return $this->currentItemKey;
+                $this->customerGroup = $keyFromSession;
+                return $this->customerGroup;
             }
-            $this->currentItemKey = $this->groupManagement->getAllCustomersGroup()->getId();
+            $this->customerGroup = $this->getDefaultValue();
         }
-        return $this->currentItemKey;
+        return $this->customerGroup;
     }
 
     /**
-     * Retrieve customer group Id (null if all selected)
-     *
-     * @return int|null
+     * {@inheritdoc}
      */
-    public function getCustomerGroupId()
+    public function getDefaultValue()
     {
-        $customerGroupId = $this->getCurrentItemKey();
-        if ($customerGroupId == $this->groupManagement->getAllCustomersGroup()->getId()) {
-            $customerGroupId = null;
-        }
-
-        return $customerGroupId;
+        return GroupManagement::CUST_GROUP_ALL;
     }
 }

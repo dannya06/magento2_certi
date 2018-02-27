@@ -13,7 +13,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Filters\Transaction\ExpirationDateTest
  */
-class ExpirationDateTest extends \PHPUnit_Framework_TestCase
+class ExpirationDateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ExpirationDate

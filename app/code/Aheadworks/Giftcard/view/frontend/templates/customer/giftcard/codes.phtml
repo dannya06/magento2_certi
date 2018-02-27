@@ -22,12 +22,17 @@ $giftcardCodes = $block->getCustomerGiftcardCodes();
                             <tr>
                                 <td class="code">
                                     <?php if ($this->isAccountPage()): ?>
-                                        <a href="#"
-                                           data-mage-init='{"awGiftCardCheckCode":{
-                                               "url": "<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getCheckCodeUrl($giftcardCode->getCode())) ?>"
-                                           }}'>
-                                            <?php echo $block->escapeHtml($giftcardCode->getCode()) ?>
-                                        </a>
+                                        <form action=""
+                                              method="post"
+                                              data-mage-init='{"awGiftCardManagement":{}}'>
+                                            <input type="hidden" name="code" value="<?php /* @noEscape */ echo $giftcardCode->getCode() ?>">
+                                            <a href="#"
+                                               data-role="aw-giftcard-check-code-action"
+                                               data-url="<?php /* @noEscape */ echo $block->escapeUrl($block->getCheckCodeUrl()) ?>"
+                                               >
+                                                <?php echo $block->escapeHtml($giftcardCode->getCode()) ?>
+                                            </a>
+                                        </form>
                                     <?php else: ?>
                                         <?php echo $block->escapeHtml($giftcardCode->getCode()) ?>
                                     <?php endif; ?>
@@ -37,9 +42,17 @@ $giftcardCodes = $block->getCustomerGiftcardCodes();
                                 </td>
                                 <?php if (!$this->isAccountPage()): ?>
                                     <td class="action-apply">
-                                        <a href="<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getApplyUrl($giftcardCode->getCode())) ?>">
-                                            <?php echo $block->escapeHtml(__('Apply')) ?>
-                                        </a>
+                                        <form action=""
+                                              method="post"
+                                              data-mage-init='{"awGiftCardManagement":{}}'>
+                                            <input type="hidden" name="code" value="<?php /* @noEscape */ echo $giftcardCode->getCode() ?>">
+                                            <a href="#"
+                                               data-role="aw-giftcard-apply-action"
+                                               data-url="<?php /* @noEscape */ echo $block->escapeUrl($block->getApplyUrl()) ?>"
+                                               >
+                                                <?php echo $block->escapeHtml(__('Apply')) ?>
+                                            </a>
+                                        </form>
                                     </td>
                                 <?php endif; ?>
                             </tr>

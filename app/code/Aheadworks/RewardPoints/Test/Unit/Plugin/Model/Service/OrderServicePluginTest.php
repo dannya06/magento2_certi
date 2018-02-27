@@ -15,7 +15,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Plugin\Model\Service\OrderServicePluginTest
  */
-class OrderServicePluginTest extends \PHPUnit_Framework_TestCase
+class OrderServicePluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OrderServicePlugin

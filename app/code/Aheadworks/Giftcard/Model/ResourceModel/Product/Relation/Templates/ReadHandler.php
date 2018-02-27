@@ -91,7 +91,7 @@ class ReadHandler implements ExtensionInterface
         if (isset($entityData['store_id'])) {
             $storeId = $entityData['store_id'];
         }
-        $templates = $this->getTemplatesByProduct($entityData[$metadata->getLinkField()], $storeId);
+        $templates = $this->getTemplatesByProduct($entityData['entity_id'], $storeId);
         $entityData[$attribute->getAttributeCode()] = $templates;
         $entity = $hydrator->hydrate($entity, $entityData);
         return $entity;

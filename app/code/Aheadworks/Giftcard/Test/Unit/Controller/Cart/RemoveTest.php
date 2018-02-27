@@ -20,7 +20,7 @@ use Magento\Checkout\Model\Session as CheckoutSession;
  *
  * @package Aheadworks\Giftcard\Controller\Cart
  */
-class RemoveTest extends \PHPUnit_Framework_TestCase
+class RemoveTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Remove
@@ -56,8 +56,14 @@ class RemoveTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
         $this->giftcardCartManagementMock = $this->getMockForAbstractClass(GiftcardCartManagementInterface::class);
-        $this->checkoutSessionMock = $this->getMock(CheckoutSession::class, [], [], '', false);
-        $this->escaperMock = $this->getMock(Escaper::class, [], [], '', false);
+        $this->checkoutSessionMock = $this->getMockBuilder(CheckoutSession::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->escaperMock = $this->getMockBuilder(Escaper::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
 
         $contextMock = $objectManager->getObject(

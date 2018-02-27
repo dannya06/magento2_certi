@@ -9,7 +9,7 @@ namespace Aheadworks\AdvancedReports\Model\ResourceModel\DatesGrouping;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\Config\ConfigOptionsListConstants;
 use Magento\Framework\App\DeploymentConfig;
-use Aheadworks\AdvancedReports\Model\Config;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
  * Class AbstractResource
@@ -34,25 +34,25 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
     private $deploymentConfig;
 
     /**
-     * @var Config
+     * @var ScopeConfigInterface
      */
-    protected $config;
+    protected $scopeConfig;
 
     /**
      * @param Context $context
      * @param DeploymentConfig $deploymentConfig
-     * @param Config $config
+     * @param ScopeConfigInterface $scopeConfig
      * @param null $connectionName
      */
     public function __construct(
         Context $context,
         DeploymentConfig $deploymentConfig,
-        Config $config,
+        ScopeConfigInterface $scopeConfig,
         $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
         $this->deploymentConfig = $deploymentConfig;
-        $this->config = $config;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -153,6 +153,7 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
      * @param \DateTime $from
      * @param int $intervalsCount
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getPeriods($from, $intervalsCount)
     {

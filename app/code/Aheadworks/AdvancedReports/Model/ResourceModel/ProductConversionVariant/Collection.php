@@ -6,6 +6,7 @@
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\ProductConversionVariant;
 
+use Aheadworks\AdvancedReports\Model\ResourceModel\AbstractPeriodBasedCollection;
 use Magento\Framework\DataObject;
 use Aheadworks\AdvancedReports\Model\ResourceModel\Conversion as ResourceConversion;
 use Aheadworks\AdvancedReports\Model\ResourceModel\ProductConversion as ResourceProductConversion;
@@ -15,13 +16,8 @@ use Aheadworks\AdvancedReports\Model\ResourceModel\ProductConversion as Resource
  *
  * @package Aheadworks\AdvancedReports\Model\ResourceModel\ProductConversion
  */
-class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\AbstractCollection
+class Collection extends AbstractPeriodBasedCollection
 {
-    /**
-     * @var bool
-     */
-    protected $periodBased = true;
-
     /**
      * {@inheritdoc}
      */
@@ -37,10 +33,18 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     {
         $this->getSelect()
             ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(false))
             ->group('product_id');
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _renderFiltersBefore()
+    {
+        $this->getSelect()->columns($this->getColumns());
+        parent::_renderFiltersBefore();
     }
 
     /**
@@ -66,16 +70,6 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      */
     public function addFieldToFilter($field, $condition = null)
     {
-        if ($field == 'include_refunded_items') {
-            if ((int)$condition['eq'] == 1) {
-                return $this;
-            } else {
-                return $this->addExcludeRefundedItemsFilter();
-            }
-        }
-        if ($field == 'periodFilter') {
-            return $this->addGroupByFilter();
-        }
         if ($field == 'product_id') {
             $condition = $condition['eq'];
             return $this->addProductFilter($condition['product_id']);
@@ -86,13 +80,14 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    protected function addExcludeRefundedItemsFilter()
+    public function addExcludeRefundedItemsFilter()
     {
         $query = '(is_refunded = 0 OR is_refunded IS NULL)';
         $this->conditionsForGroupBy[] = [
             'field' => $query,
             'condition' => []
         ];
+
         return $this;
     }
 
@@ -115,9 +110,9 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    protected function addGroupByDay($periodFrom, $periodTo, $compareFrom, $compareTo)
+    protected function addGroupByDay()
     {
-        parent::addGroupByDay($periodFrom, $periodTo, $compareFrom, $compareTo);
+        parent::addGroupByDay();
         $this->getSelect()->order('date', self::SORT_ORDER_ASC);
         return $this;
     }
@@ -125,9 +120,9 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    protected function groupByTable($table, $periodFrom, $periodTo, $compareFrom, $compareTo)
+    protected function groupByTable($table)
     {
-        parent::groupByTable($table, $periodFrom, $periodTo, $compareFrom, $compareTo);
+        parent::groupByTable($table);
         $this->getSelect()->order('start_date', self::SORT_ORDER_ASC);
         return $this;
     }

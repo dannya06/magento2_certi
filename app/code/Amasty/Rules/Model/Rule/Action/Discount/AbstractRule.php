@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -46,17 +46,25 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      */
     protected $customerSession;
 
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
     protected $itemsWithDiscount = null;
 
     /**
-     * @param \Magento\SalesRule\Model\Validator                $validator
-     * @param Discount\DataFactory                              $discountDataFactory
+     * @var \Amasty\Rules\Model\ConfigModel
+     */
+    private $configModel;
+
+    /**
+     * AbstractRule constructor.
+     * @param \Magento\SalesRule\Model\Validator $validator
+     * @param Discount\DataFactory $discountDataFactory
      * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param StoreManagerInterface $storeManager
+     * @param amHelper\Product $rulesProductHelper
+     * @param amHelper\Data $rulesDataHelper
+     * @param amHelper\Discount $rulesDiscountHelper
+     * @param \Magento\Customer\Model\Session $customerSession
+     * @param \Amasty\Rules\Model\ConfigModel $configModel
      */
     public function __construct(
         \Magento\SalesRule\Model\Validator $validator,
@@ -68,7 +76,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         \Amasty\Rules\Helper\Data $rulesDataHelper,
         \Amasty\Rules\Helper\Discount $rulesDiscountHelper,
         \Magento\Customer\Model\Session $customerSession,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Amasty\Rules\Model\ConfigModel $configModel
     ) {
         parent::__construct($validator, $discountDataFactory, $priceCurrency);
         $this->_objectManager = $objectManager;
@@ -76,8 +84,8 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         $this->rulesProductHelper = $rulesProductHelper;
         $this->rulesDataHelper = $rulesDataHelper;
         $this->customerSession = $customerSession;
-        $this->scopeConfig = $scopeConfig;
         $this->rulesDiscountHelper = $rulesDiscountHelper;
+        $this->configModel = $configModel;
     }
 
     /**
@@ -207,20 +215,30 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      * @param float $currQty
      * @param float $qty
      *
+     * @param null $eachNCounter
      * @return bool
      */
-    protected function skipBySteps($rule, $step, $i, $currQty, $qty)
+    protected function skipBySteps($rule, $step, $i, $currQty, $qty, $eachNCounter = null)
     {
-        $types = [
+        $eachN = [
             amHelper\Data::TYPE_EACH_N,
             amHelper\Data::TYPE_EACH_N_FIXED,
             amHelper\Data::TYPE_EACH_N_FIXDISC,
+        ];
+        $eachProdAfterN = [
             amHelper\Data::TYPE_EACH_M_AFT_N_PERC,
             amHelper\Data::TYPE_EACH_M_AFT_N_DISC,
             amHelper\Data::TYPE_EACH_M_AFT_N_FIX
         ];
         $simpleAction = $rule->getSimpleAction();
-        if (($step > 1) && !(($i + 1) % $step) && in_array($simpleAction, $types)) {
+
+        if ($i === 0 && in_array($simpleAction, $eachProdAfterN)) {
+            return false;
+        }
+        if ($step > 1 && $eachNCounter % $step && in_array($simpleAction, $eachN)) {
+            return true;
+        }
+        if ($step > 1 && ($i % $step) && in_array($simpleAction, $eachProdAfterN)) {
             return true;
         }
 
@@ -228,7 +246,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         $typeGroupNDisc = amHelper\Data::TYPE_GROUP_N_DISC;
 
         // introduce limit for each N with discount or each N with fixed.
-        if ( (($currQty >= $qty) && ($simpleAction !== $typeGroupN) && ($simpleAction !== $typeGroupNDisc))
+        if ((($currQty >= $qty) && ($simpleAction !== $typeGroupN) && ($simpleAction !== $typeGroupNDisc))
             || (($rule->getDiscountQty() <= $currQty) && ($rule->getDiscountQty()) && (($simpleAction === $typeGroupN)
                     || ($simpleAction === $typeGroupNDisc))) ) {
             return true;
@@ -284,28 +302,33 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      */
     public function skipEachN($allItems, $rule)
     {
-        if ( '' !== (int)$rule->getDiscountStep()) {
-            $step = (int)$rule->getDiscountStep();
-        } else {
-            $step = (int)$rule->getAmrulesRule()->getEachm();
+        $discountStep = (int)$rule->getDiscountStep();
+        $step = $discountStep !== '' ? $discountStep : (int)$rule->getAmrulesRule()->getEachm();
+        if ($step <= 0) {
+            $step = 1;
         }
 
         $currQty = 0;
         $resItems = [];
         $itemsId = $this->getItemsId($allItems);
         $ruleQty = $this->ruleQuantity(count($itemsId), $rule);
+        $eachN =  1;
+
         foreach ($allItems as $i => $allItem) {
-            if ($this->skipBySteps($rule, $step, $i, $currQty, $ruleQty)) {
+            if ($this->skipBySteps($rule, $step, $i, $currQty, $ruleQty, $eachN)) {
+                $eachN++;
                 continue;
             }
+            $eachN++;
             $currQty++;
             $resItems[] = $allItem;
         }
+
         return $resItems;
     }
 
     /**
-     * @param $item
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
      *
      * @return int
      */
@@ -317,7 +340,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     }
 
     /**
-     * @param $item
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
      *
      * @return int
      */
@@ -339,6 +362,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         if (!$prices || $qty < 1) {
             return false;
         }
+
         return true;
     }
 
@@ -347,6 +371,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      * @param \Magento\SalesRule\Model\Rule $rule
      * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
      * @param float $qty
+     * @return bool
      */
     public function beforeCalculate($rule, $item, $qty)
     {
@@ -355,6 +380,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
             $amrulesRule = $this->_objectManager->get('Amasty\Rules\Model\Rule');
             $amrulesRule->loadBySalesrule($rule);
         }
+
         return true;
     }
 
@@ -362,12 +388,14 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      * @param \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
      * @param \Magento\SalesRule\Model\Rule $rule
      * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @return bool
      */
     public function afterCalculate($discountData, $rule, $item)
     {
         if (!$item->getOriginalDiscountAmount()) {
             $this->rulesDiscountHelper->setDiscount($rule, $discountData);
         }
+
         return true;
     }
 
@@ -379,7 +407,6 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      */
     public function skip($rule, $item)
     {
-
         if ($rule->getSimpleAction() == 'cart_fixed') {
             return false;
         }
@@ -387,10 +414,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         $website_id = $this->storeManager->getWebsite()->getId();
         $groupId = $this->customerSession->getCustomerGroupId();
 
-        $skipTierPrice = $this->scopeConfig->getValue(
-            'amrules/general/skip_tier_price',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        $skipTierPrice = $this->configModel->getSkipTierPrice();
 
         $origProduct = $item->getProduct();
         $tierPrices = $origProduct->getTierPrice();
@@ -427,10 +451,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      */
     protected function checkSkipRule($rule, $item)
     {
-        $skipSpecialPrice = $this->scopeConfig->getValue(
-            'amrules/general/skip_special_price',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        $skipSpecialPrice = $this->configModel->getSkipSpecialPrice();
 
         switch ($rule->getAmrulesRule()->getData('skip_rule')) {
             case 0:
@@ -458,7 +479,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     }
 
     /**
-     * @param $item
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
      *
      * @return bool
      */
@@ -480,7 +501,6 @@ abstract class AbstractRule extends Discount\AbstractDiscount
             /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
             $productCollection = $this->_objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
 
-
             $productsCollection = $productCollection
                 ->addPriceData()
                 ->addAttributeToFilter('entity_id', ['in' => $productIds])
@@ -493,10 +513,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
             }
         }
 
-        $skipSpecialConfigurable = $this->scopeConfig->getValue(
-            'amrules/general/skip_special_price_configurable',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        $skipSpecialConfigurable = $this->configModel->getSkipSpecialPriceConfigurable();
 
         if ($skipSpecialConfigurable) {
             if ($item->getProductType() == "configurable") {

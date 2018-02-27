@@ -6,6 +6,7 @@
 
 namespace Aheadworks\AdvancedReports\Controller\Adminhtml\Manufacturer;
 
+use Aheadworks\AdvancedReports\Ui\Component\Listing\Breadcrumbs;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
@@ -47,10 +48,12 @@ class Index extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        $title = __('Sales by Manufacturer');
+        $this->_session->setData(Breadcrumbs::BREADCRUMBS_CONTROLLER_TITLE, $title);
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Aheadworks_AdvancedReports::reports_manufacturer');
-        $resultPage->getConfig()->getTitle()->prepend(__('Sales by Manufacturer'));
+        $resultPage->getConfig()->getTitle()->prepend($title);
         return $resultPage;
     }
 }

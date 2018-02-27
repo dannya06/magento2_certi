@@ -8,8 +8,6 @@ namespace Aheadworks\AdvancedReports\Model\ResourceModel\CustomerSales\Customers
 
 use Magento\Framework\DataObject;
 use Aheadworks\AdvancedReports\Model\ResourceModel\CustomerSales as ResourceCustomerSales;
-use Aheadworks\AdvancedReports\Model\Config;
-use Aheadworks\AdvancedReports\Model\Filter;
 
 /**
  * Class Collection
@@ -19,19 +17,7 @@ use Aheadworks\AdvancedReports\Model\Filter;
 class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\AbstractCollection
 {
     /**
-     * Name of object id field
-     *
-     * @var string
-     */
-    protected $_idFieldName = 'id';
-
-    /**
-     * @var Filter\Range
-     */
-    private $rangeFilter;
-
-    /**
-     * @var []
+     * @var array
      */
     private $conditionsForSales = [];
 
@@ -39,50 +25,6 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      * @var boolean
      */
     private $excludeRefunded;
-
-    /**
-     * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
-     * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param Config $config
-     * @param Filter\Store $storeFilter
-     * @param Filter\CustomerGroup $customerGroupFilter
-     * @param Filter\Groupby $groupbyFilter
-     * @param Filter\Period $periodFilter
-     * @param Filter\Range $rangeFilter
-     * @param \Magento\Framework\DB\Adapter\AdapterInterface|null $connection
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb|null $resource
-     */
-    public function __construct(
-        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        Config $config,
-        Filter\Store $storeFilter,
-        Filter\CustomerGroup $customerGroupFilter,
-        Filter\Groupby $groupbyFilter,
-        Filter\Period $periodFilter,
-        Filter\Range $rangeFilter,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
-    ) {
-        $this->rangeFilter = $rangeFilter;
-        parent::__construct(
-            $entityFactory,
-            $logger,
-            $fetchStrategy,
-            $eventManager,
-            $config,
-            $storeFilter,
-            $customerGroupFilter,
-            $groupbyFilter,
-            $periodFilter,
-            $connection,
-            $resource
-        );
-    }
 
     /**
      * {@inheritdoc}
@@ -99,7 +41,6 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     {
         $this->getSelect()
             ->from(['main_table' => $this->getMainTable()], [])
-            ->columns($this->getColumns(true))
             ->group([
                 'main_table.customer_id',
                 'main_table.customer_email'
@@ -111,11 +52,11 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    protected function getColumns($addRate = false, $excludeRefunded = false)
+    protected function getColumns($addRate = false)
     {
         $rateField = $this->getRateField($addRate);
 
-        if ($excludeRefunded) {
+        if ($this->excludeRefunded) {
             $orderItemsCount = 'SUM(COALESCE(main_table.qty_ordered - main_table.qty_refunded, 0))';
             $total = 'SUM(COALESCE((main_table.total - main_table.total_refunded)' . $rateField . ', 0))';
             $orderItemsCountLifetime = 'COALESCE(lifetime_sales.qty_ordered - lifetime_sales.qty_refunded, 0)';
@@ -183,33 +124,29 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
                 return $this;
             }
         }
-        if ($field == 'rangeFilter') {
-            return $this->addRangeFilter();
-        }
         return parent::addFieldToFilter($field, $condition);
-    }
-
-    /**
-     * Add exclude refunded items filters to collection
-     *
-     * @return $this
-     */
-    private function addExcludeRefundedItemsFilter()
-    {
-        $this->excludeRefunded = true;
-        $this->getSelect()
-            ->reset(\Magento\Framework\DB\Select::COLUMNS)
-            ->columns($this->getColumns(true, true))
-            ->where('? > 0', new \Zend_Db_Expr('(main_table.qty_ordered - main_table.qty_refunded)'));
-        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    private function addRangeFilter()
+    public function addExcludeRefundedItemsFilter()
     {
-        $range = $this->rangeFilter->getRange();
+        $this->excludeRefunded = true;
+        $this->getSelect()
+            ->where('? > 0', new \Zend_Db_Expr('(main_table.qty_ordered - main_table.qty_refunded)'));
+
+        return $this;
+    }
+
+    /**
+     * Add range filter to collection
+     *
+     * @param array $range
+     * @return $this
+     */
+    public function addRangeFilter($range)
+    {
         if (null != $range) {
             if (isset($range['from']) && $range['from']) {
                 $this->addFieldToFilter('total_sales_for_period', ['gteq' => $range['from']]);
@@ -224,7 +161,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    public function addOrderStatusFilter()
+    protected function addOrderStatusFilter()
     {
         $this->conditionsForSales[] = [
             'field' => 'order_status',
@@ -236,33 +173,27 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
     /**
      * {@inheritdoc}
      */
-    public function addCustomerGroupFilter()
+    public function addCustomerGroupFilter($customerGroupsId)
     {
-        $customerGroupsId = $this->customerGroupFilter->getCustomerGroupId();
-        if (null != $customerGroupsId) {
-            $this->conditionsForSales[] = [
-                'field' => 'customer_group_id',
-                'condition' => ['in' => $customerGroupsId]
-            ];
-        }
-        return parent::addCustomerGroupFilter();
+        $this->conditionsForSales[] = [
+            'field' => 'customer_group_id',
+            'condition' => ['in' => $customerGroupsId]
+        ];
+
+        return parent::addCustomerGroupFilter($customerGroupsId);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addStoreFilter()
+    public function addStoreFilter($storeIds)
     {
-        $storeIds = $this->storeFilter->getStoreIds();
-        if (null != $storeIds) {
-            $this->conditionsForSales[] = [
-                'field' => 'store_id',
-                'condition' => ['in' => $storeIds]
-            ];
-            $this->getSelect()
-                ->where('main_table.store_id in (?)', $storeIds);
-        }
-        return $this;
+        $this->conditionsForSales[] = [
+            'field' => 'store_id',
+            'condition' => ['in' => $storeIds]
+        ];
+
+        return parent::addStoreFilter($storeIds);
     }
 
     /**
@@ -286,6 +217,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      */
     protected function _renderFiltersBefore()
     {
+        $this->getSelect()->columns($this->getColumns(true));
         $excludeRefunded = '1=1';
         if ($this->excludeRefunded) {
             $excludeRefunded = '((qty_ordered - qty_refunded) > 0)';

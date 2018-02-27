@@ -34,7 +34,11 @@ class Price extends CatalogPrice
      */
     public function getOpenAmountMin(Product $product)
     {
-        if ($amount = $product->getData(ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MIN)) {
+        $amount = $product->getTypeInstance()
+            ->getAttribute($product, ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MIN);
+        $allowOpenAmount = (bool)$product->getTypeInstance()
+            ->getAttribute($product, ProductAttributeInterface::CODE_AW_GC_ALLOW_OPEN_AMOUNT);
+        if ($amount && $allowOpenAmount) {
             return (float)$amount;
         }
         return false;
@@ -48,7 +52,11 @@ class Price extends CatalogPrice
      */
     public function getOpenAmountMax(Product $product)
     {
-        if ($amount = $product->getData(ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MAX)) {
+        $amount = $product->getTypeInstance()
+            ->getAttribute($product, ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MAX);
+        $allowOpenAmount = (bool)$product->getTypeInstance()
+            ->getAttribute($product, ProductAttributeInterface::CODE_AW_GC_ALLOW_OPEN_AMOUNT);
+        if ($amount && $allowOpenAmount) {
             return (float)$amount;
         }
         return false;

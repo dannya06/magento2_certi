@@ -28,7 +28,7 @@ use Magento\Store\Api\Data\StoreInterface;
  *
  * @package Aheadworks\Giftcard\Test\Unit\Model\Service
  */
-class GiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
+class GiftcardCartServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GiftcardCartService
@@ -75,22 +75,22 @@ class GiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
         $objectManager = new ObjectManager($this);
         $this->giftcardRepositoryMock = $this->getMockForAbstractClass(GiftcardRepositoryInterface::class);
         $this->quoteRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
-        $this->cartExtensionFactoryMock = $this->getMock(CartExtensionFactory::class, ['create'], [], '', false);
-        $this->giftcardQuoteFactoryMock = $this->getMock(
-            GiftcardQuoteInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->giftcardQuoteCollectionFactoryMock = $this->getMock(
-            GiftcardQuoteCollectionFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->giftcardValidatorMock = $this->getMock(GiftcardValidator::class, [], [], '', false);
+        $this->cartExtensionFactoryMock = $this->getMockBuilder(CartExtensionFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->giftcardQuoteFactoryMock = $this->getMockBuilder(GiftcardQuoteInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->giftcardQuoteCollectionFactoryMock = $this->getMockBuilder(GiftcardQuoteCollectionFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->giftcardValidatorMock = $this->getMockBuilder(GiftcardValidator::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->object = $objectManager->getObject(
             GiftcardCartService::class,
@@ -114,7 +114,10 @@ class GiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
         $cartId = 1;
         $expectedValue = [$giftcardQuoteMock];
 
-        $quoteMock = $this->getMock(QuoteModel::class, ['getItemsCount', 'getExtensionAttributes'], [], '', false);
+        $quoteMock = $this->getMockBuilder(QuoteModel::class)
+            ->setMethods(['getItemsCount', 'getExtensionAttributes'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $quoteMock->expects($this->once())
             ->method('getItemsCount')
             ->willReturn(2);
@@ -152,7 +155,10 @@ class GiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
     {
         $cartId = 1;
 
-        $quoteModelMock = $this->getMock(QuoteModel::class, ['getItemsCount'], [], '', false);
+        $quoteModelMock = $this->getMockBuilder(QuoteModel::class)
+            ->setMethods(['getItemsCount'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $quoteModelMock->expects($this->once())
             ->method('getItemsCount')
             ->willReturn(null);
@@ -179,21 +185,20 @@ class GiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
         $storeMock->expects($this->once())
             ->method('getWebsiteId')
             ->willReturn($websiteId);
-        $quoteMock = $this->getMock(
-            QuoteModel::class,
-            [
-                'getItemsCount',
-                'getStore',
-                'getId',
-                'getExtensionAttributes',
-                'getShippingAddress',
-                'collectTotals',
-                'setExtensionAttributes'
-            ],
-            [],
-            '',
-            false
-        );
+        $quoteMock = $this->getMockBuilder(QuoteModel::class)
+            ->setMethods(
+                [
+                    'getItemsCount',
+                    'getStore',
+                    'getId',
+                    'getExtensionAttributes',
+                    'getShippingAddress',
+                    'collectTotals',
+                    'setExtensionAttributes'
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $quoteMock->expects($this->once())
             ->method('getItemsCount')
             ->willReturn(2);
@@ -228,13 +233,10 @@ class GiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
             ->with($giftcardMock)
             ->willReturn(true);
 
-        $giftcardQuoteCollectionMock = $this->getMock(
-            GiftcardQuoteCollection::class,
-            ['addFieldToFilter', 'load', 'getItems'],
-            [],
-            '',
-            false
-        );
+        $giftcardQuoteCollectionMock = $this->getMockBuilder(GiftcardQuoteCollection::class)
+            ->setMethods(['addFieldToFilter', 'load', 'getItems'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $giftcardQuoteCollectionMock->expects($this->at(0))
             ->method('addFieldToFilter')
             ->with('quote_id', $cartId)
@@ -355,18 +357,10 @@ class GiftcardCartServiceTest extends \PHPUnit_Framework_TestCase
         $giftcardCode = 'gccode';
         $expectedValue = true;
 
-        $quoteMock = $this->getMock(
-            QuoteModel::class,
-            [
-                'getItemsCount',
-                'getExtensionAttributes',
-                'getShippingAddress',
-                'collectTotals'
-            ],
-            [],
-            '',
-            false
-        );
+        $quoteMock = $this->getMockBuilder(QuoteModel::class)
+            ->setMethods(['getItemsCount', 'getExtensionAttributes', 'getShippingAddress', 'collectTotals'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $quoteMock->expects($this->once())
             ->method('getItemsCount')
             ->willReturn(2);

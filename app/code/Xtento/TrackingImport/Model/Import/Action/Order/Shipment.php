@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.0)
- * ID:            HdWKOY0KdgGaRx+26HyONH06+SvSVZH7A2yQmSKRHJU=
- * Packaged:      2017-10-04T08:30:20+00:00
- * Last Modified: 2017-07-05T12:14:00+00:00
+ * Product:       Xtento_TrackingImport (2.3.6)
+ * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
+ * Packaged:      2018-02-26T09:10:55+00:00
+ * Last Modified: 2017-12-14T18:42:30+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Import/Action/Order/Shipment.php
  * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -301,8 +301,12 @@ class Shipment extends AbstractAction
                         );
                     }
                 } else {
+                    $items = [];
+                    foreach ($order->getAllItems() as $orderItem) {
+                        $items[$orderItem->getId()] = $orderItem->getQtyToShip();
+                    }
                     /** @var \Magento\Sales\Model\Order\Shipment $shipment */
-                    $shipment = $this->shipmentFactory->create($order);
+                    $shipment = $this->shipmentFactory->create($order, $items);
                 }
 
                 /* @var $shipment Order\Shipment */

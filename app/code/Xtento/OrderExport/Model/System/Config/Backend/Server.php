@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.3.7)
- * ID:            vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=
- * Packaged:      2017-10-04T08:30:08+00:00
+ * Product:       Xtento_OrderExport (2.4.9)
+ * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
+ * Packaged:      2018-02-26T09:11:23+00:00
  * Last Modified: 2016-04-03T15:19:28+00:00
  * File:          app/code/Xtento/OrderExport/Model/System/Config/Backend/Server.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\System\Config\Backend;
 
 class Server extends \Xtento\XtCore\Model\System\Config\Backend\Server
 {
-    protected $version = 'vuwMiuqT6hJFCgwIsMBM7iJwY9/E3ScMI/mHOqvUFvQ=';
+    protected $version = 'kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=';
 
     /**
      * Server constructor.

@@ -9,6 +9,7 @@ namespace Aheadworks\Giftcard\Plugin\Model\Order;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\Data\CreditmemoExtensionFactory;
+use Magento\Sales\Api\Data\CreditmemoSearchResultInterface;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Creditmemo\CollectionFactory
     as GiftcardCreditmemoCollectionFactory;
 use Aheadworks\Giftcard\Api\Data\Giftcard\CreditmemoInterface as GiftcardCreditmemoInterface;
@@ -90,11 +91,11 @@ class CreditmemoRepositoryPlugin
      * Add Gift Card data to order object
      *
      * @param CreditmemoRepositoryInterface $subject
-     * @param CreditmemoInterface $creditmemos
+     * @param CreditmemoSearchResultInterface $creditmemos
      * @return CreditmemoInterface
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function afterGetList(CreditmemoRepositoryInterface $subject, CreditmemoInterface $creditmemos)
+    public function afterGetList(CreditmemoRepositoryInterface $subject, CreditmemoSearchResultInterface $creditmemos)
     {
         /** @var CreditmemoInterface $order */
         foreach ($creditmemos->getItems() as $creditmemo) {
