@@ -34,7 +34,9 @@ How to update project that base from SWIFT
     git fetch swift --tags
 
     git merge 2.0.8
-
+    
+    composer install
+    
     full deploy : setup upgrade, compile, deploy
 
     DO SOME TESTING
@@ -48,6 +50,8 @@ How to update project that clone from SWIFT
     git fetch origin --tags
 
     git checkout tags/2.0.8 -b <branch_name>_2.0.8
+    
+    composer install
 
     full deploy : setup upgrade, compile, deploy
 
