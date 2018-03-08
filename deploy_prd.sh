@@ -18,7 +18,7 @@ shr_dir=$site_dir$shared
 read_repo=""
 read_branch=""
 
-COMBI=`getopt -o h --long fix-permission,full,composer-install,help -- "$@"` 
+COMBI=`getopt -o h --long fix-permission,full,composer-install,setup-upgrade,composer-new-module,static-deploy,ca-cl,ca-fl,help -- "$@"` 
 eval set -- "$COMBI"
 
 while true; do
@@ -112,6 +112,54 @@ case "$1" in
 		ln -s $web_dir $site_dir/current
 		;;
 
+	# install new module: magento
+	--setup-upgrade) CASE_SU='Magento setup:upgrade -- install new module'; shift
+	echo "$CASE_SU"
+
+		cd $site_dir$current
+		php bin/magento cache:flush
+		php bin/magento maintenance:enable
+		php bin/magento setup:upgrade --keep-generated
+		php bin/magento maintenance:disable
+		php bin/magento cache:flush
+		;;
+
+	# install new module: composer
+	--composer-new-module) CASE_CO='Composer install -- install new module'; shift
+	echo "$CASE_CO"
+
+		cd $site_dir$current
+		php bin/magento cache:flush
+		composer install --no-dev --optimize-autoloader
+		php bin/magento cache:flush
+		;;
+
+	# --static-deploy
+	--static-deploy) CASE_ST='Magento static-content:deploy'; shift
+	echo "$CASE_ST"
+
+		cd $site_dir$current
+		php bin/magento cache:flush
+		php bin/magento setup:static-content:deploy
+		php bin/magento cache:flush
+		;;
+
+	# --ca-cl
+	--ca-cl) CASE_CL='Magento cache:clean'; shift
+	echo "$CASE_CL"
+
+		cd $site_dir$current
+		php bin/magento cache:clean
+		;;
+
+	# --ca-fl
+	--ca-fl) CASE_FL='Magento cache:flush'; shift
+	echo "$CASE_FL"
+
+		cd $site_dir$current
+		php bin/magento cache:flush
+		;;
+
 	# --help
 	-h|--help) CASE_H='Help Page'; shift
 	echo "$CASE_H"
@@ -125,6 +173,16 @@ case "$1" in
 		printf "Deployment with fixing file & folder permission in pub/ & var/log/ directory:\n"
 		printf "  bash deploy_prd.sh --full --fix-permission\t\t\t OR\n"
 		printf "  bash deploy_prd.sh --composer-install --fix-permission\n\n"
+		printf "Install new module (magento) ONLY in current code version (no git clone, no deployment):\n"
+		printf "  bash deploy_prd.sh --setup-upgrade\n\n"
+		printf "Install new module (composer) ONLY in current code version (no git clone, no deployment):\n"
+		printf "  bash deploy_prd.sh --composer-new-module\n\n"
+		printf "Static content deploy ONLY in current code version (no git clone, no deployment):\n"
+		printf "  bash deploy_prd.sh --static-deploy\n\n"
+		printf "Clean cache ONLY in current code version (no git clone, no deployment):\n"
+		printf "  bash deploy_prd.sh --ca-cl\n\n"
+		printf "Flush cache ONLY in current code version (no git clone, no deployment):\n"
+		printf "  bash deploy_prd.sh --ca-fl\n\n"
 		exit 0 ;;
 
 	--) shift; break ;;
