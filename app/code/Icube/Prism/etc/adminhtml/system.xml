@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config>
+    <system>
+
+
+
+        <tab id="icube" translate="label" sortOrder="1000">
+            <label>Icube</label>
+        </tab>
+        <section id="prism" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Prism COnfigration</label>
+            <tab>icube</tab>
+            <resource>Icube_HelloWorld::config</resource>
+            <group id="widget_snippet" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Prism Configuration</label>
+                <field id="script" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Chat Widget Snippet</label>
+                    <comment>Paste widget code snippet from prism setting.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
