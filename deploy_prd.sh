@@ -56,14 +56,14 @@ case "$1" in
 		git checkout $read_branch
 
 		cd $web_dir
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
 		php bin/magento setup:di:compile
-		php bin/magento setup:static-content:deploy
+		php bin/magento setup:static-content:deploy -f
 		php bin/magento maintenance:enable
 		php bin/magento setup:upgrade --keep-generated
 		php bin/magento maintenance:disable
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
 
 		echo "Update Symlink"
@@ -94,15 +94,15 @@ case "$1" in
 		git checkout $read_branch
 
 		cd $web_dir
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
-		composer install --no-dev --optimize-autoloader
+		composer install
 		php bin/magento setup:di:compile
-		php bin/magento setup:static-content:deploy
+		php bin/magento setup:static-content:deploy -f
 		php bin/magento maintenance:enable
 		php bin/magento setup:upgrade --keep-generated
 		php bin/magento maintenance:disable
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
 
 		echo "Update Symlink"
@@ -130,7 +130,7 @@ case "$1" in
 
 		cd $site_dir$current
 		php bin/magento cache:flush
-		composer install --no-dev --optimize-autoloader
+		composer install
 		php bin/magento cache:flush
 		;;
 
@@ -140,7 +140,7 @@ case "$1" in
 
 		cd $site_dir$current
 		php bin/magento cache:flush
-		php bin/magento setup:static-content:deploy
+		php bin/magento setup:static-content:deploy -f
 		php bin/magento cache:flush
 		;;
 

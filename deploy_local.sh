@@ -27,18 +27,18 @@ case "$1" in
 	echo "$CASE_FULL"
 
 		cd $web_dir
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
 		php bin/magento setup:di:compile
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
 		php bin/magento weltpixel:less:generate
-		php bin/magento setup:static-content:deploy
+		php bin/magento setup:static-content:deploy -f
 		php bin/magento maintenance:enable
 		php bin/magento setup:upgrade --keep-generated
 		php bin/magento deploy:mode:set production -s
 		php bin/magento maintenance:disable
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
 		;;
 
@@ -47,19 +47,19 @@ case "$1" in
 	echo "$CASE_CI"
 
 		cd $web_dir
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
-		composer install --no-dev --optimize-autoloader
+		composer install
 		php bin/magento setup:di:compile
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
 		php bin/magento weltpixel:less:generate
-		php bin/magento setup:static-content:deploy
+		php bin/magento setup:static-content:deploy -f
 		php bin/magento maintenance:enable
 		php bin/magento setup:upgrade --keep-generated
 		php bin/magento deploy:mode:set production -s
 		php bin/magento maintenance:disable
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
 		;;
 
@@ -68,15 +68,15 @@ case "$1" in
 	echo "$CASE_NSG"
 
 		cd $web_dir
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
 		php bin/magento setup:di:compile
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
 		php bin/magento weltpixel:less:generate
-		php bin/magento setup:static-content:deploy
+		php bin/magento setup:static-content:deploy -f
 		php bin/magento deploy:mode:set production -s
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
 		;;
 
@@ -90,7 +90,7 @@ case "$1" in
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
 		php bin/magento weltpixel:less:generate
-		php bin/magento setup:static-content:deploy
+		php bin/magento setup:static-content:deploy -f
 		php bin/magento deploy:mode:set production -s
 		rm -rf var/cache/ var/page_cache/
 		php bin/magento cache:flush
