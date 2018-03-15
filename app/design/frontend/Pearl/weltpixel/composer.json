@@ -27,10 +27,14 @@
         "weltpixel/m2-weltpixel-quick-cart": "~1.0 | master",
         "weltpixel/m2-reviews-widget": "~1.0 | master",
         "weltpixel/m2-weltpixel-multistore": "~1.0 | master",
-        "magento/framework": "100.*"
+        "weltpixel/m2-weltpixel-lazyload": "~1.0 | master",
+        "weltpixel/m2-weltpixel-thankyou-page": "~1.0 | master",
+        "weltpixel/m2-weltpixel-searchautocomplete": "~1.0 | master",
+        "weltpixel/m2-weltpixel-ajax-infinite-scroll": "~1.0 | master",
+        "magento/framework": "100.* | 101.*"
     },
     "type": "magento2-theme",
-    "version": "101.5.3",
+    "version": "101.6.1",
     "license": [
         "OSL-3.0",
         "AFL-3.0"

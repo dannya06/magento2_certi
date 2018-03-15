@@ -55,13 +55,7 @@
                                         <?php echo $block->escapeHtml($_item->getName()) ?>
                                     </a>
                                 </strong>
-                                <?php
-                                echo $block->getProductPriceHtml($_item, $type);
-                                ?>
-
-                                <?php if ($templateType): ?>
-                                    <?php echo $block->getReviewsSummaryHtml($_item, $templateType) ?>
-                                <?php endif; ?>
+                                <?php echo $block->getProductPriceHtml($_item, $type); ?>
 
                                 <?php if ($showWishlist || $showCompare || $showCart): ?>
                                     <div class="product-item-actions">

@@ -207,13 +207,13 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
         <script>
             require(['jquery', 'WeltPixel_CategoryPage/js/productItemActions'],
                 function ($, CategoryPage) {
-                    var actions = {
+                    window.actions = {
                         displayWishlist: '<?php /* @escapeNotVerified */ echo $displayWishlist; ?>',
                         displayCompare: '<?php /* @escapeNotVerified */ echo $displayCompare; ?>',
                         displayAddToCart: '<?php /* @escapeNotVerified */ echo $displayAddToCart; ?>',
                         displaySwatches: '<?php /* @escapeNotVerified */ echo $displaySwatches; ?>'
                     };
-                    CategoryPage.actions(actions);
+                    CategoryPage.actions();
                 });
         </script>
     </div>
