@@ -6,6 +6,9 @@ $uniqueid = 'instagram-widget-'.uniqid();
 $instagramClientId = $this->getData('instagram_client_id');
 $instagramAccessToken = $this->getData('instagram_access_token');
 $imagesPerRow = $this->getData('images_per_row');
+$openImagesInNewTab = ($this->getData('images_in_new_tab'))  ? 'target="_blank"' : '';
+$imagesHavePadding = ($this->getData('images_have_padding'))  ? 'use-padding' : '';
+$useImageShuffle = ($this->getData('optimize_image_layout'))  ? true : false;
 $description = trim($this->getData('description'));
 $backgroundColor = trim($this->getData('background_color'));
 $title = trim($this->getData('title'));
@@ -16,6 +19,7 @@ $feedType = $this->getData('feed_type');
 $userId = $this->getData('user_id');
 $tagName = $this->getData('tag_name');
 $locationId = $this->getData('location_id');
+$imagesTemplate = '<a '. $openImagesInNewTab . ' href="{{link}}"><img class="' . $imagesHavePadding . '"'  .  ' src="{{image}}" /></a>';
 ?>
 <div class="instagram-widget-container " <?php if ($backgroundColor) : ?> style="background-color: <?php echo $backgroundColor; ?>" <?php endif; ?>>
     <div class="instagram-heading-title center">
@@ -30,8 +34,8 @@ $locationId = $this->getData('location_id');
 </div>
 <div class="clear" >&nbsp;</div>
 <script>
-    require(['jquery', 'Instafeed'],
-        function ($, Instafeed) {
+    require(['jquery', 'Instafeed', 'shufflejs'],
+        function ($, Instafeed, Shuffle) {
             var c_accessToken = '<?php  echo $instagramAccessToken; ?>';
             var c_clientID = '<?php echo $instagramClientId; ?>';
             var $instagramPhotosEl = $('#<?php echo $uniqueid; ?>');
@@ -46,12 +50,14 @@ $locationId = $this->getData('location_id');
                         instaGramCount = <?php echo $limit ?>,
                         instaGramType = '<?php echo $feedType ?>',
                         instaGramSortBy = '<?php echo $sortBy ?>',
-                        instaGramRes = '<?php echo $resolution ?>';
+                        instaGramRes = '<?php echo $resolution ?>',
+                        useImageShuffle = '<?php echo $useImageShuffle ?>',
+                        intaGramImagesTemplate = '<?php echo $imagesTemplate ?>';
+
 
                     if( !instaGramCount ) { instaGramCount = 9; }
                     if( !instaGramSortBy ) { instaGramSortBy = 'none'; }
                     if( !instaGramRes ) { instaGramRes = 'standard_resolution'; }
-                    //low_resolution
 
                     if( instaGramType == 'user' ) {
 
@@ -63,7 +69,14 @@ $locationId = $this->getData('location_id');
                             sortBy: instaGramSortBy,
                             resolution: instaGramRes,
                             accessToken: c_accessToken,
-                            clientId: c_clientID
+                            clientId: c_clientID,
+                            template: intaGramImagesTemplate,
+                            after: function() {
+                                if (useImageShuffle) {
+                                    var widgetId = this.options.target;
+                                    new Shuffle(document.getElementById(widgetId));
+                                }
+                            }
                         });
 
                     } else if( instaGramType == 'tagged' ) {
@@ -76,7 +89,14 @@ $locationId = $this->getData('location_id');
                             sortBy: instaGramSortBy,
                             resolution: instaGramRes,
                             accessToken: c_accessToken,
-                            clientId: c_accessToken
+                            clientId: c_accessToken,
+                            template: intaGramImagesTemplate,
+                            after: function() {
+                                if (useImageShuffle) {
+                                    var widgetId = this.options.target;
+                                    new Shuffle(document.getElementById(widgetId));
+                                }
+                            }
                         });
 
                     } else if( instaGramType == 'location' ) {
@@ -89,7 +109,14 @@ $locationId = $this->getData('location_id');
                             sortBy: instaGramSortBy,
                             resolution: instaGramRes,
                             accessToken: c_accessToken,
-                            clientId: c_accessToken
+                            clientId: c_accessToken,
+                            template: intaGramImagesTemplate,
+                            after: function() {
+                                if (useImageShuffle) {
+                                    var widgetId = this.options.target;
+                                    new Shuffle(document.getElementById(widgetId));
+                                }
+                            }
                         });
 
                     }

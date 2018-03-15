@@ -30,6 +30,12 @@ class AddUpdateHandlesObserver implements ObserverInterface
     {
         $layout = $observer->getData('layout');
 
+        /** Apply only on pages where page is rendered */
+        $currentHandles = $layout->getUpdate()->getHandles();
+        if (!in_array('default', $currentHandles)) {
+            return $this;
+        }
+
         $isCopyrightEnabled = $this->scopeConfig->getValue(self::XML_PATH_CUSTOMFOOTER_COPYRIGHT_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if (!$isCopyrightEnabled) {
             $layout->getUpdate()->addHandle('weltpixel_customfooter_removecopyright');

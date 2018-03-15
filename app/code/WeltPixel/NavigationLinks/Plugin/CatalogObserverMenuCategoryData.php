@@ -45,7 +45,7 @@ class CatalogObserverMenuCategoryData
 
         if (isset($customCategoryUrl) && strlen($customCategoryUrl)) {
 
-            if (strpos($customCategoryUrl, 'http://') === 0) {
+            if (strpos($customCategoryUrl, 'http://') === 0 || strpos($customCategoryUrl, 'https://') === 0) {
                 $result['url'] = $customCategoryUrl;
             } elseif ($customCategoryUrl == '#') {
                 $result['url'] = 'javascript:void(0);';

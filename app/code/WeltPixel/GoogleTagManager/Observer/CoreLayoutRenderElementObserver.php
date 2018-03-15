@@ -30,7 +30,7 @@ class CoreLayoutRenderElementObserver implements ObserverInterface
 
         $elementName = $observer->getData('element_name');
 
-        if ($elementName != 'weltpixel_gtm_footer') {
+        if ($elementName != 'weltpixel_gtm_head') {
             return $this;
         }
 
@@ -38,7 +38,7 @@ class CoreLayoutRenderElementObserver implements ObserverInterface
         $html = $transport->getOutput();
 
         $scriptContent = $this->helper->getDataLayerScript();
-        $html = $html . PHP_EOL . $scriptContent;
+        $html = $scriptContent . PHP_EOL . $html;
 
         $transport->setOutput($html);
 

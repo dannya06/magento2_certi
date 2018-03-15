@@ -22,9 +22,21 @@
                 <label translate="true">Container Background Color</label>
                 <block class="WeltPixel\InstagramWidget\Block\Adminhtml\Widget\ColorPicker"/>
             </parameter>
-            <parameter name="images_per_row" xsi:type="select" visible="true" sort_order="50"
+            <parameter name="images_in_new_tab" xsi:type="select" visible="true" sort_order="50"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\YesNo">
+                <label translate="true">Open Images in new Tab</label>
+            </parameter>
+            <parameter name="images_per_row" xsi:type="select" visible="true" sort_order="55"
                        source_model="WeltPixel\InstagramWidget\Model\Config\Source\ImagesPerRow">
                 <label translate="true">Images Per Row</label>
+            </parameter>
+            <parameter name="images_have_padding" xsi:type="select" visible="true" sort_order="56"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\YesNo">
+                <label translate="true">Images Should Have Padding</label>
+            </parameter>
+            <parameter name="optimize_image_layout" xsi:type="select" visible="true" sort_order="58"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\YesNo">
+                <label translate="true">Optimize Image Layout</label>
             </parameter>
             <parameter name="limit" xsi:type="text" visible="true" sort_order="60" >
                 <label translate="true">Limit</label>

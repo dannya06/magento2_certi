@@ -17,6 +17,7 @@ class Cart extends \WeltPixel\GoogleTagManager\Block\Core
         if (empty($crosselProductListBlock)) {
             return null;
         }
+        $crosselProductListBlock->toHtml();
 
         $collection = $crosselProductListBlock->getItems();
         return $collection;

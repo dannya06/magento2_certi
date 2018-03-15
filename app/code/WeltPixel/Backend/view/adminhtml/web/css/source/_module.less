@@ -34,11 +34,36 @@
                     }
                 }
             }
+            .item-weltpixel-helpcenter {
+                a {
+                    &:after {
+                        content: '\e633';
+                        font-family: 'Admin Icons';
+                        margin-left: 10px;
+                    }
+                }
+            }
+            .item-weltpixel-debugger {
+                .submenu-group-title {
+                    &:after {
+                        content: '\e613';
+                        font-family: 'Admin Icons';
+                        margin-left: 10px;
+                        color: #FFF;
+                    }
+                }
+            }
             .item-pearl-theme-options {
                 display: none;
                 &.parent {
                     display: block
                 }
+            }
+            .parent {
+                margin-bottom: 1em;
+                .submenu-group-title {
+                    margin-bottom: 0px;
+                    padding-bottom: 0.5em;                }
             }
         }
     }
@@ -99,4 +124,35 @@
             }
         }
     }
+}
+
+iframe#launcher {
+    display: none !important;
+}
+
+.col-rewrite-status {width: 160px;}
+.rewrite-status {
+    width: 100%;
+    display: block;
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    color: #FFF;
+}
+.rewrite-status-nok {
+    background-color: #ff0000;
+}
+.rewrite-status-ok {
+    background-color: #00aa00;
+}
+.module-title {
+    font-size: 16px;
+}
+.module-theme-info {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: bold;
 }

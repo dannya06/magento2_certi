@@ -10,6 +10,7 @@
                 <item name="importConfigurationsCommand" xsi:type="object">WeltPixel\Command\Console\Command\ImportConfigurationsCommand</item>
                 <item name="importDemoCommand" xsi:type="object">WeltPixel\Command\Console\Command\ImportDemoCommand</item>
                 <item name="themeConfiguratorCommand" xsi:type="object">WeltPixel\Command\Console\Command\ThemeConfiguratorCommand</item>
+                <item name="themeSetupCommand" xsi:type="object">WeltPixel\Command\Console\Command\ThemeSetupCommand</item>
                 <item name="activateThemeCommand" xsi:type="object">WeltPixel\Command\Console\Command\ActivateThemeCommand</item>
                 <item name="generateCssCommand" xsi:type="object">WeltPixel\Command\Console\Command\GenerateCssCommand</item>
             </argument>

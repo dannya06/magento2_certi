@@ -9,46 +9,19 @@ namespace WeltPixel\FrontendOptions\Helper;
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
-     * @var array
+     * @param int $storeId
+     * @return mixed
      */
-    protected $_frontendOptions;
-
-
-    /**
-     * Constructor
-     *
-     * @param \Magento\Framework\App\Helper\Context $context
-     */
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context
-    ) {
-        parent::__construct($context);
-        
-        $this->_frontendOptions = $this->scopeConfig->getValue('weltpixel_frontend_options', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    public function getMobileTreshold($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/breakpoints/screen__m', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
      * @param int $storeId
      * @return mixed
      */
-    public function getMobileTreshold($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/breakpoints/screen__m', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['breakpoints']['screen__m'];
-        }
-    }
-
-    /**
-     * @param int $storeId
-     * @return mixed
-     */
-    public function getPageMainWidth($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/page_main', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['section_width']['page_main'];
-        }
+    public function getPageMainWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/page_main', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
 
@@ -57,12 +30,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int $storeId
      * @return mixed
      */
-    public function getPageMainPadding($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/page_main_padding', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['section_width']['page_main_padding'];
-        }
+    public function getPageMainPadding($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/page_main_padding', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
 
@@ -70,145 +39,131 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int $storeId
      * @return mixed
      */
-    public function getFooterWidth($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/footer', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['section_width']['footer'];
-        }
+    public function getFooterWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/footer', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
      * @param int $storeId
      * @return mixed
      */
-    public function getRowWidth($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/row', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['section_width']['row'];
-        }
+    public function getRowWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/row', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
      * @param int $storeId
      * @return mixed
      */
-    public function getDefaultPageWidth($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/default_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['section_width']['default_page'];
-        }
+    public function getDefaultPageWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/default_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
      * @param int $storeId
      * @return mixed
      */
-    public function getCmsPageWidth($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/cms_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['section_width']['cms_page'];
-        }
+    public function getCmsPageWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/cms_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
      * @param int $storeId
      * @return mixed
      */
-    public function getCategoryPageWidth($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/category_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['section_width']['category_page'];
-        }
+    public function getCategoryPageWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/category_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
      * @param int $storeId
      * @return mixed
      */
-    public function getProductPageWidth($storeId = 0) {
-        if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/product_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-        } else {
-            return $this->_frontendOptions['section_width']['product_page'];
-        }
+    public function getProductPageWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/section_width/product_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
-    
-    /** Breakpoints are global **/
+
+
     /**
-     * @return string
+     * @param int $storeId
+     * @return mixed
      */
-    public function getBreakpointXXS() {
-        return $this->_frontendOptions['breakpoints']['screen__xxs'];
+    public function getBreakpointXXS($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/breakpoints/screen__xxs', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getBreakpointXS($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/breakpoints/screen__xs', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
-     * @return string
+     * @param int $storeId
+     * @return mixed
      */
-    public function getBreakpointXS() {
-        return $this->_frontendOptions['breakpoints']['screen__xs'];
+    public function getBreakpointS($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/breakpoints/screen__s', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getBreakpointM($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/breakpoints/screen__m', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
-     * @return string
+     * @param int $storeId
+     * @return mixed
      */
-    public function getBreakpointS() {
-        return $this->_frontendOptions['breakpoints']['screen__s'];
+    public function getBreakpointL($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/breakpoints/screen__l', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
-     * @return string
+     * @param int $storeId
+     * @return mixed
      */
-    public function getBreakpointM() {
-        return $this->_frontendOptions['breakpoints']['screen__m'];
+    public function getBreakpointXL($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/breakpoints/screen__xl', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
-     * @return string
-     */
-    public function getBreakpointL() {
-        return $this->_frontendOptions['breakpoints']['screen__l'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getBreakpointXL() {
-        return $this->_frontendOptions['breakpoints']['screen__xl'];
-    }
-
-    /**
+     * @param int $storeId
      * @return array
      */
-    public function getAllBreakpoint() {
+    public function getAllBreakpoint($storeId = null) {
         return array(
-            'xxs' => $this->getBreakpointXXS(),
-            'xs' => $this->getBreakpointXS(),
-            's' => $this->getBreakpointS(),
-            'm' => $this->getBreakpointM(),
-            'l' => $this->getBreakpointL(),
-            'xl' => $this->getBreakpointXL(),
+            'xxs' => $this->getBreakpointXXS($storeId),
+            'xs' => $this->getBreakpointXS($storeId),
+            's' => $this->getBreakpointS($storeId),
+            'm' => $this->getBreakpointM($storeId),
+            'l' => $this->getBreakpointL($storeId),
+            'xl' => $this->getBreakpointXL($storeId),
         );
     }
 
-    public function getBreakPointsJson() {
+    /**
+     * @param int $storeId
+     * @return string
+     */
+    public function getBreakPointsJson($storeId = null) {
         $brekpoints = [];
         $brekpoints['breakpoints'] = [];
 
         $minValue = 0;
 
-        foreach ($this->getAllBreakpoint() as $key => $value) {
+        foreach ($this->getAllBreakpoint($storeId) as $key => $value) {
             $value = rtrim($value, 'px');
             $min = $minValue;
             $max = $value - 1;
 
-//            if ($key == 'xxs') {
-//                $min = 0;
-//            }
             if ($key == 'xl') {
                 $max = 10000;
             }

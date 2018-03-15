@@ -42,11 +42,29 @@
             }
         }
     }
+    .page-wrapper{
+        .btt-button{
+            bottom: 80px;
+            z-index: 1;
+        }
+    }
 }
 .media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
     .theme-pearl {
         .row {
             margin-right: 0px;
+        }
+    }
+    .page-wrapper{
+        .btt-button{
+            bottom: 60px;
+        }
+    }
+}
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__l) {
+    .page-wrapper{
+        .btt-button{
+            bottom: 20px !important;
         }
     }
 }

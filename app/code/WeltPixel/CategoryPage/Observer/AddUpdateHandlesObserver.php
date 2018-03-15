@@ -57,6 +57,13 @@ class AddUpdateHandlesObserver implements ObserverInterface
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $layout = $observer->getData('layout');
+
+        /** Apply only on pages where page is rendered */
+        $currentHandles = $layout->getUpdate()->getHandles();
+        if (!in_array('default', $currentHandles)) {
+            return $this;
+        }
+
         $fullActionName = $observer->getData('full_action_name');
 
         if ($fullActionName != 'catalog_category_view') {

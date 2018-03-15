@@ -66,6 +66,9 @@
         if (count($productImpressions)) :
             $this->setEcommerceData('currencyCode', $this->getCurrencyCode());
             $this->setEcommerceData('impressions', $productImpressions);
+            $this->setDataLayerOption('event', 'impression');
+            $this->setDataLayerOption('eventCategory', 'Ecommerce');
+            $this->setDataLayerOption('eventAction', 'Impression');
         endif;
 
         if ($helper->isCustomDimensionStockStatusEnabled()) :

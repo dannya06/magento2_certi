@@ -197,6 +197,31 @@ class UpgradeData implements UpgradeDataInterface
             $this->executor->exec($this->updater);
         }
 
+        /** Instagram Widget Demo */
+        if (version_compare($context->getVersion(), '1.1.14', '<')) {
+            $this->updater->setPagesToCreate('WeltPixel_SampleData::fixtures/pages/pages_1.1.14.csv');
+            $this->executor->exec($this->updater);
+        }
+
+        /** Home page V12 */
+        if (version_compare($context->getVersion(), '1.1.15', '<')) {
+            $sliderIds = $this->owl->update('1.1.15');
+            $this->updater->setPagesToCreate('WeltPixel_SampleData::fixtures/pages/pages_1.1.15.csv', $sliderIds);
+            $this->executor->exec($this->updater);
+        }
+
+        /** Home Page v14 */
+        if (version_compare($context->getVersion(), '1.1.16', '<')) {
+            $this->updater->setPagesToCreate('WeltPixel_SampleData::fixtures/pages/pages_1.1.16.csv');
+            $this->executor->exec($this->updater);
+        }
+
+        /** Home Page v15 */
+        if (version_compare($context->getVersion(), '1.1.17', '<')) {
+            $this->updater->setPagesToCreate('WeltPixel_SampleData::fixtures/pages/pages_1.1.17.csv');
+            $this->executor->exec($this->updater);
+        }
+
         $setup->endSetup();
     }
 }

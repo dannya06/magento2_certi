@@ -9,17 +9,17 @@ class Remarketing extends \WeltPixel\GoogleTagManager\Model\Api
     /**
      * Variable names
      */
-    const VARIABLE_REMARKETING_GOOGLE_TAG = 'WP Google Tag';
+    const VARIABLE_REMARKETING_GOOGLE_TAG = 'WP - Google Tag Params';
 
     /**
      * Tag names
      */
-    const TAG_REMARKETING_ADWORDS_REMARKETING = 'AdWords Remarketing';
+    const TAG_REMARKETING_ADWORDS_REMARKETING = 'WP - AdWords Remarketing';
 
     /**
      * Field names used in sending data to dataLayer
      */
-    const FIELD_REMARKEING_GOOGLE_TAG = 'wp_google_tag';
+    const FIELD_REMARKEING_GOOGLE_TAG = 'google_tag_params';
 
 
     const ECOMM_PAGETYPE_HOME = 'home';
@@ -183,7 +183,7 @@ class Remarketing extends \WeltPixel\GoogleTagManager\Model\Api
                     (
                         'type' => 'template',
                         'key' => 'dataLayerVariable',
-                        'value' => '{{WP Google Tag}}'
+                        'value' => '{{' . self::VARIABLE_REMARKETING_GOOGLE_TAG . '}}'
                     ),
                     array
                     (

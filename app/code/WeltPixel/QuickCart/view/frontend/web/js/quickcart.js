@@ -8,6 +8,9 @@ define(['jquery', 'jquery/ui', 'domReady'], function ($) {
                     $('.quickcart-content-wrapper').on('click', '.qty-update', function () {
                         quickcart.updateQty($(this));
                     });
+                    $('.showcart').on('click', function () {
+                        quickcart.checkSafariBrowser($(this));
+                    });
                     if (this.openMinicart()) {
                         var minicart = $('.minicart-wrapper');
                         minicart.on('contentLoading', function () {
@@ -61,6 +64,14 @@ define(['jquery', 'jquery/ui', 'domReady'], function ($) {
             },
             deleteCartItem: function (el) {
                 el.closest('.product-item-details').find('.product .action.delete').trigger('click');
+            },
+            checkSafariBrowser: function (el) {
+                var is_safari =  navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1 &&  navigator.userAgent.indexOf('Android') == -1
+                if (is_safari){
+                    $('.page-wrapper').css('overflow-x','visible')
+                }else{
+                    $('.page-wrapper').css('overflow-x','hidden')
+                }
             }
         };
 

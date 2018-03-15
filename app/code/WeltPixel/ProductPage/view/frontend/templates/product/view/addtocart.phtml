@@ -7,6 +7,7 @@
 <?php $selectMaxValue = $_helper->getQtySelectMaxValue(); ?>
 <?php $_product = $block->getProduct(); ?>
 <?php $buttonTitle = __('Add to Cart'); ?>
+<?php $addToCartClass = !$block->shouldRenderQuantity() ? 'full-width-btn' : ''; ?>
 <?php if ($_product->isSaleable()): ?>
     <div class="box-tocart">
         <div class="fieldset">
@@ -25,7 +26,7 @@
                     </div>
                 </div>
             <?php endif; ?>
-            <div class="actions">
+            <div class="actions  <?php echo $addToCartClass; ?>">
                 <button type="submit"
                         title="<?php /* @escapeNotVerified */ echo $buttonTitle ?>"
                         class="action primary tocart"

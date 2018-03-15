@@ -1,4 +1,14 @@
 & when (@media-common = true) {
+    .minicart-weltpixel{
+        .mage-dropdown-dialog{
+            display: block !important;
+        }
+        &.minicart-wrapper {
+            .block-minicart {
+                z-index: 1001;
+            }
+        }
+    }
     .box-sized {
         box-sizing: border-box;
         -moz-box-sizing: border-box;
@@ -74,6 +84,9 @@
 
                             .product-item-name {
                                 max-width: 90%;
+                            }
+                            .product-image-wrapper {
+                                margin-bottom: 10px;
                             }
                             .action.delete {
                                 span {

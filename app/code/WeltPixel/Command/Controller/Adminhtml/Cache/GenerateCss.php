@@ -4,6 +4,7 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace WeltPixel\Command\Controller\Adminhtml\Cache;
 
 use Magento\Framework\Controller\ResultFactory;
@@ -11,6 +12,7 @@ use Magento\Backend\App\Action;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Directory\Helper\Data;
 use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
+use Magento\Framework\Exception\LocalizedException;
 
 class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
 {
@@ -48,6 +50,29 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
     /** @var  ThemeProviderInterface */
     protected $themeProvider;
 
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $_storeManager;
+
+    /**
+     * Store collection
+     * storeId => \Magento\Store\Model\Store
+     *
+     * @var array
+     */
+    protected $_storeCollection;
+
+    /**
+     * @var \Magento\Framework\View\Asset\MergeService
+     */
+    protected $mergeService;
+
+    /**
+     * @var \Magento\Framework\App\Cache\Manager
+     */
+    protected $cacheManager;
+
 
     /**
      * GenerateCss constructor.
@@ -59,6 +84,9 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
      * @param \WeltPixel\Command\Model\GenerateCss $generateCss
      * @param ScopeConfigInterface $scopeConfig
      * @param ThemeProviderInterface $themeProvider
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\View\Asset\MergeService $mergeService
+     * @param \Magento\Framework\App\Cache\Manager $cacheManager
      */
     public function __construct(
         Action\Context $context,
@@ -68,8 +96,12 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \WeltPixel\Command\Model\GenerateCss $generateCss,
         ScopeConfigInterface $scopeConfig,
-        ThemeProviderInterface $themeProvider
-    ) {
+        ThemeProviderInterface $themeProvider,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\View\Asset\MergeService $mergeService,
+        \Magento\Framework\App\Cache\Manager $cacheManager
+    )
+    {
         parent::__construct($context, $cacheTypeList, $cacheState, $cacheFrontendPool, $resultPageFactory);
         $this->_cacheTypeList = $cacheTypeList;
         $this->_cacheState = $cacheState;
@@ -78,6 +110,10 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
         $this->generateCss = $generateCss;
         $this->scopeConfig = $scopeConfig;
         $this->themeProvider = $themeProvider;
+        $this->_storeManager = $storeManager;
+        $this->mergeService = $mergeService;
+        $this->cacheManager = $cacheManager;
+        $this->_storeCollection = $storeManager->getStores();
     }
 
     /**
@@ -87,8 +123,9 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
      */
     public function execute()
     {
-        $params =  $this->getRequest()->getPost();
+        $params = $this->getRequest()->getPost();
         $storeCode = $params->get('storeview');
+        $cssGenerated = false;
 
         if (!$storeCode) {
             $this->messageManager->addError(__('Store View is required'));
@@ -106,7 +143,7 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
                     $item->execute($observer);
                     $successMsg[] = $key . ' module less was generated successfully.';
                 } catch (\Exception $ex) {
-                    $errorMsg[] = $key . ' module less was not generated.';
+                    $errorMsg[] = $key . ' module less was not generated.' . $ex->getMessage();
                 }
             }
 
@@ -119,39 +156,77 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
             }
             /** Less generation */
 
-            /** Css Generation  */
-            try {
-                $locale = $this->scopeConfig->getValue(
-                    Data::XML_PATH_DEFAULT_LOCALE,
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-                    $storeCode
-                );
+            /** Must generate for all the store views */
+            if ($storeCode == '-') {
+                foreach ($this->_storeCollection as $store) {
+                    $storeCode = $store->getData('code');
+                    try {
+                        $locale = $this->scopeConfig->getValue(
+                            Data::XML_PATH_DEFAULT_LOCALE,
+                            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                            $storeCode
+                        );
 
-                $themeId = $this->scopeConfig->getValue(
-                    \Magento\Framework\View\DesignInterface::XML_PATH_THEME_ID,
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-                    $storeCode
-                );
+                        $themeId = $this->scopeConfig->getValue(
+                            \Magento\Framework\View\DesignInterface::XML_PATH_THEME_ID,
+                            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                            $storeCode
+                        );
 
-                $theme = $this->themeProvider->getThemeById($themeId);
-                $themePath = $theme->getThemePath();
+                        $theme = $this->themeProvider->getThemeById($themeId);
+                        $themePath = $theme->getThemePath();
 
-                $isPearlTheme = $this->_validatePearlTheme($theme);
-                if ($isPearlTheme) {
-                    $this->generateCss->processContent($themePath, $locale, $storeCode);
-                    $this->messageManager->addSuccess(__('Css generation finalized.'));
-                } else {
-                    $this->messageManager->addNotice(__('Css generation works only for Pearl theme or subtheme.'));
+                        $isPearlTheme = $this->_validatePearlTheme($theme);
+                        if ($isPearlTheme) {
+                            $this->generateCss->processContent($themePath, $locale, $storeCode);
+                            $cssGenerated = true;
+                            $this->messageManager->addSuccess(__('Css generation finalized for storeview: ') . $storeCode);
+                        }
+                    } catch (\Exception $ex) {
+                        $this->messageManager->addError($ex->getMessage() . ' : ' . $storeCode);
+                    }
                 }
-//                print_r($theme->getParentTheme()->getParentTheme());die;
 
-            } catch (\Exception $ex) {
-                $this->messageManager->addError($ex->getMessage());
+            } else {
+                /** Css Generation for only one store  */
+                try {
+                    $locale = $this->scopeConfig->getValue(
+                        Data::XML_PATH_DEFAULT_LOCALE,
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                        $storeCode
+                    );
+
+                    $themeId = $this->scopeConfig->getValue(
+                        \Magento\Framework\View\DesignInterface::XML_PATH_THEME_ID,
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                        $storeCode
+                    );
+
+                    $theme = $this->themeProvider->getThemeById($themeId);
+                    $themePath = $theme->getThemePath();
+
+                    $isPearlTheme = $this->_validatePearlTheme($theme);
+                    if ($isPearlTheme) {
+                        $this->generateCss->processContent($themePath, $locale, $storeCode);
+                        $cssGenerated = true;
+                        $this->messageManager->addSuccess(__('Css generation finalized.'));
+                    } else {
+                        $this->messageManager->addNotice(__('Css generation works only for Pearl theme or subtheme.'));
+                    }
+
+                } catch (\Exception $ex) {
+                    $this->messageManager->addError($ex->getMessage());
+                }
+                /** Css Generation for only one store */
             }
-            /** Css Generation  */
+
+            if ($cssGenerated) {
+                $this->cleanMergedCss();
+            }
         }
 
 
+        $this->_session->unsWeltPixelCssRegeneration();
 
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
@@ -162,7 +237,8 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
      * @param \Magento\Theme\Model\Theme $theme
      * @return bool
      */
-    protected function _validatePearlTheme($theme) {
+    protected function _validatePearlTheme($theme)
+    {
         $pearlThemePath = 'Pearl/weltpixel';
         do {
             if ($theme->getThemePath() == $pearlThemePath) {
@@ -172,6 +248,25 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
         } while ($theme);
 
         return false;
+
+    }
+
+    /**
+     * Clean JS/css files cache
+     * and refresh the fullpage cache
+     *
+     * @return \Magento\Backend\Model\View\Result\Redirect
+     */
+    public function cleanMergedCss() {
+        try {
+            $this->mergeService->cleanMergedJsCss();
+            $this->_eventManager->dispatch('clean_media_cache_after');
+            $this->cacheManager->clean(['full_page']);
+        } catch (LocalizedException $e) {
+            $this->messageManager->addError($e->getMessage());
+        } catch (\Exception $e) {
+            $this->messageManager->addException($e, __('An error occurred while clearing the JavaScript/CSS cache.'));
+        }
 
     }
 }

@@ -14,4 +14,12 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Framework\View\Asset\Source">
+        <plugin name="weltpixel-frontendoptions-view-asset-source"
+                type="WeltPixel\FrontendOptions\Plugin\ViewAssetSource" sortOrder="10"/>
+    </type>
+    <type name="Magento\Framework\View\Asset\PreProcessor\Chain">
+        <plugin name="weltpixel-frontendoptions-view-asset-processor-chain"
+                type="WeltPixel\FrontendOptions\Plugin\ViewPreProcessorChain" sortOrder="10"/>
+    </type>
 </config>

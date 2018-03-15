@@ -60,6 +60,12 @@ if (!isset($_POST['productVersion'])) {
     die;
 }
 
+if (!isset($_POST['preFooter'])) {
+    $result['error'] = true;
+    $result['msg'] = 'Please specify if enable Pre-footer or not!';
+    echo json_encode($result);
+    die;
+}
 
 if (!isset($_POST['footer'])) {
     $result['error'] = true;
@@ -82,6 +88,7 @@ $commands = [
         '--header='.$_POST['header'],
         '--categoryPage='.$_POST['categoryColumns'],
         '--productPage='.$_POST['productVersion'],
+        '--preFooter='.$_POST['preFooter'],
         '--footer='.$_POST['footer'],
     ],
     'cache:clean' => []

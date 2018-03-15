@@ -13,21 +13,26 @@
                 </field>
             </group>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>General Settings</label>
+                <label>Custom  Header General Settings</label>
                 <field id="header_style" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Header Style</label>
+                    <comment><![CDATA[ Select Header version.<br/>
+                    Check all versions on <a href="https://pearl.weltpixel.com" target="_blank" >pearl.weltpixel.com</a> ]]>
+                    </comment>
                     <source_model>WeltPixel\CustomHeader\Model\Config\Source\Headerstyles</source_model>
                 </field>
             </group>
             <group id="global_promo" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Global Promo Message</label>
                 <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable</label>
+                    <label>Enable Global Promo Message</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>weltpixel_global_promo_message static block content is displayed.</comment>
+                    <comment>The content of the [weltpixel_global_promo_message] static block is displayed.
+                        You can edit the block in Content -> Blocks.</comment>
                 </field>
                 <field id="text_color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Text Color</label>
+                    <comment>Set text color for [weltpixel_global_promo_message] static block. Example: #B05D5D</comment>
                     <validate>color {required:false, hash:true}</validate>
                     <depends>
                         <field id="enable">1</field>
@@ -35,6 +40,7 @@
                 </field>
                 <field id="background_color" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Background Color</label>
+                    <comment>Set background color of the [weltpixel_global_promo_message] static block. Example: #FFE8E8</comment>
                     <validate>color {required:false, hash:true}</validate>
                     <depends>
                         <field id="enable">1</field>
@@ -45,38 +51,46 @@
                 <label>Top Header</label>
                 <field id="width" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Width</label>
+                    <comment>Set width of Top section of Header. Example: 1400px</comment>
                 </field>
-
                 <field id="link_color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Link Color</label>
+                    <comment>Set color for Links on Top Header. Example: #FFFFFF</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="hover_link_color" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Hover Link Color</label>
+                    <comment>Set hover color on links from Top Header. Example: #F3F3F3</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="active_link_color" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Active Link Color</label>
+                    <comment>Set color for Active links on Top Header. Example: #F3F3F3</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="submenu_link_color" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Submenu Link Color</label>
+                    <comment>Set color for Submenu links from Top Header. Example: #212121</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="submenu_hover_link_color" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Submenu Hover Link Color</label>
+                    <comment>Set hover colors on Submenu links from Top er. Example: #000000</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="text_color" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Text Color</label>
+                    <comment>Set color for Text in Top Header. Example: #FFFFFF</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="background_color" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Background Color</label>
+                    <comment>Set Background color of Top Header. Example: #000000</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="border_bottom_color" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Border Bottom Color</label>
+                    <comment>Set border bottom color for entire Top Header section. Example: #FFFFFF</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
             </group>
@@ -84,9 +98,11 @@
                 <label>Middle Header</label>
                 <field id="width" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Width</label>
+                    <comment>Set width of Middle section from Header. Example: 1400px</comment>
                 </field>
                 <field id="background" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Background</label>
+                    <comment>Set background color for entire Middle section from Header. Example: #FFFFFF</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
             </group>
@@ -94,66 +110,192 @@
                 <label>Header Navigation</label>
                 <field id="width" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Width</label>
+                    <comment>Set width of Header Navigation (Menu section). Example: 1400px</comment>
                 </field>
                 <field id="background" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Background</label>
+                    <comment>Set background color of Header Navigation. Example: #FFFFFF</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="link_color" translate="label" type="text" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Link Color</label>
+                    <comment>Set link color from Header Navigation. Example: #000000</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="hover_link_color" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Hover Link Color</label>
+                    <comment>Set link color on hover, from Header Navigation. Example: #CCCCCC</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="shadow" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Navigation Shadow</label>
-                    <comment>Add shadow Ex.: 0px 10px 30px 0px rgba(0,0,0,0.05)</comment>
+                    <comment>Set shadow for Header Navigation. Example: 0px 10px 30px 0px rgba(0,0,0,0.05)</comment>
                 </field>
             </group>
-            <group id="search_options" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="sticky_header" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Sticky Header Options</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Sticky Header</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[
+					<script>requirejs(['jquery'],function($) {
+					    var stickyHeaderEnable = $('#weltpixel_custom_header_sticky_header_enable');
+                        $(document).ready(function() {
+                            hideAdvancedColors(stickyHeaderEnable.val());
+                            stickyHeaderEnable.change(function() {
+                                var curValue = $(this).val();
+                                hideAdvancedColors(curValue);
+                            });
+                        });
+                        function hideAdvancedColors(curValue) {
+                            if (curValue == 0) {
+                                var advancedColors = $('#weltpixel_custom_header_sticky_header_advanced_colors');
+                                advancedColors.find('option:last').prop('selected', true);
+                                advancedColors.closest('tr').nextAll('tr').hide();
+                            }
+                        }
+					});</script>]]></comment>
+                </field>
+                <field id="enable_mobile" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Sticky Header also on mobile</label>
+                    <comment>Set Yes to enable Sticky Header also on mobile view. If set to No, Sticky Header is enabled only on desktop view.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="advanced_colors" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use Advanced Color Control</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If "Yes" you will be able to control the background and elements color on sticky header.
+                        If "No" Sticky Header will use white background color and existing header color options.
+                    </comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="sticky_background_color" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sticky Header Background Color</label>
+                    <comment>Select background color for Header, when is sticky.</comment>
+                    <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="advanced_colors">1</field>
+                    </depends>
+                </field>
+                <field id="sticky_elements_color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sticky Header Elements Color</label>
+                    <comment>Select color for elements in Header, when is sticky.</comment>
+                    <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="advanced_colors">1</field>
+                    </depends>
+                </field>
+                <field id="sticky_elements_hover_color" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sticky Header Elements Color on Hover</label>
+                    <comment>Select color on hover for elements in Header, when is sticky.</comment>
+                    <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="advanced_colors">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="search_options" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Search Options</label>
+                <field id="version" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Search Version</label>
+                    <source_model>WeltPixel\CustomHeader\Model\Config\Source\SearchVersions</source_model>
+                    <comment>Select Search version.</comment>
+                </field>
                 <field id="width" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Field Width</label>
+                    <comment>Set width for Search field. Example: 250px</comment>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
                 <field id="height" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Field Height</label>
+                    <comment>Set height for Search field. Example: 30px</comment>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
                 <field id="border_width" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Field Border Width</label>
+                    <comment>Set borders for Search field. Example: 0 0 1px 0</comment>
                     <frontend_model>WeltPixel\CustomHeader\Table\Block\System\Config\Field\BorderWidth</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
                 <field id="border_style" translate="label" type="text" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Field Border Style</label>
+                    <comment>Set border style for Search. Example: solid</comment>
+                    <tooltip>The border-style property sets the style of Search's four borders. One of following
+                        values accepted: none, hidden, dotted, dashed, solid, double, groove, ridge, inset, outset,
+                        initial, inherit
+                    </tooltip>
                     <source_model>WeltPixel\CustomHeader\Model\Config\Source\SearchBorderStyle</source_model>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
                 <field id="border_color" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Field Border Color</label>
+                    <comment>Set border color for Search field. Example: #5C5C5C</comment>
                     <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
                 <field id="background" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Field Background color</label>
+                    <comment>Set background color for Search field. Example: #FFFFFF</comment>
                     <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
                 <field id="color" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font color</label>
+                    <comment>Set text font color from Search field. Example: #5C5C5C</comment>
                     <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
                 <field id="placeholder_color" translate="label" type="text" sortOrder="245" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Placeholder color</label>
+                    <comment>Set placeholder font color from Search field. Example: #5C5C5C</comment>
                     <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
-
                 <field id="font_size" translate="label" type="text" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font size</label>
+                    <comment>Set font size for Search field text. Example: 12px</comment>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
                 </field>
             </group>
-            <group id="icons" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="icons" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Header Icons</label>
                 <field id="icon_size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Icon Size</label>
+                    <comment>Set size of icons from Header. Example: 16px</comment>
+                </field>
+                <field id="icon_color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Icon Color</label>
+                    <comment>Set color of icons from Header. Example: #000000</comment>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+                <field id="icon_color_hover" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Icon Hover Color</label>
+                    <comment>Set hover color of icons from Header. Example: #CCCCCC</comment>
+                    <validate>color {required:false, hash:true}</validate>
                 </field>
             </group>
         </section>

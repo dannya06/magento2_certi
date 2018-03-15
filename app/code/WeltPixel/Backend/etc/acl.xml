@@ -11,7 +11,12 @@
             <resource id="Magento_Backend::admin" >
                 <resource id="WeltPixel_Backend::WeltPixel" title="WeltPixel" sortOrder="200" >
                     <resource id="WeltPixel_Backend::WeltPixel_Documentation" title="WeltPixel Documentation" sortOrder="0" />
-                    <resource id="WeltPixel_Backend::Pearl_Theme_Options" title="Pearl Theme Options" sortOrder="0" />
+                    <resource id="WeltPixel_Backend::WeltPixel_HelpCenter" title="WeltPixel HelpCenter" sortOrder="2" />
+                    <resource id="WeltPixel_Backend::WeltPixel_Debugger" title="WeltPixel Debugger" sortOrder="3" >
+                        <resource id="WeltPixel_Backend::WeltPixel_Debugger_Rewrites" title="Rewrites" sortOrder="1" />
+                        <resource id="WeltPixel_Backend::WeltPixel_Debugger_Modules" title="Extensions Version" sortOrder="5" />
+                    </resource>
+                    <resource id="WeltPixel_Backend::Pearl_Theme_Options" title="Pearl Theme Options" sortOrder="5" />
                 </resource>
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">

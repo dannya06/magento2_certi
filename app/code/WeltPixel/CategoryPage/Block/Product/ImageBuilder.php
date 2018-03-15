@@ -15,22 +15,29 @@ class ImageBuilder extends \Magento\Catalog\Block\Product\ImageBuilder
     protected $owlHelperCustom;
 
     /**
+     * @var \WeltPixel\LazyLoading\Helper\Data
+     */
+    protected $lazyLoadingHelper;
+
+    /**
      * @param HelperFactory $helperFactory
      * @param \Magento\Catalog\Block\Product\ImageFactory $imageFactory
      * @param \WeltPixel\CategoryPage\Helper\Data $categoryPageHelper
      * @param \WeltPixel\OwlCarouselSlider\Helper\Custom $owlHelperCustom
+     * @param \WeltPixel\LazyLoading\Helper\Data $lazyLoadingHelper
      */
     public function __construct(
         HelperFactory $helperFactory,
         \Magento\Catalog\Block\Product\ImageFactory $imageFactory,
         \WeltPixel\CategoryPage\Helper\Data $categoryPageHelper,
-        \WeltPixel\OwlCarouselSlider\Helper\Custom $owlHelperCustom
+        \WeltPixel\OwlCarouselSlider\Helper\Custom $owlHelperCustom,
+        \WeltPixel\LazyLoading\Helper\Data $lazyLoadingHelper
     ) {
         $this->categoryPageHelper = $categoryPageHelper;
         $this->owlHelperCustom = $owlHelperCustom;
+        $this->lazyLoadingHelper = $lazyLoadingHelper;
         parent::__construct($helperFactory, $imageFactory);
     }
-
 
 
     /**
@@ -56,7 +63,7 @@ class ImageBuilder extends \Magento\Catalog\Block\Product\ImageBuilder
             $hoverImageIds[] = 'category_page_list';
         }
 
-        if (empty($hoverImageIds)) {
+        if (empty($hoverImageIds) && !$this->isLazyLoadEnabled() && !$this->lazyLoadingHelper->isEnabled()) {
             return parent::create();
         }
 
@@ -65,8 +72,10 @@ class ImageBuilder extends \Magento\Catalog\Block\Product\ImageBuilder
             ->init($this->product, $this->imageId);
 
         $template = $helper->getFrame()
-            ? 'Magento_Catalog::product/image.phtml'
-            : 'Magento_Catalog::product/image_with_borders.phtml';
+            ? 'WeltPixel_CategoryPage::product/image.phtml'
+            : 'WeltPixel_CategoryPage::product/image_with_borders.phtml';
+
+        $data['data']['template'] = $template;
 
         $imagesize = $helper->getResizedImageInfo();
 
@@ -98,16 +107,58 @@ class ImageBuilder extends \Magento\Catalog\Block\Product\ImageBuilder
             } else {
                 $data['data']['hover_image_url'] = $hoverImageUrl;
             }
+        }
 
-
-            $template = $helper->getFrame()
-                ? 'WeltPixel_CategoryPage::product/image.phtml'
-                : 'WeltPixel_CategoryPage::product/image_with_borders.phtml';
-
-            $data['data']['template'] = $template;
+        if ($this->isLazyLoadEnabled()) {
+            $data['data']['lazy_load'] = true;
+        }
+        if ($this->isOwlCarouselEnabled()) {
+            $data['data']['owlcarousel'] = true;
         }
 
 
         return $this->imageFactory->create($data);
     }
+
+    /**
+     * @return bool
+     */
+    protected function isLazyLoadEnabled() {
+        foreach ($this->attributes as $name => $value) {
+            if ($name == 'weltpixel_lazyLoad') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isOwlCarouselEnabled() {
+        foreach ($this->attributes as $name => $value) {
+            if ($name == 'weltpixel_owlcarousel') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieve image custom attributes for HTML element
+     *
+     * @return string
+     */
+    protected function getCustomAttributes()
+    {
+        $result = [];
+        foreach ($this->attributes as $name => $value) {
+            if (in_array($name, ['weltpixel_lazyLoad', 'weltpixel_owlcarousel'])) continue;
+            $result[] = $name . '="' . $value . '"';
+        }
+        return !empty($result) ? implode(' ', $result) : '';
+    }
+
 }

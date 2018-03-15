@@ -1,0 +1,15 @@
+<?php /** @var $block \Magento\Catalog\Block\Product\Image */ ?>
+<?php $_helper = $this->helper('WeltPixel\LazyLoading\Helper\Data');  ?>
+
+<span class="product-image-container"
+      style="width:<?php /* @escapeNotVerified */ echo $block->getWidth()?>px;">
+    <span class="product-image-wrapper"
+          style="padding-bottom: <?php /* @escapeNotVerified */ echo ($block->getRatio() * 100); ?>%;">
+        <img class="product-image-photo lazy"
+             <?php /* @escapeNotVerified */ echo $block->getCustomAttributes(); ?>
+             src="<?php /* @escapeNotVerified */ echo $_helper->getImageLoader(); ?>"
+             data-original="<?php /* @escapeNotVerified */ echo $block->getImageUrl(); ?>"
+             width="<?php /* @escapeNotVerified */ echo $block->getResizedImageWidth(); ?>"
+             height="<?php /* @escapeNotVerified */ echo $block->getResizedImageHeight(); ?>"
+             alt="<?php /* @escapeNotVerified */ echo $block->stripTags($block->getLabel(), null, true); ?>"/></span>
+</span>

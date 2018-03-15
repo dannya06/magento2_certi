@@ -12,7 +12,6 @@ weltpixel_quickview/general/scroll_to_top,1,stores
 weltpixel_quickview/general/enable_shopping_checkout_product_buttons,1,stores
 weltpixel_quickview/general/custom_css,,stores
 weltpixel_quickview/general/enable_zoom,true,stores
-weltpixel_quickview/general/zoom_fullscreenzoom,800,stores
 weltpixel_quickview/general/zoom_top,,stores
 weltpixel_quickview/general/zoom_left,,stores
 weltpixel_quickview/general/zoom_width,,stores
@@ -40,7 +39,7 @@ weltpixel_owl_carousel_config/new_products/stagePadding,0,stores
 weltpixel_owl_carousel_config/new_products/items,4,stores
 weltpixel_owl_carousel_config/new_products/loop,1,stores
 weltpixel_owl_carousel_config/new_products/margin,0,stores
-weltpixel_owl_carousel_config/new_products/lazyLoad,0,stores
+weltpixel_owl_carousel_config/new_products/lazyLoad,1,stores
 weltpixel_owl_carousel_config/new_products/autoplay,1,stores
 weltpixel_owl_carousel_config/new_products/autoplayTimeout,5000,stores
 weltpixel_owl_carousel_config/new_products/autoplayHoverPause,1,stores

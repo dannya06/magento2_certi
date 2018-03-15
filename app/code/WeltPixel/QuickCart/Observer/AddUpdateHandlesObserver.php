@@ -30,6 +30,12 @@ class AddUpdateHandlesObserver implements ObserverInterface
     {
         $layout = $observer->getData('layout');
 
+        /** Apply only on pages where page is rendered */
+        $currentHandles = $layout->getUpdate()->getHandles();
+        if (!in_array('default', $currentHandles)) {
+            return $this;
+        }
+
         $isEnabled = $this->scopeConfig->getValue(self::XML_PATH_QUICKCART_ENABLED,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($isEnabled) {
             $layout->getUpdate()->addHandle('weltpixel_quickcart_sidebar');

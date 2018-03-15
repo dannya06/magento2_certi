@@ -6,13 +6,13 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="WeltPixel_Multistore::MultistoreSettings" title="WeltPixel Multistore" sortOrder="255" />
+                            <resource id="WeltPixel_Multistore::MultistoreSettings" title="WeltPixel Multi Store" sortOrder="255" />
                         </resource>
                     </resource>
                 </resource>
                 <resource id="WeltPixel_Backend::WeltPixel" >
-                    <resource id="WeltPixel_Multistore::Multistore_Label" sortOrder="55" title="Multistore" >
-                        <resource id="WeltPixel_Multistore::Multistore" sortOrder="10" title="Multistore" />
+                    <resource id="WeltPixel_Multistore::Multistore_Label" sortOrder="55" title="Multi Store" >
+                        <resource id="WeltPixel_Multistore::Multistore" sortOrder="10" title="Multi Store Settings" />
                     </resource>
                 </resource>
             </resource>

@@ -3,6 +3,9 @@
 Enable,Enable
 "Make sure the static blocks are enabled and assigned to the proper store views.","Make sure the static blocks are enabled and assigned to the proper store views."
 "Displays prefooter section before the footer. In Content -> Blocks, the block with identifier name ""weltpixel_pre-footer"" can be edited.","Displays prefooter section before the footer. In Content -> Blocks, the block with identifier name ""weltpixel_pre-footer"" can be edited."
+"Background Color","Background Color"
+"Text Color","Text Color"
+"Icon Color","Icon Color"
 "Footer Settings","Footer Settings"
 "Footer Version","Footer Version"
 "Choose footer version.","Choose footer version."

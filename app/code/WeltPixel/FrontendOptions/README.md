@@ -23,3 +23,8 @@ Copy the zip into app/code/WeltPixel/FrontendOptions directory
 $ php bin/magento module:enable WeltPixel_FrontendOptions --clear-static-content
 $ php bin/magento setup:upgrade
 ```
+
+### Important
+
+Please delete the view/frontend/web/css/source/_module.less file, it is not used anymore
+All the custom less generation was moved to view/frontend/web/css/source/_store_STORECODE_extend.less file

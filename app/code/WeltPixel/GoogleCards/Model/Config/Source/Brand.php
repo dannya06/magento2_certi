@@ -35,7 +35,7 @@ class Brand implements ArrayInterface
         $options = [];
         $options[] = array(
             'value' => 0,
-            'label' => __('Please select')
+            'label' => __('Please Select')
         );
 
         $attributeCollection = $this->attributeCollectionFactory->create();

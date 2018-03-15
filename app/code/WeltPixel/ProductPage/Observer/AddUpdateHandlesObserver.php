@@ -10,6 +10,11 @@ class AddUpdateHandlesObserver implements ObserverInterface
      */
     protected $scopeConfig;
 
+    /**
+     * @var \WeltPixel\Backend\Helper\Utility;
+     */
+    protected $utilityHelper;
+
     const XML_PATH_PRODUCTPAGE_REMOVE_STOCK_AVAILABILITY = 'weltpixel_product_page/general/remove_stock_availability';
     const XML_PATH_PRODUCTPAGE_REMOVE_BREADCRUMBS = 'weltpixel_product_page/general/remove_breadcrumbs';
     const XML_PATH_PRODUCTPAGE_MOVE_TABS = 'weltpixel_product_page/general/move_description_tabs_under_info_area';
@@ -19,12 +24,15 @@ class AddUpdateHandlesObserver implements ObserverInterface
      * AddUpdateHandlesObserver constructor.
      *
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \WeltPixel\Backend\Helper\Utility $utilityHelper
      */
     public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \WeltPixel\Backend\Helper\Utility $utilityHelper
     )
     {
         $this->scopeConfig = $scopeConfig;
+        $this->utilityHelper = $utilityHelper;
     }
 
     /**
@@ -34,10 +42,20 @@ class AddUpdateHandlesObserver implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
+        if (!$this->utilityHelper->isPearlThemeUsed()) {
+            return $this;
+        }
+
         $layout = $observer->getData('layout');
         $fullActionName = $observer->getData('full_action_name');
 
         if ($fullActionName != 'catalog_product_view') {
+            return $this;
+        }
+
+        /** Apply only on pages where page is rendered */
+        $currentHandles = $layout->getUpdate()->getHandles();
+        if (!in_array('default', $currentHandles)) {
             return $this;
         }
 

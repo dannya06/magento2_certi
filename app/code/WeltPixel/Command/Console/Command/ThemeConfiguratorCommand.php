@@ -13,6 +13,7 @@ class ThemeConfiguratorCommand extends ImportAbstract
     const ARGUMENT_HEADER = 'header';
     const ARGUMENT_CATEGORY_PAGE = 'categoryPage';
     const ARGUMENT_PRODUCT_PAGE = 'productPage';
+    const ARGUMENT_PRE_FOOTER = 'preFooter';
     const ARGUMENT_FOOTER = 'footer';
 
     const HOME_PAGE_VERSIONS = [
@@ -26,7 +27,10 @@ class ThemeConfiguratorCommand extends ImportAbstract
         'v8',
         'v9',
         'v10',
-        'v11'
+        'v11',
+        'v12',
+        'v14',
+        'v15'
     ];
 
     const HEADER_VERSIONS = [
@@ -48,6 +52,11 @@ class ThemeConfiguratorCommand extends ImportAbstract
         'v2',
         'v3',
         'v4'
+    ];
+
+    const PRE_FOOTER = [
+      'yes',
+      'no'
     ];
 
     const FOOTER_VERSIONS = [
@@ -96,6 +105,12 @@ class ThemeConfiguratorCommand extends ImportAbstract
                     'Product Page Version'
                 ),
                 new InputOption(
+                    self::ARGUMENT_PRE_FOOTER,
+                    null,
+                    InputOption::VALUE_OPTIONAL,
+                    'Pre-footer'
+                ),
+                new InputOption(
                     self::ARGUMENT_FOOTER,
                     null,
                     InputOption::VALUE_OPTIONAL,
@@ -116,10 +131,11 @@ class ThemeConfiguratorCommand extends ImportAbstract
         $headerVersion = $input->getOption(self::ARGUMENT_HEADER);
         $categoryColumns = $input->getOption(self::ARGUMENT_CATEGORY_PAGE);
         $productPageVersion = $input->getOption(self::ARGUMENT_PRODUCT_PAGE);
+        $preFooter = $input->getOption(self::ARGUMENT_PRE_FOOTER);
         $footerVersion = $input->getOption(self::ARGUMENT_FOOTER);
 
         $result = $this->validateInputs($storeCode, $homePageVersion, $headerVersion,
-            $categoryColumns, $productPageVersion, $footerVersion);
+            $categoryColumns, $productPageVersion, $preFooter, $footerVersion);
 
         $store = $result['store'];
         $csvData = $result['csvData'];
@@ -134,12 +150,13 @@ class ThemeConfiguratorCommand extends ImportAbstract
      * @param string $headerVersion
      * @param string $categoryColumns
      * @param string $productPageVersion
+     * @param string $preFooter
      * @param string $footerVersion
      * @return array
      * @throws \Exception
      */
     protected function validateInputs($storeCode, $homePageVersion, $headerVersion,
-                                      $categoryColumns, $productPageVersion, $footerVersion)
+                                      $categoryColumns, $productPageVersion, $preFooter, $footerVersion)
     {
         $demoCsvPath = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, 'WeltPixel_Command') .
         DIRECTORY_SEPARATOR . 'themeConfigurator';
@@ -198,6 +215,17 @@ class ThemeConfiguratorCommand extends ImportAbstract
             $data = array_merge($data, $csvData);
         }
 
+        /** pre-footer params verifications */
+        if (!is_null($preFooter) && strlen($preFooter) != '') {
+            if (!in_array($preFooter, self::PRE_FOOTER)) {
+                throw new \Exception('Argument ' . self::ARGUMENT_PRE_FOOTER . ' must be one of the following: ' . implode(', ', self::PRE_FOOTER));
+            }
+            $noOptionSelected = false;
+            $csvFile = $demoCsvPath . DIRECTORY_SEPARATOR . 'preFooter' .
+                DIRECTORY_SEPARATOR . $preFooter . '.csv';
+            $csvData = $this->csvFile->getData($csvFile);
+            $data = array_merge($data, $csvData);
+        }
 
         /** footer params verifications */
         if (!is_null($footerVersion) && strlen($footerVersion) != 0) {

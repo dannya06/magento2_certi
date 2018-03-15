@@ -31,6 +31,12 @@ class AddUpdateHandlesObserver implements ObserverInterface
     {
         $layout = $observer->getData('layout');
 
+        /** Apply only on pages where page is rendered */
+        $currentHandles = $layout->getUpdate()->getHandles();
+        if (!in_array('default', $currentHandles)) {
+            return $this;
+        }
+
         $isEnabled = $this->scopeConfig->getValue(self::XML_PATH_MULTISTORE_ENABLED,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $showInOneRow = $this->scopeConfig->getValue(self::XML_PATH_MULTISTORE_ONEROW,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($isEnabled) {

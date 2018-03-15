@@ -4,7 +4,6 @@
         <weltpixel_googletagmanager>
             <general>
                 <enable>0</enable>
-                <gtm_code_position>body</gtm_code_position>
                 <gtm_code></gtm_code>
                 <id_selection>id</id_selection>
                 <enable_brand>0</enable_brand>

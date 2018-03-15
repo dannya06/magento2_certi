@@ -42,6 +42,9 @@ class Additional extends \Magento\Backend\Block\Template
             array_unshift($storeCodes, [
                 'value' => 0,
                 'label' => __('Please select store view')
+            ], [
+                'value' => '-',
+                'label' => __('ALL STORE VIEWS')
             ]);
         }
 

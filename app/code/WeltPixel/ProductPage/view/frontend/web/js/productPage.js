@@ -5,6 +5,7 @@ var productPage = {
 	load: function () {
 		this.action();
 		this.mageSticky();
+		this.addMinHeight();
 	},
 
 	ajaxComplete: function () {
@@ -62,7 +63,29 @@ var productPage = {
 		} else {
 			swipeOff.removeClass('active');
 		}
-	}
+	},
+
+    addMinHeight: function() {
+        var media_v4 = jQuery('.product.media.product_v4');
+        if (media_v4.length) {
+            var mediaContainer = media_v4.find('.gallery-placeholder');
+            this.waitForEl('.fotorama__loaded--img', function() {
+                var prodImg = mediaContainer.find('.fotorama__loaded--img').first();
+                mediaContainer.css('min-height', prodImg.outerHeight());
+            });
+        }
+    },
+
+    waitForEl: function(selector, callback) {
+		var that = this;
+        if (jQuery(selector).length) {
+            callback();
+        } else {
+            setTimeout(function() {
+                that.waitForEl(selector, callback);
+            }, 500);
+        }
+    }
 };
 
 require(['jquery', 'productPage', 'mage/mage', 'mage/ie-class-fixer', 'mage/gallery/gallery'],

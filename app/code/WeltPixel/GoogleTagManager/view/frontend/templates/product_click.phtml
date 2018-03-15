@@ -32,6 +32,6 @@
             $data['ecommerce']['click']['products'][0]['brand'] = $helper->getGtmBrand($product);
         endif;
         ?>
-        dataLayer.push(<?php echo $this->escapeHtml($this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($data)); ?>);
+        window.dataLayer.push(<?php echo $this->escapeHtml($this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($data)); ?>);
     <?php endif; ?>
 <?php endif; ?>
