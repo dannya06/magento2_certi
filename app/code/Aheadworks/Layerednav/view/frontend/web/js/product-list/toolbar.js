@@ -1,10 +1,16 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery',
+    'underscore',
     './../url',
     './../filter/request/bridge',
     './../updater',
     'Magento_Catalog/js/product/list/toolbar'
-], function($, url, requestBridge, updater) {
+], function($, _, url, requestBridge, updater) {
     'use strict';
 
     $.widget('mage.awLayeredNavToolbar', $.mage.productListToolbarForm, {
@@ -43,7 +49,8 @@ define([
                 handlers,
                 this.options.limitControl,
                 this.options.limit,
-                this.options.limitDefault
+                this.options.limitDefault,
+                '_limitHandler'
             );
 
             this._on(handlers);
@@ -56,21 +63,48 @@ define([
          * @param {String} selector
          * @param {String} paramName
          * @param {String} defaultValue
+         * @param {String|Undefined} customHandler
          * @returns {Object}
          */
-        _addEventHandler: function (handlers, selector, paramName, defaultValue) {
+        _addEventHandler: function (handlers, selector, paramName, defaultValue, customHandler) {
             var isSelect = $(selector).is('select'),
                 event = isSelect ? 'change' : 'click';
 
-            handlers[event + ' ' + selector] = isSelect
+            handlers[event + ' ' + selector] = _.isFunction(this[customHandler])
                 ? function (event) {
-                    this._processSelect(event, paramName, defaultValue);
+                    this[customHandler](event, paramName, defaultValue, isSelect)
                 }
-                : function (event) {
-                    this._processLink(event, paramName, defaultValue);
-                };
+                : (isSelect
+                    ? function (event) {
+                        this._processSelect(event, paramName, defaultValue);
+                    }
+                    : function (event) {
+                        this._processLink(event, paramName, defaultValue);
+                    });
 
             return handlers;
+        },
+
+        /**
+         * Process click on link
+         *
+         * @param {Object} event
+         * @param {String} paramName
+         * @param {String} defaultValue
+         * @param {Boolean} isSelect
+         */
+        _limitHandler: function (event, paramName, defaultValue, isSelect) {
+            var paramValue = isSelect
+                    ? event.currentTarget.options[event.currentTarget.selectedIndex].value
+                    : $(event.currentTarget).data('value');
+
+            event.preventDefault();
+            this.changeUrl(
+                paramName,
+                paramValue,
+                defaultValue,
+                '_afterSubmitLimit'
+            );
         },
 
         /**
@@ -110,18 +144,38 @@ define([
          * @param {String} paramName
          * @param {String} paramValue
          * @param {String} defaultValue
+         * @param {String|Undefined} afterSubmit
          */
-        changeUrl: function (paramName, paramValue, defaultValue) {
+        changeUrl: function (paramName, paramValue, defaultValue, afterSubmit) {
             var updateUrl = url.getCurrentUrlWithChangedParam(paramName, paramValue, defaultValue);
 
+            afterSubmit = afterSubmit || '_afterSubmitDefault';
             requestBridge.submit(updateUrl).then(
                 /**
                  * Called after request finishes
                  */
                 function () {
-                    updater.update(updateUrl, requestBridge.getResult());
-                }
+                    this[afterSubmit](updateUrl)
+                }.bind(this)
             );
+        },
+
+        /**
+         * Called after request finishes
+         *
+         * @param {String} updateUrl
+         */
+        _afterSubmitDefault: function (updateUrl) {
+            updater.update(updateUrl, requestBridge.getResult());
+        },
+
+        /**
+         * Called after request finishes
+         *
+         * @param {String} updateUrl
+         */
+        _afterSubmitLimit: function (updateUrl) {
+            updater.updateAndScrollUpToTop(updateUrl, requestBridge.getResult());
         }
     });
 

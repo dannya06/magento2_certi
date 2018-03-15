@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter;
 
 use Aheadworks\Layerednav\Model\Config;
@@ -40,6 +45,11 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price
     private $config;
 
     /**
+     * @var bool
+     */
+    private $priceSliderRender = false;
+
+    /**
      * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Catalog\Model\Layer\Resolver $layerResolver
@@ -78,8 +88,22 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price
      */
     public function getMinMaxPrices()
     {
-        $priceData = $this->fetchPriceData($this->getParentSelect());
-        return ['minPrice' => $priceData['min_value'], 'maxPrice' => $priceData['max_value']];
+        $this->priceSliderRender = true;
+
+        $select = $this->getSelect();
+        $parentSelect = $this->getParentSelect();
+        $priceData = $this->fetchPriceData($parentSelect);
+        $selectionPriceData = $this->fetchPriceData($select);
+        // Min and max price values for selection excluding price filter
+        $excludedPriceData = $this->fetchPriceData($this->excludePriceFilter($select));
+        return [
+            'minPrice' => $priceData['min_value'],
+            'maxPrice' => $priceData['max_value'],
+            'minSelectionPrice' => $selectionPriceData['min_value'],
+            'maxSelectionPrice' => $selectionPriceData['max_value'],
+            'minExcludedPrice' => $excludedPriceData['min_value'],
+            'maxExcludedPrice' => $excludedPriceData['max_value'],
+        ];
     }
 
     /**
@@ -121,12 +145,23 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price
         }
         $countExpr = new \Zend_Db_Expr('COUNT(*)');
         $rangeExpr = new \Zend_Db_Expr("FLOOR(({$priceExpression}) / {$range}) + 1");
+        $orderExpr = new \Zend_Db_Expr("({$rangeExpr}) ASC");
 
-        $select->reset(\Zend_Db_Select::GROUP);
-        $select->columns(['range' => $rangeExpr, 'count' => $countExpr])
+        $select
+            ->columns(['price_index.min_price', 'price_index.entity_id']);
+
+        $mainSelect = clone $select;
+        $mainSelect
+            ->reset()
+            ->from(
+                ['price_index' => new \Zend_Db_Expr(sprintf('(%s)', $select))],
+                []
+            )
+            ->columns(['range' => $rangeExpr, 'count' => $countExpr])
             ->group($rangeExpr)
-            ->order("({$rangeExpr}) ASC");
-        return $this->getConnection()->fetchPairs($select);
+            ->order($orderExpr);
+
+        return $this->getConnection()->fetchPairs($mainSelect);
     }
 
     /**
@@ -207,6 +242,34 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price
     }
 
     /**
+     * Remove price filter from select
+     *
+     * @param Select $select
+     * @return Select
+     */
+    private function excludePriceFilter($select)
+    {
+        $wherePart = $select->getPart(Select::WHERE);
+        foreach ($wherePart as $index => $whereCond) {
+            if (strpos($whereCond, 'e.min_price') !== false) {
+                if ($index == 0
+                    && isset($wherePart[$index + 1])
+                    && substr(strtoupper($wherePart[$index + 1]), 0, 3) == 'AND'
+                ) {
+                    $wherePart[$index + 1] = substr($wherePart[$index + 1], 3, strlen($wherePart[$index + 1]) - 1);
+                }
+                unset($wherePart[$index]);
+                break;
+            }
+        }
+        $select->setPart(
+            Select::WHERE,
+            $wherePart
+        );
+        return $select;
+    }
+
+    /**
      * Prepare select to get count
      *
      * @param Select $select
@@ -259,10 +322,23 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price
     {
         $fromPartPrepared = [];
 
-        $priceIndexJoinPart = $fromPart[ProductCollection::INDEX_TABLE_ALIAS];
+        $indexKey = $this->priceSliderRender ?
+            ProductCollection::INDEX_TABLE_ALIAS :
+            'search_result';
+        $priceIndexJoinPart = $fromPart[$indexKey];
+
         $priceIndexJoinPart['joinType'] = Select::FROM;
         $priceIndexJoinPart['joinCondition'] = null;
         $fromPartPrepared[ProductCollection::MAIN_TABLE_ALIAS] = $priceIndexJoinPart;
+
+        if ($this->priceSliderRender) {
+            $fromPartPrepared['search_result'] = [
+                'joinType' => Select::INNER_JOIN,
+                'schema' => null,
+                'tableName' => $fromPart['search_result']['tableName'],
+                'joinCondition' => 'search_result.entity_id = e.entity_id'
+            ];
+        }
 
         // Add join to catalog_product_entity,
         // because we should support join conditions and where conditions of this table
@@ -274,7 +350,7 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price
         ];
 
         foreach ($fromPart as $key => $item) {
-            if (!array_key_exists($key, $fromPartPrepared) && $key != ProductCollection::INDEX_TABLE_ALIAS) {
+            if (!array_key_exists($key, $fromPartPrepared) && $key != $indexKey) {
                 $fromPartPrepared[$key] = $item;
                 $fromPartPrepared[$key]['joinCondition'] = $this->replaceTableAlias($item['joinCondition']);
             }
@@ -322,10 +398,17 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price
             sprintf($replacement, $connection->quoteIdentifier(self::PRODUCT_ENTITY_TABLE_ALIAS))
         ];
 
-        $indexTableAliasPatterns = [
-            sprintf($pattern, ProductCollection::INDEX_TABLE_ALIAS),
-            sprintf($patternQuoted, $connection->quoteIdentifier(ProductCollection::INDEX_TABLE_ALIAS))
-        ];
+        if ($this->priceSliderRender) {
+            $indexTableAliasPatterns = [
+                sprintf($pattern, ProductCollection::INDEX_TABLE_ALIAS),
+                sprintf($patternQuoted, $connection->quoteIdentifier(ProductCollection::INDEX_TABLE_ALIAS))
+            ];
+        } else {
+            $indexTableAliasPatterns = [
+                sprintf($pattern, 'search_result'),
+                sprintf($patternQuoted, $connection->quoteIdentifier('search_result'))
+            ];
+        }
 
         $mainTableAliasQuoted = $connection->quoteIdentifier(ProductCollection::MAIN_TABLE_ALIAS);
         $mainTableAliasPatterns = [
@@ -396,5 +479,17 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price
         }
 
         return $whereConditions;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _replaceTableAlias($conditionString)
+    {
+        if ($this->priceSliderRender) {
+            return parent::_replaceTableAlias($conditionString);
+        } else {
+            return $conditionString;
+        }
     }
 }

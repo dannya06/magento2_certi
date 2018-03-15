@@ -1,11 +1,18 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\Plugin;
 
+use Aheadworks\Layerednav\Model\PageConfig;
 use Aheadworks\Layerednav\Model\PageTypeResolver;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\LayoutInterface;
+use Magento\Framework\View\Result\Page;
 
 /**
  * Class Result
@@ -31,18 +38,26 @@ class Result
     private $pageTypeResolver;
 
     /**
+     * @var PageConfig
+     */
+    private $pageConfig;
+
+    /**
      * @param RequestInterface $request
      * @param LayoutInterface $layout
      * @param PageTypeResolver $pageTypeResolver
+     * @param PageConfig $pageConfig
      */
     public function __construct(
         RequestInterface $request,
         LayoutInterface $layout,
-        PageTypeResolver $pageTypeResolver
+        PageTypeResolver $pageTypeResolver,
+        PageConfig $pageConfig
     ) {
         $this->request = $request;
         $this->layout = $layout;
         $this->pageTypeResolver = $pageTypeResolver;
+        $this->pageConfig = $pageConfig;
     }
 
     /**
@@ -71,6 +86,9 @@ class Result
                 )
             );
             return $result;
+        }
+        if ($result instanceof Page) {
+            $this->pageConfig->apply($result);
         }
         return $proceed($response);
     }

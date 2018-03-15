@@ -1,12 +1,19 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
-    'jquery'
-], function ($) {
+    'jquery',
+    './url/processor/bridge'
+], function ($, processorBridge) {
     'use strict';
 
     return {
         currentUrl: window.location.href,
         filterRequestParams: [],
         paramsToRemove: ['_', 'aw_layered_nav_process_output'],
+        paramsToRemoveBeforeSend: ['p'],
 
         /**
          * Register filter request param
@@ -17,6 +24,7 @@ define([
             if ($.inArray(paramName, this.filterRequestParams) == -1) {
                 this.filterRequestParams.push(paramName);
             }
+            processorBridge.registerFilterRequestParam(paramName);
         },
 
         /**
@@ -25,7 +33,7 @@ define([
          * @param {String} url
          */
         setCurrentUrl: function (url) {
-            this.currentUrl = this._removeParams(url, this.paramsToRemove);
+            this.currentUrl = processorBridge.removeParams(url, this.paramsToRemove);
         },
 
         /**
@@ -46,14 +54,17 @@ define([
          * @returns {String}
          */
         getCurrentUrlWithChangedParam: function (paramName, paramValue, defaultValue) {
-            var paramsToUpdate = {};
+            var paramsToUpdate = {},
+                url = $.inArray(paramName, this.paramsToRemoveBeforeSend) == -1
+                    ? processorBridge.removeParams(this.currentUrl, this._prepareRemoveParams([]))
+                    : this.currentUrl;
 
             if (paramValue == defaultValue) {
-                return this._removeParams(this.currentUrl, [paramName]);
+                return processorBridge.removeParams(url, [paramName]);
             }
             paramsToUpdate[paramName] = paramValue;
 
-            return this._updateParams(this.currentUrl, paramsToUpdate);
+            return processorBridge.updateParams(url, paramsToUpdate);
         },
 
         /**
@@ -63,9 +74,12 @@ define([
          * @returns {String}
          */
         getSubmitUrl: function (filterValue) {
-            var url = this._removeParams(this.currentUrl, this.filterRequestParams);
+            var url = processorBridge.removeParams(
+                this.currentUrl,
+                this._prepareRemoveParams(this.filterRequestParams)
+            );
 
-            return this._updateParams(url, this._prepareFilterValue(filterValue));
+            return processorBridge.updateParams(url, processorBridge.prepareFilterValue(filterValue));
         },
 
         /**
@@ -74,101 +88,30 @@ define([
          * @returns {String}
          */
         getClearUrl: function () {
-            return this._removeParams(this.currentUrl, this.filterRequestParams);
+            return processorBridge.removeParams(this.currentUrl, this._prepareRemoveParams(this.filterRequestParams));
         },
 
         /**
-         * Prepare filter value
+         * Get reset url
          *
-         * @param {Array} filterValue
-         * @returns {Object}
-         */
-        _prepareFilterValue: function (filterValue) {
-            var result = {};
-
-            $.each(filterValue, function () {
-                if (result.hasOwnProperty(this.key)) {
-                    result[this.key] = result[this.key] + ',' + this.value;
-                } else {
-                    result[this.key] = this.value;
-                }
-            });
-
-            return result;
-        },
-
-        /**
-         * Update params in url and return modified url
-         *
-         * @param {String} url
-         * @param {Object} params
+         * @param {Array} params
          * @returns {String}
          */
-        _updateParams: function (url, params) {
-            var urlData = this._parseUrl(url);
-
-            for (var paramName in params) {
-                if (params.hasOwnProperty(paramName)) {
-                    urlData.params[paramName] = params[paramName];
-                }
-            }
-
-            return this._buildUrl(urlData);
+        getResetUrl: function (params) {
+            return processorBridge.removeParams(
+                this.currentUrl,
+                this._prepareRemoveParams(params)
+            );
         },
 
         /**
-         * Remove params from url and return modified url
+         * Prepare remove params
          *
-         * @param {String} url
-         * @param {Array} paramNames
-         * @returns {String}
+         * @param {Array} params
+         * @returns {Array}
          */
-        _removeParams: function (url, paramNames) {
-            var urlData = this._parseUrl(url);
-
-            $.each(paramNames, function () {
-                if (urlData.params.hasOwnProperty(this)) {
-                    delete urlData.params[this];
-                }
-            });
-
-            return this._buildUrl(urlData);
-        },
-
-        /**
-         * Parse url
-         *
-         * @param {String} url
-         * @returns {Object}
-         */
-        _parseUrl: function (url) {
-            var decode = window.decodeURIComponent,
-                urlPaths = url.split('?'),
-                baseUrl = urlPaths[0],
-                urlParams = urlPaths[1] ? urlPaths[1].split('&') : [],
-                paramData = {},
-                parameters;
-
-            for (var i = 0; i < urlParams.length; i++) {
-                parameters = urlParams[i].split('=');
-                paramData[decode(parameters[0])] = parameters[1] !== undefined
-                    ? decode(parameters[1].replace(/\+/g, '%20'))
-                    : '';
-            }
-
-            return {baseUrl: baseUrl, params: paramData};
-        },
-
-        /**
-         * Build url
-         *
-         * @param {String} urlData
-         * @returns {String}
-         */
-        _buildUrl: function (urlData) {
-            var params = $.param(urlData.params);
-
-            return urlData.baseUrl + (params.length ? '?' + params : '');
+        _prepareRemoveParams: function (params) {
+            return this.paramsToRemoveBeforeSend.concat(params);
         }
     };
 });

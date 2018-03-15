@@ -1,8 +1,17 @@
-define([], function () {
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
+define([
+    'jquery',
+    'underscore',
+    './executor/location'
+], function ($, _, defaultExecutor) {
     'use strict';
 
     return {
-        executor: null,
+        executor: defaultExecutor,
 
         /**
          * Initialize
@@ -11,6 +20,32 @@ define([], function () {
          */
         init: function (config) {
             this.executor = config.executor;
+            this._initHistoryListener();
+        },
+
+        /**
+         * Initialize history listener
+         */
+        _initHistoryListener: function () {
+            var state = {};
+
+            if (_.isEmpty(window.history.state)) {
+                state.title =  window.document.title;
+                state.url = location.href;
+                window.history.replaceState(state, state.title, state.url);
+            }
+
+            window.history.scrollRestoration = 'manual';
+
+            $(window).off('popstate');
+            $(window).on('popstate', function(event) {
+                var originalEvent = event.originalEvent;
+
+                if (!_.isEmpty(originalEvent.state)) {
+                    window.location.replace(originalEvent.state.url);
+                    $.Deferred().resolve();
+                }
+            }.bind(this));
         },
 
         /**

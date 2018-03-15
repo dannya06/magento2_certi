@@ -1,7 +1,68 @@
 <?xml version="1.0"?>
+<!--
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+-->
+
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Aheadworks\Layerednav\Api\Data\FilterInterface" type="Aheadworks\Layerednav\Model\Filter" />
+    <preference for="Aheadworks\Layerednav\Api\Data\FilterSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    <preference for="Aheadworks\Layerednav\Api\FilterRepositoryInterface" type="Aheadworks\Layerednav\Model\ResourceModel\FilterRepository" />
+    <preference for="Aheadworks\Layerednav\Api\FilterManagementInterface" type="Aheadworks\Layerednav\Model\FilterManagement" />
+    <preference for="Aheadworks\Layerednav\Api\Data\StoreValueInterface" type="Aheadworks\Layerednav\Model\StoreValue" />
+    <preference for="Aheadworks\Layerednav\Api\Data\FilterCategoryInterface" type="Aheadworks\Layerednav\Model\Filter\Category" />
+    <type name="Magento\Framework\EntityManager\MetadataPool">
+        <arguments>
+            <argument name="metadata" xsi:type="array">
+                <item name="Aheadworks\Layerednav\Api\Data\FilterInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">aw_layerednav_filter</item>
+                    <item name="identifierField" xsi:type="string">id</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\EntityManager\Operation\ExtensionPool">
+        <arguments>
+            <argument name="extensionActions" xsi:type="array">
+                <item name="Aheadworks\Layerednav\Api\Data\FilterInterface" xsi:type="array">
+                    <item name="create" xsi:type="array">
+                        <item name="titleCreator" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\Title\SaveHandler</item>
+                        <item name="displayStateCreator" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\DisplayState\SaveHandler</item>
+                        <item name="sortModeCreator" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\SortOrder\SaveHandler</item>
+                        <item name="excludeCategoryCreator" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\ExcludeCategory\SaveHandler</item>
+                        <item name="categoryCreator" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\Category\SaveHandler</item>
+                        <item name="attributeCreator" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\Attribute\SaveHandler</item>
+                    </item>
+                    <item name="update" xsi:type="array">
+                        <item name="titleUpdater" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\Title\SaveHandler</item>
+                        <item name="displayStateUpdater" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\DisplayState\SaveHandler</item>
+                        <item name="sortModeUpdater" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\SortOrder\SaveHandler</item>
+                        <item name="excludeCategoryUpdater" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\ExcludeCategory\SaveHandler</item>
+                        <item name="categoryUpdater" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\Category\SaveHandler</item>
+                        <item name="attributeUpdater" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\Attribute\SaveHandler</item>
+                    </item>
+                    <item name="read" xsi:type="array">
+                        <item name="titleReader" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\Title\ReadHandler</item>
+                        <item name="displayStateReader" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\DisplayState\ReadHandler</item>
+                        <item name="sortModeReader" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\SortOrder\ReadHandler</item>
+                        <item name="excludeCategoryReader" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\ExcludeCategory\ReadHandler</item>
+                        <item name="categoryReader" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Relation\Category\ReadHandler</item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Catalog\Model\ResourceModel\Attribute">
+        <plugin name="aw_layerednav_attribute_resource" type="Aheadworks\Layerednav\Model\Plugin\AttributeResource" sortOrder="1" />
+    </type>
     <type name="Aheadworks\Layerednav\Block\Navigation\FilterRenderer">
         <plugin name="aw_layerednav_filter_renderer" type="Aheadworks\Layerednav\Model\Plugin\FilterRenderer" sortOrder="1" />
+    </type>
+    <type name="Magento\Framework\Search\Request\Config\FilesystemReader">
+        <plugin name="aw_layerednav_dynamic_fields"  type="Aheadworks\Layerednav\Model\Plugin\SearchConfigReader" />
     </type>
     <type name="Aheadworks\Layerednav\Model\Layer\Filter\Price">
         <arguments>
@@ -19,6 +80,53 @@
                 <item name="improved" xsi:type="string">Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Auto</item>
                 <item name="manual" xsi:type="string">Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Manual</item>
             </argument>
+        </arguments>
+    </virtualType>
+    <type name="Aheadworks\Layerednav\Model\Layer\Filter\Decimal">
+        <arguments>
+            <argument name="algorithmFactory" xsi:type="object">Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Decimal\AlgorithmFactory</argument>
+        </arguments>
+    </type>
+    <virtualType name="Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Decimal\AlgorithmFactory" type="Magento\Catalog\Model\Layer\Filter\Dynamic\AlgorithmFactory">
+        <arguments>
+            <argument name="algorithms" xsi:type="array">
+                <item name="auto" xsi:type="string">Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Decimal\Auto</item>
+                <!--
+                Automatic (equalize product counts) price step calculation algorithm isn't supported,
+                because it is contrary to the logic module
+                 -->
+                <item name="improved" xsi:type="string">Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Decimal\Auto</item>
+                <item name="manual" xsi:type="string">Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Decimal\Manual</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="aw_layerednav_filter_listing_data_source" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\Layerednav\Model\ResourceModel\Filter\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">aw_layerednav_filter</argument>
+            <argument name="eventPrefix" xsi:type="string">aw_layerednav_filter_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">filter_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Aheadworks\Layerednav\Model\ResourceModel\Filter</argument>
+        </arguments>
+    </type>
+    <virtualType name="AwLayerednavGridFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
+        <arguments>
+            <argument name="appliers" xsi:type="array">
+                <item name="regular" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\RegularFilter</item>
+                <item name="fulltext" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\FulltextFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AwLayerednavFilterDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Aheadworks\Layerednav\Model\ResourceModel\Filter\Collection</argument>
+            <argument name="filterPool" xsi:type="object" shared="false">AwLayerednavGridFilterPool</argument>
         </arguments>
     </virtualType>
 </config>

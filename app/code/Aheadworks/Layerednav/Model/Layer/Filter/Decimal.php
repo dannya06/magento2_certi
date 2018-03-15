@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\Layer\Filter;
 
 use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Decimal as DataProvider;
@@ -6,27 +11,31 @@ use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\DecimalFactory as Data
 use Aheadworks\Layerednav\Model\ResourceModel\Layer\ConditionRegistry;
 use Magento\Catalog\Model\Layer;
 use Magento\Catalog\Model\Layer\Filter\AbstractFilter;
+use Magento\Catalog\Model\Layer\Filter\Dynamic\AlgorithmFactory;
 use Magento\Catalog\Model\Layer\Filter\ItemFactory;
 use Magento\Catalog\Model\Layer\Filter\Item\DataBuilder as ItemDataBuilder;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
 
 /**
  * Decimal Filter
+ *
+ * @method int getStorefrontDisplayState()
+ * @method AbstractFilter setStorefrontDisplayState(int $storefrontDisplayState)
+ *
  * @package Aheadworks\Layerednav\Model\Layer\Filter
  */
 class Decimal extends AbstractFilter
 {
     /**
+     * @var AlgorithmFactory
+     */
+    private $algorithmFactory;
+
+    /**
      * @var DataProvider
      */
     private $dataProvider;
-
-    /**
-     * @var PriceCurrencyInterface
-     */
-    private $priceCurrency;
 
     /**
      * @var ConditionRegistry
@@ -38,7 +47,7 @@ class Decimal extends AbstractFilter
      * @param StoreManagerInterface $storeManager
      * @param Layer $layer
      * @param ItemDataBuilder $itemDataBuilder
-     * @param PriceCurrencyInterface $priceCurrency
+     * @param AlgorithmFactory $algorithmFactory
      * @param DataProviderFactory $dataProviderFactory
      * @param ConditionRegistry $conditionsRegistry
      * @param array $data
@@ -48,7 +57,7 @@ class Decimal extends AbstractFilter
         StoreManagerInterface $storeManager,
         Layer $layer,
         ItemDataBuilder $itemDataBuilder,
-        PriceCurrencyInterface $priceCurrency,
+        AlgorithmFactory $algorithmFactory,
         DataProviderFactory $dataProviderFactory,
         ConditionRegistry $conditionsRegistry,
         array $data = []
@@ -60,7 +69,7 @@ class Decimal extends AbstractFilter
             $itemDataBuilder,
             $data
         );
-        $this->priceCurrency = $priceCurrency;
+        $this->algorithmFactory = $algorithmFactory;
         $this->dataProvider = $dataProviderFactory->create();
         $this->conditionsRegistry = $conditionsRegistry;
     }
@@ -81,6 +90,7 @@ class Decimal extends AbstractFilter
             return $this;
         }
 
+        $this->dataProvider->setInterval($intervals);
         $this->dataProvider->getResource()->joinFilterToCollection($this);
         $this->conditionsRegistry->addConditions(
             $this->getAttributeModel()->getAttributeCode(),
@@ -106,33 +116,11 @@ class Decimal extends AbstractFilter
      */
     protected function _getItemsData()
     {
-        $range = $this->dataProvider->getRange($this);
-        $dbRanges = $this->dataProvider->getRangeItemCounts($range, $this);
-        foreach ($dbRanges as $index => $count) {
-            if ($index === '') {
-                continue;
-            }
-            $this->itemDataBuilder->addItemData(
-                $this->getItemLabel($range, $index),
-                $index . '-' . $range,
-                $count
-            );
-        }
-
-        return $this->itemDataBuilder->build();
-    }
-
-    /**
-     * Get prepared text of item label
-     *
-     * @param int $range
-     * @param float $value
-     * @return \Magento\Framework\Phrase
-     */
-    private function getItemLabel($range, $value)
-    {
-        $from = $this->priceCurrency->format(($value - 1) * $range, false);
-        $to = $this->priceCurrency->format($value * $range, false);
-        return __('%1 - %2', $from, $to);
+        $algorithm = $this->algorithmFactory->create();
+        $algorithm->setFilter($this);
+        return $algorithm->getItemsData(
+            (array)$this->dataProvider->getInterval(),
+            $this->dataProvider->getAdditionalRequestData()
+        );
     }
 }

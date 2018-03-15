@@ -1,17 +1,31 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\Layer\Filter;
 
+use Aheadworks\Layerednav\Model\Config;
+use Aheadworks\Layerednav\Model\Config\Source\SeoFriendlyUrl;
+use Aheadworks\Layerednav\Model\PageTypeResolver;
 use Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter\Custom\AbstractFilter as ResourceAbstractFilter;
 use Aheadworks\Layerednav\Model\ResourceModel\Layer\ConditionRegistry;
 use Magento\Catalog\Model\Layer\Filter\AbstractFilter;
 use Magento\Catalog\Model\Layer\Filter\ItemFactory;
 use Magento\Catalog\Model\Layer\Filter\Item\DataBuilder as ItemDataBuilder;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Filter\StripTags;
+use Magento\Framework\Filter\FilterManager;
 use Magento\Framework\Stdlib\StringUtils;
 
 /**
  * Custom Filter
+ *
+ * @method string getSeoFriendlyValue()
+ * @method AbstractFilter setSeoFriendlyValue(string $value)
+ * @method int getStorefrontDisplayState()
+ * @method AbstractFilter setStorefrontDisplayState(int $storefrontDisplayState)
+ *
  * @package Aheadworks\Layerednav\Model\Layer\Filter
  */
 class Custom extends AbstractFilter
@@ -27,14 +41,24 @@ class Custom extends AbstractFilter
     private $stringUtils;
 
     /**
-     * @var StripTags
+     * @var FilterManager
      */
-    private $tagFilter;
+    private $filterManager;
 
     /**
      * @var ConditionRegistry
      */
     private $conditionsRegistry;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @var PageTypeResolver
+     */
+    private $pageTypeResolver;
 
     /**
      * @var string
@@ -49,7 +73,9 @@ class Custom extends AbstractFilter
      * @param ConditionRegistry $conditionsRegistry
      * @param ResourceAbstractFilter $resource
      * @param StringUtils $stringUtils
-     * @param StripTags $tagFilter
+     * @param FilterManager $filterManager
+     * @param Config $config
+     * @param PageTypeResolver $pageTypeResolver
      * @param string $requestVar
      * @param string $itemLabel
      * @param array $data
@@ -63,7 +89,9 @@ class Custom extends AbstractFilter
         ConditionRegistry $conditionsRegistry,
         ResourceAbstractFilter $resource,
         StringUtils $stringUtils,
-        StripTags $tagFilter,
+        FilterManager $filterManager,
+        Config $config,
+        PageTypeResolver $pageTypeResolver,
         $requestVar,
         $itemLabel,
         array $data = []
@@ -78,7 +106,9 @@ class Custom extends AbstractFilter
         $this->conditionsRegistry = $conditionsRegistry;
         $this->resource = $resource;
         $this->stringUtils = $stringUtils;
-        $this->tagFilter = $tagFilter;
+        $this->filterManager = $filterManager;
+        $this->config = $config;
+        $this->pageTypeResolver = $pageTypeResolver;
         $this->itemLabel = $itemLabel;
         $this->setRequestVar($requestVar);
     }
@@ -135,9 +165,12 @@ class Custom extends AbstractFilter
                 if (array_key_exists($option['value'], $optionsCount)
                     && ($optionsCount[$option['value']] || $optionsCount[$option['value']] == '0')
                 ) {
+                    $optionValue = $this->isReplaceValueByText()
+                        ? $this->getSeoFriendlyValue()
+                        : $option['value'];
                     $this->itemDataBuilder->addItemData(
-                        $this->tagFilter->filter($option['label']),
-                        $option['value'],
+                        $this->filterManager->stripTags($option['label']),
+                        $optionValue,
                         $optionsCount[$option['value']]
                     );
                 }
@@ -150,9 +183,32 @@ class Custom extends AbstractFilter
     /**
      * {@inheritdoc}
      */
+    protected function _createItem($label, $value, $count = 0)
+    {
+        $value = $this->isReplaceValueByText()
+            ? $this->getSeoFriendlyValue()
+            : $value;
+        return parent::_createItem($label, $value, $count);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return __($this->itemLabel);
+    }
+
+    /**
+     * Set filter name
+     *
+     * @param string $label
+     * @return $this
+     */
+    public function setName($label)
+    {
+        $this->itemLabel = $label;
+        return $this;
     }
 
     /**
@@ -166,5 +222,16 @@ class Custom extends AbstractFilter
                 'label' => $this->itemLabel
             ]
         ];
+    }
+
+    /**
+     * Check if option value should be replaced by url compatible text representation
+     *
+     * @return bool
+     */
+    private function isReplaceValueByText()
+    {
+        return $this->config->getSeoFriendlyUrlOption() != SeoFriendlyUrl::DEFAULT_OPTION
+            && $this->pageTypeResolver->getType() != PageTypeResolver::PAGE_TYPE_CATALOG_SEARCH;
     }
 }

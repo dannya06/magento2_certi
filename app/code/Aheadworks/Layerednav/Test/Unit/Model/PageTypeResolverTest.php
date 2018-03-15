@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model;
 
 use Aheadworks\Layerednav\Model\PageTypeResolver;
@@ -9,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Layerednav\Model\PageTypeResolver
  */
-class PageTypeResolverTest extends \PHPUnit_Framework_TestCase
+class PageTypeResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PageTypeResolver

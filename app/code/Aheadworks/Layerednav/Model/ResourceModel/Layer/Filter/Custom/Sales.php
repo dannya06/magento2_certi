@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter\Custom;
 
 use Magento\Catalog\Api\Data\ProductInterface;

@@ -1,11 +1,17 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Block\Navigation\PriceSlider;
 
 use Aheadworks\Layerednav\Model\Config;
 use Magento\Catalog\Model\Layer;
 use Magento\Catalog\Model\Layer\Filter\FilterInterface;
-use Magento\Catalog\Model\Layer\Filter\Item as FilterItem;
 use Magento\Catalog\Model\Layer\Resolver as LayerResolver;
+use Magento\Framework\Locale\FormatInterface;
+use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
@@ -17,6 +23,11 @@ use Magento\LayeredNavigation\Block\Navigation\FilterRendererInterface;
  */
 class FilterRenderer extends Template implements FilterRendererInterface
 {
+    /**
+     * Min value
+     */
+    const MIN_VALUE = 0.01;
+
     /**
      * @var Layer
      */
@@ -33,6 +44,16 @@ class FilterRenderer extends Template implements FilterRendererInterface
     private $priceCurrency;
 
     /**
+     * @var FormatInterface
+     */
+    private $localeFormat;
+
+    /**
+     * @var ResolverInterface
+     */
+    private $localeResolver;
+
+    /**
      * {@inheritdoc}
      */
     protected $_template = 'Aheadworks_Layerednav::layer/renderer/price_slider/filter.phtml';
@@ -42,6 +63,8 @@ class FilterRenderer extends Template implements FilterRendererInterface
      * @param LayerResolver $layerResolver
      * @param Config $config
      * @param PriceCurrencyInterface $priceCurrency
+     * @param FormatInterface $localeFormat
+     * @param ResolverInterface $localeResolver
      * @param array $data
      */
     public function __construct(
@@ -49,12 +72,16 @@ class FilterRenderer extends Template implements FilterRendererInterface
         LayerResolver $layerResolver,
         Config $config,
         PriceCurrencyInterface $priceCurrency,
+        FormatInterface $localeFormat,
+        ResolverInterface $localeResolver,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->layer = $layerResolver->get();
         $this->config = $config;
         $this->priceCurrency = $priceCurrency;
+        $this->localeFormat = $localeFormat;
+        $this->localeResolver = $localeResolver;
     }
 
     /**
@@ -62,20 +89,46 @@ class FilterRenderer extends Template implements FilterRendererInterface
      */
     public function render(FilterInterface $filter)
     {
+        $priceFilterSet = $otherFilterSet = false;
+        $converter = $this->priceCurrency;
         $priceData = $filter->getMinMaxPrices();
-        // Case filter is not set
-        $priceData['minPrice'] = floor($this->priceCurrency->convertAndRound($priceData['minPrice']));
-        $priceData['maxPrice'] = ceil($this->priceCurrency->convertAndRound($priceData['maxPrice']));
-        $priceData['fromPrice'] = $priceData['minPrice'];
-        $priceData['toPrice'] = $priceData['maxPrice'];
 
         foreach ($this->layer->getState()->getFilters() as $layerFilter) {
             if ($filter->getRequestVar() == $layerFilter->getFilter()->getRequestVar()) {
                 list($fromPrice, $toPrice) = explode('-', $layerFilter->getValue());
                 $priceData['fromPrice'] = (double)$fromPrice;
                 $priceData['toPrice'] = (double)$toPrice;
+                $priceFilterSet = true;
+            } else {
+                $otherFilterSet = true;
             }
         }
+
+        $priceData['minPrice'] = floor($converter->convertAndRound($priceData['minPrice']));
+        $priceData['maxPrice'] = ceil($converter->convertAndRound($priceData['maxPrice']));
+
+        if (!$priceFilterSet) {
+            $priceData['minPrice'] = floor($converter->convertAndRound($priceData['minSelectionPrice']));
+            $priceData['maxPrice'] = ceil($converter->convertAndRound($priceData['maxSelectionPrice']));
+            $priceData['fromPrice'] = $priceData['minPrice'];
+            $priceData['toPrice'] = $priceData['maxPrice'];
+        } elseif ($otherFilterSet) {
+            if ($priceData['minSelectionPrice'] > $priceData['fromPrice']
+            ) {
+                $priceData['minPrice'] = floor(
+                    $converter->convertAndRound($priceData['fromPrice'] - self::MIN_VALUE)
+                );
+                $priceData['minPrice'] < 0 ? 0 : $priceData['minPrice'];
+            }
+            if ($priceData['maxSelectionPrice'] < $priceData['toPrice']) {
+                $priceData['maxPrice'] = ceil(
+                    $converter->convertAndRound($priceData['toPrice'] + self::MIN_VALUE)
+                );
+            }
+        }
+
+        $priceData['priceFormat'] = $this->localeFormat->getPriceFormat();
+
         $this->assign($priceData);
         $html = $this->_toHtml();
         return $html;
@@ -120,5 +173,41 @@ class FilterRenderer extends Template implements FilterRendererInterface
     public function getCurrencySymbol()
     {
         return $this->priceCurrency->getCurrencySymbol();
+    }
+
+    /**
+     * Check if currency symbol should be displayed
+     *
+     * @return bool
+     */
+    public function isDisplayCurrencySymbol()
+    {
+        $format = $this->getCurrencyFormat();
+        $symPlaceholderPos = iconv_strpos($format, '¤');
+        return $symPlaceholderPos !== false;
+    }
+
+    /**
+     * Check if currency symbol should displayed after value
+     *
+     * @return bool
+     * @throws \Zend_Locale_Exception
+     */
+    public function isCurrencySymAfterValue()
+    {
+        $format = $this->getCurrencyFormat();
+        $symPlaceholderPos = iconv_strpos($format, '¤');
+        return $symPlaceholderPos > 0;
+    }
+
+    /**
+     * Get currency format
+     *
+     * @return string
+     * @throws \Zend_Locale_Exception
+     */
+    private function getCurrencyFormat()
+    {
+        return \Zend_Locale_Data::getContent($this->localeResolver->getLocale(), 'currencynumber');
     }
 }

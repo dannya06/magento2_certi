@@ -1,3 +1,8 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery',
     './../url',
@@ -34,7 +39,7 @@ define([
                          * Called after request finishes
                          */
                         function () {
-                            updater.update(submitUrl, requestBridge.getResult());
+                            updater.updateAndScrollUpToTop(submitUrl, requestBridge.getResult());
                         }
                     );
                 },
@@ -50,7 +55,7 @@ define([
                          * Called after request finishes
                          */
                         function () {
-                            updater.update(clearUrl, requestBridge.getResult());
+                            updater.updateAndScrollUpToTop(clearUrl, requestBridge.getResult());
                         }
                     );
                 }

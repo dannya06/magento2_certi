@@ -1,11 +1,17 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery',
     './value',
     './item/current',
     './../url',
+    'Magento_Catalog/js/price-utils',
     'jquery/ui',
     './../lib/jquery.ui.touch-punch.min'
-], function($, filterValue, currentFilterItem, url) {
+], function($, filterValue, currentFilterItem, url, priceUtils) {
     'use strict';
 
     $.widget('mage.awPriceSlider', $.ui.slider, {
@@ -16,7 +22,8 @@ define([
             rangeLabelToSelector: '[data-role="aw-layered-nav-price-label-to"]',
             fromInputSelector: '[data-role="aw-layered-nav-price-from"]',
             toInputSelector: '[data-role="aw-layered-nav-price-to"]',
-            submitSelector: '[data-role="aw-layered-nav-price-submit"]'
+            submitSelector: '[data-role="aw-layered-nav-price-submit"]',
+            priceFormat: {}
         },
 
         /**
@@ -29,10 +36,10 @@ define([
             this.options.slide = this.setInputValues.bind(this);
             this.options.stop = this.onSliderChangeStop.bind(this);
             this.setInputValues();
-            url.registerFilterRequestParam('price');
             if (this.isFilterActive()) {
                 this.updateFilterValue();
             }
+            url.registerFilterRequestParam('price');
         },
 
         /**
@@ -130,11 +137,16 @@ define([
                 toInput = $(this.options.toInputSelector),
                 priceRange = fromInput.val() + '-' + toInput.val();
 
-            filterValue.add(
-                'aw-filter-option-price',
-                'price',
-                priceRange
-            );
+            if (this.isFilterActive()) {
+                filterValue.add(
+                    'aw-filter-option-price',
+                    'price',
+                    priceRange,
+                    'decimal'
+                );
+            } else {
+                filterValue.remove('aw-filter-option-price');
+            }
         },
 
         /**
@@ -166,7 +178,7 @@ define([
             if (ui) {   //'slide' event triggered
                 values = ui.values
             } else {    //initial call
-                values = this.values();
+                values = this.options.values ? this.options.values : this.values();
             }
             if (values) {
                 this.changeRangeLabel(values);
@@ -186,8 +198,8 @@ define([
                 rangeLabelTo = $(this.options.rangeLabelToSelector);
 
             if (values) {
-                rangeLabelFrom.html(values[0]);
-                rangeLabelTo.html(values[1]);
+                rangeLabelFrom.html(priceUtils.formatPrice(values[0], this.options.priceFormat));
+                rangeLabelTo.html(priceUtils.formatPrice(values[1], this.options.priceFormat));
             }
         }
     });

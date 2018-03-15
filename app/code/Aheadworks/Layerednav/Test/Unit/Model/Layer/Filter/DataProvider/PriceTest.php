@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model\Layer\Filter\DataProvider;
 
 use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Price as PriceDataProvider;
@@ -8,7 +13,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Price
  */
-class PriceTest extends \PHPUnit_Framework_TestCase
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PriceDataProvider
@@ -23,7 +28,10 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->resourceMock = $this->getMock(ResourcePrice::class, [], [], '', false);
+        $this->resourceMock = $this->getMockBuilder(ResourcePrice::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->dataProvider = $objectManager->getObject(
             PriceDataProvider::class,
             ['resource' => $this->resourceMock]

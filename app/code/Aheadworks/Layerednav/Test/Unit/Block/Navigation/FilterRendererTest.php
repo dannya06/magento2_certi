@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Block\Navigation;
 
 use Aheadworks\Layerednav\Block\Navigation\FilterRenderer;
@@ -12,7 +17,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Layerednav\Block\Navigation\FilterRenderer
  */
-class FilterRendererTest extends \PHPUnit_Framework_TestCase
+class FilterRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FilterRenderer
@@ -27,8 +32,14 @@ class FilterRendererTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->layerMock = $this->getMock(Layer::class, ['getState'], [], '', false);
-        $layerResolverMock = $this->getMock(LayerResolver::class, ['get'], [], '', false);
+        $this->layerMock = $this->getMockBuilder(Layer::class)
+            ->setMethods(['getState'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $layerResolverMock = $this->getMockBuilder(LayerResolver::class)
+            ->setMethods(['get'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $layerResolverMock->expects($this->once())
             ->method('get')
             ->willReturn($this->layerMock);
@@ -43,8 +54,14 @@ class FilterRendererTest extends \PHPUnit_Framework_TestCase
         $html = 'filter html';
 
         /** @var FilterRenderer|\PHPUnit_Framework_MockObject_MockObject $rendererMock */
-        $rendererMock = $this->getMock(FilterRenderer::class, ['assign', '_toHtml'], [], '', false);
-        $filterItemMock = $this->getMock(FilterItem::class, [], [], '', false);
+        $rendererMock = $this->getMockBuilder(FilterRenderer::class)
+            ->setMethods(['assign', '_toHtml'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filterItemMock = $this->getMockBuilder(FilterItem::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         /** @var FilterInterface|\PHPUnit_Framework_MockObject_MockObject $filterMock */
         $filterMock = $this->getMockForAbstractClass(FilterInterface::class);
 
@@ -72,7 +89,10 @@ class FilterRendererTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsActiveItem($currentFilterItemMocks, $filterItemMock, $isActive)
     {
-        $stateMock = $this->getMock(State::class, ['getFilters'], [], '', false);
+        $stateMock = $this->getMockBuilder(State::class)
+            ->setMethods(['getFilters'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->layerMock->expects($this->once())
             ->method('getState')
             ->willReturn($stateMock);
@@ -91,15 +111,18 @@ class FilterRendererTest extends \PHPUnit_Framework_TestCase
      */
     private function createFilterItemMock($value, $requestVar)
     {
-        $filterItemMock = $this->getMock(FilterItem::class, ['getValue', 'getFilter'], [], '', false);
-        $filterItemMock->expects($this->once())
+        $filterItemMock = $this->getMockBuilder(FilterItem::class)
+            ->setMethods(['getValue', 'getFilter'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filterItemMock->expects($this->atMost(1))
             ->method('getValue')
             ->willReturn($value);
         $filterMock = $this->getMockForAbstractClass(FilterInterface::class);
         $filterMock->expects($this->any())
             ->method('getRequestVar')
             ->willReturn($requestVar);
-        $filterItemMock->expects($this->once())
+        $filterItemMock->expects($this->atMost(1))
             ->method('getFilter')
             ->willReturn($filterMock);
         return $filterItemMock;

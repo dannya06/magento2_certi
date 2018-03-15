@@ -1,20 +1,24 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Controller\Ajax;
 
 use Aheadworks\Layerednav\Controller\Ajax\ItemsCount;
 use Aheadworks\Layerednav\Model\Applier;
-use Aheadworks\Layerednav\Model\Layer\FilterList;
+use Aheadworks\Layerednav\Model\Config;
+use Aheadworks\Layerednav\Model\Config\Source\SeoFriendlyUrl;
 use Aheadworks\Layerednav\Model\Layer\FilterListResolver;
 use Aheadworks\Layerednav\Model\PageTypeResolver;
+use Aheadworks\Layerednav\Model\Url\ConverterPool;
 use Magento\Catalog\Model\Layer;
-use Magento\Catalog\Model\Layer\Filter\AbstractFilter;
 use Magento\Catalog\Model\Layer\Filter\Item as FilterItem;
 use Magento\Catalog\Model\Layer\Resolver;
-use Magento\Catalog\Model\Layer\State;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\RedirectInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
@@ -24,7 +28,7 @@ use Magento\Search\Model\QueryFactory;
  * Test for \Aheadworks\Layerednav\Controller\Ajax\ItemsCount
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ItemsCountTest extends \PHPUnit_Framework_TestCase
+class ItemsCountTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ItemsCount
@@ -42,6 +46,11 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
     private $layerResolverMock;
 
     /**
+     * @var PageTypeResolver|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $pageTypeResolverMock;
+
+    /**
      * @var FilterListResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filterListResolverMock;
@@ -50,6 +59,16 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
      * @var Applier|\PHPUnit_Framework_MockObject_MockObject
      */
     private $applierMock;
+
+    /**
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $configMock;
+
+    /**
+     * @var ConverterPool|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $urlConverterPoolMock;
 
     /**
      * @var Context|\PHPUnit_Framework_MockObject_MockObject
@@ -70,24 +89,39 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
     {
         $this->objectManager = new ObjectManager($this);
 
-        $this->layerResolverMock = $this->getMock(Resolver::class, ['create', 'get'], [], '', false);
-        $this->filterListResolverMock = $this->getMock(
-            FilterListResolver::class,
-            ['create', 'get'],
-            [],
-            '',
-            false
-        );
-        $this->applierMock = $this->getMock(Applier::class, ['applyFilters'], [], '', false);
+        $this->layerResolverMock = $this->getMockBuilder(Resolver::class)
+            ->setMethods(['create', 'get'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->pageTypeResolverMock = $this->getMockBuilder(PageTypeResolver::class)
+            ->setMethods(['getLayerType'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->filterListResolverMock = $this->getMockBuilder(FilterListResolver::class)
+            ->setMethods(['create', 'get'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->applierMock = $this->getMockBuilder(Applier::class)
+            ->setMethods(['applyFilters'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getSeoFriendlyUrlOption'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->urlConverterPoolMock = $this->getMockBuilder(ConverterPool::class)
+            ->setMethods(['getConverter'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->resultFactoryMock = $this->getMock(ResultFactory::class, ['create'], [], '', false);
-        $this->contextMock = $this->getMock(
-            Context::class,
-            ['getRequest', 'getRedirect', 'getResultFactory'],
-            [],
-            '',
-            false
-        );
+        $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->contextMock = $this->getMockBuilder(Context::class)
+            ->setMethods(['getRequest', 'getRedirect', 'getResultFactory'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->contextMock->expects($this->any())
             ->method('getRequest')
             ->willReturn($this->requestMock);
@@ -100,8 +134,11 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
             [
                 'context' => $this->contextMock,
                 'layerResolver' => $this->layerResolverMock,
+                'pageTypeResolver' => $this->pageTypeResolverMock,
                 'filterListResolver' => $this->filterListResolverMock,
-                'applier' => $this->applierMock
+                'applier' => $this->applierMock,
+                'config' => $this->configMock,
+                'urlConverterPool' => $this->urlConverterPoolMock
             ]
         );
     }
@@ -114,15 +151,18 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
     {
         $itemsCount = 10;
 
-        $resultJsonMock = $this->getMock(Json::class, ['setData'], [], '', false);
-        $layerMock = $this->getMock(
-            Layer::class,
-            ['getProductCollection', 'setCurrentCategory'],
-            [],
-            '',
-            false
-        );
-        $productCollectionMock = $this->getMock(Collection::class, ['getSize'], [], '', false);
+        $resultJsonMock = $this->getMockBuilder(Json::class)
+            ->setMethods(['setData'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $layerMock = $this->getMockBuilder(Layer::class)
+            ->setMethods(['getProductCollection', 'setCurrentCategory'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $productCollectionMock = $this->getMockBuilder(Collection::class)
+            ->setMethods(['getSize'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->resultFactoryMock->expects($this->once())
             ->method('create')
@@ -131,6 +171,9 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
         $this->requestMock->expects($this->once())
             ->method('getParams')
             ->willReturn($requestParams);
+        $this->configMock->expects($this->once())
+            ->method('getSeoFriendlyUrlOption')
+            ->willReturn(SeoFriendlyUrl::DEFAULT_OPTION);
         $this->requestMock->expects($this->any())
             ->method('getParam')
             ->willReturnMap(
@@ -204,6 +247,10 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
             'filter_request_var2' => 'filter_value3'
         ];
 
+        $this->configMock->expects($this->once())
+            ->method('getSeoFriendlyUrlOption')
+            ->willReturn(SeoFriendlyUrl::DEFAULT_OPTION);
+
         $class = new \ReflectionClass($this->action);
         $method = $class->getMethod('prepareFilterValue');
         $method->setAccessible(true);
@@ -211,15 +258,16 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($preparedFilterValue, $method->invokeArgs($this->action, [$filterValue]));
     }
 
-    /**
-     * @param string $pageType
-     * @param string $layerType
-     * @dataProvider getLayerDataProvider
-     */
-    public function testGetLayer($pageType, $layerType)
+    public function testGetLayer()
     {
+        $pageType = 'category';
+        $layerType = 'category';
         $categoryId = 1;
-        $layerMock = $this->getMock(Layer::class, ['setCurrentCategory'], [], '', false);
+
+        $layerMock = $this->getMockBuilder(Layer::class)
+            ->setMethods(['setCurrentCategory'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->requestMock->expects($this->exactly(2))
             ->method('getParam')
@@ -229,6 +277,10 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
                     ['categoryId', null, $categoryId]
                 ]
             );
+        $this->pageTypeResolverMock->expects($this->once())
+            ->method('getLayerType')
+            ->with($pageType)
+            ->willReturn($layerType);
         $this->layerResolverMock->expects($this->once())
             ->method('create')
             ->with($this->equalTo($layerType));
@@ -243,7 +295,7 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
         $method = $class->getMethod('getLayer');
         $method->setAccessible(true);
 
-        $this->assertEquals($layerMock, $method->invoke($this->action));
+        $this->assertSame($layerMock, $method->invoke($this->action));
     }
 
     /**
@@ -271,23 +323,6 @@ class ItemsCountTest extends \PHPUnit_Framework_TestCase
                     'searchQueryText' => 'search text',
                     'sequence' => 1
                 ]
-            ]
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getLayerDataProvider()
-    {
-        return [
-            'category layer' => [
-                PageTypeResolver::PAGE_TYPE_CATEGORY,
-                Resolver::CATALOG_LAYER_CATEGORY
-            ],
-            'catalog search layer' => [
-                PageTypeResolver::PAGE_TYPE_CATALOG_SEARCH,
-                Resolver::CATALOG_LAYER_SEARCH
             ]
         ];
     }

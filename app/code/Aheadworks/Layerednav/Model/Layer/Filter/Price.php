@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\Layer\Filter;
 
 use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Price as DataProvider;
@@ -14,6 +19,10 @@ use Magento\Framework\App\RequestInterface;
 
 /**
  * Price Filter
+ *
+ * @method int getStorefrontDisplayState()
+ * @method AbstractFilter setStorefrontDisplayState(int $storefrontDisplayState)
+ *
  * @package Aheadworks\Layerednav\Model\Layer\Filter
  */
 class Price extends AbstractFilter

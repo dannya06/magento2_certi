@@ -1,3 +1,8 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery',
     './value',
@@ -9,6 +14,7 @@ define([
     $.widget('mage.awLayeredNavFilterItem', {
         options: {
             type: 'default',
+            backendType: '',
             popover: '[data-role=aw-layered-nav-popover]'
         },
 
@@ -44,6 +50,8 @@ define([
 
                     if (this.options.type == 'swatch' && !$(element).hasClass('disabled')) {
                         $(element).toggleClass('active');
+                    } else if (this.options.type == 'category') {
+                        $(element).closest('.items').prev().removeClass('active');
                     }
 
                     if (this._isEnabled(element)) {
@@ -126,11 +134,21 @@ define([
          */
         _updateValue: function (element) {
             if (this._isSelected(element)) {
-                filterValue.add(
-                    $(element).attr('id'),
-                    this._getInputElement(element).attr('name'),
-                    this._getInputElement(element).attr('value')
-                );
+                if (this.options.type == 'category') {
+                    filterValue.addExclusive(
+                        $(element).attr('id'),
+                        this._getInputElement(element).attr('name'),
+                        this._getInputElement(element).attr('value'),
+                        this.options.backendType
+                    );
+                } else {
+                    filterValue.add(
+                        $(element).attr('id'),
+                        this._getInputElement(element).attr('name'),
+                        this._getInputElement(element).attr('value'),
+                        this.options.backendType
+                    );
+                }
             } else {
                 filterValue.remove(element.attr('id'));
             }

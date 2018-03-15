@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Block\Navigation;
 
 use Magento\Catalog\Model\Layer;
@@ -65,14 +70,30 @@ class FilterRenderer extends Template implements FilterRendererInterface
     public function isActiveItem(FilterItem $item)
     {
         foreach ($this->layer->getState()->getFilters() as $filter) {
-            $filterValues = explode(',', $filter->getValue());
-            if ($filter->getFilter()->getRequestVar() == $item->getFilter()->getRequestVar()
-                && false !== array_search($item->getValue(), $filterValues)
-            ) {
-                return true;
+            if ($filter->getFilter()->getRequestVar() == $item->getFilter()->getRequestVar()) {
+                $filterValues = explode(',', $filter->getValue());
+                if (false !== array_search($item->getValue(), $filterValues)) {
+                    return true;
+                }
             }
         }
         return false;
+    }
+
+    /**
+     * Get attribute filter backend type. Returns '' for non-attribute filter items
+     *
+     * @param FilterItem $item
+     * @return string
+     * @throws LocalizedException
+     */
+    public function getBackendType(FilterItem $item)
+    {
+        $filter = $item->getFilter();
+        if ($filter->hasData('attribute_model')) {
+            return $filter->getAttributeModel()->getBackendType();
+        }
+        return '';
     }
 
     /**
@@ -86,5 +107,61 @@ class FilterRenderer extends Template implements FilterRendererInterface
         return $this->config->isNeedToShowProductsCount()
             && (!$this->isActiveItem($item))
             && $item->getCount();
+    }
+
+    /**
+     * Check if need to to show item
+     *
+     * @param FilterItem $item
+     * @return bool
+     */
+    public function isNeedToShowItem(FilterItem $item)
+    {
+        return !$this->config->hideEmptyAttributeValues()
+            || ($this->isActiveItem($item))
+            || ($item->getCount());
+    }
+
+    /**
+     * Get filter items count to display
+     *
+     * @param FilterItem[] $filterItems
+     * @return int
+     */
+    private function getDisplayItemsCount($filterItems)
+    {
+        $count = 0;
+        foreach ($filterItems as $filterItem) {
+            if ($this->isNeedToShowItem($filterItem)) {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    /**
+     * Get count of show more items
+     *
+     * @param FilterItem[] $filterItems
+     * @return int
+     */
+    public function getShowMoreCount($filterItems)
+    {
+        $displayLimit = $this->config->getFilterValuesDisplayLimit();
+        $itemsCount = $this->getDisplayItemsCount($filterItems);
+        if (isset($displayLimit) && $displayLimit > 0 && $itemsCount > $displayLimit) {
+            return $itemsCount - $displayLimit;
+        }
+        return 0;
+    }
+
+    /**
+     * Get filter values display limit
+     *
+     * @return int
+     */
+    public function getDisplayLimit()
+    {
+        return $this->config->getFilterValuesDisplayLimit();
     }
 }

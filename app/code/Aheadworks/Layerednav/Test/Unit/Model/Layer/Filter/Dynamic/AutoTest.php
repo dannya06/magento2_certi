@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model\Layer\Filter\Dynamic;
 
 use Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Auto;
@@ -13,7 +18,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Auto
  */
-class AutoTest extends \PHPUnit_Framework_TestCase
+class AutoTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Auto
@@ -44,11 +49,26 @@ class AutoTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->resourceMock = $this->getMock(ResourcePrice::class, ['getCount', 'getParentCount'], [], '', false);
-        $this->layerMock = $this->getMock(Layer::class, ['getProductCollection'], [], '', false);
-        $this->renderMock = $this->getMock(Render::class, ['renderRangeData'], [], '', false);
-        $this->rangeMock = $this->getMock(Range::class, ['getPriceRange'], [], '', false);
-        $layerResolverMock = $this->getMock(LayerResolver::class, ['get'], [], '', false);
+        $this->resourceMock = $this->getMockBuilder(ResourcePrice::class)
+            ->setMethods(['getCount', 'getParentCount'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->layerMock = $this->getMockBuilder(Layer::class)
+            ->setMethods(['getProductCollection'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->renderMock = $this->getMockBuilder(Render::class)
+            ->setMethods(['renderRangeData'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->rangeMock = $this->getMockBuilder(Range::class)
+            ->setMethods(['getPriceRange'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $layerResolverMock = $this->getMockBuilder(LayerResolver::class)
+            ->setMethods(['get'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $layerResolverMock->expects($this->once())
             ->method('get')
             ->willReturn($this->layerMock);
@@ -77,7 +97,10 @@ class AutoTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $productCollectionMock = $this->getMock(ProductCollection::class, ['getMaxPrice'], [], '', false);
+        $productCollectionMock = $this->getMockBuilder(ProductCollection::class)
+            ->setMethods(['getMaxPrice'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->layerMock->expects($this->once())
             ->method('getProductCollection')
             ->willReturn($productCollectionMock);

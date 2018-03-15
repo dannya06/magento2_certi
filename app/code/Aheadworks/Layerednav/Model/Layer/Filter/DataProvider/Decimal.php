@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\Layer\Filter\DataProvider;
 
 use Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter\Decimal as ResourceDecimal;
@@ -28,11 +33,37 @@ class Decimal
     private $rangeItemsCount = [];
 
     /**
+     * @var array
+     */
+    private $interval = [];
+
+    /**
      * @param ResourceDecimal $resource
      */
     public function __construct(ResourceDecimal $resource)
     {
         $this->resource = $resource;
+    }
+
+    /**
+     * Set interval
+     *
+     * @param array $interval
+     * @return void
+     */
+    public function setInterval(array $interval)
+    {
+        $this->interval = $interval;
+    }
+
+    /**
+     * Get interval
+     *
+     * @return array
+     */
+    public function getInterval()
+    {
+        return $this->interval;
     }
 
     /**
@@ -124,5 +155,13 @@ class Decimal
             $this->rangeItemsCount[$range] = $parentCount;
         }
         return $count;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdditionalRequestData()
+    {
+        return '';
     }
 }
