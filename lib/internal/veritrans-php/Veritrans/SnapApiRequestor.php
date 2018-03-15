@@ -76,6 +76,10 @@ class Veritrans_SnapApiRequestor {
 
       if ($data_hash) {
         $body = json_encode($data_hash);
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        $logger->info('Request body :'.$body);
         $curl_options[CURLOPT_POSTFIELDS] = $body;
       } else {
         $curl_options[CURLOPT_POSTFIELDS] = '';
