@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter\Custom;
 
 use Magento\Catalog\Api\Data\ProductInterface;
@@ -25,6 +30,16 @@ abstract class AbstractFilter extends AbstractDb
      * @var ResourceAttribute
      */
     protected $resourceAttribute;
+
+    /**
+     * @var string
+     */
+    private $dateFromAttrId;
+
+    /**
+     * @var string
+     */
+    private $dateToAttrId;
 
     /**
      * @param Context $context
@@ -103,21 +118,113 @@ abstract class AbstractFilter extends AbstractDb
      */
     private function fetchCount(Select $select)
     {
+        $fromAndJoins = $this->prepereCountFromAndJoins($select);
         // Reset columns, order and limitation conditions
-        $select->reset(Select::COLUMNS)
+        $select
+            ->reset(Select::FROM)
+            ->reset(Select::COLUMNS)
             ->reset(Select::ORDER)
             ->reset(Select::LIMIT_COUNT)
-            ->reset(Select::LIMIT_OFFSET);
+            ->reset(Select::LIMIT_OFFSET)
+            ->reset(Select::GROUP)
+            ->setPart(Select::FROM, $fromAndJoins)// Set part
+            ->columns('e.entity_id')
+            ->group('e.entity_id');
 
         $connection = $this->getConnection();
+        $countSelect = $connection
+            ->select()
+            ->from(['main_table' => new \Zend_Db_Expr('(' . $select . ')')], [])
+            ->columns(
+                [
+                    'value' => new \Zend_Db_Expr('1'),
+                    'count' => new \Zend_Db_Expr('COUNT(*)')
+                ]
+            );
+        return $connection->fetchPairs($countSelect);
+    }
 
-        $select->columns(
-            [
-                'value' => new \Zend_Db_Expr('1'),
-                'count' => new \Zend_Db_Expr('COUNT(*)')
-            ]
-        );
-        return $connection->fetchPairs($select);
+    /**
+     * Prepere count from and joins
+     *
+     * @param Select $select
+     * @return array
+     */
+    private function prepereCountFromAndJoins($select)
+    {
+        $tableAlias = $this->getDateFromAttrCode() . '_' . $this->getDateToAttrCode();
+        $dateFromAttrId = $this->getDateFromAttrId();
+        $dateToAttrId = $this->getDateToAttrId();
+        $linkFieldName = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
+        $conditions = [
+            $tableAlias . '.' . $linkFieldName . ' = search_result.entity_id',
+            new \Zend_Db_Expr(
+                '(' . $tableAlias . '.attribute_id = ' . $dateFromAttrId . ' OR '
+                . $tableAlias . '.attribute_id = ' . $dateToAttrId . ')'
+            )
+        ];
+
+        $newFromAndJoins = [];
+        $fromAndJoins = $select->getPart(Select::FROM);
+        foreach ($fromAndJoins as $key => $join) {
+            if ($join['joinType'] == Select::FROM) {
+                $newFromAndJoins[$tableAlias] = [
+                    'joinType'      => Select::FROM,
+                    'schema'        => $join['schema'],
+                    'tableName'     => $this->getTable('catalog_product_entity_datetime'),
+                    'joinCondition' => null
+                ];
+                if (isset($fromAndJoins['search_result'])) {
+                    $newFromAndJoins['search_result'] = [
+                        'joinType' => Select::INNER_JOIN,
+                        'schema' => $join['schema'],
+                        'tableName' => $fromAndJoins['search_result']['tableName'],
+                        'joinCondition' => join(' AND ', $conditions)
+                    ];
+                }
+                $newFromAndJoins[$key] = [
+                    'joinType'      => Select::LEFT_JOIN,
+                    'schema'        => $join['schema'],
+                    'tableName'     => $join['tableName'],
+                    'joinCondition' => $tableAlias . '.' . $linkFieldName . ' = e.entity_id'
+                ];
+                continue;
+            }
+            if ($key == 'search_result') {
+                continue;
+            }
+            $newFromAndJoins[$key] = $join;
+        }
+
+        return $newFromAndJoins;
+    }
+
+    /**
+     * Retrieve date from attribute Id
+     *
+     * @return string
+     */
+    private function getDateFromAttrId()
+    {
+        if (!$this->dateFromAttrId) {
+            $this->dateFromAttrId = $this->resourceAttribute
+                ->getIdByCode('catalog_product', $this->getDateFromAttrCode());
+        }
+        return $this->dateFromAttrId;
+    }
+
+    /**
+     * Retrieve date to attribute Id
+     *
+     * @return string
+     */
+    private function getDateToAttrId()
+    {
+        if (!$this->dateToAttrId) {
+            $this->dateToAttrId =$this->resourceAttribute
+                ->getIdByCode('catalog_product', $this->getDateToAttrCode());
+        }
+        return $this->dateToAttrId;
     }
 
     /**
@@ -133,8 +240,8 @@ abstract class AbstractFilter extends AbstractDb
             return $this;
         }
 
-        $dateFromAttrId = $this->resourceAttribute->getIdByCode('catalog_product', $this->getDateFromAttrCode());
-        $dateToAttrId = $this->resourceAttribute->getIdByCode('catalog_product', $this->getDateToAttrCode());
+        $dateFromAttrId = $this->getDateFromAttrId();
+        $dateToAttrId = $this->getDateToAttrId();
 
         $tableAlias = $this->getTable('catalog_product_entity_datetime');
         $linkFieldName = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model\Layer\Filter\Dynamic;
 
 use Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Manual;
@@ -12,7 +17,7 @@ use Magento\Store\Model\ScopeInterface;
 /**
  * Test for \Aheadworks\Layerednav\Model\Layer\Filter\Dynamic\Manual
  */
-class ManualTest extends \PHPUnit_Framework_TestCase
+class ManualTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Manual
@@ -43,9 +48,18 @@ class ManualTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->renderMock = $this->getMock(Render::class, ['renderRangeData'], [], '', false);
-        $this->rangeMock = $this->getMock(Range::class, ['getPriceRange', 'getConfigRangeStep'], [], '', false);
-        $this->resourceMock = $this->getMock(ResourcePrice::class, ['getCount', 'getParentCount'], [], '', false);
+        $this->renderMock = $this->getMockBuilder(Render::class)
+            ->setMethods(['renderRangeData'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->rangeMock = $this->getMockBuilder(Range::class)
+            ->setMethods(['getPriceRange', 'getConfigRangeStep'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->resourceMock = $this->getMockBuilder(ResourcePrice::class)
+            ->setMethods(['getCount', 'getParentCount'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
 
         $this->algorithm = $objectManager->getObject(

@@ -1,10 +1,17 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Block;
 
+use Aheadworks\Layerednav\Api\Data\FilterInterface;
 use Aheadworks\Layerednav\Model\Applier;
 use Aheadworks\Layerednav\Block\Navigation;
 use Aheadworks\Layerednav\Model\Config;
-use Aheadworks\Layerednav\Model\Layer\FilterList;
+use Aheadworks\Layerednav\Model\Layer\DataSource\CompositeConfigProvider;
+use Aheadworks\Layerednav\Model\Layer\FilterListAbstract;
 use Aheadworks\Layerednav\Model\Layer\FilterListResolver;
 use Aheadworks\Layerednav\Model\PageTypeResolver;
 use Magento\Catalog\Model\Category;
@@ -13,11 +20,13 @@ use Magento\Catalog\Model\Layer\AvailabilityFlagInterface;
 use Magento\Catalog\Model\Layer\Filter\AbstractFilter;
 use Magento\Catalog\Model\Layer\Resolver as LayerResolver;
 use Magento\Catalog\Model\Layer\State;
-use Magento\Search\Model\QueryFactory;
-use Magento\Search\Model\QueryInterface;
+use Magento\Catalog\Model\Layer\Filter\FilterInterface as LayerFilterInterface;
+use Magento\Catalog\Model\Layer\Filter\Item as FilterItem;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\View\LayoutInterface;
+use Magento\Framework\View\Model\Layout\Merge as LayoutMerge;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -25,7 +34,7 @@ use Magento\Store\Model\StoreManagerInterface;
  * Test for \Aheadworks\Layerednav\Block\Navigation
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class NavigationTest extends \PHPUnit_Framework_TestCase
+class NavigationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Navigation
@@ -38,7 +47,7 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
     private $layerMock;
 
     /**
-     * @var FilterList|\PHPUnit_Framework_MockObject_MockObject
+     * @var FilterListAbstract|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filterListMock;
 
@@ -63,9 +72,9 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
     private $configMock;
 
     /**
-     * @var QueryFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var CompositeConfigProvider|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchQueryFactoryMock;
+    private $dataSourceConfigProviderMock;
 
     /**
      * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -77,33 +86,64 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
      */
     private $storeManagerMock;
 
+    /**
+     * @var LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $layoutMock;
+
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->layerMock = $this->getMock(Layer::class, ['getState', 'getCurrentCategory'], [], '', false);
-        $this->filterListMock = $this->getMock(FilterList::class, ['getFilters'], [], '', false);
+        $this->layerMock = $this->getMockBuilder(Layer::class)
+            ->setMethods(['getState', 'getCurrentCategory'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->filterListMock = $this->getMockBuilder(FilterListAbstract::class)
+            ->setMethods(['getFilters'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
         $this->visibilityFlagMock = $this->getMockForAbstractClass(AvailabilityFlagInterface::class);
-        $this->applierMock = $this->getMock(Applier::class, ['applyFilters'], [], '', false);
-        $this->pageTypeResolverMock = $this->getMock(PageTypeResolver::class, ['getType'], [], '', false);
-        $this->configMock = $this->getMock(Config::class, ['isAjaxEnabled', 'isPopoverDisabled'], [], '', false);
-        $this->searchQueryFactoryMock = $this->getMock(QueryFactory::class, ['get'], [], '', false);
+        $this->applierMock = $this->getMockBuilder(Applier::class)
+            ->setMethods(['applyFilters'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->pageTypeResolverMock = $this->getMockBuilder(PageTypeResolver::class)
+            ->setMethods(['getType'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['isAjaxEnabled', 'isPopoverDisabled'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->dataSourceConfigProviderMock = $this->getMockBuilder(CompositeConfigProvider::class)
+            ->setMethods(['getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $layerResolverMock = $this->getMock(LayerResolver::class, ['get'], [], '', false);
+        $layerResolverMock = $this->getMockBuilder(LayerResolver::class)
+            ->setMethods(['get'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $layerResolverMock->expects($this->once())
             ->method('get')
             ->willReturn($this->layerMock);
-        $filterListResolverMock = $this->getMock(FilterListResolver::class, ['get'], [], '', false);
+        $filterListResolverMock = $this->getMockBuilder(FilterListResolver::class)
+            ->setMethods(['get'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $filterListResolverMock->expects($this->once())
             ->method('get')
             ->willReturn($this->filterListMock);
 
         $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
         $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
         $context = $objectManager->getObject(
             Context::class,
             [
                 'urlBuilder' => $this->urlBuilderMock,
-                'storeManager' => $this->storeManagerMock
+                'storeManager' => $this->storeManagerMock,
+                'layout' => $this->layoutMock
             ]
         );
 
@@ -117,7 +157,7 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
                 'applier' => $this->applierMock,
                 'pageTypeResolver' => $this->pageTypeResolverMock,
                 'config' => $this->configMock,
-                'searchQueryFactory' => $this->searchQueryFactoryMock
+                'dataSourceConfigProvider' => $this->dataSourceConfigProviderMock
             ]
         );
     }
@@ -162,43 +202,6 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([$filterMock], $this->block->getFilters());
     }
 
-    public function testGetItemsCountUrl()
-    {
-        $itemsCountUrl = 'http://localhost/awlayerednav/ajax/itemsCount';
-        $isCurrentlySecure = false;
-
-        $storeMock = $this->getMock(Store::class, ['isCurrentlySecure'], [], '', false);
-
-        $this->storeManagerMock->expects($this->once())
-            ->method('getStore')
-            ->willReturn($storeMock);
-        $storeMock->expects($this->once())
-            ->method('isCurrentlySecure')
-            ->willReturn($isCurrentlySecure);
-        $this->urlBuilderMock->expects($this->once())
-            ->method('getUrl')
-            ->with(
-                $this->equalTo('awlayerednav/ajax/itemsCount'),
-                $this->equalTo(['_secure' => $isCurrentlySecure])
-            )
-            ->willReturn($itemsCountUrl);
-
-        $this->assertEquals($itemsCountUrl, $this->block->getItemsCountUrl());
-    }
-
-    public function testGetCategoryId()
-    {
-        $categoryId = 1;
-        $categoryMock = $this->getMock(Category::class, ['getId'], [], '', false);
-        $this->layerMock->expects($this->once())
-            ->method('getCurrentCategory')
-            ->willReturn($categoryMock);
-        $categoryMock->expects($this->once())
-            ->method('getId')
-            ->willReturn($categoryId);
-        $this->assertEquals($categoryId, $this->block->getCategoryId());
-    }
-
     /**
      * @param AbstractFilter[]|\PHPUnit_Framework_MockObject_MockObject[] $filters
      * @param bool $hasActiveFilters
@@ -206,7 +209,10 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
      */
     public function testHasActiveFilters($filters, $hasActiveFilters)
     {
-        $stateMock = $this->getMock(State::class, ['getFilters'], [], '', false);
+        $stateMock = $this->getMockBuilder(State::class)
+            ->setMethods(['getFilters'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->layerMock->expects($this->once())
             ->method('getState')
             ->willReturn($stateMock);
@@ -214,38 +220,6 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
             ->method('getFilters')
             ->willReturn($filters);
         $this->assertSame($hasActiveFilters, $this->block->hasActiveFilters());
-    }
-
-    public function testGetPageType()
-    {
-        $pageType = 'category';
-        $this->pageTypeResolverMock->expects($this->once())
-            ->method('getType')
-            ->willReturn($pageType);
-        $this->assertEquals($pageType, $this->block->getPageType());
-    }
-
-    /**
-     * @param string $pageType
-     * @param string|null $queryText
-     * @param string $result
-     * @dataProvider getSearchQueryTextDataProvider
-     */
-    public function testGetSearchQueryText($pageType, $queryText, $result)
-    {
-        $this->pageTypeResolverMock->expects($this->once())
-            ->method('getType')
-            ->willReturn($pageType);
-        if ($queryText) {
-            $queryMock = $this->getMockForAbstractClass(QueryInterface::class);
-            $this->searchQueryFactoryMock->expects($this->once())
-                ->method('get')
-                ->willReturn($queryMock);
-            $queryMock->expects($this->once())
-                ->method('getQueryText')
-                ->willReturn($queryText);
-        }
-        $this->assertEquals($result, $this->block->getSearchQueryText());
     }
 
     /**
@@ -258,6 +232,17 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
             ->method('isAjaxEnabled')
             ->willReturn($value);
         $this->assertSame($value, $this->block->isAjaxEnabled());
+    }
+
+    public function testGetDataSourceConfig()
+    {
+        $configData = ['dataField' => 'dataValue'];
+
+        $this->dataSourceConfigProviderMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($configData);
+
+        $this->assertEquals($configData, $this->block->getDataSourceConfig());
     }
 
     /**
@@ -313,5 +298,141 @@ class NavigationTest extends \PHPUnit_Framework_TestCase
     public function boolDataProvider()
     {
         return [[true], [false]];
+    }
+
+    /**
+     * Test isFilterExpanded method
+     *
+     * @param int $displayState
+     * @dataProvider isFilterExpandedDataProvider
+     */
+    public function testIsFilterExpanded($layout, $displayState, $result)
+    {
+        $layoutUpdateMock = $this->getMockBuilder(LayoutMerge::class)
+            ->setMethods(['getPageLayout'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $layoutUpdateMock->expects($this->once())
+            ->method('getPageLayout')
+            ->willReturn($layout);
+        $this->layoutMock->expects($this->once())
+            ->method('getUpdate')
+            ->willReturn($layoutUpdateMock);
+
+        $filterMock = $this->getMockBuilder(AbstractFilter::class)
+            ->setMethods(['getStorefrontDisplayState'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filterMock->expects($this->any())
+            ->method('getStorefrontDisplayState')
+            ->willReturn($displayState);
+
+        $this->assertEquals($result, $this->block->isFilterExpanded($filterMock));
+    }
+
+    /**
+     * @return array
+     */
+    public function isFilterExpandedDataProvider()
+    {
+        return [
+            [
+                'layout'        => '2columns-left',
+                'displayState'  => FilterInterface::DISPLAY_STATE_EXPANDED,
+                'result'        => true
+            ],
+            [
+                'layout'        => '2columns-left',
+                'displayState'  => FilterInterface::DISPLAY_STATE_COLLAPSED,
+                'result'        => false
+            ],
+            [
+                'layout'        => '1column',
+                'displayState'  => FilterInterface::DISPLAY_STATE_EXPANDED,
+                'result'        => false
+            ],
+            [
+                'layout'        => '1column',
+                'displayState'  => FilterInterface::DISPLAY_STATE_COLLAPSED,
+                'result'        => false
+            ],
+        ];
+    }
+
+    /**
+     * Test isFilterActive method
+     *
+     * @param FilterItem[] $filterItems
+     * @param string $requestVar
+     * @param bool $result
+     * @dataProvider getIsActiveFilterDataProvider
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function testIsFilterActive($filterItems, $requestVar, $result)
+    {
+        $stateMock = $this->getMockBuilder(State::class)
+            ->setMethods(['getFilters'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->layerMock->expects($this->once())
+            ->method('getState')
+            ->willReturn($stateMock);
+        $stateMock->expects($this->once())
+            ->method('getFilters')
+            ->willReturn($filterItems);
+
+        $layerFilterMock = $this->getMockBuilder(LayerFilterInterface::class)
+            ->getMockForAbstractClass();
+        $layerFilterMock->expects($this->any())
+            ->method('getRequestVar')
+            ->willReturn($requestVar);
+
+        $this->assertEquals($result, $this->block->isFilterActive($layerFilterMock));
+    }
+
+    /**
+     * @return array
+     */
+    public function getIsActiveFilterDataProvider()
+    {
+        return [
+            [
+                'filterItems' => [],
+                'requestVar' => 'var1',
+                false
+            ],
+            [
+                'filterItems' => [$this->getFilterItemMock('var1')],
+                'requestVar' => 'var2',
+                false
+            ],
+            [
+                'filterItems' => [$this->getFilterItemMock('var1')],
+                'requestVar' => 'var1',
+                true
+            ],
+        ];
+    }
+
+    /**
+     * @param string $requestVar
+     * @return FilterItem|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getFilterItemMock($requestVar)
+    {
+        $filterMock = $this->getMockBuilder(LayerFilterInterface::class)
+            ->getMockForAbstractClass();
+        $filterMock->expects($this->once())
+            ->method('getRequestVar')
+            ->willReturn($requestVar);
+        $filterItemMock = $this->getMockBuilder(FilterItem::class)
+            ->setMethods(['getFilter'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filterItemMock->expects($this->once())
+            ->method('getFilter')
+            ->willReturn($filterMock);
+
+        return $filterItemMock;
     }
 }

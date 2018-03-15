@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model\Layer\Filter\DataProvider;
 
 use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Category as CategoryDataProvider;
@@ -12,7 +17,7 @@ use Magento\Store\Model\Store;
 /**
  * Test for \Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Category
  */
-class CategoryTest extends \PHPUnit_Framework_TestCase
+class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CategoryDataProvider
@@ -37,8 +42,14 @@ class CategoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->resourceMock = $this->getMock(ResourceCategory::class, [], [], '', false);
-        $this->layerMock = $this->getMock(Layer::class, ['getCurrentStore'], [], '', false);
+        $this->resourceMock = $this->getMockBuilder(ResourceCategory::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->layerMock = $this->getMockBuilder(Layer::class)
+            ->setMethods(['getCurrentStore'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
         $this->dataProvider = $objectManager->getObject(
             CategoryDataProvider::class,
@@ -71,7 +82,10 @@ class CategoryTest extends \PHPUnit_Framework_TestCase
         $result
     ) {
         $storeId = 2;
-        $storeMock = $this->getMock(Store::class, ['getStoreId'], [], '', false);
+        $storeMock = $this->getMockBuilder(Store::class)
+            ->setMethods(['getStoreId'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->layerMock->expects($this->once())
             ->method('getCurrentStore')

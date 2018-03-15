@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Setup;
 
 use Magento\Framework\Setup\InstallSchemaInterface;

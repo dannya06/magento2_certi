@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model\Layer\Filter;
 
 use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Decimal as DataProvider;
@@ -8,19 +13,19 @@ use Aheadworks\Layerednav\Model\ResourceModel\Layer\ConditionRegistry;
 use Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter\Decimal as ResourceDecimal;
 use Magento\Catalog\Model\Layer;
 use Magento\Catalog\Model\Layer\State;
+use Magento\Catalog\Model\Layer\Filter\Dynamic\AlgorithmFactory;
 use Magento\Catalog\Model\Layer\Filter\Item as FilterItem;
 use Magento\Catalog\Model\Layer\Filter\ItemFactory;
 use Magento\Catalog\Model\Layer\Filter\Item\DataBuilder as ItemDataBuilder;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
  * Test for \Aheadworks\Layerednav\Model\Layer\Filter\Decimal
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DecimalTest extends \PHPUnit_Framework_TestCase
+class DecimalTest extends \PHPUnit\Framework\TestCase
 {
     const ATTRIBUTE_CODE = 'decimal_attribute_code';
 
@@ -45,9 +50,9 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     private $itemDataBuilderMock;
 
     /**
-     * @var PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var AlgorithmFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $priceCurrencyMock;
+    private $algorithmFactoryMock;
 
     /**
      * @var DataProvider|\PHPUnit_Framework_MockObject_MockObject
@@ -68,40 +73,41 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->layerMock = $this->getMock(Layer::class, ['getState'], [], '', false);
-        $this->filterItemFactoryMock = $this->getMock(ItemFactory::class, ['create'], [], '', false);
-        $this->itemDataBuilderMock = $this->getMock(
-            ItemDataBuilder::class,
-            ['addItemData', 'build'],
-            [],
-            '',
-            false
-        );
-        $this->priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
-        $this->dataProviderMock = $this->getMock(
-            DataProvider::class,
-            [
-                'getIntervals',
-                'getResource',
-                'getRange',
-                'getRangeItemCounts'
-            ],
-            [],
-            '',
-            false
-        );
-        $dataProviderFactoryMock = $this->getMock(DataProviderFactory::class, ['create'], [], '', false);
+        $this->layerMock = $this->getMockBuilder(Layer::class)
+            ->setMethods(['getState'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->filterItemFactoryMock = $this->getMockBuilder(ItemFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->itemDataBuilderMock = $this->getMockBuilder(ItemDataBuilder::class)
+            ->setMethods(['addItemData', 'build'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->algorithmFactoryMock = $this->getMockBuilder(AlgorithmFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->dataProviderMock = $this->getMockBuilder(DataProvider::class)
+            ->setMethods(['getIntervals', 'getResource', 'getRange', 'getRangeItemCounts'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dataProviderFactoryMock = $this->getMockBuilder(DataProviderFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $dataProviderFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($this->dataProviderMock);
-        $this->conditionRegistryMock = $this->getMock(ConditionRegistry::class, ['addConditions'], [], '', false);
-        $this->attributeMock = $this->getMock(
-            Attribute::class,
-            ['getFrontend', 'getIsFilterable', 'getAttributeCode'],
-            [],
-            '',
-            false
-        );
+        $this->conditionRegistryMock = $this->getMockBuilder(ConditionRegistry::class)
+            ->setMethods(['addConditions'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->attributeMock = $this->getMockBuilder(Attribute::class)
+            ->setMethods(['getFrontend', 'getIsFilterable', 'getAttributeCode'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->attributeMock->expects($this->any())
             ->method('getAttributeCode')
             ->willReturn(self::ATTRIBUTE_CODE);
@@ -112,7 +118,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                 'filterItemFactory' => $this->filterItemFactoryMock,
                 'layer' => $this->layerMock,
                 'itemDataBuilder' => $this->itemDataBuilderMock,
-                'priceCurrency' => $this->priceCurrencyMock,
+                'algorithmFactory' => $this->algorithmFactoryMock,
                 'dataProviderFactory' => $dataProviderFactoryMock,
                 'conditionsRegistry' => $this->conditionRegistryMock,
                 'data' => ['attribute_model' => $this->attributeMock]
@@ -128,21 +134,18 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
 
         /** @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock */
         $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $resourceMock = $this->getMock(
-            ResourceDecimal::class,
-            ['joinFilterToCollection', 'getWhereConditions'],
-            [],
-            '',
-            false
-        );
-        $stateMock = $this->getMock(State::class, ['addFilter'], [], '', false);
-        $filterItemMock = $this->getMock(
-            FilterItem::class,
-            ['setFilter', 'setLabel', 'setValue', 'setCount'],
-            [],
-            '',
-            false
-        );
+        $resourceMock = $this->getMockBuilder(ResourceDecimal::class)
+            ->setMethods(['joinFilterToCollection', 'getWhereConditions'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $stateMock = $this->getMockBuilder(State::class)
+            ->setMethods(['addFilter'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filterItemMock = $this->getMockBuilder(FilterItem::class)
+            ->setMethods(['setFilter', 'setLabel', 'setValue', 'setCount'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $requestMock->expects($this->once())
             ->method('getParam')
@@ -195,52 +198,5 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($filterItemMock));
 
         $this->assertSame($this->filter, $this->filter->apply($requestMock));
-    }
-
-    public function testGetItemsData()
-    {
-        $range = 10;
-        $index = 2;
-        $productsCount = 15;
-        $itemsData = [
-            [
-                'label' => '10.00-20.00',
-                'value' => $index . '-' . $range,
-                'count' => $productsCount
-            ]
-        ];
-
-        $this->dataProviderMock->expects($this->once())
-            ->method('getRange')
-            ->with($this->equalTo($this->filter))
-            ->willReturn($range);
-        $this->dataProviderMock->expects($this->once())
-            ->method('getRangeItemCounts')
-            ->with($this->equalTo($range), $this->equalTo($this->filter))
-            ->willReturn([$index => $productsCount]);
-        $this->priceCurrencyMock->expects($this->exactly(2))
-            ->method('format')
-            ->willReturnMap(
-                [
-                    [10, false, PriceCurrencyInterface::DEFAULT_PRECISION, null, null, '10.00'],
-                    [20, false, PriceCurrencyInterface::DEFAULT_PRECISION, null, null, '20.00']
-                ]
-            );
-        $this->itemDataBuilderMock->expects($this->once())
-            ->method('addItemData')
-            ->with(
-                $this->equalTo('10.00 - 20.00'),
-                $this->equalTo($index . '-' . $range),
-                $this->equalTo($productsCount)
-            );
-        $this->itemDataBuilderMock->expects($this->once())
-            ->method('build')
-            ->willReturn($itemsData);
-
-        $class = new \ReflectionClass($this->filter);
-        $method = $class->getMethod('_getItemsData');
-        $method->setAccessible(true);
-
-        $this->assertEquals($itemsData, $method->invoke($this->filter));
     }
 }

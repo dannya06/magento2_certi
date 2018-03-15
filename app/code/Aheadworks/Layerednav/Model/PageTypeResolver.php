@@ -1,6 +1,12 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model;
 
+use Magento\Catalog\Model\Layer\Resolver;
 use Magento\Framework\View\LayoutInterface;
 
 /**
@@ -9,6 +15,11 @@ use Magento\Framework\View\LayoutInterface;
  */
 class PageTypeResolver
 {
+    /**
+     * Default page type
+     */
+    const PAGE_TYPE_DEFAULT = 'default';
+
     /**
      * Category page
      */
@@ -33,22 +44,32 @@ class PageTypeResolver
     ];
 
     /**
+     * @var array
+     */
+    private $pageLayers = [
+        self::PAGE_TYPE_CATEGORY => Resolver::CATALOG_LAYER_CATEGORY,
+        self::PAGE_TYPE_CATALOG_SEARCH => Resolver::CATALOG_LAYER_SEARCH
+    ];
+
+    /**
      * @param LayoutInterface $layout
      * @param array $pageHandles
+     * @param array $pageLayers
      */
     public function __construct(
         LayoutInterface $layout,
-        $pageHandles = []
+        $pageHandles = [],
+        $pageLayers = []
     ) {
         $this->layout = $layout;
         $this->pageHandles = array_merge($this->pageHandles, $pageHandles);
+        $this->pageLayers = array_merge($this->pageLayers, $pageLayers);
     }
 
     /**
      * Get page type
      *
      * @return string
-     * @throws \Exception
      */
     public function getType()
     {
@@ -58,6 +79,20 @@ class PageTypeResolver
                 return $pageType;
             }
         }
-        throw new \Exception('Unable to resolve page type.');
+        return self::PAGE_TYPE_DEFAULT;
+    }
+
+    /**
+     * Get layer type
+     *
+     * @param string|null $pageType
+     * @return string
+     */
+    public function getLayerType($pageType = null)
+    {
+        $pageType = $pageType ? : $this->getType();
+        return isset($this->pageLayers[$pageType])
+            ? $this->pageLayers[$pageType]
+            : Resolver::CATALOG_LAYER_CATEGORY;
     }
 }

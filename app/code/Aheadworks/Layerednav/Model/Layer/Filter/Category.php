@@ -1,6 +1,13 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\Layer\Filter;
 
+use Aheadworks\Layerednav\Model\Config;
+use Aheadworks\Layerednav\Model\Config\Source\SeoFriendlyUrl;
 use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Category as DataProvider;
 use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\CategoryFactory as DataProviderFactory;
 use Aheadworks\Layerednav\Model\PageTypeResolver;
@@ -15,10 +22,22 @@ use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Category Filter
+ *
+ * @method int getStorefrontDisplayState()
+ * @method AbstractFilter setStorefrontDisplayState(int $storefrontDisplayState)
+ * @method string getStorefrontListStyle()
+ * @method $this setStorefrontListStyle(string $storefrontListStyle)
+ *
  * @package Aheadworks\Layerednav\Model\Layer\Filter
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Category extends AbstractFilter
 {
+    /**
+     * Request var
+     */
+    const REQUEST_VAR = 'cat';
+
     /**
      * @var DataProvider
      */
@@ -40,6 +59,16 @@ class Category extends AbstractFilter
     private $pageTypeResolver;
 
     /**
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @var string
+     */
+    private $itemLabel;
+
+    /**
      * @param ItemFactory $filterItemFactory
      * @param StoreManagerInterface $storeManager
      * @param Layer $layer
@@ -48,7 +77,9 @@ class Category extends AbstractFilter
      * @param ConditionRegistry $conditionsRegistry
      * @param Escaper $escaper
      * @param PageTypeResolver $pageTypeResolver
+     * @param Config $config
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         ItemFactory $filterItemFactory,
@@ -59,6 +90,7 @@ class Category extends AbstractFilter
         ConditionRegistry $conditionsRegistry,
         Escaper $escaper,
         PageTypeResolver $pageTypeResolver,
+        Config $config,
         array $data = []
     ) {
         parent::__construct(
@@ -68,11 +100,12 @@ class Category extends AbstractFilter
             $itemDataBuilder,
             $data
         );
-        $this->_requestVar = 'cat';
+        $this->_requestVar = self::REQUEST_VAR;
         $this->dataProvider = $dataProviderFactory->create(['layer' => $layer]);
         $this->conditionsRegistry = $conditionsRegistry;
         $this->escaper = $escaper;
         $this->pageTypeResolver = $pageTypeResolver;
+        $this->config = $config;
     }
 
     /**
@@ -111,7 +144,19 @@ class Category extends AbstractFilter
      */
     public function getName()
     {
-        return __('Category');
+        return __($this->itemLabel);
+    }
+
+    /**
+     * Set filter name
+     *
+     * @param string $label
+     * @return $this
+     */
+    public function setName($label)
+    {
+        $this->itemLabel = $label;
+        return $this;
     }
 
     /**
@@ -123,6 +168,20 @@ class Category extends AbstractFilter
             return $this->getItemsDataForSearchPage();
         }
         return $this->getItemsDataForCategoryPage();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _createItem($label, $value, $count = 0)
+    {
+        if ($this->isReplaceValueByText()) {
+            $categoryIds = explode(',', $value);
+            $urlKeys = $this->dataProvider->getCategoryUrlKeys($categoryIds);
+            return parent::_createItem($label, implode(',', $urlKeys), $count);
+        } else {
+            return parent::_createItem($label, $value, $count);
+        }
     }
 
     /**
@@ -142,9 +201,12 @@ class Category extends AbstractFilter
             foreach ($childCategories as $category) {
                 if ($category->getIsActive()) {
                     if ($productCount = $resource->getProductCount($this, $category)) {
+                        $value = $this->isReplaceValueByText()
+                            ? $category->getUrlKey()
+                            : $category->getId();
                         $this->itemDataBuilder->addItemData(
                             $this->escaper->escapeHtml($category->getName()),
-                            $category->getId(),
+                            $value,
                             $productCount
                         );
                     }
@@ -181,5 +243,16 @@ class Category extends AbstractFilter
             }
         }
         return $this->itemDataBuilder->build();
+    }
+
+    /**
+     * Check if option value should be replaced by url compatible text representation
+     *
+     * @return bool
+     */
+    private function isReplaceValueByText()
+    {
+        return $this->config->getSeoFriendlyUrlOption() != SeoFriendlyUrl::DEFAULT_OPTION
+            && $this->pageTypeResolver->getType() != PageTypeResolver::PAGE_TYPE_CATALOG_SEARCH;
     }
 }

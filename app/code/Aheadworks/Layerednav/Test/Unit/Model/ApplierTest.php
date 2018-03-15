@@ -1,8 +1,13 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model;
 
 use Aheadworks\Layerednav\Model\Applier;
-use Aheadworks\Layerednav\Model\Layer\FilterList;
+use Aheadworks\Layerednav\Model\Layer\FilterListAbstract;
 use Aheadworks\Layerednav\Model\Layer\FilterListResolver;
 use Aheadworks\Layerednav\Model\ResourceModel\Layer\ConditionRegistry;
 use Magento\Catalog\Model\Layer;
@@ -15,7 +20,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Layerednav\Model\Applier
  */
-class ApplierTest extends \PHPUnit_Framework_TestCase
+class ApplierTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Applier
@@ -41,9 +46,15 @@ class ApplierTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->filterListResolverMock = $this->getMock(FilterListResolver::class, ['get'], [], '', false);
+        $this->filterListResolverMock = $this->getMockBuilder(FilterListResolver::class)
+            ->setMethods(['get'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->conditionRegistryMock = $this->getMock(ConditionRegistry::class, ['getConditions'], [], '', false);
+        $this->conditionRegistryMock = $this->getMockBuilder(ConditionRegistry::class)
+            ->setMethods(['getConditions'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->applier = $objectManager->getObject(
             Applier::class,
@@ -63,9 +74,18 @@ class ApplierTest extends \PHPUnit_Framework_TestCase
     public function testApplyFilters($conditions = [], $whereCondition = null)
     {
         /** @var Layer|\PHPUnit_Framework_MockObject_MockObject $layerMock */
-        $layerMock = $this->getMock(Layer::class, ['getProductCollection', 'apply'], [], '', false);
-        $selectMock = $this->getMock(Select::class, ['where', 'group'], [], '', false);
-        $collectionMock = $this->getMock(ProductCollection::class, ['getSelect', 'getSize'], [], '', false);
+        $layerMock = $this->getMockBuilder(Layer::class)
+            ->setMethods(['getProductCollection', 'apply'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $selectMock = $this->getMockBuilder(Select::class)
+            ->setMethods(['where', 'group'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $collectionMock = $this->getMockBuilder(ProductCollection::class)
+            ->setMethods(['getSelect', 'getSize'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $filterMock = $this->getMockForAbstractClass(
             AbstractFilter::class,
             [],
@@ -75,7 +95,10 @@ class ApplierTest extends \PHPUnit_Framework_TestCase
             true,
             ['apply']
         );
-        $filterListMock = $this->getMock(FilterList::class, ['getFilters'], [], '', false);
+        $filterListMock = $this->getMockBuilder(FilterListAbstract::class)
+            ->setMethods(['getFilters'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
         $this->filterListResolverMock->expects($this->once())
             ->method('get')

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model\Layer\Filter\DataProvider;
 
 use Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Decimal as DecimalDataProvider;
@@ -9,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Layerednav\Model\Layer\Filter\DataProvider\Decimal
  */
-class DecimalTest extends \PHPUnit_Framework_TestCase
+class DecimalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DecimalDataProvider
@@ -24,13 +29,10 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->resourceMock = $this->getMock(
-            ResourceDecimal::class,
-            ['getMaxValue', 'getCount', 'getParentCount'],
-            [],
-            '',
-            false
-        );
+        $this->resourceMock = $this->getMockBuilder(ResourceDecimal::class)
+            ->setMethods(['getMaxValue', 'getCount', 'getParentCount'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->dataProvider = $objectManager->getObject(
             DecimalDataProvider::class,
             ['resource' => $this->resourceMock]

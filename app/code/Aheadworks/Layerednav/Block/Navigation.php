@@ -1,16 +1,24 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Block;
 
+use Aheadworks\Layerednav\Api\Data\FilterInterface;
 use Aheadworks\Layerednav\Model\Applier;
 use Aheadworks\Layerednav\Model\Config;
-use Aheadworks\Layerednav\Model\Layer\FilterList;
+use Aheadworks\Layerednav\Model\Config\Source\SeoFriendlyUrl;
+use Aheadworks\Layerednav\Model\Layer\DataSource\CompositeConfigProvider;
+use Aheadworks\Layerednav\Model\Layer\FilterListAbstract;
 use Aheadworks\Layerednav\Model\Layer\FilterListResolver;
 use Aheadworks\Layerednav\Model\PageTypeResolver;
 use Magento\Catalog\Model\Layer;
 use Magento\Catalog\Model\Layer\AvailabilityFlagInterface;
 use Magento\Catalog\Model\Layer\Filter\Item as FilterItem;
 use Magento\Catalog\Model\Layer\Resolver as LayerResolver;
-use Magento\Search\Model\QueryFactory;
+use Magento\Catalog\Model\Layer\Filter\FilterInterface as LayerFilterInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 
@@ -27,7 +35,7 @@ class Navigation extends Template
     private $layer;
 
     /**
-     * @var FilterList
+     * @var FilterListAbstract
      */
     private $filterList;
 
@@ -52,9 +60,9 @@ class Navigation extends Template
     private $config;
 
     /**
-     * @var QueryFactory
+     * @var CompositeConfigProvider
      */
-    private $searchQueryFactory;
+    private $dataSourceConfigProvider;
 
     /**
      * @param Context $context
@@ -64,7 +72,7 @@ class Navigation extends Template
      * @param Applier $applier
      * @param PageTypeResolver $pageTypeResolver
      * @param Config $config
-     * @param QueryFactory $searchQueryFactory
+     * @param CompositeConfigProvider $dataSourceConfigProvider
      * @param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -76,7 +84,7 @@ class Navigation extends Template
         Applier $applier,
         PageTypeResolver $pageTypeResolver,
         Config $config,
-        QueryFactory $searchQueryFactory,
+        CompositeConfigProvider $dataSourceConfigProvider,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -86,7 +94,7 @@ class Navigation extends Template
         $this->applier = $applier;
         $this->pageTypeResolver = $pageTypeResolver;
         $this->config = $config;
-        $this->searchQueryFactory = $searchQueryFactory;
+        $this->dataSourceConfigProvider = $dataSourceConfigProvider;
     }
 
     /**
@@ -120,29 +128,6 @@ class Navigation extends Template
     }
 
     /**
-     * Get items count url
-     *
-     * @return string
-     */
-    public function getItemsCountUrl()
-    {
-        return $this->_urlBuilder->getUrl(
-            'awlayerednav/ajax/itemsCount',
-            ['_secure' => $this->_storeManager->getStore()->isCurrentlySecure()]
-        );
-    }
-
-    /**
-     * Get category id
-     *
-     * @return int
-     */
-    public function getCategoryId()
-    {
-        return $this->layer->getCurrentCategory()->getId();
-    }
-
-    /**
      * Check if block has active filters
      *
      * @return bool
@@ -150,30 +135,6 @@ class Navigation extends Template
     public function hasActiveFilters()
     {
         return !empty($this->layer->getState()->getFilters());
-    }
-
-    /**
-     * Get page type
-     *
-     * @return string
-     * @throws \Exception
-     */
-    public function getPageType()
-    {
-        return $this->pageTypeResolver->getType();
-    }
-
-    /**
-     * Get search query text
-     *
-     * @return string
-     */
-    public function getSearchQueryText()
-    {
-        if ($this->getPageType() == PageTypeResolver::PAGE_TYPE_CATALOG_SEARCH) {
-            return $this->searchQueryFactory->get()->getQueryText();
-        }
-        return '';
     }
 
     /**
@@ -187,6 +148,16 @@ class Navigation extends Template
     }
 
     /**
+     * Get data source config
+     *
+     * @return array
+     */
+    public function getDataSourceConfig()
+    {
+        return $this->dataSourceConfigProvider->getConfig();
+    }
+
+    /**
      * Check if "Show X Items" Pop-over disabled
      *
      * @return bool
@@ -197,6 +168,28 @@ class Navigation extends Template
     }
 
     /**
+     * Check if use attribute value instead of Id in url build logic
+     *
+     * @return bool
+     */
+    public function isUseAttrValueInsteadOfId()
+    {
+        return $this->config->getSeoFriendlyUrlOption() == SeoFriendlyUrl::ATTRIBUTE_VALUE_INSTEAD_OF_ID
+            && $this->pageTypeResolver->getType() != PageTypeResolver::PAGE_TYPE_CATALOG_SEARCH;
+    }
+
+    /**
+     * Check if use attribute values as subcategories in url build logic
+     *
+     * @return bool
+     */
+    public function isUseSubcategoriesAsAttrValues()
+    {
+        return $this->config->getSeoFriendlyUrlOption() == SeoFriendlyUrl::ATTRIBUTE_VALUE_AS_SUBCATEGORY
+            && $this->pageTypeResolver->getType() != PageTypeResolver::PAGE_TYPE_CATALOG_SEARCH;
+    }
+
+    /**
      * Get page layout
      *
      * @return string
@@ -204,5 +197,60 @@ class Navigation extends Template
     public function getPageLayout()
     {
         return $this->pageConfig->getPageLayout() ?: $this->getLayout()->getUpdate()->getPageLayout();
+    }
+
+    /**
+     * Can show filter
+     *
+     * @param Layer\Filter\AbstractFilter $filter
+     * @return bool
+     */
+    public function canShowFilter($filter)
+    {
+        $filterItems = $filter->getItems();
+        if (!$filterItems) {
+            return false;
+        } elseif (!$this->config->hideEmptyFilters()) {
+            return true;
+        } else {
+            foreach ($filterItems as $filterItem) {
+                if ($filterItem->getCount()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if filter is expanded
+     *
+     * @param LayerFilterInterface $filter
+     * @return bool
+     */
+    public function isFilterExpanded($filter)
+    {
+        return ($this->getPageLayout() != '1column')
+            && ($filter->getStorefrontDisplayState() == FilterInterface::DISPLAY_STATE_EXPANDED);
+    }
+
+    /**
+     * Check if the filter is active
+     *
+     * @param LayerFilterInterface $filter
+     * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function isFilterActive($filter)
+    {
+        $activeFilterItems = $this->layer->getState()->getFilters();
+        if (!empty($activeFilterItems)) {
+            foreach ($activeFilterItems as $activeItem) {
+                if ($activeItem->getFilter()->getRequestVar() == $filter->getRequestVar()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

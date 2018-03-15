@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\Layer\Filter\DataProvider;
 
 use Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter\Category as ResourceCategory;
@@ -70,6 +75,23 @@ class Category
             }
         }
         return $categoryIds ? $categoryIds : false;
+    }
+
+    /**
+     * Get category url-keys
+     *
+     * @param array $categoryIds
+     * @return array
+     */
+    public function getCategoryUrlKeys($categoryIds)
+    {
+        $result = [];
+        foreach ($categoryIds as $id) {
+            $result[] = is_numeric($id)
+                ? $this->categoryRepository->get($id)->getUrlKey()
+                : $id;
+        }
+        return $result;
     }
 
     /**

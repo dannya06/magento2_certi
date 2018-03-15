@@ -1,3 +1,8 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery'
 ], function ($) {
@@ -33,14 +38,11 @@ define([
                 type: 'post',
                 dataType: 'json',
                 context: this,
-                data: {
+                data: $.extend({
                     isAjax: 'true',
                     filterValue: filterValue,
-                    pageType: this.config.pageType,
-                    categoryId: this.config.categoryId,
-                    searchQueryText: this.config.searchQueryText,
                     sequence: this.sequence
-                },
+                }, this.config),
 
                 /**
                  * Called when request succeeds

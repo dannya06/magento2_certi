@@ -1,6 +1,12 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model;
 
+use Aheadworks\Layerednav\Api\Data\FilterInterface;
 use Aheadworks\Layerednav\Model\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
@@ -9,7 +15,7 @@ use Magento\Store\Model\ScopeInterface;
 /**
  * Test for \Aheadworks\Layerednav\Model\Config
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -91,9 +97,61 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $this->scopeConfigMock->expects($this->any())
             ->method('isSetFlag')
-            ->with(Config::XML_PATH_POPOVER_DISABLED)
+            ->with(Config::XML_PATH_POPOVER_DISABLED, ScopeInterface::SCOPE_STORE)
             ->willReturn($value);
         $this->assertSame($value, $this->config->isPopoverDisabled());
+    }
+
+    /**
+     * @param int $value
+     * @param bool $result
+     * @dataProvider filterStateDataProvider
+     */
+    public function testGetFilterDisplayState($value, $result)
+    {
+        $this->scopeConfigMock->expects($this->any())
+            ->method('getValue')
+            ->with(Config::XML_PATH_FILTER_DISPLAY_STATE, ScopeInterface::SCOPE_STORE)
+            ->willReturn($value);
+        $this->assertEquals($value, $this->config->getFilterDisplayState());
+    }
+
+    /**
+     * @return array
+     */
+    public function filterStateDataProvider()
+    {
+        return [
+            [FilterInterface::DISPLAY_STATE_EXPANDED, true],
+            [FilterInterface::DISPLAY_STATE_COLLAPSED, false]
+        ];
+    }
+
+    /**
+     * Test getFilterValuesDisplayLimit method
+     */
+    public function testGetFilterValuesDisplayLimit()
+    {
+        $limitValue = "10";
+
+        $this->scopeConfigMock->expects($this->any())
+            ->method('getValue')
+            ->with(Config::XML_PATH_FILTER_VALUES_DISPLAY_LIMIT, ScopeInterface::SCOPE_STORE)
+            ->willReturn($limitValue);
+        $this->assertSame((int)$limitValue, $this->config->getFilterValuesDisplayLimit());
+    }
+
+    /**
+     * @param bool $value
+     * @dataProvider boolDataProvider
+     */
+    public function testHideEmptyAttributeValues($value)
+    {
+        $this->scopeConfigMock->expects($this->any())
+            ->method('isSetFlag')
+            ->with(Config::XML_PATH_HIDE_EMPTY_ATTRIBUTE_VALUES, ScopeInterface::SCOPE_STORE)
+            ->willReturn($value);
+        $this->assertSame($value, $this->config->hideEmptyAttributeValues());
     }
 
     /**

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter;
 
 use Magento\Catalog\Model\Layer\Filter\FilterInterface;
@@ -71,91 +76,125 @@ class Attribute extends AbstractDb
      * Retrieve array with products counts per attribute option
      *
      * @param FilterInterface $filter
-     * @throws \Magento\Framework\Exception\LocalizedException
      * @return array
      */
-    public function getCount(FilterInterface $filter)
+    public function getCount($filter)
     {
-        // Clone select from collection with filters
         $select = clone $filter->getLayer()->getProductCollection()->getSelect();
-        // Remove where conditions for current attribute - compatibility with multiselect attributes
-        $whereConditions = $select->getPart(Select::WHERE);
-        $select->reset(Select::WHERE);
-
         $attribute = $filter->getAttributeModel();
         $tableAlias = sprintf('%s_idx', $attribute->getAttributeCode());
 
-        foreach ($whereConditions as $key => $condition) {
-            if (false !== strpos($condition, $tableAlias)) {
-                unset($whereConditions[$key]);
-                continue;
-            }
-            if (0 === strpos($condition, 'AND ')) {
-                $condition = preg_replace("/AND /", "", $condition, 1);
-            }
-            $whereConditions[$key] = $condition;
-        }
+        $fromAndJoins = $this->prepereCountFromAndJoins($select, $filter, $tableAlias);
+        $whereConditions = $this->prepereCountWhereConditions($select, $tableAlias);
+
+        $select
+            ->reset()
+            ->setPart(Select::FROM, $fromAndJoins)
+            ->columns(
+                [
+                    'value' => $tableAlias . '.value',
+                    'entity_id' => $tableAlias . '.entity_id'
+                ]
+            )
+            ->group([$tableAlias . '.value', $tableAlias . '.entity_id']);
+
         if ($whereConditions) {
             $where[] = implode(' AND ', $whereConditions);
             $select->setPart(Select::WHERE, $where);
         }
 
-        return $this->fetchCount($select, $filter);
+        $mainSelect = clone $select;
+        $mainSelect
+            ->reset()
+            ->from(
+                ['main_table' => new \Zend_Db_Expr(sprintf('(%s)', $select))],
+                []
+            )
+            ->columns(
+                [
+                    'value' => 'main_table.value',
+                    'count' => new \Zend_Db_Expr('COUNT(main_table.entity_id)')
+                ]
+            )
+            ->group('main_table.value');
+
+        return $this->getConnection()->fetchAssoc($mainSelect);
     }
 
     /**
-     * @param FilterInterface $filter
-     * @return array
-     */
-    public function getParentCount(FilterInterface $filter)
-    {
-        // Clone select from collection with filters
-        $select = clone $filter->getLayer()->getProductCollection()->getSelect();
-        $select->reset(Select::WHERE);
-        return $this->fetchCount($select, $filter);
-    }
-
-    /**
+     * Prepere count from and joins
+     *
      * @param Select $select
      * @param FilterInterface $filter
+     * @param string $tableAlias
      * @return array
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function fetchCount(Select $select, FilterInterface $filter)
+    private function prepereCountFromAndJoins($select, $filter, $tableAlias)
     {
-        // Reset columns, order and limitation conditions
-        $select->reset(Select::COLUMNS)
-            ->reset(Select::ORDER)
-            ->reset(Select::LIMIT_COUNT)
-            ->reset(Select::LIMIT_OFFSET)
-            ->reset(Select::GROUP)
-        ;
-
         $connection = $this->getConnection();
         $attribute = $filter->getAttributeModel();
-        $tableAlias = sprintf('%s_idx', $attribute->getAttributeCode());
-        $flag = 'attribute_joined_' . $tableAlias;
-        if (!$filter->getLayer()->getProductCollection()->getFlag($flag)) {
-            $conditions = [
-                $tableAlias . '.entity_id = e.entity_id',
-                $connection->quoteInto($tableAlias . '.attribute_id = ?', $attribute->getAttributeId()),
-                $connection->quoteInto($tableAlias . '.store_id = ?', $filter->getStoreId()),
-            ];
+        $conditions = [
+            $tableAlias . '.entity_id = e.entity_id',
+            $connection->quoteInto($tableAlias . '.attribute_id = ?', $attribute->getAttributeId()),
+            $connection->quoteInto($tableAlias . '.store_id = ?', $filter->getStoreId()),
+        ];
 
-            $select->joinLeft(
-                [$tableAlias => $this->getMainTable()],
-                join(' AND ', $conditions),
-                []
-            );
+        $newFromAndJoins = [];
+        $fromAndJoins = $select->getPart(Select::FROM);
+        foreach ($fromAndJoins as $key => $join) {
+            if ($join['joinType'] == Select::FROM) {
+                $newFromAndJoins[$tableAlias] = [
+                    'joinType'      => Select::FROM,
+                    'schema'        => $join['schema'],
+                    'tableName'     => $this->getTable('catalog_product_index_eav'),
+                    'joinCondition' => null
+                ];
+                if (isset($fromAndJoins['search_result'])) {
+                    $newFromAndJoins['search_result'] = [
+                        'joinType' => Select::INNER_JOIN,
+                        'schema' => $join['schema'],
+                        'tableName' => $fromAndJoins['search_result']['tableName'],
+                        'joinCondition' => $tableAlias . '.entity_id = search_result.entity_id'
+                    ];
+                }
+                $newFromAndJoins[$key] = [
+                    'joinType'      => Select::LEFT_JOIN,
+                    'schema'        => $join['schema'],
+                    'tableName'     => $join['tableName'],
+                    'joinCondition' => join(' AND ', $conditions)
+                ];
+                continue;
+            }
+            if ($key == $tableAlias || $key == 'search_result') {
+                continue;
+            }
+            $newFromAndJoins[$key] = $join;
         }
-        $select->columns(
-            [
-                'value' => $tableAlias . '.value',
-                'count' => new \Zend_Db_Expr('COUNT(' . $tableAlias . '.entity_id)')
-            ]
-        );
-        $select->group("{$tableAlias}.value");
 
-        return $connection->fetchPairs($select);
+        return $newFromAndJoins;
+    }
+
+    /**
+     * Prepere count where conditions
+     *
+     * @param Select $select
+     * @param string $tableAlias
+     * @return array
+     */
+    private function prepereCountWhereConditions($select, $tableAlias)
+    {
+        $newWhereConditions = [];
+        $whereConditions = $select->getPart(Select::WHERE);
+        foreach ($whereConditions as $key => $condition) {
+            if (false !== strpos($condition, $tableAlias)) {
+                continue;
+            }
+            if (0 === strpos($condition, 'AND ')) {
+                $condition = preg_replace('/AND /', '', $condition, 1);
+            }
+            $newWhereConditions[$key] = $condition;
+        }
+
+        return $newWhereConditions;
     }
 }

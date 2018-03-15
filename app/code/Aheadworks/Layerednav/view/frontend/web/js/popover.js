@@ -1,3 +1,8 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery',
     './filter/value',
@@ -5,8 +10,9 @@ define([
     './url',
     './filter/data/source/ajax',
     './filter/request/bridge',
-    './updater'
-], function ($, filterValue, currentFilterItem, url, dataSource, requestBridge, updater) {
+    './updater',
+    './resolver/layout-resolver'
+], function ($, filterValue, currentFilterItem, url, dataSource, requestBridge, updater, layoutResolver) {
     'use strict';
 
     $.widget('mage.awLayeredNavPopover', {
@@ -56,7 +62,7 @@ define([
                          * Called after request finishes
                          */
                         function () {
-                            updater.update(submitUrl, requestBridge.getResult());
+                            updater.updateAndScrollUpToTop(submitUrl, requestBridge.getResult());
                         }
                     );
                 } else {
@@ -114,7 +120,7 @@ define([
                                  * Called after request finishes
                                  */
                                 function () {
-                                    updater.update(submitUrl, requestBridge.getResult());
+                                    updater.updateAndScrollUpToTop(submitUrl, requestBridge.getResult());
                                 }
                             );
                         });
@@ -154,12 +160,17 @@ define([
                 width = $(this.options.filtersContainer).width() + 35,
                 top = filterItem.position().top;
 
-            if ($('body').hasClass('page-layout-2columns-right')) {
+            if (layoutResolver.isTwoColumnsRightLayout()) {
                 position = 'right';
             }
 
+            if (layoutResolver.isOneColumnLayout()) {
+                width = (this.element.parent().width() / 2) - (this.element.width() / 2);
+                top = '10';
+            }
+
             this.element.css(position, width + 'px');
-            this.element.css('top',top + 'px');
+            this.element.css('top', top + 'px');
             this.element.show();
         }
     });

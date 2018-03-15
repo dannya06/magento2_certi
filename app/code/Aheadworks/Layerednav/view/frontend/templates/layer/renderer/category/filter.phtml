@@ -1,0 +1,70 @@
+<?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
+/* @var $block \Aheadworks\Layerednav\Block\Navigation\Category\FilterRenderer */
+
+// @codingStandardsIgnoreFile
+?>
+<ol class="categories">
+    <?php foreach ($categories as $catIndex => $category): ?>
+    <li class="category <?php /* @noEscape */ echo $block->getCategoryClass($catIndex); ?>">
+        <a href="<?php /* @noEscape */ echo $category['link'] ?>"
+           <?php if ($block->isCurrentCategory($catIndex)): ?>
+           data-mage-init='{"awLayeredNavFilterReset": {"params":["<?php /* @noEscape */ echo $filter->getRequestVar(); ?>"]}}'
+           <?php endif ?>
+        >
+            <span class="label"><?php /* @noEscape */ echo $category['label'] ?></span>
+        </a>
+    </li>
+    <?php endforeach; ?>
+    <ol class="items">
+        <?php
+        $showMoreCount = $block->getShowMoreCount($filterItems);
+        $displayLimit = $block->getDisplayLimit();
+        $itemIndex = 0;
+        ?>
+        <?php /** @var \Magento\Catalog\Model\Layer\Filter\Item[] $filterItems */ ?>
+        <?php foreach ($filterItems as $filterItem): ?>
+            <?php
+            $requestVar = $filterItem->getFilter()->getRequestVar();
+            $value = $filterItem->getValue();
+            $htmlId = 'aw-filter-option-' . $requestVar . '-' . $value;
+            ?>
+            <?php if ($block->isNeedToShowItem($filterItem)):
+                $itemIndex++;
+                ?>
+                <li class="item <?php if ($showMoreCount > 0 && $itemIndex > $displayLimit) { /* @noEscape */ echo 'hide'; } ?>
+                    <?php if ($showMoreCount > 0 && $itemIndex == $displayLimit) { /* @noEscape */ echo 'shaded'; } ?>">
+
+                    <?php if ($block->hasChildrenCategories($filterItem->getValue())) : ?>
+                        <a class="subcategory" href="<?php /* @noEscape */ echo $block->getCategoryUrl($filterItem->getValue()) ?>">
+                            <span class="label"><?php /* @noEscape */ echo __($filterItem->getLabel() )?></span>
+                        </a>
+                    <?php else: ?>
+                        <input
+                                id="<?php /* @noEscape */ echo $htmlId ?>"
+                                type="radio"
+                                name="<?php /* @noEscape */ echo $requestVar ?>"
+                                value="<?php /* @noEscape */ echo $value ?>"
+                            <?php if ($block->isActiveItem($filterItem)) { /* @noEscape */ echo 'checked'; }?>
+                            <?php if (!$filterItem->getCount() && !$block->isActiveItem($filterItem)) { /* @noEscape */ echo 'disabled'; } ?>
+                                data-mage-init='{"awLayeredNavFilterItem": {"type": "category"}}'
+                                data-role="aw-layered-nav-filter-item"
+                        />
+                        <label for="<?php /* @noEscape */ echo $htmlId ?>"><?php /* @noEscape */ echo __($filterItem->getLabel()) ?></label>
+                    <?php endif; ?>
+                </li>
+            <?php endif; ?>
+        <?php endforeach ?>
+        <?php if ($showMoreCount > 0): ?>
+            <li class="item show-more">
+                <span class="show" id="aw-layered-nav-collapse-show-<?php echo $block->escapeHtml($requestVar) ?>"><?php echo $block->escapeHtml(__('show %1 more', $showMoreCount)) ?></span>
+                <span class="hide" id="aw-layered-nav-collapse-hide-<?php echo $block->escapeHtml($requestVar) ?>"><?php echo $block->escapeHtml(__('show less')) ?></span>
+            </li>
+        <?php endif; ?>
+    </ol>
+</ol>
+

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 /* @var $block \Aheadworks\Layerednav\Block\Navigation\PriceSlider\FilterRenderer */
 
 // @codingStandardsIgnoreFile
@@ -8,13 +13,15 @@ $isFromToInputsEnabled = $block->isFromToInputsEnabled();
 $isFilterLabelEnabled = $isPriceSliderEnabled && !$isFromToInputsEnabled;
 $isFilterButtonDisabled = $block->isFilterButtonDisabled();
 $currencySymbol = $block->getCurrencySymbol();
+$isDisplayCurrencySymbol = $block->isDisplayCurrencySymbol();
+$isCurrencySymAfterValue = $block->isCurrencySymAfterValue();
 ?>
 <div class="aw-layered-nav-priceslider">
     <div class="price-filter-info" <?php /* @noEscape */ echo $isFilterLabelEnabled ? : 'style="display: none"'; ?>>
-        <?php echo $block->escapeHtml(__('From %1', $currencySymbol))?><!--
-     --><span data-role="aw-layered-nav-price-label-from"></span>
-        <?php echo $block->escapeHtml(__('to %1', $currencySymbol))?><!--
-     --><span data-role="aw-layered-nav-price-label-to"></span>
+        <?php echo $block->escapeHtml(__('From'))?>
+        <span data-role="aw-layered-nav-price-label-from"></span>
+        <?php echo $block->escapeHtml(__('to'))?>
+        <span data-role="aw-layered-nav-price-label-to"></span>
     </div>
     <div
         id="slider-range"
@@ -26,6 +33,7 @@ $currencySymbol = $block->getCurrencySymbol();
             "submitOnValueChange": <?php /* @noEscape */ echo $isFilterButtonDisabled ? 'true' : 'false' ?>,
             "min": <?php echo $block->escapeHtml($minPrice) ?>,
             "max": <?php echo $block->escapeHtml($maxPrice) ?>,
+            "priceFormat": <?php /* @noEscape */ echo \Zend_Json::encode($priceFormat) ?>,
             "values": [
              <?php echo $block->escapeHtml($fromPrice) ?>, <?php echo $block->escapeHtml($toPrice) ?> ]
         }
@@ -35,15 +43,25 @@ $currencySymbol = $block->getCurrencySymbol();
             <label for="price_from" id="price_from_label" class="label">
                 <span><?php echo $block->escapeHtml(__('From')); ?></span>
             </label>
-            <span><?php /* @noEscape */ echo $currencySymbol?></span>
+            <?php if ($isDisplayCurrencySymbol && !$isCurrencySymAfterValue): ?>
+                <span><?php /* @noEscape */ echo $currencySymbol ?></span>
+            <?php endif; ?>
             <input type="text" id="price_from" data-role="aw-layered-nav-price-from">
+            <?php if ($isDisplayCurrencySymbol && $isCurrencySymAfterValue): ?>
+                <span><?php /* @noEscape */ echo $currencySymbol ?></span>
+            <?php endif; ?>
         </div>
         <div class="field price-to">
             <label for="price_to" id="price_to_label" class="label">
                 <span><?php echo $block->escapeHtml(__('To')); ?></span>
             </label>
-            <span><?php /* @noEscape */ echo $currencySymbol?></span>
+            <?php if ($isDisplayCurrencySymbol && !$isCurrencySymAfterValue): ?>
+                <span><?php /* @noEscape */ echo $currencySymbol ?></span>
+            <?php endif; ?>
             <input type="text" id="price_to" data-role="aw-layered-nav-price-to">
+            <?php if ($isDisplayCurrencySymbol && $isCurrencySymAfterValue): ?>
+                <span><?php /* @noEscape */ echo $currencySymbol ?></span>
+            <?php endif; ?>
         </div>
     </div>
     <button

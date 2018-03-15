@@ -1,7 +1,12 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model\Layer;
 
-use Aheadworks\Layerednav\Model\Layer\FilterList;
+use Aheadworks\Layerednav\Model\Layer\FilterListAbstract;
 use Aheadworks\Layerednav\Model\Layer\FilterListResolver;
 use Aheadworks\Layerednav\Model\PageTypeResolver;
 use Magento\Framework\ObjectManagerInterface;
@@ -10,7 +15,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Layerednav\Model\Layer\FilterListResolver
  */
-class FilterListResolverTest extends \PHPUnit_Framework_TestCase
+class FilterListResolverTest extends \PHPUnit\Framework\TestCase
 {
     const PAGE_TYPE1 = 'page_type1';
     const PAGE_TYPE2 = 'page_type2';
@@ -38,7 +43,10 @@ class FilterListResolverTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
         $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->pageTypeResolverMock = $this->getMock(PageTypeResolver::class, ['getType'], [], '', false);
+        $this->pageTypeResolverMock = $this->getMockBuilder(PageTypeResolver::class)
+            ->setMethods(['getType'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->filterListResolver = $objectManager->getObject(
             FilterListResolver::class,
@@ -93,7 +101,10 @@ class FilterListResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $filterListMock = $this->getMock(FilterList::class, [], [], '', false);
+        $filterListMock = $this->getMockBuilder(FilterListAbstract::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
         $this->pageTypeResolverMock->expects($this->once())
             ->method('getType')
             ->willReturn(self::PAGE_TYPE1);

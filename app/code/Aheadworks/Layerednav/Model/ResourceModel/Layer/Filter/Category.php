@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Model\ResourceModel\Layer\Filter;
 
 use Magento\Catalog\Model\Layer\Filter\FilterInterface;
@@ -31,7 +36,7 @@ class Category extends AbstractDb
                 ->getSelect()
                 ->join(
                     ['cat' => $this->getMainTable()],
-                    'cat.product_id = e.entity_id'
+                    'cat.product_id = e.entity_id AND cat.store_id = ' . $collection->getStoreId()
                 )
             ;
             $collection->setFlag('category_table_joined', true);
@@ -102,8 +107,7 @@ class Category extends AbstractDb
 
         $whereSelectPart = array_values($whereSelectPart);
 
-        if (
-            $columnWasUnsetFlag
+        if ($columnWasUnsetFlag
             && count($whereSelectPart)
             && (stripos($whereSelectPart[0], Select::SQL_AND) !== false)
         ) {
@@ -115,10 +119,11 @@ class Category extends AbstractDb
 
         $filterSelect->setPart(Select::WHERE, $whereSelectPart);
 
-        $filterSelect->reset(Select::COLUMNS)
+        $filterSelect
+            ->reset(Select::COLUMNS)
             ->reset(Select::LIMIT_COUNT)
             ->reset(Select::LIMIT_OFFSET)
-        ;
+            ->reset(Select::ORDER);
 
         $filterSelect->columns('e.entity_id');
 

@@ -1,10 +1,15 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery',
     './../executor'
 ], function ($, Executor) {
     'use strict';
 
-    return $.extend(Executor, {
+    return $.extend({}, Executor, {
         result: null,
         config: {
             processOutputFlag: 'aw_layered_nav_process_output',

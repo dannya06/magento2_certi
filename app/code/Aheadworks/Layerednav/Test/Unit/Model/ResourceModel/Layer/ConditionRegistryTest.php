@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
 namespace Aheadworks\Layerednav\Test\Unit\Model\ResourceModel\Layer;
 
 use Aheadworks\Layerednav\Model\ResourceModel\Layer\ConditionRegistry;
@@ -7,7 +12,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Layerednav\Model\ResourceModel\Layer\ConditionRegistry
  */
-class ConditionRegistryTest extends \PHPUnit_Framework_TestCase
+class ConditionRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConditionRegistry

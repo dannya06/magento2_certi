@@ -1,3 +1,8 @@
+/**
+* Copyright 2018 aheadWorks. All rights reserved.
+* See LICENSE.txt for license details.
+*/
+
 define([
     'jquery'
 ], function ($) {
@@ -25,9 +30,36 @@ define([
          * @param {String} id
          * @param {String} name
          * @param {String} value
+         * @param {String} type
          */
-        add: function (id, name, value) {
-            valueItems[id] = {key: name, value: value};
+        add: function (id, name, value, type) {
+            valueItems[id] = {
+                key: name,
+                value: value,
+                type: type
+            };
+            this._triggerEvent();
+        },
+
+        /**
+         * Add filter item value (exclusive)
+         *
+         * @param {String} id
+         * @param {String} name
+         * @param {String} value
+         * @param {String} type
+         */
+        addExclusive: function (id, name, value, type) {
+            for (var index in valueItems) {
+                if (valueItems[index].key == name) {
+                    delete valueItems[index];
+                }
+            }
+            valueItems[id] = {
+                key: name,
+                value: value,
+                type: type
+            };
             this._triggerEvent();
         },
 
