@@ -56,6 +56,12 @@ class AddFrontendOptionsObserver implements ObserverInterface
     {
         $layout = $observer->getData('layout');
 
+        /** Apply only on pages where page is rendered */
+        $currentHandles = $layout->getUpdate()->getHandles();
+        if (!in_array('default', $currentHandles)) {
+            return $this;
+        }
+
         $includeBootstrapGrid = $this->scopeConfig->getValue(self::XML_PATH_DESIGN_ELEMENTS_BOOTSTRAP_GRID,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $includeFonts = $this->scopeConfig->getValue(self::XML_PATH_DESIGN_ELEMENTS_ICONS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $includeBootstrapTables = $this->scopeConfig->getValue(self::XML_PATH_DESIGN_ELEMENTS_BOOTSTRAP_TABLES,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);

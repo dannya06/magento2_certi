@@ -22,7 +22,7 @@ $_helper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
                         if (response.gtm) {
                             var dataLayerData = $.parseJSON(response.gtm.datalayer);
                             for (index in dataLayerData) {
-                                dataLayer.push(dataLayerData[index]);
+                                window.dataLayer.push(dataLayerData[index]);
                             }
                         }
                     }
@@ -31,5 +31,4 @@ $_helper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
                 wpgtm.trackPromotion(wpGtmOptions);
             });
     </script>
-    <?php echo $_helper->getGtmCodeSnippetForBody(); ?>
 <?php endif; ?>

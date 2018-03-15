@@ -14,7 +14,7 @@ define([
                             promoCreative = $(this).attr('data-track-promo-creative'),
                             promoPosition = $(this).attr('data-track-promo-position');
 
-                        dataLayer.push({
+                        window.dataLayer.push({
                             'event': 'promotionClick',
                             'ecommerce': {
                                 'promoClick': {
@@ -45,7 +45,8 @@ define([
                         });
                     });
                     if (promotionViews.length) {
-                        dataLayer.push({
+                        window.dataLayer.push({
+                            'event': 'promotionView',
                             'ecommerce': {
                                 'promoView': {
                                     'promotions': promotionViews

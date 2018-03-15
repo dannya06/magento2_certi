@@ -85,7 +85,7 @@
                         <item name="formElement" xsi:type="string">input</item>
                         <item name="scopeLabel" xsi:type="string">[STORE VIEW]</item>
                         <item name="label" xsi:type="string" translate="true">Number of columns in dropdown menu</item>
-                        <item name="notice" xsi:type="string" translate="true">Only active for "Full Width" and "Sectioned" display modes.</item>
+                        <item name="notice" xsi:type="string" translate="true">Only applies for "Full Width" and "Sectioned" display modes.</item>
                         <item name="default" xsi:type="number">4</item>
                     </item>
                 </argument>
@@ -98,11 +98,13 @@
                         <item name="formElement" xsi:type="string">input</item>
                         <item name="scopeLabel" xsi:type="string">[STORE VIEW]</item>
                         <item name="label" xsi:type="string" translate="true">Column Width</item>
-                        <item name="notice" xsi:type="string" translate="true">Can be used as pixels or percent for "Full Width" display mode. E.g.: "130px" or "30%". For other display modes use only pixels. If empty auto width will be applied.</item>
                         <item name="default" xsi:type="string">auto</item>
                     </item>
                 </argument>
             </field>
+            <htmlContent name="html_content">
+                <argument name="block" xsi:type="object">WeltPixel\NavigationLinks\Block\Adminhtml\ColumnWidthTemplate</argument>
+            </htmlContent>
         </container>
     </fieldset>
 </form>

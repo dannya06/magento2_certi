@@ -47,7 +47,7 @@ class FrameworkConfigView
 
         if ( ($module == 'Magento_Catalog') && ($mediaType == Image::MEDIA_TYPE_CONFIG_NODE) ) {
             /** Big image size overwrite */
-            if ($mediaId == 'product_page_image_medium') {
+            if ( ($mediaId == 'product_page_image_medium') || ($mediaId == 'product_page_image_medium_no_frame') ) {
                 $width = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_IMAGE_MAIN_WIDTH, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
                 $height = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_IMAGE_MAIN_HEIGHT, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
 

@@ -12,7 +12,7 @@
                 </resource>
                 <resource id="WeltPixel_Backend::WeltPixel" >
                     <resource id="WeltPixel_QuickCart::QuickCart_Label" sortOrder="80" title="Quick Cart" >
-                        <resource id="WeltPixel_QuickCart::QuickCart" sortOrder="10" title="Quick Cart" />
+                        <resource id="WeltPixel_QuickCart::QuickCart" sortOrder="10" title="Quick Cart Settings" />
                     </resource>
                 </resource>
             </resource>

@@ -73,6 +73,10 @@ class Owl
         $sliderId = $slider->getData('id');
 
         for ($i = 1; $i < 5; $i++) {
+            $ext = 'jpg';
+            if ($i == 3) {
+                $ext = 'png';
+            }
             $banner = $this->bannerFactory->create();
             $bannerData = array(
                 'status' => 1,
@@ -89,6 +93,7 @@ class Owl
                 'video' => NULL,
                 'video' => NULL,
                 'image' => "weltpixel/owlcarouselslider/images/h/1/h1_h{$i}.jpg",
+                'mobile_image' => "weltpixel/owlcarouselslider/images/h/1/h1_h{$i}_1.{$ext}",
                 'custom' => NULL,
                 'alt_text' => NULL,
                 'button_text' => NULL,
@@ -352,6 +357,7 @@ class Owl
                         'target' => '_self',
                         'video' => NULL,
                         'image' => "weltpixel/owlcarouselslider/images/h/7/h7_h{$i}.jpg",
+                        'mobile_image' => "weltpixel/owlcarouselslider/images/h/7/h7_h{$i}_1.jpg",
                         'custom' => NULL,
                         'alt_text' => NULL,
                         'button_text' => NULL,
@@ -645,10 +651,8 @@ class Owl
         <div class="sale_of_img"></div>
     </div>
     <div id="slide2-rotateIn">
-        <p class="sale_of_text">Pearl Responsive Theme </p>
-    </div>
-    <div id="slide2-rotateInUpLeft">
-        <p>Perfect for fashion industry</p>
+        <p class="sale_of_text">Magento 2 </p>
+        <p class="sale_of_text">Responsive Theme</p>
     </div>
 </div>',
                     '2' => '<div class="slide3">
@@ -671,7 +675,7 @@ class Owl
                         'status' => 1,
                         'title' => 'Banner Slider V5 - ' . $i,
                         'show_title' => 0,
-                        'description' => 'Banner Slider V7 - ' . $i,
+                        'description' => 'Banner Slider V5 - ' . $i,
                         'show_description' => 0,
                         'banner_type' => 1,
                         'display_position' => NULL,
@@ -680,6 +684,7 @@ class Owl
                         'target' => '_self',
                         'video' => NULL,
                         'image' => "weltpixel/owlcarouselslider/images/h/5/h5_h{$i}.png",
+                        'mobile_image' => "weltpixel/owlcarouselslider/images/h/5/h5_h{$i}_1.png",
                         'custom' => NULL,
                         'alt_text' => NULL,
                         'button_text' => NULL,
@@ -767,6 +772,116 @@ class Owl
                         'target' => '_self',
                         'video' => NULL,
                         'image' => "weltpixel/owlcarouselslider/images/h/10/h10_h{$i}.jpg",
+                        'custom' => NULL,
+                        'alt_text' => NULL,
+                        'button_text' => NULL,
+                        'custom_content' => $customContent[$i],
+                        'custom_css' => NULL,
+                        'valid_from' => '2015-01-01 12:00:00',
+                        'valid_to' => '2030-01-01 12:00:00',
+                        'sort_order' => $i
+                    );
+
+                    $banner->addData($bannerData);
+                    $banner->save();
+
+                    unset($banner);
+                }
+
+                unset($slider);
+
+                break;
+            }
+            case '1.1.15' : {
+                $slider = $this->sliderFactory->create();
+
+                $sliderData = array(
+                    'status' => 1,
+                    'title' => 'Homepage V12',
+                    'show_title' => 0,
+                    'slider_content' => NULL,
+                    'nav' => 1,
+                    'dots' => 0,
+                    'center' => 0,
+                    'items' => 1,
+                    'loop' => 1,
+                    'margin' => 0,
+                    'stagePadding' => 0,
+                    'lazyLoad' => 1,
+                    'transition' => 'slide',
+                    'autoplay' => 1,
+                    'autoplayTimeout' => 3000,
+                    'autoplayHoverPause' => 0,
+                    'autoHeight' => 0,
+                    'nav_brk1' => 0,
+                    'items_brk1' => 1,
+                    'nav_brk2' => 0,
+                    'items_brk2' => 1,
+                    'nav_brk3' => 1,
+                    'items_brk3' => 1,
+                    'nav_brk4' => 1,
+                    'items_brk4' => 1,
+                );
+
+                $slider->addData($sliderData);
+                $slider->save();
+
+                $sliderId = $slider->getData('id');
+                $sliderIds[] = $sliderId;
+
+                $customContent = [
+                    '1' => '<div class="container-v12">
+                        <div class="img-cont slider-text">
+                            <div class="overlay-text overlay-right">
+                                <div class="inner">
+                                  <div class="text">
+                                    <div class="text-custom-slider none-mob">
+                                      <div>SS 2017 Collection</div>
+                                      <div class="second-line">Out now</div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ',
+                    '2' => '<div class="container-v12">
+                        <div class="img-cont slider-text">
+                            <div class="overlay-text overlay-right">
+                                <div class="inner">
+                                  <div class="text">
+                                    <div class="text-custom-slider none-mob">
+                                      <div>SS 2017 Collection</div>
+                                      <div class="second-line">Out now</div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    '
+                ];
+
+                for ($i = 1; $i < 3; $i++) {
+                    $banner = $this->bannerFactory->create();
+                    $imageExtension = 'jpg';
+                    if ($i == 2) {
+                        $imageExtension = 'png';
+                    }
+                    $bannerData = array(
+                        'status' => 1,
+                        'title' => 'Banner Slider V12 - ' . $i,
+                        'show_title' => 0,
+                        'description' => NULL,
+                        'show_description' => 0,
+                        'banner_type' => 1,
+                        'display_position' => NULL,
+                        'slider_id' => $sliderId,
+                        'url' => '#',
+                        'target' => '_self',
+                        'video' => NULL,
+                        'image' => "weltpixel/owlcarouselslider/images/h/12/h12_h{$i}.jpg",
+                        'mobile_image' => "weltpixel/owlcarouselslider/images/h/12/h12_h{$i}_mobile.{$imageExtension}",
                         'custom' => NULL,
                         'alt_text' => NULL,
                         'button_text' => NULL,

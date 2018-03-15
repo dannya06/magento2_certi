@@ -1,4 +1,5 @@
 <?php
+
 namespace WeltPixel\GoogleCards\Block;
 
 class TwitterCards extends GoogleCards
@@ -47,5 +48,14 @@ class TwitterCards extends GoogleCards
     public function getTwitterCardType()
     {
         return $this->_helper->getTwitterCardType();
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice()
+    {
+        $priceOption = $this->_helper->getTwitterCardsPrice();
+        return $this->_calculatePrice($priceOption);
     }
 }

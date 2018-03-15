@@ -22,7 +22,10 @@ class ImportDemoCommand extends ImportAbstract
         'v8',
         'v9',
         'v10',
-        'v11'
+        'v11',
+        'v12',
+        'v14',
+        'v15'
     ];
 
     /**

@@ -12,17 +12,17 @@ title,identifier,content,is_active
         <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle address-v3"">
             <h4 class=""mini-logo""><img alt=""Logo"" src=""{{media url=""wysiwyg/pearl_theme/logo_white.png""}}""
                 style=""width:100px""></h4>
-            <p><i class=""icon icon-location""></i>9087S Divamus Faucibus Str., <br>
+            <p class=""details-v3""><i class=""icon icon-location""></i>9087S Divamus Faucibus Str., <br>
                 City name, Postal Code, <br>
                 PA 19130, United States. <br><br>
                 <i class=""icon  icon-phone3""></i> (1800) 000 000<br>
-                <i class=""icon  icon-line-mail""></i> contact@domain.com</p><br>
+                <i class=""icon  icon-line-mail""></i> contact@domain.com</p>
         </div>
         <!-- FOOTER COLUMN #1 BEGIN -->
 
         <!-- FOOTER COLUMN #2 BEGIN -->
         <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle"">
-            <h4>Company</h4>
+            <h4 class=""no-padding-mob"">Company</h4>
             <ul class=""footer-v3-list"">
                 <li><a href=""{{store url=""about-us/""}}"">About Us</a></li>
                 <li><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
@@ -36,7 +36,7 @@ title,identifier,content,is_active
 
         <!-- FOOTER COLUMN #3 BEGIN -->
         <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle"">
-            <h4>Quick Links</h4>
+            <h4 class=""no-padding-mob"">Quick Links</h4>
             <ul class=""footer-v3-list"">
                 <li><a href=""{{store url=""sitemap.xml""}}"" title=""Site Map"">Site Map</a></li>
                 <li><a href=""{{store url=""search/term/popular/""}}"" title=""Search Terms"">Search Terms</a></li>
@@ -49,9 +49,9 @@ title,identifier,content,is_active
 
         <!-- FOOTER COLUMN #4 BEGIN -->
         <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle"">
-            <h4>Let's Stay in touch!</h4>
+            <h4 class=""no-padding-mob"">Let's Stay in touch!</h4>
 
-            <div>
+            <div class=""mg-mobile"">
                 <!-- FOOTER SOCIAL-ICONS BEGIN -->
                 <a href=""#"" class=""social-icons si-borderless si-facebook"">
                     <i class=""icon-facebook""></i>
@@ -80,7 +80,7 @@ title,identifier,content,is_active
                           id=""newsletter-footer"" data-mage-init='{""validation"": {""errorClass"": ""mage-error""}}'>
 
                         <div class=""form-group"">
-                            <input name=""email"" type=""email"" id=""newsletter"" placeholder=""Enter your email address""
+                            <input name=""email"" type=""email"" id=""newsletter-bottom"" placeholder=""Enter your email address""
                                    data-validate=""{required:true, 'validate-email':true}""
                                    class=""input-text required-entry validate-email""/>
                             <button class=""button"" title=""Subscribe"" type=""submit"">
@@ -126,7 +126,7 @@ title,identifier,content,is_active
 <div class=""clearfix""></div>
 <div class=""toggle center"">
 <div class=""togglet toggleta newsletter"" style=""text-decoration: underline;""> Subscribe to the Newsletter</div>
-<div class=""togglec"">
+<div class=""togglec nopadding-left-mob"">
 
 <div class=""block newsletter"">
     <div class=""title""><strong>Newsletter</strong></div>
@@ -134,7 +134,7 @@ title,identifier,content,is_active
         <form class=""form subscribe hp-newsletter-v1"" novalidate=""novalidate"" action=""{{store url=""newsletter/subscriber/new/""}}"" method=""post"" data-mage-init='{""validation"": {""errorClass"": ""mage-error""}}' id=""newsletter-validate-detail"">
             <div class=""field newsletter"">
                 <div class=""control"">
-                    <input name=""email"" type=""email"" id=""newsletter"" placeholder=""Enter your email address"" data-validate=""{required:true, 'validate-email':true}"">
+                    <input name=""email"" type=""email"" id=""newsletter-bottom"" placeholder=""Enter your email address"" data-validate=""{required:true, 'validate-email':true}"">
                 </div>
             </div>
             <div class=""actions"">

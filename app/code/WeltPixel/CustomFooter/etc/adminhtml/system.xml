@@ -10,8 +10,34 @@
                 <field id="enable" translate="label comment tooltip" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Make sure the static blocks are enabled and assigned to the proper store views.</comment>
-                    <tooltip>Displays prefooter section before the footer. In Content -> Blocks, the block with identifier name "weltpixel_pre-footer" can be edited.</tooltip>
+                    <comment><![CDATA[ Enable PreFooter section.<br/>
+                    <strong style="color:red;">Important:</strong> Make sure that the pre-footer static blocks are enabled and assigned to the proper store views. ]]>
+                    </comment>
+                    <tooltip>Displays PreFooter section before the footer. Go to Content -> Blocks, the find and edit the block with identifier name "weltpixel_pre-footer".</tooltip>
+                </field>
+                <field id="background_color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set Background color of PreFooter section. Example: #f4f4f4</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="text_color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set Text color from PreFooter section. Example: #303030</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="icon_color" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Icon Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set Icons color from PreFooter section. Example: #aaa</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
                 </field>
             </group>
             <group id="footer" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -27,16 +53,42 @@
                     <depends>
                         <field id="enable">1</field>
                     </depends>
-                    <comment>Choose footer version.</comment>
+                    <comment><![CDATA[ Select Footer version.<br/>
+                    Check all available versions on <a href="https://pearl.weltpixel.com" target="_blank" >pearl.weltpixel.com</a> demo store ]]>
+                    </comment>
                     <tooltip>Edit footer in Content -> Blocks. Find the block with identifier name "weltpixel_footer_v[x]", where x is the footer version.</tooltip>
                 </field>
+                <field id="background_color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set Background color for selected footer.</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="text_color" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set Text color for selected footer.</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="icon_color" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Icon Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set Icons color for selected footer.</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
             </group>
-            <group id="copyright" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="copyright" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Copyright Settings</label>
                 <field id="enable" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Edit the copyright content in Content -> Configuration -> Desired store view Edit -> Footer -> Copyright</comment>
+                    <comment>Display/hide the copyright section from bottom of pages. Edit the copyright content in Content -> Configuration -> Desired store view Edit -> Footer -> Copyright</comment>
                 </field>
             </group>
         </section>

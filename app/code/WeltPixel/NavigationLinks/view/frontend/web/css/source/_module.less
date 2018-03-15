@@ -3,7 +3,10 @@
     @media only screen and (min-width: @screen__m) {
         /* style fixes for header versions */
         .page-header-v3 {
-            .header {
+            .header.panel {
+                position: relative;
+            }
+            .header.content {
                 position: relative;
 
                 .sections,
@@ -20,12 +23,14 @@
         .navigation ul li.level0 > a {
             text-transform: uppercase;
         }
-
         .navigation {
             /* common styles for every menu type */
             .megamenu.level-top-fullwidth,
             .megamenu.level-top-sectioned,
             .megamenu.level-top-boxed {
+                &.active.first a {
+                    padding-left: 10px;
+                }
                 .submenu {
                     padding-bottom: 10px;
                     z-index: 5;
@@ -39,6 +44,7 @@
 
                             &:hover {
                                 padding-left: 25px;
+                                padding-right: 15px;
                             }
                         }
                     }
@@ -67,6 +73,7 @@
                                     transition: all 0.25s ease;
                                     &:hover {
                                         padding-left: 25px;
+                                        padding-right: 15px;
                                     }
                                 }
                                 a:first-child {
@@ -97,7 +104,7 @@
             }
             /* specific styles for each menu type */
             .megamenu.level-top-fullwidth {
-                position: initial;
+                position: static;
                 .fullwidth {
                     left: 0 !important;
                     width: 100%;
@@ -135,6 +142,7 @@
             }
         }
     }
+    /* apply only on mobile */
     @media only screen and (max-width: @screen__m) {
         .navigation {
             .columns-group {
@@ -156,9 +164,33 @@
                 border-left: 0 none !important;
             }
         }
+        .nav-sections {
+            .nav-sections-item-title {
+                background: #ffffff !important;
+                position: relative;
+            }
+            .nav-sections-item-title.active {
+                &:nth-child(3) {
+                    border-right: 1px solid lightgray;
+                }
+                &:nth-child(5) {
+                    border-left: 1px solid lightgray;
+                }
+            }
+            .nav-sections-item-title {
+                &:nth-child(5) {
+                    border-left: 0 none;
+                }
+            }
+            .nav-sections-item-content {
+                .navigation {
+                    border-top: 1px solid lightgray;
+                }
+            }
+
+        }
     }
     .navigation {
-
         .columns-group {
             display: inline-block !important;
             float: left;

@@ -3,12 +3,13 @@
 ?>
 <?php if ($this->isEnabled()) : ?>
     <?php $dataLayerObject = $this->getDataLayerAsJson(); ?>
-        <?php if ($dataLayerObject != '[[]]') : ?>
         <script>
+            window.dataLayer = window.dataLayer || [];
+            <?php if ($dataLayerObject != '[[]]') : ?>
             var dlObjects = <?php echo $dataLayerObject; ?>;
             for (var i in dlObjects) {
-                dataLayer.push(dlObjects[i]);
+                window.dataLayer.push(dlObjects[i]);
             }
+            <?php endif; ?>
         </script>
-        <?php endif; ?>
 <?php endif; ?>

@@ -13,15 +13,16 @@
                 </field>
             </group>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>General Settings</label>
+                <label>General Settings for QuickCart</label>
                 <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable</label>
+                    <comment>Enable/Disable QuickCart.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="open_minicart" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Open minicart after item is added</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Opens the Quick Cart each time an item is added to the cart.</comment>
+                    <comment>If set to Yes, the Quick Cart opens each time an item is added to the cart.</comment>
                 </field>
             </group>
             <group id="header" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -33,10 +34,12 @@
                 </field>
                 <field id="header_background" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Background Color</label>
+                    <comment>Select background color for QuickCart Header. Example: #000000</comment>
                     <validate>required color {required:false, hash:true}</validate>
                 </field>
                 <field id="header_text_color" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Text Color</label>
+                    <comment>Select text color of QuickCart Header title. Example: #FFFFFF</comment>
                     <validate>required color {required:false, hash:true}</validate>
                 </field>
             </group>
@@ -44,10 +47,12 @@
                 <label>Quick Cart Footer</label>
                 <field id="subtotal_background" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Subtotal Background Color</label>
+                    <comment>Select background color for subtotal section from QuickCart footer. Example: #F6F6F6</comment>
                     <validate>required color {required:false, hash:true}</validate>
                 </field>
                 <field id="subtotal_text_color" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Subtotal Text Color</label>
+                    <comment>Select color for text in subtotal section from QuickCart footer. Example: #000000</comment>
                     <validate>required color {required:false, hash:true}</validate>
                 </field>
             </group>

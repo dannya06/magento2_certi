@@ -4,7 +4,6 @@
             var design = 'desktop';
             /* desktop  */
             if (!$('.nav-toggle').is(':visible')) {
-                $('.sections.nav-sections').appendTo('.header.content');
                 design = 'desktop';
             } else {
                 design = 'mobile';
@@ -13,9 +12,6 @@
             jQuery(window).resize(function() {
                 /* desktop */
                 if (!$('.nav-toggle').is(':visible')) {
-                    if (design == 'mobile') {
-                        $('.sections.nav-sections').appendTo('.header.content');
-                    }
                     design = 'desktop';
                 } else {
                     if (design == 'desktop') {

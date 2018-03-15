@@ -56,6 +56,25 @@ try {
         $resultMsg .= str_replace(PHP_EOL, "<br/>", $content);
     }
 
+    if (isset($_POST['deleteInstaller']) && $_POST['deleteInstaller'] == '1') {
+        $filesToDelete = [
+            'index.php',
+            'step-1.php',
+            'step-2.php',
+            'step-3.php',
+            'step-4.php',
+            'step-5.php',
+            'step-6.php',
+        ];
+        foreach ($filesToDelete as $file) {
+            shell_exec('rm ' . __DIR__ . '/' . $file);
+        }
+
+        shell_exec('mv ' . __DIR__ . '/index.php.noinstall ' . __DIR__ . '/index.php');
+
+        $resultMsg .= 'This GUI wizard has been deleted.';
+    }
+
     $result['msg'] = $resultMsg;
 } catch (Exception $ex) {
     $result['msg'] = $ex->getMessage();

@@ -54,14 +54,37 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
     protected $_mobileBreakPoint;
 
     /**
-     * Constructor
-     *
+     * @var \Magento\Framework\Message\ManagerInterface
+     */
+    protected $_messageManager;
+
+    /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    protected $_urlBuilder;
+
+    /**
+     * @var \Magento\Backend\Model\Session\Proxy
+     */
+    protected  $_session;
+
+    /**
+     * @var \Magento\Framework\Filesystem\DirectoryList
+     */
+    protected $_dir;
+
+    /**
+     * CustomHeaderEditActionControllerSaveObserver constructor.
      * @param \WeltPixel\CustomHeader\Helper\Data $helper
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Module\Dir\Reader $dirReader
      * @param \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \WeltPixel\FrontendOptions\Helper\Data $frontendHelper
+     * @param \Magento\Framework\Message\ManagerInterface $messageManager
+     * @param \Magento\Framework\UrlInterface $urlBuilder
+     * @param \Magento\Backend\Model\Session\Proxy $session
+     * @param \Magento\Framework\Filesystem\DirectoryList $dir
      */
     public function __construct(
         \WeltPixel\CustomHeader\Helper\Data $helper,
@@ -69,7 +92,11 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         \Magento\Framework\Module\Dir\Reader $dirReader,
         \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \WeltPixel\FrontendOptions\Helper\Data $frontendHelper
+        \WeltPixel\FrontendOptions\Helper\Data $frontendHelper,
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Magento\Framework\UrlInterface $urlBuilder,
+        \Magento\Backend\Model\Session\Proxy $session,
+        \Magento\Framework\Filesystem\DirectoryList $dir
     )
     {
         $this->_helper = $helper;
@@ -77,9 +104,11 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $this->_dirReader = $dirReader;
         $this->_writeFactory = $writeFactory;
         $this->_storeManager = $storeManager;
-        $this->_storeCollection = $this->_storeManager->getStores();
         $this->_frontendHelper = $frontendHelper;
-        $this->_mobileBreakPoint = $this->_frontendHelper->getBreakpointM();
+        $this->_messageManager = $messageManager;
+        $this->_urlBuilder = $urlBuilder;
+        $this->_session = $session;
+        $this->_dir = $dir;
     }
 
     /**
@@ -91,10 +120,12 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-
+        $this->_storeCollection = $this->_storeManager->getStores();
         $directoryCode = $this->_dirReader->getModuleDir('view', 'WeltPixel_CustomHeader');
 
         foreach ($this->_storeCollection as $store) {
+
+            $this->_mobileBreakPoint = $this->_frontendHelper->getBreakpointM($store->getData('store_id'));
 
             $generatedCssDirectoryPath = DIRECTORY_SEPARATOR . 'frontend' .
                 DIRECTORY_SEPARATOR . 'web' .
@@ -117,6 +148,18 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 }
             } finally {
                 $file->close();
+            }
+        }
+
+        /** Set only the notifications if triggered from admin save */
+        $event = $observer->getEvent();
+        if ($event instanceof \Magento\Framework\Event) {
+            $eventName = $observer->getEvent()->getData();
+            if ($eventName) {
+                $url = $this->_urlBuilder->getUrl('adminhtml/cache');
+                $message = __('Please regenerate Pearl Theme LESS/CSS files from <a href="%1">Cache Management Section</a>', $url);
+                $this->_messageManager->addWarning($message);
+                $this->_session->setWeltPixelCssRegeneration(true);
             }
         }
 
@@ -161,6 +204,28 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $bottomHeaderHoverLinkColor = $this->_helper->getBottomHeaderHoverLinkColor($storeId);
         $bottomNavigationShadow = $this->_helper->getBottomNavigationShadow($storeId);
 
+        // sticky header
+        $stickyIsEnabled = $this->_helper->stickyHeaderIsEnabled($storeId);
+        $stickyHeaderBackgroundColor = null;
+        $stickyHeaderElementsColor = null;
+        $stickyHeaderElementsHoverColor = null;
+        $stickyNavigationBorderColor = null;
+        $stickyNavigationBorderHoverColor = null;
+        $stickySearchBorderColor = null;
+        $stickySearchBackgroundColor = $this->_helper->getSerachOptionsBackground($storeId);
+        if ($stickyIsEnabled) {
+            $stickyAdvancedColors = $this->_helper->advancedColorsIsEnabled($storeId);
+            if ($stickyAdvancedColors) {
+                $stickyHeaderBackgroundColor = $this->_helper->getStickyHeaderBackgroundColor($storeId);
+                $stickyHeaderElementsColor = $this->_helper->getStickyHeaderElementsColor($storeId);
+                $stickyHeaderElementsHoverColor = $this->_helper->getStickyHeaderElementsHoverColor($storeId);
+                $stickyNavigationBorderColor = $this->_helper->getStickyHeaderElementsColor($storeId);
+                $stickyNavigationBorderHoverColor = $this->_helper->getStickyHeaderElementsHoverColor($storeId);
+                $stickySearchBorderColor = $this->_helper->getStickyHeaderElementsColor($storeId);
+                $stickySearchBackgroundColor = $this->_helper->getStickyHeaderBackgroundColor($storeId);
+            }
+        }
+
         $serachOptionsWidth = $this->_helper->getSerachOptionsWidth($storeId);
         $serachOptionsHeight = $this->_helper->getSerachOptionsHeight($storeId);
         $serachOptionsBorderWidth = $this->_helper->getSerachOptionsBorderWidth($storeId);
@@ -172,7 +237,8 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $serachOptionsFontSize = $this->_helper->getSerachOptionsFontSize($storeId);
 
         $headerIconSize = $this->_helper->getHeaderIconSize($storeId);
-
+        $headerIconColor = $this->_helper->getHeaderIconColor($storeId);
+        $headerIconHoverColor = $this->_helper->getHeaderIconHoverColor($storeId);
         // ---
 
         $globalPromoTextColor = strlen(trim($globalPromoTextColor)) ? 'color: ' . $globalPromoTextColor . ';' : '';
@@ -182,7 +248,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
 
         $topHeaderLinkColor = strlen(trim($topHeaderLinkColor)) ? 'color:' . $topHeaderLinkColor . ';' : '';
         $topHeaderActiveLinkColor = strlen(trim($topHeaderActiveLinkColor)) ? '&:active { color: ' . $topHeaderActiveLinkColor . '; }' : '';
-        $topHeaderHoverLinkColor = strlen(trim($topHeaderHoverLinkColor)) ? '&:hover { color: ' . $topHeaderHoverLinkColor . '; }' : '';
+        $topHeaderHoverLinkColor = strlen(trim($topHeaderHoverLinkColor)) ? '&:hover { color: ' . $topHeaderHoverLinkColor . ' !important; }' : '';
 
         $topHeaderSubmenuLinkColor = strlen(trim($topHeaderSubmenuLinkColor)) ? 'color:' . $topHeaderSubmenuLinkColor . ' !important;' : '';
         $topHeaderSubmenuHoverLinkColor = strlen(trim($topHeaderSubmenuHoverLinkColor)) ? '&:hover { color: ' . $topHeaderSubmenuHoverLinkColor . ' !important; }' : '';
@@ -202,14 +268,23 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $serachOptionsWidth = strlen(trim($serachOptionsWidth)) ? 'width: ' . $serachOptionsWidth . ';' : '';
         $serachOptionsHeight = strlen(trim($serachOptionsHeight)) ? 'height: ' . $serachOptionsHeight . ';' : '';
 
-        $serachOptionsBorderWidthJson = json_decode($serachOptionsBorderWidth);
-        /** magento 2.2 removed serialization  */
-        if ($serachOptionsBorderWidthJson && ( $serachOptionsBorderWidth != $serachOptionsBorderWidthJson )) {
-            $serachOptionsBorderWidth = json_decode($serachOptionsBorderWidth, true);
-            $serachOptionsBorderWidth = $serachOptionsBorderWidth['<%- _id %>'];
+        if (!$serachOptionsBorderWidth) {
+            $serachOptionsBorderWidth = [];
         } else {
-            $serachOptionsBorderWidth = unserialize($serachOptionsBorderWidth)['<%- _id %>'];
+            try {
+                $serachOptionsBorderWidthJson = json_decode($serachOptionsBorderWidth);
+                /** magento 2.2 removed serialization  */
+                if ($serachOptionsBorderWidthJson && ($serachOptionsBorderWidth != $serachOptionsBorderWidthJson)) {
+                    $serachOptionsBorderWidth = json_decode($serachOptionsBorderWidth, true);
+                    $serachOptionsBorderWidth = $serachOptionsBorderWidth['<%- _id %>'];
+                } else {
+                    $serachOptionsBorderWidth = unserialize($serachOptionsBorderWidth)['<%- _id %>'];
+                }
+            } catch (\Exception $ex) {
+                $serachOptionsBorderWidth = [];
+            }
         }
+
 
         $searchOBW = [];
         $true = false;
@@ -220,7 +295,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             $searchOBW[] .= $serachOptionsBorderWidth;
         }
         $searchOBW = implode(' ', $searchOBW);
-        $serachOptionsBorderWidth = strlen(trim($true)) ? 'border-width: ' . $searchOBW . ';' : 'border-width: 1px;';
+        $serachOptionsBorderWidth = strlen(trim($true)) ? 'border-width: ' . $searchOBW . ';' : 'border-width: 0px 0px 1px 0px;';
         $serachOptionsBorderStyle = strlen(trim($serachOptionsBorderStyle)) ? 'border-style: ' . $serachOptionsBorderStyle . ';' : 'border-style: solid;';
         $serachOptionsBorderColor = strlen(trim($serachOptionsBorderColor)) ? 'border-color: ' . $serachOptionsBorderColor . ';' : 'border-color: #000000;';
         $serachOptionsBackground = strlen(trim($serachOptionsBackground)) ? 'background-color: ' . $serachOptionsBackground . ';' : 'background-color: transparent;';
@@ -229,13 +304,42 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $serachOptionsFontSize = strlen(trim($serachOptionsFontSize)) ? 'font-size: ' . $serachOptionsFontSize . ';' : 'font-size: 15px;';
 
         $headerIconSize = strlen(trim($headerIconSize)) ? 'font-size: ' . $headerIconSize . ' !important;' : 'font-size: 16px !important;';
-	    $bkColorMobile = (int)$this->_mobileBreakPoint - 1  . 'px';
+        $headerIconColor = strlen(trim($headerIconColor)) ? 'color: ' . $headerIconColor . ' !important' : 'color: inherit';
+        $headerIconHoverColor = strlen(trim($headerIconHoverColor)) ? 'color: ' . $headerIconHoverColor . ' !important' : 'color: inherit';
+
+        $bkColorMobile = (int)$this->_mobileBreakPoint - 1 . 'px';
+
+        // sticky header
+        $stickyHeaderBackgroundColor = $stickyHeaderBackgroundColor && strlen(trim($stickyHeaderBackgroundColor)) ? 'background-color:' . $stickyHeaderBackgroundColor . ' !important;' : 'background-color: #ffffff !important;';
+        $stickyHeaderElementsColor = $stickyHeaderElementsColor && strlen(trim($stickyHeaderElementsColor)) ? 'color:' . $stickyHeaderElementsColor . ' !important;' : '';
+        $stickyHeaderElementsHoverColor = $stickyHeaderElementsHoverColor && strlen(trim($stickyHeaderElementsHoverColor)) ? 'color:' . $stickyHeaderElementsHoverColor . ' !important;' : '';
+        $stickyNavigationBorderColor = $stickyNavigationBorderColor && strlen(trim($stickyNavigationBorderColor)) ? 'border-color:' . $stickyNavigationBorderColor . ' !important;' : '';
+        $stickyNavigationBorderHoverColor = $stickyNavigationBorderHoverColor && strlen(trim($stickyNavigationBorderHoverColor)) ? 'border-color:' . $stickyNavigationBorderHoverColor . ' !important;' : '';
+        $stickySearchBorderColor = $stickySearchBorderColor && strlen(trim($stickySearchBorderColor)) ? 'border-color:' . $stickySearchBorderColor . ' !important;' : '';
+        $stickySearchBackgroundColor = $stickySearchBackgroundColor && strlen(trim($stickySearchBackgroundColor)) ? 'background-color:' . $stickySearchBackgroundColor . ' !important;' : '';
 
         //        Generate Less
         $content .= "
-.page-wrapper .page-header {
-    $middleHeaderBackgroundColor
-     .block-search input::-webkit-input-placeholder {
+        .page-header-v2 {
+	        .customer-welcome {
+	            .customer-name {
+	                span {
+	                    display: none;
+	                }
+	                &:before {
+	                    $headerIconColor;
+	                }
+	                &:hover {
+	                    &:before {
+	                        $headerIconHoverColor;
+	                    }
+                    }
+	            }
+	        }
+	    }
+	.page-wrapper .page-header {
+        $middleHeaderBackgroundColor
+        .block-search input::-webkit-input-placeholder {
             $serachOptionsPlaceHolderColor
         }
         .block-search input::-moz-placeholder {
@@ -248,53 +352,88 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         {
             $serachOptionsPlaceHolderColor
         }
-        .block-search .action.search:before    
+        .block-search .action.search:before
         {
-            $serachOptionsPlaceHolderColor
-        }   
-    .panel.wrapper {
-        $topHeaderBorderBottomColor
-        $topHeaderBackgroundColor
-        $topHeaderTextColor       
-    }
-    .header-global-promo {
-		.global-notification-wrapper {
-		    $globalPromoTextColor
-		    $globalPromoBackgroundColor
-		}
-    }
-    .panel.header {
-        $topHeaderWidth
-        ul.header.links {
-            li {
-                > a {
-                    $topHeaderLinkColor
-                    $topHeaderActiveLinkColor
-                    $topHeaderHoverLinkColor
-                    &:visited {
-                        $topHeaderLinkColor
-                    }
-                }
-                ul.header.links {
-                    padding: 10px;
-	                li {
-	                    a {
-		                    $topHeaderSubmenuLinkColor
-		                    &:visited {
-		                        $topHeaderSubmenuLinkColor
-		                    }
-		                    $topHeaderSubmenuHoverLinkColor
-	                    }
-	                }
+            $headerIconColor;
+        }
+        .block-search .action.search:hover {
+            &:before {
+                $headerIconHoverColor;
+            }
+        }
+        .panel.wrapper {
+            $topHeaderBorderBottomColor
+            $topHeaderBackgroundColor
+        }
+        .header-global-promo {
+            .global-notification-wrapper {
+                $globalPromoTextColor
+                $globalPromoBackgroundColor
+                a.close-global-notification {
+                    $globalPromoTextColor
                 }
             }
         }
-    }
+        .panel.header {
+            $topHeaderWidth
+            ul.compare {
+                li {
+                    > a,
+                    > a span {
+                        &:visited {
+                            $topHeaderLinkColor
+                        }
+                        $topHeaderLinkColor
+                        $topHeaderActiveLinkColor
+                        $topHeaderHoverLinkColor
+                    }
+                }
+            }
+            ul.header.links {
+                li {
+                    > a,
+                    span {
+                        &:visited {
+                            $topHeaderLinkColor
+                        }
+                        $topHeaderLinkColor
+                        $topHeaderActiveLinkColor
+                        $topHeaderHoverLinkColor
+                    }
+                    &:after {
+                        $topHeaderLinkColor
+                        $topHeaderActiveLinkColor
+                        $topHeaderHoverLinkColor
+                    }
+                }
+            }
+            .switcher-currency,
+            .switcher-language {
+                strong {
+                    $topHeaderLinkColor
+                    $topHeaderActiveLinkColor
+                    $topHeaderHoverLinkColor
+                    span {
+                        $topHeaderLinkColor
+                        $topHeaderActiveLinkColor
+                        $topHeaderHoverLinkColor
+                    }
+                }
+                .switcher-trigger {
+                    &:after {
+                        $topHeaderLinkColor
+                        $topHeaderActiveLinkColor
+                        $topHeaderHoverLinkColor
+                    }
+                }
+            }
+        }
     // Middle
     .header-multistore .multistore-desktop .weltpixel_multistore {
         $middleHeaderWidth
     }
-    .header.content, .header_right {
+    .header.content,
+    .header_right {
         $middleHeaderWidth
         $bottomHeaderPadding
         .block-search {
@@ -313,7 +452,25 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             }
         }
     }
-    #switcher-language {
+    .header.content {
+        .nav-toggle {
+            &:before {
+                $headerIconColor
+            }
+            &:hover {
+                &:before {
+                    $headerIconColor
+                }
+            }
+        }
+        .block-search {
+            .control {
+                $middleHeaderBackgroundColor
+            }
+        }
+    }
+    #switcher-language,
+    #switcher-currency {
         ul {
             li {
                 a {
@@ -332,10 +489,29 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
     .block-search .action.search:before {
         $headerIconSize
     }
+    .header.links .authorization-link a:before,
+	.minicart-wrapper .action.showcart:before {
+	    $headerIconColor;
+	}
+	.header.links .authorization-link a:hover:before,
+	.minicart-wrapper .action.showcart:hover:before {
+	    $headerIconHoverColor;
+	}
+	.header.content,
+	.header_right {
+	    .field.search {
+	        label {
+	            $headerIconColor;
+	        }
+	    }
+	}
 }
 
 .nav-sections {
     $bottomHeaderBackgroundColor
+    .nav-sections-items {
+        $bottomHeaderBackgroundColor
+    }
     .navigation {
         $bottomHeaderWidth
         $bottomHeaderBackgroundColor
@@ -365,6 +541,206 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         }
     }
 }
+// Sticky Header
+.page-header.sticky-header,
+.page-header.sticky-header-mobile {
+    $stickyHeaderBackgroundColor
+    .page-header {
+        $stickyHeaderBackgroundColor
+    }
+    .panel.wrapper {
+        $stickyHeaderBackgroundColor
+    }
+    .header.links {
+        $stickyHeaderElementsColor
+        li > a {
+            $stickyHeaderElementsColor
+            &:visited {
+                $stickyHeaderElementsColor
+                &:hover {
+                    $stickyHeaderElementsHoverColor
+                }
+            }
+            &:hover {
+                $stickyHeaderElementsHoverColor
+            }
+        }
+        li:after {
+            $stickyHeaderElementsColor
+        }
+    }
+    .navigation ul li.level0 > a,
+    .navigation ul li.level0 > a:visited {
+        $stickyHeaderElementsColor
+        $stickyNavigationBorderColor
+        &:hover {
+            $stickyHeaderElementsHoverColor
+            $stickyNavigationBorderHoverColor
+        }
+        li > a,
+        li > a:visited {
+            $stickyHeaderElementsColor
+            &:hover {
+                $stickyHeaderElementsHoverColor
+            }
+        }
+    }
+    .header_right {
+        .block-search input::-webkit-input-placeholder { $stickyHeaderElementsColor }
+        .block-search input::-moz-placeholder { $stickyHeaderElementsColor }
+        .block-search input:-ms-input-placeholder { $stickyHeaderElementsColor }
+        .block-search input:-moz-placeholder { $stickyHeaderElementsColor }
+        .block-search {
+            input {
+                $stickyHeaderElementsColor
+                $stickySearchBorderColor
+            }
+            .action.search {
+                &:before {
+                    $stickyHeaderElementsColor
+                }
+                &:hover {
+                    &:before {
+                        $stickyHeaderElementsHoverColor
+                    }
+                }
+            }
+        }
+    }
+    .header.content {
+        .block-search {
+            .field.search {
+                label {
+                    $stickyHeaderElementsColor
+                }
+                .control {
+                    $stickySearchBackgroundColor
+                }
+            }
+        }
+    }
+    .page-header,
+    .header.content,
+    .header.links .authorization-link a {
+        &:before {
+            $stickyHeaderElementsColor
+        }
+        &:hover {
+            $stickyHeaderElementsHoverColor
+            &:before {
+                $stickyHeaderElementsHoverColor
+            }
+        }
+        .nav-toggle,
+        .minicart-wrapper .action.showcart {
+            &:before {
+                $stickyHeaderElementsColor
+            }
+            &:hover {
+                $stickyHeaderElementsHoverColor
+                &:before {
+                    $stickyHeaderElementsHoverColor
+                }
+            }
+        }
+        .block-search {
+            .control {
+                $stickySearchBackgroundColor
+            }
+            input {
+                $stickySearchBackgroundColor
+                $stickyHeaderElementsColor
+                $stickySearchBorderColor
+                &::-webkit-input-placeholder { $stickyHeaderElementsColor }
+                &::-moz-placeholder { $stickyHeaderElementsColor }
+                &:-ms-input-placeholder { $stickyHeaderElementsColor }
+                &:-moz-placeholder { $stickyHeaderElementsColor }
+            }
+            .action.search {
+                &:before {
+                    $stickyHeaderElementsColor
+                }
+                &:hover {
+                    &:before {
+                        $stickyHeaderElementsHoverColor
+                    }
+                }
+            }
+        }
+    }
+}
+.page-header.page-header-v4.sticky-header {
+    .header.content {
+        z-index: 1;
+    }
+    .panel.wrapper {
+        z-index: 10;
+        background-color: transparent !important;
+        #switcher-currency {
+            &.switcher {
+                .toggle.switcher-trigger {
+                    &:after {
+                        $stickyHeaderElementsColor
+                    }
+                    &:hover {
+                        $stickyHeaderElementsHoverColor
+                        &:after {
+                            $stickyHeaderElementsHoverColor
+                        }
+                    }
+                }
+                strong {
+                    $stickyHeaderElementsColor
+                    &:hover {
+                        $stickyHeaderElementsHoverColor
+                    }
+                }
+            }
+        }
+        .panel.header{
+            .header.links {
+                li {
+                    $stickyHeaderElementsColor
+                    & > a,
+                    & > span {
+                        $stickyHeaderElementsColor
+                        &:visited {
+                            $stickyHeaderElementsColor
+                        }
+                        &:hover {
+                            $stickyHeaderElementsHoverColor
+                        }
+                    }
+                }
+            }
+            .switcher-currency{
+                display: none;
+            }
+        }
+    }
+}
+.nav-sections.sticky-header {
+    $stickyHeaderBackgroundColor
+    padding-bottom: 0 !important;
+    .nav-sections-item-content {
+        $stickyHeaderBackgroundColor
+    }
+    .navigation {
+        $stickyHeaderBackgroundColor
+        ul li.level0 > a,
+        ul li.level0 > a:visited {
+            $stickyHeaderElementsColor
+            $stickyNavigationBorderColor
+            &:hover {
+                $stickyHeaderElementsHoverColor
+                $stickyNavigationBorderHoverColor
+            }
+        }
+    }
+}
+
+
+	
         ";
         return $content;
     }
@@ -378,29 +754,55 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
     private function _generateLogoLess($storeId)
     {
         $content = '';
-        $logoHeight = (int)$this->_scopeConfig->getValue(
-            'design/header/logo_height',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
 
         $logoWidth = (int)$this->_scopeConfig->getValue(
             'design/header/logo_width',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $storeId
         );
+        $logoHeight = (int)$this->_scopeConfig->getValue(
+            'design/header/logo_height',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
 
-        if ($logoHeight || $logoWidth) {
+        $logoSrc = $this->_scopeConfig->getValue(
+            'design/header/logo_src',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+
+        $logoRatio = false;
+        if ($logoSrc) {
+            $logoSrc = $this->_dir->getPath('media') . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $logoSrc;
+            $imgPathArr = explode('.', $logoSrc);
+            $imgType = end($imgPathArr);
+
+            if ($imgType != 'svg') {
+                list($width, $height) = getimagesize($logoSrc);
+                $logoRatio = $width / $height;
+            } else {
+                $xml = simplexml_load_file($logoSrc);
+                $attr = $xml->attributes();
+                if ($attr->width && $attr->height) {
+                    $logoRatio = $attr->width / $attr->height;
+                }
+            }
+        }
+
+        if ($logoRatio && ($logoWidth || $logoHeight)) {
             $logoImgSizeCss = '';
 
-            if ($logoHeight) {
-                $logoImgSizeCss .= "height: ${logoHeight}px;";
-            }
-            if ($logoWidth) {
-                $logoImgSizeCss .= "width: ${logoWidth}px;";
+            if ($logoWidth && !$logoHeight) {
+                $logoHeight = (int) ($logoWidth / $logoRatio);
+            } elseif (!$logoWidth && $logoHeight) {
+                $logoWidth = (int) ($logoHeight * $logoRatio);
             }
 
+            $logoImgSizeCss .= "width: ${logoWidth}px;";
+            $logoImgSizeCss .= "height: ${logoHeight}px;";
 
+            /** This is for the admin image width height proper usage */
             $content .= "
 @media (min-width: $this->_mobileBreakPoint) {
     :root .theme-pearl {
@@ -415,6 +817,45 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         }
     }
 }
+            ";
+        }
+
+        // sticky header logo width and height
+        if ($logoRatio) {
+            $stickyLogoHeight = 34;
+            $stickyLogoWidth = (int) ($stickyLogoHeight * $logoRatio);
+            $stickyLogoImgSizeCss = '';
+            $stickyLogoImgSizeCss .= "width: ${stickyLogoWidth}px;";
+            $stickyLogoImgSizeCss .= "height: ${stickyLogoHeight}px;";
+
+            $content .= "
+@media (min-width: $this->_mobileBreakPoint) {
+    :root .theme-pearl {
+        .page-wrapper {
+            .page-header.sticky-header {
+                .logo {
+                    img {
+                        $stickyLogoImgSizeCss
+                    }
+                }
+            }
+        }
+    }
+}
+            ";
+            $stickyMenuOffsetLeft = $stickyLogoWidth > 100 ? 146 * -1 : ($stickyLogoWidth + 46) * -1;
+
+            $stickyMenuOffsetLeftCss = "left: ${stickyMenuOffsetLeft}px !important;";
+
+            $content .= "
+                .page-header-v2.sticky-header,
+                .page-header-v1.sticky-header {
+                    .megamenu.level-top-fullwidth {
+                        .fullwidth {
+                            $stickyMenuOffsetLeftCss
+                        }
+                    }
+                }
             ";
         }
 

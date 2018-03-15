@@ -1,3 +1,4 @@
+"Please regenerate Pearl Theme LESS/CSS files from <a href=""%1"">Cache Management Section</a>","Please regenerate Pearl Theme LESS/CSS files from <a href=""%1"">Cache Management Section</a>"
 Top,Top
 Right,Right
 Bottom,Bottom
@@ -6,6 +7,11 @@ Left,Left
 "Important / Recommended:","Important / Recommended:"
 "General Settings","General Settings"
 "Header Style","Header Style"
+"Global Promo Message","Global Promo Message"
+Enable,Enable
+"weltpixel_global_promo_message static block content is displayed.","weltpixel_global_promo_message static block content is displayed."
+"Text Color","Text Color"
+"Background Color","Background Color"
 "Top Header","Top Header"
 Width,Width
 "Link Color","Link Color"
@@ -13,8 +19,6 @@ Width,Width
 "Active Link Color","Active Link Color"
 "Submenu Link Color","Submenu Link Color"
 "Submenu Hover Link Color","Submenu Hover Link Color"
-"Text Color","Text Color"
-"Background Color","Background Color"
 "Border Bottom Color","Border Bottom Color"
 "Middle Header","Middle Header"
 Background,Background
@@ -28,6 +32,9 @@ Background,Background
 "Field Border Color","Field Border Color"
 "Field Background color","Field Background color"
 "Font color","Font color"
+"Placeholder color","Placeholder color"
 "Font size","Font size"
 "Header Icons","Header Icons"
 "Icon Size","Icon Size"
+"Icon Color","Icon Color"
+"Icon Hover Color","Icon Hover Color"

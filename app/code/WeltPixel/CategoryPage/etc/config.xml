@@ -60,7 +60,7 @@
                 <border_color></border_color>
                 <direction_font_color></direction_font_color>
                 <direction_font_hover_color></direction_font_hover_color>
-                <direction_font_size>25px</direction_font_size>
+                <direction_font_size>12px</direction_font_size>
                 <grid_list_background_active_color>#FFFFFF</grid_list_background_active_color>
                 <grid_list_background_color>#FFFFFF</grid_list_background_color>
                 <grid_list_background_hover_color>#FFFFFF</grid_list_background_hover_color>
@@ -99,7 +99,7 @@
                 <select_border_color>#CCCCCC</select_border_color>
                 <select_border_focus_color>#454545</select_border_focus_color>
                 <select_border_radius>0px</select_border_radius>
-                <select_border_width><![CDATA[a:1:{s:10:"<%- _id %>";a:4:{s:16:"border_width_top";s:3:"0px";s:18:"border_width_right";s:3:"0px";s:19:"border_width_bottom";s:3:"1px";s:17:"border_width_left";s:3:"0px";}}]]></select_border_width>
+                <select_border_width></select_border_width>
                 <select_font_color>#454545</select_font_color>
                 <select_font_size>13px</select_font_size>
                 <select_option_background_hover_color></select_option_background_hover_color>

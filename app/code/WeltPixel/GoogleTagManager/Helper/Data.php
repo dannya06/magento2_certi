@@ -69,6 +69,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $storage;
 
     /**
+     * \Magento\Cookie\Helper\Cookie
+     */
+    protected $cookieHelper;
+
+    /**
      * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\View\Element\BlockFactory $blockFactory
@@ -81,6 +86,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      * @param \Magento\Checkout\Model\Session\SuccessValidator $checkoutSuccessValidator
      * @param \WeltPixel\GoogleTagManager\Model\Storage $storage
+     * @param \Magento\Cookie\Helper\Cookie $cookieHelper
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -93,7 +99,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Magento\Checkout\Model\Session\SuccessValidator $checkoutSuccessValidator,
-        \WeltPixel\GoogleTagManager\Model\Storage $storage
+        \WeltPixel\GoogleTagManager\Model\Storage $storage,
+        \Magento\Cookie\Helper\Cookie $cookieHelper
     )
     {
         parent::__construct($context);
@@ -109,6 +116,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->orderRepository = $orderRepository;
         $this->checkoutSuccessValidator = $checkoutSuccessValidator;
         $this->storage = $storage;
+        $this->cookieHelper = $cookieHelper;
         $this->_populateStoreCategories();
     }
 
@@ -136,7 +144,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function isEnabled()
     {
-        return $this->_gtmOptions['general']['enable'];
+        return !$this->cookieHelper->isUserNotAllowSaveCookie() && $this->_gtmOptions['general']['enable'];
     }
 
     /**
@@ -183,34 +191,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return string
      */
-    public function getGtmCodeSnippetPosition()
-    {
-        return trim($this->_gtmOptions['general']['gtm_code_position']);
-    }
-
-    /**
-     * @return string
-     */
-    public function getGtmCodeSnippetForBody()
-    {
-        $gtmCodeSnippet = '';
-        if ($this->getGtmCodeSnippetPosition() == \WeltPixel\GoogleTagManager\Model\Config\Source\JsCodePosition::POSITION_BODY) {
-            $gtmCodeSnippet = $this->getGtmCodeSnippet();
-        }
-
-        return $gtmCodeSnippet;
-    }
-
-    /**
-     * @return string
-     */
     public function getGtmCodeSnippetForHead()
     {
-        $gtmCodeSnippet = '';
-        if ($this->getGtmCodeSnippetPosition() == \WeltPixel\GoogleTagManager\Model\Config\Source\JsCodePosition::POSITION_HEAD) {
-            $gtmCodeSnippet = $this->getGtmCodeSnippet();
-        }
-
+        $gtmCodeSnippet = $this->getGtmCodeSnippet();
         return $gtmCodeSnippet;
     }
 
@@ -603,6 +586,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $result['event'] = 'removeFromCart';
         $result['ecommerce'] = [];
+        $result['ecommerce']['currencyCode'] = $this->getCurrencyCode();
         $result['ecommerce']['remove'] = [];
         $result['ecommerce']['remove']['products'] = [];
 
@@ -633,6 +617,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $result['event'] = 'checkoutOption';
         $result['ecommerce'] = [];
+        $result['ecommerce']['currencyCode'] = $this->getCurrencyCode();
         $result['ecommerce']['checkout_option'] = [];
 
         $optionData = [];

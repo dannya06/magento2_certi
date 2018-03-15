@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="weltpixel_googletagmanager" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>GoogleAnalyticsEnhancedEcommerce</label>
+            <label>Google Analytics Enhanced Ecommerce</label>
             <tab>weltpixel</tab>
             <resource>WeltPixel_GoogleTagManager::GoogleTagManagerSettings</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -10,13 +10,6 @@
                 <field id="enable" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable GoogleTagManager</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="gtm_code_position" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Google Tag Manager Javascript Code Position</label>
-                    <source_model>WeltPixel\GoogleTagManager\Model\Config\Source\JsCodePosition</source_model>
-                    <depends>
-                        <field id="enable">1</field>
-                    </depends>
                 </field>
                 <field id="gtm_code" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Google Tag Manager Javascript Code</label>

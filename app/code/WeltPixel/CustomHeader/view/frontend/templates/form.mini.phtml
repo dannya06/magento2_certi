@@ -1,0 +1,118 @@
+<?php
+// @codingStandardsIgnoreFile
+?>
+<?php
+/** @var $block \Magento\Framework\View\Element\Template */
+/** @var $helper \Magento\Search\Helper\Data */
+$helper = $this->helper('Magento\Search\Helper\Data');
+?>
+
+<div class="wrap">
+    <div id="search-mod" class="modal">
+        <div class="modal-content">
+            <div class="block block-search wpx-block-search">
+                <div class="block block-content">
+                    <form class="form minisearch" id="search_mini_form" action="<?= /* @escapeNotVerified */ $helper->getResultUrl() ?>" method="get">
+                <div class="field search wpx-pos-search">
+                    <label class="label" for="search" data-role="minisearch-label">
+                        <span><?= /* @escapeNotVerified */ __('Search') ?></span>
+                    </label>
+                    <div class="control">
+                        <input id="search"
+                               data-mage-init='{"quickSearch":{
+                                "formSelector":"#search_mini_form",
+                                "url":"<?= /* @escapeNotVerified */ $block->getUrl('search/ajax/suggest', ['_secure' => $block->getRequest()->isSecure()]) ?>",
+                                "destinationSelector":"#search_autocomplete"}
+                           }'
+                               type="text"
+                               name="<?= /* @escapeNotVerified */ $helper->getQueryParamName() ?>"
+                               value="<?= /* @escapeNotVerified */ $helper->getEscapedQueryText() ?>"
+                               placeholder="<?= /* @escapeNotVerified */ __('Search entire store here...') ?>"
+                               class="input-text"
+                               maxlength="<?= /* @escapeNotVerified */ $helper->getMaxQueryLength() ?>"
+                               role="combobox"
+                               aria-haspopup="false"
+                               aria-autocomplete="both"
+                               autocomplete="off"/>
+                        <div id="search_autocomplete" class="search-autocomplete  dddddd"></div>
+                        <?= $block->getChildHtml() ?>
+                    </div>
+                </div>
+                <div class="actions wpx-pos-search search-visible-md">
+                    <button type="submit" class="action tocart primary" title="<?= $block->escapeHtml(__('Search')) ?>"><span><?= /* @escapeNotVerified */ __('Search') ?></span></button>
+                </div>
+                <div class="wpx-pos-search search-visible-md">
+                    <a class="closebutton" href="#">&times;</a>
+                </div>
+            </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="block block-search search-visible-md minisearch-v2">
+    <div class="block block-content">
+        <a href="#search-mod"><i class="open-modal-search icon-search3"></i></a>
+    </div>
+</div>
+
+<script>
+    require(['jquery'],
+        function ($) {
+
+            var resizeIdClose,
+                resizeIdModal,
+                searchMod = $("#search-mod");
+
+            $(window).resize(function() {
+                clearTimeout(resizeIdClose);
+                if(!$('#search-mod').hasClass( "isOpen" )){
+                    resizeIdModal = setTimeout(closeSearchModal($('#search-mod')), 500);
+                }
+            });
+
+            $(window).on('hashchange', function(e){
+                window.history.pushState("", document.title, window.location.pathname);
+            });
+
+            $(".open-modal-search").on('click', function(){
+                searchMod.addClass("isOpen");
+                if($('.page-header').hasClass('page-header-v4')){
+                    $(".nav-sections-4.sticky-header").attr('style', 'z-index: 0 !important');
+                }
+            });
+
+            $(".block.block-content").on('click', function(){
+                onClickSearchBtn(searchMod);
+            });
+
+            $(".closebutton").on('click', function(e){
+                closeSearchModal(searchMod);
+                if($('.page-header').hasClass('page-header-v4')) {
+                    $(".nav-sections-4.sticky-header").attr('style', 'z-index: 10 !important');
+                }
+            });
+
+            function onClickSearchBtn(searchMod){
+                if($(window).width() > 768){
+                    if(searchMod.hasClass( "isOpen" )){
+                        $('body').addClass("hidescroll");
+                        $('.actions.wpx-pos-search button').prop("disabled", false); // Search button are now enabled.
+                    }
+                }
+            }
+
+            function closeSearchModal(searchMod){
+                if (searchMod.length) {
+                    searchMod.removeClass("isOpen");
+                    setTimeout(function(){
+                        $('body').removeClass('hidescroll');
+                    }, 10);
+                }
+            }
+        }
+    );
+
+</script>

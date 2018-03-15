@@ -19,6 +19,8 @@ class Product extends \WeltPixel\GoogleTagManager\Block\Core
             return null;
         }
 
+        $relatedProductListBlock->toHtml();
+
         $blockType = $relatedProductListBlock->getData('type');
         if ($blockType == 'related-rule') {
             $collection = $relatedProductListBlock->getAllItems();
@@ -41,6 +43,8 @@ class Product extends \WeltPixel\GoogleTagManager\Block\Core
         if (empty($upsellProductListBlock)) {
             return null;
         }
+
+        $upsellProductListBlock->toHtml();
 
         $blockType = $upsellProductListBlock->getData('type');
         if ($blockType == 'upsell-rule') {

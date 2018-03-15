@@ -14,11 +14,6 @@ class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $_googlefontUrl = 'https://fonts.googleapis.com/css?family=';
 
-     /**
-     * @var array
-     */
-    protected $_frontendOptions;
-    
     /**
      * @var array
      */
@@ -84,22 +79,18 @@ class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
             'characterset' => 'form_inputs/form____element____input__font____family_characterset'
         ]
     ];
-    
+
+
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @return array
      */
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context
-    ) {
-        parent::__construct($context);
-        
-        $this->_frontendOptions = $this->scopeConfig->getValue('weltpixel_frontend_options');
-    }
-    
     public function getFontFamilyOptions() {
         return $this->_fontFamilyOptions;
     }
-    
+
+    /**
+     * @return bool|string
+     */
     public function getGoogleFonts() {
         $baseUrl = $this->_googlefontUrl;
         
@@ -119,10 +110,10 @@ class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
     private function _getFontFamilyMergedUrl() {
         $fontsArray = [];
         foreach ($this->avilableFontFamilys as $availableFamily) {
-            $fontFamily = str_replace(' ', '+', $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['font']));
+            $fontFamily = str_replace(' ', '+', $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['font'], \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
             if ($fontFamily) {
-                $fontWeight = $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['weight']);
-                $fontCharacterset = $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['characterset']);
+                $fontWeight = $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['weight'], \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $fontCharacterset = $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['characterset'], \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 if ($fontWeight) {
                     $fontsArray[$fontFamily][] = array_map('trim', explode(',', $fontWeight));
                 }

@@ -14,16 +14,24 @@ class PageConfigStructure {
     protected $_helper;
 
     /**
+     * @var \WeltPixel\Backend\Helper\Utility
+     */
+    protected $utilityHelper;
+
+    /**
      * Head constructor.
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \WeltPixel\FrontendOptions\Helper\Data $helper
+     * @param \WeltPixel\Backend\Helper\Utility $utilityHelper
      */
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \WeltPixel\FrontendOptions\Helper\Data $helper
+        \WeltPixel\FrontendOptions\Helper\Data $helper,
+        \WeltPixel\Backend\Helper\Utility $utilityHelper
     ) {
         $this->_storeManager = $storeManager;
         $this->_helper = $helper;
+        $this->utilityHelper = $utilityHelper;
     }
 
 
@@ -37,8 +45,11 @@ class PageConfigStructure {
     public function beforeAddAssets(\Magento\Framework\View\Page\Config\Structure $subject,
         $name, $attributes)
     {
-        if ($name == 'css/styles-l.css') {
-            $attributes['media'] = 'screen and (min-width: ' . $this->_helper->getMobileTreshold() . ')';
+        /** Add the store specific css just for stores where theme is used */
+        if ($this->utilityHelper->isPearlThemeUsed()) {
+            if ($name == 'css/styles-l.css') {
+                $attributes['media'] = 'screen and (min-width: ' . $this->_helper->getMobileTreshold() . ')';
+            }
         }
 
         return [$name, $attributes];

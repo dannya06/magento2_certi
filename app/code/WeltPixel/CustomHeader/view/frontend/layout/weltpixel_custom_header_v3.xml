@@ -2,6 +2,8 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <move element="minicart" destination="header.right" after="-"/>
+        <move element="navigation.sections" destination="header-wrapper" after="-"/>
+        <move element="compare-link-wrapper" destination="header.panel" before="-"/>
         <referenceBlock name="navigation.sections">
             <arguments>
                 <argument name="group_css" xsi:type="string">nav-sections-3 nav-sections</argument>
@@ -17,6 +19,12 @@
         <referenceContainer name="page.wrapper">
             <container name="header.container.v3" as="header_container_v3" label="Page Header Container V3" htmlTag="div" htmlClass="page-header page-header-v3" before="-"/>
         </referenceContainer>
+
+        <referenceBlock name="top.search">
+            <action ifconfig="weltpixel_custom_header/search_options/version" method="setTemplate">
+                <argument  name="template" xsi:type="string">WeltPixel_CustomHeader::form.mini.phtml</argument>
+            </action>
+        </referenceBlock>
 
         <move element="header.container" destination="header.container.v3"/>
 

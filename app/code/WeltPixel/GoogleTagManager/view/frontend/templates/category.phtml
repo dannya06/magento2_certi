@@ -24,6 +24,9 @@
         <?php endforeach; ?>
         <?php $this->setEcommerceData('currencyCode', $this->getCurrencyCode()); ?>
         <?php $this->setEcommerceData('impressions', $categoryProducts); ?>
+        <?php $this->setDataLayerOption('event', 'impression'); ?>
+        <?php $this->setDataLayerOption('eventCategory', 'Ecommerce'); ?>
+        <?php $this->setDataLayerOption('eventAction', 'Impression'); ?>
     <?php endif; ?>
 
     <?php if ($helper->isAdWordsRemarketingEnabled()): ?>

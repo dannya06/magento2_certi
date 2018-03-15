@@ -21,15 +21,31 @@ class GenerateLessCommand extends Command
     protected $objectManager;
 
     /**
+     * @var \Magento\Framework\App\State
+     */
+    protected $state;
+
+    /**
      * GenerateLessCommand constructor.
      * @param array $generationContainer
      * @param ObjectManagerInterface $objectManager
+     * @param \Magento\Framework\App\State $state
      */
     public function __construct(
         array $generationContainer = [],
-        ObjectManagerInterface $objectManager
+        ObjectManagerInterface $objectManager,
+        \Magento\Framework\App\State $state
     )
     {
+        $this->state = $state;
+        try {
+            $area = $this->state->getAreaCode();
+            if (!$area) {
+                $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
+            }
+        } catch (\Exception $ex) {
+
+        }
         $this->generationContainer = $generationContainer;
         $this->objectManager = $objectManager;
         parent::__construct();
@@ -60,7 +76,7 @@ class GenerateLessCommand extends Command
                 $item->execute($observer);
                 $output->writeln('<info>' . $key . ' module less was generated successfully.</info>');
             } catch (\Exception $ex) {
-                $output->writeln('<error>' . $key . ' module less was not generated.</error>');
+                $output->writeln('<error>' . $key . ' module less was not generated. ' . $ex->getMessage() . '</error>');
             }
         }
 

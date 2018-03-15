@@ -16,10 +16,14 @@
                     <block class="Magento\Directory\Block\Currency" name="currency" before="store_language" template="currency.phtml"/>
                     <block class="Magento\Store\Block\Switcher" name="store_language" as="store_language" after="-" template="switch/languages.phtml"/>
                 </container>
-                <block class="Magento\Framework\View\Element\Template" name="top.search" as="topSearch" after="-" template="Magento_Search::form.mini.phtml"/>
             </referenceContainer>
         </referenceContainer>
 
+        <referenceBlock name="top.search">
+            <action ifconfig="weltpixel_custom_header/search_options/version" method="setTemplate">
+                <argument  name="template" xsi:type="string">WeltPixel_CustomHeader::form.mini.phtml</argument>
+            </action>
+        </referenceBlock>
         <referenceBlock name="navigation.sections">
             <arguments>
                 <argument name="group_css" xsi:type="string">nav-sections-2 nav-sections</argument>

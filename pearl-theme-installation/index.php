@@ -52,6 +52,8 @@ unset($storeList['admin']);
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <!-- Import Open Sans font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -62,14 +64,14 @@ unset($storeList['admin']);
 
 <body>
 <div class="jumbotron">
-    <div class="container">
-        <h1>Pearl Theme Instalation</h1>
-        <p>This is a simple GUI wizard for the Pearl Theme installation and configuration.</p>
+    <div class="container separator nopadding">
+        <h1 class="text-uppercase no-mg-bottom big-title">Pearl. Theme Instalation.</h1>
+        <p class="sub-title">This is a simple GUI wizard for the Pearl Theme installation and configuration.</p>
     </div>
 </div>
 
 <?php if ($state->getMode() === \Magento\Framework\App\State::MODE_PRODUCTION) : ?>
-<div class="container">
+<div class="container nopadding">
     <div class="row">
         <div class="col-xs-12">
             <p class="notification-msg">The GUI is not working on production mode. <br/>
@@ -78,17 +80,17 @@ unset($storeList['admin']);
     </div>
 </div>
 <?php else:  ?>
-<div class="container">
+<div class="container nopadding">
     <div class="row">
         <div class="col-xs-12">
             <p class="notification-msg">Please make sure that you have copied the source files and the sample data to your magento installation.</p>
         </div>
     </div>
     <!-- Example row of columns -->
-    <div class="row">
+    <div class="row step-descr">
         <div class="col-md-4">
             <h2>Step 1</h2>
-            <p>In this step we run the upgrade scripts and clear the cache</p>
+            <p>In this step we run the upgrade scripts and clear the Magento cache</p>
         </div>
         <div class="col-md-4">
             <h2>Step 2</h2>
@@ -99,7 +101,7 @@ unset($storeList['admin']);
             <p>In this step the Pearl theme can be activated for a desired store view, or globally, using the GLOBAL input. </p>
         </div>
     </div>
-    <div class="row">
+    <div class="row step-descr row-2">
         <div class="col-md-4">
             <h2>Step 4</h2>
             <p>In this step you can configure your store, import predefined demo versions.</p>
@@ -113,21 +115,14 @@ unset($storeList['admin']);
             <p>In this step we cleanup the cache and generate the theme specific files after the customizations.</p>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <h2>Step 7</h2>
-            <p>Success page.</p>
-        </div>
-    </div>
 
-    <hr>
 
-    <div class="container">
+    <div class="container mg-top-sec-2">
 
         <div class="stepwizard col-xs-12">
             <div class="stepwizard-row setup-panel">
                 <div class="stepwizard-step">
-                    <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
+                    <a href="#step-1" type="button" class="btn btn-primary btn-circle step-1-link">1</a>
                     <p>Step 1</p>
                 </div>
                 <div class="stepwizard-step">
@@ -150,7 +145,7 @@ unset($storeList['admin']);
                     <a href="#step-6" type="button" class="btn btn-default btn-circle" disabled="disabled">6</a>
                     <p>Step 6</p>
                 </div>
-                <div class="stepwizard-step">
+                <div class="stepwizard-step" style="display: none">
                     <a href="#step-7" type="button" class="btn btn-default btn-circle" disabled="disabled">7</a>
                     <p>Step 7</p>
                 </div>
@@ -159,43 +154,45 @@ unset($storeList['admin']);
 
         <form role="form" action="" method="post">
             <div class="row setup-content" id="step-1">
-                <div class="col-xs-12 col-md-6 col-md-offset-3">
-                    <div class="col-md-12">
-                        <h3> Step 1 - Install Pearl Theme and included extensions</h3>
+                <div class="col-xs-12 col-md-7 col-md-offset-3">
+                    <div class="col-md-12 title-cus">
+                        <h3>Install Pearl Theme and included extensions</h3>
                         <div class="content">
-                            This step will clean cache and run the upgrades for the modules.
+                            <p>This step will clean cache and run the upgrades for the modules.</p>
                         </div>
-                        <div class="checkbox">
+                        <div class="checkbox text-center">
                             <label>
                                 <input type="checkbox" name="skip" id="skip-step-1">Skip this step
                             </label>
                         </div>
-
-                        <button class="btn btn-primary nextBtn btn-lg pull-right" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        <div class="text-center">
+                            <button class="btn btn-primary nextBtn btn-lg text-uppercase btn-proc-1" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row setup-content" id="step-2">
                 <div class="col-xs-12 col-md-6 col-md-offset-3">
-                    <div class="col-md-12">
-                        <h3> Step 2 - Theme specific less generation</h3>
+                    <div class="col-md-12 title-cus">
+                        <h3>Theme specific less generation</h3>
                         <div class="content">
                             This step will clean cache and generate the theme specific less files.
                         </div>
-                        <div class="checkbox">
+                        <div class="checkbox text-center">
                             <label>
                                 <input type="checkbox" name="skip" id="skip-step-2">Skip this step
                             </label>
                         </div>
-
-                        <button class="btn btn-primary nextBtn btn-lg pull-right" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        <div class="text-center">
+                            <button class="btn btn-primary nextBtn btn-lg text-uppercase" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row setup-content" id="step-3">
                 <div class="col-xs-12 col-md-6 col-md-offset-3">
-                    <div class="col-md-12">
-                        <h3> Step 3 - Theme Activation</h3>
+                    <div class="col-md-12 title-cus">
+                        <h3>Theme Activation</h3>
                         <div class="content">
                             Here you can activate the Pearl Theme for your store. If you don't want to activate it, you can skip this step. <br/><br/>
                             If you want to set the theme for all markets use <b>GLOBAL</b> otherwise specify the store code or store id.
@@ -208,20 +205,21 @@ unset($storeList['admin']);
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="checkbox">
+                        <div class="checkbox text-center">
                             <label>
                                 <input type="checkbox" name="skip" id="skip-step-3">Skip this step
                             </label>
                         </div>
-
-                        <button class="btn btn-primary nextBtn btn-lg pull-right" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        <div class="text-center">
+                            <button class="btn btn-primary nextBtn btn-lg text-uppercase" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row setup-content" id="step-4">
                 <div class="col-xs-12 col-md-6 col-md-offset-3">
-                    <div class="col-md-12">
-                        <h3> Step 4 - Import Demo Configuration</h3>
+                    <div class="col-md-12 title-cus">
+                        <h3>Import Demo Configuration</h3>
                         <div class="form-group">
                             <label class="control-label">Store Code</label>
                             <select  name="demo-configuration-store-code" id="demo-configuration-store-code" class="form-control" required="required">
@@ -244,21 +242,26 @@ unset($storeList['admin']);
                                 <option value="v9">v9</option>
                                 <option value="v10">v10</option>
                                 <option value="v11">v11</option>
+                                <option value="v12">v12</option>
+                                <option value="v14">v14</option>
+                                <option value="v15">v15</option>
                             </select>
                         </div>
-                        <div class="checkbox">
+                        <div class="checkbox text-center">
                             <label>
                                 <input type="checkbox" name="skip" id="skip-step-4">Skip this step
                             </label>
                         </div>
-                        <button class="btn btn-primary nextBtn btn-lg pull-right" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        <div class="text-center">
+                            <button class="btn btn-primary nextBtn btn-lg text-uppercase" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row setup-content" id="step-5">
-                <div class="col-xs-12 col-md-6 col-md-offset-3">
+                <div class="col-xs-12 col-md-3 col-lg-3">
                     <div class="col-md-12">
-                        <h3> Step 5 - Theme Options Configuration</h3>
+                        <h3>Design Options</h3>
                         <div class="form-group">
                             <label class="control-label">Store Code</label>
                             <select  name="theme-configuration-store-code" id="theme-configuration-store-code" class="form-control" required="required">
@@ -268,8 +271,19 @@ unset($storeList['admin']);
                             </select>
                         </div>
                         <div class="form-group">
+                            <label class="control-label">Header Version</label>
+                            <select class="form-control" id="theme-configuration-header" name="theme-configuration-header" required="required">
+                                <option value="">-- Please Select --</option>
+                                <option value="v1">v1</option>
+                                <option value="v2">v2</option>
+                                <option value="v3">v3</option>
+                                <option value="v4">v4</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label">Home Page Version</label>
                             <select class="form-control" id="theme-configuration-home-page" name="theme-configuration-home-page" required="required">
+                                <option value="">-- Please Select --</option>
                                 <option value="v1">v1</option>
                                 <option value="v2">v2</option>
                                 <option value="v3">v3</option>
@@ -281,11 +295,23 @@ unset($storeList['admin']);
                                 <option value="v9">v9</option>
                                 <option value="v10">v10</option>
                                 <option value="v11">v11</option>
+                                <option value="v12">v12</option>
+                                <option value="v14">v14</option>
+                                <option value="v15">v15</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Header Version</label>
-                            <select class="form-control" id="theme-configuration-header" name="theme-configuration-header" required="required">
+                            <label class="control-label">Enable Pre-Footer</label>
+                            <select class="form-control" id="theme-configuration-prefooter" name="theme-configuration-prefooter" required="required">
+                                <option value="">-- Please Select --</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Footer Version</label>
+                            <select class="form-control" id="theme-configuration-footer" name="theme-configuration-footer" required="required">
+                                <option value="">-- Please Select --</option>
                                 <option value="v1">v1</option>
                                 <option value="v2">v2</option>
                                 <option value="v3">v3</option>
@@ -295,6 +321,7 @@ unset($storeList['admin']);
                         <div class="form-group">
                             <label class="control-label">Category Page Columns</label>
                             <select class="form-control" id="theme-configuration-category-columns" name="theme-configuration-category-columns" required="required">
+                                <option value="">-- Please Select --</option>
                                 <option value="2columns">2columns</option>
                                 <option value="3columns">3columns</option>
                                 <option value="4columns">4columns</option>
@@ -304,63 +331,78 @@ unset($storeList['admin']);
                         <div class="form-group">
                             <label class="control-label">Product Page Version</label>
                             <select class="form-control" id="theme-configuration-product-page" name="theme-configuration-product-page" required="required">
+                                <option value="">-- Please Select --</option>
                                 <option value="v1">v1</option>
                                 <option value="v2">v2</option>
                                 <option value="v3">v3</option>
                                 <option value="v4">v4</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">Footer Version</label>
-                            <select class="form-control" id="theme-configuration-footer" name="theme-configuration-footer" required="required">
-                                <option value="v1">v1</option>
-                                <option value="v2">v2</option>
-                                <option value="v3">v3</option>
-                                <option value="v4">v4</option>
-                            </select>
-                        </div>
-                        <div class="checkbox">
+                        <div class="checkbox text-center">
                             <label>
                                 <input type="checkbox" name="skip" id="skip-step-5">Skip this step
                             </label>
                         </div>
-                        <button class="btn btn-primary nextBtn btn-lg pull-right" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        <div class="text-center title-cus">
+                            <button class="btn btn-primary nextBtn btn-lg text-uppercase mg-btm-step-5" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        </div>
                     </div>
+                </div>
+                <div class="preview col-xs-12 col-md-9 col-lg-9">
+                    <div class="image-container preview-header">
+                        <img src="img/frame-center.png" />
+                    </div>
+                    <div class="preview-images">
+                        <div class="image-container theme-configuration-header"><p>Header will preview here once selected from drop-down</p></div>
+                        <div class="image-container page-preview"><p>Page body will preview here once selected from drop-down</p></div>
+                        <div class="image-container theme-configuration-prefooter"><p>Pre-Footer will preview here once selected from drop-down</p></div>
+                        <div class="image-container theme-configuration-footer"><p>Footer will preview here once selected from drop-down</p></div>
+                    </div>
+                    <div class="preview-footer"></div>
                 </div>
             </div>
             <div class="row setup-content" id="step-6">
                 <div class="col-xs-12 col-md-6 col-md-offset-3">
                     <div class="col-md-12">
-                        <h3> Step 6 - Cache cleanup</h3>
+                        <h3>Cache cleanup</h3>
                         <div class="content">
                             <p>In this step we cleanup the cache and generate the theme specific files after the customizations.</p>
                             <p><b>Don't skip this test if you made configuration changes.</b></p>
                         </div>
-                        <div class="checkbox">
+                        <h3>Installer removal options</h3>
+                        <div class="form-group">
+                            <p>At the end of the installation this GUI should be removed in order to prevent unauthorized access.</p>
+                            <label class="control-label">Remove GUI files after installation</label>
+                            <select class="form-control" id="delete-installer" name="delete-installer" required="required">
+                                <option value="1">Yes (Recommended)</option>
+                                <option value="0">No, I will manually remove GUI files</option>
+                            </select>
+                        </div>
+                        <div class="checkbox text-center">
                             <label>
                                 <input type="checkbox" name="skip" id="skip-step-6">Skip this step
                             </label>
                         </div>
-
-                        <button class="btn btn-primary nextBtn btn-lg pull-right" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        <div class="text-center title-cus">
+                            <button class="btn btn-primary nextBtn btn-lg text-uppercase" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row setup-content" id="step-7">
                 <div class="col-xs-6 col-md-offset-3">
                     <div class="col-md-12">
-                        <h3> Step 7 - Success Page</h3>
                         <div class="success-container">
-                            <p>Congratulations!</p>
+                            <p class="congratulations">Congratulations!</p>
                             <p>Theme was installed and configured successfully.</p>
-                            <a class="btn btn-success" target="_blank" href="<?php echo $homeUrl ?>">Go to Homepage</a>
-                            <a class="btn btn-success" target="_blank" href="<?php echo $backendUrl ?>">Go to Admin</a>
+                            <a class="btn btn-primary succesBtn btn-lg text-uppercase" target="_blank" href="<?php echo $homeUrl ?>">Go to Homepage</a>
+                            <a class="btn btn-primary succesBtn btn-lg text-uppercase admin-btn" target="_blank" href="<?php echo $backendUrl ?>">Go to Admin</a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row" >
-                <h3>Installation Log</h3>
+                <h3 class="log-title">Installation log</h3>
                 <div class="row result-container" >
                 </div>
             </div>

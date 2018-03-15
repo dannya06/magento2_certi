@@ -12,5 +12,12 @@
                 </block>
             </container>
         </referenceContainer>
+        <referenceContainer name="before.body.end">
+            <block
+                class="Magento\Framework\View\Element\Template"
+                ifconfig="weltpixel_custom_header/sticky_header/enable"
+                name="welpixel.sticky.header.js" template="WeltPixel_CustomHeader::sticky_header_js.phtml"
+            />
+        </referenceContainer>
     </body>
 </page>

@@ -9,23 +9,30 @@ class Head {
     protected $_storeManager;
 
     /**
-     * var \WeltPixel\ProductPage\Helper\Data
+     * @var \WeltPixel\Backend\Helper\Utility;
      */
-    protected $_helper;
+    protected $utilityHelper;
 
     /**
      * Head constructor.
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \WeltPixel\ProductPage\Helper\Data $helper
+     * @param \WeltPixel\Backend\Helper\Utility $utilityHelper
      */
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \WeltPixel\ProductPage\Helper\Data $helper
+        \WeltPixel\Backend\Helper\Utility $utilityHelper
     ) {
         $this->_storeManager = $storeManager;
-        $this->_helper = $helper;
+        $this->utilityHelper = $utilityHelper;
     }
 
+    /**
+     * @param \Magento\Framework\View\Page\Config\Reader\Head $subject
+     * @param \Closure $proceed
+     * @param \Magento\Framework\View\Layout\Reader\Context $readerContext
+     * @param \Magento\Framework\View\Layout\Element $headElement
+     * @return mixed
+     */
     public function aroundInterpret(
         \Magento\Framework\View\Page\Config\Reader\Head $subject, 
         \Closure $proceed, 
@@ -34,20 +41,26 @@ class Head {
     {
         
         $result = $proceed($readerContext, $headElement);
-        $pageConfigStructure = $readerContext->getPageConfigStructure();
-        
-        $store = $this->_storeManager->getStore();
+        /** Add the store specific css just for stores where theme is used */
+        if ($this->utilityHelper->isPearlThemeUsed()) {
+            $pageConfigStructure = $readerContext->getPageConfigStructure();
 
-        $categoryStoreCss = 'weltpixel_product_store_' . $store->getData('code') . '.css';
+            $store = $this->_storeManager->getStore();
 
-        $node = new \Magento\Framework\View\Layout\Element('<css src="WeltPixel_ProductPage::css/'. $categoryStoreCss .'" />');
-        $node->addAttribute('content_type', 'css');
-        $pageConfigStructure->addAssets($node->getAttribute('src'), $this->getAttributes($node));
+            $categoryStoreCss = 'weltpixel_product_store_' . $store->getData('code') . '.css';
+
+            $node = new \Magento\Framework\View\Layout\Element('<css src="WeltPixel_ProductPage::css/' . $categoryStoreCss . '" />');
+            $node->addAttribute('content_type', 'css');
+            $pageConfigStructure->addAssets($node->getAttribute('src'), $this->getAttributes($node));
+        }
 
         return $result;
     }
-    
-    
+
+    /**
+     * @param $element
+     * @return array
+     */
     protected function getAttributes($element)
     {
         $attributes = [];

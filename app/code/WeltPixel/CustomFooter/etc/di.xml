@@ -7,4 +7,11 @@
             </argument>
         </arguments>
     </type>
+    <type name="WeltPixel\Command\Console\Command\GenerateLessCommand">
+        <arguments>
+            <argument name="generationContainer" xsi:type="array">
+                <item name="WeltPixel_CustomFooter" xsi:type="object">WeltPixel\CustomFooter\Observer\CustomFooterEditActionControllerSaveObserver</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

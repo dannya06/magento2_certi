@@ -3,7 +3,7 @@
     <default>
         <weltpixel_custom_header>
             <general>
-                <header_style>v2</header_style>
+                <header_style>v1</header_style>
             </general>
             <global_promo>
                 <enable>0</enable>
@@ -26,7 +26,7 @@
                 <background></background>
 			    <border_color>#CCCCCC</border_color>
 			    <border_style>solid</border_style>
-			    <border_width><![CDATA[a:1:{s:10:"<%- _id %>";a:4:{s:16:"border_width_top";s:3:"0px";s:18:"border_width_right";s:3:"0px";s:19:"border_width_bottom";s:3:"1px";s:17:"border_width_left";s:3:"0px";}}]]></border_width>
+			    <border_width></border_width>
 			    <color>#5C5C5C</color>
 			    <font_size>12px</font_size>
 			    <height>30px</height>
@@ -43,8 +43,15 @@
 	            <shadow></shadow>
 	            <width>1400px</width>
             </bottom_header>
+            <sticky_header>
+                <enable>1</enable>
+                <enable_mobile>0</enable_mobile>
+                <sticky_background_color>#FFFFFF</sticky_background_color>
+            </sticky_header>
 	        <icons>
 		        <icon_size>16px</icon_size>
+		        <icon_color>#000000</icon_color>
+		        <icon_color_hover>#CCCCCC</icon_color_hover>
 	        </icons>
         </weltpixel_custom_header>
     </default>

@@ -83,7 +83,7 @@ define(['jquery'], function (jQuery) {
 
             jQuery(productItem).each(function () {
                 var el = jQuery(this),
-                    img = el.find(image).outerHeight(),
+                    img = el.find(image).parent().outerHeight(),
                     quickViewH_1 = el.find(buttonQuickView_1).outerHeight(),
                     quickViewH_2 = el.find(buttonQuickView_2).outerHeight() + 10;
 
@@ -93,6 +93,7 @@ define(['jquery'], function (jQuery) {
 
                 } else {
 
+                    el.find(buttonQuickView_1).css('top', img - quickViewH_2 - 45);
                     el.find(buttonQuickView_2).css('top', img - quickViewH_2 - 10);
                 }
 
@@ -129,7 +130,8 @@ define(['jquery'], function (jQuery) {
             jQuery(productItem).height(finalHeight);
         },
 
-        actions: function (actions) {
+        actions: function () {
+            var actions = window.actions;
             this.displayAddToCart(actions);
             this.displayWishlist(actions);
             this.displayCompare(actions);
@@ -149,6 +151,7 @@ define(['jquery'], function (jQuery) {
 
     };
 
+    window.CategoryPage = CategoryPage;
     return CategoryPage;
 });
 

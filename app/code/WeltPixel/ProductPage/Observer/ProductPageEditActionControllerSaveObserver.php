@@ -7,7 +7,8 @@ use Magento\Framework\Event\ObserverInterface;
 /**
  * ProductPageEditActionControllerSaveObserver observer
  */
-class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
+class ProductPageEditActionControllerSaveObserver implements ObserverInterface
+{
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -64,6 +65,22 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
     protected $jsonHelper;
 
     /**
+     * @var \Magento\Framework\Message\ManagerInterface
+     */
+    protected $_messageManager;
+
+    /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    protected $_urlBuilder;
+
+    /**
+     * @var \Magento\Backend\Model\Session\Proxy
+     */
+    protected $_session;
+
+
+    /**
      * ProductPageEditActionControllerSaveObserver constructor.
      *
      * @param \WeltPixel\ProductPage\Helper\Data $helper
@@ -73,6 +90,9 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
      * @param \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \WeltPixel\ProductPage\Model\ProductPageFactory $productPageFactory
+     * @param \Magento\Framework\Message\ManagerInterface $messageManager
+     * @param \Magento\Framework\UrlInterface $urlBuilder
+     * @param \Magento\Backend\Model\Session\Proxy $session
      */
     public function __construct(
         \WeltPixel\ProductPage\Helper\Data $helper,
@@ -82,18 +102,23 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \WeltPixel\ProductPage\Model\ProductPageFactory $productPageFactory,
-        \Magento\Framework\Json\Helper\Data $jsonHelper
-    ) {
+        \Magento\Framework\Json\Helper\Data $jsonHelper,
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Magento\Framework\UrlInterface $urlBuilder,
+        \Magento\Backend\Model\Session\Proxy $session
+    )
+    {
         $this->_helper = $helper;
         $this->_frontendHelper = $frontendHelper;
         $this->_scopeConfig = $scopeConfig;
         $this->_dirReader = $dirReader;
         $this->_writeFactory = $writeFactory;
         $this->_storeManager = $storeManager;
-        $this->_storeCollection = $this->_storeManager->getStores();
-        $this->_mobileBreakPoint = $this->_frontendHelper->getBreakpointM();
         $this->productPageFactory = $productPageFactory;
         $this->jsonHelper = $jsonHelper;
+        $this->_messageManager = $messageManager;
+        $this->_urlBuilder = $urlBuilder;
+        $this->_session = $session;
     }
 
     /**
@@ -103,10 +128,13 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function execute(\Magento\Framework\Event\Observer $observer) {
-
+    public function execute(\Magento\Framework\Event\Observer $observer)
+    {
+        $this->_storeCollection = $this->_storeManager->getStores();
         $directoryCode = $this->_dirReader->getModuleDir('view', 'WeltPixel_ProductPage');
         foreach ($this->_storeCollection as $store) {
+
+            $this->_mobileBreakPoint = $this->_frontendHelper->getBreakpointM($store->getData('store_id'));
 
             $imageAreaWidth = trim($this->_helper->getImageAreaWidth($store->getData('store_id')));
             $productAreaWidth = trim($this->_helper->getProductInfoAreaWidth($store->getData('store_id')));
@@ -157,6 +185,18 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         /* Store view specific less generation */
         $this->_generateStoreViewSpecificLess();
 
+        /** Set only the notifications if triggered from admin save */
+        $event = $observer->getEvent();
+        if ($event instanceof \Magento\Framework\Event) {
+            $eventName = $observer->getEvent()->getData();
+            if ($eventName) {
+                $url = $this->_urlBuilder->getUrl('adminhtml/cache');
+                $message = __('Please regenerate Pearl Theme LESS/CSS files from <a href="%1">Cache Management Section</a>', $url);
+                $this->_messageManager->addWarning($message);
+                $this->_session->setWeltPixelCssRegeneration(true);
+            }
+        }
+
         return $this;
     }
 
@@ -167,9 +207,10 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
      * @param string $productAreaWidth
      * @return string
      */
-    private function _generateContent($imageAreaWidth, $productAreaWidth) {
+    private function _generateContent($imageAreaWidth, $productAreaWidth)
+    {
         $content = '/* Generated Less from WeltPixel_ProductPage */' . PHP_EOL;
-        $content .= '.catalog-product-view { .block.related, .block.upsell {clear: both} }' . PHP_EOL;
+        $content .= '.theme-pearl.catalog-product-view { .block.related, .block.upsell {clear: both} }' . PHP_EOL;
 
         if (strlen($imageAreaWidth)) {
             $content .= $this->_getAreaWidthCss($imageAreaWidth);
@@ -186,15 +227,16 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
      * @param $imageAreaWidth
      * @return string
      */
-    private function _getAreaWidthCss($imageAreaWidth) {
+    private function _getAreaWidthCss($imageAreaWidth)
+    {
         $content = "
         @media (min-width: $this->_mobileBreakPoint) {
-            .catalog-product-view.page-layout-1column .product.media {
+            .theme-pearl.catalog-product-view.page-layout-1column .product.media {
               width: $imageAreaWidth;
             }
-            .catalog-product-view.page-layout-2columns-left .product.media,
-            .catalog-product-view.page-layout-2columns-right .product.media,
-            .catalog-product-view.page-layout-3columns .product.media {
+            .theme-pearl.catalog-product-view.page-layout-2columns-left .product.media,
+            .theme-pearl.catalog-product-view.page-layout-2columns-right .product.media,
+            .theme-pearl.catalog-product-view.page-layout-3columns .product.media {
               width: $imageAreaWidth;
             }
         }
@@ -207,15 +249,16 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
      * @param $productAreaWidth
      * @return string
      */
-    private function _getProductAreaWidthCss($productAreaWidth) {
+    private function _getProductAreaWidthCss($productAreaWidth)
+    {
         $content = "
         @media (min-width: $this->_mobileBreakPoint) {
-            .catalog-product-view.page-layout-1column .product-info-main {
+            .theme-pearl.catalog-product-view.page-layout-1column .product-info-main {
                 width: $productAreaWidth;
             }
-            .catalog-product-view.page-layout-2columns-left .product-info-main,
-            .catalog-product-view.page-layout-2columns-right .product-info-main,
-            .catalog-product-view.page-layout-3columns .product-info-main {
+            .theme-pearl.catalog-product-view.page-layout-2columns-left .product-info-main,
+            .theme-pearl.catalog-product-view.page-layout-2columns-right .product-info-main,
+            .theme-pearl.catalog-product-view.page-layout-3columns .product-info-main {
               width: $productAreaWidth;
             }
         }
@@ -227,9 +270,10 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
     /**
      * @return string
      */
-    private function _addRemovedBorderCss() {
-        $content = '.catalog-product-view .product.data.items > .item.content {border: none}' . PHP_EOL;
-        $content .= '.catalog-product-view .product.data.items .item.title .switch {border-left: none !important; border-right: none !important;}' . PHP_EOL;
+    private function _addRemovedBorderCss()
+    {
+        $content = '.theme-pearl.catalog-product-view .product.data.items > .item.content {border: none}' . PHP_EOL;
+        $content .= '.theme-pearl.catalog-product-view .product.data.items .item.title .switch {border-left: none !important; border-right: none !important;}' . PHP_EOL;
         return $content;
     }
 
@@ -237,8 +281,9 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
     /**
      * @return string;
      */
-    private function _addRemoveSwatchTooltipCss() {
-        $content = '.catalog-product-view .swatch-option-tooltip {display: none !important;}' . PHP_EOL;
+    private function _addRemoveSwatchTooltipCss()
+    {
+        $content = '.theme-pearl.catalog-product-view .swatch-option-tooltip {display: none !important;}' . PHP_EOL;
         return $content;
     }
 
@@ -247,7 +292,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
      * @param array $swatchOptions
      * @return string
      */
-    private function _generateSwatchCss($swatchOptions) {
+    private function _generateSwatchCss($swatchOptions)
+    {
         $radius = $swatchOptions['radius'];
         $width = $swatchOptions['width'];
         $height = $swatchOptions['height'];
@@ -259,7 +305,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         $icon_content = '\e116';
 
         $content = "
-        .catalog-product-view {
+        .theme-pearl.catalog-product-view {
             .swatch-option {
                 outline: none !important;
                 border: none !important;
@@ -352,7 +398,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
 	                line-height: $lineHeight;
 	                padding: 0;
 	                font-size: $fontSize;
-	                margin-right: 10px;
+	                margin-right: 15px;
 		            &:before {
 		                visibility: hidden;
 		                position: absolute;
@@ -398,7 +444,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
      * @param array $cssOptions
      * @return string
      */
-    private function _generateCssOptions($cssOptions) {
+    private function _generateCssOptions($cssOptions)
+    {
         $thumbBorder = $cssOptions['thumbnail_border'];
         $tabActiveBg = $cssOptions['tab_active_background'];
         $tabBg = $cssOptions['tab_background'];
@@ -409,21 +456,21 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         $page_background_color = $cssBG != '' ? true : false;
         $pbc = '';
         $rgba = '';
-        if($page_background_color){
+        if ($page_background_color) {
             $pbc = 'background-color: ' . $cssBG . ' !important;';
             $rgba = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($cssBG))) . ',0.8) !important;';
         }
 
         $cssBGT = $cssOptions['page_background_color_top_v3'];
         $page_background_color_top_v3 = $cssBGT != '' ? true : false;
-        if($page_background_color_top_v3){
-            $page_background_color_top_v3 = 'background-color: '.$cssBGT.';';
+        if ($page_background_color_top_v3) {
+            $page_background_color_top_v3 = 'background-color: ' . $cssBGT . ';';
         } else {
             $page_background_color_top_v3 = '';
         }
 
         $page_background_color_bottom_v3 = $cssOptions['page_background_color_bottom_v3'] != '' ? true : false;
-        if($page_background_color_bottom_v3){
+        if ($page_background_color_bottom_v3) {
             $pbct = 'background-color: ' . $cssOptions['page_background_color_bottom_v3'] . ';';
             $rgbat = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($cssOptions['page_background_color_bottom_v3']))) . ',0.8) !important;';
         } else {
@@ -434,11 +481,11 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         $content = "
         
         .product-page-v2 {
-            &.catalog-product-view #pre-div,
-	        &.catalog-product-view {
+            &.theme-pearl.catalog-product-view #pre-div,
+	        &.theme-pearl.catalog-product-view {
                 $pbc
             }
-	        &.catalog-product-view #maincontent .product-items.owl-carousel.owl-center .owl-nav {
+	        &.theme-pearl.catalog-product-view #maincontent .product-items.owl-carousel.owl-center .owl-nav {
 	            .owl-prev,
 	            .owl-next {
 		            $rgba
@@ -455,8 +502,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
 	        }
         }        
         
-		.product-page-v3,
-		.product-page-v4 {
+		.theme-pearl.product-page-v3,
+		.theme-pearl.product-page-v4 {
 			.page-wrapper {
 				overflow-x: hidden;
 			}
@@ -526,17 +573,19 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
 	        }
 		}
         
-        .catalog-product-view {
+        .theme-pearl.catalog-product-view {
             .fotorama__thumb-border {
                 border: 1px solid $thumbBorder;
             }
-            
-            .fotorama__nav--thumbs .fotorama__nav__frame {
-				border-bottom: 2px solid $cssBG;
-				&:last-of-type {
-					border: none;
-				}
-			}
+            .fotorama__nav-wrap--vertical{
+                  .fotorama__nav--thumbs .fotorama__nav__frame {
+                    border-bottom: 2px solid $cssBG;
+                    &:last-of-type {
+                        border: none;
+                    }
+			    }
+            }
+          
                         
             .product.data.items > .item.title > .switch,
             .product.data.items > .item.title > .switch:visited{
@@ -584,7 +633,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
             }
                                     
         }
-        .product-page-v4 {
+        .theme-pearl.product-page-v4 {
 	        @media (min-width: $this->_mobileBreakPoint) {
 	            .product-info-main {
 	                min-width: 450px;
@@ -598,8 +647,9 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         return $content;
     }
 
-    private function _generateBackgroundArrows($backgroundArrows) {
-        if($backgroundArrows != ''){
+    private function _generateBackgroundArrows($backgroundArrows)
+    {
+        if ($backgroundArrows != '') {
             $rgba = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($backgroundArrows))) . ',0.3) !important;';
             $rgbah = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($backgroundArrows))) . ',0.5) !important;';
         } else {
@@ -627,7 +677,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
     /**
      * @return void
      */
-    protected function _generateStoreViewSpecificLess() {
+    protected function _generateStoreViewSpecificLess()
+    {
         $content = '/* Generated Less from WeltPixel_ProductPage */' . PHP_EOL;
 
         $lessTemplateAccordion = $this->_dirReader->getModuleDir('', 'WeltPixel_ProductPage') . DIRECTORY_SEPARATOR .
@@ -658,7 +709,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
         $directoryCode = $this->_dirReader->getModuleDir('view', 'WeltPixel_ProductPage');
 
         $lessPath =
-            DIRECTORY_SEPARATOR . 'frontend'.
+            DIRECTORY_SEPARATOR . 'frontend' .
             DIRECTORY_SEPARATOR . 'web' .
             DIRECTORY_SEPARATOR . 'css' .
             DIRECTORY_SEPARATOR . 'source' .
@@ -681,7 +732,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
     /**
      * @return array
      */
-    private function _getLessVariables() {
+    private function _getLessVariables()
+    {
         return array(
             '@storeViewClass'
         );
@@ -691,24 +743,26 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface {
      * @param \Magento\Store\Model\Store
      * @return array
      */
-    private function _getLessValues(\Magento\Store\Model\Store $store) {
+    private function _getLessValues(\Magento\Store\Model\Store $store)
+    {
         $storeCode = $store->getData('code');
-        $storeClassName = '.store-view-' . preg_replace('#[^a-z0-9]+#', '-', strtolower($storeCode));
+        $storeClassName = '.theme-pearl.store-view-' . preg_replace('#[^a-z0-9]+#', '-', strtolower($storeCode));
 
         return array(
             $storeClassName
         );
     }
 
-    public function collectionData($store){
+    public function collectionData($store)
+    {
 
         $scopeConfig = 'weltpixel_product_page';
         $adminOptions = $this->_scopeConfig->getValue($scopeConfig, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store);
         $version = '';
         foreach ($adminOptions as $key => $values) {
             $name = $scopeConfig . '_' . $key . '_';
-            if($key != 'version'){
-                foreach ($values as $key => $value){
+            if ($key != 'version') {
+                foreach ($values as $key => $value) {
                     $configs[] = [
                         'id' => $name . $key,
                         'value' => $value

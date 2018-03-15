@@ -36,12 +36,18 @@ class GenerateCss
     protected $filesystem;
 
     /**
+     * @var \WeltPixel\Command\Model\Storage
+     */
+    protected $storage;
+
+    /**
      * @param AssetBuilder $assetBuilder
      * @param \Magento\Framework\App\View\Asset\Publisher $assetPublisher
      * @param \Magento\Framework\View\Asset\Repository $assetRepo
      * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
      * @param \Magento\Framework\Filesystem\Driver\File $file
      * @param Filesystem $filesystem
+     * @param \WeltPixel\Command\Model\Storage $storage
      */
     public function __construct(
         AssetBuilder $assetBuilder,
@@ -49,7 +55,8 @@ class GenerateCss
         \Magento\Framework\View\Asset\Repository $assetRepo,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\Filesystem\Driver\File $file,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        \WeltPixel\Command\Model\Storage $storage
     ) {
         $this->assetBuilder = $assetBuilder;
         $this->assetRepo = $assetRepo;
@@ -57,6 +64,7 @@ class GenerateCss
         $this->directoryList = $directoryList;
         $this->file = $file;
         $this->filesystem = $filesystem;
+        $this->storage = $storage;
     }
 
     /**
@@ -67,11 +75,14 @@ class GenerateCss
      */
     public function processContent($theme, $locale, $storeCode) {
 
+        $this->storage->setData('generation_store_code', $storeCode);
+
         $filesToGenerate = [
             "css/styles-l-temp.css",
             "css/styles-m-temp.css",
             "WeltPixel_CategoryPage::css/weltpixel_category_store_" . $storeCode .".css",
             "WeltPixel_CustomHeader::css/weltpixel_custom_header_" . $storeCode .".css",
+            "WeltPixel_CustomFooter::css/weltpixel_custom_footer_" . $storeCode .".css",
             "WeltPixel_ProductPage::css/weltpixel_product_store_" . $storeCode .".css"
         ];
 
@@ -103,11 +114,22 @@ class GenerateCss
                 $this->file->deleteFile($filePath);
             }
 
+            $minifiedfilePath = str_replace('.css', '.min.css', $filePath);
+            if ($this->file->isExists($minifiedfilePath)) {
+                $this->file->deleteFile($minifiedfilePath);
+            }
+
+
             /** For production mode */
             $lessFile = rtrim($filePath, 'css');
             $lessFile .= 'less';
             if ($this->file->isExists($lessFile)) {
                 $this->file->deleteFile($lessFile);
+            }
+            $minifiedlessFile = rtrim($minifiedfilePath, 'css');
+            $minifiedlessFile .= 'less';
+            if ($this->file->isExists($minifiedlessFile)) {
+                $this->file->deleteFile($minifiedlessFile);
             }
 
             $this->assetPublisher->publish($asset);
@@ -116,7 +138,15 @@ class GenerateCss
             if (strpos($filePath, '-temp.css') !== false ) {
                 $newPath = str_replace('-temp.css', '', $filePath);
                 $newPath .= '.css';
-                copy($filePath, $newPath);
+                /** Production mode without minified css */
+                if ($this->file->isExists($filePath)) {
+                    copy($filePath, $newPath);
+                } else {
+                    /** check the production mode minified version*/
+                    $filePath = str_replace('.css', '.min.css', $filePath);
+                    $newPath = str_replace('.css', '.min.css', $newPath);
+                    copy($filePath, $newPath);
+                }
             }
         }
 

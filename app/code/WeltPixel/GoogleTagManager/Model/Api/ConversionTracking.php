@@ -10,18 +10,18 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
     /**
      * Variable names
      */
-    const VARIABLE_CONVERSION_TRACKING_CONVERSION_VALUE = 'WP Conversion Value';
-    const VARIABLE_CONVERSION_TRACKING_ORDER_ID = 'WP Order ID';
+    const VARIABLE_CONVERSION_TRACKING_CONVERSION_VALUE = 'WP - Conversion Value';
+    const VARIABLE_CONVERSION_TRACKING_ORDER_ID = 'WP - Order ID';
 
     /**
      * Trigger names
      */
-    const TRIGGER_CONVERSION_TRACKING_MAGENTO_CHECKOUT_SUCCESS_PAGE = 'Magento Checkout Success Page';
+    const TRIGGER_CONVERSION_TRACKING_MAGENTO_CHECKOUT_SUCCESS_PAGE = 'WP - Magento Checkout Success Page';
 
     /**
      * Tag names
      */
-    const TAG_CONVERSION_TRACKING_ADWORDS_CONVERSION_TRACKING = 'AdWords Conversion Tracking';
+    const TAG_CONVERSION_TRACKING_ADWORDS_CONVERSION_TRACKING = 'WP - AdWords Conversion Tracking';
 
     /**
      * Field names used in sending data to dataLayer
@@ -283,15 +283,21 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
                 (
                     array
                     (
+                        'type' => 'boolean',
+                        'key' => 'enableConversionLinker',
+                        'value' => true
+                    ),
+                    array
+                    (
                         'type' => 'template',
                         'key' => 'conversionValue',
-                        'value' => '{{WP Conversion Value}}'
+                        'value' => '{{' . self::VARIABLE_CONVERSION_TRACKING_CONVERSION_VALUE . '}}'
                     ),
                     array
                     (
                         'type' => 'template',
                         'key' => 'orderId',
-                        'value' => '{{WP Order ID}}'
+                        'value' => '{{' . self::VARIABLE_CONVERSION_TRACKING_ORDER_ID . '}}'
                     ),
                     array
                     (
@@ -310,6 +316,12 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
                         'type' => 'template',
                         'key' => 'conversionLabel',
                         'value' => $params['conversion_label']
+                    ),
+                    array
+                    (
+                        'type' => 'template',
+                        'key' => 'conversionCookiePrefix',
+                        'value' => '_gcl'
                     )
                 )
             )
