@@ -7,7 +7,7 @@ email="sysadmin@icube.us"
 release_version=$(date +%Y%m%d%H%M%S)
 
 site_dir=/home/mage2user/site
-release=/releases/
+releases=/releases/
 current=/current
 shared=/shared
 pub_dir=pub
@@ -56,6 +56,10 @@ case "$1" in
 		git checkout $read_branch
 
 		cd $web_dir
+		echo "Update Symlink: configuration"
+		ln -s $shr_dir/config/env.php $site_dir/releases/$release_version/app/etc/env.php
+		ln -s $shr_dir/config/config.php $site_dir/releases/$release_version/app/etc/config.php
+
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
 		php bin/magento setup:di:compile
@@ -65,10 +69,13 @@ case "$1" in
 		php bin/magento maintenance:disable
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
+		rm -rf generated/*
 
-		echo "Update Symlink"
-		ln -s $shr_dir/media/ $site_dir$current/$pub_dir/media
-		ln -s $shr_dir/config/env.php $site_dir$current/app/etc/env.php
+		echo "Update Symlink: media"
+		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
+		ln -s $shr_dir/media/ $site_dir/releases/$release_version/$pub_dir/media
+
+		echo "Update Symlink: current"
 		rm $site_dir/current
 		ln -s $web_dir $site_dir/current
 		;;
@@ -94,6 +101,10 @@ case "$1" in
 		git checkout $read_branch
 
 		cd $web_dir
+		echo "Update Symlink: configuration"
+		ln -s $shr_dir/config/env.php $site_dir/releases/$release_version/app/etc/env.php
+		ln -s $shr_dir/config/config.php $site_dir/releases/$release_version/app/etc/config.php
+
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
 		composer install
@@ -104,10 +115,13 @@ case "$1" in
 		php bin/magento maintenance:disable
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
+		rm -rf generated/*
 
-		echo "Update Symlink"
-		ln -s $shr_dir/media/ $site_dir$current/$pub_dir/media
-		ln -s $shr_dir/config/env.php $site_dir$current/app/etc/env.php
+		echo "Update Symlink: media"
+		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
+		ln -s $shr_dir/media/ $site_dir/releases/$release_version/$pub_dir/media
+
+		echo "Update Symlink: current"
 		rm $site_dir/current
 		ln -s $web_dir $site_dir/current
 		;;

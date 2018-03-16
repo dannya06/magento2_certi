@@ -29,6 +29,7 @@ case "$1" in
 		cd $web_dir
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
+		rm -rf generated/*
 		php bin/magento setup:di:compile
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
@@ -40,6 +41,7 @@ case "$1" in
 		php bin/magento maintenance:disable
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
+		rm -rf generated/*
 		;;
 
 	# --composer-install
@@ -50,6 +52,7 @@ case "$1" in
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
 		composer install
+		rm -rf generated/*
 		php bin/magento setup:di:compile
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
@@ -61,6 +64,7 @@ case "$1" in
 		php bin/magento maintenance:disable
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
+		rm -rf generated/*
 		;;
 
 	# --no-setup-upgrade
@@ -70,6 +74,7 @@ case "$1" in
 		cd $web_dir
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
 		php bin/magento cache:flush
+		rm -rf generated/*
 		php bin/magento setup:di:compile
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
@@ -78,6 +83,7 @@ case "$1" in
 		php bin/magento deploy:mode:set production -s
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
 		php bin/magento cache:flush
+		rm -rf generated/*
 		;;
 
 	# --static-deploy-only
