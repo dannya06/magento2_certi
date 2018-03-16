@@ -73,7 +73,7 @@ case "$1" in
 
 		echo "Update Symlink: media"
 		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
-		ln -s $shr_dir/media/ $site_dir$releases$pub_dir/media
+		ln -s $shr_dir/media/ $site_dir/releases/$release_version/$pub_dir/media
 
 		echo "Update Symlink: current"
 		rm $site_dir/current
@@ -119,7 +119,7 @@ case "$1" in
 
 		echo "Update Symlink: media"
 		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
-		ln -s $shr_dir/media/ $site_dir$releases$pub_dir/media
+		ln -s $shr_dir/media/ $site_dir/releases/$release_version/$pub_dir/media
 
 		echo "Update Symlink: current"
 		rm $site_dir/current
