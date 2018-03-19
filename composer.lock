@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "64a7e41dd8ac5df912d1e21a8d9b6976",
+    "content-hash": "4cfa784708a1542eea9526abe2ca6e70",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -718,7 +718,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2018-02-08T06:52:07+00:00"
+            "time": "2018-02-08 06:52:07"
         },
         {
             "name": "icubeus/magento2-checkout",
@@ -798,7 +798,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2018-02-28T07:21:48+00:00"
+            "time": "2018-02-28 07:21:48"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -830,7 +830,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2018-02-21T09:43:23+00:00"
+            "time": "2018-02-21 09:43:23"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -856,7 +856,7 @@
                 }
             ],
             "description": "Indonesian language package for Magento 2",
-            "time": "2017-09-26T02:09:30+00:00"
+            "time": "2017-09-26 02:09:30"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -887,7 +887,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2018-02-13T08:10:19+00:00"
+            "time": "2018-02-13 08:10:19"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -952,7 +952,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2018-03-14T07:40:38+00:00"
+            "time": "2018-03-14 07:40:38"
         },
         {
             "name": "justinrainbow/json-schema",
