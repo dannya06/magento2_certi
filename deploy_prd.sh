@@ -60,16 +60,16 @@ case "$1" in
 		ln -s $shr_dir/config/env.php $site_dir/releases/$release_version/app/etc/env.php
 		ln -s $shr_dir/config/config.php $site_dir/releases/$release_version/app/etc/config.php
 
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
 		php bin/magento cache:flush
 		php bin/magento setup:di:compile
 		php bin/magento setup:static-content:deploy -f
 		php bin/magento maintenance:enable
 		php bin/magento setup:upgrade --keep-generated
+		php bin/magento deploy:mode:set production -s
 		php bin/magento maintenance:disable
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
-		rm -rf generated/*
 
 		echo "Update Symlink: media"
 		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
@@ -105,17 +105,17 @@ case "$1" in
 		ln -s $shr_dir/config/env.php $site_dir/releases/$release_version/app/etc/env.php
 		ln -s $shr_dir/config/config.php $site_dir/releases/$release_version/app/etc/config.php
 
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ generated/*
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
 		php bin/magento cache:flush
 		composer install
 		php bin/magento setup:di:compile
 		php bin/magento setup:static-content:deploy -f
 		php bin/magento maintenance:enable
 		php bin/magento setup:upgrade --keep-generated
+		php bin/magento deploy:mode:set production -s
 		php bin/magento maintenance:disable
-		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/ generated/*
+		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
-		rm -rf generated/*
 
 		echo "Update Symlink: media"
 		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
