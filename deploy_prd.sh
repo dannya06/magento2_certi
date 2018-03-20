@@ -70,6 +70,7 @@ case "$1" in
 		php bin/magento maintenance:disable
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 
 		echo "Update Symlink: media"
 		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
@@ -116,6 +117,7 @@ case "$1" in
 		php bin/magento maintenance:disable
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 
 		echo "Update Symlink: media"
 		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
@@ -136,6 +138,7 @@ case "$1" in
 		php bin/magento setup:upgrade --keep-generated
 		php bin/magento maintenance:disable
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 		;;
 
 	# install new module: composer
@@ -146,6 +149,7 @@ case "$1" in
 		php bin/magento cache:flush
 		composer install
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 		;;
 
 	# --static-deploy
@@ -156,6 +160,7 @@ case "$1" in
 		php bin/magento cache:flush
 		php bin/magento setup:static-content:deploy -f
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 		;;
 
 	# --ca-cl
@@ -164,6 +169,7 @@ case "$1" in
 
 		cd $site_dir$current
 		php bin/magento cache:clean
+		php bin/magento cache:enable
 		;;
 
 	# --ca-fl
@@ -172,6 +178,7 @@ case "$1" in
 
 		cd $site_dir$current
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 		;;
 
 	# --help

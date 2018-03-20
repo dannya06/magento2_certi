@@ -42,6 +42,7 @@ case "$1" in
 		php bin/magento maintenance:disable
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 		;;
 
 	# --composer-install
@@ -65,6 +66,7 @@ case "$1" in
 		php bin/magento maintenance:disable
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 		;;
 
 	# --no-setup-upgrade
@@ -84,6 +86,7 @@ case "$1" in
 		php bin/magento deploy:mode:set production -s
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 		;;
 
 	# --static-deploy-only
@@ -100,6 +103,7 @@ case "$1" in
 		php bin/magento deploy:mode:set production -s
 		rm -rf var/cache/ var/page_cache/
 		php bin/magento cache:flush
+		php bin/magento cache:enable
 		;;
 
 	# --help
