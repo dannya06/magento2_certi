@@ -19,7 +19,8 @@
         "smile/elasticsuite": "2.5.5",
         "icubeus/magento2-indonesianlanguage": "dev-master",
         "magepal/magento2-reindex": "^1.0",
-        "ebizmarts/MailChimp-lib": "^3.0"
+        "ebizmarts/MailChimp-lib": "^3.0",
+        "icubeus/magento2-rapidflow": "dev-masterrc"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.0",
@@ -89,6 +90,10 @@
         "icubeus-indonesianlanguage": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-indonesianlanguage.git"
+        },
+        "icubeus-rapidflow": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-rapidflow.git"
         }
     },
     "extra": {
