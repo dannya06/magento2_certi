@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5164db6a373554f12c24573f481ea9e0",
+    "content-hash": "14b5a9a9772178df672c78c97c521cc0",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -823,6 +823,50 @@
                 "payment"
             ],
             "time": "2018-02-21 09:43:23"
+        },
+        {
+            "name": "icubeus/magento2-gosend",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icube-mage/magento2-gosend.git",
+                "reference": "6e96039bddd8c64a57b670ae3ab45a96631d8a37"
+            },
+            "require": {
+                "icubeus/magento2-checkout": "^2.1.11",
+                "php": "~5.6.0|7.0.2|~7.0.6"
+            },
+            "replace": {
+                "icubeus/module-gosend": "self.version"
+            },
+            "type": "magento2-component",
+            "autoload": {
+                "files": [
+                    "src/module-gosend/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\Gosend\\": "src/module-gosend"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "gojek gosend shipping method",
+            "homepage": "https://github.com/icube-mage/magento2-gosend",
+            "keywords": [
+                "gojek",
+                "gosend",
+                "magento",
+                "magento2",
+                "shipping"
+            ],
+            "time": "2018-03-22 07:44:03"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -10783,6 +10827,7 @@
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-indonesianlanguage": 20,
         "icubeus/magento2-rapidflow": 20,
+        "icubeus/magento2-gosend": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,

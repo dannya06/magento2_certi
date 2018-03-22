@@ -20,7 +20,8 @@
         "icubeus/magento2-indonesianlanguage": "dev-master",
         "magepal/magento2-reindex": "^1.0",
         "ebizmarts/MailChimp-lib": "^3.0",
-        "icubeus/magento2-rapidflow": "dev-masterrc"
+        "icubeus/magento2-rapidflow": "dev-masterrc",
+        "icubeus/magento2-gosend": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.0",
@@ -94,6 +95,10 @@
         "icubeus-rapidflow": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-rapidflow.git"
+        },
+        "icubeus-gosend": {
+            "type": "git",
+            "url": "git@github.com:icube-mage/magento2-gosend.git"
         }
     },
     "extra": {
