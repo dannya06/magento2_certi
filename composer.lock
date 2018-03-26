@@ -830,7 +830,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "6e96039bddd8c64a57b670ae3ab45a96631d8a37"
+                "reference": "7d22c4716008052304ef2817d09fb773d68ebe3d"
             },
             "require": {
                 "icubeus/magento2-checkout": "^2.1.11",
@@ -866,7 +866,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2018-03-22 07:44:03"
+            "time": "2018-03-26 09:54:13"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
