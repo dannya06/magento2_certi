@@ -17,7 +17,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Block\Customer\StoreCreditBalanceTest
  */
-class StoreCreditBalanceTest extends \PHPUnit_Framework_TestCase
+class StoreCreditBalanceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Aheadworks\StoreCredit\Block\Customer\StoreCreditBalance

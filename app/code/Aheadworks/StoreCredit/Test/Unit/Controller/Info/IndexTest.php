@@ -22,7 +22,7 @@ use Magento\Framework\View\Page\Title;
  * Class Aheadworks\StoreCredit\Test\Unit\Controller\Info\Index$IndexTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Cms\Controller\Index\Index
@@ -64,7 +64,8 @@ class IndexTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->requestMock = $this->getMockBuilder(RequestHttp::class)
-            ->disableOriginalConstructor()->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
             ->disableOriginalConstructor()

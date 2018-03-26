@@ -131,6 +131,9 @@
     <type name="Magento\Sales\Model\Service\OrderService">
         <plugin name="spend_store_credit_on_checkout" type="Aheadworks\StoreCredit\Plugin\Model\Service\OrderServicePlugin"/>
     </type>
+    <type name="Magento\Sales\Controller\Adminhtml\Order\MassCancel">
+        <plugin name="refund_store_credit_mass_cancel" type="Aheadworks\StoreCredit\Plugin\Controller\Adminhtml\Order\MassCancelPlugin"/>
+    </type>
     <type name="Magento\Quote\Model\Cart\CartTotalRepository">
         <plugin name="store_credit_total" type="Aheadworks\StoreCredit\Plugin\Model\Cart\CartTotalRepositoryPlugin" />
     </type>

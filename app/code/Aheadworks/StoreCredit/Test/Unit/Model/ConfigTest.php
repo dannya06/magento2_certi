@@ -14,7 +14,7 @@ use Magento\Store\Model\ScopeInterface;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Model\ConfigTest
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config

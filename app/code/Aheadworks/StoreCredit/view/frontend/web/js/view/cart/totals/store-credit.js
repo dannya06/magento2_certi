@@ -11,7 +11,10 @@ define(
     function (Component) {
         "use strict";
 
-        var awStoreCreditRemoveUrl  = window.checkoutConfig.payment.awStoreCredit.removeUrl;
+        var removePostData = JSON.stringify({
+                'action': window.checkoutConfig.payment.awStoreCredit.removeUrl,
+                'data': {}
+            });
 
         return Component.extend({
             defaults: {
@@ -32,8 +35,8 @@ define(
              *
              * @returns {String}
              */
-            getRemoveUrl: function () {
-                return awStoreCreditRemoveUrl;
+            getRemoveScData: function () {
+                return removePostData;
             },
         });
     }

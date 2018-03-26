@@ -12,7 +12,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\StoreCredit\Model\Source\NotifiedStatus
  */
-class NotifiedStatusTest extends \PHPUnit_Framework_TestCase
+class NotifiedStatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var NotifiedStatus

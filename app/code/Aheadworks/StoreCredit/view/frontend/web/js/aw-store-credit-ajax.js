@@ -10,7 +10,8 @@
  * @method replacePlaceholder(placeholder, html)
  */
 define([
-    'jquery'
+    'jquery',
+    'jquery/ui'
 ], function($) {
     "use strict";
 

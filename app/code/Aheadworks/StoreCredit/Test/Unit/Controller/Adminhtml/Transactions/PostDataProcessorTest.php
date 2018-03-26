@@ -15,7 +15,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Controller\Adminhtml\Transactions\PostDataProcessorTest
  */
-class PostDataProcessorTest extends \PHPUnit_Framework_TestCase
+class PostDataProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PostDataProcessor

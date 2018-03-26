@@ -9,13 +9,14 @@ namespace Aheadworks\StoreCredit\Test\Unit\Model\Source;
 use Aheadworks\StoreCredit\Model\Comment\CommentPool;
 use Aheadworks\StoreCredit\Model\Source\CommentToCustomer;
 use Aheadworks\StoreCredit\Model\Comment\CommentDefault;
-use Aheadworks\StoreCredit\Model\Comment\CommentForOrder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Url;
+use Magento\Framework\Phrase\Renderer\Placeholder;
 
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Model\Source\CommentToCustomerTest
  */
-class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
+class CommentToCustomerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CommentToCustomer
@@ -31,6 +32,16 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
      * @var \PHPUnit_Framework_MockObject_MockObject|CommentPool
      */
     private $commentPoolMock;
+
+    /**
+     * @var UrlInterface
+     */
+    private $urlBuilder;
+
+    /**
+     * @var Placeholder
+     */
+    private $placeholder;
 
     protected function setUp()
     {
@@ -48,6 +59,8 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->object = $this->objectManager->getObject(CommentToCustomer::class, $data);
+        $this->urlBuilder = $this->objectManager->getObject(Url::class);
+        $this->placeholder = $this->objectManager->getObject(Placeholder::class);
     }
 
     /**
@@ -56,16 +69,18 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
      */
     public function testToOptionArrayMethod()
     {
-        $commentSpentForOrder = $this->getMock(
-            CommentForOrder::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'spent_for_order',
-                'label' => 'Spent Store Credit on order',
-            ],
-            '',
-            false
-        );
+        $commentSpentForOrder = $this->getMockBuilder(CommentDefault::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'urlBuilder' => $this->urlBuilder,
+                    'placeholder' => $this->placeholder,
+                    'comment' => 'spent_for_order',
+                    'label' => 'Spent Store Credit on order'
+                ]
+            )
+            ->getMock();
         $commentSpentForOrder->expects($this->once())
             ->method('getLabel')
             ->willReturn('Spent Store Credit on order');
@@ -73,16 +88,17 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
             ->method('getComment')
             ->willReturn('spent_for_order');
 
-        $commentRefundToStoreCredit = $this->getMock(
-            CommentDefault::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'refund_to_store_credit',
-                'label' => 'Refund to Store Credit from order',
-            ],
-            '',
-            false
-        );
+        $commentRefundToStoreCredit = $this->getMockBuilder(CommentDefault::class)
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'urlBuilder' => $this->urlBuilder,
+                    'placeholder' => $this->placeholder,
+                    'comment' => 'refund_to_store_credit',
+                    'label' => 'Refund to Store Credit from order'
+                ]
+            )
+            ->getMock();
         $commentRefundToStoreCredit->expects($this->once())
             ->method('getLabel')
             ->willReturn('Refund to Store Credit from order');
@@ -90,16 +106,18 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
             ->method('getComment')
             ->willReturn('refund_to_store_credit');
 
-        $commentReimbursedSpentStoreCredit = $this->getMock(
-            CommentDefault::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'reimbursed_spent_store_credit',
-                'label' => 'Reimbursed spent Store Credit from order',
-            ],
-            '',
-            false
-        );
+        $commentReimbursedSpentStoreCredit = $this->getMockBuilder(CommentDefault::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'urlBuilder' => $this->urlBuilder,
+                    'placeholder' => $this->placeholder,
+                    'comment' => 'reimbursed_spent_store_credit',
+                    'label' => 'Reimbursed spent Store Credit from order'
+                ]
+            )
+            ->getMock();
         $commentReimbursedSpentStoreCredit->expects($this->once())
             ->method('getLabel')
             ->willReturn('Reimbursed spent Store Credit from order');
@@ -107,16 +125,18 @@ class CommentToCustomerTest extends \PHPUnit_Framework_TestCase
             ->method('getComment')
             ->willReturn('reimbursed_spent_store_credit');
 
-        $commentReimbursedSpentStoreCreditOnOrderCancel = $this->getMock(
-            CommentForOrder::class,
-            ['getLabel', 'getComment'],
-            [
-                'comment' => 'reimbursed_spent_sс_on_order_cancel',
-                'label' => 'Reimbursed spent Store Credit from cancel order',
-            ],
-            '',
-            false
-        );
+        $commentReimbursedSpentStoreCreditOnOrderCancel = $this->getMockBuilder(CommentDefault::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getLabel', 'getComment'])
+            ->setConstructorArgs(
+                [
+                    'urlBuilder' => $this->urlBuilder,
+                    'placeholder' => $this->placeholder,
+                    'comment' => 'reimbursed_spent_sс_on_order_cancel',
+                    'label' => 'Reimbursed spent Store Credit from cancel order'
+                ]
+            )
+            ->getMock();
         $commentReimbursedSpentStoreCreditOnOrderCancel->expects($this->once())
             ->method('getLabel')
             ->willReturn('Reimbursed spent Store Credit from cancel order');

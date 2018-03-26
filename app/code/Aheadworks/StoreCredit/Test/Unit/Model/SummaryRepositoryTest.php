@@ -16,7 +16,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Model\SummaryRepositoryTest
  */
-class SummaryRepositoryTest extends \PHPUnit_Framework_TestCase
+class SummaryRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SummaryRepository

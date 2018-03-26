@@ -19,7 +19,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Block\Adminhtml\Sales\Order\TotalTest
  */
-class TotalTest extends \PHPUnit_Framework_TestCase
+class TotalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|AbstractBlock
@@ -102,7 +102,6 @@ class TotalTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->object = $objectManager->getObject(Total::class, $data);
-
     }
 
     /**
@@ -268,7 +267,7 @@ class TotalTest extends \PHPUnit_Framework_TestCase
             ->method('getBaseAwStoreCreditAmount')
             ->willReturn($baseValue);
 
-        $dataObjectMock = $this->getMock(DataObject::class, [], [], '', false);
+        $dataObjectMock = $this->createMock(DataObject::class);
 
         $this->factoryMock->expects($this->once())
             ->method('create')

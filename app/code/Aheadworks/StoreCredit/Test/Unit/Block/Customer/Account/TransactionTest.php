@@ -28,7 +28,7 @@ use Aheadworks\StoreCredit\Model\Comment\CommentPoolInterface;
  * Class Aheadworks\StoreCredit\Test\Unit\Block\Customer\StoreCreditBalance\Account\TransactionTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TransactionTest extends \PHPUnit_Framework_TestCase
+class TransactionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Transaction

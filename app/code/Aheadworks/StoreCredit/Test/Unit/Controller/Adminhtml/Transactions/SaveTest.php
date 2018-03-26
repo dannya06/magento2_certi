@@ -22,7 +22,7 @@ use Aheadworks\StoreCredit\Api\CustomerStoreCreditManagementInterface;
  * Class Aheadworks\StoreCredit\Test\Unit\Controller\Adminhtml\Transactions\SaveTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends \PHPUnit_Framework_TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Save

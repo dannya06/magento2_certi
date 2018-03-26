@@ -23,7 +23,7 @@ use Magento\Framework\View\Layout;
  * Test for \Aheadworks\StoreCredit\Controller\Block\Render
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RenderTest extends \PHPUnit_Framework_TestCase
+class RenderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Render
@@ -65,7 +65,10 @@ class RenderTest extends \PHPUnit_Framework_TestCase
         $objectManager = new ObjectManager($this);
 
         $this->translateInlineMock = $this->getMockForAbstractClass(InlineInterface::class);
-        $this->resultRedirectFactoryMock = $this->getMock(RedirectFactory::class, ['create'], [], '', false);
+        $this->resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(
             RequestInterface::class,
             [],
@@ -94,7 +97,10 @@ class RenderTest extends \PHPUnit_Framework_TestCase
             true,
             ['appendBody']
         );
-        $this->viewMock = $this->getMock(View::class, ['loadLayout', 'getLayout'], [], '', false);
+        $this->viewMock = $this->getMockBuilder(View::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['loadLayout', 'getLayout'])
+            ->getMock();
         $contextMock = $objectManager->getObject(
             Context::class,
             [
@@ -119,7 +125,7 @@ class RenderTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteIsNotAjax()
     {
-        $resultRedirectMock = $this->getMock(ResultRedirect::class, [], [], '', false);
+        $resultRedirectMock = $this->createMock(ResultRedirect::class);
         $resultRedirectMock->expects($this->once())
             ->method('setRefererOrBaseUrl')
             ->willReturnSelf();
@@ -207,14 +213,20 @@ class RenderTest extends \PHPUnit_Framework_TestCase
             ->with($currentRequestUri)
             ->willReturnSelf();
 
-        $blockInstanceMock = $this->getMock(Discount::class, ['toHtml', 'setNameInLayout'], [], '', false);
+        $blockInstanceMock = $this->getMockBuilder(Discount::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['toHtml', 'setNameInLayout'])
+            ->getMock();
         $blockInstanceMock->expects($this->once())
             ->method('setNameInLayout')
             ->with($blocks[0] . '_0');
         $blockInstanceMock->expects($this->once())
             ->method('toHtml')
             ->willReturn($expected['aw_store_credit.product.view.discount']);
-        $layoutMock = $this->getMock(Layout::class, ['createBlock'], [], '', false);
+        $layoutMock = $this->getMockBuilder(Layout::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['createBlock'])
+            ->getMock();
         $layoutMock->expects($this->once())
             ->method('createBlock')
             ->with(Discount::class)

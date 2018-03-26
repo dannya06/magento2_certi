@@ -39,8 +39,7 @@ class StoreCredit extends AbstractTotal
         $invoice->setBaseAwStoreCreditAmount(0);
 
         $order = $invoice->getOrder();
-        if (
-            $order->getBaseAwStoreCreditAmount()
+        if ($order->getBaseAwStoreCreditAmount()
             && $order->getBaseAwStoreCreditInvoiced()
             != $order->getBaseAwStoreCreditAmount()
         ) {

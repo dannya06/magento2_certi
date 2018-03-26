@@ -16,7 +16,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Model\Service$StoreCreditCartServiceTest
  */
-class StoreCreditCartServiceTest extends \PHPUnit_Framework_TestCase
+class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var StoreCreditCartService

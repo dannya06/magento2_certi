@@ -12,7 +12,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\StoreCredit\Model\Source\SubscribeStatus
  */
-class SubscribeStatusTest extends \PHPUnit_Framework_TestCase
+class SubscribeStatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SubscribeStatus

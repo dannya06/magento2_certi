@@ -14,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Block\Adminhtml\Transaction\NewAction\BackButtonTest
  */
-class BackButtonTest extends \PHPUnit_Framework_TestCase
+class BackButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|Context

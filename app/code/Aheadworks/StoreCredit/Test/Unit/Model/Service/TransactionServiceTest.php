@@ -20,7 +20,7 @@ use Aheadworks\StoreCredit\Model\Source\NotifiedStatus;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Model\Service\TransactionServiceTest
  */
-class TransactionServiceTest extends \PHPUnit_Framework_TestCase
+class TransactionServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TransactionService

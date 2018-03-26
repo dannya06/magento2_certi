@@ -194,16 +194,23 @@ class Collection extends SearchResult
         $select = clone $this->getSelect();
         $select->reset();
 
-        $lifetimeSales =  new \Zend_Db_Expr(
-            '(SUM(IFNULL(base_total_invoiced,0))
-            - SUM(IFNULL(base_total_refunded,0))
-            - SUM(IFNULL(base_shipping_invoiced,0))
-            + SUM(IFNULL(base_shipping_refunded,0)))'
-        );
+        $columns = $this->getConnection()->describeTable($this->getTable('sales_order'));
+        $lifetimeSales = 'SUM(IFNULL(base_total_invoiced, 0)) - SUM(IFNULL(base_total_refunded, 0))';
+        $allowedExternalColumns = [
+            'base_aw_store_credit_refunded' => '+',
+            'base_aw_reward_points_refund' => '+'
+        ];
+
+        foreach ($allowedExternalColumns as $allowedExternalColumn => $operation) {
+            if (isset($columns[$allowedExternalColumn])) {
+                $lifetimeSales .= $operation . 'SUM(IFNULL(' . $allowedExternalColumn . ', 0))';
+            }
+        }
+
         $select->from(
             $this->getTable('sales_order'),
             [
-                'lifetime_sales' => $lifetimeSales,
+                'lifetime_sales' => new \Zend_Db_Expr('(' . $lifetimeSales . ')'),
                 'customer_id',
             ]
         );

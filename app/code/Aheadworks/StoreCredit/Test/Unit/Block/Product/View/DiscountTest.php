@@ -24,7 +24,7 @@ use Magento\Framework\Pricing\Amount\AmountInterface;
  * Class Aheadworks\StoreCredit\Test\Unit\Block\Product\View\DiscountTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DiscountTest extends \PHPUnit_Framework_TestCase
+class DiscountTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  Context|\PHPUnit_Framework_MockObject_MockObject */
     private $context;
@@ -251,7 +251,10 @@ class DiscountTest extends \PHPUnit_Framework_TestCase
         $priceMock->expects($this->once())
             ->method('getAmount')
             ->willReturn($amountMock);
-        $priceInfoMock = $this->getMock(PriceInfo\Base::class, ['getPrice'], [], '', false);
+        $priceInfoMock = $this->getMockBuilder(PriceInfo\Base::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getPrice'])
+            ->getMock();
         $priceInfoMock->expects($this->once())
             ->method('getPrice')
             ->willReturn($priceMock);
@@ -294,7 +297,10 @@ class DiscountTest extends \PHPUnit_Framework_TestCase
         $priceMock->expects($this->once())
             ->method('getAmount')
             ->willReturn($amountMock);
-        $priceInfoMock = $this->getMock(PriceInfo\Base::class, ['getPrice'], [], '', false);
+        $priceInfoMock = $this->getMockBuilder(PriceInfo\Base::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getPrice'])
+            ->getMock();
         $priceInfoMock->expects($this->once())
             ->method('getPrice')
             ->willReturn($priceMock);
@@ -331,7 +337,10 @@ class DiscountTest extends \PHPUnit_Framework_TestCase
         $priceMock->expects($this->once())
             ->method('getAmount')
             ->willReturn($amountMock);
-        $priceInfoMock = $this->getMock(PriceInfo\Base::class, ['getPrice'], [], '', false);
+        $priceInfoMock = $this->getMockBuilder(PriceInfo\Base::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getPrice'])
+            ->getMock();
         $priceInfoMock->expects($this->once())
             ->method('getPrice')
             ->willReturn($priceMock);
@@ -369,7 +378,10 @@ class DiscountTest extends \PHPUnit_Framework_TestCase
         $priceMock->expects($this->once())
             ->method('getAmount')
             ->willReturn($amountMock);
-        $priceInfoMock = $this->getMock(PriceInfo\Base::class, ['getPrice'], [], '', false);
+        $priceInfoMock = $this->getMockBuilder(PriceInfo\Base::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getPrice'])
+            ->getMock();
         $priceInfoMock->expects($this->once())
             ->method('getPrice')
             ->willReturn($priceMock);

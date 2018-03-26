@@ -48,7 +48,7 @@ class OrderServicePlugin
     }
 
     /**
-     * Spend customer Store Credit on checkout after place order
+     * Reimburse Store Credit after cancel order
      *
      * @param OrderService $subject
      * @param \Closure $proceed

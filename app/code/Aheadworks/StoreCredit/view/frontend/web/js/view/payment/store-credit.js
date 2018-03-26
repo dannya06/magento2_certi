@@ -15,6 +15,7 @@ define(
         'Aheadworks_StoreCredit/js/action/remove-store-credit',
         'Aheadworks_StoreCredit/js/action/get-customer-store-credit-balance',
         'Aheadworks_StoreCredit/js/model/store-credit-balance',
+        'Aheadworks_StoreCredit/js/model/is-applied-flag',
         'mage/translate'
      ],
     function (
@@ -28,16 +29,11 @@ define(
             removeStoreCredit, 
             getCustomerStoreCreditBalanceAction,
             storeCreditBalance,
+            isAppliedFlag,
             $t
         ){
         'use strict';
 
-        var storeCredit = totals.getSegment('aw_store_credit');
-        var isApplied = ko.pureComputed(function() {
-            var scTotals = totals.getSegment('aw_store_credit');
-
-            return scTotals != null && scTotals.value != 0;
-        });
         var isLoading = ko.observable(false);
 
         return Component.extend({
@@ -50,7 +46,7 @@ define(
              *
              * @return {boolean}
              */
-            isApplied: isApplied,
+            isApplied: isAppliedFlag,
 
             /**
              * Is loading
@@ -85,7 +81,7 @@ define(
             apply: function() {
                 if (this.validate()) {
                     isLoading(true);
-                    applyStoreCredit(isApplied, isLoading);
+                    applyStoreCredit(isAppliedFlag, isLoading);
                 }
             },
             
@@ -97,7 +93,7 @@ define(
             remove: function() {
                 if (this.validate()) {
                     isLoading(true);
-                    removeStoreCredit(isApplied, isLoading);
+                    removeStoreCredit(isAppliedFlag, isLoading);
                 }
             },
             
@@ -135,13 +131,15 @@ define(
                     return '';
                 }
             },
+
             /**
-             * Formated price
+             * Format price
              * 
              * @return {String}
              */
             getFormattedPrice: function(price) {
                 return priceUtils.formatPrice(price, window.checkoutConfig.priceFormat);
-            },
+            }
         });
-});
+    }
+);

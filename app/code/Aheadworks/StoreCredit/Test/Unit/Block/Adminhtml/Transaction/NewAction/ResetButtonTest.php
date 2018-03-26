@@ -14,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Block\Adminhtml\Transaction\NewAction\ResetButtonTest
  */
-class ResetButtonTest extends \PHPUnit_Framework_TestCase
+class ResetButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ResetButton

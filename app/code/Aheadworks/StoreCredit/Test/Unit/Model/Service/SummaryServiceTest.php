@@ -21,7 +21,7 @@ use Aheadworks\StoreCredit\Model\Source\SubscribeStatus;
  * Class Aheadworks\StoreCredit\Test\Unit\Model\Service\SummaryServiceTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SummaryServiceTest extends \PHPUnit_Framework_TestCase
+class SummaryServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SummaryService

@@ -13,7 +13,7 @@ use Aheadworks\StoreCredit\Model\Source\TransactionType;
 /**
  * Test for \Aheadworks\StoreCredit\Model\Source\BalanceUpdateActions
  */
-class BalanceUpdateActionsTest extends \PHPUnit_Framework_TestCase
+class BalanceUpdateActionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BalanceUpdateActions
@@ -34,7 +34,10 @@ class BalanceUpdateActionsTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->transactionTypeMock = $this->getMock(TransactionType::class, ['getBalanceUpdateActions'], [], '', false);
+        $this->transactionTypeMock = $this->getMockBuilder(TransactionType::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getBalanceUpdateActions'])
+            ->getMock();
         $this->model = $objectManager->getObject(
             BalanceUpdateActions::class,
             [

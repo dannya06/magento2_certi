@@ -28,24 +28,29 @@ define(
             $t
     ) {
         'use strict';
-        return function (isApplied, isLoading) {
+        return function (isApplied, isLoading, deferred) {
             var quoteId = quote.getQuoteId(),
                 url = urlManager.getRemoveStoreCreditUrl(quoteId), 
                 message = $t('Store Credit were successfully removed.');
             
             messageContainer.clear();
+            if (typeof deferred == 'undefined') {
+                deferred = $.Deferred();
+            }
 
             return storage.delete(
                 url,
-                false
+                true
             ).done(
                 function () {
-                    var deferred = $.Deferred();
+                    var totalsDeferred = $.Deferred();
+
                     totals.isLoading(true);
-                    getPaymentInformationAction(deferred);
-                    $.when(deferred).done(function () {
+                    getPaymentInformationAction(totalsDeferred);
+                    $.when(totalsDeferred).done(function () {
                         isApplied();
                         totals.isLoading(false);
+                        deferred.resolve();
                     });
                     messageContainer.addSuccessMessage({
                         'message': message
@@ -55,6 +60,7 @@ define(
                 function (response) {
                     totals.isLoading(false);
                     errorProcessor.process(response, messageContainer);
+                    deferred.reject();
                 }
             ).always(
                 function () {

@@ -16,7 +16,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Model\TransactionRepositoryTest
  */
-class TransactionRepositoryTest extends \PHPUnit_Framework_TestCase
+class TransactionRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TransactionRepository

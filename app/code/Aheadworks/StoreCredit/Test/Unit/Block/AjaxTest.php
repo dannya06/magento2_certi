@@ -17,7 +17,7 @@ use Magento\Framework\UrlInterface;
  * Test for \Aheadworks\StoreCredit\Block\Ajax
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AjaxTest extends \PHPUnit_Framework_TestCase
+class AjaxTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Ajax

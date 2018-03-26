@@ -16,7 +16,7 @@ use Aheadworks\StoreCredit\Model\Source\TransactionType;
 /**
  * Class Aheadworks\StoreCredit\Test\Unit\Model\Comment\CommentPoolTest
  */
-class CommentPoolTest extends \PHPUnit_Framework_TestCase
+class CommentPoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CommentPool

@@ -11,7 +11,7 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Backend::marketing">
-                    <resource id="Aheadworks_StoreCredit::aw_store_credit" title="Store Credit &amp; Refund by aheadWorks">
+                    <resource id="Aheadworks_StoreCredit::aw_store_credit" title="Store Credit &amp; Refund by Aheadworks">
                         <resource id="Aheadworks_StoreCredit::aw_store_credit_transaction" title="Transactions" translate="title" sortOrder="10" >
                             <resource id="Aheadworks_StoreCredit::aw_store_credit_transaction_save" title="Save Transactions" translate="title" sortOrder="10" />
                         </resource>
@@ -21,7 +21,7 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="Aheadworks_StoreCredit::config_aw_storecredit" title="Store Credit &amp; Refund by aheadWorks" />
+                            <resource id="Aheadworks_StoreCredit::config_aw_storecredit" title="Store Credit &amp; Refund by Aheadworks" />
                         </resource>
                     </resource>
                 </resource>

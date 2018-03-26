@@ -1,10 +1,10 @@
 <!-- ko if: isDisplayed() -->
 <tr class="totals">
     <th colspan="1" style="" class="mark" scope="row">
-        <a data-bind="attr: { 'href': getRemoveUrl(), 'title': $t('Remove') }" class="action delete">
-            <span data-bind="text: $t('Remove')"/>
-        </a>
         <span class="title" data-bind="text: getTitle()"></span>
+        <a href="#" data-bind="attr: { 'data-post': getRemoveScData(), 'title': $t('(Cancel)') }" class="action delete">
+            <span data-bind="text: $t('(Cancel)')"/>
+        </a>
     </th>
     <td class="amount" data-bind="attr: {'data-th': title}">
         <span class="price" data-bind="text: getValue(), attr: {'data-th': name}"></span>
