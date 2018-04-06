@@ -35,6 +35,8 @@ case "$1" in
 		find $pub_dir/ -type d -print0 | xargs -0 chmod 775
 		find $log_dir/ -type f -print0 | xargs -0 chmod 664
 		find $log_dir/ -type d -print0 | xargs -0 chmod 775
+		chown -h mage2user. $site_dir$current
+		chown -R mage2user. $site_dir$current/
 		;;
 
 	# --full
@@ -194,7 +196,7 @@ case "$1" in
 		;;
 
 	# install new module: magento
-	--setup-upgrade) CASE_SU='Magento setup:upgrade -- install new module'; shift
+	--setup-upgrade) CASE_SU='Magento setup:upgrade only -- install new module'; shift
 	echo "$CASE_SU"
 
 		cd $site_dir$current
@@ -207,7 +209,7 @@ case "$1" in
 		;;
 
 	# install new module: composer
-	--composer-new-module) CASE_CO='Composer install -- install new module'; shift
+	--composer-new-module) CASE_CO='Composer install only -- install new module'; shift
 	echo "$CASE_CO"
 
 		cd $site_dir$current
@@ -218,7 +220,7 @@ case "$1" in
 		;;
 
 	# --static-deploy-only
-	--static-deploy-only) CASE_ST='Magento static-content:deploy only'; shift
+	--static-deploy-only) CASE_ST='Magento static content deploy only'; shift
 	echo "$CASE_ST"
 
 		cd $site_dir$current
@@ -272,7 +274,7 @@ case "$1" in
 		printf "Deployment with fixing file & folder permission in pub/ & var/log/ directory:\n"
 		printf "  bash deploy_prd.sh --full --fix-permission\t\t\t OR\n"
 		printf "  bash deploy_prd.sh --composer-install --fix-permission\n\n"
-		printf "Deployment with all options enabled WITHOUT composer install AND setup upgrade (no git clone):\n"
+		printf "Deployment with all options enabled WITHOUT composer install AND setup upgrade in current code version (no git clone):\n"
 		printf "  bash deploy_sh.sh --no-setup-upgrade\n\n"
 		printf "Install new module (magento) ONLY in current code version (no git clone, no deployment):\n"
 		printf "  bash deploy_prd.sh --setup-upgrade\n\n"

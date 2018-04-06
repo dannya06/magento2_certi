@@ -126,7 +126,7 @@ case "$1" in
 		;;
 
 	# install new module: magento
-	--setup-upgrade) CASE_SU='Magento setup:upgrade -- install new module'; shift
+	--setup-upgrade) CASE_SU='Magento setup:upgrade only -- install new module'; shift
 	echo "$CASE_SU"
 
 		cd $web_dir
@@ -139,7 +139,7 @@ case "$1" in
 		;;
 
 	# install new module: composer
-	--composer-new-module) CASE_CO='Composer install -- install new module'; shift
+	--composer-new-module) CASE_CO='Composer install only -- install new module'; shift
 	echo "$CASE_CO"
 
 		cd $web_dir
@@ -150,8 +150,8 @@ case "$1" in
 		;;
 
 	# --static-deploy-only
-	--static-deploy-only) CASE_DO='Static content deploy only'; shift
-	echo "$CASE_DO"
+	--static-deploy-only) CASE_ST='Magento static content deploy only'; shift
+	echo "$CASE_ST"
 
 		cd $web_dir
 		rm -rf var/cache/ var/page_cache/
@@ -205,7 +205,7 @@ case "$1" in
 		printf "  bash deploy_local.sh --full\n\n"
 		printf "Deployment with all options enabled WITH composer install:\n"
 		printf "  bash deploy_local.sh --composer-install\n\n"
-		printf "Deployment with all options enabled WITHOUT composer install AND setup upgrade:\n"
+		printf "Deployment with all options enabled WITHOUT composer install AND setup upgrade in current code version:\n"
 		printf "  bash deploy_local.sh --no-setup-upgrade\n\n"
 		printf "Static content deploy only:\n"
 		printf "  bash deploy_local.sh --static-deploy-only\n\n"
@@ -214,9 +214,9 @@ case "$1" in
 		printf "  bash deploy_local.sh --fix-permission --composer-install\t OR\n"
 		printf "  bash deploy_local.sh --fix-permission --no-setup-upgrade\t OR\n"
 		printf "  bash deploy_local.sh --fix-permission --static-deploy-only\n\n"
-		printf "Clean cache ONLY in current code version (no git clone, no deployment):\n"
+		printf "Clean cache ONLY in current code version:\n"
 		printf "  bash deploy_local.sh --ca-cl\n\n"
-		printf "Flush cache ONLY in current code version (no git clone, no deployment):\n"
+		printf "Flush cache ONLY in current code version:\n"
 		printf "  bash deploy_local.sh --ca-fl\n\n"
 		exit 0 ;;
 
