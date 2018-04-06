@@ -125,19 +125,23 @@ class CustomStyleEditActionControllerSaveObserver implements ObserverInterface {
      * @return string
      */
     private function _generateContent($frontendOptions, $fontFamilyOptions) {
-        $content = '// Generated Less from Icube_CustomStyle' . PHP_EOL;
+        if ($frontendOptions) {
+            $content = '// Generated Less from Icube_CustomStyle' . PHP_EOL;
 
-        foreach ($frontendOptions as $groupId => $frontendGroup) {
-            if (in_array($groupId, array('section_width'))) {
-                continue;
+            foreach ($frontendOptions as $groupId => $frontendGroup) {
+                if (in_array($groupId, array('section_width'))) {
+                    continue;
+                }
+                foreach ($frontendGroup as $id => $frontendValue) {                
+                    $content .= '' . PHP_EOL;
+                    $content .= '/*----------------------------------------*/ '. PHP_EOL;
+                    $content .= '/* '. $id  . PHP_EOL;
+                    $content .= '/*----------------------------------------*/ '. PHP_EOL;
+                    $content .= $frontendValue;
+                }
             }
-            foreach ($frontendGroup as $id => $frontendValue) {                
-                $content .= '' . PHP_EOL;
-                $content .= '/*----------------------------------------*/ '. PHP_EOL;
-                $content .= '/* '. $id  . PHP_EOL;
-                $content .= '/*----------------------------------------*/ '. PHP_EOL;
-                $content .= $frontendValue;
-            }
+        }else{
+            $content = '';
         }
         
         return $content;
