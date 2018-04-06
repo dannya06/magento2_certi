@@ -1,11 +1,13 @@
 # mirasz@icube.us
-# magento 2.1/2.2 minimum downtime deployment
+# magento 2.2 minimum downtime deployment
 
 web_dir=/home/mage2user/site/current/
 pub_dir=pub/
 log_dir=var/log/
+merged_dir=pub/static/_cache/merged
+weltpixel_dir=app/code/WeltPixel
 
-COMBI=`getopt -o h --long fix,fwc,nsg,fix-permission,full,composer-install,no-setup-upgrade,static-deploy-only,help -- "$@"` 
+COMBI=`getopt -o h --long fix-permission,full,composer-install,no-setup-upgrade,setup-upgrade,composer-new-module,static-deploy-only,ca-cl,ca-fl,help -- "$@"` 
 eval set -- "$COMBI"
 
 while true; do
@@ -28,14 +30,26 @@ case "$1" in
 
 		cd $web_dir
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
+		rm -rf $merged_dir/*
 		php bin/magento cache:flush
 		php bin/magento setup:di:compile
 		php bin/magento deploy:mode:set developer
 		rm -rf generated/*
 		rm -rf generated/*
 		php bin/magento weltpixel:cleanup
+		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs chmod 664
 		php bin/magento weltpixel:less:generate
 		php bin/magento setup:static-content:deploy -f
+		php bin/magento weltpixel:css:generate --store=default
 		php bin/magento maintenance:enable
 		php bin/magento setup:upgrade --keep-generated
 		php bin/magento deploy:mode:set production -s
@@ -58,8 +72,19 @@ case "$1" in
 		rm -rf generated/*
 		rm -rf generated/*
 		php bin/magento weltpixel:cleanup
+		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs chmod 664
 		php bin/magento weltpixel:less:generate
 		php bin/magento setup:static-content:deploy -f
+		php bin/magento weltpixel:css:generate --store=default
 		php bin/magento maintenance:enable
 		php bin/magento setup:upgrade --keep-generated
 		php bin/magento deploy:mode:set production -s
@@ -70,8 +95,8 @@ case "$1" in
 		;;
 
 	# --no-setup-upgrade
-	--no-setup-upgrade) CASE_NSG='Full deployment WITHOUT setup upgrade'; shift
-	echo "$CASE_NSG"
+	--no-setup-upgrade) CASE_NSU='Full deployment WITHOUT setup upgrade'; shift
+	echo "$CASE_NSU"
 
 		cd $web_dir
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/
@@ -81,10 +106,45 @@ case "$1" in
 		rm -rf generated/*
 		rm -rf generated/*
 		php bin/magento weltpixel:cleanup
+		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs chmod 664
 		php bin/magento weltpixel:less:generate
 		php bin/magento setup:static-content:deploy -f
+		php bin/magento weltpixel:css:generate --store=default
 		php bin/magento deploy:mode:set production -s
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
+		php bin/magento cache:flush
+		php bin/magento cache:enable
+		;;
+
+	# install new module: magento
+	--setup-upgrade) CASE_SU='Magento setup:upgrade -- install new module'; shift
+	echo "$CASE_SU"
+
+		cd $web_dir
+		php bin/magento cache:flush
+		php bin/magento maintenance:enable
+		php bin/magento setup:upgrade --keep-generated
+		php bin/magento maintenance:disable
+		php bin/magento cache:flush
+		php bin/magento cache:enable
+		;;
+
+	# install new module: composer
+	--composer-new-module) CASE_CO='Composer install -- install new module'; shift
+	echo "$CASE_CO"
+
+		cd $web_dir
+		php bin/magento cache:flush
+		composer install
 		php bin/magento cache:flush
 		php bin/magento cache:enable
 		;;
@@ -98,10 +158,39 @@ case "$1" in
 		php bin/magento cache:flush
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
+		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs chmod 775
+		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs chmod 664
 		php bin/magento weltpixel:less:generate
 		php bin/magento setup:static-content:deploy -f
+		php bin/magento weltpixel:css:generate --store=default
 		php bin/magento deploy:mode:set production -s
 		rm -rf var/cache/ var/page_cache/
+		php bin/magento cache:flush
+		php bin/magento cache:enable
+		;;
+
+	# --ca-cl
+	--ca-cl) CASE_CL='Magento cache:clean'; shift
+	echo "$CASE_CL"
+
+		cd $web_dir
+		php bin/magento cache:clean
+		php bin/magento cache:enable
+		;;
+
+	# --ca-fl
+	--ca-fl) CASE_FL='Magento cache:flush'; shift
+	echo "$CASE_FL"
+
+		cd $web_dir
 		php bin/magento cache:flush
 		php bin/magento cache:enable
 		;;
@@ -125,6 +214,10 @@ case "$1" in
 		printf "  bash deploy_local.sh --fix-permission --composer-install\t OR\n"
 		printf "  bash deploy_local.sh --fix-permission --no-setup-upgrade\t OR\n"
 		printf "  bash deploy_local.sh --fix-permission --static-deploy-only\n\n"
+		printf "Clean cache ONLY in current code version (no git clone, no deployment):\n"
+		printf "  bash deploy_local.sh --ca-cl\n\n"
+		printf "Flush cache ONLY in current code version (no git clone, no deployment):\n"
+		printf "  bash deploy_local.sh --ca-fl\n\n"
 		exit 0 ;;
 
 	--) shift; break ;;
