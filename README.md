@@ -96,3 +96,40 @@ Those 5 widgets are  :
 
 Update them all after Swift installation by running SQL script located on :
 ###### sql/weltpixel_samplecmsblock_update_for_catalogwidget.sql
+
+Deployment Script
+=============================================================
+
+## For complete usable command and description:
+
+- `bash deploy_local.sh -h`
+- `bash deploy_prd.sh -h`
+
+### deploy_local.sh
+- for development environment (testingnow.me) usage WITHOUT cloning the latest branch
+- deployment ALWAYS done in current directory
+
+### deploy_prd.sh
+- for production environment usage (can be used in testingnow.me environment, too)
+- deployment ALWAYS do `git clone` in new releases folder
+- please provide github **Repository name** (use "Clone with SSH" format) to bypass password prompt
+- please provide repository **Branch to be deployed** name
+
+example: 
+```
+mage2user@testingnow.me:~site/current$ bash deploy_prd.sh --full
+
+Full deployment WITHOUT composer install
+
+Repository name (example: git@github.com:icubeus/swift.git): git@github.com:icubeus/swift.git
+
+Branch to be deployed (example: master): master
+```
+
+### overriding password and branch name prompt
+- open deploy_prd.sh
+- go to line 20 and add your repository name here, example:
+    - `read_repo="git@github.com:icubeus/swift.git"`
+- go to line 21 and add your repository branch name here, example:
+    - `read_branch="master"`
+
