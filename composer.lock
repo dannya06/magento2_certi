@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "14b5a9a9772178df672c78c97c521cc0",
+    "content-hash": "b40d37195b7ba6eec13aa7c0790ad1ea",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -722,11 +722,11 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "2.1.13",
+            "version": "2.1.14",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "f93715eeaa3970398853add34e98da6fd9d71e33"
+                "reference": "b15d6de4c606fe46ccdca568a1dd77337d0b7d90"
             },
             "replace": {
                 "icubeus/module-core": "self.version",
@@ -758,7 +758,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2018-03-15T07:16:31+00:00"
+            "time": "2018-04-12T03:39:15+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -830,7 +830,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "7d22c4716008052304ef2817d09fb773d68ebe3d"
+                "reference": "8c5627fa244a35ee4a2cc233a9ae105e20d38511"
             },
             "require": {
                 "icubeus/magento2-checkout": "^2.1.11",
@@ -866,7 +866,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2018-03-26 09:54:13"
+            "time": "2018-04-12 05:04:15"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
