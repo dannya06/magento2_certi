@@ -1,12 +1,13 @@
 # mirasz@icube.us
 # magento 2.2 minimum downtime deployment
 
+site_dir=/home/mage2user/site
 web_dir=/home/mage2user/site/current/
 pub_dir=pub/
 log_dir=var/log/
 merged_dir=pub/static/_cache/merged
 weltpixel_dir=app/code/WeltPixel
-update_dir=/home/mage2user/site/current/update
+update_dir=$site_dir/current/update
 
 COMBI=`getopt -o h --long fix-permission,full,composer-install,no-setup-upgrade,setup-upgrade,composer-new-module,static-deploy-only,ca-cl,ca-fl,help -- "$@"` 
 eval set -- "$COMBI"

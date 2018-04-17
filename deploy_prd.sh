@@ -16,7 +16,7 @@ web_dir=$site_dir$releases$release_version
 shr_dir=$site_dir$shared
 merged_dir=pub/static/_cache/merged
 weltpixel_dir=app/code/WeltPixel
-upd_dir=/home/mage2user/site/current/update
+update_dir=$web_dir/update
 
 read_repo=""
 read_branch=""
