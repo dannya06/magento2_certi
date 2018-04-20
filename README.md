@@ -133,3 +133,11 @@ Branch to be deployed (example: master): master
 - go to line 21 and add your repository branch name here, example:
     - `read_branch="master"`
 
+Extension Incompatibility
+=============================================================
+Up until Weltpixel v.1.6.1, WeltPixel_SearchAutoComplete has incompatibility code with SmileElasticSuite.
+It will throw error code of 500 if both of the modules are active when we are performing AJAX Search Request on Header Search Form.
+So, the only possible workaround for now is disable the WeltPixel_SearchAutoComplete via admin : (https://cl.ly/r1Ya)
+- Admin Panel : Weltpixel > Ajax Search Autocomplete - Ajax Search Settings
+- General Settings for Ajax Search Autocomplete : Enable Ajax Search, set the value to NO
+- Perform clean cache from Cache Management or do "php bin/magento cache:clean" from CLI
