@@ -1,11 +1,13 @@
 # mirasz@icube.us
 # magento 2.2 minimum downtime deployment
 
+site_dir=/home/mage2user/site
 web_dir=/home/mage2user/site/current/
 pub_dir=pub/
 log_dir=var/log/
 merged_dir=pub/static/_cache/merged
 weltpixel_dir=app/code/WeltPixel
+update_dir=$site_dir/current/update
 
 COMBI=`getopt -o h --long fix-permission,full,composer-install,no-setup-upgrade,setup-upgrade,composer-new-module,static-deploy-only,ca-cl,ca-fl,help -- "$@"` 
 eval set -- "$COMBI"
@@ -37,16 +39,16 @@ case "$1" in
 		rm -rf generated/*
 		rm -rf generated/*
 		php bin/magento weltpixel:cleanup
-		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs -0 chmod 664
 		php bin/magento weltpixel:less:generate
 		php bin/magento setup:static-content:deploy -f
 		php bin/magento weltpixel:css:generate --store=default
@@ -57,6 +59,7 @@ case "$1" in
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
 		php bin/magento cache:enable
+		cd $update_dir && composer install && cd $web_dir
 		;;
 
 	# --composer-install
@@ -72,16 +75,16 @@ case "$1" in
 		rm -rf generated/*
 		rm -rf generated/*
 		php bin/magento weltpixel:cleanup
-		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs -0 chmod 664
 		php bin/magento weltpixel:less:generate
 		php bin/magento setup:static-content:deploy -f
 		php bin/magento weltpixel:css:generate --store=default
@@ -92,6 +95,7 @@ case "$1" in
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
 		php bin/magento cache:enable
+		cd $update_dir && composer install && cd $web_dir
 		;;
 
 	# --no-setup-upgrade
@@ -106,16 +110,16 @@ case "$1" in
 		rm -rf generated/*
 		rm -rf generated/*
 		php bin/magento weltpixel:cleanup
-		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs -0 chmod 664
 		php bin/magento weltpixel:less:generate
 		php bin/magento setup:static-content:deploy -f
 		php bin/magento weltpixel:css:generate --store=default
@@ -123,6 +127,7 @@ case "$1" in
 		rm -rf var/cache/ var/page_cache/ var/di/ var/generation/ var/tmp/ var/report/
 		php bin/magento cache:flush
 		php bin/magento cache:enable
+		cd $update_dir && composer install && cd $web_dir
 		;;
 
 	# install new module: magento
@@ -158,16 +163,16 @@ case "$1" in
 		php bin/magento cache:flush
 		php bin/magento deploy:mode:set developer
 		php bin/magento weltpixel:cleanup
-		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs chmod 664
-		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs chmod 775
-		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs chmod 664
+		find $weltpixel_dir/FrontendOptions/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/FrontendOptions/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CustomFooter/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CustomFooter/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CustomHeader/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CustomHeader/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/CategoryPage/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/CategoryPage/view -type f -print0 | xargs -0 chmod 664
+		find $weltpixel_dir/ProductPage/view -type d -print0 | xargs -0 chmod 775
+		find $weltpixel_dir/ProductPage/view -type f -print0 | xargs -0 chmod 664
 		php bin/magento weltpixel:less:generate
 		php bin/magento setup:static-content:deploy -f
 		php bin/magento weltpixel:css:generate --store=default
@@ -175,6 +180,7 @@ case "$1" in
 		rm -rf var/cache/ var/page_cache/
 		php bin/magento cache:flush
 		php bin/magento cache:enable
+		cd $update_dir && composer install && cd $web_dir
 		;;
 
 	# --ca-cl
