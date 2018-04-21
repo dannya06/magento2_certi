@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b40d37195b7ba6eec13aa7c0790ad1ea",
+    "content-hash": "df432f6cac3246d90926196ff5945bbe",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -691,11 +691,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "ef6a4d32f7fce09ab87b2f6ea20ba4504ca51572"
+                "reference": "6a0a8b5e0d7a7db2d6ae7792cca3d35699ff3752"
             },
             "require": {
                 "php": "~5.6.0|7.0.2|~7.0.6|~7.1.11"
@@ -718,7 +718,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2018-02-08 06:52:07"
+            "time": "2018-04-21T08:51:41+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
@@ -10821,7 +10821,6 @@
     "stability-flags": {
         "composer/composer": 15,
         "icubeus/magento2-citykecamatan": 20,
-        "icubeus/magento2-advancerate": 20,
         "icubeus/magento2-veritranspayment": 20,
         "icubeus/magento2-confirmpayment": 20,
         "icubeus/magento2-trackorder": 20,
