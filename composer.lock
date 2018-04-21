@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "df432f6cac3246d90926196ff5945bbe",
+    "content-hash": "f683bb0e00a1f849f254dca7da606baa",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -762,11 +762,11 @@
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "6618ec8a954722fa52bbd2f9c40cf6665a6a658e"
+                "reference": "c1d1f84c547d06470fc74d4a065c8fc7a4c5f9a4"
             },
             "require": {
                 "php": "~5.6.0|7.0.2|~7.0.6|~7.1.1"
@@ -790,7 +790,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2018-02-28 07:21:48"
+            "time": "2018-04-21T08:36:45+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -10820,7 +10820,6 @@
     "minimum-stability": "alpha",
     "stability-flags": {
         "composer/composer": 15,
-        "icubeus/magento2-citykecamatan": 20,
         "icubeus/magento2-veritranspayment": 20,
         "icubeus/magento2-confirmpayment": 20,
         "icubeus/magento2-trackorder": 20,
