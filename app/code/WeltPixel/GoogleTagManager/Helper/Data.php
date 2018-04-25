@@ -373,7 +373,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             DIRECTORY_SEPARATOR . $this->_request->getControllerName() .
             DIRECTORY_SEPARATOR . $this->_request->getActionName();
 
-        if ($requestPath == 'checkout/index/index') {
+        if ($requestPath == 'checkout/index/index' || $requestPath == 'onestepcheckout/index/index') {
             $checkoutBlock = $this->createBlock('Checkout', 'checkout.phtml');
 
             if ($checkoutBlock) {
