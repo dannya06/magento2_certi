@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\Source\Config\Cms;
 
@@ -15,7 +15,7 @@ use Magento\Cms\Model\ResourceModel\Block\CollectionFactory;
 /**
  * Test for \Aheadworks\Blog\Model\Source\Config\Cms\Block
  */
-class BlockTest extends \PHPUnit_Framework_TestCase
+class BlockTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CmsBlock

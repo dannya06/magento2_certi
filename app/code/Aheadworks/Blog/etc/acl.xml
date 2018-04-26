@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2018 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -11,7 +11,7 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Backend::content">
-                    <resource id="Aheadworks_Blog::home" title="Blog by aheadWorks" sortOrder="110">
+                    <resource id="Aheadworks_Blog::home" title="Blog by Aheadworks" sortOrder="110">
                         <resource id="Aheadworks_Blog::posts" title="Posts" sortOrder="10" />
                         <resource id="Aheadworks_Blog::comments" title="Comments" sortOrder="20" />
                         <resource id="Aheadworks_Blog::categories" title="Categories" sortOrder="30" />
@@ -20,7 +20,7 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="Aheadworks_Blog::config_aw_blog" title="Blog by aheadWorks" />
+                            <resource id="Aheadworks_Blog::config_aw_blog" title="Blog by Aheadworks" />
                         </resource>
                     </resource>
                 </resource>

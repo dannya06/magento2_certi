@@ -3,14 +3,19 @@
 //  _____________________________________________
 
 @info-text__color: @color-gray40;
-@tag__background-color: @color-gray82;
-@tag__hover__background-color: @color-gray-light2;
-@tag__hover__color: @color-gray-darken4;
+@tag__background-color: @color-white;
+@tag-border__color: @color-gray89;
+@tag__text__color: #00699D;
+@tag__hover__color: @color-sky-blue1;
 @tag-cloud__color: @color-gray-darken3;
 @pagination-page-current__active__color: @color-blue1;
-@post-author__border-bottom-color: @color-gray82;
+@post-author__border-bottom-color: @color-gray-light0;
 @post-author__background-color: @color-white-dark-smoke;
 @post-share-content-container__background: @color-gray94;
+@sidebar-text__color: @color-blue2;
+@sidebar-link__color: @color-gray40;
+@sidebar-item__border-color: @color-gray94;
+@sidebar-tag__font-size: @font-size__s;
 
 & when (@media-common = true) {
 
@@ -62,9 +67,8 @@
     //
     //  Sidebar
     //  ---------------------------------------------
-
     .blog-sidebar-block {
-        margin-bottom: @indent__xl;
+        margin-bottom: @indent__m * 2;
 
         &:last-child {
             margin-bottom: 0;
@@ -73,6 +77,8 @@
 
     .blog-sidebar-block-title {
         margin: 0 0 @indent__base;
+        font-size: 18px;
+        font-weight: 300;
     }
 
     .block-recent-posts {
@@ -95,23 +101,23 @@
 
         .blog-tags-tag {
             background: @tag__background-color;
-            border-radius: 4px;
+            border-radius: 3px;
+            border: 1px solid @tag-border__color;
             box-sizing: border-box;
-            color: @info-text__color;
+            color: @tag__text__color;
             display: inline-block;
-            height: 24px;
-            line-height: 24px;
+            height: 30px;
+            line-height: 28px;
             margin-bottom: 6px;
             margin-left: 6px;
             max-width: 95%;
             overflow: hidden;
-            padding: 0 14px;
+            padding: 0 12px;
             text-decoration: none;
             text-overflow: ellipsis;
             white-space: nowrap;
 
             &:hover {
-                background: @tag__hover__background-color;
                 color: @tag__hover__color;
             }
         }
@@ -119,12 +125,90 @@
 
     .blog-tags-cloud {
         margin-right: -6px;
+        font-size: @sidebar-tag__font-size+1;
 
         .blog-tags-tag {
-            color: @tag-cloud__color;
-            margin-right: 6px;
-            padding: 2px 0;
-            word-break: break-word;
+            background: @tag__background-color;
+            border-radius: 3px;
+            border: 1px solid @tag-border__color;
+            box-sizing: border-box;
+            color: @tag__text__color;
+            display: inline-block;
+            height: 25px;
+            line-height: 23px;
+            margin-bottom: 3px;
+            margin-left: 3px;
+            max-width: 95%;
+            overflow: hidden;
+            padding: 0 8px;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            &:hover {
+                color: @tag__hover__color;
+            }
+        }
+    }
+
+    .block-category-listing {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        .hide {
+            display: none;
+        }
+
+        .block-category-listing-item {
+            border-bottom: 1px solid @sidebar-item__border-color;
+            padding: @indent__s 0;
+            margin: 0;
+
+            .block-category-listing-item-link{
+                color: @sidebar-link__color;
+                text-decoration: none;
+
+                &:hover {
+                    color: @sidebar-text__color;
+                }
+            }
+
+            &:nth-last-child(2) {
+                border:none;
+            }
+
+            &.show-more {
+                border: none;
+                padding: 0;
+                font-size: @sidebar-tag__font-size+1;
+
+                > span {
+                    cursor: pointer;
+                }
+
+                color: @sidebar-text__color;
+            }
+
+            &.shaded {
+                border: none;
+                position: relative;
+
+                &::after {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    width: 100%;
+                    height: 30px;
+                    left: 0;
+                    bottom: 0;
+                    z-index: 20;
+                    -webkit-box-shadow: inset 0px -24px 35px -5px rgba(255,255,255,1);
+                    -moz-box-shadow: inset 0px -24px 35px -5px rgba(255,255,255,1);
+                    box-shadow: inset 0px -24px 35px -5px rgba(255,255,255,1);
+                }
+            }
+
         }
     }
 
@@ -177,7 +261,7 @@
     .blog-post-info {
         color: @info-text__color;
         list-style: none;
-        margin: 0 0 15px;
+        margin: 0 0 20px;
         padding: 0;
     }
 
@@ -223,7 +307,7 @@
     }
 
     .blog-post-content {
-        margin-bottom: @indent__base;
+        margin-bottom: @indent__l;
     }
 
     .blog-post-full {
@@ -236,6 +320,14 @@
         }
     }
 
+    .blog-post-featured-image-wrapper {
+        margin: @indent__l 0;
+
+        .blog-post-featured-image {
+            max-width: 100%;
+        }
+    }
+
     .blog-post-read-more-wrapper {
         margin-bottom: @indent__base;
     }
@@ -244,14 +336,15 @@
         background: @post-author__background-color;
         border-bottom: 1px solid @post-author__border-bottom-color;
         padding: 14px;
+        margin-bottom: @indent__xl;
     }
 
     .blog-post-tags {
-        margin-bottom: @indent__l;
+        margin-bottom: @indent__s;
     }
 
     .blog-post-share {
-        margin-bottom: @indent__l;
+        margin-bottom: @indent__base;
     }
 
     .blog-post-share-title {
@@ -267,11 +360,9 @@
         vertical-align: middle;
 
         .container {
-            background: @post-share-content-container__background;
             display: inline-block;
-            height: 32px;
-            line-height: 32px;
-            padding: 0 14px;
+            height: 28px;
+            line-height: 24px;
         }
     }
 

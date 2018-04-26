@@ -1,13 +1,11 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Controller\Post;
 
-use Aheadworks\Blog\Api\Data\PostInterface;
-use Aheadworks\Blog\Model\Source\Post\Status;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
@@ -25,11 +23,7 @@ class View extends \Aheadworks\Blog\Controller\Action
             $post = $this->postRepository->get(
                 $this->getRequest()->getParam('post_id')
             );
-            if ($post->getStatus() != Status::PUBLICATION
-                || strtotime($post->getPublishDate()) > time()
-                || (!in_array($this->getStoreId(), $post->getStoreIds())
-                    && !in_array(0, $post->getStoreIds()))
-            ) {
+            if (!$this->dataChecker->isPostVisible($post, $this->getStoreId())) {
                 /**  @var \Magento\Framework\Controller\Result\Forward $forward */
                 $forward = $this->resultForwardFactory->create();
                 return $forward
@@ -37,7 +31,9 @@ class View extends \Aheadworks\Blog\Controller\Action
                     ->setController('noroute')
                     ->forward('index');
             }
-            if ($this->getRequest()->getParam('blog_category_id')) {
+            $categoryId = $this->getRequest()->getParam('blog_category_id');
+            $exclCategoryFromUrl = $this->urlTypeResolver->isCategoryExcl() && $categoryId ? true : false;
+            if ($exclCategoryFromUrl || $categoryId && !in_array($categoryId, $post->getCategoryIds())) {
                 // Forced redirect to post url without category id
                 $resultRedirect = $this->resultRedirectFactory->create();
                 $resultRedirect->setUrl($this->url->getPostUrl($post));
@@ -48,42 +44,15 @@ class View extends \Aheadworks\Blog\Controller\Action
             $pageConfig = $resultPage->getConfig();
             $pageConfig->getTitle()->set($post->getTitle());
             $pageConfig->setMetadata('description', $post->getMetaDescription());
-            $pageConfig->setMetadata('og:description', $this->getMetaOgDescription($post));
+            $pageConfig->addRemotePageAsset(
+                $this->url->getCanonicalUrl($post),
+                'canonical',
+                ['attributes' => ['rel' => 'canonical']]
+            );
             return $resultPage;
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
             return $this->goBack();
         }
-    }
-
-    /**
-     * Retrieve og:description meta tag from post
-     *
-     * @param PostInterface $post
-     * @return string
-     */
-    private function getMetaOgDescription($post)
-    {
-        $content = $this->getClearContent($post->getShortContent());
-        if (strlen($content) == 0) {
-            $content = $this->getClearContent($post->getContent());
-        }
-        return $content;
-    }
-
-    /**
-     * Retrieve clear content
-     *
-     * @param string $content
-     * @return string
-     */
-    private function getClearContent($content)
-    {
-        $lenContent = 256;
-        $content = trim(strip_tags($content));
-
-        return strlen($content) > $lenContent
-            ? substr($content, 0, $lenContent)
-            : $content;
     }
 }

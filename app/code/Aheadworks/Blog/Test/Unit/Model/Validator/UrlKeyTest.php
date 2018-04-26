@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\Validator;
 
@@ -12,7 +12,7 @@ use Aheadworks\Blog\Model\Validator\UrlKey;
 /**
  * Test for \Aheadworks\Blog\Model\Validator\UrlKey
  */
-class UrlKeyTest extends \PHPUnit_Framework_TestCase
+class UrlKeyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var UrlKey

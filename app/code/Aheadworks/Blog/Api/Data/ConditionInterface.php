@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Api\Data;
 
@@ -62,7 +62,7 @@ interface ConditionInterface extends \Magento\Framework\Api\ExtensibleDataInterf
     /**
      * Get value
      *
-     * @return mixed
+     * @return string
      */
     public function getValue();
 
@@ -123,7 +123,7 @@ interface ConditionInterface extends \Magento\Framework\Api\ExtensibleDataInterf
     /**
      * Set value
      *
-     * @param mixed $value
+     * @param string $value
      * @return $this
      */
     public function setValue($value);

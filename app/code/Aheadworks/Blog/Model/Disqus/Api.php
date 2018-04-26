@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model\Disqus;
 

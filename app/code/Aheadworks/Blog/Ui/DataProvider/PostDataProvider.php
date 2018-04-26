@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Ui\DataProvider;
 
@@ -11,6 +11,7 @@ use Aheadworks\Blog\Model\Source\Post\Status;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Aheadworks\Blog\Model\ResourceModel\Post\Collection;
+use Aheadworks\Blog\Model\Post\FeaturedImageInfo;
 
 /**
  * Post data provider
@@ -26,6 +27,11 @@ class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      * @var DataPersistorInterface
      */
     private $dataPersistor;
+
+    /**
+     * @var FeaturedImageInfo
+     */
+    private $imageInfo;
 
     /**
      * @param string $name
@@ -44,6 +50,7 @@ class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         CollectionFactory $collectionFactory,
         RequestInterface $request,
         DataPersistorInterface $dataPersistor,
+        FeaturedImageInfo $imageInfo,
         array $meta = [],
         array $data = []
     ) {
@@ -59,6 +66,7 @@ class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         ;
         $this->request = $request;
         $this->dataPersistor = $dataPersistor;
+        $this->imageInfo = $imageInfo;
     }
 
     /**
@@ -71,7 +79,7 @@ class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         if (!empty($dataFromForm)) {
             $object = $this->collection->getNewEmptyItem();
             $object->setData($dataFromForm);
-            $data[$object->getId()] = $object->getData();
+            $data[$object->getId()] = $this->preparePersistingFormData($object->getData());
             $this->dataPersistor->clear('aw_blog_post');
         } else {
             $id = $this->request->getParam($this->getRequestFieldName());
@@ -97,6 +105,54 @@ class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $itemData['is_scheduled'] = $itemData['status'] == Status::SCHEDULED ? 1 : 0;
         $itemData['has_short_content'] = !empty($itemData['short_content']);
         $itemData['tag_names'] = array_values($itemData['tag_names']);
+        $itemData = $this->prepareImageData($itemData);
+        $itemData = $this->prepareUseDefaultData($itemData);
+        return $itemData;
+    }
+
+    /**
+     * Prepare persisting data
+     *
+     * @param array $itemData
+     * @return array
+     */
+    private function preparePersistingFormData(array $itemData)
+    {
+        $itemData = $this->prepareImageData($itemData);
+        $itemData = $this->prepareUseDefaultData($itemData);
+        return $itemData;
+    }
+
+    /**
+     * Prepare featured image data
+     *
+     * @param array $itemData
+     * @return array
+     */
+    private function prepareImageData(array $itemData)
+    {
+        if (!empty($itemData['featured_image_file'])) {
+            $itemData['featured_image_file'] = [
+                0 => [
+                    'name' => $this->imageInfo->getImageFileName($itemData['featured_image_file']),
+                    'url' => $this->imageInfo->getImageUrl($itemData['featured_image_file']),
+                    'path' => $itemData['featured_image_file']
+                ]
+            ];
+        }
+        return $itemData;
+    }
+
+    /**
+     * Prepare use default checkboxes
+     *
+     * @param array $itemData
+     * @return array
+     */
+    private function prepareUseDefaultData(array $itemData)
+    {
+        $itemData['twitterSiteUseDefault'] = $itemData['meta_twitter_site'] ? false : true;
+        $itemData['twitterCreatorUseDefault'] = $itemData['meta_twitter_creator'] ? false : true;
         return $itemData;
     }
 }

@@ -1,17 +1,19 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model\ResourceModel;
 
 use Aheadworks\Blog\Api\Data\PostInterface;
+use Aheadworks\Blog\Api\Data\ConditionInterface;
 use Aheadworks\Blog\Api\Data\PostInterfaceFactory;
 use Aheadworks\Blog\Api\Data\PostSearchResultsInterfaceFactory;
 use Aheadworks\Blog\Model\PostFactory;
 use Aheadworks\Blog\Model\PostRegistry;
 use Aheadworks\Blog\Model\Source\Post\Status as PostStatus;
+use Aheadworks\Blog\Model\Source\Post\CustomerGroups;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
@@ -125,15 +127,23 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
             $this->entityManager->load($postModel, $postId);
             $origPostData = $postModel->getData();
         }
-        $postModel->addData(
-            $this->dataObjectProcessor->buildOutputDataArray($post, PostInterface::class)
+        $this->dataObjectHelper->populateWithArray(
+            $postModel,
+            $this->dataObjectProcessor->buildOutputDataArray($post, PostInterface::class),
+            PostInterface::class
         );
         if ($postModel->getStatus() == PostStatus::DRAFT) {
             $postModel->setPublishDate(null);
         }
-        if (is_array($postModel->getProductCondition())) {
-            $postModel->setProductCondition(serialize($postModel->getProductCondition()));
+        $productCondition = $this->dataObjectProcessor->buildOutputDataArray(
+            $postModel->getProductCondition(),
+            ConditionInterface::class
+        );
+        if (is_array($productCondition)) {
+            $postModel->setProductCondition(serialize($productCondition));
         }
+        $this->checkAtCharacterForTwitterData($postModel);
+        $this->checkCustomerGroupsData($postModel);
         $this->entityManager->save($postModel);
         $post = $this->convertPostConditionsToDataModel($postModel);
         $this->postRegistry->push($post);
@@ -208,6 +218,8 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
                     $collection->addTagFilter($filter->getValue());
                 } elseif ($filter->getField() == 'product_id') {
                     $collection->addRelatedProductFilter($filter->getValue());
+                } elseif ($filter->getField() == PostInterface::CUSTOMER_GROUPS) {
+                    $collection->addCustomerGroupFilter($filter->getValue());
                 } else {
                     $condition = $filter->getConditionType() ? $filter->getConditionType() : 'eq';
                     $fields[] = $filter->getField();
@@ -309,5 +321,51 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
             return true;
         }
         return false;
+    }
+
+    /**
+     * Check if twitter value contains @ symbol at the beginning
+     *
+     * @param PostInterface $post
+     */
+    private function checkAtCharacterForTwitterData(PostInterface $post)
+    {
+        if ($metaTwitterSite = $post->getMetaTwitterSite()) {
+            $post->setMetaTwitterSite($this->insertAtCharacter($metaTwitterSite));
+        }
+        if ($metaTwitterCreator = $post->getMetaTwitterCreator()) {
+            $post->setMetaTwitterCreator($this->insertAtCharacter($metaTwitterCreator));
+        }
+    }
+
+    /**
+     * Insert @ symbol to the string
+     *
+     * @param string $twitterValue
+     * @return string
+     */
+    private function insertAtCharacter(string $twitterValue)
+    {
+        $at_character = '@';
+        if ($twitterValue[0] != $at_character) {
+            $twitterValue = $at_character . $twitterValue;
+        }
+        return $twitterValue;
+    }
+
+    /**
+     * Check customer groups data and convert it from array to string.
+     *
+     * @param PostInterface $post
+     */
+    private function checkCustomerGroupsData(PostInterface $post)
+    {
+        $customerGroups = $post->getCustomerGroups();
+        if (is_array($customerGroups) && in_array(CustomerGroups::ALL_GROUPS, $customerGroups)
+            || (!is_array($customerGroups) || empty($customerGroups))
+        ) {
+            $customerGroups = [0 => CustomerGroups::ALL_GROUPS];
+        }
+        $post->setCustomerGroups(implode(',', $customerGroups));
     }
 }

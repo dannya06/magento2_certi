@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model\ResourceModel;
 
@@ -102,8 +102,10 @@ class TagRepository implements \Aheadworks\Blog\Api\TagRepositoryInterface
         if ($tagId = $tag->getId()) {
             $this->entityManager->load($tagModel, $tagId);
         }
-        $tagModel->addData(
-            $this->dataObjectProcessor->buildOutputDataArray($tag, TagInterface::class)
+        $this->dataObjectHelper->populateWithArray(
+            $tagModel,
+            $this->dataObjectProcessor->buildOutputDataArray($tag, TagInterface::class),
+            TagInterface::class
         );
         $this->entityManager->save($tagModel);
         $tag = $this->getTagDataObject($tagModel);

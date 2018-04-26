@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\Plugin;
 
@@ -17,7 +17,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Blog\Model\Plugin\Product
  */
-class ProductTest extends \PHPUnit_Framework_TestCase
+class ProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Product
@@ -47,13 +47,10 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->blogProductAttributesMock = $this->getMock(
-            BlogProductAttributes::class,
-            ['loadAttributeOptions', 'getAttributeOption'],
-            [],
-            '',
-            false
-        );
+        $this->blogProductAttributesMock = $this->getMockBuilder(BlogProductAttributes::class)
+            ->setMethods(['loadAttributeOptions', 'getAttributeOption'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->productRepositoryMock = $this->getMockForAbstractClass(ProductRepositoryInterface::class);
         $this->indexerStateMock = $this->getMockForAbstractClass(
             StateInterface::class,
@@ -84,7 +81,10 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         $productClimate = ['All-Weather', 'Cold'];
         $attributeOption = ['climate' => 'Climate'];
 
-        $productMock = $this->getMock(ProductModel::class, ['getId', 'getData'], [], '', false);
+        $productMock = $this->getMockBuilder(ProductModel::class)
+            ->setMethods(['getId', 'getData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $productMock->expects($this->once())
             ->method('getId')
             ->willReturn($productId);
@@ -114,7 +114,10 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         $productClimate = ['All-Weather', 'Cold'];
         $attributeOption = ['climate' => 'Climate'];
 
-        $productMock = $this->getMock(ProductModel::class, ['getData'], [], '', false);
+        $productMock = $this->getMockBuilder(ProductModel::class)
+            ->setMethods(['getData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $productMock->expects($this->once())
             ->method('getData')
             ->with('climate')

@@ -1,13 +1,14 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model\ResourceModel\Post;
 
 use Aheadworks\Blog\Model\Post;
 use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
+use Aheadworks\Blog\Model\Source\Post\CustomerGroups;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\Data\Collection\EntityFactoryInterface;
 use Magento\Framework\DB\Adapter\AdapterInterface;
@@ -148,6 +149,23 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
     }
 
     /**
+     * Add customer groups filter. First of all it checks 'all groups'
+     *    option and then specified one.
+     *
+     * @param string $customerGroup
+     * @return $this
+     */
+    public function addCustomerGroupFilter($customerGroup)
+    {
+        $condition = [
+            ['finset' => CustomerGroups::ALL_GROUPS],
+            ['finset' => $customerGroup],
+        ];
+        $this->addFilter('customer_groups', $condition, 'public');
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function _renderFiltersBefore()
@@ -233,11 +251,12 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
             $select = $connection->select()
                 ->from(['category_linkage_table' => $this->getTable('aw_blog_post_category')])
                 ->where('category_linkage_table.post_id IN (?)', $postIds);
+            $result = $connection->fetchAll($select);
             /** @var \Magento\Framework\DataObject $item */
             foreach ($this as $item) {
                 $categoryIds = [];
                 $postId = $item->getData('id');
-                foreach ($connection->fetchAll($select) as $data) {
+                foreach ($result as $data) {
                     if ($data['post_id'] == $postId) {
                         $categoryIds[] = $data['category_id'];
                     }
@@ -266,10 +285,11 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
                 )
                 ->where('tag_post_linkage_table.post_id IN (?)', $postIds);
             /** @var \Magento\Framework\DataObject $item */
+            $result = $connection->fetchAll($select);
             foreach ($this as $item) {
                 $tagNames = [];
                 $postId = $item->getData('id');
-                foreach ($connection->fetchAll($select) as $data) {
+                foreach ($result as $data) {
                     if ($data['post_id'] == $postId) {
                         $tagNames[] = $data['name'];
                     }
@@ -305,10 +325,11 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
                 );
             }
             /** @var \Magento\Framework\DataObject $item */
+            $result = $connection->fetchAll($select);
             foreach ($this as $item) {
                 $productIds = [];
                 $postId = $item->getData('id');
-                foreach ($connection->fetchAll($select) as $data) {
+                foreach ($result as $data) {
                     if ($data['post_id'] == $postId) {
                         $productIds[] = $data['product_id'];
                     }

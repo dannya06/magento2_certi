@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model\ResourceModel;
 
@@ -80,10 +80,11 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
                 ->from(['store_linkage_table' => $this->getTable($tableName)])
                 ->where('store_linkage_table.' . $linkageColumnName . ' IN (?)', $ids);
             /** @var \Magento\Framework\DataObject $item */
+            $result = $connection->fetchAll($select);
             foreach ($this as $item) {
                 $storeIds = [];
                 $id = $item->getData($columnName);
-                foreach ($connection->fetchAll($select) as $data) {
+                foreach ($result as $data) {
                     if ($data[$linkageColumnName] == $id) {
                         $storeIds[] = $data['store_id'];
                     }

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 /* @var $block \Aheadworks\Blog\Block\Widget\RecentPost */
 
@@ -31,20 +31,6 @@ if (!$block->isAjax()): ?>
                                class="block-recent-posts-link">
                                 <?php echo $block->escapeHtml($post->getTitle()) ?>
                             </a>
-                            <div class="block-recent-post-content">
-                                <?php echo $block->getShortContent($post) ?>
-                            </div>
-                            <div class="block-recent-post-toolbar">
-                                <span class="block-recent-post-publishdate">
-                                    <?php echo $block->formatDate($post->getPublishDate(), \IntlDateFormatter::MEDIUM) ?>
-                                </span>
-                                <span class="block-recent-post-readmore">
-                                    <a href="<?php /* @noEscape */ echo $block->getPostUrl($post) ?>"
-                                       class="block-recent-posts-link action primary">
-                                        <?php echo $block->escapeHtml(__('Read more')) ?>
-                                    </a>
-                                </span>
-                            </div>
                         </li>
                     <?php endforeach; ?>
                 </div>

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 /* @var $block \Aheadworks\Blog\Block\Post */
 
@@ -41,6 +41,25 @@
                 <?php endif; ?>
             </ul>
         </header>
+        <?php if ($block->isFeaturedImageLoaded()): ?>
+            <div class="blog-post-featured-image-wrapper">
+            <?php if ($block->isListItemMode()): ?>
+                <a href="<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getPostUrl($post)) ?>" class="blog-post-featured-image-link">
+                    <img class="blog-post-featured-image"
+                         src = "<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getFeaturedImageUrl()) ?>"
+                         title = "<?php echo $block->escapeHtml($post->getFeaturedImageTitle()) ?>"
+                         alt = "<?php echo $block->escapeHtml($post->getFeaturedImageAlt()) ?>"
+                    />
+                </a>
+            <?php else: ?>
+                <img class="blog-post-featured-image"
+                     src = "<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getFeaturedImageUrl()) ?>"
+                     title = "<?php echo $block->escapeHtml($post->getFeaturedImageTitle()) ?>"
+                     alt = "<?php echo $block->escapeHtml($post->getFeaturedImageAlt()) ?>"
+                />
+            <?php endif; ?>
+            </div>
+        <?php endif; ?>
         <div class="blog-post-content">
             <?php /* @noEscape */ echo $block->getContent($post) ?>
         </div>

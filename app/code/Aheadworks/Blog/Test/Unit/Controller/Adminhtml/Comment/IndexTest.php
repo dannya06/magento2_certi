@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Comment;
 
@@ -16,7 +16,7 @@ use Magento\Backend\App\Action\Context;
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Comment\Index
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Index
@@ -41,14 +41,14 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->disqusCommentsServiceMock = $this->getMock(
-            DisqusCommentsService::class,
-            ['getModerateUrl'],
-            [],
-            '',
-            false
-        );
-        $this->resultRedirectFactoryMock = $this->getMock(RedirectFactory::class, ['create'], [], '', false);
+        $this->disqusCommentsServiceMock = $this->getMockBuilder(DisqusCommentsService::class)
+            ->setMethods(['getModerateUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $context = $objectManager->getObject(
             Context::class,
@@ -75,7 +75,10 @@ class IndexTest extends \PHPUnit_Framework_TestCase
         $this->disqusCommentsServiceMock->expects($this->once())
             ->method('getModerateUrl')
             ->willReturn($url);
-        $resultRedirectMock = $this->getMock(ResultRedirect::class, ['setUrl'], [], '', false);
+        $resultRedirectMock = $this->getMockBuilder(ResultRedirect::class)
+            ->setMethods(['setUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectMock->expects($this->once())
             ->method('setUrl')
             ->with($url)

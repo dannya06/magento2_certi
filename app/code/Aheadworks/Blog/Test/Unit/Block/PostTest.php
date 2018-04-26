@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block;
 
@@ -29,13 +29,14 @@ use Magento\Framework\View\LayoutInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Aheadworks\Blog\Model\Source\Config\Seo\UrlType;
 
 /**
  * Test for \Aheadworks\Blog\Block\Post
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PostTest extends \PHPUnit_Framework_TestCase
+class PostTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Post constants defined for test
@@ -109,14 +110,14 @@ class PostTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(self::POST_ID))
             ->will($this->returnValue($this->postMock));
 
-        $searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
-        $searchCriteriaBuilderMock = $this->getMock(
-            SearchCriteriaBuilder::class,
-            ['addFilter', 'create'],
-            [],
-            '',
-            false
-        );
+        $searchCriteriaMock = $this->getMockBuilder(SearchCriteria::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
+            ->setMethods(['addFilter', 'create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchCriteriaBuilderMock->expects($this->any())
             ->method('addFilter')
             ->will($this->returnSelf());
@@ -138,15 +139,19 @@ class PostTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($searchCriteriaMock))
             ->will($this->returnValue($categorySearchResultsMock));
 
-        $this->configMock = $this->getMock(
-            Config::class,
-            ['isCommentsEnabled', 'getDisplaySharingAt', 'getRelatedBlockPosition'],
-            [],
-            '',
-            false
-        );
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['isCommentsEnabled', 'getDisplaySharingAt', 'getRelatedBlockPosition', 'getSeoUrlType'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $urlMock = $this->getMock(Url::class, ['getPostUrl', 'getCategoryUrl'], [], '', false);
+        $this->configMock->expects($this->any())->method('getSeoUrlType')
+            ->with(self::STORE_ID)
+            ->will($this->returnValue(UrlType::URL_EXC_CATEGORY));
+
+        $urlMock = $this->getMockBuilder(Url::class)
+            ->setMethods(['getPostUrl', 'getCategoryUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $urlMock->expects($this->any())->method('getPostUrl')
             ->with($this->equalTo($this->postMock))
             ->will($this->returnValue(self::POST_URL));
@@ -154,34 +159,39 @@ class PostTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($this->categoryMock))
             ->will($this->returnValue(self::CATEGORY_URL));
 
-        $linkMock = $this->getMock(
-            Link::class,
-            [
-                'setHref',
-                'setTitle',
-                'setLabel',
-                'toHtml'
-            ],
-            [],
-            '',
-            false
-        );
+        $linkMock = $this->getMockBuilder(Link::class)
+            ->setMethods(['setHref', 'setTitle', 'setLabel', 'toHtml'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $linkMock->expects($this->any())->method('setHref')->will($this->returnSelf());
         $linkMock->expects($this->any())->method('setTitle')->will($this->returnSelf());
         $linkMock->expects($this->any())->method('setLabel')->will($this->returnSelf());
         $linkMock->expects($this->any())
             ->method('toHtml')
             ->will($this->returnValue(self::CATEGORY_LINK_HTML));
-        $linkFactoryMock = $this->getMock(LinkFactory::class, ['create'], [], '', false);
+        $linkFactoryMock = $this->getMockBuilder(LinkFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $linkFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($linkMock));
 
-        $this->filterMock = $this->getMock(FilterTemplate::class, ['setStoreId', 'filter'], [], '', false);
+        $this->filterMock = $this->getMockBuilder(FilterTemplate::class)
+            ->setMethods(['setStoreId', 'filter'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->getMockBuilder(FilterTemplate::class)
+            ->setMethods(['setStoreId', 'filter'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->filterMock->expects($this->any())
             ->method('setStoreId')
             ->will($this->returnSelf());
-        $templateFilterProviderMock = $this->getMock(FilterProvider::class, ['getFilter'], [], '', false);
+        $templateFilterProviderMock = $this->getMockBuilder(FilterProvider::class)
+            ->setMethods(['getFilter'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $templateFilterProviderMock->expects($this->any())
             ->method('getFilter')
             ->will($this->returnValue($this->filterMock));
@@ -197,21 +207,20 @@ class PostTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
-        $this->childBlockMock = $this->getMock(
-            ElementTemplate::class,
-            [
-                'setTemplate',
-                'setShareUrl',
-                'setSharingText',
-                'setPageIdentifier',
-                'setPageUrl',
-                'setPageTitle',
-                'toHtml'
-            ],
-            [],
-            '',
-            false
-        );
+        $this->childBlockMock = $this->getMockBuilder(ElementTemplate::class)
+            ->setMethods(
+                [
+                    'setTemplate',
+                    'setShareUrl',
+                    'setSharingText',
+                    'setPageIdentifier',
+                    'setPageUrl',
+                    'setPageTitle',
+                    'toHtml'
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->childBlockMock->expects($this->any())->method('setTemplate')->will($this->returnSelf());
         $this->childBlockMock->expects($this->any())->method('setShareUrl')->will($this->returnSelf());
         $this->childBlockMock->expects($this->any())->method('setSharingText')->will($this->returnSelf());
@@ -396,6 +405,21 @@ class PostTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Testing whether featured image is loaded or not
+     *
+     * @param $imagePath
+     * @param $expectedResult
+     * @dataProvider isFeaturedImageLoadedDataProvider
+     */
+    public function testIsFeaturedImageLoaded($imagePath, $expectedResult)
+    {
+        $this->postMock->expects($this->any())
+            ->method('getFeaturedImageFile')
+            ->willReturn($imagePath);
+        $this->assertEquals($expectedResult, $this->block->isFeaturedImageLoaded());
+    }
+
+    /**
      * Data provider for testGetRelatedProductHtml method
      *
      * @return array
@@ -519,6 +543,19 @@ class PostTest extends \PHPUnit_Framework_TestCase
                 'short content'
             ],
             'list item mode, post has not short content' => ['content', null, Post::MODE_LIST_ITEM, 'content']
+        ];
+    }
+
+    /**
+     * Data provider for testIsFeaturedImageLoaded method
+     *
+     * @return array
+     */
+    public function isFeaturedImageLoadedDataProvider()
+    {
+        return [
+            'image exists' => ['wysiwyg/test.png', true],
+            'image does not exist' => ['', false],
         ];
     }
 }

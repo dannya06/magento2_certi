@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model;
 
@@ -15,7 +15,7 @@ use Aheadworks\Blog\Api\Data\CategoryInterfaceFactory;
 /**
  * Test for \Aheadworks\Blog\Model\CategoryRegistry
  */
-class CategoryRegistryTest extends \PHPUnit_Framework_TestCase
+class CategoryRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var int
@@ -46,22 +46,16 @@ class CategoryRegistryTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->entityManagerMock = $this->getMock(
-            EntityManager::class,
-            ['load'],
-            [],
-            '',
-            false
-        );
+        $this->entityManagerMock = $this->getMockBuilder(EntityManager::class)
+            ->setMethods(['load'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
-        $categoryDataFactoryMock = $this->getMock(
-            CategoryInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $categoryDataFactoryMock = $this->getMockBuilder(CategoryInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryDataFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->categoryMock));

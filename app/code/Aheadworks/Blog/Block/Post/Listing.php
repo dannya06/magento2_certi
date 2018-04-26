@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Block\Post;
 
@@ -15,6 +15,8 @@ use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Http\Context as HttpContext;
+use Magento\Customer\Model\Context as CustomerContext;
 
 /**
  * Class Listing
@@ -59,6 +61,11 @@ class Listing
     private $dateTime;
 
     /**
+     * @var HttpContext
+     */
+    private $httpContext;
+
+    /**
      * @param PostRepositoryInterface $postRepository
      * @param TagRepositoryInterface $tagRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
@@ -66,6 +73,7 @@ class Listing
      * @param StoreManagerInterface $storeManager
      * @param RequestInterface $request
      * @param DateTime $dateTime
+     * @param HttpContext $httpContext
      */
     public function __construct(
         PostRepositoryInterface $postRepository,
@@ -74,7 +82,8 @@ class Listing
         SortOrderBuilder $sortOrderBuilder,
         StoreManagerInterface $storeManager,
         RequestInterface $request,
-        DateTime $dateTime
+        DateTime $dateTime,
+        HttpContext $httpContext
     ) {
         $this->postRepository = $postRepository;
         $this->tagRepository = $tagRepository;
@@ -83,6 +92,7 @@ class Listing
         $this->storeManager = $storeManager;
         $this->request = $request;
         $this->dateTime = $dateTime;
+        $this->httpContext = $httpContext;
     }
 
     /**
@@ -139,7 +149,8 @@ class Listing
     {
         $this->searchCriteriaBuilder
             ->addFilter(PostInterface::STATUS, Status::PUBLICATION)
-            ->addFilter(PostInterface::STORE_IDS, $this->storeManager->getStore()->getId());
+            ->addFilter(PostInterface::STORE_IDS, $this->storeManager->getStore()->getId())
+            ->addFilter(PostInterface::CUSTOMER_GROUPS, $this->httpContext->getValue(CustomerContext::CONTEXT_GROUP));
         /** @var \Magento\Framework\Api\SortOrder $publishDateOrder */
         $publishDateOrder = $this->sortOrderBuilder
             ->setField(PostInterface::PUBLISH_DATE)

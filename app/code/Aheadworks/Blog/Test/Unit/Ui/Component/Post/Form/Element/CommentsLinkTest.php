@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Form\Element;
 
@@ -16,7 +16,7 @@ use Aheadworks\Blog\Api\CommentsServiceInterface;
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Form\Element\CommentsLink
  */
-class CommentsLinkTest extends \PHPUnit_Framework_TestCase
+class CommentsLinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -42,13 +42,10 @@ class CommentsLinkTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $processorMock = $this->getMock(
-            Processor::class,
-            ['register'],
-            [],
-            '',
-            false
-        );
+        $processorMock = $this->getMockBuilder(Processor::class)
+            ->setMethods(['register'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $contextMock = $this->getMockForAbstractClass(ContextInterface::class);
         $contextMock->expects($this->exactly(2))
             ->method('getProcessor')
@@ -59,7 +56,10 @@ class CommentsLinkTest extends \PHPUnit_Framework_TestCase
             ->method('getModerateUrl')
             ->will($this->returnValue(self::DISQUS_ADMIN_URL));
 
-        $this->sessionMock = $this->getMock(Session::class, ['isAllowed'], [], '', false);
+        $this->sessionMock = $this->getMockBuilder(Session::class)
+            ->setMethods(['isAllowed'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->commentsLink = $objectManager->getObject(
             CommentsLink::class,

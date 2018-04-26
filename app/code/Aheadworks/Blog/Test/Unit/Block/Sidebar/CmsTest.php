@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block\Sidebar;
 
@@ -20,7 +20,7 @@ use Magento\Framework\View\Element\Template\Context;
 /**
  * Test for \Aheadworks\Blog\Block\Sidebar\Cms
  */
-class CmsTest extends \PHPUnit_Framework_TestCase
+class CmsTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Pager constants defined for test
@@ -59,36 +59,39 @@ class CmsTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->configMock = $this->getMock(Config::class, ['getSidebarCmsBlockId'], [], '', false);
-        $this->cmsBlockMock = $this->getMock(
-            CmsBlock::class,
-            ['setStoreId', 'load', 'getContent'],
-            [],
-            '',
-            false
-        );
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getSidebarCmsBlockId'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->cmsBlockMock = $this->getMockBuilder(CmsBlock::class)
+            ->setMethods(['setStoreId', 'load', 'getContent'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->cmsBlockMock->expects($this->any())
             ->method('setStoreId')
             ->will($this->returnSelf());
         $this->cmsBlockMock->expects($this->any())
             ->method('load')
             ->will($this->returnSelf());
-        $cmsBlockFactoryMock = $this->getMock(CmsBlockFactory::class, ['create'], [], '', false);
+        $cmsBlockFactoryMock = $this->getMockBuilder(CmsBlockFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $cmsBlockFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->cmsBlockMock));
 
-        $this->filterMock = $this->getMock(Template::class, ['setStoreId', 'filter'], [], '', false);
+        $this->filterMock = $this->getMockBuilder(Template::class)
+            ->setMethods(['setStoreId', 'filter'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->filterMock->expects($this->any())
             ->method('setStoreId')
             ->will($this->returnSelf());
-        $cmsFilterProviderMock = $this->getMock(
-            FilterProvider::class,
-            ['getBlockFilter'],
-            [],
-            '',
-            false
-        );
+        $cmsFilterProviderMock = $this->getMockBuilder(FilterProvider::class)
+            ->setMethods(['getBlockFilter'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $cmsFilterProviderMock->expects($this->any())
             ->method('getBlockFilter')
             ->will($this->returnValue($this->filterMock));

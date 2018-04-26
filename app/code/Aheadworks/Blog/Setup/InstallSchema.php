@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Setup;
 
@@ -52,6 +52,24 @@ class InstallSchema implements InstallSchemaInterface
                 ['nullable' => false],
                 'URL-Key'
             )->addColumn(
+                'featured_image_file',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                [],
+                'Featured Image File'
+            )->addColumn(
+                'featured_image_title',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                [],
+                'Featured Image Title'
+            )->addColumn(
+                'featured_image_alt',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                [],
+                'Featured Image Alt Text'
+            )->addColumn(
                 'short_content',
                 \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                 '2M',
@@ -94,6 +112,12 @@ class InstallSchema implements InstallSchemaInterface
                 [],
                 'Publish Date'
             )->addColumn(
+                'canonical_category_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['unsigned' => true],
+                'Category ID used for canonical URL'
+            )->addColumn(
                 'is_allow_comments',
                 \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
                 null,
@@ -117,7 +141,26 @@ class InstallSchema implements InstallSchemaInterface
                 null,
                 ['nullable' => false],
                 'Product Condition'
-            )->addIndex(
+            )->addColumn(
+                'meta_twitter_site',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                [],
+                'Meta Twitter Site'
+            )->addColumn(
+                'meta_twitter_creator',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                [],
+                'Meta Twitter Creator'
+            )->addColumn(
+                'customer_groups',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                '64k',
+                ['nullable' => false],
+                'Allowed Customer Groups'
+            )
+            ->addIndex(
                 $installer->getIdxName('aw_blog_post', ['status', 'publish_date']),
                 ['status', 'publish_date']
             )->addIndex(

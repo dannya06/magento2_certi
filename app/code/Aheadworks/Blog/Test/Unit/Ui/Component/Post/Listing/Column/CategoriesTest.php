@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Listing\Column;
 
@@ -19,7 +19,7 @@ use Aheadworks\Blog\Api\CategoryRepositoryInterface;
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Listing\Column\Categories
  */
-class CategoriesTest extends \PHPUnit_Framework_TestCase
+class CategoriesTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Category constants defined for test
@@ -60,7 +60,10 @@ class CategoriesTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $processorMock = $this->getMock(Processor::class, [], [], '', false);
+        $processorMock = $this->getMockBuilder(Processor::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $processorMock->expects($this->any())
             ->method('register');
         $contextMock = $this->getMockBuilder(ContextInterface::class)
@@ -78,14 +81,14 @@ class CategoriesTest extends \PHPUnit_Framework_TestCase
             ->method('getName')
             ->will($this->returnValue(self::CATEGORY2_NAME));
 
-        $searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
-        $searchCriteriaBuilderMock = $this->getMock(
-            SearchCriteriaBuilder::class,
-            ['addFilter', 'create'],
-            [],
-            '',
-            false
-        );
+        $searchCriteriaMock = $this->getMockBuilder(SearchCriteria::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
+            ->setMethods(['addFilter', 'create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchCriteriaBuilderMock->expects($this->once())
             ->method('addFilter')
             ->will($this->returnSelf());

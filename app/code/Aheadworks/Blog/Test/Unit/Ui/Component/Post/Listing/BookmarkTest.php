@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Listing;
 
@@ -18,7 +18,7 @@ use Magento\Authorization\Model\UserContextInterface;
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark
  */
-class BookmarkTest extends \PHPUnit_Framework_TestCase
+class BookmarkTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Bookmarks constants defined for test
@@ -72,13 +72,10 @@ class BookmarkTest extends \PHPUnit_Framework_TestCase
     {
         $this->objectManager = new ObjectManager($this);
 
-        $processorMock = $this->getMock(
-            Processor::class,
-            ['register'],
-            [],
-            '',
-            false
-        );
+        $processorMock = $this->getMockBuilder(Processor::class)
+            ->setMethods(['register'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->contextMock = $this->getMockForAbstractClass(ContextInterface::class);
         $this->contextMock->expects($this->any())
             ->method('getProcessor')
@@ -101,13 +98,10 @@ class BookmarkTest extends \PHPUnit_Framework_TestCase
             ->method('setConfig')
             ->will($this->returnSelf());
 
-        $bookmarkFactoryMock = $this->getMock(
-            BookmarkInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $bookmarkFactoryMock = $this->getMockBuilder(BookmarkInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $bookmarkFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->bookmarkMock));
@@ -136,16 +130,16 @@ class BookmarkTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrepare()
     {
-        $bookmarkMock = $this->getMock(
-            Bookmark::class,
-            ['addView'],
-            $this->objectManager->getConstructArguments(
-                Bookmark::class,
-                ['context' => $this->contextMock]
-            ),
-            '',
-            true
-        );
+        $bookmarkMock = $this->getMockBuilder(Bookmark::class)
+            ->setMethods(['addView'])
+            ->setConstructorArgs(
+                $this->objectManager->getConstructArguments(
+                    Bookmark::class,
+                    ['context' => $this->contextMock]
+                )
+            )
+            ->enableOriginalConstructor()
+            ->getMock();
         $bookmarkMock->expects($this->exactly(3))
             ->method('addView')
             ->withConsecutive(

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block\PostList;
 
@@ -19,7 +19,7 @@ use Magento\Framework\View\Element\Template\Context;
 /**
  * Test for \Aheadworks\Blog\Block\PostList\Pager
  */
-class PagerTest extends \PHPUnit_Framework_TestCase
+class PagerTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Pager constants defined for test
@@ -75,15 +75,15 @@ class PagerTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
-        $this->searchCriteriaBuilderMock = $this->getMock(
-            SearchCriteriaBuilder::class,
-            ['setCurrentPage', 'setPageSize', 'create'],
-            [],
-            '',
-            false,
-            false
-        );
+        $this->searchCriteriaMock = $this->getMockBuilder(SearchCriteria::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
+            ->setMethods(['setCurrentPage', 'setPageSize', 'create'])
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->getMock();
         $this->searchCriteriaBuilderMock->expects($this->any())
             ->method('setCurrentPage')
             ->will($this->returnSelf());

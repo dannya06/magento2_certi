@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model;
 
@@ -66,9 +66,39 @@ class Config
     const XML_PATH_SIDEBAR_CMS_BLOCK = 'aw_blog/sidebar/cms_block';
 
     /**
+     * Configuration path to sidebar Category Listing Enabled
+     */
+    const XML_PATH_SIDEBAR_CATEGORY_LISTING_ENABLED = 'aw_blog/sidebar/category_listing_enabled';
+
+    /**
+     * Configuration path to sidebar Category Listing Enabled
+     */
+    const XML_PATH_SIDEBAR_CATEGORY_LISTING_LIMIT = 'aw_blog/sidebar/category_listing_limit';
+
+    /**
      * Configuration path to blog meta description
      */
     const XML_PATH_META_DESCRIPTION = 'aw_blog/seo/meta_description';
+
+    /**
+     * Configuration path to url type
+     */
+    const XML_PATH_SEO_URL_TYPE = 'aw_blog/seo/url_type';
+
+    /**
+     *  Configuration path to blog facebook application ID
+     */
+    const XML_PATH_FACEBOOK_APP_ID = 'aw_blog/general/facebook_app_id';
+
+    /**
+     *  Configuration path to twitter site
+     */
+    const XML_PATH_META_TWITTER_SITE = 'aw_blog/general/twitter_site';
+
+    /**
+     *  Configuration path to twitter creator
+     */
+    const XML_PATH_META_TWITTER_CREATOR = 'aw_blog/general/twitter_creator';
 
     /**
      * Configuration path to blog change frequency
@@ -104,6 +134,11 @@ class Config
      * Configuration path to display "Add to Cart" button
      */
     const XML_PATH_RELATED_DISPLAY_ADD_TO_CART = 'aw_blog/related_products/display_add_to_cart';
+
+    /**
+     *  Configuration path to store name
+     */
+    const XML_PATH_STORE_INFORMATION_NAME = 'general/store_information/name';
 
     /**
      * @var ScopeConfigInterface
@@ -365,6 +400,108 @@ class Config
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_RELATED_DISPLAY_ADD_TO_CART,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    /**
+     * Get store name
+     *
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getStoreName($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_STORE_INFORMATION_NAME,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    /**
+     * Get facebook application ID
+     *
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getFacebookAppId($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_FACEBOOK_APP_ID,
+            ScopeInterface::SCOPE_WEBSITE,
+            $this->getWebsiteId($storeId)
+        );
+    }
+
+    /**
+     * Get meta twitter site
+     *
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getMetaTwitterSite($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_META_TWITTER_SITE,
+            ScopeInterface::SCOPE_WEBSITE,
+            $this->getWebsiteId($storeId)
+        );
+    }
+
+    /**
+     * Get meta twitter creator
+     *
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getMetaTwitterCreator($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_META_TWITTER_CREATOR,
+            ScopeInterface::SCOPE_WEBSITE,
+            $this->getWebsiteId($storeId)
+        );
+    }
+
+    /**
+     * Check if category listing visible in sidebar
+     *
+     * @return int
+     */
+    public function isDisplaySidebarCategoryListing($storeId = null)
+    {
+        return (int)$this->scopeConfig->getValue(
+            self::XML_PATH_SIDEBAR_CATEGORY_LISTING_ENABLED,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    /**
+     * Get sidebar category listing limit
+     *
+     * @return int
+     */
+    public function getNumCategoriesToDisplay($storeId = null)
+    {
+        return (int)$this->scopeConfig->getValue(
+            self::XML_PATH_SIDEBAR_CATEGORY_LISTING_LIMIT,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    /**
+     * Get seo url type
+     *
+     * @return string
+     */
+    public function getSeoUrlType($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_SEO_URL_TYPE,
             ScopeInterface::SCOPE_STORE,
             $storeId
         );

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Ui\DataProvider;
 
@@ -17,7 +17,7 @@ use Magento\Framework\App\Request\DataPersistorInterface;
 /**
  * Test for \Aheadworks\Blog\Ui\DataProvider\CategoryDataProvider
  */
-class CategoryDataProviderTest extends \PHPUnit_Framework_TestCase
+class CategoryDataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Category constants defined for test
@@ -66,8 +66,14 @@ class CategoryDataProviderTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->collectionMock = $this->getMock(Collection::class, ['getItems', 'getNewEmptyItem'], [], '', false);
-        $collectionFactoryMock = $this->getMock(CollectionFactory::class, ['create'], [], '', false);
+        $this->collectionMock = $this->getMockBuilder(Collection::class)
+            ->setMethods(['getItems', 'getNewEmptyItem'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $collectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $collectionFactoryMock->expects($this->once())
             ->method('create')
             ->will($this->returnValue($this->collectionMock));
@@ -92,7 +98,10 @@ class CategoryDataProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDataFromCollection()
     {
-        $categoryMock = $this->getMock(Category::class, ['getId', 'getData'], [], '', false);
+        $categoryMock = $this->getMockBuilder(Category::class)
+            ->setMethods(['getId', 'getData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryMock->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(self::CATEGORY_ID));
@@ -126,7 +135,10 @@ class CategoryDataProviderTest extends \PHPUnit_Framework_TestCase
             ->with('aw_blog_category')
             ->willReturnSelf();
 
-        $categoryMock = $this->getMock(Category::class, ['getId', 'getData', 'setData'], [], '', false);
+        $categoryMock = $this->getMockBuilder(Category::class)
+            ->setMethods(['getId', 'getData', 'setData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryMock->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(self::CATEGORY_ID));

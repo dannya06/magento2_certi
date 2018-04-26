@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Block;
 
@@ -22,7 +22,7 @@ use Magento\Framework\View\Layout;
  * Test for \Aheadworks\Blog\Controller\Block\Render
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RenderTest extends \PHPUnit_Framework_TestCase
+class RenderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Render
@@ -64,7 +64,10 @@ class RenderTest extends \PHPUnit_Framework_TestCase
         $objectManager = new ObjectManager($this);
 
         $this->translateInlineMock = $this->getMockForAbstractClass(InlineInterface::class);
-        $this->resultRedirectFactoryMock = $this->getMock(RedirectFactory::class, ['create'], [], '', false);
+        $this->resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(
             RequestInterface::class,
             [],
@@ -83,7 +86,10 @@ class RenderTest extends \PHPUnit_Framework_TestCase
             true,
             ['appendBody']
         );
-        $this->viewMock = $this->getMock(View::class, ['loadLayout', 'getLayout'], [], '', false);
+        $this->viewMock = $this->getMockBuilder(View::class)
+            ->setMethods(['loadLayout', 'getLayout'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $contextMock = $objectManager->getObject(
             Context::class,
             [
@@ -111,7 +117,10 @@ class RenderTest extends \PHPUnit_Framework_TestCase
         $this->requestMock->expects($this->once())
             ->method('isAjax')
             ->willReturn(false);
-        $resultRedirectMock = $this->getMock(ResultRedirect::class, [], [], '', false);
+        $resultRedirectMock = $this->getMockBuilder(ResultRedirect::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectMock->expects($this->once())
             ->method('setRefererOrBaseUrl')
             ->willReturnSelf();
@@ -152,14 +161,20 @@ class RenderTest extends \PHPUnit_Framework_TestCase
                 ]
             );
 
-        $blockInstanceMock = $this->getMock(RecentPost::class, ['toHtml', 'setNameInLayout'], [], '', false);
+        $blockInstanceMock = $this->getMockBuilder(RecentPost::class)
+            ->setMethods(['toHtml', 'setNameInLayout'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $blockInstanceMock->expects($this->once())
             ->method('setNameInLayout')
             ->with($blockName);
         $blockInstanceMock->expects($this->once())
             ->method('toHtml')
             ->willReturn($expected[$block]);
-        $layoutMock = $this->getMock(Layout::class, ['createBlock'], [], '', false);
+        $layoutMock = $this->getMockBuilder(Layout::class)
+            ->setMethods(['createBlock'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $layoutMock->expects($this->once())
             ->method('createBlock')
             ->with(RecentPost::class)

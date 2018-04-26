@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model\ResourceModel;
 
@@ -103,8 +103,10 @@ class CategoryRepository implements \Aheadworks\Blog\Api\CategoryRepositoryInter
         if ($categoryId = $category->getId()) {
             $this->entityManager->load($categoryModel, $categoryId);
         }
-        $categoryModel->addData(
-            $this->dataObjectProcessor->buildOutputDataArray($category, CategoryInterface::class)
+        $this->dataObjectHelper->populateWithArray(
+            $categoryModel,
+            $this->dataObjectProcessor->buildOutputDataArray($category, CategoryInterface::class),
+            CategoryInterface::class
         );
         $this->entityManager->save($categoryModel);
         $category = $this->getCategoryDataObject($categoryModel);

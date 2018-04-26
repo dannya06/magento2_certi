@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model;
 
@@ -398,7 +398,8 @@ class WordpressImport
     private function getPostContent($post)
     {
         $wpPostContent = $this->getWpPostContent($post);
-        return $this->getProcessedPostContent($wpPostContent);
+        $processedPostContent = nl2br($this->getProcessedPostContent($wpPostContent));
+        return $processedPostContent;
     }
 
     /**

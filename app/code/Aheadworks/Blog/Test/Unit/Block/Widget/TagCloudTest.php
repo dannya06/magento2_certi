@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block\Widget;
 
@@ -27,7 +27,7 @@ use Magento\Framework\Api\SortOrder;
  * Test for \Aheadworks\Blog\Block\Widget\TagCloud
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TagCloudTest extends \PHPUnit_Framework_TestCase
+class TagCloudTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Pager constants defined for test
@@ -114,16 +114,16 @@ class TagCloudTest extends \PHPUnit_Framework_TestCase
         $this->tagCloudItemRepositoryMock = $this->getMockForAbstractClass(TagCloudItemRepositoryInterface::class);
         $this->searchResultsMock = $this->getMockForAbstractClass(TagCloudItemSearchResultsInterface::class);
 
-        $this->sortOrderBuilderMock = $this->getMock(
-            SortOrderBuilder::class,
-            ['setField', 'setDirection', 'create'],
-            [],
-            '',
-            false
-        );
+        $this->sortOrderBuilderMock = $this->getMockBuilder(SortOrderBuilder::class)
+            ->setMethods(['setField', 'setDirection', 'create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->searchCriteriaMock = $this->getMockForAbstractClass(SearchCriteriaInterface::class);
 
-        $sortOrderMock = $this->getMock(SortOrder::class, [], [], '', false);
+        $sortOrderMock = $this->getMockBuilder(SortOrder::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->sortOrderBuilderMock->expects($this->any())
             ->method('setField')
             ->with('post_count')
@@ -135,13 +135,10 @@ class TagCloudTest extends \PHPUnit_Framework_TestCase
         $this->sortOrderBuilderMock->expects($this->any())
             ->method('create')
             ->willReturn($sortOrderMock);
-        $searchCriteriaBuilderMock = $this->getMock(
-            SearchCriteriaBuilder::class,
-            ['setPageSize', 'addFilter', 'create', 'addSortOrder'],
-            [],
-            '',
-            false
-        );
+        $searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
+            ->setMethods(['setPageSize', 'addFilter', 'create', 'addSortOrder'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchCriteriaBuilderMock->expects($this->any())
             ->method('addSortOrder')
             ->with($sortOrderMock)
@@ -150,18 +147,18 @@ class TagCloudTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->will($this->returnValue($this->searchCriteriaMock));
 
-        $this->configMock = $this->getMock(
-            Config::class,
-            ['getNumPopularTags', 'isBlogEnabled', 'isHighlightTags'],
-            [],
-            '',
-            false
-        );
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getNumPopularTags', 'isBlogEnabled', 'isHighlightTags'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->configMock->expects($this->any())
             ->method('getNumPopularTags')
             ->will($this->returnValue(10));
 
-        $this->urlMock = $this->getMock(Url::class, ['getSearchByTagUrl'], [], '', false);
+        $this->urlMock = $this->getMockBuilder(Url::class)
+            ->setMethods(['getSearchByTagUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->tagCloudItemMock = $this->getMockForAbstractClass(TagCloudItemInterface::class);
 
         $this->block = $objectManager->getObject(

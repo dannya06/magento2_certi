@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2018 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -67,6 +67,7 @@
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">post</item>
+                    <item name="sortOrder" xsi:type="number">10</item>
                 </item>
             </argument>
         </field>
@@ -78,6 +79,7 @@
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">post</item>
+                    <item name="sortOrder" xsi:type="number">20</item>
                     <item name="validation" xsi:type="array">
                         <item name="required-entry" xsi:type="boolean">true</item>
                     </item>
@@ -92,12 +94,83 @@
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">post</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
                     <item name="validation" xsi:type="array">
                         <item name="required-entry" xsi:type="boolean">true</item>
                     </item>
                 </item>
             </argument>
         </field>
+        <container name="image-container">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="template" xsi:type="string">Aheadworks_Blog/ui/form/image-container</item>
+                    <item name="sortOrder" xsi:type="number">40</item>
+                </item>
+            </argument>
+            <container name="featured_image_loader">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="displayArea" xsi:type="string">leftPosition</item>
+                    </item>
+                </argument>
+                <field name="featured_image_file" class="Aheadworks\Blog\Ui\Component\Post\Form\Element\ImageField">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="formElement" xsi:type="string">fileUploader</item>
+                            <item name="component" xsi:type="string">Aheadworks_Blog/js/ui/form/element/file-uploader</item>
+                            <item name="template" xsi:type="string">Aheadworks_Blog/ui/form/element/uploader</item>
+                            <item name="elementId" xsi:type="string">featured_image_file</item>
+                            <item name="imagePlaceholderText" xsi:type="string" translate="true">NO IMAGE</item>
+                            <item name="dialogUrl" xsi:type="url" path="cms/wysiwyg_images/index">
+                                <param name="target_element_id">featured_image_file</param>
+                                <param name="type">file</param>
+                            </item>
+                            <item name="imagePreviewUrl" xsi:type="url" path="*/*/imagePreview"/>
+                            <item name="source" xsi:type="string">post</item>
+                            <item name="label" xsi:type="string" translate="true">Featured Image</item>
+                            <item name="tooltip" xsi:type="array">
+                                <item name="description" xsi:type="string" translate="true">
+                                    <![CDATA[Best parameters for sharing on Facebook and Twitter:</br>
+                                    Minimum 600x315px, 1200x630px is recommended.</br>
+                                    Maximum 4096x4096px, less than 5Mb.</br>
+                                    Try to keep aspect ratio close to 2:1 to avoid image cropping.]]>
+                                </item>
+                            </item>
+                        </item>
+                    </argument>
+                </field>
+            </container>
+            <container name="featured_image_fields">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="displayArea" xsi:type="string">rightPosition</item>
+                    </item>
+                </argument>
+                <field name="featured_image_title">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="dataScope" xsi:type="string">featured_image_title</item>
+                            <item name="label" xsi:type="string" translate="true">Image Title</item>
+                            <item name="dataType" xsi:type="string">text</item>
+                            <item name="formElement" xsi:type="string">input</item>
+                            <item name="source" xsi:type="string">post</item>
+                        </item>
+                    </argument>
+                </field>
+                <field name="featured_image_alt">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="dataScope" xsi:type="string">featured_image_alt</item>
+                            <item name="label" xsi:type="string" translate="true">Alt Text</item>
+                            <item name="dataType" xsi:type="string">text</item>
+                            <item name="formElement" xsi:type="string">input</item>
+                            <item name="source" xsi:type="string">post</item>
+                        </item>
+                    </argument>
+                </field>
+            </container>
+        </container>
         <field name="has_short_content">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -106,6 +179,7 @@
                     <item name="dataType" xsi:type="string">boolean</item>
                     <item name="formElement" xsi:type="string">checkbox</item>
                     <item name="source" xsi:type="string">post</item>
+                    <item name="sortOrder" xsi:type="number">50</item>
                     <item name="default" xsi:type="number">1</item>
                     <item name="exports" xsi:type="array">
                         <item name="checked" xsi:type="string">aw_blog_post_form.aw_blog_post_form:has_short_content</item>
@@ -119,6 +193,7 @@
                     <item name="label" xsi:type="string" translate="true">Short Content</item>
                     <item name="formElement" xsi:type="string">wysiwyg</item>
                     <item name="source" xsi:type="string">post</item>
+                    <item name="sortOrder" xsi:type="number">60</item>
                     <item name="wysiwyg" xsi:type="boolean">true</item>
                     <item name="dataScope" xsi:type="string">short_content</item>
                     <item name="additionalClasses" xsi:type="string">admin__field-wide</item>
@@ -137,6 +212,7 @@
                     <item name="label" xsi:type="string" translate="true">Content</item>
                     <item name="formElement" xsi:type="string">wysiwyg</item>
                     <item name="source" xsi:type="string">post</item>
+                    <item name="sortOrder" xsi:type="number">70</item>
                     <item name="wysiwyg" xsi:type="boolean">true</item>
                     <item name="dataScope" xsi:type="string">content</item>
                     <item name="additionalClasses" xsi:type="string">admin__field-wide</item>
@@ -157,6 +233,7 @@
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">post</item>
+                    <item name="sortOrder" xsi:type="number">80</item>
                     <item name="validation" xsi:type="array">
                         <item name="required-entry" xsi:type="boolean">true</item>
                     </item>
@@ -175,6 +252,7 @@
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="source" xsi:type="string">post</item>
+                    <item name="sortOrder" xsi:type="number">90</item>
                     <item name="validation" xsi:type="array">
                         <item name="required-entry" xsi:type="boolean">true</item>
                     </item>
@@ -255,6 +333,17 @@
                 </item>
             </argument>
         </field>
+        <field name="canonical_url" class="Aheadworks\Blog\Ui\Component\Post\Form\Element\CanonicalUrl">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Aheadworks_Blog/js/ui/form/element/canonical-url-select</item>
+                    <item name="dataScope" xsi:type="string">canonical_category_id</item>
+                    <item name="dataType" xsi:type="string">number</item>
+                    <item name="formElement" xsi:type="string">select</item>
+                    <item name="label" xsi:type="string" translate="true">Canonical URL</item>
+                </item>
+            </argument>
+        </field>
         <field name="tag_names">
             <argument name="data" xsi:type="array">
                 <item name="options" xsi:type="object">Aheadworks\Blog\Model\Source\Tags</item>
@@ -295,6 +384,63 @@
                     <item name="dataType" xsi:type="string">boolean</item>
                     <item name="formElement" xsi:type="string">select</item>
                     <item name="label" xsi:type="string" translate="true">Allow Comments</item>
+                </item>
+            </argument>
+        </field>
+        <field name="meta_twitter_site">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataScope" xsi:type="string">meta_twitter_site</item>
+                    <item name="label" xsi:type="string" translate="true">Twitter site account</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="service" xsi:type="array">
+                        <item name="template" xsi:type="string">Aheadworks_Blog/ui/form/element/helper/service-settings</item>
+                        <item name="configSettingsUrl" xsi:type="url" path="adminhtml/system_config/edit/section/aw_blog"/>
+                        <item name="label" xsi:type="string" translate="true">Use default from</item>
+                    </item>
+                    <item name="usedDefault" xsi:type="boolean">true</item>
+                    <item name="disabled" xsi:type="boolean">true</item>
+                    <item name="imports" xsi:type="array">
+                        <item name="usedDefault" xsi:type="string">${ $.provider }:data.twitterSiteUseDefault</item>
+                        <item name="disabled" xsi:type="string">${ $.provider }:data.twitterSiteUseDefault</item>
+                    </item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="source" xsi:type="string">post</item>
+                    <item name="placeholder" xsi:type="string" translate="true">@yoursiteontwitter</item>
+                </item>
+            </argument>
+        </field>
+        <field name="meta_twitter_creator">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataScope" xsi:type="string">meta_twitter_creator</item>
+                    <item name="label" xsi:type="string" translate="true">Twitter post author account</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="service" xsi:type="array">
+                        <item name="template" xsi:type="string">Aheadworks_Blog/ui/form/element/helper/service-settings</item>
+                        <item name="configSettingsUrl" xsi:type="url" path="adminhtml/system_config/edit/section/aw_blog"/>
+                        <item name="label" xsi:type="string" translate="true">Use default from</item>
+                    </item>
+                    <item name="usedDefault" xsi:type="boolean">true</item>
+                    <item name="disabled" xsi:type="boolean">true</item>
+                    <item name="imports" xsi:type="array">
+                        <item name="usedDefault" xsi:type="string">${ $.provider }:data.twitterCreatorUseDefault</item>
+                        <item name="disabled" xsi:type="string">${ $.provider }:data.twitterCreatorUseDefault</item>
+                    </item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="source" xsi:type="string">post</item>
+                    <item name="placeholder" xsi:type="string" translate="true">@authorontwitter</item>
+                </item>
+            </argument>
+        </field>
+        <field name="customer_groups">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">Aheadworks\Blog\Model\Source\Post\CustomerGroups</item>
+                <item name="config" xsi:type="array">
+                    <item name="dataScope" xsi:type="string">customer_groups</item>
+                    <item name="dataType" xsi:type="string">number</item>
+                    <item name="formElement" xsi:type="string">multiselect</item>
+                    <item name="label" xsi:type="string" translate="true">Enable post for customer groups</item>
                 </item>
             </argument>
         </field>

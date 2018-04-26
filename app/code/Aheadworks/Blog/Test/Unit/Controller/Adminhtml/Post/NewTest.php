@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Post;
 
@@ -14,7 +14,7 @@ use Magento\Backend\Model\View\Result\ForwardFactory;
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Post\NewAction
  */
-class NewTest extends \PHPUnit_Framework_TestCase
+class NewTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var NewAction
@@ -35,23 +35,17 @@ class NewTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->resultForwardMock = $this->getMock(
-            Forward::class,
-            ['forward'],
-            [],
-            '',
-            false
-        );
+        $this->resultForwardMock = $this->getMockBuilder(Forward::class)
+            ->setMethods(['forward'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultForwardMock->expects($this->any())
             ->method('forward')
             ->will($this->returnSelf());
-        $resultForwardFactoryMock = $this->getMock(
-            ForwardFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $resultForwardFactoryMock = $this->getMockBuilder(ForwardFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultForwardFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultForwardMock));

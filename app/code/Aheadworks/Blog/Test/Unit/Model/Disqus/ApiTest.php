@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\Disqus;
 
@@ -14,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Blog\Model\Disqus\Api
  */
-class ApiTest extends \PHPUnit_Framework_TestCase
+class ApiTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -47,12 +47,18 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->curlMock = $this->getMock(Curl::class, ['setConfig', 'write', 'read', 'close'], [], '', false);
+        $this->curlMock = $this->getMockBuilder(Curl::class)
+            ->setMethods(['setConfig', 'write', 'read', 'close'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->curlMock->expects($this->any())
             ->method('write')
             ->will($this->returnValue(''));
 
-        $curlFactoryMock = $this->getMock(CurlFactory::class, ['create'], [], '', false);
+        $curlFactoryMock = $this->getMockBuilder(CurlFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $curlFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->curlMock));

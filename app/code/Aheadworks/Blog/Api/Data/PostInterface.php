@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Api\Data;
 
@@ -29,11 +29,18 @@ interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
     const IS_ALLOW_COMMENTS = 'is_allow_comments';
     const STORE_IDS = 'store_ids';
     const CATEGORY_IDS = 'category_ids';
+    const CANONICAL_CATEGORY_ID = 'canonical_category_id';
     const TAG_NAMES = 'tag_names';
     const META_TITLE = 'meta_title';
     const META_DESCRIPTION = 'meta_description';
     const PRODUCT_CONDITION = 'product_condition';
     const RELATED_PRODUCT_IDS = 'related_product_ids';
+    const FEATURED_IMAGE_FILE = 'featured_image_file';
+    const FEATURED_IMAGE_TITLE = 'featured_image_title';
+    const FEATURED_IMAGE_ALT = 'featured_image_alt';
+    const META_TWITTER_SITE = 'meta_twitter_site';
+    const META_TWITTER_CREATOR = 'meta_twitter_creator';
+    const CUSTOMER_GROUPS = 'customer_groups';
     /**#@-*/
 
     /**
@@ -233,6 +240,21 @@ interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
     public function setCategoryIds($categoryIds);
 
     /**
+     * Get canonical category id
+     *
+     * @return int|null
+     */
+    public function getCanonicalCategoryId();
+
+    /**
+     * Set canonical category id
+     *
+     * @param int $canonicalCategoryId
+     * @return $this
+     */
+    public function setCanonicalCategoryId($canonicalCategoryId);
+
+    /**
      * Get tag names
      *
      * @return string[]|null
@@ -306,6 +328,96 @@ interface PostInterface extends \Magento\Framework\Api\ExtensibleDataInterface
      * @return $this
      */
     public function setRelatedProductIds($relatedProductIds);
+
+    /**
+     * Get featured image file
+     *
+     * @return string|null
+     */
+    public function getFeaturedImageFile();
+
+    /**
+     * Set featured image file
+     *
+     * @param string $featuredImageFile
+     * @return $this
+     */
+    public function setFeaturedImageFile($featuredImageFile);
+
+    /**
+     * Get featured image title
+     *
+     * @return string|null
+     */
+    public function getFeaturedImageTitle();
+
+    /**
+     * Set featured image title
+     *
+     * @param string $featuredImageTitle
+     * @return $this
+     */
+    public function setFeaturedImageTitle($featuredImageTitle);
+
+    /**
+     * Get featured image alt
+     *
+     * @return string|null
+     */
+    public function getFeaturedImageAlt();
+
+    /**
+     * Set featured image alt
+     *
+     * @param string $featuredImageAlt
+     * @return $this
+     */
+    public function setFeaturedImageAlt($featuredImageAlt);
+
+    /**
+     * Get meta twitter site
+     *
+     * @return string|null
+     */
+    public function getMetaTwitterSite();
+
+    /**
+     * Set meta twitter site
+     *
+     * @param string $metaTwitterSite
+     * @return $this
+     */
+    public function setMetaTwitterSite($metaTwitterSite);
+
+    /**
+     * Get meta twitter creator
+     *
+     * @return string|null
+     */
+    public function getMetaTwitterCreator();
+
+    /**
+     * Set meta twitter creator
+     *
+     * @param string $metaTwitterCreator
+     * @return $this
+     */
+    public function setMetaTwitterCreator($metaTwitterCreator);
+
+    /**
+     * Get allowed customer groups for post
+     *
+     * @return string
+     */
+    public function getCustomerGroups();
+
+    /**
+     * Set allowed customer groups for post
+     *
+     * @param int[] $customerGroups
+     * @return $this
+     */
+    public function setCustomerGroups($customerGroups);
 
     /**
      * Retrieve existing extension attributes object or create a new one

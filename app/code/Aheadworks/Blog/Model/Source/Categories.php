@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model\Source;
 
@@ -39,6 +39,7 @@ class Categories implements OptionSourceInterface
     public function toOptionArray()
     {
         if (!$this->options) {
+            $this->categoryCollection->setOrder('sort_order', 'ASC');
             $this->options = $this->categoryCollection->toOptionArray();
         }
         return $this->options;

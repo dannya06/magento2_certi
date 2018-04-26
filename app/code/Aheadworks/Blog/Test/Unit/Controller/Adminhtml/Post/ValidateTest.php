@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Post;
 
@@ -32,7 +32,7 @@ use Aheadworks\Blog\Api\Data\ConditionInterface;
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Post\Validate
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ValidateTest extends \PHPUnit_Framework_TestCase
+class ValidateTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -117,55 +117,46 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $postMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::POST_ID));
-        $postDataFactoryMock = $this->getMock(
-            PostInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $postDataFactoryMock = $this->getMockBuilder(PostInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $postDataFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($postMock));
 
-        $this->postModelMock = $this->getMock(
-            Post::class,
-            ['setData', 'setPostId', 'validateBeforeSave'],
-            [],
-            '',
-            false
-        );
-        $postFactoryMock = $this->getMock(PostFactory::class, ['create'], [], '', false);
+        $this->postModelMock = $this->getMockBuilder(Post::class)
+            ->setMethods(['setData', 'setPostId', 'validateBeforeSave'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $postFactoryMock = $this->getMockBuilder(PostFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $postFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->postModelMock));
 
-        $dataObjectHelperMock = $this->getMock(
-            DataObjectHelper::class,
-            ['populateWithArray'],
-            [],
-            '',
-            false
-        );
-        $dataObjectProcessorMock = $this->getMock(
-            DataObjectProcessor::class,
-            ['buildOutputDataArray'],
-            [],
-            '',
-            false
-        );
+        $dataObjectHelperMock = $this->getMockBuilder(DataObjectHelper::class)
+            ->setMethods(['populateWithArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dataObjectProcessorMock = $this->getMockBuilder(DataObjectProcessor::class)
+            ->setMethods(['buildOutputDataArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->resultJsonMock = $this->getMock(Json::class, ['setData'], [], '', false);
+        $this->resultJsonMock = $this->getMockBuilder(Json::class)
+            ->setMethods(['setData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultJsonMock->expects($this->any())
             ->method('setData')
             ->will($this->returnSelf());
-        $resultJsonFactoryMock = $this->getMock(
-            JsonFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $resultJsonFactoryMock = $this->getMockBuilder(JsonFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultJsonFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultJsonMock));
@@ -182,31 +173,49 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
             ->method('hasSingleStore')
             ->will($this->returnValue(false));
 
-        $errorMock = $this->getMock(Error::class, ['getText'], [], '', false);
+        $errorMock = $this->getMockBuilder(Error::class)
+            ->setMethods(['getText'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $errorMock->expects($this->any())
             ->method('getText')
             ->will($this->returnValue(self::ERROR_MESSAGE));
-        $this->exceptionMock = $this->getMock(Exception::class, ['getMessages'], [], '', false);
+        $this->exceptionMock = $this->getMockBuilder(Exception::class)
+            ->setMethods(['getMessages'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->exceptionMock->expects($this->any())
             ->method('getMessages')
             ->with(MessageInterface::TYPE_ERROR)
             ->will($this->returnValue([$errorMock]));
 
-        $requestMock = $this->getMock(Http::class, ['getPostValue'], [], '', false);
+        $requestMock = $this->getMockBuilder(Http::class)
+            ->setMethods(['getPostValue'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $requestMock->expects($this->any())
             ->method('getPostValue')
             ->will($this->returnValue($this->formData));
 
-        $userMock = $this->getMock(User::class, ['getId', 'getName'], [], '', false);
+        $userMock = $this->getMockBuilder(User::class)
+            ->setMethods(['getId', 'getName'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $userMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::USER_ID));
         $userMock->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(self::USER_NAME));
-        $authMock = $this->getMock(Auth::class, ['getUser'], [], '', false);
+        $authMock = $this->getMockBuilder(Auth::class)
+            ->setMethods(['getUser'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $authMock->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
-        $this->conditionConverterMock = $this->getMock(ConditionConverter::class, ['arrayToDataModel'], [], '', false);
+        $this->conditionConverterMock = $this->getMockBuilder(ConditionConverter::class)
+            ->setMethods(['arrayToDataModel'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $conditionMock = $this->getMockForAbstractClass(ConditionInterface::class);
         $this->conditionConverterMock->expects($this->once())
             ->method('arrayToDataModel')

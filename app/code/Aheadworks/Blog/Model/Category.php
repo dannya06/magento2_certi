@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model;
 
@@ -29,6 +29,11 @@ class Category extends AbstractModel implements CategoryInterface, IdentityInter
      * Blog category cache tag
      */
     const CACHE_TAG = 'aw_blog_category';
+
+    /**
+     * Blog category sidebar cache tag
+     */
+    const CACHE_TAG_CATEGORY_SIDEBAR = 'aw_blog_category_sidebar';
 
     /**
      * {@inheritdoc}
