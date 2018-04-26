@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Ui\DataProvider;
 
@@ -17,7 +17,7 @@ use Magento\Framework\App\Request\DataPersistorInterface;
 /**
  * Test for \Aheadworks\Blog\Ui\DataProvider\PostDataProvider
  */
-class PostDataProviderTest extends \PHPUnit_Framework_TestCase
+class PostDataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Post constants defined for test
@@ -37,7 +37,9 @@ class PostDataProviderTest extends \PHPUnit_Framework_TestCase
         'status' => 'draft',
         'is_allow_comments' => 1,
         'tag_names' => ['tag1', 'tag2'],
-        'category_ids' => [1, 2]
+        'category_ids' => [1, 2],
+        'meta_twitter_site' => '@testsite',
+        'meta_twitter_creator' => '@testcreator'
     ];
 
     /**
@@ -69,8 +71,14 @@ class PostDataProviderTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->collectionMock = $this->getMock(Collection::class, ['getItems', 'getNewEmptyItem'], [], '', false);
-        $collectionFactoryMock = $this->getMock(CollectionFactory::class, ['create'], [], '', false);
+        $this->collectionMock = $this->getMockBuilder(Collection::class)
+            ->setMethods(['getItems', 'getNewEmptyItem'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $collectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $collectionFactoryMock->expects($this->once())
             ->method('create')
             ->will($this->returnValue($this->collectionMock));
@@ -95,7 +103,10 @@ class PostDataProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDataFromCollection()
     {
-        $postMock = $this->getMock(Post::class, ['getId', 'getData'], [], '', false);
+        $postMock = $this->getMockBuilder(Post::class)
+            ->setMethods(['getId', 'getData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $postMock->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(self::POST_ID));
@@ -129,7 +140,10 @@ class PostDataProviderTest extends \PHPUnit_Framework_TestCase
             ->with('aw_blog_post')
             ->willReturnSelf();
 
-        $postMock = $this->getMock(Post::class, ['getId', 'getData', 'setData'], [], '', false);
+        $postMock = $this->getMockBuilder(Post::class)
+            ->setMethods(['getId', 'getData', 'setData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $postMock->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(self::POST_ID));

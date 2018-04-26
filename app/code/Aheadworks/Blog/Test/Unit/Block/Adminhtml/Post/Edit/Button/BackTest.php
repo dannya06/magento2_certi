@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block\Adminhtml\Post\Edit\Button;
 
@@ -13,7 +13,7 @@ use Magento\Framework\UrlInterface;
 /**
  * Test for \Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Back
  */
-class BackTest extends \PHPUnit_Framework_TestCase
+class BackTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string

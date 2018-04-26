@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Controller\Adminhtml;
 
@@ -186,7 +186,7 @@ abstract class Post extends \Magento\Backend\App\Action
         if ($this->storeManager->hasSingleStore()) {
             $postData['store_ids'] = [$this->storeManager->getStore(true)->getId()];
         }
-        if (!isset($postData['category_ids'])) {
+        if (!isset($postData['category_ids']) || empty($postData['category_ids'])) {
             $postData['category_ids'] = [];
         }
         if (!isset($postData['tag_names'])) {
@@ -198,7 +198,7 @@ abstract class Post extends \Magento\Backend\App\Action
             if (is_array($conditionArray['conditions']['1'])) {
                 $arrayForConvertation = $conditionArray['conditions']['1'];
             }
-        } elseif (isset($postData['product_condition'])) {
+        } elseif (isset($postData['product_condition']) && !empty($postData['product_condition'])) {
             $arrayForConvertation = unserialize($postData['product_condition']);
         } else {
             $productRule = $this->productRuleFactory->create();
@@ -206,9 +206,21 @@ abstract class Post extends \Magento\Backend\App\Action
         }
         $postData['product_condition'] = $this->conditionConverter
             ->arrayToDataModel($arrayForConvertation);
+        if (isset($postData['featured_image_file'][0]['path'])) {
+            $postData['featured_image_file'] = $postData['featured_image_file'][0]['path'];
+        } else {
+            $postData['featured_image_file'] = '';
+        }
+        if (isset($postData['use_default'])) {
+            if (!empty($postData['use_default']['meta_twitter_site'])) {
+                $postData['meta_twitter_site'] = '';
+            }
+            if (!empty($postData['use_default']['meta_twitter_creator'])) {
+                $postData['meta_twitter_creator'] = '';
+            }
+        }
         return $postData;
     }
-
     /**
      * Get prepared publish date
      *
@@ -251,7 +263,6 @@ abstract class Post extends \Magento\Backend\App\Action
                             $node[$key][$path[$i]] = [];
                         }
                         $node = & $node[$key][$path[$i]];
-
                     }
                     foreach ($data as $k => $v) {
                         $node[$k] = $v;

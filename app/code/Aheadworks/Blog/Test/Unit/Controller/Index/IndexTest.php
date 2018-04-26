@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Index;
 
@@ -24,7 +24,7 @@ use Magento\Framework\App\Action\Context;
  * Test for \Aheadworks\Blog\Controller\Index\Index
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IndexTest extends \PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -78,39 +78,36 @@ class IndexTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->titleMock = $this->getMock(Title::class, ['set'], [], '', false);
-        $this->pageConfigMock = $this->getMock(
-            Config::class,
-            ['getTitle', 'setMetadata'],
-            [],
-            '',
-            false
-        );
+        $this->titleMock = $this->getMockBuilder(Title::class)
+            ->setMethods(['set'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->pageConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getTitle', 'setMetadata'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->pageConfigMock->expects($this->any())
             ->method('getTitle')
             ->will($this->returnValue($this->titleMock));
-        $this->resultPageMock = $this->getMock(Page::class, ['getConfig'], [], '', false);
+        $this->resultPageMock = $this->getMockBuilder(Page::class)
+            ->setMethods(['getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultPageMock->expects($this->any())
             ->method('getConfig')
             ->will($this->returnValue($this->pageConfigMock));
-        $resultPageFactoryMock = $this->getMock(
-            PageFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultPageFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultPageMock));
 
-        $configMock = $this->getMock(
-            BlogConfig::class,
-            ['getBlogTitle', 'getBlogMetaDescription'],
-            [],
-            '',
-            false
-        );
+        $configMock = $this->getMockBuilder(BlogConfig::class)
+            ->setMethods(['getBlogTitle', 'getBlogMetaDescription'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $configMock->expects($this->any())
             ->method('getBlogTitle')
             ->will($this->returnValue(self::BLOG_TITLE_CONFIG_VALUE));
@@ -118,20 +115,14 @@ class IndexTest extends \PHPUnit_Framework_TestCase
             ->method('getBlogMetaDescription')
             ->will($this->returnValue(self::META_DESCRIPTION_CONFIG_VALUE));
 
-        $this->resultRedirectMock = $this->getMock(
-            Redirect::class,
-            ['setUrl'],
-            [],
-            '',
-            false
-        );
-        $resultRedirectFactoryMock = $this->getMock(
-            RedirectFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->setMethods(['setUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultRedirectMock));

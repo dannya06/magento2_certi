@@ -1,5 +1,5 @@
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2018 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 
@@ -9,7 +9,8 @@ var config = {
             blogCommentsLink: 'Aheadworks_Blog/js/comments-link',
             awBlogRelatedGrid: 'Aheadworks_Blog/js/aw-blog-related-grid',
             awBlogRelatedSlider: 'Aheadworks_Blog/js/aw-blog-related-slider',
-            awBlogAjax: 'Aheadworks_Blog/js/aw-blog-ajax'
+            awBlogAjax: 'Aheadworks_Blog/js/aw-blog-ajax',
+            awBlogToggleCategories: 'Aheadworks_Blog/js/toggle-categories'
         }
     },
     paths: {

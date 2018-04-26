@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Category;
 
@@ -24,7 +24,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Category\Edit
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class EditTest extends \PHPUnit_Framework_TestCase
+class EditTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var int
@@ -77,46 +77,46 @@ class EditTest extends \PHPUnit_Framework_TestCase
 
         $this->categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
 
-        $this->titleMock = $this->getMock(Title::class, ['prepend'], [], '', false);
-        $pageConfigMock = $this->getMock(Config::class, ['getTitle'], [], '', false);
+        $this->titleMock = $this->getMockBuilder(Title::class)
+            ->setMethods(['prepend'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pageConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getTitle'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $pageConfigMock->expects($this->any())
             ->method('getTitle')
             ->will($this->returnValue($this->titleMock));
-        $this->resultPageMock = $this->getMock(
-            Page::class,
-            ['setActiveMenu', 'getConfig'],
-            [],
-            '',
-            false
-        );
+        $this->resultPageMock = $this->getMockBuilder(Page::class)
+            ->setMethods(['setActiveMenu', 'getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultPageMock->expects($this->any())
             ->method('setActiveMenu')
             ->will($this->returnSelf());
         $this->resultPageMock->expects($this->any())
             ->method('getConfig')
             ->will($this->returnValue($pageConfigMock));
-        $resultPageFactoryMock = $this->getMock(PageFactory::class, ['create'], [], '', false);
+        $resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultPageFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultPageMock));
 
-        $this->resultRedirectMock = $this->getMock(
-            Redirect::class,
-            ['setPath'],
-            [],
-            '',
-            false
-        );
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->setMethods(['setPath'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultRedirectMock->expects($this->any())
             ->method('setPath')
             ->will($this->returnSelf());
-        $resultRedirectFactoryMock = $this->getMock(
-            RedirectFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultRedirectMock));

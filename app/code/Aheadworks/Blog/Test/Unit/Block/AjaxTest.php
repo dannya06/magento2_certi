@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block;
 
@@ -18,7 +18,7 @@ use Magento\Framework\View\Layout\ProcessorInterface;
  * Test for \Aheadworks\Blog\Block\Ajax
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AjaxTest extends \PHPUnit_Framework_TestCase
+class AjaxTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Ajax

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block\Adminhtml\Post\Edit\Button;
 
@@ -15,7 +15,7 @@ use Aheadworks\Blog\Api\PostRepositoryInterface;
 /**
  * Test for \Aheadworks\Blog\Block\Adminhtml\Post\Edit\Button\Update
  */
-class UpdateTest extends \PHPUnit_Framework_TestCase
+class UpdateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var int

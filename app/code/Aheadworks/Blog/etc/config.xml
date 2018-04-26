@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2018 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -22,12 +22,17 @@
                 <popular_tags>5</popular_tags>
                 <highlight_popular_tags>1</highlight_popular_tags>
                 <cms_block>-1</cms_block>
+                <category_listing_enabled>1</category_listing_enabled>
+                <category_listing_limit>5</category_listing_limit>
             </sidebar>
             <related_products>
                 <display_posts_on_product_page>0</display_posts_on_product_page>
                 <block_position>not_display</block_position>
                 <products_limit>8</products_limit>
             </related_products>
+            <seo>
+                <url_type>url_exclude_category</url_type>
+            </seo>
         </aw_blog>
         <sitemap>
             <aw_blog>

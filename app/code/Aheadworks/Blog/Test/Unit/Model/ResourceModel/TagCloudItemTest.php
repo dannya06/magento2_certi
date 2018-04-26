@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\ResourceModel;
 
@@ -23,7 +23,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TagCloudItemTest extends \PHPUnit_Framework_TestCase
+class TagCloudItemTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -57,13 +57,10 @@ class TagCloudItemTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->selectMock = $this->getMock(
-            Select::class,
-            ['from', 'joinLeft', 'where', 'columns'],
-            [],
-            '',
-            false
-        );
+        $this->selectMock = $this->getMockBuilder(Select::class)
+            ->setMethods(['from', 'joinLeft', 'where', 'columns'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
         $this->connectionMock->expects($this->any())
@@ -74,19 +71,19 @@ class TagCloudItemTest extends \PHPUnit_Framework_TestCase
             ->method('getEntityConnectionName')
             ->will($this->returnValue(self::CONNECTION_NAME));
 
-        $metadataPoolMock = $this->getMock(MetadataPool::class, ['getMetadata'], [], '', false);
+        $metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
+            ->setMethods(['getMetadata'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $metadataPoolMock->expects($this->any())
             ->method('getMetadata')
             ->with($this->equalTo(TagInterface::class))
             ->will($this->returnValue($metadataMock));
 
-        $resourceConnectionMock = $this->getMock(
-            ResourceConnection::class,
-            ['getConnectionByName', 'getTableName'],
-            [],
-            '',
-            false
-        );
+        $resourceConnectionMock = $this->getMockBuilder(ResourceConnection::class)
+            ->setMethods(['getConnectionByName', 'getTableName'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resourceConnectionMock->expects($this->any())
             ->method('getConnectionByName')
             ->with(self::CONNECTION_NAME)
@@ -111,19 +108,15 @@ class TagCloudItemTest extends \PHPUnit_Framework_TestCase
             );
 
         $transactionManagerMock = $this->getMockForAbstractClass(TransactionManagerInterface::class);
-        $objectRelationProcessorMock = $this->getMock(ObjectRelationProcessor::class, [], [], '', false);
+        $objectRelationProcessorMock = $this->getMockBuilder(ObjectRelationProcessor::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $contextMock = $this->getMock(
-            Context::class,
-            [
-                'getTransactionManager',
-                'getResources',
-                'getObjectRelationProcessor'
-            ],
-            [],
-            '',
-            false
-        );
+        $contextMock = $this->getMockBuilder(Context::class)
+            ->setMethods(['getTransactionManager', 'getResources', 'getObjectRelationProcessor'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $contextMock->expects($this->any())
             ->method('getTransactionManager')
             ->will($this->returnValue($transactionManagerMock));

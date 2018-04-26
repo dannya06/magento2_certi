@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block\Post;
 
@@ -26,7 +26,7 @@ use Aheadworks\Blog\Api\Data\PostInterface;
  * Test for \Aheadworks\Blog\Block\Post\RelatedProduct
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RelatedProductTest extends \PHPUnit_Framework_TestCase
+class RelatedProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RelatedProduct
@@ -66,24 +66,27 @@ class RelatedProductTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->configMock = $this->getMock(
-            Config::class,
-            ['getRelatedProductsLimit', 'getRelatedBlockLayout', 'isRelatedDisplayAddToCart'],
-            [],
-            '',
-            false
-        );
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getRelatedProductsLimit', 'getRelatedBlockLayout', 'isRelatedDisplayAddToCart'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->productRepositoryMock = $this->getMockForAbstractClass(ProductRepositoryInterface::class);
-        $this->postHelperMock = $this->getMock(PostHelper::class, [], [], '', false);
-        $this->imageBuilderMock = $this->getMock(
-            ImageBuilder::class,
-            ['setProduct', 'setImageId', 'setAttributes', 'create'],
-            [],
-            '',
-            false
-        );
-        $this->cartHelperMock = $this->getMock(CartHelper::class, [], [], '', false);
-        $this->urlEncoderMock = $this->getMock(EncoderInterface::class, [], [], '', false);
+        $this->postHelperMock = $this->getMockBuilder(PostHelper::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->imageBuilderMock = $this->getMockBuilder(ImageBuilder::class)
+            ->setMethods(['setProduct', 'setImageId', 'setAttributes', 'create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->cartHelperMock = $this->getMockBuilder(CartHelper::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->urlEncoderMock = $this->getMockBuilder(EncoderInterface::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->block = $objectManager->getObject(
             RelatedProduct::class,
@@ -127,8 +130,14 @@ class RelatedProductTest extends \PHPUnit_Framework_TestCase
     public function testGetImage()
     {
         $imageId = 'product_base_image';
-        $productMock = $this->getMock(Product::class, [], [], '', false);
-        $productImageMock = $this->getMock(Image::class, [], [], '', false);
+        $productMock = $this->getMockBuilder(Product::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $productImageMock = $this->getMockBuilder(Image::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->imageBuilderMock->expects($this->once())
             ->method('setProduct')
             ->with($productMock)
@@ -153,9 +162,15 @@ class RelatedProductTest extends \PHPUnit_Framework_TestCase
     public function testGetProductPrice()
     {
         $priceRenderHtml = 'product price html code';
-        $productMock = $this->getMock(Product::class, [], [], '', false);
+        $productMock = $this->getMockBuilder(Product::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $blockMock = $this->getMock(PricingRender::class, ['render'], [], '', false);
+        $blockMock = $this->getMockBuilder(PricingRender::class)
+            ->setMethods(['render'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $blockMock->expects($this->once())
             ->method('render')
             ->willReturn($priceRenderHtml);
@@ -286,7 +301,10 @@ class RelatedProductTest extends \PHPUnit_Framework_TestCase
      */
     public function testHasProductUrl($value, $expected)
     {
-        $productMock = $this->getMock(Product::class, ['getVisibleInSiteVisibilities'], [], '', false);
+        $productMock = $this->getMockBuilder(Product::class)
+            ->setMethods(['getVisibleInSiteVisibilities'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $productMock->expects($this->once())
             ->method('getVisibleInSiteVisibilities')
             ->willReturn($value);

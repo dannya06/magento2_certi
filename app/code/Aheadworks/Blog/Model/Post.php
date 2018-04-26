@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model;
 
@@ -316,6 +316,22 @@ class Post extends AbstractModel implements PostInterface, IdentityInterface
     /**
      * {@inheritdoc}
      */
+    public function getCanonicalCategoryId()
+    {
+        return $this->getData(self::CANONICAL_CATEGORY_ID);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCanonicalCategoryId($canonicalCategoryId)
+    {
+        return $this->setData(self::CANONICAL_CATEGORY_ID, $canonicalCategoryId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTagNames()
     {
         return $this->getData(self::TAG_NAMES);
@@ -375,6 +391,102 @@ class Post extends AbstractModel implements PostInterface, IdentityInterface
     public function setProductCondition($productCondition)
     {
         return $this->setData(self::PRODUCT_CONDITION, $productCondition);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFeaturedImageFile()
+    {
+        return $this->getData(self::FEATURED_IMAGE_FILE);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFeaturedImageFile($featuredImageFile)
+    {
+        return $this->setData(self::FEATURED_IMAGE_FILE, $featuredImageFile);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFeaturedImageTitle()
+    {
+        return $this->getData(self::FEATURED_IMAGE_TITLE);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFeaturedImageTitle($featuredImageTitle)
+    {
+        return $this->setData(self::FEATURED_IMAGE_TITLE, $featuredImageTitle);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFeaturedImageAlt()
+    {
+        return $this->getData(self::FEATURED_IMAGE_ALT);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFeaturedImageAlt($featuredImageAlt)
+    {
+        return $this->setData(self::FEATURED_IMAGE_ALT, $featuredImageAlt);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMetaTwitterSite()
+    {
+        return $this->getData(self::META_TWITTER_SITE);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMetaTwitterSite($metaTwitterSite)
+    {
+        return $this->setData(self::META_TWITTER_SITE, $metaTwitterSite);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMetaTwitterCreator()
+    {
+        return $this->getData(self::META_TWITTER_CREATOR);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomerGroups($customerGroups)
+    {
+        return $this->setData(self::CUSTOMER_GROUPS, $customerGroups);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomerGroups()
+    {
+        return $this->getData(self::CUSTOMER_GROUPS);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMetaTwitterCreator($metaTwitterCreator)
+    {
+        return $this->setData(self::META_TWITTER_CREATOR, $metaTwitterCreator);
     }
 
     /**

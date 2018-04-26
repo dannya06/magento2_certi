@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\Template;
 
@@ -14,7 +14,7 @@ use Magento\Framework\ObjectManagerInterface;
 /**
  * Test for \Aheadworks\Blog\Model\Template\FilterProvider
  */
-class FilterProviderTest extends \PHPUnit_Framework_TestCase
+class FilterProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -105,10 +105,12 @@ class FilterProviderTest extends \PHPUnit_Framework_TestCase
     public function testGetFilterWrongInstance()
     {
         $wrongFilterClassName = 'WrongClass';
+        $wrongFilterMock = $this->getMockBuilder($wrongFilterClassName)
+            ->getMock();
         $this->objectManager->expects($this->any())
             ->method('get')
             ->with($this->equalTo($wrongFilterClassName))
-            ->will($this->returnValue($this->getMock($wrongFilterClassName)));
+            ->will($this->returnValue($wrongFilterMock));
         $objectManager = new ObjectManager($this);
         $filterProvider = $objectManager->getObject(
             FilterProvider::class,

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model;
 
@@ -17,7 +17,7 @@ use Magento\Store\Api\Data\WebsiteInterface;
 /**
  * Test for \Aheadworks\Blog\Model\DisqusCommentsService
  */
-class DisqusCommentsServiceTest extends \PHPUnit_Framework_TestCase
+class DisqusCommentsServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -46,7 +46,10 @@ class DisqusCommentsServiceTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $disqusConfigMock = $this->getMock(DisqusConfig::class, ['getForumCode'], [], '', false);
+        $disqusConfigMock = $this->getMockBuilder(DisqusConfig::class)
+            ->setMethods(['getForumCode'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $disqusConfigMock->expects($this->any())
             ->method('getForumCode')
             ->with(self::WEBSITE_ID)
@@ -66,7 +69,10 @@ class DisqusCommentsServiceTest extends \PHPUnit_Framework_TestCase
             ->with(self::STORE_ID)
             ->will($this->returnValue($storeMock));
 
-        $this->disqusApiMock = $this->getMock(Api::class, ['sendRequest'], [], '', false);
+        $this->disqusApiMock = $this->getMockBuilder(Api::class)
+            ->setMethods(['sendRequest'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->commentsService = $objectManager->getObject(
             DisqusCommentsService::class,

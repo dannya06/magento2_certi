@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model;
 
@@ -13,7 +13,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Blog\Model\Tag
  */
-class TagTest extends \PHPUnit_Framework_TestCase
+class TagTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Tag
@@ -40,7 +40,10 @@ class TagTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->tagNameIsUniqueMock = $this->getMock(TagNameIsUnique::class, ['validate'], [], '', false);
+        $this->tagNameIsUniqueMock = $this->getMockBuilder(TagNameIsUnique::class)
+            ->setMethods(['validate'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->tagModel = $objectManager->getObject(
             Tag::class,
             ['tagNameIsUnique' => $this->tagNameIsUniqueMock]

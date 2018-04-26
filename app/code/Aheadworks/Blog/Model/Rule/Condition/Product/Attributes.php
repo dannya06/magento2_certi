@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 
 namespace Aheadworks\Blog\Model\Rule\Condition\Product;
@@ -163,14 +163,14 @@ class Attributes extends \Magento\Rule\Model\Condition\Product\AbstractProduct
                     ->getSelect()
                     ->joinLeft(
                         ['cat_index' => $catProductIndexTable],
-                        'e.' . $linkField . ' = cat_index.product_id AND cat_index.store_id=' . $storeId,
+                        'e.entity_id = cat_index.product_id AND cat_index.store_id=' . $storeId,
                         []
                     )
-                    ->group('e.' . $linkField);
-                $condition = $this->prepareSqlCondition('GROUP_CONCAT(cat_index.category_id)', $this->getValue());
-                $productCollection->getSelect()->having($condition);
+                    ->group('e.entity_id');
                 $productCollection->setFlag('aw_blog_collection_category_joined', true);
             }
+            $condition = $this->prepareSqlCondition('GROUP_CONCAT(cat_index.category_id)', $this->getValue());
+            $productCollection->getSelect()->having($condition);
         } else {
             if ($attribute->isStatic()) {
                 $condition = $this->prepareSqlCondition('e.' . $attributeCode, $this->getValue());
@@ -213,10 +213,10 @@ class Attributes extends \Magento\Rule\Model\Condition\Product\AbstractProduct
                 $productCollection->getSelect()
                     ->join(
                         ['cat_index' => $this->_productResource->getTable('catalog_category_product_index')],
-                        'e.' . $linkField . ' = cat_index.product_id AND cat_index.store_id=' . $storeId,
+                        'e.entity_id = cat_index.product_id AND cat_index.store_id=' . $storeId,
                         []
                     )
-                    ->group('e.' . $linkField);
+                    ->group('e.entity_id');
                 $productCollection->setFlag('aw_blog_collection_category_joined', true);
             }
         }
@@ -246,8 +246,7 @@ class Attributes extends \Magento\Rule\Model\Condition\Product\AbstractProduct
             $method = $this->categoryOverwrite[$method];
         }
 
-        if (
-            $this->getAttributeObject()->getFrontendInput() == 'multiselect'
+        if ($this->getAttributeObject()->getFrontendInput() == 'multiselect'
             && array_key_exists($method, $this->multiselectOverwrite)
         ) {
             $method = $this->multiselectOverwrite[$method];
@@ -299,7 +298,6 @@ class Attributes extends \Magento\Rule\Model\Condition\Product\AbstractProduct
             $condition  = join(' OR ', $conditions);
         }
         return $condition;
-
     }
 
     /**

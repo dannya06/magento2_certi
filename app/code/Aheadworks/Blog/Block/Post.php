@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Block;
 
@@ -21,6 +21,8 @@ use Aheadworks\Blog\Model\Url;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Element\Template\Context;
+use Aheadworks\Blog\Model\Post\FeaturedImageInfo;
+use Aheadworks\Blog\Model\Source\Config\Seo\UrlType;
 
 /**
  * Post view/list item block
@@ -88,6 +90,11 @@ class Post extends \Magento\Framework\View\Element\Template implements IdentityI
     private $templateFilterProvider;
 
     /**
+     * @var FeaturedImageInfo
+     */
+    protected $imageInfo;
+
+    /**
      * @param Context $context
      * @param PostRepositoryInterface $postRepository
      * @param CategoryRepositoryInterface $categoryRepository
@@ -97,6 +104,7 @@ class Post extends \Magento\Framework\View\Element\Template implements IdentityI
      * @param LinkFactory $linkFactory
      * @param Url $url
      * @param FilterProvider $templateFilterProvider
+     * @param FeaturedImageInfo $imageInfo
      * @param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -110,6 +118,7 @@ class Post extends \Magento\Framework\View\Element\Template implements IdentityI
         LinkFactory $linkFactory,
         Url $url,
         FilterProvider $templateFilterProvider,
+        FeaturedImageInfo $imageInfo,
         array $data = []
     ) {
         $this->postRepository = $postRepository;
@@ -120,6 +129,7 @@ class Post extends \Magento\Framework\View\Element\Template implements IdentityI
         $this->linkFactory = $linkFactory;
         $this->url = $url;
         $this->templateFilterProvider = $templateFilterProvider;
+        $this->imageInfo = $imageInfo;
         parent::__construct($context, $data);
     }
 
@@ -192,8 +202,10 @@ class Post extends \Magento\Framework\View\Element\Template implements IdentityI
                         ]
                     );
                 }
-                $post = $this->postRepository->get($this->getRequest()->getParam('post_id'));
-                $breadcrumbs->addCrumb('post_view', ['label' => $post->getTitle()]);
+                if ($postId = $this->getRequest()->getParam('post_id')) {
+                    $post = $this->postRepository->get($postId);
+                    $breadcrumbs->addCrumb('post_view', ['label' => $post->getTitle()]);
+                }
             }
         }
         return $this;
@@ -332,6 +344,12 @@ class Post extends \Magento\Framework\View\Element\Template implements IdentityI
      */
     public function getPostUrl(PostInterface $post)
     {
+        $categoryId = $this->getRequest()->getParam('blog_category_id');
+        $storeId = $this->_storeManager->getStore()->getId();
+        $canIncludeCategory = $this->config->getSeoUrlType($storeId) == UrlType::URL_INC_CATEGORY ? true : false;
+        if ($canIncludeCategory && $categoryId) {
+            return $this->url->getPostUrl($post, $this->categoryRepository->get($categoryId));
+        }
         return $this->url->getPostUrl($post);
     }
 
@@ -398,5 +416,25 @@ class Post extends \Magento\Framework\View\Element\Template implements IdentityI
             $identities[] = \Aheadworks\Blog\Model\Tag::CACHE_TAG . '_' . $tag->getId();
         }
         return $identities;
+    }
+
+    /**
+     * Check if featured image is loaded
+     *
+     * @return bool
+     */
+    public function isFeaturedImageLoaded()
+    {
+        return $this->getPost()->getFeaturedImageFile() ? true : false;
+    }
+
+    /**
+     * Get featured image url
+     *
+     * @return string
+     */
+    public function getFeaturedImageUrl()
+    {
+        return $this->imageInfo->getImageUrl($this->getPost()->getFeaturedImageFile());
     }
 }

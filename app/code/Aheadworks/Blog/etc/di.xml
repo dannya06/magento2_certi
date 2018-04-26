@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2018 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -18,6 +18,7 @@
     <preference for="Aheadworks\Blog\Api\TagRepositoryInterface" type="Aheadworks\Blog\Model\ResourceModel\TagRepository" />
     <preference for="Aheadworks\Blog\Api\TagCloudItemRepositoryInterface" type="Aheadworks\Blog\Model\ResourceModel\TagCloudItemRepository" />
     <preference for="Aheadworks\Blog\Api\CommentsServiceInterface" type="Aheadworks\Blog\Model\DisqusCommentsService" />
+    <preference for="Aheadworks\Blog\Api\PermissionManagementInterface" type="Aheadworks\Blog\Model\Service\PermissionService" />
     <preference for="Aheadworks\Blog\Api\Data\CategoryInterface" type="Aheadworks\Blog\Model\Data\Category" />
     <preference for="Aheadworks\Blog\Api\Data\ConditionInterface" type="Aheadworks\Blog\Model\Data\Condition" />
     <preference for="Aheadworks\Blog\Api\Data\PostInterface" type="Aheadworks\Blog\Model\Data\Post" />
@@ -117,6 +118,13 @@
                         <item name="tagUpdater" xsi:type="string">Aheadworks\Blog\Model\ResourceModel\Post\Relation\Tag\SaveHandler</item>
                     </item>
                 </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Gene\BlueFoot\Block\Element\Editor">
+        <arguments>
+            <argument name="supportedModules" xsi:type="array">
+                <item name="Aheadworks_Blog" xsi:type="string">Aheadworks_Blog</item>
             </argument>
         </arguments>
     </type>

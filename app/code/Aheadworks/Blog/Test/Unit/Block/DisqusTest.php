@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block;
 
@@ -14,7 +14,7 @@ use Aheadworks\Blog\Model\DisqusConfig;
 /**
  * Test for \Aheadworks\Blog\Block\Disqus
  */
-class DisqusTest extends \PHPUnit_Framework_TestCase
+class DisqusTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Disqus
@@ -34,20 +34,14 @@ class DisqusTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->configMock = $this->getMock(
-            Config::class,
-            ['isCommentsEnabled'],
-            [],
-            '',
-            false
-        );
-        $disqusConfigMock = $this->getMock(
-            DisqusConfig::class,
-            ['getForumCode'],
-            [],
-            '',
-            false
-        );
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['isCommentsEnabled'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $disqusConfigMock = $this->getMockBuilder(DisqusConfig::class)
+            ->setMethods(['getForumCode'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $disqusConfigMock->expects($this->any())
             ->method('getForumCode')
             ->will($this->returnValue('forum_code'));

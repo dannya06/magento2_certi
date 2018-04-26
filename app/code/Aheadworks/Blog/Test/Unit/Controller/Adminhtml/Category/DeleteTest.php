@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Category;
 
@@ -18,7 +18,7 @@ use Magento\Backend\App\Action\Context;
 /**
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Category\Delete
  */
-class DeleteTest extends \PHPUnit_Framework_TestCase
+class DeleteTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var int
@@ -59,23 +59,17 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
         $this->categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
-        $this->resultRedirectMock = $this->getMock(
-            Redirect::class,
-            ['setPath'],
-            [],
-            '',
-            false
-        );
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->setMethods(['setPath'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultRedirectMock->expects($this->any())
             ->method('setPath')
             ->will($this->returnSelf());
-        $resultRedirectFactoryMock = $this->getMock(
-            RedirectFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultRedirectMock));

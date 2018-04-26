@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Setup;
 
@@ -51,6 +51,12 @@ class UpgradeSchema implements UpgradeSchemaInterface
         }
         if ($context->getVersion() && version_compare($context->getVersion(), '2.1.0', '<')) {
             $this->updatePostStatus($setup);
+        }
+        if ($context->getVersion() && version_compare($context->getVersion(), '2.4.0', '<')) {
+            $this->addFeaturedImageFields($setup);
+            $this->addMetaTwitterFields($setup);
+            $this->addCanonicalCategoryIdField($setup);
+            $this->addCustomerGroupsField($setup);
         }
     }
 
@@ -743,5 +749,121 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'id IN(' . implode(',', array_values($postIds)) . ')'
             );
         }
+    }
+
+    /**
+     * Add featured image fields to post table
+     *
+     * @param SchemaSetupInterface $installer
+     */
+    private function addFeaturedImageFields(SchemaSetupInterface $installer)
+    {
+        $connection = $installer->getConnection();
+
+        $connection->addColumn(
+            $installer->getTable('aw_blog_post'),
+            'featured_image_alt',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length' => 255,
+                'after' => 'url_key',
+                'comment' => 'Featured Image Alt Text'
+            ]
+        );
+
+        $connection->addColumn(
+            $installer->getTable('aw_blog_post'),
+            'featured_image_title',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length' => 255,
+                'after' => 'url_key',
+                'comment' => 'Featured Image Title'
+            ]
+        );
+
+        $connection->addColumn(
+            $installer->getTable('aw_blog_post'),
+            'featured_image_file',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length' => 255,
+                'after' => 'url_key',
+                'comment' => 'Featured Image File',
+            ]
+        );
+    }
+
+    /**
+     * Add meta twitter fields to post table
+     *
+     * @param SchemaSetupInterface $installer
+     */
+    private function addMetaTwitterFields(SchemaSetupInterface $installer)
+    {
+        $connection = $installer->getConnection();
+
+        $connection->addColumn(
+            $installer->getTable('aw_blog_post'),
+            'meta_twitter_site',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length' => 255,
+                'comment' => 'Meta Twitter Site'
+            ]
+        );
+
+        $connection->addColumn(
+            $installer->getTable('aw_blog_post'),
+            'meta_twitter_creator',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length' => 255,
+                'comment' => 'Meta Twitter Creator'
+            ]
+        );
+    }
+
+    /**
+     * Add canonical category field to post table
+     *
+     * @param SchemaSetupInterface $installer
+     */
+    private function addCanonicalCategoryIdField(SchemaSetupInterface $installer)
+    {
+        $connection = $installer->getConnection();
+
+        $connection->addColumn(
+            $installer->getTable('aw_blog_post'),
+            'canonical_category_id',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                'length' => null,
+                'unsigned' => true,
+                'after' => 'publish_date',
+                'comment' => 'Category ID used for canonical URL'
+            ]
+        );
+    }
+
+    /**
+     * Add customer groups field to post table
+     *
+     * @param SchemaSetupInterface $installer
+     */
+    private function addCustomerGroupsField(SchemaSetupInterface $installer)
+    {
+        $connection = $installer->getConnection();
+
+        $connection->addColumn(
+            $installer->getTable('aw_blog_post'),
+            'customer_groups',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length' => '64k',
+                'nullable' => false,
+                'comment' => 'Allowed Customer Groups'
+            ]
+        );
     }
 }

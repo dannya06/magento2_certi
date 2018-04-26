@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 
 namespace Aheadworks\Blog\Model\ResourceModel\Product;
@@ -100,9 +100,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
     {
         parent::_initSelect();
         $this->addAttributeToSelect('price');
-        if ($this->isPartExists('disable_staging_preview')) {
-            $this->getSelect()->setPart('disable_staging_preview', true);
-        }
         return $this;
     }
 
@@ -116,10 +113,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
     public function getAllIds($limit = null, $offset = null)
     {
         $linkField = 'entity_id';
-        $configPath = Custom::XML_PATH_CATALOG_FRONTEND_FLAT_CATALOG_PRODUCT;
-        if (!$this->_scopeConfig->getValue($configPath, ScopeInterface::SCOPE_STORE)) {
-            $linkField = $this->metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
-        }
         $this->addAttributeToFilter([
             ['attribute' => 'visibility', 'eq' => Visibility::VISIBILITY_IN_CATALOG],
             ['attribute' => 'visibility', 'eq' => Visibility::VISIBILITY_IN_SEARCH],

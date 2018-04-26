@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model;
 
@@ -16,7 +16,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Blog\Model\Config
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for store and website config scopes testing
@@ -64,7 +64,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             Config::class,
             ['scopeConfig' => $this->scopeConfigMock, 'storeManager' => $this->storeManagerMock]
         );
-
     }
 
     /**
@@ -327,6 +326,103 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             ->with(Config::XML_PATH_RELATED_DISPLAY_ADD_TO_CART, ScopeInterface::SCOPE_STORE, $storeId)
             ->willReturn($value);
         $this->assertEquals($value, $this->configModel->isRelatedDisplayAddToCart($storeId));
+    }
+
+    /**
+     * Test get store name
+     */
+    public function testGetStoreName()
+    {
+        $storeName = 'Test store name';
+        $this->scopeConfigMock->expects($this->any())
+            ->method('getValue')
+            ->with(Config::XML_PATH_STORE_INFORMATION_NAME, ScopeInterface::SCOPE_STORE, self::STORE_ID)
+            ->willReturn($storeName);
+        $this->assertEquals($storeName, $this->configModel->getStoreName(self::STORE_ID));
+    }
+
+    /**
+     * Test get facebook application ID
+     */
+    public function testGetFacebookAppId()
+    {
+        $fbAppId = '1234567890';
+        $this->storeMock->expects($this->once())
+            ->method('getWebsiteId')
+            ->willReturn(self::WEBSITE_ID);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getStore')
+            ->willReturn($this->storeMock);
+        $this->scopeConfigMock->expects($this->any())
+            ->method('getValue')
+            ->with(Config::XML_PATH_FACEBOOK_APP_ID, ScopeInterface::SCOPE_WEBSITE, self::WEBSITE_ID)
+            ->willReturn($fbAppId);
+        $this->assertEquals($fbAppId, $this->configModel->getFacebookAppId(self::STORE_ID));
+    }
+
+    /**
+     * Test get twitter site name
+     */
+    public function testGetMetaTwitterSite()
+    {
+        $twitterSite = '@mysite';
+        $this->storeMock->expects($this->once())
+            ->method('getWebsiteId')
+            ->willReturn(self::WEBSITE_ID);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getStore')
+            ->willReturn($this->storeMock);
+        $this->scopeConfigMock->expects($this->any())
+            ->method('getValue')
+            ->with(Config::XML_PATH_META_TWITTER_SITE, ScopeInterface::SCOPE_WEBSITE, self::WEBSITE_ID)
+            ->willReturn($twitterSite);
+        $this->assertEquals($twitterSite, $this->configModel->getMetaTwitterSite(self::STORE_ID));
+    }
+
+    /**
+     * Test get twitter site name
+     */
+    public function testGetMetaTwitterCreator()
+    {
+        $twitterCreator = '@myname';
+        $this->storeMock->expects($this->once())
+            ->method('getWebsiteId')
+            ->willReturn(self::WEBSITE_ID);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getStore')
+            ->willReturn($this->storeMock);
+        $this->scopeConfigMock->expects($this->any())
+            ->method('getValue')
+            ->with(Config::XML_PATH_META_TWITTER_CREATOR, ScopeInterface::SCOPE_WEBSITE, self::WEBSITE_ID)
+            ->willReturn($twitterCreator);
+        $this->assertEquals($twitterCreator, $this->configModel->getMetaTwitterCreator(self::STORE_ID));
+    }
+
+    /**
+     * Test get "is Display Sidebar Category Listing" config value
+     *
+     * @dataProvider boolValuesDataProvider
+     */
+    public function testIsDisplaySidebarCategoryListing($value)
+    {
+        $this->scopeConfigMock->expects($this->any())
+            ->method('getValue')
+            ->with(Config::XML_PATH_SIDEBAR_CATEGORY_LISTING_ENABLED, ScopeInterface::SCOPE_STORE)
+            ->willReturn($value);
+        $this->assertEquals($value, $this->configModel->isDisplaySidebarCategoryListing(self::STORE_ID));
+    }
+
+    /**
+     * Test get number of categories to display in sidebar
+     */
+    public function testGetNumCategoriesToDisplay()
+    {
+        $categoriesToDisplay = 5;
+        $this->scopeConfigMock->expects($this->any())
+            ->method('getValue')
+            ->with(Config::XML_PATH_SIDEBAR_CATEGORY_LISTING_LIMIT, ScopeInterface::SCOPE_STORE)
+            ->willReturn($categoriesToDisplay);
+        $this->assertSame($categoriesToDisplay, $this->configModel->getNumCategoriesToDisplay(self::STORE_ID));
     }
 
     /**

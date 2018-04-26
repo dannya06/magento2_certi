@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\Source\Config\Related;
 
@@ -12,7 +12,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test \Aheadworks\Blog\Model\Source\Status
  */
-class BlockPositionTest extends \PHPUnit_Framework_TestCase
+class BlockPositionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BlockPosition|\PHPUnit_Framework_MockObject_MockObject

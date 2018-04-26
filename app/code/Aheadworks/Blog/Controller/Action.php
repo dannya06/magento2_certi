@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Controller;
 
@@ -16,6 +16,8 @@ use Magento\Framework\Controller\Result\ForwardFactory;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Registry;
 use Magento\Store\Model\StoreManagerInterface;
+use Aheadworks\Blog\Model\Url\TypeResolver as UrlTypeResolver;
+use Aheadworks\Blog\Controller\Checker as DataChecker;
 
 /**
  * Class Action
@@ -70,6 +72,17 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     protected $url;
 
     /**
+     * @var UrlTypeResolver
+     */
+    protected $urlTypeResolver;
+
+    /**
+     * @var DataChecker
+     */
+    protected $dataChecker;
+
+    /**
+     * Action constructor.
      * @param Context $context
      * @param PageFactory $resultPageFactory
      * @param ForwardFactory $resultForwardFactory
@@ -80,6 +93,8 @@ abstract class Action extends \Magento\Framework\App\Action\Action
      * @param TagRepositoryInterface $tagRepository
      * @param Config $config
      * @param Url $url
+     * @param UrlTypeResolver $urlTypeResolver
+     * @param DataChecker $dataChecker
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -92,7 +107,9 @@ abstract class Action extends \Magento\Framework\App\Action\Action
         PostRepositoryInterface $postRepository,
         TagRepositoryInterface $tagRepository,
         Config $config,
-        Url $url
+        Url $url,
+        UrlTypeResolver $urlTypeResolver,
+        DataChecker $dataChecker
     ) {
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
@@ -104,6 +121,8 @@ abstract class Action extends \Magento\Framework\App\Action\Action
         $this->tagRepository = $tagRepository;
         $this->config = $config;
         $this->url = $url;
+        $this->urlTypeResolver = $urlTypeResolver;
+        $this->dataChecker = $dataChecker;
     }
 
     /**

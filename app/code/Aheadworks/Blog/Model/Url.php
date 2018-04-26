@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model;
 
@@ -11,6 +11,7 @@ use Aheadworks\Blog\Api\Data\PostInterface;
 use Aheadworks\Blog\Api\Data\TagInterface;
 use Aheadworks\Blog\Controller\Router;
 use Magento\Framework\UrlInterface;
+use Aheadworks\Blog\Model\Url\Canonical\Category as CanonicalCategory;
 
 /**
  * Class Url
@@ -24,6 +25,11 @@ class Url
     private $config;
 
     /**
+     * @var CanonicalCategory
+     */
+    private $canonicalCategory;
+
+    /**
      * @var UrlInterface
      */
     private $urlBuilder;
@@ -31,10 +37,15 @@ class Url
     /**
      * @param Config $config
      * @param UrlInterface $urlBuilder
+     * @param CanonicalCategory $canonicalCategory
      */
-    public function __construct(Config $config, UrlInterface $urlBuilder)
-    {
+    public function __construct(
+        Config $config,
+        UrlInterface $urlBuilder,
+        CanonicalCategory $canonicalCategory
+    ) {
         $this->config = $config;
+        $this->canonicalCategory = $canonicalCategory;
         $this->urlBuilder = $urlBuilder;
     }
 
@@ -64,11 +75,15 @@ class Url
      * Retrieves post url
      *
      * @param PostInterface $post
+     * @param CategoryInterface|null $category
      * @return string
      */
-    public function getPostUrl(PostInterface $post)
+    public function getPostUrl(PostInterface $post, CategoryInterface $category = null)
     {
         $parts = [$this->config->getRouteToBlog()];
+        if ($category) {
+            $parts[] = $category->getUrlKey();
+        }
         $parts[] = $post->getUrlKey();
         return $this->getUrl(null, ['_direct' => implode('/', $parts) . '/']);
     }
@@ -117,5 +132,19 @@ class Url
             null,
             ['_direct' => $this->config->getRouteToBlog() . '/' . Router::TAG_KEY . '/' . urlencode($tagName) . '/']
         );
+    }
+
+    /**
+     * Get canonical URL of post
+     *
+     * @param PostInterface $post
+     * @return string
+     */
+    public function getCanonicalUrl(PostInterface $post)
+    {
+        if ($category = $this->canonicalCategory->getCanonicalCategory($post)) {
+             return $this->getPostUrl($post, $category);
+        }
+        return $this->getPostUrl($post);
     }
 }

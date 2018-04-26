@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Category;
 
@@ -29,7 +29,7 @@ use Magento\Framework\App\Action\Context;
  * Test for \Aheadworks\Blog\Controller\Category\View
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ViewTest extends \PHPUnit_Framework_TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -102,37 +102,37 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->titleMock = $this->getMock(Title::class, ['set'], [], '', false);
-        $this->pageConfigMock = $this->getMock(
-            Config::class,
-            ['getTitle', 'setMetadata'],
-            [],
-            '',
-            false
-        );
+        $this->titleMock = $this->getMockBuilder(Title::class)
+            ->setMethods(['set'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->pageConfigMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getTitle', 'setMetadata'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $this->pageConfigMock->expects($this->any())
             ->method('getTitle')
             ->will($this->returnValue($this->titleMock));
-        $this->resultPageMock = $this->getMock(Page::class, ['getConfig'], [], '', false);
+        $this->resultPageMock = $this->getMockBuilder(Page::class)
+            ->setMethods(['getConfig'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultPageMock->expects($this->any())
             ->method('getConfig')
             ->will($this->returnValue($this->pageConfigMock));
-        $resultPageFactoryMock = $this->getMock(PageFactory::class, ['create'], [], '', false);
+        $resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultPageFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultPageMock));
 
-        $this->forwardMock = $this->getMock(
-            Forward::class,
-            [
-                'setModule',
-                'setController',
-                'forward'
-            ],
-            [],
-            '',
-            false
-        );
+        $this->forwardMock = $this->getMockBuilder(Forward::class)
+            ->setMethods(['setModule', 'setController', 'forward'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->forwardMock->expects($this->any())
             ->method('setModule')
             ->will($this->returnSelf());
@@ -142,13 +142,10 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $this->forwardMock->expects($this->any())
             ->method('forward')
             ->will($this->returnSelf());
-        $resultForwardFactoryMock = $this->getMock(
-            ForwardFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $resultForwardFactoryMock = $this->getMockBuilder(ForwardFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultForwardFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->forwardMock));
@@ -169,20 +166,14 @@ class ViewTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(self::CATEGORY_ID))
             ->will($this->returnValue($this->categoryMock));
 
-        $this->resultRedirectMock = $this->getMock(
-            Redirect::class,
-            ['setUrl'],
-            [],
-            '',
-            false
-        );
-        $resultRedirectFactoryMock = $this->getMock(
-            RedirectFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->setMethods(['setUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultRedirectMock));

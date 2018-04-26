@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block;
 
@@ -14,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Blog\Block\Sharethis
  */
-class SharethisTest extends \PHPUnit_Framework_TestCase
+class SharethisTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -44,7 +44,10 @@ class SharethisTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->urlMock = $this->getMock(Url::class, ['getPostUrl'], [], '', false);
+        $this->urlMock = $this->getMockBuilder(Url::class)
+            ->setMethods(['getPostUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->postMock = $this->getMockForAbstractClass(PostInterface::class);
         $this->postMock->expects($this->any())
             ->method('getTitle')

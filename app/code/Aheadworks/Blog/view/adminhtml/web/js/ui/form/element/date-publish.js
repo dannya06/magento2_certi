@@ -1,5 +1,5 @@
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2018 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 
@@ -142,6 +142,16 @@ define([
          */
         isPostAlreadyScheduled: function () {
             return this.source.get('data.is_scheduled');
+        },
+
+        /**
+         * @inheritdoc
+         */
+        prepareDateTimeFormats: function () {
+            this._super();
+            if (this.options.showsTime && this.timezoneFormat) {
+                this.validationParams.dateFormat = this.timezoneFormat;
+            }
         }
     });
 });

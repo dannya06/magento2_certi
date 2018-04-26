@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Observer;
 
@@ -29,7 +29,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  * Test for \Aheadworks\Blog\Observer\AddBlogToTopmenuItemsObserver
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AddBlogToTopmenuItemsObserverTest extends \PHPUnit_Framework_TestCase
+class AddBlogToTopmenuItemsObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Observer constants defined for test
@@ -92,21 +92,30 @@ class AddBlogToTopmenuItemsObserverTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->configMock = $this->getMock(Config::class, ['isBlogEnabled', 'getBlogTitle'], [], '', false);
-        $this->nodeFactoryMock = $this->getMock(NodeFactory::class, ['create'], [], '', false);
-        $this->searchCriteriaBuilderMock = $this->getMock(
-            SearchCriteriaBuilder::class,
-            ['addFilter', 'addSortOrder', 'create'],
-            [],
-            '',
-            false
-        );
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['isBlogEnabled', 'getBlogTitle'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->nodeFactoryMock = $this->getMockBuilder(NodeFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
+            ->setMethods(['addFilter', 'addSortOrder', 'create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
-        $this->coreRegistryMock = $this->getMock(\Magento\Framework\Registry::class, ['registry'], [], '', false);
+        $this->coreRegistryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
+            ->setMethods(['registry'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
         $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
 
-        $urlMock = $this->getMock(Url::class, ['getCategoryUrl', 'getBlogHomeUrl'], [], '', false);
+        $urlMock = $this->getMockBuilder(Url::class)
+            ->setMethods(['getCategoryUrl', 'getBlogHomeUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $urlMock->expects($this->any())
             ->method('getCategoryUrl')
             ->will($this->returnValue(self::CATEGORY_URL));
@@ -152,30 +161,51 @@ class AddBlogToTopmenuItemsObserverTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute($isBlogEnabled, $category = null)
     {
-        $treeMock = $this->getMock(Tree::class, [], [], '', false);
-        $blogNodeMock = $this->getMock(Node::class, ['getTree', 'addChild'], [], '', false);
+        $treeMock = $this->getMockBuilder(Tree::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $blogNodeMock = $this->getMockBuilder(Node::class)
+            ->setMethods(['getTree', 'addChild'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $blogNodeMock->expects($this->any())
             ->method('getTree')
             ->will($this->returnValue($treeMock));
-        $categoryNodeMock = $this->getMock(Node::class, [], [], '', false);
+        $categoryNodeMock = $this->getMockBuilder(Node::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryNodeMock->expects($this->any())
             ->method('getTree')
             ->will($this->returnValue($treeMock));
-        $parentNodeMock = $this->getMock(Node::class, ['getTree', 'addChild'], [], '', false);
+        $parentNodeMock = $this->getMockBuilder(Node::class)
+            ->setMethods(['getTree', 'addChild'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $parentNodeMock->expects($this->any())
             ->method('getTree')
             ->will($this->returnValue($treeMock));
-        $menuBlockMock = $this->getMock(Topmenu::class, ['addIdentity', 'getMenu'], [], '', false);
+        $menuBlockMock = $this->getMockBuilder(Topmenu::class)
+            ->setMethods(['addIdentity', 'getMenu'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $menuBlockMock->expects($this->any())
             ->method('getMenu')
             ->will($this->returnValue($parentNodeMock));
-        $eventMock = $this->getMock(Event::class, ['getBlock'], [], '', false);
+        $eventMock = $this->getMockBuilder(Event::class)
+            ->setMethods(['getBlock'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $eventMock->expects($this->any())
             ->method('getBlock')
             ->will($this->returnValue($menuBlockMock));
 
         /** @var Observer|\PHPUnit_Framework_MockObject_MockObject $observerMock */
-        $observerMock = $this->getMock(Observer::class, ['getEvent'], [], '', false);
+        $observerMock = $this->getMockBuilder(Observer::class)
+            ->setMethods(['getEvent'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $observerMock->expects($isBlogEnabled ? $this->once() : $this->never())
             ->method('getEvent')
             ->will($this->returnValue($eventMock));
@@ -230,7 +260,10 @@ class AddBlogToTopmenuItemsObserverTest extends \PHPUnit_Framework_TestCase
      */
     private function prepareCategoryRepositoryMock($items = [], $calls = 1)
     {
-        $searchCriteriaMock = $this->getMock(SearchCriteria::class, [], [], '', false);
+        $searchCriteriaMock = $this->getMockBuilder(SearchCriteria::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchResultMock = $this->getMockForAbstractClass(CategorySearchResultsInterface::class);
         $searchResultMock->expects($this->exactly($calls))
             ->method('getItems')
@@ -266,12 +299,21 @@ class AddBlogToTopmenuItemsObserverTest extends \PHPUnit_Framework_TestCase
     public function testAddItem()
     {
         $itemData = ['fieldName' => 'fieldValue'];
-        $treeMock = $this->getMock(Tree::class, [], [], '', false);
-        $nodeMock = $this->getMock(Node::class, ['getTree', 'addChild'], [], '', false);
+        $treeMock = $this->getMockBuilder(Tree::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $nodeMock = $this->getMockBuilder(Node::class)
+            ->setMethods(['getTree', 'addChild'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $nodeMock->expects($this->any())
             ->method('getTree')
             ->will($this->returnValue($treeMock));
-        $newNodeMock = $this->getMock(Node::class, [], [], '', false);
+        $newNodeMock = $this->getMockBuilder(Node::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->nodeFactoryMock->expects($this->once())
             ->method('create')
             ->with(

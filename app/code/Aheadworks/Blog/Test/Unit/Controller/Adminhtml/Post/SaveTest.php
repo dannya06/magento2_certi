@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Post;
 
@@ -30,7 +30,7 @@ use Aheadworks\Blog\Model\Converter\Condition as ConditionConverter;
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Post\Save
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends \PHPUnit_Framework_TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -67,7 +67,10 @@ class SaveTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ],
-        'product_condition' => ''
+        'product_condition' => '',
+        'featured_image_file' => '',
+        'featured_image_title' => 'test title',
+        'featured_image_alt' => 'alt text'
     ];
 
     /**
@@ -134,45 +137,33 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->method('save')
             ->with($this->equalTo($this->postMock))
             ->will($this->returnValue($this->postMock));
-        $postDataFactoryMock = $this->getMock(
-            PostInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $postDataFactoryMock = $this->getMockBuilder(PostInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $postDataFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->postMock));
 
-        $this->resultRedirectMock = $this->getMock(
-            Redirect::class,
-            ['setPath'],
-            [],
-            '',
-            false
-        );
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->setMethods(['setPath'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultRedirectMock->expects($this->any())
             ->method('setPath')
             ->will($this->returnSelf());
-        $resultRedirectFactoryMock = $this->getMock(
-            RedirectFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultRedirectMock));
 
-        $dataObjectHelperMock = $this->getMock(
-            DataObjectHelper::class,
-            ['populateWithArray'],
-            [],
-            '',
-            false
-        );
+        $dataObjectHelperMock = $this->getMockBuilder(DataObjectHelper::class)
+            ->setMethods(['populateWithArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
         $storeMock->expects($this->any())
             ->method('getId')
@@ -185,24 +176,39 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->method('hasSingleStore')
             ->will($this->returnValue(false));
 
-        $requestMock = $this->getMock(Http::class, ['getPostValue'], [], '', false);
+        $requestMock = $this->getMockBuilder(Http::class)
+            ->setMethods(['getPostValue'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $requestMock->expects($this->any())
             ->method('getPostValue')
             ->will($this->returnValue($this->formData));
         $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $sessionMock = $this->getMock(Session::class, ['unsFormData', 'setFormData'], [], '', false);
+        $sessionMock = $this->getMockBuilder(Session::class)
+            ->setMethods(['unsFormData', 'setFormData'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $userMock = $this->getMock(User::class, ['getId', 'getName'], [], '', false);
+        $userMock = $this->getMockBuilder(User::class)
+            ->setMethods(['getId', 'getName'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $userMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::USER_ID));
         $userMock->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(self::USER_NAME));
-        $authMock = $this->getMock(Auth::class, ['getUser'], [], '', false);
+        $authMock = $this->getMockBuilder(Auth::class)
+            ->setMethods(['getUser'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $authMock->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
         $this->dataPersistorMock = $this->getMockForAbstractClass(DataPersistorInterface::class);
-        $this->conditionConverterMock = $this->getMock(ConditionConverter::class, ['arrayToDataModel'], [], '', false);
+        $this->conditionConverterMock = $this->getMockBuilder(ConditionConverter::class)
+            ->setMethods(['arrayToDataModel'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $context = $objectManager->getObject(
             Context::class,

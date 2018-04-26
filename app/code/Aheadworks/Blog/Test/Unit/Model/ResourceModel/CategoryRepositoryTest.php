@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\ResourceModel;
 
@@ -29,7 +29,7 @@ use Magento\Framework\Api\Search\FilterGroup;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CategoryRepositoryTest extends \PHPUnit_Framework_TestCase
+class CategoryRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -116,40 +116,33 @@ class CategoryRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->entityManagerMock = $this->getMock(
-            EntityManager::class,
-            ['load', 'save', 'delete'],
-            [],
-            '',
-            false
-        );
+        $this->entityManagerMock = $this->getMockBuilder(EntityManager::class)
+            ->setMethods(['load', 'save', 'delete'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->categoryModelMock = $this->getMock(
-            Category::class,
-            ['getId', 'addData', 'getCollection'],
-            [],
-            '',
-            false
-        );
+        $this->categoryModelMock = $this->getMockBuilder(Category::class)
+            ->setMethods(['getId', 'addData', 'getCollection'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->categoryModelMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::CATEGORY_ID));
 
-        $this->collectionMock = $this->getMock(
-            Collection::class,
-            [
-                'addFieldToFilter',
-                'addStoreFilter',
-                'getSize',
-                'addOrder',
-                'setCurPage',
-                'setPageSize',
-                'getIterator'
-            ],
-            [],
-            '',
-            false
-        );
+        $this->collectionMock = $this->getMockBuilder(Collection::class)
+            ->setMethods(
+                [
+                    'addFieldToFilter',
+                    'addStoreFilter',
+                    'getSize',
+                    'addOrder',
+                    'setCurPage',
+                    'setPageSize',
+                    'getIterator'
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->collectionMock->expects($this->any())
             ->method('getSize')
             ->will($this->returnValue(self::COLLECTION_SIZE));
@@ -160,72 +153,57 @@ class CategoryRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('getCollection')
             ->will($this->returnValue($this->collectionMock));
 
-        $categoryFactoryMock = $this->getMock(CategoryFactory::class, ['create'], [], '', false);
+        $categoryFactoryMock = $this->getMockBuilder(CategoryFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->categoryModelMock));
 
         $this->categoryMock = $this->getMockForAbstractClass(CategoryInterface::class);
-        $categoryDataFactoryMock = $this->getMock(
-            CategoryInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $categoryDataFactoryMock = $this->getMockBuilder(CategoryInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryDataFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->categoryMock));
 
-        $this->categoryRegistryMock = $this->getMock(
-            CategoryRegistry::class,
-            ['retrieve', 'get', 'push', 'remove'],
-            [],
-            '',
-            false
-        );
+        $this->categoryRegistryMock = $this->getMockBuilder(CategoryRegistry::class)
+            ->setMethods(['retrieve', 'get', 'push', 'remove'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->searchResultsMock = $this->getMockForAbstractClass(CategorySearchResultsInterface::class);
         $this->searchResultsMock->expects($this->any())
             ->method('setSearchCriteria')
             ->will($this->returnSelf());
-        $searchResultsFactoryMock = $this->getMock(
-            CategorySearchResultsInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $searchResultsFactoryMock = $this->getMockBuilder(CategorySearchResultsInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchResultsFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->searchResultsMock));
 
-        $dataObjectHelperMock = $this->getMock(
-            DataObjectHelper::class,
-            ['populateWithArray'],
-            [],
-            '',
-            false
-        );
-        $dataObjectProcessorMock = $this->getMock(
-            DataObjectProcessor::class,
-            ['buildOutputDataArray'],
-            [],
-            '',
-            false
-        );
+        $dataObjectHelperMock = $this->getMockBuilder(DataObjectHelper::class)
+            ->setMethods(['populateWithArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dataObjectProcessorMock = $this->getMockBuilder(DataObjectProcessor::class)
+            ->setMethods(['buildOutputDataArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $dataObjectProcessorMock->expects($this->any())
             ->method('buildOutputDataArray')
             ->with($this->categoryMock, CategoryInterface::class)
             ->will($this->returnValue($this->categoryData));
 
-        $this->filterMock = $this->getMock(
-            Filter::class,
-            ['getField', 'getValue', 'getConditionType'],
-            [],
-            '',
-            false
-        );
+        $this->filterMock = $this->getMockBuilder(Filter::class)
+            ->setMethods(['getField', 'getValue', 'getConditionType'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->filterMock->expects($this->any())
             ->method('getField')
             ->will($this->returnValue(self::FILTER_FIELD));
@@ -235,24 +213,18 @@ class CategoryRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->filterMock->expects($this->any())
             ->method('getConditionType')
             ->will($this->returnValue('eq'));
-        $filterGroupMock = $this->getMock(
-            FilterGroup::class,
-            ['getFilters'],
-            [],
-            '',
-            false
-        );
+        $filterGroupMock = $this->getMockBuilder(FilterGroup::class)
+            ->setMethods(['getFilters'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $filterGroupMock->expects($this->any())
             ->method('getFilters')
             ->will($this->returnValue([$this->filterMock]));
 
-        $this->sortOrderMock = $this->getMock(
-            SortOrder::class,
-            ['getField', 'getDirection'],
-            [],
-            '',
-            false
-        );
+        $this->sortOrderMock = $this->getMockBuilder(SortOrder::class)
+            ->setMethods(['getField', 'getDirection'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->sortOrderMock->expects($this->any())
             ->method('getField')
             ->will($this->returnValue(self::SORT_ORDER_FIELD));
@@ -307,9 +279,6 @@ class CategoryRepositoryTest extends \PHPUnit_Framework_TestCase
                 ->method('load')
                 ->with($this->categoryModelMock);
         }
-        $this->categoryModelMock->expects($this->once())
-            ->method('addData')
-            ->with($this->categoryData);
         $this->entityManagerMock->expects($this->once())
             ->method('save')
             ->with($this->categoryModelMock);

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Model\ResourceModel\Category\Grid;
 
@@ -29,7 +29,7 @@ class Collection extends CategoryCollection implements SearchResultInterface
      * @param string $mainTable
      * @param string $resourceModel
      * @param string $model
-     * @param string|null $connection
+     * @param \Magento\Framework\DB\Adapter\AdapterInterface|null $connection
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -42,7 +42,7 @@ class Collection extends CategoryCollection implements SearchResultInterface
         $mainTable,
         $resourceModel,
         $model = Document::class,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
         parent::__construct(

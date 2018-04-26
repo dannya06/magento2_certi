@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Controller\Adminhtml\Category;
 
@@ -24,7 +24,7 @@ use Magento\Framework\App\Request\DataPersistorInterface;
  * Test for \Aheadworks\Blog\Controller\Adminhtml\Category\Save
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends \PHPUnit_Framework_TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var int
@@ -89,52 +89,46 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->method('save')
             ->with($this->equalTo($this->categoryMock))
             ->will($this->returnValue($this->categoryMock));
-        $categoryDataFactoryMock = $this->getMock(
-            CategoryInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $categoryDataFactoryMock = $this->getMockBuilder(CategoryInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryDataFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->categoryMock));
 
-        $this->resultRedirectMock = $this->getMock(
-            Redirect::class,
-            ['setPath'],
-            [],
-            '',
-            false
-        );
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->setMethods(['setPath'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultRedirectMock->expects($this->any())
             ->method('setPath')
             ->will($this->returnSelf());
-        $resultRedirectFactoryMock = $this->getMock(
-            RedirectFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $resultRedirectFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->resultRedirectMock));
 
-        $dataObjectHelperMock = $this->getMock(
-            DataObjectHelper::class,
-            ['populateWithArray'],
-            [],
-            '',
-            false
-        );
+        $dataObjectHelperMock = $this->getMockBuilder(DataObjectHelper::class)
+            ->setMethods(['populateWithArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $requestMock = $this->getMock(Http::class, ['getPostValue'], [], '', false);
+        $requestMock = $this->getMockBuilder(Http::class)
+            ->setMethods(['getPostValue'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $requestMock->expects($this->any())
             ->method('getPostValue')
             ->will($this->returnValue($this->formData));
         $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $sessionMock = $this->getMock(Session::class, ['unsFormData', 'setFormData'], [], '', false);
+        $sessionMock = $this->getMockBuilder(Session::class)
+            ->setMethods(['unsFormData', 'setFormData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->dataPersistorMock = $this->getMockForAbstractClass(DataPersistorInterface::class);
         $context = $objectManager->getObject(
             Context::class,

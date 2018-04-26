@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block;
 
@@ -23,7 +23,7 @@ use Magento\Store\Model\StoreManagerInterface;
  * Test for \Aheadworks\Blog\Block\PostList
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PostListTest extends \PHPUnit_Framework_TestCase
+class PostListTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Post list constants defined for test
@@ -70,28 +70,25 @@ class PostListTest extends \PHPUnit_Framework_TestCase
         $objectManager = new ObjectManager($this);
 
         $this->postMock = $this->getMockForAbstractClass(PostInterface::class);
-        $this->postListingMock = $this->getMock(
-            Listing::class,
-            ['getPosts', 'applyPagination'],
-            [],
-            '',
-            false
-        );
+        $this->postListingMock = $this->getMockBuilder(Listing::class)
+            ->setMethods(['getPosts', 'applyPagination'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->postListingMock->expects($this->any())
             ->method('getPosts')
             ->will($this->returnValue([$this->postMock]));
-        $postListingFactoryMock = $this->getMock(ListingFactory::class, ['create'], [], '', false);
+        $postListingFactoryMock = $this->getMockBuilder(ListingFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $postListingFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->postListingMock));
 
-        $configMock = $this->getMock(
-            Config::class,
-            ['getBlogTitle', 'getNumPostsPerPage'],
-            [],
-            '',
-            false
-        );
+        $configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['getBlogTitle', 'getNumPostsPerPage'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $configMock->expects($this->any())
             ->method('getBlogTitle')
             ->will($this->returnValue(self::BLOG_TITLE_CONFIG_VALUE));
@@ -112,13 +109,10 @@ class PostListTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
-        $this->childBlockMock = $this->getMock(
-            Template::class,
-            ['toHtml', 'setPath', 'setLimit'],
-            [],
-            '',
-            false
-        );
+        $this->childBlockMock = $this->getMockBuilder(Template::class)
+            ->setMethods(['toHtml', 'setPath', 'setLimit'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->childBlockMock->expects($this->any())
             ->method('setPath')
             ->will($this->returnSelf());

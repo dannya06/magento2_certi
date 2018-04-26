@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 /* @var $block \Aheadworks\Blog\Block\Widget\TagCloud */
 
@@ -14,7 +14,7 @@
 ?>
 <?php if ($block->isEnabled() && count($tagCloudItems)): ?>
     <div id="blog-sidebar-tag-cloud" class="blog-sidebar-block">
-        <h3 class="blog-sidebar-block-title"><?php echo __($block->escapeHtml($title)) ?></h3>
+        <div class="blog-sidebar-block-title"><?php echo __($block->escapeHtml($title)) ?></div>
         <div class="blog-sidebar-block-content">
             <div class="blog-tags blog-tags-<?php if ($block->isCloudMode()): ?>cloud<?php else: ?>plain<?php endif; ?>">
                 <?php foreach ($tagCloudItems as $tagCloudItem): ?>

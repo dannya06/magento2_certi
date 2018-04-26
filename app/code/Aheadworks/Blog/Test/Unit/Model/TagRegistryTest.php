@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model;
 
@@ -15,7 +15,7 @@ use Aheadworks\Blog\Api\Data\TagInterfaceFactory;
 /**
  * Test for \Aheadworks\Blog\Model\TagRegistry
  */
-class TagRegistryTest extends \PHPUnit_Framework_TestCase
+class TagRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var int
@@ -46,22 +46,16 @@ class TagRegistryTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->entityManagerMock = $this->getMock(
-            EntityManager::class,
-            ['load'],
-            [],
-            '',
-            false
-        );
+        $this->entityManagerMock = $this->getMockBuilder(EntityManager::class)
+            ->setMethods(['load'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->tagMock = $this->getMockForAbstractClass(TagInterface::class);
-        $tagDataFactoryMock = $this->getMock(
-            TagInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $tagDataFactoryMock = $this->getMockBuilder(TagInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $tagDataFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->tagMock));

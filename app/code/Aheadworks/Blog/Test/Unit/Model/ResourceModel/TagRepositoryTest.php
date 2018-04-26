@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\ResourceModel;
 
@@ -29,7 +29,7 @@ use Magento\Framework\Api\Search\FilterGroup;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TagRepositoryTest extends \PHPUnit_Framework_TestCase
+class TagRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -111,39 +111,23 @@ class TagRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->entityManagerMock = $this->getMock(
-            EntityManager::class,
-            ['load', 'save', 'delete'],
-            [],
-            '',
-            false
-        );
+        $this->entityManagerMock = $this->getMockBuilder(EntityManager::class)
+            ->setMethods(['load', 'save', 'delete'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->tagModelMock = $this->getMock(
-            Tag::class,
-            ['getId', 'addData', 'getCollection'],
-            [],
-            '',
-            false
-        );
+        $this->tagModelMock = $this->getMockBuilder(Tag::class)
+            ->setMethods(['getId', 'addData', 'getCollection'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->tagModelMock->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(self::TAG_ID));
 
-        $this->collectionMock = $this->getMock(
-            Collection::class,
-            [
-                'addFieldToFilter',
-                'getSize',
-                'addOrder',
-                'setCurPage',
-                'setPageSize',
-                'getIterator'
-            ],
-            [],
-            '',
-            false
-        );
+        $this->collectionMock = $this->getMockBuilder(Collection::class)
+            ->setMethods(['addFieldToFilter', 'getSize', 'addOrder', 'setCurPage', 'setPageSize', 'getIterator'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->collectionMock->expects($this->any())
             ->method('getSize')
             ->will($this->returnValue(self::COLLECTION_SIZE));
@@ -154,72 +138,57 @@ class TagRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('getCollection')
             ->will($this->returnValue($this->collectionMock));
 
-        $tagFactoryMock = $this->getMock(TagFactory::class, ['create'], [], '', false);
+        $tagFactoryMock = $this->getMockBuilder(TagFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $tagFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->tagModelMock));
 
         $this->tagMock = $this->getMockForAbstractClass(TagInterface::class);
-        $tagDataFactoryMock = $this->getMock(
-            TagInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $tagDataFactoryMock = $this->getMockBuilder(TagInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $tagDataFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->tagMock));
 
-        $this->tagRegistryMock = $this->getMock(
-            TagRegistry::class,
-            ['retrieve', 'get', 'push', 'remove'],
-            [],
-            '',
-            false
-        );
+        $this->tagRegistryMock = $this->getMockBuilder(TagRegistry::class)
+            ->setMethods(['retrieve', 'get', 'push', 'remove'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->searchResultsMock = $this->getMockForAbstractClass(TagSearchResultsInterface::class);
         $this->searchResultsMock->expects($this->any())
             ->method('setSearchCriteria')
             ->will($this->returnSelf());
-        $searchResultsFactoryMock = $this->getMock(
-            TagSearchResultsInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $searchResultsFactoryMock = $this->getMockBuilder(TagSearchResultsInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchResultsFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->searchResultsMock));
 
-        $dataObjectHelperMock = $this->getMock(
-            DataObjectHelper::class,
-            ['populateWithArray'],
-            [],
-            '',
-            false
-        );
-        $dataObjectProcessorMock = $this->getMock(
-            DataObjectProcessor::class,
-            ['buildOutputDataArray'],
-            [],
-            '',
-            false
-        );
+        $dataObjectHelperMock = $this->getMockBuilder(DataObjectHelper::class)
+            ->setMethods(['populateWithArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dataObjectProcessorMock = $this->getMockBuilder(DataObjectProcessor::class)
+            ->setMethods(['buildOutputDataArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $dataObjectProcessorMock->expects($this->any())
             ->method('buildOutputDataArray')
             ->with($this->tagMock, TagInterface::class)
             ->will($this->returnValue($this->tagData));
 
-        $this->filterMock = $this->getMock(
-            Filter::class,
-            ['getField', 'getValue', 'getConditionType'],
-            [],
-            '',
-            false
-        );
+        $this->filterMock = $this->getMockBuilder(Filter::class)
+            ->setMethods(['getField', 'getValue', 'getConditionType'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->filterMock->expects($this->any())
             ->method('getField')
             ->will($this->returnValue(self::FILTER_FIELD));
@@ -229,24 +198,18 @@ class TagRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->filterMock->expects($this->any())
             ->method('getConditionType')
             ->will($this->returnValue('eq'));
-        $filterGroupMock = $this->getMock(
-            FilterGroup::class,
-            ['getFilters'],
-            [],
-            '',
-            false
-        );
+        $filterGroupMock = $this->getMockBuilder(FilterGroup::class)
+            ->setMethods(['getFilters'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $filterGroupMock->expects($this->any())
             ->method('getFilters')
             ->will($this->returnValue([$this->filterMock]));
 
-        $this->sortOrderMock = $this->getMock(
-            SortOrder::class,
-            ['getField', 'getDirection'],
-            [],
-            '',
-            false
-        );
+        $this->sortOrderMock = $this->getMockBuilder(SortOrder::class)
+            ->setMethods(['getField', 'getDirection'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->sortOrderMock->expects($this->any())
             ->method('getField')
             ->will($this->returnValue(self::SORT_ORDER_FIELD));
@@ -301,9 +264,6 @@ class TagRepositoryTest extends \PHPUnit_Framework_TestCase
                 ->method('load')
                 ->with($this->tagModelMock);
         }
-        $this->tagModelMock->expects($this->once())
-            ->method('addData')
-            ->with($this->tagData);
         $this->entityManagerMock->expects($this->once())
             ->method('save')
             ->with($this->tagModelMock);

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\Converter;
 
@@ -14,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Blog\Model\Converter\Condition
  */
-class ConverterTest extends \PHPUnit_Framework_TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConditionConverter
@@ -34,7 +34,10 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->conditionFactoryMock = $this->getMock(ConditionInterfaceFactory::class, ['create'], [], '', false);
+        $this->conditionFactoryMock = $this->getMockBuilder(ConditionInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->model = $objectManager->getObject(
             ConditionConverter::class,
@@ -50,8 +53,10 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testArrayToDataModel($conditions)
     {
-        $conditionMock = $this->getMock(ConditionInterface::class);
-        $conditionChildMock = $this->getMock(ConditionInterface::class);
+        $conditionMock = $this->getMockBuilder(ConditionInterface::class)
+            ->getMock();
+        $conditionChildMock = $this->getMockBuilder(ConditionInterface::class)
+            ->getMock();
         $childCondition = $conditions['conditions'][0];
 
         $this->conditionFactoryMock
@@ -120,8 +125,10 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testDataModelToArray($conditions)
     {
-        $dataModelMock = $this->getMock(ConditionInterface::class);
-        $childConditionMock = $this->getMock(ConditionInterface::class);
+        $dataModelMock = $this->getMockBuilder(ConditionInterface::class)
+            ->getMock();
+        $childConditionMock = $this->getMockBuilder(ConditionInterface::class)
+            ->getMock();
         $childCondition = $conditions['conditions'][0];
 
         $dataModelMock->expects($this->once())

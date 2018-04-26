@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model\ResourceModel;
 
@@ -28,7 +28,7 @@ use Aheadworks\Blog\Model\ResourceModel\TagCloudItem\CollectionFactory;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TagCloudItemRepositoryTest extends \PHPUnit_Framework_TestCase
+class TagCloudItemRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants defined for test
@@ -100,59 +100,61 @@ class TagCloudItemRepositoryTest extends \PHPUnit_Framework_TestCase
         $objectManager = new ObjectManager($this);
 
         $this->tagCloudItemMock = $this->getMockForAbstractClass(TagCloudItemInterface::class);
-        $tagCloudItemFactoryMock = $this->getMock(
-            TagCloudItemFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $tagCloudItemFactoryMock = $this->getMockBuilder(TagCloudItemFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $tagCloudItemFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->tagCloudItemMock));
 
         $this->tagMock = $this->getMockForAbstractClass(TagInterface::class);
-        $tagDataFactoryMock = $this->getMock(TagFactory::class, ['create'], [], '', false);
+        $tagDataFactoryMock = $this->getMockBuilder(TagFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $tagDataFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->tagMock));
 
-        $this->tagRegistryMock = $this->getMock(TagRegistry::class, ['retrieve'], [], '', false);
+        $this->tagRegistryMock = $this->getMockBuilder(TagRegistry::class)
+            ->setMethods(['retrieve'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $tagCloudItemResourceModelMock = $this->getMock(
-            TagCloudItem::class,
-            ['getPostCount'],
-            [],
-            '',
-            false
-        );
+        $tagCloudItemResourceModelMock = $this->getMockBuilder(TagCloudItem::class)
+            ->setMethods(['getPostCount'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $tagCloudItemResourceModelMock->expects($this->any())
             ->method('getPostCount')
             ->with(self::TAG_ID, self::STORE_ID)
             ->will($this->returnValue(self::POST_COUNT));
 
-        $tagModel = $this->getMock(Tag::class, ['getData'], [], '', false);
+        $tagModel = $this->getMockBuilder(Tag::class)
+            ->setMethods(['getData'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $tagModel->expects($this->any())
             ->method('getData')
             ->will($this->returnValue(['name' => 'tag', 'post_count' => 10]));
-        $this->collectionMock = $this->getMock(
-            TagCloudItemCollection::class,
-            [
-                'joinPostCount',
-                'addCategoryFilter',
-                'addFieldToFilter',
-                'getSize',
-                'addOrder',
-                'setCurPage',
-                'setPageSize',
-                'getMaxPostCount',
-                'getMinPostCount',
-                'getIterator'
-            ],
-            [],
-            '',
-            false
-        );
+        $this->collectionMock = $this->getMockBuilder(TagCloudItemCollection::class)
+            ->setMethods(
+                [
+                    'joinPostCount',
+                    'addCategoryFilter',
+                    'addFieldToFilter',
+                    'getSize',
+                    'addOrder',
+                    'setCurPage',
+                    'setPageSize',
+                    'getMaxPostCount',
+                    'getMinPostCount',
+                    'getIterator'
+                ]
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->collectionMock->expects($this->any())
             ->method('getSize')
             ->will($this->returnValue(self::COLLECTION_SIZE));
@@ -166,13 +168,10 @@ class TagCloudItemRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('getIterator')
             ->will($this->returnValue(new \ArrayIterator([$tagModel])));
 
-        $tagCloudItemCollectionFactoryMock = $this->getMock(
-            CollectionFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $tagCloudItemCollectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $tagCloudItemCollectionFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->collectionMock));
@@ -182,18 +181,20 @@ class TagCloudItemRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('setSearchCriteria')
             ->will($this->returnSelf());
 
-        $searchResultsFactoryMock = $this->getMock(
-            \Aheadworks\Blog\Api\Data\TagCloudItemSearchResultsInterfaceFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $searchResultsFactoryMock = $this->getMockBuilder(
+            \Aheadworks\Blog\Api\Data\TagCloudItemSearchResultsInterfaceFactory::class
+        )
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $searchResultsFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->searchResultsMock));
 
-        $this->filterMock = $this->getMock(Filter::class, ['getField', 'getValue', 'getConditionType'], [], '', false);
+        $this->filterMock = $this->getMockBuilder(Filter::class)
+            ->setMethods(['getField', 'getValue', 'getConditionType'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->filterMock->expects($this->any())
             ->method('getField')
             ->will($this->returnValue(self::FILTER_FIELD));
@@ -203,12 +204,18 @@ class TagCloudItemRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->filterMock->expects($this->any())
             ->method('getConditionType')
             ->will($this->returnValue('eq'));
-        $filterGroupMock = $this->getMock(FilterGroup::class, ['getFilters'], [], '', false);
+        $filterGroupMock = $this->getMockBuilder(FilterGroup::class)
+            ->setMethods(['getFilters'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $filterGroupMock->expects($this->any())
             ->method('getFilters')
             ->will($this->returnValue([$this->filterMock]));
 
-        $this->sortOrderMock = $this->getMock(SortOrder::class, ['getField', 'getDirection'], [], '', false);
+        $this->sortOrderMock = $this->getMockBuilder(SortOrder::class)
+            ->setMethods(['getField', 'getDirection'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->sortOrderMock->expects($this->any())
             ->method('getField')
             ->will($this->returnValue(self::SORT_ORDER_FIELD));

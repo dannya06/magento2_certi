@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block\Product;
 
@@ -19,7 +19,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 /**
  * Test for \Aheadworks\Blog\Block\Product\PostList
  */
-class PostListTest extends \PHPUnit_Framework_TestCase
+class PostListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PostList
@@ -55,27 +55,18 @@ class PostListTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
         $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->configMock = $this->getMock(
-            Config::class,
-            ['isDisplayPostsOnProductPage'],
-            [],
-            '',
-            false
-        );
-        $this->urlMock = $this->getMock(
-            Url::class,
-            [],
-            [],
-            '',
-            false
-        );
-        $this->postListingMock = $this->getMock(
-            PostListing::class,
-            ['getSearchCriteriaBuilder', 'getPosts'],
-            [],
-            '',
-            false
-        );
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['isDisplayPostsOnProductPage'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->urlMock = $this->getMockBuilder(Url::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->postListingMock = $this->getMockBuilder(PostListing::class)
+            ->setMethods(['getSearchCriteriaBuilder', 'getPosts'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $context = $objectManager->getObject(
             Context::class,
@@ -116,13 +107,10 @@ class PostListTest extends \PHPUnit_Framework_TestCase
                 ->with('id')
                 ->willReturn($productId);
 
-            $searchCriteriaBuilderMock = $this->getMock(
-                SearchCriteriaBuilder::class,
-                ['addFilter'],
-                [],
-                '',
-                false
-            );
+            $searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
+                ->setMethods(['addFilter'])
+                ->disableOriginalConstructor()
+                ->getMock();
             $searchCriteriaBuilderMock->expects($this->once())
                 ->method('addFilter')
                 ->with('product_id', $productId);

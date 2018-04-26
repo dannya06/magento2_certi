@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Ui\Component\Post\Listing\Column;
 
@@ -14,7 +14,7 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Listing\Column\Tags
  */
-class TagsTest extends \PHPUnit_Framework_TestCase
+class TagsTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Tags constants defined for test
@@ -39,7 +39,10 @@ class TagsTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $processorMock = $this->getMock(Processor::class, [], [], '', false);
+        $processorMock = $this->getMockBuilder(Processor::class)
+            ->setMethods([])
+            ->disableOriginalConstructor()
+            ->getMock();
         $processorMock->expects($this->any())
             ->method('register');
         $contextMock = $this->getMockBuilder(ContextInterface::class)

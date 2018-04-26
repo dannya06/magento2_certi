@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Block;
 
@@ -14,7 +14,7 @@ use Magento\Framework\View\Element\Template\Context;
 /**
  * Test for \Aheadworks\Blog\Block\Link
  */
-class LinkTest extends \PHPUnit_Framework_TestCase
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Link constants defined for test
@@ -38,7 +38,10 @@ class LinkTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $escaperMock = $this->getMock(Escaper::class, ['escapeHtml'], [], '', false);
+        $escaperMock = $this->getMockBuilder(Escaper::class)
+            ->setMethods(['escapeHtml'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $escaperMock->expects($this->any())
             ->method('escapeHtml')
             ->will($this->returnArgument(0));

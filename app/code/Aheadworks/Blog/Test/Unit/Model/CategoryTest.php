@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2018 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Blog\Test\Unit\Model;
 
@@ -14,7 +14,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for \Aheadworks\Blog\Model\Category
  */
-class CategoryTest extends \PHPUnit_Framework_TestCase
+class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Category
@@ -49,7 +49,10 @@ class CategoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->urlKeyIsUniqueMock = $this->getMock(UrlKeyIsUnique::class, ['validate'], [], '', false);
+        $this->urlKeyIsUniqueMock = $this->getMockBuilder(UrlKeyIsUnique::class)
+            ->setMethods(['validate'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->categoryModel = $objectManager->getObject(
             Category::class,
             ['urlKeyIsUnique' => $this->urlKeyIsUniqueMock]
