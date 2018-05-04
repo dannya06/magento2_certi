@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f683bb0e00a1f849f254dca7da606baa",
+    "content-hash": "b1f50700dcb4c4acd2265f94aaaea53d",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -691,11 +691,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "6a0a8b5e0d7a7db2d6ae7792cca3d35699ff3752"
+                "reference": "21f9ba0fed5d99b0fed2ce578a321b5b668b261b"
             },
             "require": {
                 "php": "~5.6.0|7.0.2|~7.0.6|~7.1.11"
@@ -718,7 +718,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2018-04-21T08:51:41+00:00"
+            "time": "2018-05-04T08:02:18+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
@@ -762,11 +762,11 @@
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "c1d1f84c547d06470fc74d4a065c8fc7a4c5f9a4"
+                "reference": "ecccd28ad85de4d8845cf40e323a710cd1d5d507"
             },
             "require": {
                 "php": "~5.6.0|7.0.2|~7.0.6|~7.1.1"
@@ -790,7 +790,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2018-04-21T08:36:45+00:00"
+            "time": "2018-05-04T08:05:27+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
