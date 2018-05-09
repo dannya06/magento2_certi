@@ -10,7 +10,7 @@
     "require": {
         "magento/product-community-edition": "2.2.1",
         "composer/composer": "@alpha",
-        "icubeus/magento2-citykecamatan": "1.0.1",
+        "icubeus/magento2-citykecamatan": "1.0.3",
         "icubeus/magento2-advancerate": "1.0.1",
         "icubeus/magento2-veritranspayment": "dev-develop",
         "icubeus/magento2-confirmpayment": "dev-master",
