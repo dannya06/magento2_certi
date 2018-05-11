@@ -94,9 +94,13 @@ case "$1" in
 		php bin/magento cache:enable
 		cd $update_dir && composer install && cd $web_dir
 
-		echo "Update Symlink: media"
-		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
-		ln -s $shr_dir/media/ $site_dir/releases/$release_version/$pub_dir/media
+		echo "Update Symlink: media/catalog"
+		mv $site_dir/releases/$release_version/$pub_dir/media/catalog $site_dir/releases/$release_version/$pub_dir/media/catalog.original
+		ln -s $shr_dir/media/catalog/ $site_dir/releases/$release_version/$pub_dir/media/catalog
+
+		echo "Update Symlink: media/wysiwyg"
+		mv $site_dir/releases/$release_version/$pub_dir/media/wysiwyg $site_dir/releases/$release_version/$pub_dir/media/wysiwyg.original
+		ln -s $shr_dir/media/wysiwyg/ $site_dir/releases/$release_version/$pub_dir/media/wysiwyg
 
 		echo "Update Symlink: current"
 		rm $site_dir/current
@@ -158,9 +162,13 @@ case "$1" in
 		php bin/magento cache:enable
 		cd $update_dir && composer install && cd $web_dir
 
-		echo "Update Symlink: media"
-		mv $site_dir/releases/$release_version/$pub_dir/media $site_dir/releases/$release_version/$pub_dir/media.original
-		ln -s $shr_dir/media/ $site_dir/releases/$release_version/$pub_dir/media
+		echo "Update Symlink: media/catalog"
+		mv $site_dir/releases/$release_version/$pub_dir/media/catalog $site_dir/releases/$release_version/$pub_dir/media/catalog.original
+		ln -s $shr_dir/media/catalog/ $site_dir/releases/$release_version/$pub_dir/media/catalog
+
+		echo "Update Symlink: media/wysiwyg"
+		mv $site_dir/releases/$release_version/$pub_dir/media/wysiwyg $site_dir/releases/$release_version/$pub_dir/media/wysiwyg.original
+		ln -s $shr_dir/media/wysiwyg/ $site_dir/releases/$release_version/$pub_dir/media/wysiwyg
 
 		echo "Update Symlink: current"
 		rm $site_dir/current
