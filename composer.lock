@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "060eed039138fe442290d866b82041a2",
+    "content-hash": "cc63d05ee193a40fc0c97c84fb06baad",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -762,11 +762,11 @@
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "1.0.5",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "69958e7c78495981591e1e76d2fb1aa04d9f8d48"
+                "reference": "1c861dba97cbe4e04d19f7008a310ec604c0e888"
             },
             "require": {
                 "php": "~5.6.0|7.0.2|~7.0.6|~7.1.1"
@@ -790,7 +790,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2018-05-11T06:39:51+00:00"
+            "time": "2018-05-16T04:34:46+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -822,7 +822,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2018-02-21T09:43:23+00:00"
+            "time": "2018-02-21 09:43:23"
         },
         {
             "name": "icubeus/magento2-gosend",
@@ -866,7 +866,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2018-04-12T11:27:03+00:00"
+            "time": "2018-04-12 11:27:03"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -892,7 +892,7 @@
                 }
             ],
             "description": "Indonesian language package for Magento 2",
-            "time": "2017-09-26T02:09:30+00:00"
+            "time": "2017-09-26 02:09:30"
         },
         {
             "name": "icubeus/magento2-rapidflow",
@@ -936,7 +936,7 @@
                 "magento2",
                 "rapidflow"
             ],
-            "time": "2018-02-14T05:02:40+00:00"
+            "time": "2018-02-14 05:02:40"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -967,7 +967,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2018-02-13T08:10:19+00:00"
+            "time": "2018-02-13 08:10:19"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -1032,7 +1032,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2018-03-20T08:39:25+00:00"
+            "time": "2018-03-20 08:39:25"
         },
         {
             "name": "justinrainbow/json-schema",
