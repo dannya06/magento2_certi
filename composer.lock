@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc63d05ee193a40fc0c97c84fb06baad",
+    "content-hash": "0bd91bc48ccb7b2dfcf68346ec4ef86f",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -691,11 +691,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "21f9ba0fed5d99b0fed2ce578a321b5b668b261b"
+                "reference": "26b5d3b3679beb9cf08004082a0d20fa0d8c1ecf"
             },
             "require": {
                 "php": "~5.6.0|7.0.2|~7.0.6|~7.1.11"
@@ -718,7 +718,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2018-05-04T08:02:18+00:00"
+            "time": "2018-06-06T02:57:37+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
@@ -975,7 +975,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "183b565580926e76ae129b931b6a54c0775085a7"
+                "reference": "ef54380296b07539566c1c941ab989a25993e2a9"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -1032,7 +1032,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2018-03-20 08:39:25"
+            "time": "2018-06-04 09:02:12"
         },
         {
             "name": "justinrainbow/json-schema",
