@@ -1,0 +1,18 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+?>
+<h2>
+    <span><?php /* @escapeNotVerified */ echo __('Cloudfront Cache Management') ?></span>
+</h2>
+<form id="generate-css" action="<?php /* @escapeNotVerified */ echo $block->getCloudGenerationUrl() ?>" method="POST" >
+    <input type="hidden" value="<?php echo $block->getFormKey(); ?>" name="form_key" id="form_key" />
+    
+    <button id="clear-cloudfront-button" type="submit">
+        <?php /* @escapeNotVerified */ echo __('Clear Cloudfront Cache') ?>
+    </button>
+</form>
