@@ -975,7 +975,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "ef54380296b07539566c1c941ab989a25993e2a9"
+                "reference": "8896a5f33015ab23e2e29f6a5c57834d883a8e94"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -1032,7 +1032,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2018-06-04 09:02:12"
+            "time": "2018-06-25 09:14:47"
         },
         {
             "name": "justinrainbow/json-schema",
