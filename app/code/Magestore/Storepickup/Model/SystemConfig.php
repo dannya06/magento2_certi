@@ -297,7 +297,7 @@ class SystemConfig
      *
      * @return mixed
      */
-    public function getGoolgeApiKey($store = null)
+    public function getGoogleApiKey($store = null)
     {
         return $this->_scopeConfig->getValue(
             self::XML_PATH_SERVICE_GOOGLE_API_KEY,
