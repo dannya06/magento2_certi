@@ -22,6 +22,9 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
+        <meta name="google-site-verification" content="LACX05zyN2BTV2lHCkk0VACwEwPNSWNRDEDQsLGt1LI" />
+        <script src="https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer.js" src_type="url"/>
+        
         <css src="Magestore_Storepickup::css/bootstrap/bootstrap.css"></css>
         <css src="Magestore_Storepickup::css/bootstrap/glyphicons.css"></css>
         <css src="Magestore_Storepickup::css/liststore.css"></css>

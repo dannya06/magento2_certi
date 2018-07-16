@@ -61,9 +61,13 @@ $mcOptions= array (
     <div class="overlay-bg">
         <img src="<?php echo $block->getViewFileUrl('Magestore_Storepickup::images/ajax-loader.gif') ?>" alt="overlay" />
     </div>
+
     <script type="text/javascript">
 		var mcOptions = JSON.parse('<?php echo $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($mcOptions) ?>');
         var loadStoreURL = '<?php echo $block->getUrl('storepickup/index/loadstore') ?>';
+        window.checkoutConfig = {
+            googleKeyApi: '<?php echo $block->getSystemConfig()->getGoogleApiKey(); ?>'
+        }
         if(window.location.href.slice(0,5)=='https') loadStoreURL= loadStoreURL.replace("http:","https:");
         require(['jquery', 'magestore/googlemap', 'Magestore_Storepickup/js/makercluster'], function($){
             $(document).ready(function ($) {
