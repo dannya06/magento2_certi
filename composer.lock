@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "43aabbdd94cc3a4bf93fd2e82967a39e",
+    "content-hash": "16cddbb941af9d96337e177f77f0e4c3",
     "packages": [
         {
             "name": "braintree/braintree_php",
@@ -589,6 +589,42 @@
             "time": "2017-11-08T17:04:47+00:00"
         },
         {
+            "name": "fabrizioballiano/deferjavascripts",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fballiano/magento2-defer-javascripts.git",
+                "reference": "a90ee640881a8d5fc68be946e2c23f18ac675046"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fballiano/magento2-defer-javascripts/zipball/a90ee640881a8d5fc68be946e2c23f18ac675046",
+                "reference": "a90ee640881a8d5fc68be946e2c23f18ac675046",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FabrizioBalliano\\DeferJavascripts\\": ""
+                },
+                "files": [
+                    "registration.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL 3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Fabrizio Balliano",
+                    "email": "fabrizio@fabrizioballiano.com"
+                }
+            ],
+            "description": "Moves all your javascripts to the very end of your HTML (only on frontend) making search engines and speed metering tools happy.",
+            "time": "2016-09-09T11:38:26+00:00"
+        },
+        {
             "name": "guzzlehttp/ringphp",
             "version": "1.1.0",
             "source": {
@@ -822,7 +858,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2018-02-21 09:43:23"
+            "time": "2018-02-21T09:43:23+00:00"
         },
         {
             "name": "icubeus/magento2-gosend",
@@ -866,7 +902,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2018-04-12 11:27:03"
+            "time": "2018-04-12T11:27:03+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -892,7 +928,7 @@
                 }
             ],
             "description": "Indonesian language package for Magento 2",
-            "time": "2017-09-26 02:09:30"
+            "time": "2017-09-26T02:09:30+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
@@ -936,7 +972,7 @@
                 "magento2",
                 "rapidflow"
             ],
-            "time": "2018-02-14 05:02:40"
+            "time": "2018-02-14T05:02:40+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -967,7 +1003,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2018-02-13 08:10:19"
+            "time": "2018-02-13T08:10:19+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -1032,7 +1068,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2018-07-16 07:57:18"
+            "time": "2018-07-16T07:57:18+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
