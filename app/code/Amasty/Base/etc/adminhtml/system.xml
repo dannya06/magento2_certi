@@ -16,11 +16,22 @@
             <label><![CDATA[Extensions &amp; Notifications]]></label>
             <tab>amasty</tab>
             <resource>Amasty_Base::config</resource>
-            <group id="extensions" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0"
+            <group id="notifications" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Notifications</label>
+                <field id="type" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>I want to Receive Notifications about:</label>
+                    <source_model>Amasty\Base\Model\Source\NotificationType</source_model>
+                </field>
+            </group>
+
+            <group id="extensions" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0"
                    showInStore="0">
                 <label>Installed Extensions</label>
                 <frontend_model>Amasty\Base\Block\Extensions</frontend_model>
             </group>
+
             <group id="information" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="0"
                    showInStore="0">
                 <label>System Information</label>

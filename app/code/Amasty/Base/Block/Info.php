@@ -8,6 +8,7 @@
 
 namespace Amasty\Base\Block;
 
+use Magento\Framework\App\State;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
@@ -16,11 +17,6 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
      * @var \Magento\Framework\View\LayoutFactory
      */
     private $_layoutFactory;
-    
-    /**
-     * @var \Magento\Framework\App\State
-     */
-    private $appState;
     
     /**
      * @var \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory
@@ -33,6 +29,21 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
     private $directoryList;
 
     /**
+     * @var \Magento\Framework\App\ResourceConnection
+     */
+    private $resourceConnection;
+
+    /**
+     * @var \Magento\Framework\App\ProductMetadataInterface
+     */
+    private $productMetadata;
+
+    /**
+     * @var \Magento\Framework\App\DeploymentConfig\Reader
+     */
+    private $reader;
+
+    /**
      * Info constructor.
      *
      * @param \Magento\Backend\Block\Context                               $context
@@ -41,7 +52,9 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
      * @param \Magento\Framework\View\LayoutFactory                        $layoutFactory
      * @param \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronFactory
      * @param \Magento\Framework\App\Filesystem\DirectoryList              $directoryList
-     * @param \Magento\Framework\App\State                                 $appState
+     * @param \Magento\Framework\App\DeploymentConfig\Reader               $reader
+     * @param \Magento\Framework\App\ResourceConnection                    $resourceConnection
+     * @param \Magento\Framework\App\ProductMetadataInterface              $productMetadata
      * @param array                                                        $data
      */
     public function __construct(
@@ -51,16 +64,20 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
         \Magento\Framework\View\LayoutFactory $layoutFactory,
         \Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory $cronFactory,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
-        \Magento\Framework\App\State $appState,
+        \Magento\Framework\App\DeploymentConfig\Reader $reader,
+        \Magento\Framework\App\ResourceConnection $resourceConnection,
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         array $data = []
     ) {
         parent::__construct($context, $authSession, $jsHelper, $data);
 
         $this->_layoutFactory = $layoutFactory;
         $this->_scopeConfig   = $context->getScopeConfig();
-        $this->appState = $appState;
         $this->cronFactory = $cronFactory;
         $this->directoryList = $directoryList;
+        $this->resourceConnection = $resourceConnection;
+        $this->productMetadata = $productMetadata;
+        $this->reader = $reader;
     }
 
     /**
@@ -106,7 +123,9 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
     private function getMagentoMode($fieldset)
     {
         $label = __("Magento Mode");
-        $mode = $this->appState->getMode();
+
+        $env = $this->reader->load();
+        $mode = isset($env[State::PARAM_MODE]) ? $env[State::PARAM_MODE] : '';
 
         return $this->getFieldHtml($fieldset, 'magento_mode', $label, ucfirst($mode));
     }
@@ -148,12 +167,12 @@ class Info extends \Magento\Config\Block\System\Config\Form\Fieldset
      */
     private function getSystemTime($fieldset)
     {
-        return $this->getFieldHtml(
-            $fieldset,
-            'current_time',
-            __("Current Time"),
-            $this->_localeDate->date()->format('H:i:s')
-        );
+        if (version_compare($this->productMetadata->getVersion(), '2.2', '>=')) {
+            $time = $this->resourceConnection->getConnection()->fetchOne("select now()");
+        } else {
+            $time = $this->_localeDate->date()->format('H:i:s');
+        }
+        return $this->getFieldHtml($fieldset, 'mysql_current_date_time', __("Current Time"), $time);
     }
 
     /**

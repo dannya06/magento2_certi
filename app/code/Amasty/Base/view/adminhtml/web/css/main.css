@@ -19,6 +19,27 @@
     vertical-align: top;
 }
 
-#amasty_base_extensions table td.value, #amasty_base_information table td.value{
+#amasty_base_extensions table td.value,
+#amasty_base_information table td.value {
     vertical-align: bottom;
 }
+
+.ambase-grid-message {
+    padding-left: 58px;
+    min-height: 53px;
+    background: url(../images/logo_m_table.png) no-repeat;
+}
+
+.ambase-grid-message.amasty-grid-logo {
+    background: url(../images/logo_table.png) no-repeat;
+}
+
+.admin__action-dropdown-menu .notifications-entry:not(.notifications-entry-last) {
+    padding-left: 37px;
+    background: url(../images/logo_m_popup.png) no-repeat 5px 7px;
+}
+
+.admin__action-dropdown-menu .notifications-entry[data-ambase-logo="1"] {
+    background: url(../images/logo_popup.png) no-repeat 5px 7px;
+}
+
