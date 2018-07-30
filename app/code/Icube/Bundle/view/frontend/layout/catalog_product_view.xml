@@ -12,6 +12,11 @@
     </head>
 -->
     <referenceContainer name="head.additional">
+	    <block class="Icube\Bundle\Block\Init" template="Icube_Bundle::head-bundlejs.phtml" name="jsbundle.pdp.catalog">
+		    <arguments>
+			    <argument name="file_path" xsi:type="string">bundles/catalog.js</argument>
+			</arguments>
+	    </block>
 	    <block class="Icube\Bundle\Block\Init" template="Icube_Bundle::head-bundlejs.phtml" name="jsbundle.pdp">
 		    <arguments>
 			    <argument name="file_path" xsi:type="string">bundles/product.js</argument>
