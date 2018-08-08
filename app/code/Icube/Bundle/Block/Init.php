@@ -9,7 +9,7 @@ class Init extends \Magento\Framework\View\Element\Template
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Framework\View\Asset\Repository $assetRepo,
-        \Icube\CustomStyle\Helper\Data $helper
+        \Icube\Bundle\Helper\Data $helper
     ) {
         parent::__construct($context);
         $this->_assetRepo = $assetRepo;
