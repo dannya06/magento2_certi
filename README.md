@@ -31,7 +31,7 @@ How to update project that base from SWIFT
 
     git remote add swift https://github.com/icubeus/swift.git
 
-    git fetch swift --tags
+    git fetch swift
 
     git merge master
     
@@ -49,7 +49,7 @@ How to update project that clone from SWIFT
 
     git fetch origin
 
-    git checkout master_swift -b swift_repo/master
+    git checkout master_swift -b swift/master
     
     composer install
 
