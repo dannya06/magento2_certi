@@ -13,7 +13,7 @@ Instalation:
 
     install site using wizard from browser
 
-    git checkout 2.0.10
+    git checkout master
 
     composer install
 
@@ -33,7 +33,7 @@ How to update project that base from SWIFT
 
     git fetch swift --tags
 
-    git merge 2.0.10
+    git merge master
     
     composer install
     
@@ -47,9 +47,9 @@ How to update project that base from SWIFT
 How to update project that clone from SWIFT
 =============================================================
 
-    git fetch origin --tags
+    git fetch origin
 
-    git checkout tags/2.0.10 -b <branch_name>_2.0.10
+    git checkout master_swift -b swift_repo/master
     
     composer install
 
