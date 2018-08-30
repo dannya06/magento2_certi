@@ -22,7 +22,8 @@
         "ebizmarts/MailChimp-lib": "^3.0",
         "icubeus/magento2-rapidflow": "dev-masterrc",
         "icubeus/magento2-gosend": "dev-master",
-        "fabrizioballiano/deferjavascripts": "^1.0"
+        "fabrizioballiano/deferjavascripts": "^1.0",
+        "msp/recaptcha": "2.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.0",
