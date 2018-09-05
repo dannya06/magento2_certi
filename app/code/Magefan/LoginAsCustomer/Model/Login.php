@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Ihor Vansach (ihor@magefan.com). All rights reserved.
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  *
  * Glory to Ukraine! Glory to the heroes!
@@ -17,6 +17,8 @@ class Login extends \Magento\Framework\Model\AbstractModel
      * Login tome frame
      */
     const TIME_FRAME = 60;
+
+    const XML_PATH_KEEP_GUEST_CART = 'mfloginascustomer/general/keep_guest_cart';
 
     /**
      * Prefix of model events names
@@ -44,11 +46,15 @@ class Login extends \Magento\Framework\Model\AbstractModel
      */
     protected $_customer;
 
-
     /**
      * @var \Magento\Customer\Model\Session
      */
     protected $_customerSession;
+
+    /**
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $_checkoutSession;
 
     /**
      * @var \Magento\Framework\Stdlib\DateTime\DateTime
@@ -61,6 +67,16 @@ class Login extends \Magento\Framework\Model\AbstractModel
     protected $_random;
 
     /**
+     * @var \Magento\Checkout\Model\Cart
+     */
+    protected $cart;
+
+    /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
+    /**
      * Initialize dependencies.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -69,9 +85,12 @@ class Login extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
      * @param \Magento\Framework\Math\Random $random
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
+     * @param \Magento\Checkout\Model\Cart $cart
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
+     * @param null|\Magento\Checkout\Model\Session $checkoutSession
+     * @param null|\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -80,14 +99,28 @@ class Login extends \Magento\Framework\Model\AbstractModel
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
         \Magento\Framework\Math\Random $random,
+        \Magento\Checkout\Model\Cart $cart,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = []
+        array $data = [],
+        $checkoutSession = null,
+        $scopeConfig = null
     ) {
         $this->_customerFactory = $customerFactory;
         $this->_customerSession = $customerSession;
+        $this->_checkoutSession = $checkoutSession;
         $this->_dateTime = $dateTime;
         $this->_random = $random;
+        $this->cart = $cart;
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->_checkoutSession = $checkoutSession ?: $objectManager->get(
+            \Magento\Checkout\Model\Session::class
+        );
+        $this->scopeConfig = $scopeConfig ?: $objectManager->get(
+            \Magento\Framework\App\Config\ScopeConfigInterface::class
+        );
+
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -124,7 +157,8 @@ class Login extends \Magento\Framework\Model\AbstractModel
     {
         $resource = $this->getResource();
         $resource->getConnection()->delete(
-            $resource->getTable('magefan_login_as_customer'), [
+            $resource->getTable('magefan_login_as_customer'),
+            [
                 'created_at < ?' => $this->getDateTimePoint(),
                 'used = ?' => 0,
             ]
@@ -159,6 +193,25 @@ class Login extends \Magento\Framework\Model\AbstractModel
      */
     public function authenticateCustomer()
     {
+        if ($this->_customerSession->getId()) {
+            /* Logout if logged in */
+            $this->_customerSession->logout();
+        } else {
+
+            $keepItems = $this->scopeConfig->getValue(
+                self::XML_PATH_KEEP_GUEST_CART,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            );
+
+            if (!$keepItems) {
+                /* Remove items from guest cart */
+                foreach ($this->cart->getQuote()->getAllVisibleItems() as $item) {
+                    $this->cart->removeItem($item->getId());
+                }
+                $this->cart->save();
+            }
+        }
+
         $customer = $this->getCustomer();
 
         if (!$customer->getId()) {
@@ -170,7 +223,12 @@ class Login extends \Magento\Framework\Model\AbstractModel
             $this->_customerSession->setLoggedAsCustomerAdmindId(
                 $this->getAdminId()
             );
+        } else {
+            throw new \Exception(__("Cannot login customer."), 1);
         }
+
+        /* Load Customer Quote */
+        $this->_checkoutSession->loadCustomerQuote();
 
         $this->setUsed(1)->save();
 
@@ -192,5 +250,4 @@ class Login extends \Magento\Framework\Model\AbstractModel
             'created_at' => $this->_dateTime->gmtTimestamp(),
         ])->save();
     }
-
 }

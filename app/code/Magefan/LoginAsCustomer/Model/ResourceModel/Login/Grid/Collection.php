@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Ihor Vansach (ihor@magefan.com). All rights reserved.
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  *
  * Glory to Ukraine! Glory to the heroes!
@@ -35,15 +35,14 @@ class Collection extends \Magefan\LoginAsCustomer\Model\ResourceModel\Login\Coll
         parent::_initSelect();
         $this->getSelect()
             ->joinLeft(
-                array('c' => $this->getTable('customer_entity')),
+                ['c' => $this->getTable('customer_entity')],
                 'c.entity_id = main_table.customer_id',
-                array('email')
+                ['email']
             )->joinLeft(
-                array('a' => $this->getTable('admin_user')),
+                ['a' => $this->getTable('admin_user')],
                 'a.user_id = main_table.admin_id',
-                array('username')
+                ['username']
             );
         return $this;
     }
-
 }

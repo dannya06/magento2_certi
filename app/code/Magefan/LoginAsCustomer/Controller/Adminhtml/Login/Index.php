@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Ihor Vansach (ihor@magefan.com). All rights reserved.
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  *
  * Glory to Ukraine! Glory to the heroes!
@@ -13,20 +13,20 @@ namespace Magefan\LoginAsCustomer\Controller\Adminhtml\Login;
  */
 class Index extends \Magento\Backend\App\Action
 {
-	/**
+    /**
      * Login as customer log
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
-    	if ($this->getRequest()->getParam('ajax')) {
+        if ($this->getRequest()->getParam('ajax')) {
             $this->_forward('grid');
             return;
         }
 
         $this->_objectManager
-            ->create('\Magefan\LoginAsCustomer\Model\Login')
+            ->create(\Magefan\LoginAsCustomer\Model\Login::class)
             ->deleteNotUsed();
 
         $this->_view->loadLayout();

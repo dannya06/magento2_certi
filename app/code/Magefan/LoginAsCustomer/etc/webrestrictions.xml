@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Copyright © 2015-2017 Ihor Vansach (ihor@magefan.com). All rights reserved.
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  *
  * Glory to Ukraine! Glory to the heroes!
@@ -9,6 +9,5 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_WebsiteRestriction:etc/webrestrictions.xsd">
     <action path="loginascustomer_login_index" type="generic" />
-    <action path="loginascustomer_login_post" type="generic" />
     <action path="loginascustomer_login_proceed" type="generic" />
 </config>
