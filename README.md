@@ -32,8 +32,10 @@ How to update project that base from SWIFT
     git remote add swift https://github.com/icubeus/swift.git
 
     git fetch swift
+    
+    git checkout -b master_swift
 
-    git merge master
+    git pull swift master
     
     composer install
     
@@ -41,7 +43,9 @@ How to update project that base from SWIFT
 
     DO SOME TESTING
 
-    git push origin <your branch>
+    git push origin master_swift
+    
+    Continue will pull request
 
 
 How to update project that clone from SWIFT
