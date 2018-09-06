@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Ihor Vansach (ihor@magefan.com). All rights reserved.
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  *
  * Glory to Ukraine! Glory to the heroes!
@@ -86,8 +86,8 @@ class AdminNotificationFeed extends \Magento\AdminNotification\Model\Feed
 
         $url = $this->_feedUrl . 'domain/' . urlencode($domain);
 
-        $modulesParams = array();
-        foreach($this->getMagefanModules() as $key => $module) {
+        $modulesParams = [];
+        foreach ($this->getMagefanModules() as $key => $module) {
             $key = str_replace('Magefan_', '', $key);
             $modulesParams[] = $key . ',' . $module['setup_version'];
         }
@@ -106,9 +106,9 @@ class AdminNotificationFeed extends \Magento\AdminNotification\Model\Feed
      */
     protected function getMagefanModules()
     {
-        $modules = array();
-        foreach($this->_moduleList->getAll() as $moduleName => $module) {
-            if ( strpos($moduleName, 'Magefan_') !== false && $this->_moduleManager->isEnabled($moduleName) ) {
+        $modules = [];
+        foreach ($this->_moduleList->getAll() as $moduleName => $module) {
+            if (strpos($moduleName, 'Magefan_') !== false && $this->_moduleManager->isEnabled($moduleName)) {
                 $modules[$moduleName] = $module;
             }
         }
@@ -166,5 +166,4 @@ class AdminNotificationFeed extends \Magento\AdminNotification\Model\Feed
         $this->_cacheManager->save(time(), 'magefan_admin_notifications_lastcheck');
         return $this;
     }
-
 }

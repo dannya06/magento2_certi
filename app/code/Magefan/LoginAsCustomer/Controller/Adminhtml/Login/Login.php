@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Ihor Vansach (ihor@magefan.com). All rights reserved.
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  *
  * Glory to Ukraine! Glory to the heroes!
@@ -23,7 +23,7 @@ class Login extends \Magento\Backend\App\Action
         $customerId = (int) $this->getRequest()->getParam('customer_id');
 
         $login = $this->_objectManager
-            ->create('\Magefan\LoginAsCustomer\Model\Login')
+            ->create(\Magefan\LoginAsCustomer\Model\Login::class)
             ->setCustomerId($customerId);
 
         $login->deleteNotUsed();
@@ -36,17 +36,34 @@ class Login extends \Magento\Backend\App\Action
             return;
         }
 
-        $user = $this->_objectManager->get('Magento\Backend\Model\Auth\Session')->getUser();
+        $user = $this->_objectManager->get(\Magento\Backend\Model\Auth\Session::class)->getUser();
         $login->generate($user->getId());
+        $customerStoreId = $this->getCustomerStoreId($customer);
 
-        $store = $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')
-            ->getStore($customer->getStoreId());
-        $url = $this->_objectManager->get('Magento\Framework\Url')
+        $storeManager = $this->_objectManager->get(\Magento\Store\Model\StoreManagerInterface::class);
+
+        if ($customerStoreId) {
+            $store = $storeManager->getStore($customerStoreId);    
+        } else {
+            $store = $storeManager->getDefaultStoreView();    
+        }
+        
+        $url = $this->_objectManager->get(\Magento\Framework\Url::class)
             ->setScope($store);
 
         $redirectUrl = $url->getUrl('loginascustomer/login/index', ['secret' => $login->getSecret(), '_nosid' => true]);
 
         $this->getResponse()->setRedirect($redirectUrl);
+    }
+
+    /**
+     * We're not using the $customer->getStoreId() method due to a bug where it returns the store for the customer's website
+     * @param $customer
+     * @return string
+     */
+    public function getCustomerStoreId(\Magento\Customer\Model\Customer $customer)
+    {
+        return $customer->getData('store_id');
     }
 
     /**

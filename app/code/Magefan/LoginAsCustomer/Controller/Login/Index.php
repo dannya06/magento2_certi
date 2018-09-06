@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Ihor Vansach (ihor@magefan.com). All rights reserved.
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  *
  * Glory to Ukraine! Glory to the heroes!
@@ -26,29 +26,14 @@ class Index extends \Magento\Framework\App\Action\Action
         }
 
         try {
-            $session = $this->_objectManager
-                ->create('\Magento\Customer\Model\Session');
-            if ($session->getId()) {
-                /* Logout if logged in */
-                $session->logout();
-            } else {
-                /* Remove items from cart */
-                $cart = $this->_objectManager
-                    ->create('\Magento\Checkout\Model\Cart');
-                foreach ($cart->getQuote()->getAllVisibleItems() as $item) {
-                    $cart->removeItem($item->getId());
-                }
-                $cart->save();
-            }
             /* Log in */
             $login->authenticateCustomer();
+            $this->messageManager->addSuccess(
+                __('You are logged in as customer: %1', $login->getCustomer()->getName())
+            );
         } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
         }
-
-        $this->messageManager->addSuccess(
-            __('You are logged in as customer: %1', $login->getCustomer()->getName())
-        );
 
         $this->_redirect('*/*/proceed');
     }
@@ -66,7 +51,7 @@ class Index extends \Magento\Framework\App\Action\Action
         }
 
         $login = $this->_objectManager
-            ->create('\Magefan\LoginAsCustomer\Model\Login')
+            ->create(\Magefan\LoginAsCustomer\Model\Login::class)
             ->loadNotUsed($secret);
 
         if ($login->getId()) {
@@ -76,5 +61,4 @@ class Index extends \Magento\Framework\App\Action\Action
             return false;
         }
     }
-
 }

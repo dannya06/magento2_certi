@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Ihor Vansach (ihor@magefan.com). All rights reserved.
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  *
  * Glory to Ukraine! Glory to the heroes!
@@ -13,14 +13,14 @@ namespace Magefan\LoginAsCustomer\Controller\Adminhtml\Login;
  */
 class Grid extends \Magento\Backend\App\Action
 {
-	/**
+    /**
      * Login as customer log grid
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
-		$this->_view->loadLayout(false);
+        $this->_view->loadLayout(false);
         $this->_view->renderLayout();
     }
 
