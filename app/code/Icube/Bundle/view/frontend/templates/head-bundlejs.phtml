@@ -1,6 +1,0 @@
-<?php
-	$filePath = $this->getFilePath();
-?>
-<?php if($block->isEnableJsBundling()): ?>
-<script src="<?php echo $block->escapeUrl($block->getAssetRepo($filePath)); ?>" ></script>
-<?php endif; ?>
