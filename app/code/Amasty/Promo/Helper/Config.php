@@ -1,17 +1,12 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
-namespace Amasty\Promo\Helper;
 
-/**
- * Class Config
- *
- * @author Artem Brunevski
- */
+namespace Amasty\Promo\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 
@@ -27,7 +22,7 @@ class Config extends AbstractHelper
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context
-    ){
+    ) {
         parent::__construct($context);
         $this->scopeConfig = $context->getScopeConfig();
     }

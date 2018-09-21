@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 -->
@@ -24,13 +24,8 @@
     <type name="Magento\SalesRule\Model\Rule\Metadata\ValueProvider">
         <plugin name="Amasty_Promo::SalesRule_ValueProvider" type="Amasty\Promo\Plugin\ValueProvider"/>
     </type>
-    <type name="Magento\SalesRule\Model\Rule\Condition\Product">
-        <plugin name="Amasty_Promo::SalesRule_Rule_Condition_Product"
-                type="Amasty\Promo\Plugin\SalesRule\Model\Rule\Condition\Product"/>
-    </type>
-    <type name="Magento\Rule\Model\Condition\Product\AbstractProduct">
-        <plugin name="Amasty_Promo::Rule_Condition_Product_AbstractProduct"
-                type="Amasty\Promo\Plugin\Rule\Model\Condition\Product\AbstractProduct"/>
+    <type name="Magento\Checkout\Model\Cart">
+        <plugin name="Amasty_Promo::Model_Cart_Update" type="Amasty\Promo\Plugin\Model\Cart"/>
     </type>
 
     <virtualType name="Amasty\Promo\Model\BannerImageUpload" type="Magento\Catalog\Model\ImageUploader">
@@ -51,8 +46,31 @@
             <argument name="imageUploader" xsi:type="object">Amasty\Promo\Model\BannerImageUpload</argument>
         </arguments>
     </type>
-    <type name="\Magento\Rule\Model\Condition\AbstractCondition">
-        <plugin name="Amasty_Promo::Condition_AbstractCondition"
-                type="Amasty\Promo\Plugin\Rule\Model\Condition\AbstractCondition"/>
+    <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
+        <plugin name="Amasty_Promo::Configurable_View"
+                type="Amasty\Promo\Plugin\Block\Product\Configurable"/>
+    </type>
+    <type name="Magento\Catalog\Block\Product\View">
+        <plugin name="Amasty_Promo::Simple_View"
+                type="Amasty\Promo\Plugin\Block\Product\Simple"/>
+    </type>
+    <type name="Magento\SalesRule\Observer\SalesOrderAfterPlaceObserver">
+        <plugin name="Amasty_Promo::Fix_Coupon_Usage"
+                type="Amasty\Promo\Plugin\FixCouponsUsage"/>
+    </type>
+    <type name="Magento\OfflineShipping\Model\SalesRule\Calculator">
+        <plugin name="Amasty_Promo::Apply_Shipping" type="Amasty\Promo\Plugin\OfflineShipping\Model\SalesRule\Calculator" />
+    </type>
+    <type name="Magento\Tax\Model\Sales\Total\Quote\CommonTaxCollector">
+        <plugin name="Amasty_Promo::Apply_Tax" type="Amasty\Promo\Plugin\Tax\Model\Sales\Total\Quote\CommonTaxCollector" />
+    </type>
+    <type name="Magento\Tax\Model\TaxDetails\TaxDetails">
+        <plugin name="Amasty_Promo::Tax_Details" type="Amasty\Promo\Plugin\Tax\Model\TaxDetails\TaxDetails" />
+    </type>
+    <type name="Magento\Sales\Controller\AbstractController\Reorder">
+        <plugin name="Amasty_Promo::Reorder" type="Amasty\Promo\Plugin\Reorder\Reorder" />
+    </type>
+    <type name="Magento\Sales\Model\Order">
+        <plugin name="Amasty_Promo::Reorder_Items_Cleaner" type="Amasty\Promo\Plugin\Reorder\ReorderItemsCleaner" />
     </type>
 </config>

@@ -8,7 +8,7 @@
         "AFL-3.0"
     ],
     "require": {
-        "magento/product-community-edition": "2.2.1",
+        "magento/product-community-edition": "2.2.6",
         "composer/composer": "@alpha",
         "icubeus/magento2-citykecamatan": "^1.0",
         "icubeus/magento2-advancerate": "1.0.2",
@@ -16,7 +16,7 @@
         "icubeus/magento2-confirmpayment": "dev-master",
         "icubeus/magento2-trackorder": "dev-master",
         "icubeus/magento2-checkout": "^2.1",
-        "smile/elasticsuite": "2.5.5",
+        "smile/elasticsuite": "2.6.0",
         "icubeus/magento2-indonesianlanguage": "dev-master",
         "magepal/magento2-reindex": "^1.0",
         "ebizmarts/MailChimp-lib": "^3.0",

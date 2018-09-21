@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -38,6 +38,11 @@ class ValueProvider
         'ampromorule[type]',
     ];
 
+    const BOOL_ACTIONS = [
+        'ampromorule[apply_tax]',
+        'ampromorule[apply_shipping]',
+    ];
+
     const LABELS = [
         'ampromorule_label_image',
         'ampromorule_label_image_alt',
@@ -54,6 +59,12 @@ class ValueProvider
         'ampromorule_top_banner',
         'ampromorule_after_product_banner',
         'ampromorule_product_label',
+        'ampromorule_items_price'
+    ];
+
+    const PRICE = [
+        'ampromorule_items_discount',
+        'ampromorule_minimal_items_price',
     ];
 
     /**
@@ -87,21 +98,30 @@ class ValueProvider
 
         $actions = &$result['actions']['children']['simple_action']['arguments']['data']['config']['options'];
 
-        $actions[] = [
+        $autoaddActions[] = [
             'label' => __('Auto add promo items with products'),
             'value' => 'ampromo_items'
         ];
-        $actions[] = [
+        $autoaddActions[] = [
             'label' => __('Auto add promo items for the whole cart'),
             'value' => 'ampromo_cart'
         ];
-        $actions[] = [
+        $autoaddActions[] = [
             'label' => __('Auto add the same product'),
             'value' => 'ampromo_product'
         ];
-        $actions[] = [
+        $autoaddActions[] = [
             'label' => __('Auto add promo items for every $X spent'),
             'value' => 'ampromo_spent'
+        ];
+        $autoaddActions[] = [
+            'label' => __('Add gift with each N-th product in the cart'),
+            'value' => 'ampromo_eachn'
+        ];
+
+        $actions[] = [
+            'label' => __('Automatically add products to cart'),
+            'value' => $autoaddActions
         ];
 
         /** @var \Amasty\Promo\Model\Rule $ampromoRule */
@@ -146,6 +166,9 @@ class ValueProvider
                 foreach (self::ACTIONS as $action) {
                     $result[$field]['children'][$action]['arguments']['data']['config']['componentType'] = 'text';
                 }
+                foreach (self::BOOL_ACTIONS as $action) {
+                    $result[$field]['children'][$action]['arguments']['data']['config']['componentType'] = 'boolean';
+                }
                 break;
         }
 
@@ -174,8 +197,12 @@ class ValueProvider
             case 'ampromorule_product_label':
                 $result = $this->setValueForAmastyFieldSet($field, self::LABELS, $rule, $result);
                 break;
+            case 'ampromorule_items_price':
+                $result = $this->setValueForAmastyFieldSet($field, self::PRICE, $rule, $result);
+                break;
             case 'actions':
-                foreach (self::ACTIONS as $action) {
+                $actions = array_merge(self::ACTIONS, self::BOOL_ACTIONS);
+                foreach ($actions as $action) {
                     preg_match('/.+?\[(.+?)\]/', $action, $modelField);
                     $value = $rule->getData($modelField[1]);
                     $result[$field]['children']["ampromorule[$modelField[1]]"]['arguments']['data']['config']['value']
@@ -192,7 +219,7 @@ class ValueProvider
      *
      * @param $type
      * @param $arrayWithField
-     * @param $rule
+     * @param \Amasty\Promo\Model\Rule $rule
      * @param $result
      *
      * @return array

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -40,7 +40,7 @@ class Banner extends Template
     protected $ruleCollection;
 
     /** @var  \Magento\SalesRule\Model\ResourceModel\Rule\Collection [] */
-    protected $validRules;
+    private static $validRules = null;
 
     /** @var \Amasty\Promo\Helper\Config\Proxy  */
     protected $config;
@@ -232,7 +232,7 @@ class Banner extends Template
                     $currentQuote->getCustomerGroupId(),
                     $currentQuote->getCouponCode()
                 )
-                ->addFieldToFilter('simple_action', ['in' => ['ampromo_items', 'ampromo_product']]);
+                ->addFieldToFilter('simple_action', ['in' => ['ampromo_items', 'ampromo_product', 'ampromo_eachn']]);
         }
         return $this->ruleCollection;
     }
@@ -242,7 +242,7 @@ class Banner extends Template
      */
     public function getValidRules()
     {
-        if ($this->validRules === null) {
+        if (self::$validRules === null) {
             $validRulesIds = [];
             if ($this->config->getScopeValue('banners/mode') === self::MODE_PRODUCT) {
                 $validRulesIds = $this->getProductBasedValidRuleIds();
@@ -254,11 +254,11 @@ class Banner extends Template
                 $validRulesIds = array_slice($validRulesIds, 0, 1);
             }
 
-            $this->validRules = $this->ruleConfigCollectionFactory->create()
+            self::$validRules = $this->ruleConfigCollectionFactory->create()
                 ->addFieldToFilter('salesrule_id', ['in' => $validRulesIds]);
         }
 
-        return $this->validRules;
+        return self::$validRules;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -38,24 +38,30 @@ class AddressCollectTotalsAfterObserver implements ObserverInterface
     protected $promoRegistry;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var \Amasty\Promo\Model\Config
      */
-    protected $scopeConfig;
+    private $config;
+
+    /**
+     * @var \Amasty\Promo\Model\DiscountCalculator
+     */
+    private $discountCalculator;
 
     public function __construct(
         \Magento\Framework\Registry $registry,
         \Magento\Catalog\Model\ProductFactory $productFactory,
         \Amasty\Promo\Helper\Item $promoItemHelper,
         \Amasty\Promo\Model\Registry $promoRegistry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Amasty\Promo\Model\Config $config,
+        \Amasty\Promo\Model\DiscountCalculator $discountCalculator
     ) {
         $this->_coreRegistry   = $registry;
         $this->_productFactory = $productFactory;
         $this->promoItemHelper = $promoItemHelper;
         $this->promoRegistry   = $promoRegistry;
-        $this->scopeConfig     = $scopeConfig;
+        $this->config = $config;
+        $this->discountCalculator = $discountCalculator;
     }
-
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
@@ -63,10 +69,7 @@ class AddressCollectTotalsAfterObserver implements ObserverInterface
 
         $items = $quote->getAllItems();
 
-        $addAutomatically = $this->scopeConfig->isSetFlag(
-            'ampromo/general/auto_add',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        $addAutomatically = $this->config->getAutoAddType();
 
         if ($addAutomatically) {
             $toAdd = $this->promoRegistry->getPromoItems();
@@ -75,12 +78,16 @@ class AddressCollectTotalsAfterObserver implements ObserverInterface
             foreach ($items as $item) {
                 $sku = $item->getProduct()->getData('sku');
 
-                if (!isset($toAdd[$sku])) {
-                    continue;
-                }
+                foreach ($toAdd as &$rule) {
+                    if (!isset($rule['sku'][$sku])) {
+                        continue;
+                    }
 
-                if ($this->promoItemHelper->isPromoItem($item)) {
-                    $toAdd[$sku]['qty'] -= $item->getQty();
+                    if ($this->discountCalculator->isEnableAutoAdd($rule['sku'][$sku]['discount'])) {
+                        if ($this->promoItemHelper->isPromoItem($item)) {
+                            $rule['sku'][$sku]['qty'] -= $item->getQty();
+                        }
+                    }
                 }
             }
 
@@ -89,17 +96,21 @@ class AddressCollectTotalsAfterObserver implements ObserverInterface
             $this->_coreRegistry->unregister('ampromo_to_add');
             $collectorData = [];
 
-            foreach ($toAdd as $sku => $item) {
-                if ($item['qty'] > 0 && $item['auto_add'] && !isset($deleted[$sku])) {
-                    $product = $this->_productFactory->create()->loadByAttribute('sku', $sku);
+            foreach ($toAdd as $ruleId => $ruleItem) {
+                foreach ($ruleItem['sku'] as $sku => $item) {
+                    if ($item['qty'] > 0 && $item['auto_add'] && !isset($deleted[$sku])) {
+                        $product = $this->_productFactory->create()->loadByAttribute('sku', $sku);
 
-                    if (isset($collectorData[$product->getId()])) {
-                        $collectorData[$product->getId()]['qty'] += $item['qty'];
-                    } else {
-                        $collectorData[$product->getId()] = [
-                            'product' => $product,
-                            'qty'     => $item['qty']
-                        ];
+                        if (isset($collectorData[$product->getId()])) {
+                            $collectorData[$product->getId()]['qty'] += $item['qty'];
+                        } else {
+                            $collectorData[$product->getId()] = [
+                                'product' => $product,
+                                'discount' => $item['discount'],
+                                'qty'     => $item['qty'],
+                                'rule_id' => $ruleId
+                            ];
+                        }
                     }
                 }
             }

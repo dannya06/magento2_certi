@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -41,7 +41,7 @@ class Notification extends \Magento\Framework\View\Element\Template
         \Amasty\Promo\Helper\Config $config,
         \Amasty\Promo\Helper\Data $promoHelper,
         array $data = []
-    ){
+    ) {
         $this->config = $config;
         $this->promoHelper = $promoHelper;
         $this->_isScopePrivate = true;
@@ -56,7 +56,9 @@ class Notification extends \Magento\Framework\View\Element\Template
         return (int)$this->config->getScopeValue(self::VAR_ENABLED) === 1;
     }
 
-
+    /**
+     * @return int
+     */
     public function getNewItemsCount()
     {
         $count = 0;
