@@ -145,3 +145,21 @@ So, the only possible workaround for now is disable the WeltPixel_SearchAutoComp
 - Admin Panel : Weltpixel > Ajax Search Autocomplete - Ajax Search Settings
 - General Settings for Ajax Search Autocomplete : Enable Ajax Search, set the value to NO
 - Perform clean cache from Cache Management or do "php bin/magento cache:clean" from CLI
+
+
+### Updating weltpixel configuration in local,dev, or production
+
+Import
+
+	php bin/magento weltpixel:import:configurations --store=GLOBAL --file="weltpixel_configurations_admin.csv"
+
+Export
+	
+	php bin/magento weltpixel:export:configurations --store=admin
+	
+The steps to everytime we made a changes in Weltpixel
+1. export the configuration
+2. push to github
+3. get latest in another local,dev, or production site
+4. Run the import
+5. full deploy
