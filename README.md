@@ -147,7 +147,8 @@ So, the only possible workaround for now is disable the WeltPixel_SearchAutoComp
 - Perform clean cache from Cache Management or do "php bin/magento cache:clean" from CLI
 
 
-### Updating weltpixel configuration in local,dev, or production
+Updating weltpixel configuration in local,dev, or production
+=============================================================
 
 Import
 
