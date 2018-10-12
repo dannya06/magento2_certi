@@ -1027,7 +1027,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "43bdb1158aa150ce6874f81f7fef63a0a05e6fc1"
+                "reference": "99d829bb8476c995eaf40e8918bb54dc85fb730a"
             },
             "require": {
                 "php": "~5.6.0|7.0.2|~7.0.6|~7.1.11"
@@ -1050,7 +1050,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2018-02-13 08:10:19"
+            "time": "2018-09-19 04:14:01"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -1058,7 +1058,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "4b7a0b75a194997311f7359b7db0787537e47c91"
+                "reference": "822808550222b3ae406b04b00042b236ea56ac5e"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -1115,7 +1115,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2018-10-01 16:30:24"
+            "time": "2018-10-12 04:50:53"
         },
         {
             "name": "justinrainbow/json-schema",
