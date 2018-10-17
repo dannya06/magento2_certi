@@ -18,13 +18,24 @@ Instalation:
     composer install
 
     php bin/magento setup:upgrade
+    
+    php bin/magento module:status 
+    (check current status for all module, if Smile Elasticsuite is enable please disable all module under Smile Elasticsuit)
+    
+    php bin/magento module:disable Smile_ElasticsuiteVirtualCategory Smile_ElasticsuiteTracker Smile_ElasticsuiteThesaurus Smile_ElasticsuiteSwatches Smile_ElasticsuiteCatalogOptimizer Smile_ElasticsuiteCatalogRule Smile_ElasticsuiteCatalog Smile_ElasticsuiteCore
+    
+    php bin/magento setup:upgrade
 
     php bin/magento setup:di:compile
+    
+    php bin/magento weltpixel:less:generate
 
-    php bin/magento setup:static-content:deploy
+    php bin/magento setup:static-content:deploy -f
 
     php bin/magento cache:flush
-
+    
+    chmod -R 777 var/ pub/ generated/ 
+    (*optional)
 
 How to update project that base from SWIFT
 =============================================================
