@@ -805,11 +805,11 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "2.1.19",
+            "version": "2.1.21",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "44263412109ff7d40bd6fbc8eec047bcee5d3e1e"
+                "reference": "a9b552998b2e4d5b099c3684517846a15af3a6c8"
             },
             "replace": {
                 "icubeus/module-core": "self.version",
@@ -841,7 +841,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2018-07-30T08:23:13+00:00"
+            "time": "2018-10-05T08:19:35+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
