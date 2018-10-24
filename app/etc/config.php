@@ -185,7 +185,6 @@ return array (
     'WeltPixel_Quickview' => 1,
     'WeltPixel_ReviewsWidget' => 1,
     'WeltPixel_SampleData' => 1,
-    'WeltPixel_SearchAutoComplete' => 1,
     'WeltPixel_Sitemap' => 1,
     'WeltPixel_SmartProductTabs' => 1,
     'WeltPixel_ThankYouPage' => 1,
