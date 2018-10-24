@@ -881,10 +881,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-confirmpayment.git",
-                "reference": "d80532836b73f76b0ec44f0770c3729a1d13d6d9"
-            },
-            "require": {
-                "php": "~5.6.0|7.0.2|~7.0.6"
+                "reference": "19f5b65f9b52742bb8f865a7d13bdf90c2412984"
             },
             "type": "magento2-module",
             "autoload": {
@@ -905,7 +902,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2018-02-21 09:43:23"
+            "time": "2018-07-17 05:12:36"
         },
         {
             "name": "icubeus/magento2-gosend",
@@ -913,11 +910,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "2e710bc26b52ce50816b9f8b197232846ea406df"
+                "reference": "25b9489b84252cc6c33360b18316f0da84ced914"
             },
             "require": {
                 "icubeus/magento2-checkout": "^2.1.11",
-                "php": "~5.6.0|7.0.2|~7.0.6"
+                "php": ">=7.0.2"
             },
             "replace": {
                 "icubeus/module-gosend": "self.version"
@@ -949,7 +946,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2018-04-12 11:27:03"
+            "time": "2018-10-24 08:41:35"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -983,10 +980,10 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-rapidflow.git",
-                "reference": "eb4592cf734f36d2d4a3cec3433f91a9c6c48e9f"
+                "reference": "b86a756b0fb0bef21e9b12c13e884d6344bd3464"
             },
             "require": {
-                "php": "~5.6.0|7.0.2|~7.0.6"
+                "php": ">=7.0.2"
             },
             "replace": {
                 "icubeus/module-rapidflow": "self.version",
@@ -1019,7 +1016,7 @@
                 "magento2",
                 "rapidflow"
             ],
-            "time": "2018-02-14 05:02:40"
+            "time": "2018-10-12 11:15:02"
         },
         {
             "name": "icubeus/magento2-trackorder",
