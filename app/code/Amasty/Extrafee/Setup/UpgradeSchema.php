@@ -136,7 +136,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
     protected function addBankFeeColumns(SchemaSetupInterface $setup)
     {
-        $connection = $setup->getConnection();
+        /*$connection = $setup->getConnection();
         $sql = "INSERT INTO `amasty_extrafee` (`entity_id`, `enabled`, `name`, `sort_order`, `frontend_type`, `description`, `options_serialized`, `conditions_serialized`, `discount_in_subtotal`, `tax_in_subtotal`, `shipping_in_subtotal`) VALUES (1, 1, 'Unique Code Bank Transfer', 0, 'radio', NULL, NULL, '', 2, 2, 2);";
 
         $connection->query($sql);
@@ -151,6 +151,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         $sql = "INSERT INTO `amasty_extrafee_store` (`fee_id`, `store_id`) VALUES (1, 0);";
 
-        $connection->query($sql);
+        $connection->query($sql);*/
     }
 }

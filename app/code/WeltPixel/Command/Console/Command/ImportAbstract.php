@@ -95,16 +95,6 @@ class ImportAbstract extends Command
                 $data[2] = \Magento\Framework\App\Config::SCOPE_TYPE_DEFAULT;
             }
 
-            /** Magento 2.2 or higher serialization changed to json object */
-            if (version_compare($magentoVersion, '2.2', '>=')) {
-                switch ($data[0]) {
-                    case 'weltpixel_custom_header/search_options/border_width':
-                    case 'weltpixel_category_page/toolbar/select_border_width':
-                        $data[1] = json_encode(unserialize($data[1]));
-                        break;
-                }
-            }
-
             $this->resourceConfig->saveConfig($data[0], $data[1], $data[2], $scopeId);
         }
     }

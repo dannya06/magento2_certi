@@ -18,13 +18,24 @@ Instalation:
     composer install
 
     php bin/magento setup:upgrade
+    
+    php bin/magento module:status 
+    (check current status for all module, if Smile Elasticsuite is enable please disable all module under Smile Elasticsuit)
+    
+    php bin/magento module:disable Smile_ElasticsuiteVirtualCategory Smile_ElasticsuiteTracker Smile_ElasticsuiteThesaurus Smile_ElasticsuiteSwatches Smile_ElasticsuiteCatalogOptimizer Smile_ElasticsuiteCatalogRule Smile_ElasticsuiteCatalog Smile_ElasticsuiteCore
+    
+    php bin/magento setup:upgrade
 
     php bin/magento setup:di:compile
+    
+    php bin/magento weltpixel:less:generate
 
-    php bin/magento setup:static-content:deploy
+    php bin/magento setup:static-content:deploy -f
 
     php bin/magento cache:flush
-
+    
+    chmod -R 777 var/ pub/ generated/ 
+    (*optional)
 
 How to update project that base from SWIFT
 =============================================================
@@ -145,3 +156,22 @@ So, the only possible workaround for now is disable the WeltPixel_SearchAutoComp
 - Admin Panel : Weltpixel > Ajax Search Autocomplete - Ajax Search Settings
 - General Settings for Ajax Search Autocomplete : Enable Ajax Search, set the value to NO
 - Perform clean cache from Cache Management or do "php bin/magento cache:clean" from CLI
+
+
+Updating weltpixel configuration in local,dev, or production
+=============================================================
+
+Import
+
+	php bin/magento weltpixel:import:configurations --store=GLOBAL --file="weltpixel_configurations_admin.csv"
+
+Export
+	
+	php bin/magento weltpixel:export:configurations --store=admin
+	
+The steps to everytime we made a changes in Weltpixel
+1. export the configuration
+2. push to github
+3. get latest in another local,dev, or production site
+4. Run the import
+5. full deploy

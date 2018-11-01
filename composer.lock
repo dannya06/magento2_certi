@@ -1223,11 +1223,11 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "2.1.19",
+            "version": "2.1.21",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "44263412109ff7d40bd6fbc8eec047bcee5d3e1e"
+                "reference": "a9b552998b2e4d5b099c3684517846a15af3a6c8"
             },
             "replace": {
                 "icubeus/module-core": "self.version",
@@ -1259,7 +1259,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2018-07-30 08:23:13"
+            "time": "2018-10-05T08:19:35+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -1328,7 +1328,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "502747676f4c0fa00570746f9a07667e1a553424"
+                "reference": "b92643f3763271e590499cb207dba925b46922e0"
             },
             "require": {
                 "icubeus/magento2-checkout": "^2.1.11",
@@ -1364,7 +1364,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2018-08-31 02:48:58"
+            "time": "2018-10-25 06:04:53"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -1398,7 +1398,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-rapidflow.git",
-                "reference": "76226bded2d4b4eeac1b2a6991862d732844b046"
+                "reference": "b86a756b0fb0bef21e9b12c13e884d6344bd3464"
             },
             "require": {
                 "php": ">=7.0.2"
@@ -1434,7 +1434,7 @@
                 "magento2",
                 "rapidflow"
             ],
-            "time": "2018-08-24 01:18:12"
+            "time": "2018-10-12 11:15:02"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -1473,7 +1473,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "f9ebdcba462fb5ea817237b8466a6439f9f017e1"
+                "reference": "822808550222b3ae406b04b00042b236ea56ac5e"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -1530,7 +1530,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2018-09-13 05:28:20"
+            "time": "2018-10-12 04:50:53"
         },
         {
             "name": "justinrainbow/json-schema",
