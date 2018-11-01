@@ -11,5 +11,10 @@ var config = {
                 'Amasty_Promo/js/checkout/cart-items-counter-update': true
             }
         }
+    },
+    map: {
+        '*': {
+            configurable: 'Amasty_Promo/js/type/configurable'
+        }
     }
 };

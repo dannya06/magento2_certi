@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 -->
@@ -13,5 +13,9 @@
     </event>
     <event name="controller_action_postdispatch_salesrulestaging_update_save">
         <observer name="amasty_salesrulestaging_update_data" instance="Amasty\Promo\Observer\Admin\UpdateRuleDataObserver" />
+    </event>
+
+    <event name="salesrule_rule_condition_combine">
+        <observer name="Amasty_Promo::delete_condition_handle" instance="Amasty\Promo\Observer\Admin\DeleteConditionHandle" />
     </event>
 </config>

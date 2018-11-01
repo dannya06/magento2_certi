@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 -->
@@ -26,6 +26,14 @@
                 </action>
             </block>
         </referenceContainer>
+
+        <referenceBlock name="product.info.options.wrapper">
+            <block ifconfig="ampromo/banners/enabled_above_cart" before="-" class="Amasty\Promo\Block\Banner" name="amasty.promo.banner.configurable_above_cart" template="banner.phtml" >
+                <action method="setPosition">
+                    <argument name="position" xsi:type="string">after_product</argument>
+                </action>
+            </block>
+        </referenceBlock>
 
         <referenceContainer name="product.info.media">
             <block before="-" class="Amasty\Promo\Block\Banner" name="amasty.promo.label" template="label.phtml" >

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -32,7 +32,7 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
     /**
      * @var \Amasty\Promo\Model\RuleFactory
      */
-    private $ruleFactory;
+    protected $ruleFactory;
 
     protected $_itemsWithDiscount;
 
@@ -68,9 +68,11 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule                $rule
+     * @param \Magento\SalesRule\Model\Rule $rule
      * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
-     * @param int                                          $qty
+     * @param int $qty
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _addFreeItems(
         \Magento\SalesRule\Model\Rule $rule,
@@ -90,9 +92,7 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
             return;
         }
 
-        $quote = $item->getQuote();
-
-        $qty = $this->_getFreeItemsQty($rule, $quote);
+        $qty = $this->_getFreeItemsQty($rule, $item);
         if (!$qty) {
             return;
         }
@@ -100,12 +100,19 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
         if ($this->_skip($rule, $item)) {
             return;
         }
+        $discountData = [
+            'discount_item' => $ampromoRule->getItemsDiscount(),
+            'minimal_price' => $ampromoRule->getMinimalItemsPrice(),
+        ];
 
         if ($ampromoRule->getType() == \Amasty\Promo\Model\Rule::RULE_TYPE_ONE) {
             $this->promoRegistry->addPromoItem(
                 preg_split('/\s*,\s*/', $promoSku, -1, PREG_SPLIT_NO_EMPTY),
                 $qty,
-                $rule->getId()
+                $rule->getId(),
+                $discountData,
+                $ampromoRule->getType(),
+                $rule->getDiscountAmount()
             );
         } else {
             $promoSku = explode(',', $promoSku);
@@ -114,21 +121,26 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
                 if (!$sku) {
                     continue;
                 }
-
-                $this->promoRegistry->addPromoItem($sku, $qty, $rule->getId());
+                $this->promoRegistry->addPromoItem(
+                    $sku,
+                    $qty,
+                    $rule->getId(),
+                    $discountData,
+                    $ampromoRule->getType(),
+                    $rule->getDiscountAmount()
+                );
             }
         }
     }
 
     /**
      * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote    $quote
-     *
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
      * @return int|float
      */
     protected function _getFreeItemsQty(
         \Magento\SalesRule\Model\Rule $rule,
-        \Magento\Quote\Model\Quote $quote
+        \Magento\Quote\Model\Quote\Item\AbstractItem $item
     ) {
         return max(1, $rule->getDiscountAmount());
     }
@@ -169,7 +181,7 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
                 ->addAttributeToFilter('entity_id', ['in' => $productIds])
                 ->addAttributeToFilter('price', ['gt' => new \Zend_Db_Expr('final_price')]);
 
-            $this->_itemsWithDiscount[] = $productsCollection->getAllIds();
+            $this->_itemsWithDiscount = array_merge($this->_itemsWithDiscount, $productsCollection->getAllIds());
         }
 
         if ($this->config->getScopeValue('limitations/skip_special_price_configurable')
@@ -200,5 +212,47 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
     protected function _getAllItems(\Magento\Quote\Model\Quote\Item\AbstractItem $item)
     {
         return $item->getAddress()->getAllItems();
+    }
+
+    /**
+     * @param \Magento\SalesRule\Model\Rule $rule
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     *
+     * @return float|int|mixed
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    protected function getPromoQtyByStep(
+        \Magento\SalesRule\Model\Rule $rule,
+        \Magento\Quote\Model\Quote\Item\AbstractItem $item
+    ) {
+        $qty    = 0;
+        $amount = max(1, $rule->getDiscountAmount());
+        $step   = max(1, $rule->getDiscountStep());
+        foreach ($item->getQuote()->getAllVisibleItems() as $item) {
+            if (!$item || $this->promoItemHelper->isPromoItem($item) || $item->getProduct()->getParentProductId()) {
+                continue;
+            }
+
+            if (!$rule->getActions()->validate($item)) {
+                // if condition not valid for Parent, but valid for child then collect qty of child
+                foreach ($item->getChildren() as $child) {
+                    if ($rule->getActions()->validate($child)) {
+                        $qty += $child->getTotalQty();
+                    }
+                }
+                continue;
+            }
+
+            $qty += $item->getQty();
+        }
+        $item->getAddress()->setDiscountDescription($rule->getName());
+
+        $qty = floor($qty / $step) * $amount;
+        $max = $rule->getDiscountQty();
+        if ($max) {
+            $qty = min($max, $qty);
+        }
+
+        return $qty;
     }
 }

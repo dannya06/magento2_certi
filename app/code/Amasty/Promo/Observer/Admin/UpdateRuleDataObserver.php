@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -84,6 +84,10 @@ class UpdateRuleDataObserver implements ObserverInterface
                 ->addData($ampromoData)
                 ->setData('salesrule_id', $salesrule->getId())
                 ->save();
+        }
+
+        if (in_array($salesrule->getSimpleAction(), \Amasty\Promo\Observer\Salesrule\Discount::PROMO_RULES)) {
+            $salesrule->setData(\Magento\SalesRule\Model\Data\Rule::KEY_SIMPLE_FREE_SHIPPING, 0)->save();
         }
     }
 }

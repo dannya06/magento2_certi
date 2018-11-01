@@ -4,9 +4,10 @@ define([
 ], function ($, registry) {
     var ampromoForm = {
         update: function (type) {
-            var action = '';
+            var action = '',
+                actionFieldSet = $('#' + type +'rule_actions_fieldset_').parent(),
+                discountRuleTree = $('.rule-tree fieldset');
             this.resetFields(type);
-            var actionFieldSet = $('#' + type +'rule_actions_fieldset_').parent();
             window.amPromoHide = 0;
 
             actionFieldSet.show();
@@ -16,52 +17,84 @@ define([
 
             var selector = $('[data-index="simple_action"] select');
             if (type !== 'sales_rule_form') {
-                action = selector[1] ? selector[1].value : selector[0].value;
+                action = selector[1] ? selector[1].value ? selector[0].value : selector[0].value : undefined;
             } else {
                 action = selector.val();
+            }
+
+            if (!action) {
+                action = 'by_percent';
             }
 
             if (action.match(/^ampromo/)) {
                 this.hideFields(['simple_free_shipping', 'apply_to_shipping'], type);
             }
 
-            this.hideBannersTab();
+            this.renameRulesSetting(action);
+            this.hideTabs();
+            discountRuleTree.show();
             switch (action) {
                 case 'ampromo_cart':
+                    discountRuleTree.hide();
                     actionFieldSet.hide();
                     window.amPromoHide = 1;
 
                     this.hideFields(['discount_qty', 'discount_step'], type);
-                    this.showFields(['ampromorule[sku]', 'ampromorule[type]'], type);
+                    this.showFields(['ampromorule[sku]', 'ampromorule[type]', 'ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
+                    this.showPromoItemPriceTab();
                     break;
                 case 'ampromo_items':
-                    this.showFields(['ampromorule[sku]', 'ampromorule[type]'], type);
+                    this.showFields(['ampromorule[sku]', 'ampromorule[type]', 'ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
                     this.showBannersTab();
+                    this.showPromoItemPriceTab();
+                    this.showProductLabelTab();
                     break;
                 case 'ampromo_product':
                     this.showBannersTab();
+                    this.showFields(['ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
+                    this.showPromoItemPriceTab();
+                    this.showProductLabelTab();
                     break;
                 case 'ampromo_spent':
-                    actionFieldSet.hide();
-                    window.amPromoHide = 1;
-
-                    this.showFields(['ampromorule[sku]', 'ampromorule[type]'], type);
+                    this.showFields(['ampromorule[sku]', 'ampromorule[type]', 'ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
+                    this.showPromoItemPriceTab();
+                    break;
+                case 'ampromo_eachn':
+                    this.showFields(['ampromorule[sku]', 'ampromorule[type]', 'ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
+                    this.showPromoItemPriceTab();
+                    this.showBannersTab();
+                    this.showProductLabelTab();
                     break;
             }
         },
         showBannersTab: function(){
-            jQuery('[data-index=ampromorule_top_banner]').show();
-            jQuery('[data-index=ampromorule_after_product_banner]').show();
+            $('[data-index=ampromorule_top_banner]').show();
+            $('[data-index=ampromorule_after_product_banner]').show();
         },
         hideBannersTab: function(){
-            jQuery('[data-index=ampromorule_top_banner]').hide();
-            jQuery('[data-index=ampromorule_after_product_banner]').hide();
+            $('[data-index=ampromorule_top_banner]').hide();
+            $('[data-index=ampromorule_after_product_banner]').hide();
+        },
+        showPromoItemPriceTab: function(){
+            $('[data-index=ampromorule_items_price]').show();
+        },
+        hidePromoItemPriceTab: function(){
+            $('[data-index=ampromorule_items_price]').hide();
+        },
+        showProductLabelTab: function(){
+            $('[data-index=ampromorule_product_label]').show();
+        },
+        hideProductLabelTab: function(){
+            $('[data-index=ampromorule_product_label]').hide();
+        },
+        hideHighlightPromotionTab: function(){
+            $('[data-index=ampromo_promo_highlights]').hide();
         },
         resetFields: function (type) {
             this.showFields([
                 'discount_qty', 'discount_step', 'apply_to_shipping', 'simple_free_shipping'
             ], type);
-            this.hideFields(['ampromorule[sku]', 'ampromorule[type]'], type);
+            this.hideFields(['ampromorule[sku]', 'ampromorule[type]', 'ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
         },
 
         hideFields: function (names, type) {
@@ -86,6 +119,41 @@ define([
                     arguments[i][method]();
                 }
             });
+        },
+
+        /**
+         *
+         * @param action
+         */
+        renameRulesSetting: function (action) {
+            var discountStep = $('[data-index="discount_step"] label span'),
+                discountAmount = $('[data-index="discount_amount"] label span');
+
+            switch (action) {
+                case 'ampromo_eachn':
+                    discountStep.text($.mage.__("Each N-th"));
+                    discountAmount.text($.mage.__("Number Of Gift Items"));
+                    break;
+                case 'ampromo_cart':
+                case 'ampromo_items':
+                case 'ampromo_product':
+                case 'ampromo_spent':
+                    discountAmount.text($.mage.__("Number Of Gift Items"));
+                    break;
+                default:
+                    discountAmount.text($.mage.__("Discount Amount"));
+                    discountStep.text($.mage.__("Discount Qty Step (Buy X)"));
+                    break;
+            }
+        },
+
+        hideTabs: function () {
+            this.hidePromoItemPriceTab();
+            this.hideBannersTab();
+            this.hideProductLabelTab();
+            if ($('[data-index=promo_highlights]').length) {
+                this.hideHighlightPromotionTab();
+            }
         }
     };
 

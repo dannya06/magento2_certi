@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -13,9 +13,14 @@ class Rule extends \Magento\Framework\Model\AbstractModel
     const PER_PRODUCT = 'ampromo_items';
     const WHOLE_CART = 'ampromo_cart';
     const SPENT = 'ampromo_spent';
+    const EACHN = 'ampromo_eachn';
 
     const RULE_TYPE_ALL = 0;
     const RULE_TYPE_ONE = 1;
+
+    const NOT_AUTO_FREE_ITEMS = 0;
+    const AUTO_FREE_ITEMS = 1;
+    const AUTO_FREE_DISCOUNTED_ITEMS = 2;
 
     /**
      * Set resource model and Id field name
