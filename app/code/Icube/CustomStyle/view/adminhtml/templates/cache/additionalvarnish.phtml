@@ -1,0 +1,18 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+?>
+<h2>
+    <span><?php /* @escapeNotVerified */ echo __('Varnish Cache Management') ?></span>
+</h2>
+<form id="clear-varnish" action="<?php /* @escapeNotVerified */ echo $block->getVarnishGenerationUrl() ?>" method="POST" >
+    <input type="hidden" value="<?php echo $block->getFormKey(); ?>" name="form_key" id="form_key" />
+    
+    <button id="clear-varnish-button" type="submit">
+        <?php /* @escapeNotVerified */ echo __('Clear Varnish Cache') ?>
+    </button>
+</form>

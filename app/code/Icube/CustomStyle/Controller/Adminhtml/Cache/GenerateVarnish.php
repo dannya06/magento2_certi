@@ -14,7 +14,7 @@ use Magento\Directory\Helper\Data;
 use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
 use Magento\Framework\Exception\LocalizedException;
 
-class GenerateCloudfront extends \Magento\Backend\Controller\Adminhtml\Cache
+class GenerateVarnish extends \Magento\Backend\Controller\Adminhtml\Cache
 {
 
     /**
@@ -125,8 +125,10 @@ class GenerateCloudfront extends \Magento\Backend\Controller\Adminhtml\Cache
     {
         $params = $this->getRequest()->getPost();
 
-        $command = "./cfpurge.sh";
+        $command = "sudo service varnish restart";
         $data = "<pre>".shell_exec($command)."</pre>";
+
+        $message = "Vanish cache successfully cleared";
 
         $this->messageManager->addSuccess(__($data));
 
