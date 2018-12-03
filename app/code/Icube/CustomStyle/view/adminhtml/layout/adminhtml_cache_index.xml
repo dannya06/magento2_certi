@@ -3,6 +3,7 @@
 	<body>
 		<referenceBlock name="cache.additional" >
 			<block class="Icube\CustomStyle\Block\Cache\Additional" name="cache.additional.cloudfront" template="Icube_CustomStyle::cache/additional.phtml"/>
+			<block class="Icube\CustomStyle\Block\Cache\Additionalvarnish" name="cache.additional.varnish" template="Icube_CustomStyle::cache/additionalvarnish.phtml"/>
 		</referenceBlock>
 	</body>
 </page>
