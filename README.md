@@ -13,7 +13,7 @@ Instalation:
 
     install site using wizard from browser
 
-    git checkout master
+    git checkout master_2.2.6
 
     composer install
 
