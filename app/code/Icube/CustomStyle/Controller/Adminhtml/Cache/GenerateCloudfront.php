@@ -125,11 +125,6 @@ class GenerateCloudfront extends \Magento\Backend\Controller\Adminhtml\Cache
     {
         $params = $this->getRequest()->getPost();
 
-        
-
-        $command = "sudo service varnish restart";
-        $data = "<pre>".shell_exec($command)."</pre>";
-
         $command = "./cfpurge.sh";
         $data = "<pre>".shell_exec($command)."</pre>";
 

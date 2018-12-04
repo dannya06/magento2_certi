@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -30,8 +30,7 @@ class FixWholeCartRuleObserver implements ObserverInterface
     public function __construct(
         \Amasty\Promo\Helper\Item $promoItemHelper,
         \Amasty\Promo\Model\Registry $promoRegistry
-    )
-    {
+    ) {
         $this->promoItemHelper = $promoItemHelper;
         $this->promoRegistry = $promoRegistry;
     }
