@@ -38,7 +38,7 @@ class InstallSchema implements InstallSchemaInterface
             $installer->getTable('amasty_extrafee')
         )->addColumn(
             'entity_id',
-            Table::TYPE_SMALLINT,
+            Table::TYPE_INTEGER,
             null,
             ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
             'Entity ID'
