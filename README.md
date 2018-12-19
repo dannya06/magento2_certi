@@ -7,7 +7,7 @@ Instalation:
 
     git clone https://github.com/icubeus/swift.git
     
-    git checkout 1.1.0 (install without sample data)  /  git checkout 1.0.0 (install with sample data)
+    git checkout 1.1.0 (install without sample data)
 
     composer install --prefer-dist
 
