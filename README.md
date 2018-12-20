@@ -1,28 +1,27 @@
 # ICUBE SWIFT
-This is SWIFT code base using Magento CE 2.1.10
+This is SWIFT code base using Magento CE 2.2.6
 
 
 Instalation:
 ============================================================
 
     git clone https://github.com/icubeus/swift.git
-    
-    git checkout 1.1.0 (install without sample data)
 
     composer install --prefer-dist
 
+    sh step1.ssh
+
     install site using wizard from browser
 
-    git checkout master_2.2.6
+    sh step2.sh
 
-    composer install
+    sh step3.sh (for LOCAL ONLY to disable elastic)
 
-    php bin/magento setup:upgrade
+    php bin/magento weltpixel:import:configurations --store=GLOBAL --file="weltpixel_configurations_admin.csv"
     
-    php bin/magento module:status 
-    (check current status for all module, if Smile Elasticsuite is enable please disable all module under Smile Elasticsuit)
+    import sql/theme_initial.sql
     
-    php bin/magento module:disable Smile_ElasticsuiteVirtualCategory Smile_ElasticsuiteTracker Smile_ElasticsuiteThesaurus Smile_ElasticsuiteSwatches Smile_ElasticsuiteCatalogOptimizer Smile_ElasticsuiteCatalogRule Smile_ElasticsuiteCatalog Smile_ElasticsuiteCore
+    import sql/ves_megamenu_init_v1.0_swiftdev4.sql
     
     php bin/magento setup:upgrade
 
@@ -37,6 +36,8 @@ Instalation:
     chmod -R 777 var/ pub/ generated/ 
     (*optional)
 
+    FOR SAMPLE DATA ONLY run php bin/magento sampledata:deploy
+
 How to update project that base from SWIFT
 =============================================================
 
@@ -46,7 +47,7 @@ How to update project that base from SWIFT
     
     git checkout -b master_swift
 
-    git pull swift master
+    git pull swift master_2.2.6
     
     composer install
     
@@ -64,7 +65,7 @@ How to update project that clone from SWIFT
 
     git fetch origin
 
-    git checkout master_swift -b swift/master
+    git checkout master_swift -b swift/master_2.2.6
     
     composer install
 

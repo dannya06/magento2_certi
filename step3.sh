@@ -1,0 +1,2 @@
+#!/bin/bash
+php bin/magento module:disable Smile_ElasticsuiteCore Smile_ElasticsuiteCatalog Smile_ElasticsuiteCatalogRule Smile_ElasticsuiteCatalogOptimizer Smile_ElasticsuiteSwatches Smile_ElasticsuiteThesaurus Smile_ElasticsuiteTracker Smile_ElasticsuiteVirtualCategory
