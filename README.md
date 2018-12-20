@@ -9,7 +9,7 @@ Instalation:
 
     composer install --prefer-dist
 
-    sh step1.ssh
+    sh step1.sh
 
     install site using wizard from browser
 
