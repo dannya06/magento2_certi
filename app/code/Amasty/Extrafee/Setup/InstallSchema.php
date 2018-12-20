@@ -100,7 +100,7 @@ class InstallSchema implements InstallSchemaInterface
             'Entity ID'
         )->addColumn(
             'fee_id',
-            Table::TYPE_SMALLINT,
+            Table::TYPE_INTEGER,
             null,
             ['unsigned' => true, 'nullable' => false, 'primary' => true],
             'Fee Id'
@@ -156,7 +156,7 @@ class InstallSchema implements InstallSchemaInterface
             $installer->getTable('amasty_extrafee_store')
         )->addColumn(
             'fee_id',
-            Table::TYPE_SMALLINT,
+            Table::TYPE_INTEGER,
             null,
             ['unsigned' => true, 'nullable' => false, 'primary' => true],
             'Fee ID'
@@ -193,7 +193,7 @@ class InstallSchema implements InstallSchemaInterface
             $installer->getTable('amasty_extrafee_customer_group')
         )->addColumn(
             'fee_id',
-            Table::TYPE_SMALLINT,
+            Table::TYPE_INTEGER,
             null,
             ['unsigned' => true, 'nullable' => false, 'primary' => true],
             'Fee Id'
@@ -243,7 +243,7 @@ class InstallSchema implements InstallSchemaInterface
             'Quote ID'
         )->addColumn(
             'fee_id',
-            Table::TYPE_SMALLINT,
+            Table::TYPE_INTEGER,
             null,
             ['unsigned' => true, 'nullable' => false],
             'Fee Id'
