@@ -1259,7 +1259,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2018-10-05T08:19:35+00:00"
+            "time": "2018-10-05 08:19:35"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -1398,7 +1398,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-rapidflow.git",
-                "reference": "b86a756b0fb0bef21e9b12c13e884d6344bd3464"
+                "reference": "3778c5baf6be1e4eaa2608722c8e4cfd6221719d"
             },
             "require": {
                 "php": ">=7.0.2"
@@ -1434,7 +1434,7 @@
                 "magento2",
                 "rapidflow"
             ],
-            "time": "2018-10-12 11:15:02"
+            "time": "2018-12-24 05:17:42"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -1473,7 +1473,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "f0e49a0521b17c5828460435a5f3b896351701f7"
+                "reference": "4bbbebb608a9124a4bf06a4a95147f780763cdd3"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -1530,7 +1530,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2018-12-04 08:59:33"
+            "time": "2018-12-20 09:44:43"
         },
         {
             "name": "justinrainbow/json-schema",
