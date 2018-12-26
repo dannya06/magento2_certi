@@ -7,21 +7,29 @@ Instalation:
 
     git clone https://github.com/icubeus/swift.git
 
+    git checkout base (change to base branch)
+
     composer install --prefer-dist
 
-    sh step1.sh
+    install site using wizard from browser or using terminal, below is the script using terminal
 
-    install site using wizard from browser
+    php bin/magento setup:install --cleanup-database --base-url=http://local.testingnow.me/ --base-url-secure=https://local.testingnow.me/ \
+    --db-host=127.0.0.1 --db-name=m2webapp_db --db-user=root --db-password=password123 \
+    --admin-firstname=Swift --admin-lastname=Install --admin-email=sysadmin@icube.us \
+    --admin-user=mage2user --admin-password=password123--backend-frontname=backoffice \
+    --language=en_US --currency=USD --timezone=Asia/Jakarta --use-rewrites=1 --use-secure-admin=1
 
-    sh step2.sh
+    git checkout master_2.2.6
+
+    composer install
 
     sh step3.sh (for LOCAL ONLY to disable elastic)
 
     php bin/magento weltpixel:import:configurations --store=GLOBAL --file="weltpixel_configurations_admin.csv"
     
-    import sql/theme_initial.sql
+    import sql/theme_initial.sql (mysql -u mage2user -p m2webapp_testvm < sql/theme_initial.sql)
     
-    import sql/ves_megamenu_init_v1.0_swiftdev4.sql
+    import sql/ves_megamenu_init_v1.0_swiftdev4.sql (mysql -u mage2user -p m2webapp_testvm < sql/ves_megamenu_init_v1.0_swiftdev4.sql)
     
     php bin/magento setup:upgrade
 
@@ -35,8 +43,6 @@ Instalation:
     
     chmod -R 777 var/ pub/ generated/ 
     (*optional)
-
-    FOR SAMPLE DATA ONLY run php bin/magento sampledata:deploy
 
 How to update project that base from SWIFT
 =============================================================
