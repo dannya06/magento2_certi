@@ -11,7 +11,7 @@
     		title="Brands"
     		module="Icube_Brands"
     		sortOrder="40"
-    		resource="Icube_Brands::sample"
+    		resource="Icube_Brands::brands"
     		action="icube_brands/items/"/>
     	<!-- <add id="icube_brands::brands" title="Brands" module="Icube_Brands" sortOrder="10" parent="icube::base" action="icube_brands/items/" resource="Icube_Brands::items"/> -->
     </menu>
