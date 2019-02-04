@@ -182,3 +182,22 @@ The steps to everytime we made a changes in Weltpixel
 3. get latest in another local,dev, or production site
 4. Run the import
 5. full deploy
+
+
+
+
+Cronjob clear varnish and clear cloudfront
+=============================================================
+
+    * * * * * sh /home/mage2user/site/current/clearvarnish.sh $1 $2 >> /home/mage2user/site/current/var/logclearvarnish.log
+
+    * * * * * sh /home/mage2user/site/current/clearcloudfront.sh $1 $2 >> /home/mage2user/site/current/var/clearcloudfront.log
+
+$1 = server increment current
+$2 = next srver increment that need to execute
+
+example
+
+    * * * * * sh /home/mage2user/site/current/clearvarnish.sh 1 2 >> /home/mage2user/site/current/var/logclearvarnish.log
+
+    * * * * * sh /home/mage2user/site/current/clearcloudfront.sh 1 2 >> /home/mage2user/site/current/var/clearcloudfront.log

@@ -125,10 +125,12 @@ class GenerateCloudfront extends \Magento\Backend\Controller\Adminhtml\Cache
     {
         $params = $this->getRequest()->getPost();
 
-        $command = "./cfpurge.sh";
+        $command = "echo cloudfront > pub/media/cloudfront1.flag";
         $data = "<pre>".shell_exec($command)."</pre>";
 
-        $this->messageManager->addSuccess(__($data));
+        $message = "Clear cloudfront has been executed, please wait in few minutes.";
+
+        $this->messageManager->addSuccess(__($message));
 
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
