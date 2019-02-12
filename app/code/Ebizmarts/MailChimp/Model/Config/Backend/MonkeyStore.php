@@ -76,11 +76,12 @@ class MonkeyStore extends \Magento\Framework\App\Config\Value
         $data = $this->getData('groups');
         $found = 0;
         $newListId = null;
-        $this->_helper->log($this->getDataByPath(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_ACTIVE));
         if (isset($data['ecommerce']['fields']['active']['value'])) {
             $active = $data['ecommerce']['fields']['active']['value'];
         } elseif ($data['ecommerce']['fields']['active']['inherit']) {
             $active = $data['ecommerce']['fields']['active']['inherit'];
+        } else {
+            $active = 0;
         }
         if ($active && $this->isValueChanged()) {
             $mailchimpStore     = $this->getOldValue();
@@ -88,16 +89,15 @@ class MonkeyStore extends \Magento\Framework\App\Config\Value
             if (isset($data['general']['fields']['apikey']['value'])) {
                 $apiKey = $data['general']['fields']['apikey']['value'];
             } else {
-                $apiKey = $this->_helper->getConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_APIKEY, $this->getScopeId());
+                $apiKey = $this->_helper->getConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_APIKEY, $this->getScopeId(), $this->getScope());
             }
-            if(isset($data['general']['fields']['monkeylist']['value'])) {
+            if (isset($data['general']['fields']['monkeylist']['value'])) {
                 $newListId = $data['general']['fields']['monkeylist']['value'];
             } else {
-                $newListId = $this->getStore($apiKey,$this->getValue());
-                $this->_helper->log('list '.$newListId.'Score :'.$this->getScope().' Id '.$this->getScopeId());
-                $this->_helper->saveConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST,$newListId,$this->getScopeId(),$this->getScope());
+                $newListId = $this->getStore($apiKey, $this->getValue());
+                $this->_helper->saveConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST, $newListId, $this->getScopeId(), $this->getScope());
             }
-            $this->oldListId = $this->_helper->getConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST, $this->getScopeId());
+            $this->oldListId = $this->_helper->getConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST, $this->getScopeId(), $this->getScope());
 
             $createWebhook = true;
             foreach ($this->_storeManager->getStores() as $storeId => $val) {
@@ -117,15 +117,19 @@ class MonkeyStore extends \Magento\Framework\App\Config\Value
             }
             if ($createWebhook) {
                 $this->_helper->createWebHook($apiKey, $newListId);
-                //$this->_helper->createWebHook($data['general']['fields']['apikey']['value'], $newListId);
             }
         }
         return parent::beforeSave();
     }
-    private function getStore($apiKey,$store)
+    private function getStore($apiKey, $store)
     {
-        $api = $this->_helper->getApiByApiKey($apiKey);
-        $store = $api->ecommerce->stores->get($store);
-        return $store['list_id'];
+        try {
+            $api = $this->_helper->getApiByApiKey($apiKey);
+            $store = $api->ecommerce->stores->get($store);
+            return $store['list_id'];
+        } catch (\Mailchimp_Error $e) {
+            $this->_helper->log($e->getFriendlyMessage());
+        }
+        return null;
     }
 }

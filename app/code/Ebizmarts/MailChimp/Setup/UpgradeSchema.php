@@ -28,7 +28,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
      * @var DeploymentConfig
      */
     protected $_deploymentConfig;
-    public function __construct(ResourceConnection $resource,DeploymentConfig $deploymentConfig)
+    public function __construct(ResourceConnection $resource, DeploymentConfig $deploymentConfig)
     {
         $this->_resource = $resource;
         $this->_deploymentConfig = $deploymentConfig;
@@ -42,14 +42,12 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $connection = $this->_resource->getConnectionByName('default');
         if ($this->_deploymentConfig->get(\Magento\Framework\Config\ConfigOptionsListConstants::CONFIG_PATH_DB_CONNECTIONS . '/checkout')) {
             $checkoutConnection = $this->_resource->getConnectionByName('checkout');
-        }
-        else {
+        } else {
             $checkoutConnection = $connection;
         }
         if ($this->_deploymentConfig->get(\Magento\Framework\Config\ConfigOptionsListConstants::CONFIG_PATH_DB_CONNECTIONS . '/sales')) {
             $salesConnection = $this->_resource->getConnectionByName('sales');
-        }
-        else {
+        } else {
             $salesConnection = $connection;
         }
         if (version_compare($context->getVersion(), '1.0.5') < 0) {
@@ -296,28 +294,32 @@ class UpgradeSchema implements UpgradeSchemaInterface
             );
         }
         if (version_compare($context->getVersion(), '1.0.12') < 0) {
-            $connection->changecolumn(
-                $setup->getTable('mailchimp_stores'),
-                'address_address1',
-                'address_address_one',
-                [
-                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                    'length' => 255,
-                    'default' => null,
-                    'comment' => 'first street address'
-                ]
-            );
-            $connection->changecolumn(
-                $setup->getTable('mailchimp_stores'),
-                'address_address2',
-                'address_address_two',
-                [
-                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                    'length' => 255,
-                    'default' => null,
-                    'comment' => 'second street address'
-                ]
-            );
+            if ($connection->tableColumnExists($setup->getTable('mailchimp_stores'), 'address_address1')) {
+                $connection->changecolumn(
+                    $setup->getTable('mailchimp_stores'),
+                    'address_address1',
+                    'address_address_one',
+                    [
+                        'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'length' => 255,
+                        'default' => null,
+                        'comment' => 'first street address'
+                    ]
+                );
+            }
+            if ($connection->tableColumnExists($setup->getTable('mailchimp_stores'), 'address_address2')) {
+                $connection->changecolumn(
+                    $setup->getTable('mailchimp_stores'),
+                    'address_address2',
+                    'address_address_two',
+                    [
+                        'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'length' => 255,
+                        'default' => null,
+                        'comment' => 'second street address'
+                    ]
+                );
+            }
         }
         if (version_compare($context->getVersion(), '1.0.13') < 0) {
             $connection->addColumn(
@@ -416,7 +418,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
         if (version_compare($context->getVersion(), '1.0.25') < 0) {
             $connection->addIndex(
                 $setup->getTable('mailchimp_sync_ecommerce'),
-                $connection->getIndexName($setup->getTable('mailchimp_sync_ecommerce'),'related_id','index'),
+                $connection->getIndexName($setup->getTable('mailchimp_sync_ecommerce'), 'related_id', 'index'),
                 'related_id'
             );
             $connection->addColumn(
@@ -429,6 +431,46 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'comment' => 'Id related to deleted item'
                 ]
             );
+        }
+        if (version_compare($context->getVersion(), '1.0.26') < 0) {
+            $table = $connection
+                ->newTable($setup->getTable('mailchimp_interest_group'))
+                ->addColumn(
+                    'id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    null,
+                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                    'Id'
+                )
+                ->addColumn(
+                    'subscriber_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    10,
+                    ['unsigned' => true, 'nullable' => false],
+                    'subscriber id'
+                )
+                ->addColumn(
+                    'store_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                    5,
+                    ['unsigned' => true, 'nullable' => false],
+                    'subscriber id'
+                )
+                ->addColumn(
+                    'updated_at',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+                    null,
+                    [],
+                    'date of the request'
+                )
+                ->addColumn(
+                    'groupdata',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    4096,
+                    ['unsigned' => true, 'nullable' => false],
+                    'data'
+                );
+            $connection->createTable($table);
         }
     }
 }

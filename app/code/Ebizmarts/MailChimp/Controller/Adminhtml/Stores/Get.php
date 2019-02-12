@@ -53,7 +53,7 @@ class Get extends Action
             $result = [];
             foreach ($stores['stores'] as $store) {
                 if ($store['platform'] == \Ebizmarts\MailChimp\Helper\Data::PLATFORM) {
-                    if($store['list_id']=='') {
+                    if ($store['list_id']=='') {
                         continue;
                     }
                     $list = $api->lists->getLists($store['list_id']);
@@ -61,6 +61,7 @@ class Get extends Action
                 }
             }
         } catch (\Mailchimp_Error $e) {
+            $this->_helper->log($e->getFriendlyMessage());
             $result = [];
         }
         $resultJson = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
