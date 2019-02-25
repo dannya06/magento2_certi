@@ -14,8 +14,6 @@ include_once 'HtmlNodeComment.php';
 include_once 'HtmlNodeConditional.php';
 include_once 'HtmlNodeCdata.php';
 include_once 'HtmlNodeDoctype.php';
-include_once 'HtmlNodeXML.php';
-include_once 'HtmlNodeAsp.php';
 
 /**
  * Holds (x)html/xml tag information like tag name, attributes,
