@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -11,24 +11,21 @@ namespace Amasty\Rules\Plugin\Condition;
 class Combine
 {
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $_objectManager;
-
-    /**
      * @var \Amasty\Rules\Helper\Data
      */
-    protected $rulesDataHelper;
+    private $rulesDataHelper;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @var \Amasty\Rules\Model\RuleResolver
      */
+    private $ruleResolver;
+
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Amasty\Rules\Helper\Data $rulesDataHelper
+        \Amasty\Rules\Helper\Data $rulesDataHelper,
+        \Amasty\Rules\Model\RuleResolver $ruleResolver
     ) {
-        $this->_objectManager  = $objectManager;
         $this->rulesDataHelper = $rulesDataHelper;
+        $this->ruleResolver = $ruleResolver;
     }
 
     public function aroundValidate(
@@ -51,10 +48,8 @@ class Combine
     {
         $action = $rule->getSimpleAction();
 
-        $amrulesRule = $this->_objectManager->get('Amasty\Rules\Model\Rule');
-        $amrulesRule->loadBySalesrule($rule);
-
         if (strpos($action, "buyxget") !== false || strpos($action, "groupn") !== false) {
+            $this->ruleResolver->getSpecialPromotions($rule);
 
             $promoCats = $this->rulesDataHelper->getRuleCats($rule);
             $promoSku  = $this->rulesDataHelper->getRuleSkus($rule);

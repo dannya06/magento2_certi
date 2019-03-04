@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -11,14 +11,28 @@ namespace Amasty\Rules\Setup;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\EntityManager\MetadataPool;
 
 class InstallSchema implements InstallSchemaInterface
 {
+    /**
+     * @var MetadataPool
+     */
+    private $metadata;
+
+    public function __construct(
+        MetadataPool $metadata
+    ) {
+        $this->metadata = $metadata;
+    }
+
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $installer = $setup;
 
         $installer->startSetup();
+        $salesruleLinkField = $this->metadata->getMetadata(\Magento\SalesRule\Api\Data\RuleInterface::class)
+            ->getLinkField();
 
         /**
          * Create table 'amasty_amrules_rule'
@@ -98,11 +112,11 @@ class InstallSchema implements InstallSchemaInterface
                     'amasty_amrules_rule',
                     'salesrule_id',
                     'salesrule',
-                    'rule_id'
+                    $salesruleLinkField
                 ),
                 'salesrule_id',
                 $installer->getTable('salesrule'),
-                'rule_id',
+                $salesruleLinkField,
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )
             ->setComment('Amasty Promotions Rules Table');

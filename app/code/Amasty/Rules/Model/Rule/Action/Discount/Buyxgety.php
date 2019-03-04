@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -10,6 +10,7 @@ namespace Amasty\Rules\Model\Rule\Action\Discount;
 abstract class Buyxgety extends AbstractRule
 {
     protected $_passedItems = [];
+    const DEFAULT_SORT_ORDER = 'asc';
 
     /**
      * @param $address
@@ -20,7 +21,7 @@ abstract class Buyxgety extends AbstractRule
     {
         // find all X (trigger) elements
         $arrX = [];
-        foreach ($this->getSortedItems($address, $rule, 'desc') as $item) {
+        foreach ($this->getSortedItems($address, $rule, self::DEFAULT_SORT_ORDER) as $item) {
             if ($item->getParentItemId()) {
                 continue;
             }
@@ -31,9 +32,6 @@ abstract class Buyxgety extends AbstractRule
             $promoCats = $this->rulesDataHelper->getRuleCats($rule);
             $promoSku  = $this->rulesDataHelper->getRuleSkus($rule);
             //if ( Mage::helper('amrules')->isConfigurablePromoItem($item,$promoSku)  ) continue;
-            if (!$rule->getActions()->validate($item)) {
-                continue;
-            }
 
             if (in_array($item->getSku(), $promoSku)) {
                 continue;

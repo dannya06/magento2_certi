@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -84,7 +84,7 @@ class Product
             $product = $this->productModel->load($object->getProductId());
         }
 
-        if ($product) {
+        if ($product && $product->getTypeId() !== 'skip') {
             if ($this->configModel->getOptionsValue()) {
                 $options = $product->getTypeInstance(true)->getOrderOptions($product);
                 $values = '';

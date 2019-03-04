@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -14,13 +14,15 @@ class Utils extends AbstractHelper
 {
     public function _exit($code = 0)
     {
-        $exit = create_function('$a', 'exit($a);');
-        $exit($code);
+        /** @codingStandardsIgnoreStart */
+        exit($code);
+        /** @codingStandardsIgnoreEnd */
     }
 
     public function _echo($a)
     {
-        $echo = create_function('$a', 'echo $a;');
-        $echo($a);
+        /** @codingStandardsIgnoreStart */
+        echo $a;
+        /** @codingStandardsIgnoreEnd */
     }
 }

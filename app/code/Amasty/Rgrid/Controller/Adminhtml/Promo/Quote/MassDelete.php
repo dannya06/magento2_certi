@@ -1,43 +1,63 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rgrid
  */
 
+
 namespace Amasty\Rgrid\Controller\Adminhtml\Promo\Quote;
 
-class MassDelete extends \Amasty\Rgrid\Controller\Adminhtml\Promo\Quote
+use Magento\Backend\App\Action;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\SalesRule\Api\RuleRepositoryInterface;
+
+class MassDelete extends Action
 {
     /**
-     * @return \Magento\Backend\Model\View\Result\Redirect
+     * @var RuleRepositoryInterface
+     */
+    private $ruleRepository;
+
+    public function __construct(
+        Action\Context $context,
+        RuleRepositoryInterface $ruleRepository
+    ) {
+        parent::__construct($context);
+
+        $this->ruleRepository = $ruleRepository;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function execute()
     {
+        /** @var int[]|null $ids */
         $ids = $this->getRequest()->getParam('ids');
-        if ($ids && is_array($ids)) {
+
+        if (is_array($ids)) {
             try {
-                /** @var \Magento\SalesRule\Model\ResourceModel\Rule\Collection $collection */
-                $collection = $this->_collectionFactory->create();
-                $collection->addFieldToFilter('rule_id', ['in' => $ids ]);
-                foreach ($collection as $rule) {
-                    $rule->delete();
+                foreach ($ids as $ruleId) {
+                    $this->ruleRepository->deleteById($ruleId);
                 }
-                $this->messageManager->addSuccessMessage(__('You deleted %1 rule(s).', count($collection)));
-                $this->_redirect('sales_rule/*/');
-                return;
-            } catch (\Magento\Framework\Exception\LocalizedException $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addErrorMessage(
+
+                $this->messageManager->addSuccessMessage(__('You deleted %1 rule(s).', count($ids)));
+
+                return $this->_redirect('sales_rule/*/');
+            } catch (LocalizedException $exception) {
+                $this->messageManager->addExceptionMessage($exception);
+            } catch (\Exception $exception) {
+                $this->messageManager->addExceptionMessage(
+                    $exception,
                     __('We can\'t delete the rule right now. Please review the log and try again.')
                 );
-                $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
-                $this->_redirect('sales_rule/*/');
-                return;
             }
+
+            return $this->_redirect('sales_rule/*/');
         }
-        $this->messageManager->addErrorMessage(__('We can\'t find a rule to delete.'));
-        $this->_redirect('sales_rule/*/');
+        $this->messageManager->addErrorMessage(__('We can\'t find a rule(s) to delete.'));
+
+        return $this->_redirect('sales_rule/*/');
     }
 }

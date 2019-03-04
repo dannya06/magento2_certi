@@ -1,17 +1,15 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 namespace Amasty\Rules\Helper;
 
 class Discount extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    protected $_ruleDiscountAmount = [];
 
-    protected $_ruleOriginalDiscountAmount = [];
-
+    public static $maxDiscount;
     /**
      * @var \Magento\Framework\App\Config\scopeConfigInterface
      */
@@ -37,60 +35,35 @@ class Discount extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule                      $rule
+     * @param \Magento\SalesRule\Model\Rule $rule
      * @param \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData
+     * @param \Magento\Store\Model\Store $store
      *
      * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data
      */
     public function setDiscount(
         \Magento\SalesRule\Model\Rule $rule,
-        \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData
-    ) {
-        if (!isset($this->_ruleDiscountAmount[$rule->getId()])) {
-            $this->_ruleDiscountAmount[$rule->getId()] = $discountData->getBaseAmount();
-            $this->_ruleOriginalDiscountAmount[$rule->getId()] = $discountData->getBaseOriginalAmount();
-        } else {
-            $this->_ruleDiscountAmount[$rule->getId()] += $discountData->getBaseAmount();
-            $this->_ruleOriginalDiscountAmount[$rule->getId()] += $discountData->getBaseOriginalAmount();
-        }
-
-        $maxDiscount = $rule->getAmrulesRule()->getMaxDiscount();
-
-        if ($maxDiscount > 0 && $this->_ruleDiscountAmount[$rule->getId()] >= $maxDiscount) {
-            $this->decrementDiscount($discountData, $rule);
-        }
-
-        return $discountData;
-    }
-
-    /**
-     * @param \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData
-     * @param \Magento\SalesRule\Model\Rule                      $rule
-     *
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data
-     */
-    protected function decrementDiscount(
         \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData,
-        \Magento\SalesRule\Model\Rule $rule
+        \Magento\Store\Model\Store $store
     ) {
-        if ($discountData->getAmount() === 0) {
+        if ($rule->getAmrulesRule()->getMaxDiscount() == 0) {
             return $discountData;
         }
-        $ruleMaxDiscount = $rule->getAmrulesRule()->getMaxDiscount();
-        $baseAmount = min(
-            $ruleMaxDiscount,
-            $this->_ruleOriginalDiscountAmount[$rule->getId()] - $ruleMaxDiscount  + $discountData->getBaseAmount()
-        );
 
-        $baseOriginalAmount = min(
-            $ruleMaxDiscount,
-            $this->_ruleOriginalDiscountAmount[$rule->getId()] - $ruleMaxDiscount + $discountData->getBaseAmount()
-        );
+        if (!isset(self::$maxDiscount[$rule->getId()])) {
+            self::$maxDiscount[$rule->getId()] = $rule->getAmrulesRule()->getMaxDiscount();
+        }
 
-        $discountData->setBaseAmount(abs($baseAmount));
-        $discountData->setAmount($this->_priceCurrency->round(abs($baseAmount)));
-        $discountData->setBaseOriginalAmount(abs($baseOriginalAmount));
-        $discountData->setOriginalAmount($this->_priceCurrency->round(abs($baseOriginalAmount)));
+        if (self::$maxDiscount[$rule->getId()] - $discountData->getBaseAmount() < 0) {
+            $convertedPrice = $this->_priceCurrency->convert(self::$maxDiscount[$rule->getId()], $store);
+            $discountData->setBaseAmount(self::$maxDiscount[$rule->getId()]);
+            $discountData->setAmount($this->_priceCurrency->round($convertedPrice));
+            $discountData->setBaseOriginalAmount(self::$maxDiscount[$rule->getId()]);
+            $discountData->setOriginalAmount($this->_priceCurrency->round($convertedPrice));
+            self::$maxDiscount[$rule->getId()] = 0;
+        } else {
+            self::$maxDiscount[$rule->getId()] = self::$maxDiscount[$rule->getId()] - $discountData->getBaseAmount();
+        }
 
         return $discountData;
     }

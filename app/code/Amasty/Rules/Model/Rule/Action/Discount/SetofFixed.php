@@ -1,119 +1,111 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
+
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
-class SetofFixed extends Setof
+use Magento\SalesRule\Model\Rule as RuleModel;
+
+class SetofFixed extends AbstractSetof
 {
-    const RULE_VERSION = '1.0.0';
-
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
-     * @param float $qty
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
-     */
-    public function calculate($rule, $item, $qty)
-    {
-        $this->beforeCalculate($rule, $item, $qty);
-        $discountData = $this->_calculate($rule, $item);
-        $this->afterCalculate($discountData, $rule, $item);
-        return $discountData;
-    }
-
-    /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param RuleModel $rule
      *
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data
+     * @return $this
      */
-    protected function _calculate($rule, $item)
+    protected function calculateDiscountForRule($rule, $item)
     {
-        /** @var \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData */
-        $discountData = $this->discountFactory->create();
-        $address = $item->getAddress();
-        list ( $qtySkus,$qtyCats,$sortedProducts ) = $this->prepareSetRule($rule, $address);
+        list($setQty,$itemsForSet) = $this->prepareDataForCalculation($rule);
 
-        $r = [];
-        $discountedQtyByItem = [];
+        if (!$itemsForSet) {
+            return $this;
+        }
 
-        $promoCats = $this->rulesDataHelper->getRuleCats($rule);
-        $promoSku = $this->rulesDataHelper->getRuleSkus($rule);
-        $discountedQty = 0;
-        $summaryPrice = 0;
-        $minQty = $this->getMinQty($rule,$qtySkus,$qtyCats);
-        foreach ($sortedProducts as $itemId => $allItem) {
-            $itemQty = $this->getItemQty($allItem);
-            if ($rule->getAmrulesRule()->getPromoSkus() && in_array($allItem->getSku(), $promoSku)) {
-                $discountedQty = min($itemQty, $qtySkus[$allItem->getSku()]);
-                $discountedQtyByItem[$itemId] = $discountedQty;
-                $qtySkus[$allItem->getSku()] -= $discountedQty;
-                $summaryPrice += $discountedQty * ($this->rulesProductHelper->getItemBasePrice($item));
-            }
+        $totalPrice = $this->getItemsPrice($itemsForSet);
+        $quoteAmount = $setQty * $rule->getDiscountAmount();
 
-            if ( $rule->getAmrulesRule()->getPromoCats() && array_intersect($allItem->getProduct()->getCategoryIds(), $promoCats) ) {
-                foreach (array_intersect($allItem->getProduct()->getCategoryIds(), $promoCats) as $category) {
-                    if (isset($qtyCats[$category])) {
-                        $discountedQty = min($itemQty, $qtyCats[$category]);
-                        $discountedQtyByItem[$itemId] = $discountedQty;
-                        $qtyCats[$category] -= $discountedQty;
-                        $summaryPrice += $discountedQty * ($this->rulesProductHelper->getItemBasePrice($item));
-                    }
+        if ($totalPrice < $quoteAmount) {
+            foreach (self::$allItems as $i => $elem) {
+                if ($item->getSku() == $elem->getSku()) {
+                    unset(self::$allItems[$i]);
                 }
             }
+
+            return $this;
         }
 
-        foreach ($sortedProducts as $itemId => $allItem) {
-            if (!array_key_exists( $itemId,$discountedQtyByItem ) || !$allItem) {
-                continue;
-            }
+        $countItemsForDiscount = count($itemsForSet);
+        $this->calculateDiscountForItems($totalPrice, $rule, $itemsForSet, $countItemsForDiscount, $quoteAmount);
 
-            $percentDiscount = 1 - $rule->getDiscountAmount() * $minQty / $summaryPrice;
-            $r[$allItem->getAmrulesId()]['discount'] = $this->rulesProductHelper->getItemPrice($allItem)
-                * $percentDiscount * $discountedQtyByItem[$itemId];
-            $r[$allItem->getAmrulesId()]['original_discount'] = $this->rulesProductHelper->getItemOriginalPrice($allItem)
-                * $percentDiscount * $discountedQtyByItem[$itemId];
-            $r[$allItem->getAmrulesId()]['base_discount'] = $this->rulesProductHelper->getItemBasePrice($allItem)
-                * $percentDiscount * $discountedQtyByItem[$itemId];
-            $r[$allItem->getAmrulesId()]['base_item_original_discount'] = $this->rulesProductHelper->getItemBaseOriginalPrice($allItem)
-                * $percentDiscount * $discountedQtyByItem[$itemId];
-            $r[$allItem->getAmrulesId()]['percent'] = $percentDiscount;
+        foreach ($itemsForSet as $i => $item) {
+            unset(self::$allItems[$i]);
         }
 
-        if (isset($r[$item->getAmrulesId()])) {
-            $discountData->setAmount($r[$item->getAmrulesId()]['discount']);
-            $discountData->setBaseAmount($r[$item->getAmrulesId()]['base_discount']);
-            $discountData->setOriginalAmount($r[$item->getAmrulesId()]['original_discount']);
-            $discountData->setBaseOriginalAmount($r[$item->getAmrulesId()]['base_item_original_discount']);
-        }
-
-        return $discountData;
+        return $this;
     }
 
-    protected function getMinQty($rule,$qtySkus,$qtyCats)
+    /**
+     * @param float $totalPrice
+     * @param RuleModel $rule
+     * @param array $itemsForSet
+     * @param int $maxDiscountQty
+     * @param float|int $quoteAmount
+     *
+     * @return void
+     */
+    private function calculateDiscountForItems($totalPrice, $rule, $itemsForSet, $maxDiscountQty, $quoteAmount)
     {
-        $minQty = 0;
-        if ($qtySkus) {
-            if ($rule->getAmrulesRule()->getPromoSkus()) {
-                $minQty = min($qtySkus);
-                foreach ($qtySkus as $key => $qtySku) {
-                    $qtySkus[$key] = $minQty;
+        $ruleId = $this->getRuleId($rule);
+        foreach ($itemsForSet as $item) {
+            if ($maxDiscountQty > 0) {
+                $discountData = $this->discountFactory->create();
+
+                $baseItemPrice = $this->rulesProductHelper->getItemBasePrice($item);
+                $baseItemOriginalPrice = $this->rulesProductHelper->getItemBaseOriginalPrice($item);
+
+                $percentage = $baseItemPrice / $totalPrice;
+                $baseDiscount = $baseItemPrice - $quoteAmount * $percentage;
+                $itemDiscount = $this->priceCurrency->convert($baseDiscount, $item->getQuote()->getStore());
+                $baseOriginalDiscount = $baseItemOriginalPrice - $quoteAmount * $percentage;
+                $originalDiscount = ($baseItemOriginalPrice/$baseItemPrice) *
+                    $this->priceCurrency->convert($baseOriginalDiscount, $item->getQuote()->getStore());
+
+                if (!isset(self::$cachedDiscount[$ruleId][$item->getProductId()])) {
+                    $discountData->setAmount($itemDiscount);
+                    $discountData->setBaseAmount($baseDiscount);
+                    $discountData->setOriginalAmount($originalDiscount);
+                    $discountData->setBaseOriginalAmount($baseOriginalDiscount);
+                } else {
+                    $cachedItem = self::$cachedDiscount[$ruleId][$item->getProductId()];
+                    $discountData->setAmount($itemDiscount + $cachedItem->getAmount());
+                    $discountData->setBaseAmount($baseDiscount + $cachedItem->getBaseAmount());
+                    $discountData->setOriginalAmount($originalDiscount + $cachedItem->getOriginalAmount());
+                    $discountData->setBaseOriginalAmount($baseOriginalDiscount + $cachedItem->getBaseOriginalAmount());
                 }
+                $maxDiscountQty--;
+                self::$cachedDiscount[$ruleId][$item->getProductId()] = $discountData;
+            } else {
+                break;
             }
+        }
+    }
+
+    /**
+     * @param array $items
+     *
+     * @return float
+     */
+    private function getItemsPrice($items)
+    {
+        $totalPrice = 0;
+        foreach ($items as $item) {
+            $totalPrice += $this->validator->getItemBasePrice($item);
         }
 
-        if ($qtyCats) {
-            if ($rule->getAmrulesRule()->getPromoCats()) {
-                $minQty = min($qtyCats);
-                foreach ($qtyCats as $key => $qtyCat) {
-                    $qtyCats[$key] = $minQty;
-                }
-            }
-        }
-        return $minQty;
+        return $totalPrice;
     }
 }

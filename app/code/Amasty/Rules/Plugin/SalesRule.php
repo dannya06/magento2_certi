@@ -1,54 +1,51 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Plugin;
 
+use Amasty\Rules\Api\Data\RuleInterface;
+
 class SalesRule
 {
     /**
-     * Core registry
-     *
-     * @var \Magento\Framework\Registry
+     * @var \Amasty\Rules\Model\RuleFactory
      */
-    protected $_coreRegistry;
-
-    /**
-     * Rule
-     *
-     * @var \Magento\SalesRule\Model\Rule
-     */
-    protected $_rule;
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $_objectManager;
+    private $ruleFactory;
 
     public function __construct(
-        \Magento\Framework\Registry $registry,
-        \Magento\SalesRule\Model\Rule $rule,
-        \Magento\Framework\ObjectManagerInterface $objectManager
+        \Amasty\Rules\Model\RuleFactory $ruleFactory
     ) {
-        $this->_coreRegistry = $registry;
-        $this->_rule = $rule;
-        $this->_objectManager = $objectManager;
+        $this->ruleFactory = $ruleFactory;
     }
 
-    public function afterAfterSave(\Magento\SalesRule\Model\Rule $subject, $result)
+    /**
+     * @param \Magento\SalesRule\Model\Rule $subject
+     * @param \Magento\SalesRule\Model\Rule $salesRule
+     *
+     * @return \Magento\SalesRule\Model\Rule
+     */
+    public function afterLoadPost(\Magento\SalesRule\Model\Rule $subject, $salesRule)
     {
-        $this->_coreRegistry->register('amrules_current_salesrule', $subject, true);
-        return $result;
-    }
+        /** @var array $attributes */
+        $attributes = $salesRule->getExtensionAttributes() ?: [];
+        if (!isset($attributes[RuleInterface::EXTENSION_CODE])
+            || !is_array($attributes[RuleInterface::EXTENSION_CODE])
+        ) {
+            return $salesRule;
+        }
 
-    public function afterLoad($subject, $result)
-    {
-        $amrulesRule = $this->_objectManager->get('Amasty\Rules\Model\Rule');
-        $amrulesRule->loadBySalesrule($subject);
-        return $result;
+        /** @var RuleInterface $amRule */
+        $amRule = $this->ruleFactory->create();
+        $amRule->addData($attributes[RuleInterface::EXTENSION_CODE]);
+
+        $attributes[RuleInterface::EXTENSION_CODE] = $amRule;
+        $subject->setExtensionAttributes($attributes);
+
+        return $salesRule;
     }
 }

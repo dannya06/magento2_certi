@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -134,7 +134,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     self::TYPE_GROUP_N,
                     self::TYPE_GROUP_N_DISC
                 ],
-                'Product Set (beta)' => [
+                'Product Set' => [
                     self::TYPE_SETOF_PERCENT,
                     self::TYPE_SETOF_FIXED
                 ],

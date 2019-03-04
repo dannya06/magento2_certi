@@ -1,67 +1,61 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Setup;
 
-use Amasty\Rules\Helper\Data;
-use Amasty\Rules\Model\ResourceModel\RuleFactory as RuleResourceFactory;
-use Amasty\Rules\Model\RuleFactory as AmastyRule;
-use Magento\Framework\Api\SearchCriteriaBuilder;
+use Amasty\Rules\Api\Data\RuleInterface;
 use Magento\Framework\App\State;
+use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\SalesRule\Api\RuleRepositoryInterface;
-use Magento\SalesRule\Model\Data\Rule;
+use Magento\Framework\Setup\ExternalFKSetup;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 
-/**
- * Upgrade the Catalog module DB scheme
- */
 class UpgradeSchema implements UpgradeSchemaInterface
 {
     /**
-     * @var SearchCriteriaBuilder
+     * @var State
      */
-    private $searchCriteriaBuilder;
+    private $appState;
 
     /**
-     * @var RuleRepositoryInterface
+     * @var Operation\AddAmrulesTable
      */
-    private $ruleRepository;
+    private $addAmrulesTable;
 
     /**
-     * @var RuleResourceFactory
+     * @var Operation\MigrateRules
      */
-    private $ruleResourceFactory;
+    private $migrateRules;
 
     /**
-     * @var AmastyRule
+     * @var ExternalFKSetup
      */
-    private $ruleFactory;
+    private $externalFKSetup;
+
+    /**
+     * @var MetadataPool
+     */
+    private $metadata;
 
     public function __construct(
         State $appState,
-        RuleRepositoryInterface $ruleRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        RuleResourceFactory $ruleResourceFactory,
-        AmastyRule $ruleFactory
+        Operation\AddAmrulesTable\Proxy $addAmrulesTable,
+        Operation\MigrateRules\Proxy $migrateRules,
+        ExternalFKSetup $externalFKSetup,
+        MetadataPool $metadata
     ) {
-        try {
-            if (!$appState->getAreaCode()) {
-                $appState->setAreaCode('frontend');
-            }
-        } catch (\Exception $e) {
-            // Area code is already set
-        }
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->ruleRepository = $ruleRepository;
-        $this->ruleResourceFactory = $ruleResourceFactory;
-        $this->ruleFactory = $ruleFactory;
+        $this->appState = $appState;
+        $this->addAmrulesTable = $addAmrulesTable;
+        $this->migrateRules = $migrateRules;
+        $this->externalFKSetup = $externalFKSetup;
+        $this->metadata = $metadata;
     }
 
     /**
@@ -72,11 +66,28 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $setup->startSetup();
 
         if (version_compare($context->getVersion(), '1.1.0', '<')) {
-            $this->addAmrulesTable($setup);
+            $this->addAmrulesTable->execute($setup);
         }
 
         if (version_compare($context->getVersion(), '2.0.0', '<')) {
-            $this->migrateRules($setup);
+            $this->appState->emulateAreaCode(
+                \Magento\Framework\App\Area::AREA_FRONTEND,
+                [$this->migrateRules, 'execute']
+            );
+        }
+
+        /** @since 2.5.1 deleted deprecated code of changing foreign key for EE (2.1.1) */
+
+        if (version_compare($context->getVersion(), '2.2.3', '<')) {
+            $this->addApplyDiscountTo($setup);
+        }
+
+        if (version_compare($context->getVersion(), '2.2.4', '<')) {
+            $this->addUseFor($setup);
+        }
+
+        if (version_compare($context->getVersion(), '2.5.1', '<')) {
+            $this->changeForeignKey($setup);
         }
 
         $setup->endSetup();
@@ -84,170 +95,98 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
     /**
      * @param SchemaSetupInterface $setup
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Exception
      */
-    private function migrateRules(SchemaSetupInterface $setup)
+    private function addApplyDiscountTo(SchemaSetupInterface $setup)
     {
-        $rulesArray = [
-            Data::TYPE_XY_PERCENT,
-            Data::TYPE_XY_FIXED,
-            Data::TYPE_XY_FIXDISC,
-            Data::TYPE_AFTER_N_DISC,
-            Data::TYPE_AFTER_N_FIXDISC,
-            Data::TYPE_AFTER_N_FIXED
-        ];
-        /** @var \Magento\Framework\Api\SearchCriteria $searchCriteria */
-        $searchCriteria = $this->searchCriteriaBuilder->addFilter(Rule::KEY_SIMPLE_ACTION, $rulesArray, 'in')->create();
-        /** @var \Magento\SalesRule\Model\ResourceModel\Rule\Collection $rulesCollection */
-        $rulesCollection = $this->ruleRepository->getList($searchCriteria);
+        $setup->getConnection()->addColumn(
+            $setup->getTable('amasty_amrules_rule'),
+            'apply_discount_to',
+            [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length'   => 4,
+                'nullable' => false,
+                'comment'  => 'Apply Discount To'
+            ]
+        );
+    }
 
-        $rules = $rulesCollection->getItems();
-        /** @var \Magento\SalesRule\Model\Data\Rule $rule */
-        foreach ($rules as $rule) {
-            $action = $rule->getSimpleAction();
-            $discountStep = $rule->getDiscountStep();
-            switch ($action) {
-                case Data::TYPE_XY_PERCENT:
-                    $rule->setSimpleAction(Data::TYPE_XN_PERCENT);
-                    break;
-                case Data::TYPE_XY_FIXED:
-                    $rule->setSimpleAction(Data::TYPE_XN_FIXED);
-                    break;
-                case Data::TYPE_XY_FIXDISC:
-                    $rule->setSimpleAction(Data::TYPE_XN_FIXDISC);
-                    break;
-                case Data::TYPE_AFTER_N_DISC:
-                    $rule->setSimpleAction(Data::TYPE_EACH_M_AFT_N_PERC);
-                    $rule->setDiscountStep(1);
-                    break;
-                case Data::TYPE_AFTER_N_FIXDISC:
-                    $rule->setSimpleAction(Data::TYPE_EACH_M_AFT_N_DISC);
-                    $rule->setDiscountStep(1);
-                    break;
-                case Data::TYPE_AFTER_N_FIXED:
-                    $rule->setSimpleAction(Data::TYPE_EACH_M_AFT_N_FIX);
-                    $rule->setDiscountStep(1);
-                    break;
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function addUseFor(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('amasty_amrules_rule'),
+            'use_for',
+            [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                'length'   => 4,
+                'nullable' => false,
+                'comment'  => 'Use'
+            ]
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function changeForeignKey(SchemaSetupInterface $setup)
+    {
+        /** @var AdapterInterface $adapter */
+        $adapter = $setup->getConnection();
+        $amruleTableName = $setup->getTable('amasty_amrules_rule');
+        $salesruleTableName = $setup->getTable('salesrule');
+        $foreignKeys = $adapter->getForeignKeys($amruleTableName);
+        $linkField = $this->metadata->getMetadata(\Magento\SalesRule\Api\Data\RuleInterface::class)->getLinkField();
+
+        foreach ($foreignKeys as $key) {
+            if ($key['COLUMN_NAME'] == RuleInterface::KEY_SALESRULE_ID && $key['REF_COLUMN_NAME'] != $linkField) {
+                $this->setRowIdInsteadRuleId($adapter, $amruleTableName, $salesruleTableName);
+                $adapter->dropForeignKey($key['TABLE_NAME'], $key['FK_NAME']);
+                $this->externalFKSetup->install(
+                    $setup,
+                    $salesruleTableName,
+                    $this->metadata->getMetadata(\Magento\SalesRule\Api\Data\RuleInterface::class)->getLinkField(),
+                    $amruleTableName,
+                    RuleInterface::KEY_SALESRULE_ID
+                );
             }
-            $this->ruleRepository->save($rule);
-            $this->setNqtyToXYrules($rule, $discountStep);
         }
     }
 
     /**
-     * @param $rule
-     * @param $discountStep
-     * @throws \Exception
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @param AdapterInterface $adapter
+     * @param string $amruleTableName
+     * @param string $salesruleTableName
      */
-    private function setNqtyToXYrules($rule, $discountStep)
+    private function setRowIdInsteadRuleId($adapter, $amruleTableName, $salesruleTableName)
     {
-        if ($rule->getRuleId()) {
-            /** @var \Amasty\Rules\Model\Rule $amastyRule */
-            $amastyRule = $this->ruleFactory->create();
-            /** @var \Amasty\Rules\Model\ResourceModel\Rule $ruleResource */
-            $ruleResource = $this->ruleResourceFactory->create();
-            $ruleResource->load($amastyRule, $rule->getRuleId(), 'salesrule_id');
-            if (in_array($rule->getSimpleAction(), Data::BUY_X_GET_Y)) {
-                $amastyRule->setNqty(1);
-            } elseif (in_array($rule->getSimpleAction(), Data::TYPE_EACH_M_AFT_N)) {
-                $amastyRule->setEachm($discountStep);
-            }
-            $ruleResource->save($amastyRule);
+        $select = $adapter->select()
+            ->from(
+                $amruleTableName,
+                [
+                    'eachm',
+                    'priceselector',
+                    'promo_cats',
+                    'promo_skus',
+                    'nqty',
+                    'skip_rule',
+                    'max_discount',
+                    'apply_discount_to',
+                    'use_for'
+                ]
+            )->joinInner(
+                ['salesrule' => $salesruleTableName],
+                'salesrule.rule_id = ' . $amruleTableName . '.salesrule_id',
+                ['salesrule_id' => 'salesrule.row_id']
+            )->setPart('disable_staging_preview', true);
+
+        $amRules = $adapter->fetchAll($select);
+
+        $adapter->truncateTable($amruleTableName);
+
+        foreach ($amRules as $rule) {
+            $adapter->insert($amruleTableName, $rule);
         }
-    }
-
-    protected function addAmrulesTable(SchemaSetupInterface $setup)
-    {
-        /**
-         * Create table 'amasty_amrules_rule'
-         */
-        $table = $setup->getConnection()
-            ->newTable($setup->getTable('amasty_amrules_rule'))
-            ->addColumn(
-                'entity_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                null,
-                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-                'Entity ID'
-            )
-            ->addColumn(
-                'salesrule_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                null,
-                ['unsigned' => true, 'nullable' => false],
-                'Salesrule Entity Id'
-            )
-            ->addColumn(
-                'eachm',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                null,
-                ['nullable' => false],
-                'Each M Product'
-            )
-            ->addColumn(
-                'priceselector',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                null,
-                ['nullable' => false],
-                'Price Base On'
-            )
-            ->addColumn(
-                'promo_cats',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                null,
-                ['nullable' => false],
-                'Additional Y cats'
-            )
-            ->addColumn(
-                'promo_skus',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                null,
-                ['nullable' => false],
-                'Additional Y skus'
-            )
-            ->addColumn(
-                'nqty',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                null,
-                ['nullable' => false],
-                'N Qty'
-            )
-            ->addColumn(
-                'skip_rule',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                null,
-                ['nullable' => false],
-                'Skip Rule'
-            )
-            ->addColumn(
-                'max_discount',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                null,
-                ['nullable' => false],
-                'Max Discount Amount'
-            )
-
-            ->addIndex(
-                $setup->getIdxName('amasty_amrules_rule', ['salesrule_id']),
-                ['salesrule_id']
-            )
-            ->addForeignKey(
-                $setup->getFkName(
-                    'amasty_amrules_rule',
-                    'salesrule_id',
-                    'salesrule',
-                    'rule_id'
-                ),
-                'salesrule_id',
-                $setup->getTable('salesrule'),
-                'rule_id',
-                \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
-            )
-            ->setComment('Amasty Promotions Rules Table');
-        $setup->getConnection()->createTable($table);
     }
 }

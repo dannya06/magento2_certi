@@ -1,43 +1,73 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rgrid
  */
 
+
 namespace Amasty\Rgrid\Controller\Adminhtml\Promo\Quote;
 
-class MassStatus extends \Amasty\Rgrid\Controller\Adminhtml\Promo\Quote
+use Magento\Backend\App\Action;
+use Magento\Framework\Exception\LocalizedException;
+use Amasty\Rgrid\Model\SalesRuleProvider;
+
+class MassStatus extends Action
 {
     /**
-     * @return \Magento\Backend\Model\View\Result\Redirect
+     * @var SalesRuleProvider
+     */
+    private $ruleProvider;
+
+    public function __construct(
+        Action\Context $context,
+        SalesRuleProvider $ruleProvider
+    ) {
+        parent::__construct($context);
+
+        $this->ruleProvider = $ruleProvider;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function execute()
     {
+        /** @var int[]|null $ids */
         $ids = $this->getRequest()->getParam('ids');
+        /** @var string|null $status */
         $status = $this->getRequest()->getParam('status');
 
-        if ($ids) {
+        if (is_array($ids)) {
             try {
-                $collection = $this->_collectionFactory->create();
-                $collection->addFieldToFilter('rule_id', ['in' => $ids ]);
-                foreach ($collection as $rule) {
+                /** @var \Magento\SalesRule\Api\Data\RuleSearchResultInterface $rules */
+                $rules = $this->ruleProvider->getByRuleIds($ids);
+
+                /** @var \Magento\SalesRule\Model\Rule $rule */
+                foreach ($rules->getItems() as $rule) {
                     $rule->setIsActive($status);
-                    $rule->save();
+                    $this->ruleProvider->getRepository()->save($rule);
                 }
+
                 $this->messageManager->addSuccessMessage(
-                    __('A total of %1 record(s) have been updated.', count($collection))
+                    __('A total of %1 record(s) have been updated.', $rules->getTotalCount())
                 );
-                $this->_redirect('sales_rule/*/');
-                return;
-            } catch (\Magento\Framework\Exception\LocalizedException $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addErrorMessage(
+
+                return $this->_redirect('sales_rule/*/');
+            } catch (LocalizedException $exception) {
+                $this->messageManager->addExceptionMessage($exception);
+            } catch (\Exception $exception) {
+                $this->messageManager->addExceptionMessage(
+                    $exception,
                     __('Something went wrong while updating the rule(s) status.')
                 );
             }
+
+            return $this->_redirect('sales_rule/*/');
         }
-        $this->_redirect('sales_rule/*/');
+
+        $this->messageManager->addErrorMessage(__('We can\'t find a rule to update its status.'));
+
+        return $this->_redirect('sales_rule/*/');
     }
 }

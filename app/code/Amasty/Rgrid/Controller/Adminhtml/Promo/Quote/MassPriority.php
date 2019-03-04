@@ -1,56 +1,106 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rgrid
  */
 
+
 namespace Amasty\Rgrid\Controller\Adminhtml\Promo\Quote;
 
-class MassPriority extends \Amasty\Rgrid\Controller\Adminhtml\Promo\Quote
+use Magento\Backend\App\Action;
+use Magento\Framework\Data\Collection as DataCollection;
+use Magento\Framework\Exception\LocalizedException;
+use Amasty\Rgrid\Model\SalesRuleProvider;
+use Amasty\Rgrid\Model\ResourceModel\Rule\Collection;
+use Amasty\Rgrid\Model\ResourceModel\Rule\CollectionFactory;
+
+class MassPriority extends Action
 {
     /**
-     * @return \Magento\Backend\Model\View\Result\Redirect
+     * @var CollectionFactory
+     */
+    private $collectionFactory;
+
+    /**
+     * @var SalesRuleProvider
+     */
+    private $ruleProvider;
+
+    public function __construct(
+        Action\Context $context,
+        CollectionFactory $collectionFactory,
+        SalesRuleProvider $ruleProvider
+    ) {
+        parent::__construct($context);
+
+        $this->collectionFactory = $collectionFactory;
+        $this->ruleProvider = $ruleProvider;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function execute()
     {
+        /** @var int[]|null $ids */
         $ids = $this->getRequest()->getParam('ids');
-        $priority = $this->getRequest()->getParam('priority');
+        $rulePriority = $this->getRulePriority();
 
-        $collection = $this->_collectionFactory->create();
-        if ($priority == 'low') {
-            $rulePriority = $collection->setOrder('sort_order', 'DESC')->setPageSize(1)->getFirstItem()->getSortOrder();
+        if (is_array($ids)) {
+            try {
+                /** @var \Magento\SalesRule\Api\Data\RuleSearchResultInterface $rules */
+                $rules = $this->ruleProvider->getByRuleIds($ids);
+
+                /** @var \Magento\SalesRule\Model\Rule $rule */
+                foreach ($rules->getItems() as $rule) {
+                    $rule->setSortOrder($rulePriority);
+                    $this->ruleProvider->getRepository()->save($rule);
+                }
+
+                $this->messageManager->addSuccessMessage(
+                    __('A total of %1 record(s) have been updated.', $rules->getTotalCount())
+                );
+
+                return $this->_redirect('sales_rule/*/');
+            } catch (LocalizedException $exception) {
+                $this->messageManager->addExceptionMessage($exception);
+            } catch (\Exception $exception) {
+                $this->messageManager->addExceptionMessage(
+                    $exception,
+                    __('Something went wrong while updating the rule(s) priority.')
+                );
+            }
+
+            return $this->_redirect('sales_rule/*/');
+        }
+
+        $this->messageManager->addErrorMessage(__('We can\'t find a rule to update its priority.'));
+
+        return $this->_redirect('sales_rule/*/');
+    }
+
+    /**
+     * @return int
+     */
+    private function getRulePriority()
+    {
+        /** @var string|null $priority */
+        $priority = $this->getRequest()->getParam('priority');
+        /** @var Collection $collection */
+        $collection = $this->collectionFactory->create();
+
+        if ($priority === 'low') {
+            $rulePriority = $collection->getSortOrder();
             $rulePriority++;
         } else {
-            $rulePriority = $collection->setOrder('sort_order', 'ASC')->setPageSize(1)->getFirstItem()->getSortOrder();
+            $rulePriority = $collection->getSortOrder(DataCollection::SORT_ORDER_ASC);
+
             if ($rulePriority != 0) {
                 $rulePriority--;
             }
         }
 
-        if ($ids) {
-            try {
-                /** @var \Magento\SalesRule\Model\ResourceModel\Rule\Collection $collection */
-                $collection = $this->_collectionFactory->create();
-                $collection->addFieldToFilter('rule_id', ['in' => $ids ]);
-                /** @var \Magento\SalesRule\Model\Rule $rule */
-                foreach ($collection as $rule) {
-                    $rule->setSortOrder($rulePriority);
-                    $rule->save();
-                }
-                $this->messageManager->addSuccessMessage(
-                    __('A total of %1 record(s) have been updated.', count($collection))
-                );
-                $this->_redirect('sales_rule/*/');
-                return;
-            } catch (\Magento\Framework\Exception\LocalizedException $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addErrorMessage(
-                    __('Something went wrong while updating the rule(s) status.')
-                );
-            }
-        }
-        $this->_redirect('sales_rule/*/');
+        return $rulePriority;
     }
 }

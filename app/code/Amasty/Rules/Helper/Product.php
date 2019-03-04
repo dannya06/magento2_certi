@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 namespace Amasty\Rules\Helper;
@@ -28,14 +28,19 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $_priceCurrency;
 
+    /**
+     * @var \Amasty\Rules\Model\RuleResolver
+     */
+    private $ruleResolver;
+
     public function __construct(
         \Magento\SalesRule\Model\Validator $_validator,
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Directory\Model\PriceCurrency $priceCurrency
+        \Magento\Directory\Model\PriceCurrency $priceCurrency,
+        \Amasty\Rules\Model\RuleResolver $ruleResolver
     ) {
         $this->_validator = $_validator;
-        $this->_objectManager = $objectManager;
         $this->_priceCurrency = $priceCurrency;
+        $this->ruleResolver = $ruleResolver;
     }
 
     public function setRule($rule)
@@ -127,8 +132,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
     protected function getPriceSelector()
     {
-        $amrulesRule = $this->_objectManager->get('Amasty\Rules\Model\Rule');
-        $amrulesRule = $amrulesRule->loadBySalesrule($this->_rule);
+        $amrulesRule = $this->ruleResolver->getSpecialPromotions($this->_rule);
 
         return $amrulesRule->getPriceselector();
     }

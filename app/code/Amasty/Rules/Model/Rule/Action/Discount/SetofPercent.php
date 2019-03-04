@@ -1,88 +1,80 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
+
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
-class SetofPercent extends Setof
-{
-    const RULE_VERSION = '1.0.0';
+use Magento\SalesRule\Model\Rule as RuleModel;
 
+class SetofPercent extends AbstractSetof
+{
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
-     * @param float $qty
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
+     * @param RuleModel $rule
+     *
+     * @return $this
      */
-    public function calculate($rule, $item, $qty)
+    protected function calculateDiscountForRule($rule, $item)
     {
-        $this->beforeCalculate($rule, $item, $qty);
-        $discountData = $this->_calculate($rule, $item);
-        $this->afterCalculate($discountData, $rule, $item);
-        return $discountData;
+        list($setQty, $itemsForSet) = $this->prepareDataForCalculation($rule);
+
+        if (!$itemsForSet) {
+            return $this;
+        }
+
+        $countItemsForDiscount = count($itemsForSet);
+        $this->calculateDiscountForItems($rule, $itemsForSet, $countItemsForDiscount);
+
+        foreach ($itemsForSet as $i => $item) {
+            unset(self::$allItems[$i]);
+        }
+
+        return $this;
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param RuleModel $rule
+     * @param array $itemsForSet
+     * @param int $maxDiscountQty
      *
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data
+     * @return void
      */
-    protected function _calculate($rule, $item)
+    private function calculateDiscountForItems($rule, $itemsForSet, $maxDiscountQty)
     {
-        /** @var \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData */
-        $discountData = $this->discountFactory->create();
-        $address = $item->getAddress();
-        list ( $qtySkus,$qtyCats,$sortedProducts ) = $this->prepareSetRule($rule, $address);
-        $r = [];
-        $discountedQtyByItem = [];
-        $promoCats = $this->rulesDataHelper->getRuleCats($rule);
-        $promoSku = $this->rulesDataHelper->getRuleSkus($rule);
-        $discountedQty = 0;
-        foreach ($sortedProducts as $itemId => $allItem) {
-            $itemQty = $this->getItemQty($allItem);
-            if ($rule->getAmrulesRule()->getPromoSkus() && in_array($allItem->getSku(), $promoSku)) {
-                $discountedQty = min($itemQty, $qtySkus[$allItem->getSku()]);
-                $discountedQtyByItem[$itemId] = $discountedQty;
-                $qtySkus[$allItem->getSku()] -= $discountedQty;
-            }
+        $ruleId = $this->getRuleId($rule);
+        foreach ($itemsForSet as $item) {
+            if ($maxDiscountQty > 0) {
+                $discountData = $this->discountFactory->create();
 
-            if ( $rule->getAmrulesRule()->getPromoCats()
-                && array_intersect($allItem->getProduct()->getCategoryIds(), $promoCats)
-            ) {
-                foreach (array_intersect($allItem->getProduct()->getCategoryIds(), $promoCats) as $category) {
-                    if (isset($qtyCats[$category])) {
-                        $discountedQty = min($itemQty, $qtyCats[$category]);
-                        $discountedQtyByItem[$itemId] = $discountedQty;
-                        $qtyCats[$category] -= $discountedQty;
-                    }
+                $baseItemPrice = $this->rulesProductHelper->getItemBasePrice($item);
+                $baseItemOriginalPrice = $this->rulesProductHelper->getItemBaseOriginalPrice($item);
+
+                $percentage = min(100, $rule->getDiscountAmount()) / 100;
+                $baseDiscount = $baseItemPrice * $percentage;
+                $itemDiscount = $this->priceCurrency->convert($baseDiscount, $item->getQuote()->getStore());
+                $baseOriginalDiscount = $baseItemOriginalPrice * $percentage;
+                $originalDiscount = $this->priceCurrency->convert($baseOriginalDiscount, $item->getQuote()->getStore());
+
+                if (!isset(self::$cachedDiscount[$ruleId][$item->getProductId()])) {
+                    $discountData->setAmount($itemDiscount);
+                    $discountData->setBaseAmount($baseDiscount);
+                    $discountData->setOriginalAmount($originalDiscount);
+                    $discountData->setBaseOriginalAmount($baseOriginalDiscount);
+                } else {
+                    $cachedItem = self::$cachedDiscount[$ruleId][$item->getProductId()];
+                    $discountData->setAmount($itemDiscount + $cachedItem->getAmount());
+                    $discountData->setBaseAmount($baseDiscount + $cachedItem->getBaseAmount());
+                    $discountData->setOriginalAmount($originalDiscount + $cachedItem->getOriginalAmount());
+                    $discountData->setBaseOriginalAmount($baseOriginalDiscount + $cachedItem->getBaseOriginalAmount());
                 }
+                $maxDiscountQty--;
+                self::$cachedDiscount[$ruleId][$item->getProductId()] = $discountData;
+            } else {
+                break;
             }
-
-            $percent = min(100, $rule->getDiscountAmount());
-
-            $itemPrice = $this->rulesProductHelper->getItemPrice($allItem);
-            $itemBasePrice = $this->rulesProductHelper->getItemBasePrice($allItem);
-            $itemOriginalPrice = $this->rulesProductHelper->getItemOriginalPrice($allItem);
-            $itemBaseOriginalPrice =  $this->rulesProductHelper->getItemBaseOriginalPrice($allItem);
-            $r[$allItem->getAmrulesId()]['discount'] = $itemPrice * ($percent / 100) * $discountedQty;
-            $r[$allItem->getAmrulesId()]['original_discount'] = $itemOriginalPrice * ($percent / 100) * $discountedQty;
-            $r[$allItem->getAmrulesId()]['base_discount'] = $itemBasePrice * ($percent / 100) * $discountedQty;
-            $r[$allItem->getAmrulesId()]['base_item_original_discount'] = $itemBaseOriginalPrice
-                * ($percent / 100) * $discountedQty;
-            $r[$allItem->getAmrulesId()]['percent'] = $percent;
         }
-
-        if (isset($r[$item->getAmrulesId()])) {
-            $discountData->setAmount($r[$item->getAmrulesId()]['discount']);
-            $discountData->setBaseAmount($r[$item->getAmrulesId()]['base_discount']);
-            $discountData->setOriginalAmount($r[$item->getAmrulesId()]['original_discount']);
-            $discountData->setBaseOriginalAmount($r[$item->getAmrulesId()]['base_item_original_discount']);
-        }
-
-        return $discountData;
     }
 }

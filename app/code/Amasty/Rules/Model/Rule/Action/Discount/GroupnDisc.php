@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -13,6 +13,7 @@ namespace Amasty\Rules\Model\Rule\Action\Discount;
 class GroupnDisc extends AbstractRule
 {
     const RULE_VERSION = '1.0.0';
+    const DEFAULT_SORT_ORDER = 'asc';
 
     /**
      * @param \Magento\SalesRule\Model\Rule $rule
@@ -36,7 +37,7 @@ class GroupnDisc extends AbstractRule
     protected function _calculate($rule, $item)
     {
         $discountData = $this->discountFactory->create();
-        $allItems = $this->getSortedItems($item->getAddress(), $rule, 'asc');
+        $allItems = $this->getSortedItems($item->getAddress(), $rule, $this->getSortOrder($rule, self::DEFAULT_SORT_ORDER));
         $qty = $this->ruleQuantity(count($allItems), $rule);
         if (!$this->hasDiscountItems($allItems, $qty)) {
             return $discountData;
@@ -72,13 +73,11 @@ class GroupnDisc extends AbstractRule
             $itemOriginalPrice = $this->rulesProductHelper->getItemOriginalPrice($allItem);
             $baseItemOriginalPrice = $this->rulesProductHelper->getItemBaseOriginalPrice($allItem);
             if ($i < $countPrices - ($countPrices % $step)) {
-
                 $discount = $itemPrice * $rule->getDiscountAmount() / 100;
-                $originalDiscount = $itemOriginalPrice - $rule->getDiscountAmount() / 100;
-                $baseDiscount = $baseItemPrice - $rule->getDiscountAmount() / 100;
-                $baseItemOriginalDiscount = $baseItemOriginalPrice - $rule->getDiscountAmount() / 100;
+                $originalDiscount = $itemOriginalPrice * $rule->getDiscountAmount() / 100;
+                $baseDiscount = $baseItemPrice * $rule->getDiscountAmount() / 100;
+                $baseItemOriginalDiscount = $baseItemOriginalPrice * $rule->getDiscountAmount() / 100;
                 $percentage = $discount * 100 / $itemPrice;
-
             } else {
                 $discount = 0;
                 $baseDiscount = 0;

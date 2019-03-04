@@ -1,4 +1,3 @@
-
 /* additional tab in config section*/
 
 .module-version {
@@ -51,5 +50,31 @@ tr[id*="amasty_not_instaled"] .value{
 }
 
 tr[id*="amasty_is_instaled"] .value{
-    color: #00f702;
+    color: #0a820b;
+}
+
+.ambase-unsubscribe .message-success:before {
+    display: none;
+}
+
+.ambase-unsubscribe img {
+    margin-right: 10px;
+    max-width: 20px;
+}
+
+.ambase-unsubscribe .message-success {
+    padding: 1.8rem 4rem 1.8rem 2rem;
+}
+
+.ambase-unsubscribe .message-success span {
+    vertical-align: top;
+}
+
+.accordion .config .value.with-tooltip div.tooltip {
+    margin: -23px -28px 0 0;
+}
+
+.accordion .config .value.with-tooltip div.tooltip .tooltip-content {
+    max-width: 400px;
+    width: 400px;
 }

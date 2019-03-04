@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -19,14 +19,35 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $setup->startSetup();
 
         if (version_compare($context->getVersion(), '1.4.0', '<')) {
-            $setup->getConnection()->addColumn(
-                $setup->getTable('adminnotification_inbox'),
-                'is_amasty',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                null,
-                ['nullable' => false, 'default' => 0],
-                'Is Amasty Notification'
-            );
+            $this->addIsAmastyField($setup);
         }
+
+        if (version_compare($context->getVersion(), '1.4.2', '<')) {
+            $this->addExpireField($setup);
+        }
+    }
+
+    private function addIsAmastyField(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('adminnotification_inbox'),
+            'is_amasty',
+            \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+            null,
+            ['nullable' => false, 'default' => 0],
+            'Is Amasty Notification'
+        );
+    }
+
+    private function addExpireField(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('adminnotification_inbox'),
+            'expiration_date',
+            \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+            null,
+            ['nullable' => false],
+            'Expiration Date'
+        );
     }
 }
