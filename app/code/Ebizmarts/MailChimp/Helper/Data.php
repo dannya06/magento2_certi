@@ -44,6 +44,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     const XML_INTEREST_SUCCESS_HTML_BEFORE  = 'mailchimp/general/interest_success_html_before';
     const XML_INTEREST_SUCCESS_HTML_AFTER   = 'mailchimp/general/interest_success_html_after';
     const XML_MAGENTO_MAIL           = 'mailchimp/general/magentoemail';
+    const XML_SEND_PROMO             = 'mailchimp/ecommerce/send_promo';
+    const XML_INCLUDING_TAXES        = 'mailchimp/ecommerce/including_taxes';
 
 
     const ORDER_STATE_OK             = 'complete';
@@ -70,6 +72,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     const ORD_NEW       = "OrderNew";
     const QUO_MOD       = "QuoteModified";
     const QUO_NEW       = "QuoteNew";
+
+    const MAX_MERGEFIELDS = 100;
 
     protected $counters = [];
     /**
@@ -182,10 +186,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Framework\Stdlib\DateTime\DateTime
      */
     protected $_date;
-    /**
-     * @var \Magento\Framework\Serialize\Serializer\Json
-     */
-    protected $_serializer;
 
 
     private $customerAtt    = null;
@@ -218,7 +218,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Directory\Api\CountryInformationAcquirerInterface $countryInformation
      * @param \Magento\Framework\App\ResourceConnection $resource
      * @param \Ebizmarts\MailChimp\Model\MailChimpInterestGroupFactory $interestGroupFactory
-     * @param \Magento\Framework\Serialize\Serializer\Json $serializer
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
      */
     public function __construct(
@@ -247,7 +246,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Directory\Api\CountryInformationAcquirerInterface $countryInformation,
         \Magento\Framework\App\ResourceConnection $resource,
         \Ebizmarts\MailChimp\Model\MailChimpInterestGroupFactory $interestGroupFactory,
-        \Magento\Framework\Serialize\Serializer\Json $serializer,
         \Magento\Framework\Stdlib\DateTime\DateTime $date
     ) {
 
@@ -278,7 +276,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_customerFactory         = $customerFactory;
         $this->_countryInformation      = $countryInformation;
         $this->_interestGroupFactory    = $interestGroupFactory;
-        $this->_serializer              = $serializer;
         $this->_date                    = $date;
         parent::__construct($context);
     }
@@ -354,17 +351,21 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if (!$this->_mapFields) {
             $customerAtt = $this->getCustomerAtts();
             $data = $this->getConfigValue(self::XML_MERGEVARS, $storeId);
-            $data = $this->_serializer->unserialize($data);
-            if (is_array($data)) {
-                foreach ($data as $customerFieldId => $mailchimpName) {
-                    $this->_mapFields[] = [
-                        'mailchimp' => strtoupper($mailchimpName),
-                        'customer_field' => $customerAtt[$customerFieldId]['attCode'],
-                        'isDate' => $customerAtt[$customerFieldId]['isDate'],
-                        'isAddress' => $customerAtt[$customerFieldId]['isAddress'],
-                        'options' => $customerAtt[$customerFieldId]['options']
-                    ];
+            try {
+                $data = $this->unserialize($data);
+                if (is_array($data)) {
+                    foreach ($data as $customerFieldId => $mailchimpName) {
+                        $this->_mapFields[] = [
+                            'mailchimp' => strtoupper($mailchimpName),
+                            'customer_field' => $customerAtt[$customerFieldId]['attCode'],
+                            'isDate' => $customerAtt[$customerFieldId]['isDate'],
+                            'isAddress' => $customerAtt[$customerFieldId]['isAddress'],
+                            'options' => $customerAtt[$customerFieldId]['options']
+                        ];
+                    }
                 }
+            } catch (\Exception $e) {
+                $this->log($e->getMessage());
             }
         }
         return $this->_mapFields;
@@ -516,9 +517,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
     public function markRegisterAsModified($registerId, $type)
     {
-        $connection = $this->_mailChimpSyncE->getResource()->getConnection();
-        $tableName = $this->_mailChimpSyncE->getResource()->getMainTable();
-        $connection->update($tableName, ['mailchimp_sync_modified' => 1,'batch_id' => null], "type = '".$type."' and related_id = $registerId");
+        if(!empty($registerId)) {
+            $connection = $this->_mailChimpSyncE->getResource()->getConnection();
+            $tableName = $this->_mailChimpSyncE->getResource()->getMainTable();
+            $connection->update($tableName, ['mailchimp_sync_modified' => 1, 'batch_id' => null], "type = '" . $type . "' and related_id = $registerId");
+        }
     }
     public function getMCStoreName($storeId)
     {
@@ -715,31 +718,32 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
     public function saveEcommerceData($storeId, $entityId, $type, $date = null, $error = null, $modified = null, $deleted = null, $token = null)
     {
-
-        $chimpSyncEcommerce = $this->getChimpSyncEcommerce($storeId, $entityId, $type);
-        if ($chimpSyncEcommerce->getRelatedId()==$entityId || !$chimpSyncEcommerce->getRelatedId() && $modified!=1) {
-            $chimpSyncEcommerce->setMailchimpStoreId($storeId);
-            $chimpSyncEcommerce->setType($type);
-            $chimpSyncEcommerce->setRelatedId($entityId);
-            if ($modified) {
-                $chimpSyncEcommerce->setMailchimpSyncModified($modified);
+        if(!empty($entityId)) {
+            $chimpSyncEcommerce = $this->getChimpSyncEcommerce($storeId, $entityId, $type);
+            if ($chimpSyncEcommerce->getRelatedId() == $entityId || !$chimpSyncEcommerce->getRelatedId() && $modified != 1) {
+                $chimpSyncEcommerce->setMailchimpStoreId($storeId);
+                $chimpSyncEcommerce->setType($type);
+                $chimpSyncEcommerce->setRelatedId($entityId);
+                if ($modified) {
+                    $chimpSyncEcommerce->setMailchimpSyncModified($modified);
+                }
+                if ($date) {
+                    $chimpSyncEcommerce->setMailchimpSyncDelta($date);
+                } elseif ($modified != 1) {
+                    $chimpSyncEcommerce->setBatchId(null);
+                }
+                if ($error) {
+                    $chimpSyncEcommerce->setMailchimpSyncError($error);
+                }
+                if ($deleted) {
+                    $chimpSyncEcommerce->setMailchimpSyncDeleted($deleted);
+                    $chimpSyncEcommerce->setMailchimpSyncModified(0);
+                }
+                if ($token) {
+                    $chimpSyncEcommerce->setMailchimpToken($token);
+                }
+                $chimpSyncEcommerce->getResource()->save($chimpSyncEcommerce);
             }
-            if ($date) {
-                $chimpSyncEcommerce->setMailchimpSyncDelta($date);
-            } elseif ($modified != 1) {
-                $chimpSyncEcommerce->setBatchId(null);
-            }
-            if ($error) {
-                $chimpSyncEcommerce->setMailchimpSyncError($error);
-            }
-            if ($deleted) {
-                $chimpSyncEcommerce->setMailchimpSyncDeleted($deleted);
-                $chimpSyncEcommerce->setMailchimpSyncModified(0);
-            }
-            if ($token) {
-                $chimpSyncEcommerce->setMailchimpToken($token);
-            }
-            $chimpSyncEcommerce->getResource()->save($chimpSyncEcommerce);
         }
     }
 
@@ -1025,30 +1029,37 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $interestGroup = $this->_interestGroupFactory->create();
         $interestGroup->getBySubscriberIdStoreId($subscriberId, $storeId);
-        $groups = $this->_serializer->unserialize($interestGroup->getGroupdata());
-        if (isset($groups['group'])) {
-            foreach ($groups['group'] as $key => $value) {
-                if (isset($interest[$key])) {
-                    if (is_array($value)) {
-                        foreach ($value as $groupId) {
-                            foreach ($interest[$key]['category'] as $gkey => $gvalue) {
-                                if ($gvalue['id'] == $groupId) {
-                                    $interest[$key]['category'][$gkey]['checked'] = true;
-                                } elseif (!isset($interest[$key]['category'][$gkey]['checked'])) {
-                                    $interest[$key]['category'][$gkey]['checked'] = false;
+        $serialized = $interestGroup->getGroupdata();
+        if($serialized) {
+            try {
+                $groups = $this->unserialize($serialized);
+                if (isset($groups['group'])) {
+                    foreach ($groups['group'] as $key => $value) {
+                        if (isset($interest[$key])) {
+                            if (is_array($value)) {
+                                foreach ($value as $groupId) {
+                                    foreach ($interest[$key]['category'] as $gkey => $gvalue) {
+                                        if ($gvalue['id'] == $groupId) {
+                                            $interest[$key]['category'][$gkey]['checked'] = true;
+                                        } elseif (!isset($interest[$key]['category'][$gkey]['checked'])) {
+                                            $interest[$key]['category'][$gkey]['checked'] = false;
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                    } else {
-                        foreach ($interest[$key]['category'] as $gkey => $gvalue) {
-                            if ($gvalue['id'] == $value) {
-                                $interest[$key]['category'][$gkey]['checked'] = true;
                             } else {
-                                $interest[$key]['category'][$gkey]['checked'] = false;
+                                foreach ($interest[$key]['category'] as $gkey => $gvalue) {
+                                    if ($gvalue['id'] == $value) {
+                                        $interest[$key]['category'][$gkey]['checked'] = true;
+                                    } else {
+                                        $interest[$key]['category'][$gkey]['checked'] = false;
+                                    }
+                                }
                             }
                         }
                     }
                 }
+            } catch (\Exception $e) {
+                $this->log($e->getMessage());
             }
         }
         return $interest;
@@ -1090,5 +1101,21 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getCounters()
     {
         return $this->counters;
+    }
+    public function serialize($data)
+    {
+        $result = json_encode($data);
+        if (false === $result) {
+            throw new \InvalidArgumentException('Unable to serialize value.');
+        }
+        return $result;
+    }
+    public function unserialize($string)
+    {
+        $result = json_decode($string, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException('Unable to unserialize value.');
+        }
+        return $result;
     }
 }
