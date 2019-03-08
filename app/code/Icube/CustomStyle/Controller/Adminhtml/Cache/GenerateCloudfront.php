@@ -125,7 +125,7 @@ class GenerateCloudfront extends \Magento\Backend\Controller\Adminhtml\Cache
     {
         $params = $this->getRequest()->getPost();
 
-        $command = "echo cloudfront > pub/media/cloudfront1.flag";
+        $command = "echo cloudfront > /home/mage2user/site/current/pub/media/cloudfront1.flag";
         $data = "<pre>".shell_exec($command)."</pre>";
 
         $message = "Clear cloudfront has been executed, please wait in few minutes.";

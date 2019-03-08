@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ -f pub/media/cloudfront$1.flag ]; then
+if [ -f /home/mage2user/site/current/pub/media/cloudfront$1.flag ]; then
     sh cfpurge.sh
-    mv pub/media/cloudfront$1.flag pub/media/cloudfront$2.flag
+    mv /home/mage2user/site/current/pub/media/cloudfront$1.flag /home/mage2user/site/current/pub/media/cloudfront$2.flag
 fi

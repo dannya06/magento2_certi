@@ -125,7 +125,7 @@ class GenerateVarnish extends \Magento\Backend\Controller\Adminhtml\Cache
     {
         $params = $this->getRequest()->getPost();
 
-        $command = "echo varnish > pub/media/varnish1.flag";
+        $command = "echo varnish > /home/mage2user/site/current/pub/media/varnish1.flag";
         $data = "<pre>".shell_exec($command)."</pre>";
 
         $message = "Clear varnish has been executed, please wait in few minutes.";
