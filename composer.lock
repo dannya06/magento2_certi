@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a535602fc9b436444c9759f25a62316b",
+    "content-hash": "13fc4ad2da95081c1f9c348002a53df6",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-with-amazon-core-module",
@@ -1264,11 +1264,11 @@
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "1.0.9",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "96e06c9ac1580675038e6fb2c81ece55546df253"
+                "reference": "6f704c72f8f6d387dab1cf134e0efa520c85cb6f"
             },
             "require": {
                 "php": "~5.6.0|7.0.2|~7.0.6|~7.1.1"
@@ -1292,7 +1292,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2018-06-08T06:47:44+00:00"
+            "time": "2019-03-06T09:58:31+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
