@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9996258b5d363e9a494c2192ae5dc02",
+    "content-hash": "ea3b214221c2d418ea2451ae6cc819fd",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-with-amazon-core-module",
@@ -1220,46 +1220,6 @@
             "time": "2019-03-06T09:59:57+00:00"
         },
         {
-            "name": "icubeus/magento2-checkout",
-            "version": "2.1.22",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "10b40c8c05f90ab7cc771976ca8fc5644e3685a0"
-            },
-            "replace": {
-                "icubeus/module-core": "self.version",
-                "icubeus/module-osc": "self.version"
-            },
-            "type": "magento2-component",
-            "autoload": {
-                "files": [
-                    "src/module-core/registration.php",
-                    "src/module-osc/registration.php"
-                ],
-                "psr-4": {
-                    "Mageplaza\\Core\\": "src/module-core",
-                    "Mageplaza\\Osc\\": "src/module-osc"
-                }
-            },
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "icubeus",
-                    "email": "sales@icube.us"
-                }
-            ],
-            "description": "Custom checkout with payment grouping for Indonesia CLient",
-            "homepage": "https://github.com/icubeus/magento2-checkout",
-            "keywords": [
-                "magento",
-                "magento2"
-            ],
-            "time": "2019-01-10T08:17:30+00:00"
-        },
-        {
             "name": "icubeus/magento2-citykecamatan",
             "version": "2.0.0",
             "source": {
@@ -1319,50 +1279,6 @@
                 "payment"
             ],
             "time": "2018-07-17T05:12:36+00:00"
-        },
-        {
-            "name": "icubeus/magento2-gosend",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "3ad2656a8d3bfad27fdb72de749391a0e89a7f02"
-            },
-            "require": {
-                "icubeus/magento2-checkout": "^2.1.11",
-                "php": ">=7.0.2"
-            },
-            "replace": {
-                "icubeus/module-gosend": "self.version"
-            },
-            "type": "magento2-component",
-            "autoload": {
-                "files": [
-                    "src/module-gosend/registration.php"
-                ],
-                "psr-4": {
-                    "Icube\\Gosend\\": "src/module-gosend"
-                }
-            },
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "icubeus",
-                    "email": "sales@icube.us"
-                }
-            ],
-            "description": "gojek gosend shipping method",
-            "homepage": "https://github.com/icube-mage/magento2-gosend",
-            "keywords": [
-                "gojek",
-                "gosend",
-                "magento",
-                "magento2",
-                "shipping"
-            ],
-            "time": "2019-02-18T05:47:09+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -12266,7 +12182,6 @@
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-indonesianlanguage": 20,
         "icubeus/magento2-rapidflow": 20,
-        "icubeus/magento2-gosend": 20,
         "icubeus/magento2-osc": 20,
         "phpmd/phpmd": 0
     },
