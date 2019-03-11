@@ -15,7 +15,6 @@
         "icubeus/magento2-veritranspayment": "dev-develop",
         "icubeus/magento2-confirmpayment": "dev-master",
         "icubeus/magento2-trackorder": "dev-master",
-        "icubeus/magento2-checkout": "^2.1",
         "smile/elasticsuite": "2.6.0",
         "icubeus/magento2-indonesianlanguage": "dev-master",
         "magepal/magento2-reindex": "^1.0",
