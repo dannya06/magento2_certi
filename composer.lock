@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "13fc4ad2da95081c1f9c348002a53df6",
+    "content-hash": "d454bbecf562a5296254cdd1f7d98d8e",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-with-amazon-core-module",
@@ -1193,14 +1193,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "1.0.2",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "26b5d3b3679beb9cf08004082a0d20fa0d8c1ecf"
-            },
-            "require": {
-                "php": "~5.6.0|7.0.2|~7.0.6|~7.1.11"
+                "reference": "9f46e023a347fcc7c19db8ab4e5ed5fc806eaf1b"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1220,7 +1217,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2018-06-06T02:57:37+00:00"
+            "time": "2019-03-06T09:59:57+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
