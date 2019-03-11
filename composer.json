@@ -22,7 +22,8 @@
         "icubeus/magento2-rapidflow": "dev-masterrc",
         "icubeus/magento2-gosend": "dev-master",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "msp/recaptcha": "2.0.0"
+        "msp/recaptcha": "2.0.0",
+        "icubeus/magento2-osc": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.0",
@@ -100,6 +101,10 @@
         "icubeus-gosend": {
             "type": "git",
             "url": "git@github.com:icube-mage/magento2-gosend.git"
+        },
+        "icubeus-osc": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-osc.git"
         }
     },
     "extra": {

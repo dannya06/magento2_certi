@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "18c58e50a4066fbec7aa3df04a4cdbbf",
+    "content-hash": "d9996258b5d363e9a494c2192ae5dc02",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-with-amazon-core-module",
@@ -1389,6 +1389,45 @@
             ],
             "description": "Indonesian language package for Magento 2",
             "time": "2017-09-26T02:09:30+00:00"
+        },
+        {
+            "name": "icubeus/magento2-osc",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-osc.git",
+                "reference": "13fd54c6eec54e965ef576cdadb910b26ca07cdf"
+            },
+            "replace": {
+                "icubeus/module-osc": "self.version"
+            },
+            "type": "magento2-component",
+            "autoload": {
+                "files": [
+                    "src/module-osc/registration.php",
+                    "src/module-paymentgrouping/registration.php"
+                ],
+                "psr-4": {
+                    "Aheadworks\\OneStepCheckout\\": "src/module-osc",
+                    "Icube\\Paymentgrouping\\": "src/module-paymentgrouping"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Custom checkout with payment grouping for Indonesia CLient",
+            "homepage": "https://github.com/icubeus/magento2-osc",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2019-03-11T06:11:16+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
@@ -12228,6 +12267,7 @@
         "icubeus/magento2-indonesianlanguage": 20,
         "icubeus/magento2-rapidflow": 20,
         "icubeus/magento2-gosend": 20,
+        "icubeus/magento2-osc": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,
