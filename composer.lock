@@ -1312,12 +1312,13 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-                "reference": "13fd54c6eec54e965ef576cdadb910b26ca07cdf"
+                "reference": "775e3c9a763cc262e165da1d3a00c2dc721d0a34"
             },
             "replace": {
-                "icubeus/module-osc": "self.version"
+                "icubeus/module-osc": "self.version",
+                "icubeus/module-paymentgrouping": "self.version"
             },
-            "type": "magento2-component",
+            "type": "magento2-module",
             "autoload": {
                 "files": [
                     "src/module-osc/registration.php",
@@ -1329,7 +1330,8 @@
                 }
             },
             "license": [
-                "OSL-3.0"
+                "OSL-3.0",
+                "AFL-3.0"
             ],
             "authors": [
                 {
@@ -1343,7 +1345,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-03-11T06:11:16+00:00"
+            "time": "2019-03-12T08:24:28+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
