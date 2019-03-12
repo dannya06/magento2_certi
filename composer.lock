@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ea3b214221c2d418ea2451ae6cc819fd",
+    "content-hash": "7d64ea0512f43e1d6271fd9c5f838a71",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-with-amazon-core-module",
@@ -1312,21 +1312,24 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-                "reference": "775e3c9a763cc262e165da1d3a00c2dc721d0a34"
+                "reference": "ba237ea221679c9306c477e8aaeffc793d5ac051"
             },
             "replace": {
                 "icubeus/module-osc": "self.version",
+                "icubeus/module-oscoverride": "self.version",
                 "icubeus/module-paymentgrouping": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
                 "files": [
                     "src/module-osc/registration.php",
-                    "src/module-paymentgrouping/registration.php"
+                    "src/module-paymentgrouping/registration.php",
+                    "src/module-oscoverride/registration.php"
                 ],
                 "psr-4": {
                     "Aheadworks\\OneStepCheckout\\": "src/module-osc",
-                    "Icube\\Paymentgrouping\\": "src/module-paymentgrouping"
+                    "Icube\\Paymentgrouping\\": "src/module-paymentgrouping",
+                    "Icube\\Oscoverride\\": "src/module-oscoverride"
                 }
             },
             "license": [
@@ -1345,7 +1348,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-03-12T08:24:28+00:00"
+            "time": "2019-03-12T10:15:39+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
