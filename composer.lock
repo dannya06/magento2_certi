@@ -1221,14 +1221,11 @@
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "6f704c72f8f6d387dab1cf134e0efa520c85cb6f"
-            },
-            "require": {
-                "php": "~5.6.0|7.0.2|~7.0.6|~7.1.1"
+                "reference": "39203ad9c2caa725ea03b51bfe109d9e287cac64"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1249,7 +1246,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2019-03-06T09:58:31+00:00"
+            "time": "2019-03-12T13:30:46+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -1312,7 +1309,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-                "reference": "ba237ea221679c9306c477e8aaeffc793d5ac051"
+                "reference": "b12fca5514a30804610f63e295695a83e318d6f1"
             },
             "replace": {
                 "icubeus/module-osc": "self.version",
@@ -1348,7 +1345,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-03-12T10:15:39+00:00"
+            "time": "2019-03-12T13:25:45+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
