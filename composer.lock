@@ -1309,7 +1309,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-                "reference": "b12fca5514a30804610f63e295695a83e318d6f1"
+                "reference": "e5bfc4d29423aff74d975b2a77d785ca97cb8ccc"
             },
             "replace": {
                 "icubeus/module-osc": "self.version",
@@ -1345,7 +1345,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-03-12T13:25:45+00:00"
+            "time": "2019-03-19T08:35:29+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
