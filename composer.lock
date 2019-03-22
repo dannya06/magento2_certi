@@ -1279,11 +1279,11 @@
         },
         {
             "name": "icubeus/magento2-gosend",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "045567bae1d95d1e542a2c062f7b54b257782fd4"
+                "reference": "a4bf8165e57512ade73f24703b636e1c0d0b0609"
             },
             "replace": {
                 "icubeus/module-gosend": "self.version"
@@ -1315,7 +1315,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2019-03-19T08:52:09+00:00"
+            "time": "2019-03-22T08:38:02+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
