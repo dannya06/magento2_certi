@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Setup;
 
@@ -96,6 +96,11 @@ class UpgradeData implements UpgradeDataInterface
         }
 
         if (version_compare($context->getVersion(), '2.5.1', '<')) {
+            $arepIndex = $this->indexerRegistry->get(StatisticsProcessor::INDEXER_ID);
+            $arepIndex->invalidate();
+        }
+
+        if (version_compare($context->getVersion(), '2.7.0', '<')) {
             $arepIndex = $this->indexerRegistry->get(StatisticsProcessor::INDEXER_ID);
             $arepIndex->invalidate();
         }

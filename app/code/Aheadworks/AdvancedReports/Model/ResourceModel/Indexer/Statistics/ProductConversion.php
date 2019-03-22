@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
@@ -61,7 +61,7 @@ class ProductConversion extends AbstractResource
 
         $select = $this->addFilterByCreatedAt($select, 'order');
 
-        $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+        $this->safeInsertFromSelect($select, $this->getIdxTable(), array_keys($columns));
     }
 
     /**
@@ -133,7 +133,7 @@ class ProductConversion extends AbstractResource
 
         $select = $this->addFilterByLoggedAt($select, 'main_table');
 
-        $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+        $this->safeInsertFromSelect($select, $this->getIdxTable(), array_keys($columns));
     }
 
     /**
