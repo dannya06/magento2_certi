@@ -63,4 +63,14 @@ class Index extends \Magento\Backend\App\Action
             ->addBreadcrumb(__('Import'), __('Import'));
         return $resultPage;
     }
+    /**
+     * Check the permission to run it
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Ves_Setup::import');
+
+    }//end _isAllowed()
 }

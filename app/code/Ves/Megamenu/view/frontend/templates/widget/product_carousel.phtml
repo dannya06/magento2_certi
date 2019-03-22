@@ -10,7 +10,8 @@ $_productCollection = [];
 $helper = $this->helper("Ves\Megamenu\Helper\Data");
 $imgHelper = $this->helper("Ves\Megamenu\Helper\Image");
 if ($exist = ($collection = $block->getProductCollection() && $block->getProductCollection()->getSize())) {
-	$type = 'widget-new-grid';
+	$gridtype = 'widget-new-grid';
+	$type = '-ves-megamenu-list-' . time().rand();
 	$mode = 'grid';
 	$image = 'new_products_content_widget_grid';
 	$title = $this->getConfig("widget_title");
@@ -89,7 +90,7 @@ $block_width        = (int)$this->getConfig('block_width');
 			</div>
 			<?php } ?>
 			<div class="products-grid grid megamenuowl-play">
-				<ol id="menuowl-<?php echo $blockId ?>" class="product-items owl-carousel <?php echo $type; ?> megamenu-products<?php echo $blockId ?>"
+				<ol id="menuowl-<?php echo $blockId ?>" class="product-items owl-carousel <?php echo $gridtype; ?> megamenu-products<?php echo $blockId ?>"
 					data-items="<?php echo $this->getConfig("column", 3); ?>"
 					data-mousedrag="<?php echo $this->getConfig("mousedrag")?"true":"false"; ?>"
 					data-pulldrag="<?php echo $this->getConfig("pulldrag")?"true":"false"; ?>"
@@ -236,7 +237,7 @@ $block_width        = (int)$this->getConfig('block_width');
 
 					<?php // Price ?>
 					<?php if($show_price){ ?>
-					<?php echo $block->getProductPrice($_item) ?>
+					<?php echo $block->getVesProductPriceHtml($_item, $type) ?>
 					<?php } ?>
 					<?php if ($show_review && $templateType): ?>
 						<?php echo $block->getReviewsSummaryHtml($_item, $templateType, true) ?>

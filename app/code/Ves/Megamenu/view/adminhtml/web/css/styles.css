@@ -880,11 +880,13 @@
     background: #FFF;
 }
 
-#menudesign, #menueditor {
+#menudesign, #base_fieldset {
     display: none;
     position: relative;
 }
-
+#widget_options_form #base_fieldset{
+    display: block!important;
+}
 #preview-form button {
     background-color: #eb5202;
     border-color: #eb5202;
@@ -895,10 +897,6 @@
     background-color: #ba4000;
     border-color: #b84002;
     color: #FFF;
-}
-
-.vesmegamenu-menu-edit .modal-slide.magento._show {
-    z-index: 900 !important;
 }
 
 #menu-note {
@@ -1570,3 +1568,6 @@
     width: 100%!important;
     float: none!important;
 }
+.vesmegamenu-menu-edit .modal-popup._show{z-index: 920;}
+.vesmegamenu-menu-edit .modal-slide._show{z-index: 930;}
+.vesmegamenu-menu-edit aside.modal-popup.prompt._show{z-index: 935;}

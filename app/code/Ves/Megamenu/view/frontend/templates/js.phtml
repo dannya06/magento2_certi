@@ -36,7 +36,7 @@ $data           = $this->helper("Ves\Megamenu\Helper\Data");
                                 if($(this).parents(".nav-item.dropdown-submenu").length > 0){
                                     $(this).parents(".nav-item.dropdown-submenu").each(function(index2, el2){
                                         if($(this).children(".dropdown-menu").length > 0) {
-                                            $(this).children(".dropdown-menu").show();
+                                            $(this).addClass("current");
                                         }
                                         if($(this).children(".nav-anchor").length >0 && $(this).children(".nav-anchor").children(".ves-caret.fa.fa-plus").length > 0){
                                             var caret_obj2 = $(this).children(".nav-anchor").children(".ves-caret.fa.fa-plus").first();

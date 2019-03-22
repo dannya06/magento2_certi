@@ -68,7 +68,7 @@ class InstallSchema implements InstallSchemaInterface
         )->addColumn(
             'structure',
             Table::TYPE_TEXT,
-            '64k',
+            '10M',
             ['nullable' => false],
             'Structure'
         )->addColumn(
@@ -86,7 +86,7 @@ class InstallSchema implements InstallSchemaInterface
         )->addColumn(
             'html',
             Table::TYPE_TEXT,
-            '64k',
+            '10M',
             ['nullable' => false],
             'Html'
         )->addColumn(

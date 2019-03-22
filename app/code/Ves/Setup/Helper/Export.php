@@ -284,7 +284,7 @@ class Export extends \Magento\Framework\App\Helper\AbstractHelper
 		"Ves_Blog" => ["ves_blog_category", "ves_blog_category_store","ves_blog_post", "ves_blog_post_author", "ves_blog_post_category", "ves_blog_post_tag", "ves_blog_post_related", "ves_blog_post_store", "ves_blog_comment", "ves_blog_comment_store", "ves_blog_post_vote", "ves_blog_post_products_related"],
 		"Ves_PageBuilder" => ["ves_blockbuilder_block", "ves_blockbuilder_cms","ves_blockbuilder_page","ves_blockbuilder_widget"],
 		"Ves_Brand" => ["ves_brand_group", "ves_brand","ves_brand_store"],
-		"Ves_Megamenu" => ["ves_megamenu_menu", "ves_megamenu_menu_store","ves_megamenu_item","ves_megamenu_menu_customergroup"],
+		"Ves_Megamenu" => ["ves_megamenu_menu", "ves_megamenu_menu_store","ves_megamenu_item","ves_megamenu_menu_customergroup","ves_megamenu_menu_log"],
 		"Ves_Testimonial" => ["ves_testimonial_testimonial","ves_testimonial_testimonial_store","ves_testimonial_category","ves_testimonial_testimonial_category","ves_testimonial_testimonial_product"],
 		"Magento_Cms_Page" => ["cms_page", "cms_page_store"],
 		"Magento_Cms_Block" => ["cms_block", "cms_block_store"],

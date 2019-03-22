@@ -30,15 +30,25 @@ class FlushCache extends \Magento\Backend\App\Action
     protected $_resource;
 
     /**
+     * Cache
+     *
+     * @var \Magento\Framework\App\CacheInterface
+     */
+    protected $_cache;
+
+    /**
      * @param \Magento\Backend\App\Action\Context       $context  
      * @param \Magento\Framework\App\ResourceConnection $resource 
+     * @param \Magento\Framework\App\CacheInterface $cache
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\App\ResourceConnection $resource
+        \Magento\Framework\App\ResourceConnection $resource,
+        \Magento\Framework\App\CacheInterface $cache
         ) {
         parent::__construct($context);
         $this->_resource = $resource;
+        $this->_cache = $cache;
     }
 
     /**
@@ -56,6 +66,7 @@ class FlushCache extends \Magento\Backend\App\Action
             $table      = $resource->getTableName('ves_megamenu_cache');
             $connection = $resource->getConnection();
             $connection->truncateTable($table);
+            $this->_cache->clean([\Ves\Megamenu\Model\Menu::CACHE_HTML_TAG]);
             $this->messageManager->addSuccess(__('The Mega Menu Cache has been flushed.'));
         } catch (\Exception $e) {
             $this->messageManager->addException($e, __('Something went wrong in progressing.'));

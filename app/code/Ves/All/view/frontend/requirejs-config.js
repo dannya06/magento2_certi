@@ -4,16 +4,24 @@
  */
  var config = {
  	map: {
- 		"*": {
- 			vesallOwlCarousel: "Ves_All/lib/owl.carousel/owl.carousel.min",
- 			vesallBootstrap: "Ves_All/lib/bootstrap/js/bootstrap.min",
- 			vesallColorbox: "Ves_All/lib/colorbox/jquery.colorbox.min",
- 			vesallFancybox: "Ves_All/lib/fancybox/jquery.fancybox.pack",
- 			vesallFancyboxMouseWheel: "Ves_All/lib/fancybox/jquery.mousewheel-3.0.6.pack"
+ 		'*': {
+ 			vesallOwlCarousel: 'Ves_All/lib/owl.carousel/owl.carousel.min',
+ 			vesallBootstrap: 'Ves_All/lib/bootstrap/js/bootstrap.min',
+ 			vesallColorbox: 'Ves_All/lib/colorbox/jquery.colorbox.min',
+ 			vesallFancybox: 'Ves_All/lib/fancybox/jquery.fancybox.pack',
+            vesallBootstrap4: 'Ves_All/lib/bootstrap4/js/bootstrap.min',
+            'popper.js': 'Ves_All/lib/bootstrap4/js/popper.min',
+ 			vesallFancyboxMouseWheel: 'Ves_All/lib/fancybox/jquery.mousewheel-3.0.6.pack'
  		}
  	},
  	shim: {
         'Ves_All/lib/bootstrap/js/bootstrap.min': {
+            'deps': ['jquery']
+        },
+        'Ves_All/lib/bootstrap4/js/bootstrap.min': {
+            'deps': ['jquery']
+        },
+        'Ves_All/lib/bootstrap4/js/popper.min': {
             'deps': ['jquery']
         },
         'Ves_All/lib/bootstrap/js/bootstrap': {

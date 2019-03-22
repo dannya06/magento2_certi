@@ -29,14 +29,14 @@ class StoreResolver extends \Magento\Store\Model\StoreResolver
     public function __construct(
         \Magento\Store\Api\StoreRepositoryInterface $storeRepository,
         StoreCookieManagerInterface $storeCookieManager,
-        \Magento\Framework\App\RequestInterface $request,
-        \Magento\Framework\Cache\FrontendInterface $cache,
-        \Magento\Store\Model\StoreResolver\ReaderList $readerList,
+        \Magento\Framework\App\Request\Http $request,
+        \Magento\Store\Model\StoresData $storesData,
+        \Magento\Store\App\Request\StorePathInfoValidator $storePathInfoValidator,
         $runMode = ScopeInterface::SCOPE_STORE,
         $scopeCode = null,
         \Magento\Framework\Registry $registry
     ) {
-    	parent::__construct($storeRepository, $storeCookieManager, $request, $cache, $readerList, $runMode, $scopeCode);
+    	parent::__construct($storeRepository, $storeCookieManager, $request, $storesData, $storePathInfoValidator, $runMode, $scopeCode);
         $this->_coreRegistry = $registry;
     }
 

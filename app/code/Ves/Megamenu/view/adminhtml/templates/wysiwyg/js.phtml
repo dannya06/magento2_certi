@@ -22,7 +22,7 @@
 <script>
     require([
         "jquery",
-        "tinymce",
+        "wysiwygAdapter",
         "Magento_Ui/js/modal/modal",
         "prototype",
         "mage/adminhtml/events"
@@ -86,7 +86,7 @@ var megamenuWysiwygEditor = {
     okDialogWindow : function(dialogWindow) {
         if (this.elementId) {
             wysiwygObj = eval('wysiwyg'+this.elementId+'_editor');
-            wysiwygObj.turnOff();
+            wysiwygObj.toggle();
             if (tinyMCE.get(wysiwygObj.id)) {
                 var content = tinyMCE.get(wysiwygObj.id).getContent();
                 $(this.elementId).value = content;
@@ -98,7 +98,7 @@ var megamenuWysiwygEditor = {
                     jQuery("#"+this.elementId).val(content);
                 }
             }
-            tinyMCE.editors[this.elementId].load();
+            tinyMCE.get(this.elementId).load();
         }
         jQuery("#"+this.elementId).trigger("change");
         this.closeDialogWindow(dialogWindow);

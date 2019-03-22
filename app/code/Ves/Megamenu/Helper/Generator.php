@@ -21,8 +21,14 @@
 
 namespace Ves\Megamenu\Helper;
 
+use Magento\Catalog\Model\Category as CategoryModel;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\CacheInterface;
+use Magento\Catalog\Model\Locator\LocatorInterface;
+
 class Generator extends \Magento\Framework\App\Helper\AbstractHelper
 {
+	const MEGAMENU_CACHE_KEY = 'MEGAMENU_CACHING_HTML';
 	/**
 	 * @var \Magento\Store\Model\StoreManagerInterface
 	 */
@@ -50,6 +56,7 @@ class Generator extends \Magento\Framework\App\Helper\AbstractHelper
 
 	protected $_logger;
 	protected $_dir;
+	private $cacheManager;
 
 	/**
 	 * @param \Magento\Framework\App\Helper\Context        $context      
@@ -108,63 +115,100 @@ class Generator extends \Magento\Framework\App\Helper\AbstractHelper
 		} 
 		return $this->_logger;
 	}
+	/**
+     * Retrieve cache interface
+     *
+     * @return CacheInterface
+     * @deprecated
+     */
+    private function getCacheManager()
+    {
+        if (!$this->cacheManager) {
+            $this->cacheManager = ObjectManager::getInstance()
+                ->get(CacheInterface::class);
+        }
+        return $this->cacheManager;
+    }
 	public function getMenuCacheHtml($menu) {
 		if (!$this->helper->getConfig('general_settings/enable_cache')) return false;
 
-		$resource   = $this->_resource;
-		$connection = $resource->getConnection();
 		$store      = $this->_storeManager->getStore();
 		$storeId    = $store->getId();
 		$menuId     = $menu->getId();
 		$is_mobile_view = $this->helper->isMobileDevice();
-		$cache_key = $is_mobile_view?'desktop-menu':'mobile-menu';
-		$table      = $resource->getTableName('ves_megamenu_cache');
-		$select     = $connection->select()
-								 ->from($table)
-								 ->where('menu_id = ?', $menuId)
-								 ->where('store_id = ?', (int)$storeId)
-								 ->where('cache_key = ?', $cache_key);
-		$row        = $connection->fetchRow($select);
+		$cache_key = $is_mobile_view?'mobile-menu':'desktop-menu';
 
-
-		if (empty($row)) {
-			$html = $this->generateMenuHtml($menu);
-			try{
-				$data['menu_id']       = (int)$menuId;
-				$data['store_id']      = (int)$storeId;
-				$data['html']          = $html;
-				$data['cache_key']     = $cache_key;
-				$data['creation_time'] = $this->_date->gmtDate('Y-m-d H:i:s');
-				$connection->insert($table, $data);
-			}catch (\Exception $e) {
-				$logger = $this->getDebugLogger();
-				$time = $this->_date->gmtDate('Y-m-d H:i:s');
-				$logger->info('<==================='.$time.'====================>\n');
-				$logger->info('Error Insert: Can not insert menu profile into database table "ves_megamenu_cache". \n More Info:\n');
-				$logger->info($e);
-				$logger->info('==================================================\n');
-            }
+		if ($this->helper->getConfig('general_settings/enable_cache_file')) {
+			$html = $this->getCacheManager()->load(self::MEGAMENU_CACHE_KEY .'_MENU_ID_'.$menuId.'_STORE_ID_'.$storeId.'_KEY_'.$cache_key);
+	        if (!$html) {
+		        $cache_time = $this->helper->getConfig('general_settings/cache_time');
+		        $cache_time = $cache_time?(int)$cache_time:null;
+				$html = $this->generateMenuHtml($menu);
+				$cache_menu_profile_tag = \Ves\Megamenu\Model\Menu::CACHE_HTML_TAG;
+				$cache_menu_profile_tag .= "_".$menuId;
+				$this->getCacheManager()->save(
+		            $html,
+		            self::MEGAMENU_CACHE_KEY .'_MENU_ID_'.$menuId.'_STORE_ID_'.$storeId.'_KEY_'.$cache_key,
+		            [
+		                \Ves\Megamenu\Model\Menu::CACHE_HTML_TAG,
+		                $cache_menu_profile_tag,
+		                \Magento\Framework\App\Cache\Type\Block::CACHE_TAG,
+		                self::MEGAMENU_CACHE_KEY
+		            ],
+		            $cache_time
+		        );
+			}
 		} else {
-			$timestamp   = strtotime($row['creation_time']);
-			$menuDay     = date("d", $timestamp);
-			$currentDate = $this->_date->gmtDate('Y-m-d H:i:s');
-			$currentDay  = date("d", strtotime($currentDate));
-			if ($currentDay == $menuDay) {
-				$html = $row['html'];
-			} else {
+			$resource   = $this->_resource;
+			$connection = $resource->getConnection();
+			$table      = $resource->getTableName('ves_megamenu_cache');
+			$select     = $connection->select()
+									 ->from($table)
+									 ->where('menu_id = ?', $menuId)
+									 ->where('store_id = ?', (int)$storeId)
+									 ->where('cache_key = ?', $cache_key);
+			$row        = $connection->fetchRow($select);
+
+			if (empty($row)) {
 				$html = $this->generateMenuHtml($menu);
 				try{
-					$connection->update($table, ['html' => $html, 'creation_time' => $currentDate], ['menu_id = ?' => (int)$menuId, 'store_id = ?' => (int)$storeId, 'cache_key = ?' => $cache_key]);
+					$data['menu_id']       = (int)$menuId;
+					$data['store_id']      = (int)$storeId;
+					$data['html']          = $html;
+					$data['cache_key']     = $cache_key;
+					$data['creation_time'] = $this->_date->gmtDate('Y-m-d H:i:s');
+					$connection->insert($table, $data);
 				}catch (\Exception $e) {
 					$logger = $this->getDebugLogger();
 					$time = $this->_date->gmtDate('Y-m-d H:i:s');
 					$logger->info('<==================='.$time.'====================>\n');
-					$logger->info('Error Update: Can not update menu profile into database table "ves_megamenu_cache". \n More Info:\n');
+					$logger->info('Error Insert: Can not insert menu profile into database table "ves_megamenu_cache". \n More Info:\n');
 					$logger->info($e);
 					$logger->info('==================================================\n');
 	            }
+			} else {
+				$timestamp   = strtotime($row['creation_time']);
+				$menuDay     = date("d", $timestamp);
+				$currentDate = $this->_date->gmtDate('Y-m-d H:i:s');
+				$currentDay  = date("d", strtotime($currentDate));
+				if ($currentDay == $menuDay) {
+					$html = $row['html'];
+				} else {
+					$html = $this->generateMenuHtml($menu);
+					try{
+						$connection->update($table, ['html' => $html, 'creation_time' => $currentDate], ['menu_id = ?' => (int)$menuId, 'store_id = ?' => (int)$storeId, 'cache_key = ?' => $cache_key]);
+					}catch (\Exception $e) {
+						$logger = $this->getDebugLogger();
+						$time = $this->_date->gmtDate('Y-m-d H:i:s');
+						$logger->info('<==================='.$time.'====================>\n');
+						$logger->info('Error Update: Can not update menu profile into database table "ves_megamenu_cache". \n More Info:\n');
+						$logger->info($e);
+						$logger->info('==================================================\n');
+		            }
+				}
 			}
 		}
+		
 		return $html;
 	}
 

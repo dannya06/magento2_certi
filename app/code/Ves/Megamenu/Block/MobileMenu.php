@@ -57,7 +57,19 @@ class MobileMenu extends \Magento\Framework\View\Element\Template
         $this->_objectManager   = $objectManager;
         $this->_customerSession = $customerSession;
     }
-
+    public function getCustomerGroupId(){
+        if(!isset($this->_customer_group_id)) {
+            $this->_customer_group_id = (int)$this->_customerSession->getCustomerGroupId();
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $context = $objectManager->get('Magento\Framework\App\Http\Context');
+            $isLoggedIn = $context->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+            if(!$isLoggedIn) {
+               $this->_customer_group_id = 0;
+            }
+        }
+        return $this->_customer_group_id;
+        
+    }
     public function _toHtml()
     {
         if (!$this->getTemplate()) {
@@ -66,23 +78,49 @@ class MobileMenu extends \Magento\Framework\View\Element\Template
 
         $store = $this->_storeManager->getStore();
         $html  = $menu = '';
-        $tmp   = $this->_objectManager->create('\Ves\Megamenu\Model\Menu'); 
 
-        if ($menuId = $this->getData('id')) {
-            $menu = $tmp->setStore($store)->load((int)$menuId);
-        } elseif ($alias = $this->getData('alias')) {
-            $menu = $tmp->setStore($store)->load(addslashes($alias));
+        $menu = $this->getData('menu');
+        $alias = $this->getData('alias');
+        $menu_id = $this->getData('id');
+
+        if(!$menu) {
+            $menu = $this->getMenuProfile($menu_id, $alias);
         }
         if ($menu) {
             $customerGroups = $menu->getData('customer_group_ids');
-            $customerGroupId = (int)$this->_customerSession->getCustomerId();
+            $customerGroupId = (int)$this->getCustomerGroupId();
             if ($customerGroupId) {
                 if(!in_array($customerGroupId, $customerGroups)) return;
             }
-        }
-        if ($menu && $menu->getStatus()) {
+
             $this->setData("menu", $menu);
         }
+
         return parent::_toHtml();
+    }
+    public function getMenuProfile($menuId = 0, $alias = ""){
+        $menu = false;
+        $store = $this->_storeManager->getStore();
+        if($menuId){
+            $menu = $this->_menu->setStore($store)->load((int)$menuId);
+            if ($menu->getId() != $menuId) {
+                $menu = false;
+            }
+        } elseif($alias){
+            $menu = $this->_menu->setStore($store)->load(addslashes($alias));
+            if ($menu->getAlias() != $alias) {
+                $menu = false;
+            }
+        }
+        if ($menu && !$menu->getStatus()) {
+            $menu = false;
+        }
+        return $menu;
+    }
+    public function getConfig($key, $default = NULL){
+        if($this->hasData($key)){
+            return $this->getData($key);
+        }
+        return $default;
     }
 }

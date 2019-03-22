@@ -1704,7 +1704,6 @@
 		z-index: 99;
 
 		> .submenu {
-			display: block !important;
 			padding: 0;
 			.box-shadow(4px 2px 6px rgba(0,0,0,0.2));
 			> .submenu-inner{
@@ -1730,6 +1729,11 @@
 				position: absolute;
 				line-height: 50px;
 			}
+		}
+	}
+	.ves-megamenu.alway-show .navigation .level0.vertical-item {
+		> .submenu {
+			display: block !important;
 		}
 	}
 

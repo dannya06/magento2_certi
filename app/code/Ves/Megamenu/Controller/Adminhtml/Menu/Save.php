@@ -40,20 +40,30 @@ class Save extends \Magento\Backend\App\Action
     protected $generatorhelper;
 
     /**
+     * Cache
+     *
+     * @var \Magento\Framework\App\CacheInterface
+     */
+    protected $_cache;
+
+    /**
      * @param \Magento\Backend\App\Action\Context        $context      
      * @param \Magento\Framework\App\ResourceConnection  $resource     
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager 
+     * @param \Magento\Framework\App\CacheInterface $cache
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\App\ResourceConnection $resource,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Ves\Megamenu\Helper\Generator $generatorhelper
+        \Ves\Megamenu\Helper\Generator $generatorhelper,
+        \Magento\Framework\App\CacheInterface $cache
     ) {
         parent::__construct($context);
         $this->_resource       = $resource;
         $this->_storeManager   = $storeManager;
         $this->generatorhelper = $generatorhelper;
+        $this->_cache = $cache;
     }
 
     /**
@@ -116,6 +126,11 @@ class Save extends \Magento\Backend\App\Action
                     $connection = $resource->getConnection();
                     $where = ['menu_id = ?' => $model->getId()];
                     $connection->delete($resource->getTableName('ves_megamenu_cache'), $where);
+                    //flush menu profile cache
+                    $cache_menu_profile_tag = \Ves\Megamenu\Model\Menu::CACHE_HTML_TAG;
+                    $cache_menu_profile_tag .= "_".$model->getId();
+                    $this->_cache->clean([$cache_menu_profile_tag]);
+
                     $this->messageManager->addSuccess(__('You saved this menu.'));
                     return $resultRedirect->setPath('*/*/edit', ['menu_id' => $model->getId()]);
                 }

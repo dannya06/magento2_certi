@@ -32,6 +32,7 @@ class Menu extends \Magento\Framework\Model\AbstractModel
      * Menu cache tag
      */
     const CACHE_TAG = 'megamenu_menu';
+    const CACHE_HTML_TAG = 'megamenu_menu_html';
 
     /**
      * Menu cache tag
@@ -68,6 +69,8 @@ class Menu extends \Magento\Framework\Model\AbstractModel
     protected $scopeConfig;
 
     protected $_store;
+
+    protected $_logged_customer_group_id;
 
     /**
      * @param \Magento\Framework\Model\Context                          $context                  
@@ -174,6 +177,21 @@ class Menu extends \Magento\Framework\Model\AbstractModel
         }
     }
 
+    public function setLoggedCustomerGroupId($customer_group_id = 0)
+    {
+        $this->_logged_customer_group_id = $customer_group_id;
+        return $this;
+    }
+
+    public function getLoggedCustomerGroupId()
+    {
+        if($this->_logged_customer_group_id){
+            return $this->_logged_customer_group_id;
+        }else{
+            return 0;
+        }
+    }
+
     /**
      * Load object data
      *
@@ -185,7 +203,10 @@ class Menu extends \Magento\Framework\Model\AbstractModel
     {
         $this->_beforeLoad($modelId, $field);
         $store = $this->getStore();
-        $this->_getResource()->setStore($store)->load($this, $modelId, $field);
+        $customer_group_id = $this->getLoggedCustomerGroupId();
+        $this->_getResource()->setStore($store)
+                            ->setLoggedCustomerGroupId($customer_group_id)
+                            ->load($this, $modelId, $field);
         $this->_afterLoad();
         $this->setOrigData();
         $this->_hasDataChanges = false;
@@ -216,5 +237,8 @@ class Menu extends \Magento\Framework\Model\AbstractModel
             $this->storedData = [];
         }
         return $this;
+    }
+    public function getStoresIds(){
+        return $this->_getResource()->lookupStoreIds($this->getId());
     }
 }

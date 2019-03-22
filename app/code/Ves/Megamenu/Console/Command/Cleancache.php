@@ -22,15 +22,25 @@ class Cleancache extends Command
     protected $_resource;
 
     /**
+     * Cache
+     *
+     * @var \Magento\Framework\App\CacheInterface
+     */
+    protected $_cache;
+
+    /**
      * Constructor.
      *
      * @param \Magento\Framework\App\ResourceConnection $resource 
+     * @param \Magento\Framework\App\CacheInterface $cache
      * @api
      */
     public function __construct(
-        \Magento\Framework\App\ResourceConnection $resource
+        \Magento\Framework\App\ResourceConnection $resource,
+        \Magento\Framework\App\CacheInterface $cache
         ) {
         $this->_resource = $resource;
+        $this->_cache = $cache;
         parent::__construct();
         
     }
@@ -48,6 +58,7 @@ class Cleancache extends Command
             $table      = $resource->getTableName('ves_megamenu_cache');
             $connection = $resource->getConnection();
             $connection->truncateTable($table);
+            $this->_cache->clean([\Ves\Megamenu\Model\Menu::CACHE_HTML_TAG]);
             $output->writeln("The Mega Menu Cache has been flushed.");
         } catch (\Exception $e) {
             $output->writeln("Something went wrong in progressing.");

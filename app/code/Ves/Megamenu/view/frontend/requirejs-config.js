@@ -19,10 +19,10 @@
  */
  var config = {
  	paths: {
-        "menu.bootstrap": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min",
-        "scrolltofixed": "Ves_Megamenu/js/jquery-scrolltofixed-min",
-        "megamenuowlcarousel": "Ves_All/lib/owl.carousel/owl.carousel.min",
-        "jquery.drilldown": "Ves_Megamenu/js/jquery.drilldown",
+        'menu.bootstrap': 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min',
+        'scrolltofixed': 'Ves_Megamenu/js/jquery-scrolltofixed-min',
+        'megamenuowlcarousel': 'Ves_All/lib/owl.carousel/owl.carousel.min',
+        'jquery.drilldown': 'Ves_Megamenu/js/jquery.drilldown',
     },
     shim: {
         'menu.bootstrap': {

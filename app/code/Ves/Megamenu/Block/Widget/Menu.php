@@ -21,6 +21,9 @@
 
 namespace Ves\Megamenu\Block\Widget;
 
+use Magento\Framework\Serialize\Serializer\Json;
+use \Magento\Framework\App\ObjectManager;
+
 class Menu extends \Magento\Framework\View\Element\Template implements \Magento\Widget\Block\BlockInterface
 {
     /**
@@ -42,11 +45,19 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
     protected $httpContext;
 
     /**
+     * Json Serializer Instance
+     *
+     * @var Json
+     */
+    private $json;
+
+    /**
      * @param \Magento\Framework\View\Element\Template\Context $context            
      * @param \Ves\Megamenu\Model\Menu                         $menu               
      * @param \Magento\Customer\Model\Session                  $customerSession    
      * @param \Ves\Megamenu\Helper\MobileDetect                $mobileDetectHelper 
-     * @param array                                            $data               
+     * @param array                                            $data
+     * @param Json|null                                        $json                
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -54,7 +65,8 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
         \Magento\Customer\Model\Session $customerSession,
         \Ves\Megamenu\Helper\MobileDetect $mobileDetectHelper,
         \Magento\Framework\App\Http\Context $httpContext,
-        array $data = []
+        array $data = [],
+        Json $json = null
         ) {
         parent::__construct($context);
         $this->setTemplate("widget/menu.phtml");
@@ -62,6 +74,7 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
         $this->_mobileDetect    = $mobileDetectHelper;
         $this->_customerSession = $customerSession;
         $this->httpContext = $httpContext;
+        $this->json = $json ?: ObjectManager::getInstance()->get(Json::class);
     }
 
     /**
@@ -74,7 +87,19 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
             'cache_lifetime' => 86400,
             'cache_tags' => [\Ves\Megamenu\Model\Menu::CACHE_WIDGET_TAG]]);
     }
-
+     public function getCustomerGroupId(){
+        if(!isset($this->_customer_group_id)) {
+            $this->_customer_group_id = (int)$this->_customerSession->getCustomerGroupId();
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $context = $objectManager->get('Magento\Framework\App\Http\Context');
+            $isLoggedIn = $context->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+            if(!$isLoggedIn) {
+               $this->_customer_group_id = 0;
+            }
+        }
+        return $this->_customer_group_id;
+        
+    }
     /**
      * Get key pieces for caching block content
      *
@@ -87,6 +112,9 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
         $code = $this->getConfig('alias');
 
         $conditions = $code.".".$menuId;
+        $customerGroupId = (int)$this->getCustomerGroupId();
+        $customerGroupId = $customerGroupId?("group".$customerGroupId):"group0";
+        $conditions .= ".".$customerGroupId;
         if ($this->getMobileDetect()->isMobile()) {
             $conditions .= ".mobilemenu";
         }
@@ -96,35 +124,20 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
         $this->_design->getDesignTheme()->getId(),
         $this->httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_GROUP),
         'template' => $this->getTemplate(),
-        $conditions
+        $conditions,
+        $this->json->serialize($this->getRequest()->getParams())
         ];
     }
 
     public function _toHtml() {
         $menu  = '';
-        $tmp   = $this->_menu;
-        $store = $this->_storeManager->getStore();
-        if ($menuId = $this->getData('id')) {
-            $menu = $tmp->setStore($store)->load((int)$menuId);
-            if ($menu->getId() != $menuId) {
-                return;
-            }
-        } else if ($alias = $this->getData('alias')){
-            $menu = $tmp->setStore($store)->load(addslashes($alias));
-            if ($menu->getAlias() != $alias) {
-                return;
-            }
-        }
-
+        $menu = $this->getMenuProfile($this->getData('id'), $this->getData('alias'));
         if ($menu) {
             $customerGroups = $menu->getData('customer_group_ids');
-            $customerGroupId = (int)$this->_customerSession->getCustomerGroupId();
+            $customerGroupId = (int)$this->getCustomerGroupId();
             if(is_array($customerGroups) && !in_array($customerGroupId, $customerGroups)) {
                 return;
             }
-        }
-
-        if ($menu && $menu->getStatus()) {
             $this->setData("menu", $menu);
         }
         return parent::_toHtml();
@@ -133,7 +146,48 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
     public function getMobileDetect() {
         return $this->_mobileDetect;
     }
-
+    public function getMenuProfile($menuId = 0, $alias = ""){
+        $menu = false;
+        $store = $this->_storeManager->getStore();
+        $customerGroupId = (int)$this->getCustomerGroupId();
+        if($menuId){
+            if($customerGroupId) {
+                $menu = $this->_menu->setStore($store)
+                                ->setLoggedCustomerGroupId($customerGroupId)
+                                ->load((int)$menuId);
+                if(!$menu->getId()) {
+                    $menu = $this->_menu->setStore($store)
+                                    ->load((int)$menuId);
+                }
+            } else {
+                $menu = $this->_menu->setStore($store)->load((int)$menuId);
+            }
+            
+            if ($menu->getId() != $menuId) {
+                $menu = false;
+            }
+        } elseif($alias){
+            if($customerGroupId) {
+                $menu = $this->_menu->setStore($store)
+                                ->setLoggedCustomerGroupId($customerGroupId)
+                                ->load(addslashes($alias));
+                if(!$menu->getId()) {
+                    $menu = $this->_menu->setStore($store)
+                                    ->load(addslashes($alias));
+                }
+            } else {
+                $menu = $this->_menu->setStore($store)->load(addslashes($alias));
+            }
+            
+            if ($menu->getAlias() != $alias) {
+                $menu = false;
+            }
+        }
+        if ($menu && !$menu->getStatus()) {
+            $menu = false;
+        }
+        return $menu;
+    }
     public function getMobileTemplateHtml($menuAlias)
     {
         $html = '';

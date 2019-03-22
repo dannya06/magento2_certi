@@ -1022,7 +1022,7 @@ Disabled,Disabled
 Top,Top
 "Off Canvas Left","Off Canvas Left"
 "Custom Menu","Custom Menu"
-"A menu alias with the same properties already exists in the selected store.","A menu alias with the same properties already exists in the selected store."
+"A menu alias with the same properties already exists in the selected store and selected customer group.","A menu alias with the same properties already exists in the selected store and selected customer group."
 Edit,Edit
 "Add Menu Item","Add Menu Item"
 "Import Store Category","Import Store Category"

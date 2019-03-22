@@ -48,13 +48,13 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Framework\View\LayoutInterface
      */
     protected $_layout;
-    protected $_menuType;
-    protected $_yesno;
-    protected $_status;
-    protected $_linkType;
-    protected $_alignType;
-    protected $_iconPosition;
-    protected $_repeatType;
+    protected $_menuTypeObject;
+    protected $_yesnoObject;
+    protected $_statusObject;
+    protected $_linkTypeObject;
+    protected $_alignTypeObject;
+    protected $_iconPositionObject;
+    protected $_repeatTypeObject;
 
     /**
      * Store manager
@@ -73,10 +73,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $escaper;
 
-    /**
-     * @var array
-     */
-    protected $_chilCol;
+    protected $_chilColObject;
 
     /**
      * @var \Magento\Cms\Model\Wysiwyg\Config
@@ -86,12 +83,12 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @var \Ves\Megamenu\Model\Config\Source\AnimationsIn
      */
-    protected $_animationsIn;
+    protected $_animationsInObject;
 
     /**
      * @var \Ves\Megamenu\Model\Config\Source\AnimationsOut
      */
-    protected $_animationsOut;
+    protected $_animationsOutObject;
 
     /**
      * @var \Ves\Megamenu\Model\Config\Source\ListCmsPage
@@ -116,11 +113,11 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Ves\Megamenu\Model\Config\Source\IconPosition    $iconPosition    
      * @param \Ves\Megamenu\Model\Config\Source\ChilCol         $childCol        
      * @param \Ves\Megamenu\Model\Config\Source\TabPosition     $tabPosition     
-     * @param \Magento\Store\Model\StoreManagerInterface        $storeManager    
-     * @param \Magento\Cms\Model\Wysiwyg\Config                 $wysiwygConfig   
+     * @param \Magento\Store\Model\StoreManagerInterface        $storeManager 
      * @param \Ves\Megamenu\Model\Config\Source\StoreCategories $storeCategories 
      * @param  \Ves\Megamenu\Model\Config\Source\ListCmsPage $listCmsPage
-     * @param \Magento\Framework\Url                            $url             
+     * @param \Magento\Framework\Url                            $url      
+     * @param \Ves\Megamenu\Helper\Data                         $dataHelper       
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -142,37 +139,108 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
         \Ves\Megamenu\Model\Config\Source\ChilCol $childCol,
         \Ves\Megamenu\Model\Config\Source\TabPosition $tabPosition,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
         \Ves\Megamenu\Model\Config\Source\StoreCategories $storeCategories,
         \Ves\Megamenu\Model\Config\Source\ListCmsPage $listCmsPage,
-        \Magento\Framework\Url $url
+        \Magento\Framework\Url $url,
+        \Ves\Megamenu\Helper\Data $dataHelper
     ) {
         parent::__construct($context);
         $this->_coreRegistry      = $registry;
         $this->_backendData       = $backendData;
         $this->_layout            = $layout;
-        $this->_menuType          = $menuType->toOptionArray();
-        $this->_yesno             = $yesno->toOptionArray();
-        $this->_status            = $status->toOptionArray();
-        $this->_linkTarget        = $linkTarget->toOptionArray();
-        $this->_linkType          = $linkType->toOptionArray();
-        $this->_alignType         = $alignType->toOptionArray();
-        $this->_repeatType        = $repeatType->toOptionArray();
-        $this->_iconPosition      = $iconPosition->toOptionArray();
+        $this->_menuTypeObject          = $menuType;
+        $this->_yesnoObject             = $yesno;
+        $this->_statusObject            = $status;
+        $this->_linkTargetObject        = $linkTarget;
+        $this->_linkTypeObject          = $linkType;
+        $this->_alignTypeObject         = $alignType;
+        $this->_repeatTypeObject        = $repeatType;
+        $this->_iconPositionObject      = $iconPosition;
         $this->_storeManager      = $storeManager;
         $this->_backendUrlBuilder = $url;
         $this->escaper            = $escaper;
-        $this->_chilCol           = $childCol->toOptionArray();
-        $this->_tabPosition       = $tabPosition->toOptionArray();
-        $this->_wysiwygConfig     = $wysiwygConfig;
-        $this->_animationsOut     = $animationsOut->toOptionArray();
-        $this->_animationsIn      = $animationsIn->toOptionArray();
+        $this->_chilColObject           = $childCol;
+        $this->_tabPositionObject       = $tabPosition;
+        $this->_animationsOutObject     = $animationsOut;
+        $this->_animationsInObject      = $animationsIn;
         $this->_systemStore       = $systemStore;
         $this->storeCategories    = $storeCategories;
         $this->listCmsPage        = $listCmsPage;
-        $this->prepareFields();
+        $this->dataHelper         = $dataHelper;
+        //$this->prepareFields();
     }
-
+    public function getMenuType() {
+        if(!isset($this->_menuType) || !$this->_menuType) {
+            $this->_menuType          = $this->_menuTypeObject->toOptionArray();
+        }
+        return $this->_menuType;
+    }
+    public function getYesno() {
+        if(!isset($this->_yesno) || !$this->_yesno) {
+            $this->_yesno          = $this->_yesnoObject->toOptionArray();
+        }
+        return $this->_yesno;
+    }
+    public function getStatus() {
+        if(!isset($this->_status) || !$this->_status) {
+            $this->_status          = $this->_statusObject->toOptionArray();
+        }
+        return $this->_status;
+    }
+    public function getLinkTarget() {
+        if(!isset($this->_linkTarget) || !$this->_linkTarget) {
+            $this->_linkTarget          = $this->_linkTargetObject->toOptionArray();
+        }
+        return $this->_linkTarget;
+    }
+    public function getLinkType() {
+        if(!isset($this->_linkType) || !$this->_linkType) {
+            $this->_linkType          = $this->_linkTypeObject->toOptionArray();
+        }
+        return $this->_linkType;
+    }
+    public function getAlignType() {
+        if(!isset($this->_alignType) || !$this->_alignType) {
+            $this->_alignType          = $this->_alignTypeObject->toOptionArray();
+        }
+        return $this->_alignType;
+    }
+    public function getRepeatType() {
+        if(!isset($this->_repeatType) || !$this->_repeatType) {
+            $this->_repeatType          = $this->_repeatTypeObject->toOptionArray();
+        }
+        return $this->_repeatType;
+    }
+    public function getIconPosition() {
+        if(!isset($this->_iconPosition) || !$this->_iconPosition) {
+            $this->_iconPosition          = $this->_iconPositionObject->toOptionArray();
+        }
+        return $this->_iconPosition;
+    }
+    public function getChilCol() {
+        if(!isset($this->_chilCol) || !$this->_chilCol) {
+            $this->_chilCol          = $this->_chilColObject->toOptionArray();
+        }
+        return $this->_chilCol;
+    }
+    public function getTabPosition() {
+        if(!isset($this->_tabPosition) || !$this->_tabPosition) {
+            $this->_tabPosition          = $this->_tabPositionObject->toOptionArray();
+        }
+        return $this->_tabPosition;
+    }
+    public function getAnimationsOut() {
+        if(!isset($this->_animationsOut) || !$this->_animationsOut) {
+            $this->_animationsOut          = $this->_animationsOutObject->toOptionArray();
+        }
+        return $this->_animationsOut;
+    }
+    public function getAnimationsIn() {
+        if(!isset($this->_animationsIn) || !$this->_animationsIn) {
+            $this->_animationsIn          = $this->_animationsInObject->toOptionArray();
+        }
+        return $this->_animationsIn;
+    }
     public function getCategoriesHtml() {
         $categories = $this->storeCategories->getCategoryList();
         $html = '<select data-bind="value: loadcategory">';
@@ -187,9 +255,28 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
         $html .= '</select>';
         return $html;
     }
+    public function getCategoriesOptionsHtml() {
+        $categories = $this->storeCategories->getCategoryList();
+        $html = '';
+        $exists_categories = [];
+        foreach ($categories as $category) {
+            if(!isset($exists_categories[$category['value']])) {
+                $html .= $this->_optionToHtml($category);
+                $exists_categories[$category['value']] = $category['value'];
+            }
+            
+        }
+        return $html;
+    }
 
     public function prepareFields() {
-        $categoryList = $this->storeCategories->getCategoryList();
+        $enable_admin_ajax = $this->dataHelper->getConfig("general_settings/enable_admin_ajax");
+        if(!$enable_admin_ajax) {
+            $categoryList = $this->storeCategories->getCategoryList();
+        } else {
+            $categoryList = [];
+        }
+        
         $cmsList =  $this->listCmsPage->toOptionArray();
 
         $this->addField("label1", [
@@ -201,7 +288,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Status'),
                 'type'   => 'switcher',
                 'value'  => 1,
-                'values' => $this->_yesno
+                'values' => $this->getYesno()
             ]);
 
         $this->addField("name", [
@@ -218,7 +305,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Link Type'),
                 'type'   => 'select',
                 'value'  => 'custom_link',
-                'values' => $this->_linkType
+                'values' => $this->getLinkType()
             ]);
 
         $this->addField("cms_page", [
@@ -256,17 +343,14 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Link Target'),
                 'type'   => 'select',
                 'value'  => '_self',
-                'values' => $this->_linkTarget,
-                'depend' => [
-                    'field' => 'link_type'
-                ]
+                'values' => $this->getLinkTarget()
             ]);
 
         $this->addField("show_icon", [
                 'label'  => __('Show Icon'),
                 'type'   => 'switcher',
                 'value'  => 0,
-                'values' => $this->_yesno
+                'values' => $this->getYesno()
             ]);
 
         $this->addField("icon", [
@@ -290,7 +374,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
         $this->addField("icon_position", [
                 'label'  => __('Icon Position'),
                 'type'   => 'select',
-                'values' => $this->_iconPosition,
+                'values' => $this->getIconPosition(),
                 'depend' => [
                     'field' => 'show_icon',
                     'value' => 1
@@ -341,7 +425,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Is Group'),
                 'type'   => 'switcher',
                 'value'  => 0,
-                'values' => $this->_yesno,
+                'values' => $this->getYesno(),
                 'note'   => __('Set to Yes and then both menu content and sub-menu items will be displayed in the same level.')
             ]);
 
@@ -354,7 +438,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Show Effect'),
                 'type'   => 'select',
                 'note'   => __('Check animations at <a href="https://daneden.github.io/animate.css" target="_blank">here</a>'),
-                'values' => $this->_animationsIn,
+                'values' => $this->getAnimationsIn(),
             ]);
 
         $this->addField("animation_time", [
@@ -367,7 +451,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Alignment'),
                 'type'   => 'select',
                 'value'  => '3',
-                'values' => $this->_alignType,
+                'values' => $this->getAlignType(),
             ]);
 
         $this->addField("dropdown_bgcolor", [
@@ -384,7 +468,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Background Repeat'),
                 'type'   => 'select',
                 'value'  => '1',
-                'values' => $this->_repeatType
+                'values' => $this->getRepeatType()
             ]);
 
         $this->addField("dropdown_bgpositionx", [
@@ -412,7 +496,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Enabled'),
                 'type'   => 'switcher',
                 'value'  => 0,
-                'values' => $this->_yesno
+                'values' => $this->getYesno()
             ]);
 
         $this->addField("header_html", [
@@ -433,7 +517,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Enabled'),
                 'type'   => 'switcher',
                 'value'  => 0,
-                'values' => $this->_yesno
+                'values' => $this->getYesno()
             ]);
 
         $this->addField("left_sidebar_width", [
@@ -463,7 +547,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Enabled'),
                 'type'   => 'switcher',
                 'value'  => 1,
-                'values' => $this->_yesno
+                'values' => $this->getYesno()
             ]);
 
         $this->addField("content_width", [
@@ -476,13 +560,13 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Main Content Type'),
                 'type'   => 'select',
                 'value'  => 'childmenu',
-                'values' => $this->_menuType
+                'values' => $this->getMenuType()
             ]);
 
         $this->addField("tab_position", [
                 'label'  => __('Tab Position'),
                 'type'   => 'select',
-                'values' => $this->_tabPosition,
+                'values' => $this->getTabPosition(),
                 'value'  => 'left',
                 'depend' => [
                     'field'  => 'content_type',
@@ -504,10 +588,41 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
         $this->addField("child_col", [
                 'label'  => __('Child Menu Column'),
                 'type'   => 'select',
-                'values' => $this->_chilCol,
+                'values' => $this->getChilCol(),
                 'value'  => 1
             ]);
-
+        $this->addField("isgroup_level", [
+                'label'  => __('Enable Is Group For Submenu Level?'),
+                'comment' => __('Setup number level of sub menu items which will enable is group option. Default = 0 to dont use the feature.'),
+                'type'   => 'text',
+                'depend' => [
+                    'field'  => 'content_type',
+                    'value'  => 'parentcat'
+                ],
+                'value'  => '0'
+            ]);
+        $this->addField("child_col_type", [
+                'label'  => __('Child Menu Column Type'),
+                'type'   => 'select',
+                'values' => [
+                                ['value' => 'normal', 'label' => __("Normal")],
+                                ['value' => 'bootstrap', 'label' => __("Bootstrap")]
+                            ],
+                'depend' => [
+                    'field'  => 'content_type',
+                    'value'  => 'childmenu'
+                ],
+                'value'  => 'normal'
+            ]);
+        $this->addField("submenu_sorttype", [
+                'label'  => __('Menu Sort Type'),
+                'type'   => 'select',
+                'values' => [
+                                ['value' => 'normal', 'label' => __("Normal")],
+                                ['value' => 'alphabet', 'label' => __("Alphabet")]
+                            ],
+                'value'  => 'normal'
+            ]);
         $this->addField("content_html", [
                 'label'  => __('Content HTML'),
                 'type'   => 'editor',
@@ -526,7 +641,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Enabled'),
                 'value'  => 0,
                 'type'   => 'switcher',
-                'values' => $this->_yesno
+                'values' => $this->getYesno()
             ]);
 
         $this->addField("right_sidebar_width", [
@@ -556,7 +671,7 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
                 'label'  => __('Enabled'),
                 'type'   => 'switcher',
                 'value'  => 0,
-                'values' => $this->_yesno
+                'values' => $this->getYesno()
             ]);
 
         $this->addField("footer_html", [
@@ -613,6 +728,9 @@ class Editor extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
 public function getFields(){
+    if (!isset($this->_fields)) {
+        $this->prepareFields();
+    }
     return $this->_fields;
 }
 
@@ -778,7 +896,7 @@ public function _optionToHtml($option)
                 $html .= '<div class="field-cm">'.(isset($field['note'])?$field['note']:'').'</div>';
                 break;
                 case 'editor':
-                $tinyMCEConfig = json_encode($this->_wysiwygConfig->getConfig());
+                $tinyMCEConfig = json_encode($this->getWysiwygConfigObject()->getConfig());
                 $editorId = 'editor'.time().rand();
                 $html = '<textarea id="'.$editorId.'" data-key=' . $fieldName . ' class="'.$classes.' ves-editor" style="height:400px;"  data-bind="{value: '.$fieldName.', if: status==1}" data-ui-id="product-tabs-attributes-tab-fieldset-element-textarea-'.$editorId.' aria-hidden="true"></textarea>';
                 $html .= $this->_layout->createBlock(
@@ -846,8 +964,19 @@ public function _optionToHtml($option)
         $config['add_variables']  = true;
         $config['add_widgets']    = true;
         $config['add_directives'] = true;
-        $wysiwgConfig = $this->_wysiwygConfig->getConfig($config)->getData();
+        $wysiwgConfig = $this->getWysiwygConfigObject()->getConfig($config)->getData();
         $wysiwgConfig['forced_root_block'] = false;
         return $wysiwgConfig;
+    }
+    public function getWysiwygConfigObject() {
+        if(!$this->_wysiwygConfig) {
+            $_objectManager = \Magento\Framework\App\ObjectManager::getInstance(); //instance of\Magento\Framework\App\ObjectManager
+            $wysiwygConfig = $_objectManager->get('Magento\Cms\Model\Wysiwyg\Config');
+            $this->setWysiwygConfig($wysiwygConfig);
+        }
+        return $this->_wysiwygConfig;
+    }
+    public function setWysiwygConfig($wysiwygConfig) {
+        $this->_wysiwygConfig     = $wysiwygConfig;
     }
 }

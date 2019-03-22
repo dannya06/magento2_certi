@@ -4,15 +4,15 @@
  */
 var config = {
 	map: {
-		"*": {
-			"nestable": "Ves_Megamenu/js/jquery.nestable",
-			"vesknockoutjs": "Ves_Megamenu/js/vesknockoutjs",
-			"vesbrowser": "Ves_Megamenu/js/vesbrowser"
+		'*': {
+			'nestable': 'Ves_Megamenu/js/jquery.nestable',
+			'vesknockoutjs': 'Ves_Megamenu/js/vesknockoutjs',
+			'vesbrowser': 'Ves_Megamenu/js/vesbrowser'
 		}
 	},
-	"deps": [
-		"js/theme",
-        "mage/adminhtml/globals"
+	'deps': [
+		'js/theme',
+        'mage/adminhtml/globals'
     ],
     shim: {
         'nestable': {
