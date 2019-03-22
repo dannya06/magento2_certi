@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -12,8 +12,11 @@ use Magento\Framework\App\ResourceConnection;
 class DataProvider
 {
     protected $resource;
+
     protected $connection;
+
     protected $actionFull;
+
     protected $separator = ', ';
 
     /**
@@ -22,17 +25,26 @@ class DataProvider
     private $product;
 
     /**
+     * @var ResolveProductIds
+     */
+    private $productIdsResolver;
+
+    /**
      * DataProvider constructor.
-     * @param ResourceConnection $resource
+     *
+     * @param ResourceConnection             $resource
      * @param \Magento\Catalog\Model\Product $product
+     * @param ResolveProductIds              $productIdsResolver
      */
     public function __construct(
         ResourceConnection $resource,
-        \Magento\Catalog\Model\Product $product
+        \Magento\Catalog\Model\Product $product,
+        ResolveProductIds $productIdsResolver
     ) {
         $this->resource = $resource;
         $this->connection = $resource->getConnection();
         $this->product = $product;
+        $this->productIdsResolver = $productIdsResolver;
     }
 
     public function getSearchableItems(
@@ -109,7 +121,12 @@ class DataProvider
         $id = $this->product->getResource()->getLinkField();
 
         foreach ($productsItems as $storeId => $products) {
-            $productIds = array_keys($products);
+            if ($id == 'row_id') {
+                // on EE version row_id for join tables should be used
+                $productIds = $this->productIdsResolver->getRowIdsFromEntityIds(array_keys($products));
+            } else {
+                $productIds = $products;
+            }
 
             $selects = [];
             foreach ($attributeTypes as $backendType => $attributeIds) {
@@ -135,7 +152,7 @@ class DataProvider
                         $attributeIds
                     )->where(
                         't_default.' . $id . ' IN (?)',
-                        $productIds
+                        array_keys($productIds)
                     );
                 }
             }
@@ -145,8 +162,14 @@ class DataProvider
 
                 $query = $this->connection->query($select);
                 while ($row = $query->fetch()) {
-                    if (array_key_exists($row[$id], $products)) {
-                        foreach ($products[$row[$id]] as $itemId) {
+                    if ($id == 'row_id' && array_key_exists($row[$id], $productIds)) {
+                        $productId = $productIds[$row[$id]];
+                    } else {
+                        $productId = $row[$id];
+                    }
+
+                    if (array_key_exists($productId, $products)) {
+                        foreach ($products[$productId] as $itemId) {
                             $result[$itemId][$row['attribute_id']] = $row['value'];
                         }
                     }

@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 -->
@@ -32,6 +32,18 @@
     <virtualType name="Amasty\Ogrid\Model\Column\Order\BaseSubtotal" type="Amasty\Ogrid\Model\Column\Order">
         <arguments>
             <argument name="fieldKey" xsi:type="string">base_subtotal</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Amasty\Ogrid\Model\Column\Order\TotalDue" type="Amasty\Ogrid\Model\Column\Order">
+        <arguments>
+            <argument name="fieldKey" xsi:type="string">total_due</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Amasty\Ogrid\Model\Column\Order\TotalPaid" type="Amasty\Ogrid\Model\Column\Order">
+        <arguments>
+            <argument name="fieldKey" xsi:type="string">total_paid</argument>
             <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order</argument>
         </arguments>
     </virtualType>
@@ -322,6 +334,14 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="Amasty\Ogrid\Model\Column\Product\Qty\Available" type="Amasty\Ogrid\Model\Column\Product\Qty">
+        <arguments>
+            <argument name="fieldKey" xsi:type="string">qty_available</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order\Item</argument>
+            <argument name="foreignKey" xsi:type="string">order_id</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="Amasty\Ogrid\Model\Column\Product\RowTotal"  type="Amasty\Ogrid\Model\Column\Product\Price">
         <arguments>
             <argument name="fieldKey" xsi:type="string">row_total</argument>
@@ -356,6 +376,17 @@
         <arguments>
             <argument name="converter" xsi:type="object">Amasty\Ogrid\Model\Export\ConvertToXml</argument>
         </arguments>
+    </type>
+
+    <type name="Magento\Ui\Config\Reader">
+        <plugin name="Amasty_Ogrid::addColumns" type="Amasty\Ogrid\Plugin\Ui\Model\Reader"/>
+    </type>
+    <type name="Magento\Ui\Model\Manager">
+        <plugin name="Amasty_Ogrid::addColumnsOld" type="Amasty\Ogrid\Plugin\Ui\Model\Manager" />
+    </type>
+    <!-- compatibility with magento EE AdminGws module -->
+    <type name="Magento\AdminGws\Model\Collections">
+        <plugin name="Amasty_Ogrid::addStoreFilter" type="Amasty\Ogrid\Plugin\AdminGws\Model\Collections\AddFilter" />
     </type>
 
     <!--<virtualType name="Amasty\Ogrid\Controller\Adminhtml\Export\GridToCsv" type="Magento\Ui\Controller\Adminhtml\Export\GridToCsv">-->

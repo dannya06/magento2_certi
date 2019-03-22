@@ -312,8 +312,7 @@ class GenerateInformationTab implements ObserverInterface
                 $data = $item->getData('resource');
                 if (isset($data['label'])
                     && isset($data['resource'])
-                    && $data['resource']
-                    && strpos($data['resource'], $this->getModuleCode()) !== false
+                    && strpos($data['resource'], $this->getModuleCode() . '::') !== false
                 ) {
                     $result = $data['label'];
                     break;

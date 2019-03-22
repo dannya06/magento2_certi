@@ -1,45 +1,60 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
+
 namespace Amasty\Ogrid\Ui\Component\Listing;
 
-use Magento\Framework\View\Element\UiComponentInterface;
+use Magento\Ui\Component\Listing\Columns as ListingColumns;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Ui\Api\BookmarkManagementInterface;
 
-class Columns extends \Magento\Ui\Component\Listing\Columns
+class Columns extends ListingColumns
 {
-    protected $_bookmarkManagement;
-    protected $_componentFactory;
-    protected $_helper;
+    /**
+     * @var BookmarkManagementInterface
+     */
+    private $bookmarkManagement;
 
+    /**
+     * Columns constructor.
+     * @param ContextInterface $context
+     * @param BookmarkManagementInterface $bookmarkManagement
+     * @param array $components
+     * @param array $data
+     */
     public function __construct(
-        \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
-        \Magento\Ui\Api\BookmarkManagementInterface $bookmarkManagement,
-        \Magento\Framework\View\Element\UiComponentFactory $componentFactory,
-        \Amasty\Ogrid\Helper\Data $helper,
+        ContextInterface $context,
+        BookmarkManagementInterface $bookmarkManagement,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $components, $data);
-        $this->_bookmarkManagement = $bookmarkManagement;
-        $this->_componentFactory = $componentFactory;
-        $this->_helper = $helper;
+        $this->bookmarkManagement = $bookmarkManagement;
     }
 
+    /**
+     * Prepare component configuration
+     *
+     * @return void
+     */
     public function prepare()
     {
-        $ret = parent::prepare();
-
-        $this->_prepareColumns();
-        return $ret;
+        parent::prepare();
+        $this->prepareColumns();
     }
 
-    protected function _prepareColumns()
+    /**
+     * Prepare component columns configuration
+     *
+     * return void
+     */
+    private function prepareColumns()
     {
-        $bookmark = $this->_bookmarkManagement->getByIdentifierNamespace(
+        $bookmark = $this->bookmarkManagement->getByIdentifierNamespace(
             'current',
             'sales_order_grid'
         );
@@ -52,11 +67,11 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
         }
 
         foreach ($this->getChildComponents() as $id => $column) {
-            if ($column instanceof \Magento\Ui\Component\Listing\Columns\Column) {
+            if ($column instanceof ListingColumns\Column) {
                 $config = $column->getData('config');
                 $config['amogrid'] = [
-                    'label'   => $config['label'],
-                    'title'   => '',
+                    'label' => $config['label'],
+                    'title' => '',
                     'visible' => true
                 ];
 

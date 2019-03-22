@@ -1,17 +1,7 @@
 "Amasty: Extended Order Grid Properties","Amasty: Extended Order Grid Properties"
 "Add to Column Options","Add to Column Options"
 "Select ""Yes"" to add this attribute to the list of column options in the order grid.","Select ""Yes"" to add this attribute to the list of column options in the order grid."
-"Track Order","Track Order"
-Columns,Columns
-Column,Column
-Title,Title
-Save,Save
-Close,Close
-"Order Grid","Order Grid"
 General,General
-"Hide orders with statuses","Hide orders with statuses"
-"Amasty: Order Grid - Product Attributes","Amasty: Order Grid - Product Attributes"
-"Rebuild attributes index","Rebuild attributes index"
 Product,Product
 Customer,Customer
 Billing,Billing
@@ -34,13 +24,26 @@ Options,Options
 "Qty Shipped","Qty Shipped"
 "Qty Refunded","Qty Refunded"
 "Qty Canceled","Qty Canceled"
+"Qty Available","Qty Available"
 "Row Total (Base)","Row Total (Base)"
 "Row Total (Purchased)","Row Total (Purchased)"
+"Track Order","Track Order"
+Columns,Columns
+Column,Column
+Title,Title
+Save,Save
+Close,Close
+"Order Grid","Order Grid"
+"Hide orders with statuses","Hide orders with statuses"
+"Amasty: Order Grid - Product Attributes","Amasty: Order Grid - Product Attributes"
+"Rebuild attributes index","Rebuild attributes index"
 "Coupon Code","Coupon Code"
 "Order Tax","Order Tax"
 "Order Comments","Order Comments"
 "Shipping Method","Shipping Method"
 "Subtotal (Base)","Subtotal (Base)"
+"Total Due","Total Due"
+"Total Paid","Total Paid"
 "Subtotal (Purchased)","Subtotal (Purchased)"
 Weight,Weight
 "Tracking Number","Tracking Number"

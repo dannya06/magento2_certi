@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -20,6 +20,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_orderFields = [
         'amasty_ogrid_shipping_description' => 'Order\\ShippingMethod',
         'amasty_ogrid_base_subtotal' => 'Order\\BaseSubtotal',
+        'amasty_ogrid_total_due' => 'Order\\TotalDue',
+        'amasty_ogrid_total_paid' => 'Order\\TotalPaid',
         'amasty_ogrid_subtotal' => 'Order\\Subtotal',
         'amasty_ogrid_coupon_code' => 'Order\\CouponCode',
         'amasty_ogrid_weight' => 'Order\\Weight',
@@ -62,8 +64,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         'amasty_ogrid_product_qty_shipped' => 'Product\\Qty\\Shipped',
         'amasty_ogrid_product_qty_refunded' => 'Product\\Qty\\Refunded',
         'amasty_ogrid_product_qty_canceled' => 'Product\\Qty\\Canceled',
+        'amasty_ogrid_product_qty_available' => 'Product\\Qty\\Available',
         'amasty_ogrid_product_row_total' => 'Product\\RowTotal',
-        'amasty_ogrid_product_base_row_total' => 'Product\\BaseRowTotal',
+        'amasty_ogrid_product_base_row_total' => 'Product\\BaseRowTotal'
     ];
 
     protected $_orderTrack = [
