@@ -3,6 +3,7 @@ namespace Aheadworks\SocialLogin\Helper;
 
 use Aheadworks\SocialLogin\Exception\InvalidStateException;
 use Aheadworks\SocialLogin\Model\Provider\AccountInterface;
+use Magento\Customer\Model\Session;
 
 /**
  * Class State
@@ -24,7 +25,7 @@ class State
     /**#@-*/
 
     /**
-     * @var \Magento\Customer\Model\Session
+     * @var Session
      */
     protected $session;
 
@@ -45,11 +46,10 @@ class State
     protected $defaultState = self::STATE_LOGIN;
 
     /**
-     * @param \Magento\Customer\Model\Session $session
+     * @param Session $session
      */
-    public function __construct(
-        \Magento\Customer\Model\Session $session
-    ) {
+    public function __construct(Session $session)
+    {
         $this->session = $session;
     }
 
@@ -99,7 +99,6 @@ class State
     {
         return $this->_getAccount() !== null;
     }
-
 
     /**
      * Get state

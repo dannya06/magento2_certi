@@ -4,6 +4,7 @@
     <!-- Account model -->
     <preference for="Aheadworks\SocialLogin\Api\Data\AccountInterface" type="Aheadworks\SocialLogin\Model\Account" />
     <preference for="Aheadworks\SocialLogin\Api\AccountRepositoryInterface" type="Aheadworks\SocialLogin\Model\AccountRepository" />
+    <preference for="Aheadworks\SocialLogin\Api\AccountSearchInterface" type="Aheadworks\SocialLogin\Model\AccountSearch" />
 
     <!-- Account converter -->
     <preference for="Aheadworks\SocialLogin\Model\Provider\Account\ConverterInterface"

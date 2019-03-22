@@ -52,7 +52,10 @@ class Serializer
      */
     private function getSerializer()
     {
+        // phpcs:disable
         $serializerInterfaceName = '\Magento\Framework\Serialize\SerializerInterface';
+        // phpcs:enable
+
         if (!interface_exists($serializerInterfaceName)) {
             return null;
         }

@@ -2,6 +2,7 @@
 namespace Aheadworks\SocialLogin\Model\Provider\Service\Credentials;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * Class ConfigProvider
@@ -70,7 +71,7 @@ class ConfigProvider implements CredentialsInterface
      */
     public function getConsumerId()
     {
-        return $this->scopeConfig->getValue($this->consumerIdPath);
+        return $this->scopeConfig->getValue($this->consumerIdPath, ScopeInterface::SCOPE_WEBSITE);
     }
 
     /**
@@ -78,6 +79,6 @@ class ConfigProvider implements CredentialsInterface
      */
     public function getConsumerSecret()
     {
-        return $this->scopeConfig->getValue($this->consumerSecretPath);
+        return $this->scopeConfig->getValue($this->consumerSecretPath, ScopeInterface::SCOPE_WEBSITE);
     }
 }

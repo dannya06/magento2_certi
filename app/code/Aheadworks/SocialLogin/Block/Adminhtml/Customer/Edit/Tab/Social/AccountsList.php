@@ -2,15 +2,20 @@
 namespace Aheadworks\SocialLogin\Block\Adminhtml\Customer\Edit\Tab\Social;
 
 use Aheadworks\SocialLogin\Api\Data\AccountInterface;
+use Aheadworks\SocialLogin\Model\Account\ImageProvider;
+use Aheadworks\SocialLogin\Model\ResourceModel\Account\CollectionFactory;
+use Magento\Backend\Block\Template;
+use Magento\Backend\Block\Template\Context;
 use Magento\Customer\Controller\RegistryConstants;
+use Magento\Framework\Registry;
 
 /**
  * Class AccountsList
  */
-class AccountsList extends \Magento\Backend\Block\Template
+class AccountsList extends Template
 {
     /**
-     * @var \Aheadworks\SocialLogin\Model\ResourceModel\Account\CollectionFactory
+     * @var CollectionFactory
      */
     protected $accountCollectionFactory;
 
@@ -20,27 +25,27 @@ class AccountsList extends \Magento\Backend\Block\Template
     protected $accounts;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var Registry
      */
     protected $registry;
 
     /**
-     * @var \Aheadworks\SocialLogin\Model\Account\ImageProvider
+     * @var ImageProvider
      */
     private $imageProvider;
 
     /**
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Aheadworks\SocialLogin\Model\ResourceModel\Account\CollectionFactory $accountCollectionFactory
-     * @param \Magento\Framework\Registry $registry
-     * @param \Aheadworks\SocialLogin\Model\Account\ImageProvider $imageProvider
+     * @param Context $context
+     * @param CollectionFactory $accountCollectionFactory
+     * @param Registry $registry
+     * @param ImageProvider $imageProvider
      * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Aheadworks\SocialLogin\Model\ResourceModel\Account\CollectionFactory $accountCollectionFactory,
-        \Magento\Framework\Registry $registry,
-        \Aheadworks\SocialLogin\Model\Account\ImageProvider $imageProvider,
+        Context $context,
+        CollectionFactory $accountCollectionFactory,
+        Registry $registry,
+        ImageProvider $imageProvider,
         array $data
     ) {
         parent::__construct($context, $data);
@@ -82,7 +87,7 @@ class AccountsList extends \Magento\Backend\Block\Template
 
     /**
      * Get account image url.
-     * 
+     *
      * @param AccountInterface $account
      * @return string
      */

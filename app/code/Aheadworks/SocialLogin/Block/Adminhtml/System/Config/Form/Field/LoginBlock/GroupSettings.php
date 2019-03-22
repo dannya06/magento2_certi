@@ -1,10 +1,15 @@
 <?php
 namespace Aheadworks\SocialLogin\Block\Adminhtml\System\Config\Form\Field\LoginBlock;
 
+use Aheadworks\SocialLogin\Model\Config\LoginBlock;
+use Magento\Backend\Block\Template\Context;
+use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
+use Magento\Framework\DataObject;
+
 /**
  * Class GroupSettings
  */
-class GroupSettings extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray
+class GroupSettings extends AbstractFieldArray
 {
     /**
      * @var bool
@@ -22,18 +27,18 @@ class GroupSettings extends \Magento\Config\Block\System\Config\Form\Field\Field
     protected $rendererList = [];
 
     /**
-     * @var \Aheadworks\SocialLogin\Model\Config\LoginBlock
+     * @var LoginBlock
      */
     protected $loginBlockConfig;
 
     /**
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Aheadworks\SocialLogin\Model\Config\LoginBlock $loginBlockConfig
+     * @param Context $context
+     * @param LoginBlock $loginBlockConfig
      * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Aheadworks\SocialLogin\Model\Config\LoginBlock $loginBlockConfig,
+        Context $context,
+        LoginBlock $loginBlockConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -66,9 +71,7 @@ class GroupSettings extends \Magento\Config\Block\System\Config\Form\Field\Field
      */
     protected function getGroupRenderer()
     {
-        return $this->getRenderer(
-            'Aheadworks\SocialLogin\Block\Adminhtml\System\Config\Form\Field\LoginBlock\Group'
-        );
+        return $this->getRenderer(Group::class);
     }
 
     /**
@@ -78,9 +81,7 @@ class GroupSettings extends \Magento\Config\Block\System\Config\Form\Field\Field
      */
     protected function getVisibilityRenderer()
     {
-        return $this->getRenderer(
-            'Aheadworks\SocialLogin\Block\Adminhtml\System\Config\Form\Field\LoginBlock\Visibility'
-        );
+        return $this->getRenderer(Visibility::class);
     }
 
     /**
@@ -90,9 +91,7 @@ class GroupSettings extends \Magento\Config\Block\System\Config\Form\Field\Field
      */
     protected function getTemplateRenderer()
     {
-        return $this->getRenderer(
-            'Aheadworks\SocialLogin\Block\Adminhtml\System\Config\Form\Field\LoginBlock\Template'
-        );
+        return $this->getRenderer(Template::class);
     }
 
     /**
@@ -117,7 +116,7 @@ class GroupSettings extends \Magento\Config\Block\System\Config\Form\Field\Field
     /**
      * {@inheritdoc}
      */
-    protected function _prepareArrayRow(\Magento\Framework\DataObject $row)
+    protected function _prepareArrayRow(DataObject $row)
     {
         $row->setData('option_extra_attrs', []);
     }
@@ -138,7 +137,7 @@ class GroupSettings extends \Magento\Config\Block\System\Config\Form\Field\Field
                 $rowColumnValues[$this->_getCellInputElementId($rowId, $key)] = $row[$key];
             }
             $row['column_values'] = $rowColumnValues;
-            $result[$rowId] = new \Magento\Framework\DataObject($row);
+            $result[$rowId] = new DataObject($row);
             $this->_prepareArrayRow($result[$rowId]);
         }
         return $result;
