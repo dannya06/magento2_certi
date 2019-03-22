@@ -19,10 +19,10 @@
         "icubeus/magento2-indonesianlanguage": "dev-master",
         "magepal/magento2-reindex": "^1.0",
         "ebizmarts/mailchimp-lib": "^3.0",
-        "icubeus/magento2-rapidflow": "dev-masterrc",
         "fabrizioballiano/deferjavascripts": "^1.0",
         "msp/recaptcha": "2.0.0",
-        "icubeus/magento2-osc": "dev-master"
+        "icubeus/magento2-osc": "dev-master",
+        "icubeus/magento2-gosend": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.0",

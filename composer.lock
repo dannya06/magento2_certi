@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7d64ea0512f43e1d6271fd9c5f838a71",
+    "content-hash": "771b16fefd0d7fe73773232aa58f2516",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-with-amazon-core-module",
@@ -1278,6 +1278,46 @@
             "time": "2018-07-17T05:12:36+00:00"
         },
         {
+            "name": "icubeus/magento2-gosend",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icube-mage/magento2-gosend.git",
+                "reference": "045567bae1d95d1e542a2c062f7b54b257782fd4"
+            },
+            "replace": {
+                "icubeus/module-gosend": "self.version"
+            },
+            "type": "magento2-component",
+            "autoload": {
+                "files": [
+                    "src/module-gosend/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\Gosend\\": "src/module-gosend"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "gojek gosend shipping method",
+            "homepage": "https://github.com/icube-mage/magento2-gosend",
+            "keywords": [
+                "gojek",
+                "gosend",
+                "magento",
+                "magento2",
+                "shipping"
+            ],
+            "time": "2019-03-19T08:52:09+00:00"
+        },
+        {
             "name": "icubeus/magento2-indonesianlanguage",
             "version": "dev-master",
             "source": {
@@ -1309,7 +1349,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-                "reference": "e5bfc4d29423aff74d975b2a77d785ca97cb8ccc"
+                "reference": "b2c76f7ac967e6b7ca1e6b60819b7c09ca7d008a"
             },
             "replace": {
                 "icubeus/module-osc": "self.version",
@@ -1345,51 +1385,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-03-19T08:35:29+00:00"
-        },
-        {
-            "name": "icubeus/magento2-rapidflow",
-            "version": "dev-masterrc",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:icubeus/magento2-rapidflow.git",
-                "reference": "3778c5baf6be1e4eaa2608722c8e4cfd6221719d"
-            },
-            "require": {
-                "php": ">=7.0.2"
-            },
-            "replace": {
-                "icubeus/module-rapidflow": "self.version",
-                "icubeus/module-rapidflowpro": "self.version"
-            },
-            "type": "magento2-component",
-            "autoload": {
-                "files": [
-                    "src/module-rapidflow/registration.php",
-                    "src/module-rapidflowpro/registration.php"
-                ],
-                "psr-4": {
-                    "Unirgy\\RapidFlow\\": "src/module-rapidflow",
-                    "Unirgy\\RapidFlowPro\\": "src/module-rapidflowpro"
-                }
-            },
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "icubeus",
-                    "email": "sales@icube.us"
-                }
-            ],
-            "description": "repidflow for import product",
-            "homepage": "https://github.com/icubeus/magento2-rapidflow",
-            "keywords": [
-                "magento",
-                "magento2",
-                "rapidflow"
-            ],
-            "time": "2018-12-24T05:17:42+00:00"
+            "time": "2019-03-22T08:08:56+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -12183,7 +12179,6 @@
         "icubeus/magento2-confirmpayment": 20,
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-indonesianlanguage": 20,
-        "icubeus/magento2-rapidflow": 20,
         "icubeus/magento2-osc": 20,
         "phpmd/phpmd": 0
     },
