@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -301,11 +301,6 @@
             <argument name="filterPool" xsi:type="object" shared="false">AwGiftcardGridFilterPool</argument>
         </arguments>
     </virtualType>
-    <type name="Aheadworks\Giftcard\Controller\Adminhtml\Product\ImageUpload">
-        <arguments>
-            <argument name="imageUploader" xsi:type="object">Aheadworks\Giftcard\ImageUploader</argument>
-        </arguments>
-    </type>
     <type name="Magento\Quote\Model\Quote\Item\Repository">
         <arguments>
             <argument name="cartItemProcessors" xsi:type="array">

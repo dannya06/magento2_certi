@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Plugin\Model\Order;
 
@@ -103,8 +103,8 @@ class InvoicePlugin
     /**
      * @param GiftcardRepositoryInterface $giftcardRepository
      * @param GiftcardInterfaceFactory $giftcardDataFactory
-     * @param DataObjectHelper $dataObjectHelper
      * @param OptionInterfaceFactory $optionFactory
+     * @param DataObjectHelper $dataObjectHelper
      * @param LoggerInterface $logger
      * @param EntityManager $entityManager
      * @param InvoiceRepositoryPlugin $invoiceRepositoryPlugin
@@ -200,6 +200,7 @@ class InvoicePlugin
         if (!$invoice->wasPayCalled()) {
             return;
         }
+
         foreach ($invoice->getAllItems() as $item) {
             /** @var $item \Magento\Sales\Model\Order\Invoice\Item */
             if ($item->getOrderItem()->getProductType() != ProductGiftcard::TYPE_CODE) {
@@ -208,6 +209,12 @@ class InvoicePlugin
             /** @var Option $options */
             $options = $this->getProductOptions($item->getOrderItem()->getProductOptions());
             $qty = (int)$item->getQty();
+            if ($options->getAwGcCreatedCodes()) {
+                $qty -= count($options->getAwGcCreatedCodes());
+            }
+            if (!$qty) {
+                continue;
+            }
             $giftcardCodesByProduct = [];
             while ($qty > 0) {
                 try {

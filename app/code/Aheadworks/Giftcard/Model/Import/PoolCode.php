@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Model\Import;
 
@@ -11,7 +11,6 @@ use Aheadworks\Giftcard\Api\Data\Pool\CodeInterface as PoolCodeInterface;
 use Aheadworks\Giftcard\Api\Data\Pool\CodeInterfaceFactory as PoolCodeInterfaceFactory;
 use Aheadworks\Giftcard\Model\ResourceModel\Validator\GiftcardIsUnique;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Ui\Component\MassAction\Filter;
 
 /**
@@ -45,7 +44,6 @@ class PoolCode extends AbstractImport
      * @param DataObjectHelper $dataObjectHelper
      * @param Filter $filter
      * @param RequestInterface $request
-     * @param UrlInterface $url
      * @param GiftcardIsUnique $giftcardIsUniqueValidator
      * @param PoolCodeInterfaceFactory $poolCodeFactory
      */
@@ -53,11 +51,10 @@ class PoolCode extends AbstractImport
         DataObjectHelper $dataObjectHelper,
         Filter $filter,
         RequestInterface $request,
-        UrlInterface $url,
         GiftcardIsUnique $giftcardIsUniqueValidator,
         PoolCodeInterfaceFactory $poolCodeFactory
     ) {
-        parent::__construct($dataObjectHelper, $filter, $request, $url);
+        parent::__construct($dataObjectHelper, $filter, $request);
         $this->giftcardIsUniqueValidator = $giftcardIsUniqueValidator;
         $this->poolCodeFactory = $poolCodeFactory;
     }

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Model\Service;
 
@@ -31,6 +31,7 @@ use Magento\Sales\Api\Data\OrderStatusHistoryInterface;
 use Magento\Sales\Api\Data\OrderStatusHistoryInterfaceFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Aheadworks\Giftcard\Model\Import\GiftcardCode as ImportGiftcardCode;
+use Magento\Store\Model\StoreManagerInterface as StoreManager;
 
 /**
  * Class GiftcardService
@@ -115,6 +116,11 @@ class GiftcardService implements GiftcardManagementInterface
     private $importGiftcardCode;
 
     /**
+     * StoreManager
+     */
+    private $storeManager;
+
+    /**
      * @param GiftcardRepositoryInterface $giftcardRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param PriceCurrencyInterface $priceCurrency
@@ -130,6 +136,7 @@ class GiftcardService implements GiftcardManagementInterface
      * @param OrderRepositoryInterface $orderRepository
      * @param CodeGenerator $codeGenerator
      * @param ImportGiftcardCode $importGiftcardCode
+     * @param StoreManager $storeManager
      */
     public function __construct(
         GiftcardRepositoryInterface $giftcardRepository,
@@ -146,7 +153,8 @@ class GiftcardService implements GiftcardManagementInterface
         OrderStatusHistoryInterfaceFactory $orderStatusHistoryFactory,
         OrderRepositoryInterface $orderRepository,
         CodeGenerator $codeGenerator,
-        ImportGiftcardCode $importGiftcardCode
+        ImportGiftcardCode $importGiftcardCode,
+        StoreManager $storeManager
     ) {
         $this->giftcardRepository = $giftcardRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -163,6 +171,7 @@ class GiftcardService implements GiftcardManagementInterface
         $this->orderRepository = $orderRepository;
         $this->codeGenerator = $codeGenerator;
         $this->importGiftcardCode = $importGiftcardCode;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -233,6 +242,7 @@ class GiftcardService implements GiftcardManagementInterface
         if (!$customerEmail) {
             $customerEmail = $this->customerSession->getCustomer()->getEmail();
         }
+        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
         if (!$customerEmail) {
             return $giftcards;
         }
@@ -242,7 +252,8 @@ class GiftcardService implements GiftcardManagementInterface
         $this->searchCriteriaBuilder
             ->addFilter(GiftcardInterface::RECIPIENT_EMAIL, $customerEmail)
             ->addFilter(GiftcardInterface::STATE, Status::ACTIVE)
-            ->addFilter(GiftcardInterface::EMAIL_SENT, [EmailStatus::SENT, EmailStatus::NOT_SEND], 'in');
+            ->addFilter(GiftcardInterface::EMAIL_SENT, [EmailStatus::SENT, EmailStatus::NOT_SEND], 'in')
+            ->addFilter(GiftcardInterface::WEBSITE_ID, $websiteId);
         $giftcards = $this->giftcardRepository->getList($this->searchCriteriaBuilder->create())->getItems();
 
         /** @var GiftcardInterface $giftcardCode */

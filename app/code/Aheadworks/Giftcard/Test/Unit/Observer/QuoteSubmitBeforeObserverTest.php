@@ -1,12 +1,14 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Test\Unit\Observer;
 
+use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface;
 use Aheadworks\Giftcard\Observer\QuoteSubmitBeforeObserver;
+use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event;
@@ -49,6 +51,11 @@ class QuoteSubmitBeforeObserverTest extends \PHPUnit\Framework\TestCase
     private $dataObjectHelperMock;
 
     /**
+     * @var DataObjectProcessor|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $dataObjectProcessorMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
@@ -69,13 +76,18 @@ class QuoteSubmitBeforeObserverTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['populateWithArray'])
             ->disableOriginalConstructor()
             ->getMock();
+        $this->dataObjectProcessorMock = $this->getMockBuilder(DataObjectProcessor::class)
+            ->setMethods(['buildOutputDataArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->object = $objectManager->getObject(
             QuoteSubmitBeforeObserver::class,
             [
                 'orderExtensionFactory' => $this->orderExtensionFactoryMock,
                 'giftcardOrderFactory' => $this->giftcardOrderFactoryMock,
-                'dataObjectHelper' => $this->dataObjectHelperMock
+                'dataObjectHelper' => $this->dataObjectHelperMock,
+                'dataObjectProcessor' => $this->dataObjectProcessorMock
             ]
         );
     }
@@ -182,9 +194,6 @@ class QuoteSubmitBeforeObserverTest extends \PHPUnit\Framework\TestCase
             true,
             ['getData']
         );
-        $quoteGiftcardMock->expects($this->once())
-            ->method('getData')
-            ->willReturn($quoteData);
         $quoteExtensionMock->expects($this->once())
             ->method('getAwGiftcardCodes')
             ->willReturn([$quoteGiftcardMock]);
@@ -194,6 +203,10 @@ class QuoteSubmitBeforeObserverTest extends \PHPUnit\Framework\TestCase
             ->method('create')
             ->willReturn($orderGiftcardMock);
 
+        $this->dataObjectProcessorMock->expects($this->once())
+            ->method('buildOutputDataArray')
+            ->with($quoteGiftcardMock, QuoteInterface::class)
+            ->willReturn($quoteData);
         $this->dataObjectHelperMock->expects($this->once())
             ->method('populateWithArray')
             ->with($orderGiftcardMock, $quoteData, GiftcardOrderInterface::class)

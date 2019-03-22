@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Setup;
 
@@ -67,6 +67,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
     private $storeManager;
 
     /**
+     * @var State
+     */
+    private $appState;
+
+    /**
      * @param State $appState
      * @param CommentPool $commentPool
      * @param HistoryEntityInterfaceFactory $historyEntityFactory
@@ -84,10 +89,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
         CreditmemoRepositoryInterface $creditmemoRepository,
         StoreManagerInterface $storeManager
     ) {
-        try {
-            $appState->setAreaCode(Area::AREA_ADMINHTML);
-        } catch (LocalizedException $e) {
-        }
+        $this->appState = $appState;
         $this->commentPool = $commentPool;
         $this->historyEntityFactory = $historyEntityFactory;
         $this->entityManager = $entityManager;
@@ -103,7 +105,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
     {
         if ($context->getVersion() && version_compare($context->getVersion(), '1.1.0', '<')) {
             $this->addTables110($setup);
-            $this->updateTableData110($setup);
+            $this->appState->emulateAreaCode(
+                Area::AREA_ADMINHTML,
+                [$this, 'updateTableData110'],
+                [$setup]
+            );
         }
         if ($context->getVersion() && version_compare($context->getVersion(), '1.2.0', '<')) {
             $this->addTables120($setup);

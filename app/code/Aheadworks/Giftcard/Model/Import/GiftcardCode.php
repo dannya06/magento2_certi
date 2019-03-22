@@ -1,13 +1,12 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Model\Import;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\DataObjectHelper;
@@ -72,7 +71,6 @@ class GiftcardCode extends AbstractImport
      * @param DataObjectHelper $dataObjectHelper
      * @param Filter $filter
      * @param RequestInterface $request
-     * @param UrlInterface $url
      * @param GiftcardIsUnique $giftcardIsUniqueValidator
      * @param GiftcardInterfaceFactory $giftcardFactory
      * @param TimezoneInterface $localeDate
@@ -84,7 +82,6 @@ class GiftcardCode extends AbstractImport
         DataObjectHelper $dataObjectHelper,
         Filter $filter,
         RequestInterface $request,
-        UrlInterface $url,
         GiftcardIsUnique $giftcardIsUniqueValidator,
         GiftcardInterfaceFactory $giftcardFactory,
         TimezoneInterface $localeDate,
@@ -92,7 +89,7 @@ class GiftcardCode extends AbstractImport
         ProductRepositoryInterface $productRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
-        parent::__construct($dataObjectHelper, $filter, $request, $url);
+        parent::__construct($dataObjectHelper, $filter, $request);
         $this->giftcardIsUniqueValidator = $giftcardIsUniqueValidator;
         $this->giftcardFactory = $giftcardFactory;
         $this->localeDate = $localeDate;
