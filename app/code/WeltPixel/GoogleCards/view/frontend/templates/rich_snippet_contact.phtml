@@ -5,6 +5,23 @@ $contactType = $this->getContactType();
 $contactArea = $this->getContactArea();
 $contactOption = $this->getContactOption();
 $contactLanguage = $this->getContactLanguage();
+
+$contactPoint = [
+    "@type"     => "ContactPoint",
+    "telephone" => $block->stripTags($phone),
+    "contactType"=> $contactType
+];
+if ($contactArea) :
+    $contactPoint['areaServed'] = $block->stripTags($contactArea);
+endif;
+if ($contactOption) :
+    $contactPoint['contactOption'] = $block->stripTags($contactOption);
+endif;
+if ($contactLanguage) :
+    $contactPoint['availableLanguage'] = $block->stripTags($contactLanguage);
+endif;
+
+
 ?>
 
 <?php if ($phone && $contactType) : ?>
@@ -16,25 +33,7 @@ $contactLanguage = $this->getContactLanguage();
         $block->getBaseUrl() ?>",
       "logo": "<?= /* @escapeNotVerified */
         $logoUrl; ?>",
-      "contactPoint": [{
-        "@type": "ContactPoint",
-        "telephone": "<?= /* @escapeNotVerified */
-        $block->stripTags($phone); ?>",
-        "contactType": "<?= /* @escapeNotVerified */
-        $contactType; ?>",
-        <?php if ($contactArea) : ?>
-        "areaServed": "<?= /* @escapeNotVerified */
-            $block->stripTags($contactArea); ?>",
-        <?php endif; ?>
-        <?php if ($contactOption) : ?>
-        "contactOption": "<?= /* @escapeNotVerified */
-            $block->stripTags($contactOption); ?>",
-        <?php endif; ?>
-        <?php if ($contactLanguage) : ?>
-        "availableLanguage": "<?= /* @escapeNotVerified */
-            $block->stripTags($contactLanguage); ?>"
-        <?php endif; ?>
-      }]
+      "contactPoint": [<?php echo json_encode($contactPoint, JSON_FORCE_OBJECT)?>]
     }
 
     </script>

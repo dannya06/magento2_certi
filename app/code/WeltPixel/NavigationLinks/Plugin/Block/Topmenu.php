@@ -19,7 +19,7 @@ class Topmenu
     protected $catalogCategory;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory
+     * @var \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory
      */
     private $collectionFactory;
 
@@ -37,13 +37,13 @@ class Topmenu
      * Initialize dependencies.
      *
      * @param \Magento\Catalog\Helper\Category $catalogCategory
-     * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
+     * @param \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory $categoryCollectionFactory
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Catalog\Model\Layer\Resolver $layerResolver
      */
     public function __construct(
         \Magento\Catalog\Helper\Category $catalogCategory,
-        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
+        \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory $categoryCollectionFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Model\Layer\Resolver $layerResolver
     ) {
@@ -76,14 +76,25 @@ class Topmenu
         $currentCategory = $this->getCurrentCategory();
         $mapping = [$rootId => $subject->getMenu()];  // use nodes stack to avoid recursion
         foreach ($collection as $category) {
-            if (!isset($mapping[$category->getParentId()])) {
-                continue;
+            $categoryParentId = $category->getParentId();
+            if (!isset($mapping[$categoryParentId])) {
+                $parentIds = $category->getParentIds();
+                foreach ($parentIds as $parentId) {
+                    if (isset($mapping[$parentId])) {
+                        $categoryParentId = $parentId;
+                    }
+                }
             }
+
             /** @var Node $parentCategoryNode */
-            $parentCategoryNode = $mapping[$category->getParentId()];
+            $parentCategoryNode = $mapping[$categoryParentId];
 
             $categoryNode = new Node(
-                $this->getCategoryAsArray($category, $currentCategory),
+                $this->getCategoryAsArray(
+                    $category,
+                    $currentCategory,
+                    $category->getParentId() == $categoryParentId
+                ),
                 'id',
                 $parentCategoryNode->getTree(),
                 $parentCategoryNode
@@ -137,16 +148,19 @@ class Topmenu
      *
      * @param \Magento\Catalog\Model\Category $category
      * @param \Magento\Catalog\Model\Category $currentCategory
+     * @param bool $isParentActive
      * @return array
      */
-    private function getCategoryAsArray($category, $currentCategory)
+    private function getCategoryAsArray($category, $currentCategory, $isParentActive)
     {
         $result =  [
             'name' => $category->getName(),
             'id' => 'category-node-' . $category->getId(),
             'url' => $this->catalogCategory->getCategoryUrl($category),
             'has_active' => in_array((string)$category->getId(), explode('/', $currentCategory->getPath()), true),
-            'is_active' => $category->getId() == $currentCategory->getId()
+            'is_active' => $category->getId() == $currentCategory->getId(),
+            'is_category' => true,
+            'is_parent_active' => $isParentActive
         ];
 
         $categoryMenuData = $category->getData();
@@ -188,6 +202,71 @@ class Topmenu
 	        $result['weltpixel_mm_column_width'] = $categoryMenuData['weltpixel_mm_column_width'];
         }
 
+        $result['weltpixel_mm_top_block_type'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_top_block_type'])) {
+            $result['weltpixel_mm_top_block_type'] = $categoryMenuData['weltpixel_mm_top_block_type'];
+        }
+
+        $result['weltpixel_mm_top_block_cms'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_top_block_cms'])) {
+            $result['weltpixel_mm_top_block_cms'] = $categoryMenuData['weltpixel_mm_top_block_cms'];
+        }
+
+        $result['weltpixel_mm_top_block'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_top_block'])) {
+            $result['weltpixel_mm_top_block'] = $categoryMenuData['weltpixel_mm_top_block'];
+        }
+
+        $result['weltpixel_mm_right_block_type'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_right_block_type'])) {
+            $result['weltpixel_mm_right_block_type'] = $categoryMenuData['weltpixel_mm_right_block_type'];
+        }
+
+        $result['weltpixel_mm_right_block_cms'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_right_block_cms'])) {
+            $result['weltpixel_mm_right_block_cms'] = $categoryMenuData['weltpixel_mm_right_block_cms'];
+        }
+
+        $result['weltpixel_mm_right_block'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_right_block'])) {
+            $result['weltpixel_mm_right_block'] = $categoryMenuData['weltpixel_mm_right_block'];
+        }
+
+        $result['weltpixel_mm_bottom_block_type'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_bottom_block_type'])) {
+            $result['weltpixel_mm_bottom_block_type'] = $categoryMenuData['weltpixel_mm_bottom_block_type'];
+        }
+
+        $result['weltpixel_mm_bottom_block_cms'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_bottom_block_cms'])) {
+            $result['weltpixel_mm_bottom_block_cms'] = $categoryMenuData['weltpixel_mm_bottom_block_cms'];
+        }
+
+        $result['weltpixel_mm_bottom_block'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_bottom_block'])) {
+            $result['weltpixel_mm_bottom_block'] = $categoryMenuData['weltpixel_mm_bottom_block'];
+        }
+
+        $result['weltpixel_mm_left_block_type'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_left_block_type'])) {
+            $result['weltpixel_mm_left_block_type'] = $categoryMenuData['weltpixel_mm_left_block_type'];
+        }
+
+        $result['weltpixel_mm_left_block_cms'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_left_block_cms'])) {
+            $result['weltpixel_mm_left_block_cms'] = $categoryMenuData['weltpixel_mm_left_block_cms'];
+        }
+
+        $result['weltpixel_mm_left_block'] = '';
+        if (isset($categoryMenuData['weltpixel_mm_left_block'])) {
+            $result['weltpixel_mm_left_block'] = $categoryMenuData['weltpixel_mm_left_block'];
+        }
+
+        $result['weltpixel_mm_mob_hide_allcat'] = 0;
+        if (isset($categoryMenuData['weltpixel_mm_mob_hide_allcat'])) {
+            $result['weltpixel_mm_mob_hide_allcat'] = $categoryMenuData['weltpixel_mm_mob_hide_allcat'];
+        }
+
         return $result;
     }
 
@@ -211,6 +290,19 @@ class Topmenu
 		        'weltpixel_mm_display_mode',
 		        'weltpixel_mm_columns_number',
 		        'weltpixel_mm_column_width',
+		        'weltpixel_mm_top_block_type',
+		        'weltpixel_mm_top_block_cms',
+		        'weltpixel_mm_top_block',
+		        'weltpixel_mm_right_block',
+                'weltpixel_mm_right_block_type',
+                'weltpixel_mm_right_block_cms',
+                'weltpixel_mm_bottom_block_type',
+                'weltpixel_mm_bottom_block_cms',
+		        'weltpixel_mm_bottom_block',
+                'weltpixel_mm_left_block_type',
+                'weltpixel_mm_left_block_cms',
+		        'weltpixel_mm_left_block',
+		        'weltpixel_mm_mob_hide_allcat',
             )
         );
         $collection->addFieldToFilter('path', ['like' => '1/' . $rootId . '/%']); //load only from store root

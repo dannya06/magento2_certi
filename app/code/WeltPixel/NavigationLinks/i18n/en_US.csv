@@ -10,6 +10,8 @@ Boxed,Boxed
 "Menu display mode for each level 1 category: Full Width / Sectioned / Boxed / Default Magento","Menu display mode for each level 1 category: Full Width / Sectioned / Boxed / Default Magento"
 "Number of columns for each category menu","Number of columns for each category menu"
 "Width of the columns","Width of the columns"
+"Add CMS blocks or custom HTML to categories - Top / Left / Right / Bottom","Add CMS blocks or custom HTML to categories - Top / Left / Right / Bottom"
+"Control visibility for mobile Link “ALL [category name]” at category level","Control visibility for mobile Link “ALL [category name]” at category level"
 "Go to Products > Categories (any) > WeltPixel Options","Go to Products > Categories (any) > WeltPixel Options"
 "Custom Link - set a custom link for any category in the menu","Custom Link - set a custom link for any category in the menu"
 "Open in new tab - opens the custom link/category page in new tab","Open in new tab - opens the custom link/category page in new tab"

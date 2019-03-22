@@ -42,6 +42,10 @@ class AttributeCollection implements ArrayInterface
 	public function toOptionArray()
 	{
 		$arr = [];
+        $arr[] = [
+            'value' => false,
+            'label' => __('-- Please Select Attribute --')
+        ];
 		$entityType = $this->eavTypeFactory->create()->loadByCode('catalog_product');
 		$attributesCollection = $this->_attributeFactory->create()->getCollection();
 		$attributesCollection

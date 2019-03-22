@@ -31,6 +31,17 @@
 			    <font_size>12px</font_size>
 			    <height>30px</height>
 			    <width>250px</width>
+                <background_v2>#191919</background_v2>
+                <background_opacity>0.95</background_opacity>
+                <background_input>#222222</background_input>
+                <main_elements_color>#F8F8F8</main_elements_color>
+                <display_magnifier>1</display_magnifier>
+                <magnifier_background_color>#000000</magnifier_background_color>
+                <input_borders>0</input_borders>
+                <input_font_size>18</input_font_size>
+                <border_widthv2>3</border_widthv2>
+                <placeholder_text>Type at least 3 characters to search</placeholder_text>
+                <customHtml>&lt;p class=&quot;search-description&quot;&gt; &lt;span&gt;# Type at least 3 character to search&lt;/span&gt; &lt;span&gt;# Hit enter to search&lt;/span&gt; &lt;/p&gt; &lt;style&gt; .search-description{ padding: 10px 20px; } .search-description span{ color: #F8F8F8; margin-right: 20px; } &lt;/style&gt;</customHtml>
             </search_options>
             <middle_header>
 	            <width>1400px</width>

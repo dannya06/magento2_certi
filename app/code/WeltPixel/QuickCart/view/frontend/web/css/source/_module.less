@@ -74,9 +74,20 @@
                     margin: 0;
                     z-index: -1;
                     position: absolute;
-                    overflow-y: scroll;
+                    overflow-y: auto;
                     width: 100%;
-
+                    &::-webkit-scrollbar-track{
+                        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+                        background-color: #F5F5F5;
+                    }
+                    &::-webkit-scrollbar,
+                    &::-moz-scrollbar{
+                        width: 6px;
+                        background-color: #F5F5F5;
+                    }
+                    &::-webkit-scrollbar-thumb{
+                        background-color: #c2c2c2;
+                    }
                     .quickcart-items {
 
                         .quickcart-product-item {

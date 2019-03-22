@@ -17,13 +17,9 @@
                 <show_compare>0</show_compare>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
-                <nav>1</nav>
-                <dots>1</dots>
-                <center>0</center>
-                <items>5</items>
+                <slide_by>1</slide_by>
                 <loop>1</loop>
                 <margin>0</margin>
-                <stagePadding>0</stagePadding>
                 <lazyLoad>1</lazyLoad>
                 <autoplay>1</autoplay>
                 <autoplayTimeout>3000</autoplayTimeout>
@@ -52,19 +48,16 @@
             <bestsell_products>
                 <status>1</status>
                 <title></title>
+                <period>beginning</period>
                 <show_price>1</show_price>
                 <show_addto>0</show_addto>
                 <show_wishlist>0</show_wishlist>
                 <show_compare>0</show_compare>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
-                <nav>1</nav>
-                <dots>1</dots>
-                <center>0</center>
-                <items>5</items>
+                <slide_by>1</slide_by>
                 <loop>1</loop>
                 <margin>0</margin>
-                <stagePadding>0</stagePadding>
                 <lazyLoad>1</lazyLoad>
                 <autoplay>1</autoplay>
                 <autoplayTimeout>3000</autoplayTimeout>
@@ -99,13 +92,9 @@
                 <show_compare>0</show_compare>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
-                <nav>1</nav>
-                <dots>1</dots>
-                <center>0</center>
-                <items>5</items>
+                <slide_by>1</slide_by>
                 <loop>1</loop>
                 <margin>0</margin>
-                <stagePadding>0</stagePadding>
                 <lazyLoad>1</lazyLoad>
                 <autoplay>1</autoplay>
                 <autoplayTimeout>3000</autoplayTimeout>
@@ -140,13 +129,9 @@
                 <show_compare>0</show_compare>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
-                <nav>1</nav>
-                <dots>1</dots>
-                <center>0</center>
-                <items>5</items>
+                <slide_by>1</slide_by>
                 <loop>1</loop>
                 <margin>0</margin>
-                <stagePadding>0</stagePadding>
                 <lazyLoad>1</lazyLoad>
                 <autoplay>1</autoplay>
                 <autoplayTimeout>3000</autoplayTimeout>
@@ -176,13 +161,10 @@
                 <status>1</status>
                 <title>Related products</title>
                 <max_items>15</max_items>
-                <nav>1</nav>
-                <dots>1</dots>
-                <center>0</center>
-                <items>5</items>
+                <slide_by>1</slide_by>
                 <loop>1</loop>
                 <margin>0</margin>
-                <stagePadding>0</stagePadding>
+                <slide_by>1</slide_by>
                 <lazyLoad>1</lazyLoad>
                 <autoplay>1</autoplay>
                 <autoplayTimeout>3000</autoplayTimeout>
@@ -212,13 +194,10 @@
                 <status>1</status>
                 <title>Upsell products</title>
                 <max_items>15</max_items>
-                <nav>1</nav>
-                <dots>1</dots>
-                <center>0</center>
-                <items>5</items>
+                <slide_by>1</slide_by>
                 <loop>1</loop>
                 <margin>0</margin>
-                <stagePadding>0</stagePadding>
+                <slide_by>1</slide_by>
                 <lazyLoad>1</lazyLoad>
                 <autoplay>1</autoplay>
                 <autoplayTimeout>3000</autoplayTimeout>
@@ -248,13 +227,10 @@
                 <status>1</status>
                 <title>Cross sell products</title>
                 <max_items>15</max_items>
-                <nav>1</nav>
-                <dots>1</dots>
-                <center>0</center>
-                <items>5</items>
+                <slide_by>1</slide_by>
                 <loop>1</loop>
                 <margin>0</margin>
-                <stagePadding>0</stagePadding>
+                <slide_by>1</slide_by>
                 <lazyLoad>1</lazyLoad>
                 <autoplay>1</autoplay>
                 <autoplayTimeout>3000</autoplayTimeout>
@@ -289,13 +265,9 @@
                 <show_compare>0</show_compare>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
-                <nav>1</nav>
-                <dots>1</dots>
-                <center>0</center>
-                <items>5</items>
+                <slide_by>1</slide_by>
                 <loop>1</loop>
                 <margin>0</margin>
-                <stagePadding>0</stagePadding>
                 <lazyLoad>1</lazyLoad>
                 <autoplay>1</autoplay>
                 <autoplayTimeout>3000</autoplayTimeout>
@@ -327,6 +299,7 @@
                 <enable_google_tracking>0</enable_google_tracking>
                 <enable_hover_image>0</enable_hover_image>
                 <mobile_breakpoint>778</mobile_breakpoint>
+                <default_loader>1</default_loader>
             </general>
         </weltpixel_owl_slider_config>
     </default>

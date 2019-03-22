@@ -43,7 +43,7 @@ $ratingSummary = ($summaryModel->getRatingSummary()) ? $summaryModel->getRatingS
         "gtin13": "<?php echo $block->stripTags($_gtin); ?>",
 <?php endif; ?>
 <?php if ($reviewCount) : ?>
-        <?php if ($reviewsFormat != 0) : // agregate ratings?>
+        <?php if ($reviewsFormat != 0) : ?>
         "aggregateRating": {
             "@type": "AggregateRating",
             "bestRating": 5,
@@ -52,7 +52,7 @@ $ratingSummary = ($summaryModel->getRatingSummary()) ? $summaryModel->getRatingS
             "reviewCount": "<?php echo $reviewCount ?>"
         },
         <?php endif ;?>
-        <?php if($reviewsFormat == 2) : $reviews = $block->getReviews(); //reviews?>
+        <?php if($reviewsFormat == 2) : $reviews = $block->getReviews(); ?>
             <?php if ($reviews):  $countReviews = count($reviews);?>
                 "review": [
                     <?php $ctr = 1; foreach ($reviews as $key => $reviewItem) : ?>
@@ -78,6 +78,7 @@ $ratingSummary = ($summaryModel->getRatingSummary()) ? $summaryModel->getRatingS
         "offers": {
             "@type": "Offer",
             "priceCurrency": "<?php echo $block->getCurrencyCode() ?>",
+            "url": "<?php echo $block->stripTags($block->getCurrentUrl($_product)); ?>",
 <?php if ($_product->isAvailable()): ?>
             "availability": "https://schema.org/InStock",
  <?php else : ?>

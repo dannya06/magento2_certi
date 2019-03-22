@@ -5004,7 +5004,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-beaker i-alt""></i></a>
         </div>
         <h3>Powerful Performance</h3>
-        <p>Cleo includes tons of optimized code that are completely customizable and deliver unmatched fast performance.</p>
+        <p>Pearl includes tons of optimized code that are completely customizable and deliver unmatched fast performance.</p>
     </div>
 </div>
 
@@ -5015,8 +5015,8 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-stack i-alt""></i></a>
         </div>
-        <h3>Premium Sliders Included</h3>
-        <p>Cleo included 20+ custom designed Slider Pages with Premium Sliders like Layer, Revolution, Swiper &amp; others.</p>
+        <h3>Premium Extensions</h3>
+        <p>Pearl included 15+ Premium Extensions like Google Tag Manager, Lazy Loading, Banner Slider OWL Carousel and more.  </p>
     </div>
 </div>
 
@@ -5026,7 +5026,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-tint i-alt""></i></a>
         </div>
         <h3>Unlimited Color Options</h3>
-        <p>Change the color scheme of the Theme in a flash just by changing the 6-digit HEX code in the colors.php file.</p>
+        <p>Change the color scheme of the Theme in a flash just by changing the 6-digit HEX code in admin options.</p>
     </div>
 </div>
 
@@ -5047,8 +5047,8 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-ok""></i></a>
         </div>
-        <h3>12+ Header Designs</h3>
-        <p>We have included 12+ Header + Menu Designs for your convenience so that you can match your style.</p>
+        <h3>4 Header Designs<</h3>
+        <p>We have included 4 Header versions + Menu Designs for your convenience so that you can match your style.</p>
     </div>
 </div>
 
@@ -5058,7 +5058,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-thumbs-up""></i></a>
         </div>
         <h3>Awesome Mega menu</h3>
-        <p>Completely Customizable 2 Columns, 3 Columns, 4 Columns &amp; 5 Columns Mega Menus are available with Cleo.</p>
+        <p>Completely Customizable 2 Columns, 3 Columns, 4 Columns &amp; 5 Columns Mega Menus are available with Pearl.</p>
     </div>
 </div>
 
@@ -5067,8 +5067,8 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-magnet""></i></a>
         </div>
-        <h3>Attractive Sticky Menu</h3>
-        <p>Smooth &amp; Stylish Sticky Menu is what will make your Website differentiate with others.</p>
+        <h3>Attractive Sticky Header</h3>
+        <p>Smooth &amp; Stylish Sticky Header is what will make your Website differentiate with others.</p>
     </div>
 </div>
 
@@ -5080,7 +5080,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-share i-alt""></i></a>
         </div>
         <h3>Socially Strong</h3>
-        <p>Get ready to make your presence felt socially with some awesome included social features with Cleo.</p>
+        <p>Get ready to make your presence felt socially with some awesome included social features with Pearl.</p>
     </div>
 </div>
 
@@ -5090,7 +5090,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-search3 i-alt""></i></a>
         </div>
         <h3>SEO Optimized</h3>
-        <p>Cleo uses the best SEO optimization practises in order to give your website a Good Rank in Search Engines.</p>
+        <p>Pearl uses the best SEO optimization practises like Rich Snippets & Cards, Page Title Overwrite, Google XML Sitemap in order to give your website a Good Rank in Search Engines.</p>
     </div>
 </div>
 
@@ -5112,7 +5112,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-play""></i></a>
         </div>
         <h3>HTML5 Video</h3>
-        <p>Cleo provides support for Native HTML5 Videos that can be added to a Full Width Background.</p>
+        <p>Pearl provides support for Native HTML5 Videos that can be added to a Full Width Background.</p>
     </div>
 </div>
 
@@ -5164,7 +5164,7 @@ requirejs(['jquery' ],
             <a href=""#""><img src=""http://www.weltpixel.com/features/images/icons/features/performance.png"" alt=""Powerful Performance""></a>
         </div>
         <h3>Powerful Performance</h3>
-        <p>Cleo includes tons of optimized code that are completely customizable and deliver unmatched fast performance.</p>
+        <p>Pearl includes tons of optimized code that are completely customizable and deliver unmatched fast performance.</p>
     </div>
 </div>
 
@@ -5232,7 +5232,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-beaker i-alt""></i></a>
         </div>
         <h3>Powerful Performance</h3>
-        <p>Cleo includes tons of optimized code that are completely customizable and deliver unmatched fast performance.</p>
+        <p>Pearl includes tons of optimized code that are completely customizable and deliver unmatched fast performance.</p>
     </div>
 </div>
 
@@ -5243,8 +5243,8 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-stack i-alt""></i></a>
         </div>
-        <h3>Premium Sliders</h3>
-        <p>Cleo included 20+ custom designed Slider Pages with Premium Sliders like Layer, Revolution, Swiper &amp; others.</p>
+        <h3>Premium Extensions</h3>
+        <p>Pearl included 15+ Premium Extensions like Google Tag Manager, Lazy Loading, Banner Slider OWL Carousel and more.</p>
     </div>
 </div>
 
@@ -5254,7 +5254,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-tint i-alt""></i></a>
         </div>
         <h3>Unlimited Colors</h3>
-        <p>Change the color scheme of the Theme in a flash just by changing the 6-digit HEX code in the colors.php file.</p>
+        <p>Change the color scheme of the Theme in a flash just by changing the 6-digit HEX code in admin options.</p>
     </div>
 </div>
 
@@ -5275,8 +5275,8 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-ok""></i></a>
         </div>
-        <h3>12+ Header Designs</h3>
-        <p>We have included 12+ Header + Menu Designs for your convenience so that you can match your style.</p>
+        <h3>4 Header Designs</h3>
+        <p>We have included 4 Header versions + Menu Designs for your convenience so that you can match your style.</p>
     </div>
 </div>
 
@@ -5286,7 +5286,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-thumbs-up""></i></a>
         </div>
         <h3>Mega Menu</h3>
-        <p>Completely Customizable 2 Columns, 3 Columns, 4 Columns &amp; 5 Columns Mega Menus are available with Cleo.</p>
+        <p>Completely Customizable 2 Columns, 3 Columns, 4 Columns &amp; 5 Columns Mega Menus are available with Pearl</p>
     </div>
 </div>
 
@@ -5295,8 +5295,8 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-magnet""></i></a>
         </div>
-        <h3>Sticky Menu</h3>
-        <p>Smooth &amp; Stylish Sticky Menu is what will make your Website differentiate with others.</p>
+        <h3>Sticky Header</h3>
+        <p>Smooth &amp; Stylish Sticky Header is what will make your Website differentiate with others.</p>
     </div>
 </div>
 
@@ -5308,7 +5308,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-share i-alt""></i></a>
         </div>
         <h3>Socially Strong</h3>
-        <p>Get ready to make your presence felt socially with some awesome included social features with Cleo.</p>
+        <p>Get ready to make your presence felt socially with some awesome included social features with Pearl.</p>
     </div>
 </div>
 
@@ -5318,7 +5318,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-search3 i-alt""></i></a>
         </div>
         <h3>SEO Optimized</h3>
-        <p>Cleo uses the best SEO optimization practises in order to give your website a Good Rank in Search Engines.</p>
+        <p>Pearl uses the best SEO optimization practises like Rich Snippets & Cards, Page Title Overwrite, Google XML Sitemap in order to give your website a Good Rank in Search Engines.</p>
     </div>
 </div>
 
@@ -5340,7 +5340,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-play""></i></a>
         </div>
         <h3>HTML5 Video</h3>
-        <p>Cleo provides support for Native HTML5 Videos that can be added to a Full Width Background.</p>
+        <p>Pearl provides support for Native HTML5 Videos that can be added to a Full Width Background.</p>
     </div>
 </div>
 
@@ -5396,7 +5396,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-beaker i-alt""></i></a>
         </div>
         <h3>Powerful Performance</h3>
-        <p>Cleo includes tons of optimized code that are completely customizable and deliver unmatched fast performance.</p>
+        <p>Pearl includes tons of optimized code that are completely customizable and deliver unmatched fast performance.</p>
     </div>
 </div>
 
@@ -5418,7 +5418,7 @@ requirejs(['jquery' ],
             <a href=""#""><i class=""icon-search3 i-alt""></i></a>
         </div>
         <h3>SEO Optimized</h3>
-        <p>Cleo uses the best SEO optimization practises to give your website a Good Rank in Search Engines.</p>
+        <p>Pearl uses the best SEO optimization practises like Rich Snippets & Cards, Page Title Overwrite, Google XML Sitemap in order to give your website a Good Rank in Search Engines.</p>
     </div>
 </div>
 
@@ -5439,7 +5439,7 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-crop""></i></a>
         </div>
-        <h3>Premium Sliders Included<span class=""subtitle"">About 20+ Dedicated Slider Templates</span></h3>
+        <h3>Premium Extensions<span class=""subtitle"">About 15+ Dedicated Premium Extensions</span></h3>
     </div>
 </div>
 
@@ -5468,8 +5468,8 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-ok""></i></a>
         </div>
-        <h3>12+ Header Designs</h3>
-        <p>We have included 12+ Header + Menu Designs for your convenience so that you can match your style.</p>
+        <h3>4 Header Designs</h3>
+        <p>We have included 4 Header versions + Menu Designs for your convenience so that you can match your style..</p>
     </div>
 </div>
 
@@ -5488,8 +5488,8 @@ requirejs(['jquery' ],
         <div class=""fbox-icon"">
             <a href=""#""><i class=""icon-magnet""></i></a>
         </div>
-        <h3>Attractive Sticky Menu</h3>
-        <p>Smooth &amp; Stylish Sticky Menu is what will make your Website differentiate with others.</p>
+        <h3>Attractive Sticky Header</h3>
+        <p>Smooth &amp; Stylish Sticky Header is what will make your Website differentiate with others.</p>
     </div>
 </div>
 

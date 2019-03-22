@@ -1,0 +1,119 @@
+<?php
+$_order = $block->getOrder();
+$_store = $this->getStoreData();
+
+$markup = '';
+if (is_object($_order) && is_object($_store)) {
+
+    $acceptedOfferHtml = '"acceptedOffer": [';
+    $_items = $_order->getAllItems();
+    $itemsCount = count($_items);
+    $ctr = 1;
+    foreach ($_items as $_item) {
+
+        if ($_item->getParentItem()) {
+            continue;
+        }
+        $_product = $_item->getProduct();
+        $_productUrl = $_product->getProductUrl();
+        $_productImgUrl = $this->getProductImgUrl($_product);
+        $acceptedOfferHtml .= '{
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Product",
+                        "name": "' . $_item->getName() . '",
+                        "sku": "' . $_item->getSku() . '",
+                        "url": "' . $_productUrl . '",
+                        "image": "' . $_productImgUrl . '"
+                    },
+                    "price": "' . $_item->getPrice() . '",
+                    "priceCurrency": "' . $_store->getCurrentCurrencyCode() . '",
+                    "eligibleQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "' . $_item->getQtyOrdered() . '"
+                    }
+                },';
+        $ctr++;
+    }
+    $acceptedOfferHtml = rtrim($acceptedOfferHtml, ',');
+    $acceptedOfferHtml .= ']';
+    $markup .= '<script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "Order",
+                  "merchant": {
+                    "@type": "Organization",
+                    "name": "' . $_store->getFrontendName() . '"
+                  },
+                  "orderNumber": "' . $_order->getIncrementId() . '",
+                  "orderStatus": "http://schema.org/OrderProcessing",
+                  "priceCurrency": "' . $_store->getCurrentCurrencyCode() . '",
+                  "price": "' . $_order->getGrandTotal() . '",
+                  ' . $acceptedOfferHtml . ',
+                  "url": "' . $this->getUrl('sales/order/view', array('order_id' => $_order->getId())) . '",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "url": "' . $this->getUrl('sales/order/view', array('order_id' => $_order->getId())) . '"
+                  }
+                }
+                </script>';
+} else {
+    $markup = '
+        <pre>
+                &lt;<span>script type="application/ld+json"</span><span>></span>
+                        "@context": "http://schema.org",
+                        "@type": "Order",
+                        "merchant": {
+                            "@type": "Organization",
+                            "name": "Amazon.com"
+                        },
+                        "orderNumber": "123-4567890-1234567",
+                        "orderStatus": "http://schema.org/OrderProcessing",
+                        "priceCurrency": "USD",
+                        "price": "29.99",
+                        "priceSpecification": {
+                            "@type": "PriceSpecification",
+                            "validFrom": "2027-12-07T23:30:00-08:00"
+                        },
+                        "acceptedOffer": [{
+                            "@type": "Offer",
+                            "itemOffered": {
+                                "@type": "Product",
+                                "name": "Test Product 1",
+                                "sku": "test_1",
+                                "url": "http://www.example.com/Test_Product_1",
+                                "image": "http://www.example.com/Test_Product_1/image.jpg"
+                            },
+                            "price": "19.99",
+                            "priceCurrency": "USD",
+                            "eligibleQuantity": {
+                                "@type": "QuantitativeValue",
+                                "value": "1"
+                                }
+                            },
+                            "itemOffered": {
+                                "@type": "Product",
+                                "name": "Test Product 2",
+                                "sku": "test_1",
+                                "url": "http://www.example.com/Test_Product_2",
+                                "image": "http://www.example.com/Test_Product_2/image.jpg"
+                            },
+                            "price": "99.99",
+                            "priceCurrency": "USD",
+                            "eligibleQuantity": {
+                                "@type": "QuantitativeValue",
+                                "value": "2"
+                            }
+                        }],
+                        "url": "https://www.example.com/orderID=123-4567890-1234567",
+                            "potentialAction": {
+                            "@type": "ViewAction",
+                                "url": "https://www.example.com/orderID=123-4567890-1234567"
+                            }
+                        }
+                    &lt;<span>/script</span>>
+            </pre>
+    ';
+}
+?>
+<?= $markup ?>

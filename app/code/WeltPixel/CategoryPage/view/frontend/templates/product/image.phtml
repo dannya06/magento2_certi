@@ -1,5 +1,12 @@
 <?php /** @var $block \Magento\Catalog\Block\Product\Image */ ?>
-<?php $lazyLoadHelper = $this->helper('WeltPixel\LazyLoading\Helper\Data');  ?>
+<?php $lazyLoadHelper = $this->helper('WeltPixel\LazyLoading\Helper\Data');
+$isRequestAjax = $lazyLoadHelper->isRequestAjax();
+$lazyLodImgSrc = $lazyLoadHelper->getImageLoader();
+$lazyLoadImgDataOriginal = $block->getImageUrl();
+if ($isRequestAjax) {
+    $lazyLodImgSrc = $lazyLoadImgDataOriginal;
+}
+?>
 
 <?php
 $lazyLoadClass = '';
@@ -13,8 +20,8 @@ if ($block->getLazyLoad()) {
     <?php /* @escapeNotVerified */ echo $block->getCustomAttributes(); ?>
     <?php if (!$block->getLazyLoad()): ?>
         <?php if ($lazyLoadHelper->isEnabled() && !$block->getOwlcarousel()) : ?>
-            src="<?php /* @escapeNotVerified */ echo $lazyLoadHelper->getImageLoader(); ?>"
-            data-original="<?php /* @escapeNotVerified */ echo $block->getImageUrl(); ?>"
+            src="<?php /* @escapeNotVerified */ echo $lazyLodImgSrc; ?>"
+            data-original="<?php /* @escapeNotVerified */ echo $lazyLoadImgDataOriginal; ?>"
         <?php else:  ?>
             src="<?php /* @escapeNotVerified */ echo $block->getImageUrl(); ?>"
         <?php endif; ?>

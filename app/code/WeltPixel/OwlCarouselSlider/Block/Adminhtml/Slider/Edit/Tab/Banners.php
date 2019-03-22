@@ -218,6 +218,7 @@ class Banners extends \Magento\Backend\Block\Widget\Grid\Extended
                 'header' => __('Sort Order'),
                 'name'   => 'sort_order',
                 'index'  => 'sort_order',
+                'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Slider\Edit\Tab\Helper\Renderer\SortOrder',
                 'width'  => '50px',
                 'editable' => true,
             ]
@@ -255,11 +256,31 @@ class Banners extends \Magento\Backend\Block\Widget\Grid\Extended
             return [];
         }
         $bannerCollection = $this->_bannerCollectionFactory->create();
-        $bannerCollection->addFieldToFilter('slider_id', $sliderId);
+        $bannerCollection->addFieldToFilter('slider_id', array('like' => '%' . $sliderId . '%'));
 
         $bannerIds = [];
-        foreach ($bannerCollection as $banner) {
-            $bannerIds[$banner->getId()] = ['sort_order' => $banner->getSortOrder()];
+        foreach ($bannerCollection as $key => $banner) {
+            $sliderIds = explode(',', $banner->getSliderId());
+            if (!in_array($sliderId, $sliderIds)) {
+                $bannerCollection->removeItemByKey($key);
+                continue;
+            }
+
+            $sortOrder = @unserialize($banner->getSortOrder());
+            if ($sortOrder === false) {
+                // make it array
+                if ($banner->getSortOrder() != 0) {
+                    $sortOrder = [
+                        $banner->getSliderId() => $banner->getSortOrder()
+                    ];
+                }
+            }
+
+            if (isset($sortOrder[$sliderId])) {
+                $bannerIds[$banner->getId()] = ['sort_order' => $sortOrder[$sliderId]];
+            } else {
+                $bannerIds[$banner->getId()] = ['sort_order' => 0];
+            }
         }
 
         return $bannerIds;

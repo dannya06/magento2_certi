@@ -13,7 +13,7 @@
                 id="WeltPixel_NavigationLinks::MegaMenu"
                 title="Mega Menu Settings"
                 module="WeltPixel_NavigationLinks"
-                action="weltpixelmegamenu/megamenu"
+                action="adminhtml/system_config/edit/section/weltpixel_megamenu/"
                 sortOrder="10"
                 parent="WeltPixel_NavigationLinks::MegaMenu_Label"
                 resource="WeltPixel_NavigationLinks::Megamenu"

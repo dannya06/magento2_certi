@@ -7,7 +7,7 @@
         <parameters>
             <parameter name="icon" xsi:type="select" source_model="WeltPixel\DesignElements\Model\Config\Source\Icons" visible="true" sort_order="10" required="true">
                 <label translate="true">Select Icon</label>
-                <description><![CDATA[Icons -> <a target="_blank" href="http://cleo.weltpixel.com/fashion_v2/icons">http://cleo.weltpixel.com/fashion_v2/icons</a>]]></description>
+                <description><![CDATA[Icons -> <a target="_blank" href="http://pearl.weltpixel.com/weltpixel-icons">http://pearl.weltpixel.com/weltpixel-icons</a>]]></description>
             </parameter>
             <parameter name="icon_size" xsi:type="text"  visible="true" sort_order="20" >
                 <label translate="true">Icon Size</label>
@@ -35,11 +35,11 @@
         <parameters>
             <parameter name="style" xsi:type="select" source_model="WeltPixel\DesignElements\Model\Config\Source\Dividers" visible="true" sort_order="10" required="true">
                 <label translate="true">Select Style</label>
-                <description><![CDATA[Dividers -> <a target="_blank" href="http://cleo.weltpixel.com/fashion_v2/dividers">http://cleo.weltpixel.com/fashion_v2/dividers</a>]]></description>
+                <description><![CDATA[Dividers -> <a target="_blank" href="http://pearl.weltpixel.com/weltpixel-dividers">http://pearl.weltpixel.com/weltpixel-dividers</a>]]></description>
             </parameter>
             <parameter name="icon" xsi:type="select" source_model="WeltPixel\DesignElements\Model\Config\Source\Icons" visible="true" sort_order="10" required="true">
                 <label translate="true">Select Icon</label>
-                <description><![CDATA[Icons -> <a target="_blank" href="http://cleo.weltpixel.com/fashion_v2/icons">http://cleo.weltpixel.com/fashion_v2/icons</a>]]></description>
+                <description><![CDATA[Icons -> <a target="_blank" href="http://pearl.weltpixel.com/weltpixel-icons">http://pearl.weltpixel.com/weltpixel-icons</a>]]></description>
             </parameter>
             <parameter name="custom_class" xsi:type="text"  visible="true" sort_order="40" >
                 <label translate="true">Custom class</label>
@@ -58,7 +58,7 @@
         <parameters>
             <parameter name="style" xsi:type="select" source_model="WeltPixel\DesignElements\Model\Config\Source\Headings" visible="true" sort_order="10" required="true">
                 <label translate="true">Select Style</label>
-                <description><![CDATA[Headings -> <a target="_blank" href="http://cleo.weltpixel.com/fashion_v2/headings">http://cleo.weltpixel.com/fashion_v2/headings</a>]]></description>
+                <description><![CDATA[Headings -> <a target="_blank" href="http://pearl.weltpixel.com/weltpixel-headings">http://pearl.weltpixel.com/weltpixel-headings</a>]]></description>
             </parameter>
             <parameter name="title" xsi:type="text"  visible="true" sort_order="20" required="true">
                 <label translate="true">Title</label>
@@ -85,7 +85,7 @@
         <parameters>
             <parameter name="style" xsi:type="select" source_model="WeltPixel\DesignElements\Model\Config\Source\Brands" visible="true" sort_order="10" required="true">
                 <label translate="true">Select Style</label>
-                <description><![CDATA[Brands -> <a target="_blank" href="http://cleo.weltpixel.com/fashion_v2/brands">http://cleo.weltpixel.com/fashion_v2/brands</a>]]></description>
+                <description><![CDATA[Brands -> <a target="_blank" href="http://pearl.weltpixel.com/brands-widget">http://pearl.weltpixel.com/brands-widget</a>]]></description>
             </parameter>
             <parameter name="block_id" xsi:type="block" visible="true" required="true" sort_order="20">
                 <label translate="true">Block</label>
@@ -106,7 +106,7 @@
         <parameters>
             <parameter name="style" xsi:type="select" source_model="WeltPixel\DesignElements\Model\Config\Source\Toggles" visible="true" sort_order="10" required="true">
                 <label translate="true">Select Style</label>
-                <description><![CDATA[Toggles -> <a target="_blank" href="http://cleo.weltpixel.com/fashion_v2/toggles-and-accordions">http://cleo.weltpixel.com/fashion_v2/toggles-and-accordions</a>]]></description>
+                <description><![CDATA[Toggles -> <a target="_blank" href="http://pearl.weltpixel.com/weltpixel-accordion">http://pearl.weltpixel.com/weltpixel-accordion</a>]]></description>
             </parameter>
 
             <parameter name="bkg_color" xsi:type="block"  visible="true" sort_order="11" >
@@ -156,7 +156,7 @@
         <parameters>
             <parameter name="style" xsi:type="select" source_model="WeltPixel\DesignElements\Model\Config\Source\Accordions" visible="true" sort_order="10" required="true">
                 <label translate="true">Select Style</label>
-                <description><![CDATA[Accordions -> <a target="_blank" href="http://cleo.weltpixel.com/fashion_v2/toggles-and-accordions">http://cleo.weltpixel.com/fashion_v2/toggles-and-accordions</a>]]></description>
+                <description><![CDATA[Accordions -> <a target="_blank" href="http://pearl.weltpixel.com/weltpixel-accordion">http://pearl.weltpixel.com/weltpixel-accordion</a>]]></description>
             </parameter>
 
             <parameter name="bkg_color" xsi:type="block"  visible="true" sort_order="11" >

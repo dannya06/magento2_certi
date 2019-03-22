@@ -35,7 +35,9 @@ class Initialize extends \Magento\Framework\View\Element\Template
             'baseUrl' => $this->getBaseUrl(),
             'closeSeconds' => $this->_helper->getCloseSeconds(),
             'showMiniCart' => $this->_helper->getScrollAndOpenMiniCart(),
-            'showShoppingCheckoutButtons' => $this->_helper->getShoppingCheckoutButtons()
+            'showShoppingCheckoutButtons' => $this->_helper->getShoppingCheckoutButtons(),
+            'popupMainClass' => $this->getPopupMainClass(),
+            'closeOnBgClick' => $this->_helper->getCloseOnBgClick()
         ];
     }
 
@@ -48,5 +50,21 @@ class Initialize extends \Magento\Framework\View\Element\Template
     public function getBaseUrl()
     {
         return $this->_storeManager->getStore()->getBaseUrl();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopupMainClass() {
+        $mainClass = 'mfp-popup-default';
+        $quickViewType = $this->_helper->getQuickViewType();
+
+        if ($quickViewType == \WeltPixel\Quickview\Model\Config\Source\QuickviewType::TYPE_RIGHT_SLIDE) {
+            $mainClass = 'mfp-popup-fadeInRight';
+        }
+        if ($quickViewType == \WeltPixel\Quickview\Model\Config\Source\QuickviewType::TYPE_LEFT_SLIDE) {
+            $mainClass = 'mfp-popup-fadeInLeft';
+        }
+        return $mainClass;
     }
 }

@@ -2,4 +2,5 @@
     <type name="Magento\Catalog\Block\Product\Widget\Html\Pager">
         <plugin name="weltpixel_ajaxcatalog_pager" type="WeltPixel\AjaxInfiniteScroll\Plugin\Html\Pager" sortOrder="1" disabled="false"/>
     </type>
+    <preference for="Magento\Catalog\Block\Product\ListProduct" type="WeltPixel\AjaxInfiniteScroll\Block\Product\ListProduct"/>
 </config>

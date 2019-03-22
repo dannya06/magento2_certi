@@ -49,19 +49,26 @@ class GenerateCssCommand extends Command
     protected $themePath;
 
     /**
+     * @var \WeltPixel\Backend\Helper\Utility
+     */
+    protected $utilityHelper;
+
+    /**
      * GenerateCssCommand constructor.
      * @param \WeltPixel\Command\Model\GenerateCss $generateCss
      * @param ObjectManagerInterface $objectManager
      * @param StoreManagerInterface $storeManager
      * @param ScopeConfigInterface $scopeConfig
      * @param ThemeProviderInterface $themeProvider
+     * @param \WeltPixel\Backend\Helper\Utility $utilityHelper
      */
     public function __construct(
         \WeltPixel\Command\Model\GenerateCss $generateCss,
         ObjectManagerInterface $objectManager,
         StoreManagerInterface $storeManager,
         ScopeConfigInterface $scopeConfig,
-        ThemeProviderInterface $themeProvider
+        ThemeProviderInterface $themeProvider,
+        \WeltPixel\Backend\Helper\Utility $utilityHelper
     )
     {
         $this->generateCss = $generateCss;
@@ -69,6 +76,7 @@ class GenerateCssCommand extends Command
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
         $this->themeProvider = $themeProvider;
+        $this->utilityHelper = $utilityHelper;
         parent::__construct();
     }
 
@@ -102,10 +110,15 @@ class GenerateCssCommand extends Command
 
         $state = $this->objectManager->get('\\Magento\\Framework\\App\\State');
         $state->setAreaCode('frontend');
-        $output->writeln("Css generation started.");
 
-        $this->generateCss->processContent($this->themePath, $this->locale, $storeCode);
-        $output->writeln("Css generation ended.");
+        $isPearlTheme = $this->utilityHelper->isPearlThemeUsed($storeCode);
+        if ($isPearlTheme) {
+            $output->writeln("Css generation started.");
+            $this->generateCss->processContent($this->themePath, $this->locale, $storeCode);
+            $output->writeln("Css generation ended.");
+        } else {
+            $output->writeln("<error>It only works with pearl theme or it's subchilds.</error>");
+        }
     }
 
     /**

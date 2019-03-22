@@ -6,7 +6,8 @@ class BlockProductList
 {
     const XML_PATH_QUICKVIEW_ENABLED = 'weltpixel_quickview/general/enable_product_listing';
     const XML_PATH_QUICKVIEW_BUTTONSTYLE = 'weltpixel_quickview/general/button_style';
-    
+    const XML_PATH_QUICKVIEW_NOFOLLOW = 'weltpixel_quickview/seo/no_follow';
+
     
     /**
      * @var \Magento\Framework\UrlInterface 
@@ -36,12 +37,17 @@ class BlockProductList
         \Magento\Catalog\Model\Product $product
         )
     {
+        $noFollow = '';
         $result = $proceed($product);
         $isEnabled = $this->scopeConfig->getValue(self::XML_PATH_QUICKVIEW_ENABLED,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($isEnabled) {
             $buttonStyle =  'weltpixel_quickview_button_' . $this->scopeConfig->getValue(self::XML_PATH_QUICKVIEW_BUTTONSTYLE,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $noFollowEnabled = $this->scopeConfig->getValue(self::XML_PATH_QUICKVIEW_NOFOLLOW,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            if ($noFollowEnabled) {
+                $noFollow = ' rel="nofollow"';
+            }
             $productUrl = $this->urlInterface->getUrl('weltpixel_quickview/catalog_product/view', array('id' => $product->getId()));
-            return $result . '<a class="weltpixel-quickview '.$buttonStyle.'" data-quickview-url=' . $productUrl . ' href="javascript:void(0);"><span>' . __("Quickview") . '</span></a>';
+            return $result . '<a ' . $noFollow . ' class="weltpixel-quickview '.$buttonStyle.'" data-quickview-url="' . $productUrl . '" href="javascript:void(0);"><span>' . __("Quickview") . '</span></a>';
         }
         
         return $result;

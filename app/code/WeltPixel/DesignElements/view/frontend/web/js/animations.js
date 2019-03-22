@@ -9,14 +9,14 @@ define(['jquery', 'jquery/ui', 'jquery_important'], function ($) {
         },
 
         animations: function(){
+
             var $body = $('body'), $dataAnimateEl = $('[data-animate]');
             if( $dataAnimateEl.length > 0 ){
-                if( $body.hasClass('device-lg') || $body.hasClass('device-md') || $body.hasClass('device-sm') ){
+                if( $body.hasClass('device-lg') || $body.hasClass('device-md') || $body.hasClass('device-sm') || $body.hasClass('wp-device-xs') ){
                     $dataAnimateEl.each(function(){
                         var element = $(this),
                             animationDelay = element.attr('data-delay'),
                             animationDelayTime = 0;
-
                         if( element.parents('.fslider.no-thumbs-animate').length > 0 ) { return true; }
 
                         if( animationDelay ) { animationDelayTime = Number( animationDelay ) + 500; } else { animationDelayTime = 500; }

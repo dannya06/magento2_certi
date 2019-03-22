@@ -11,7 +11,7 @@ class ViewAssetSource extends ViewPreprocessorAbstract {
     public function afterGetContent(
         \Magento\Framework\View\Asset\Source $subject, $result)
     {
-       return $this->_getContent($result);
+       return $this->_getContent($subject, $result);
     }
 
 }

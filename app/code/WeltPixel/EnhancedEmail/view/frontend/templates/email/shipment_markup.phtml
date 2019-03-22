@@ -1,0 +1,214 @@
+<?php
+$_order = $block->getOrder();
+$_shipment = $block->getShipment();
+$_store = $this->getStoreData();
+$trackData = $this->getTrackingData();
+$origin = $this->getShippingOrigin();
+
+$markup = '';
+if (is_object($_order) && is_object($_store) && is_object($_shipment) && $trackData) {
+    $deliveryAddress = $_order->getShippingAddress();
+    $billingAddress = $_order->getBillingAddress();
+
+    $itemShipped = '"itemShipped": [';
+    $_items = $_order->getAllItems();
+    $itemsCount = count($_items);
+    $ctr = 1;
+    foreach ($_items as $_item) {
+
+        if ($_item->getParentItem()) {
+            continue;
+        }
+        $_product = $_item->getProduct();
+        $_productUrl = $_product->getProductUrl();
+        $_productImgUrl = $this->getProductImgUrl($_product);
+        $itemShipped .= '{
+                    "@type": "Product",
+                    "name": "' . $_item->getName() . '",
+                    "sku": "' . $_item->getSku() . '",
+                    "url": "' . $_productUrl . '",
+                    "image": "' . $_productImgUrl . '"
+                    },';
+        $ctr++;
+    }
+    $itemShipped = rtrim($itemShipped, ',');
+    $itemShipped .= ']';
+    $markup .= '<script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "ParcelDelivery",
+                  "deliveryAddress": {
+                    "@type": "PostalAddress",
+                    "name": "' . $deliveryAddress->getFirstname() . ' ' .$deliveryAddress->getLastname() . '",
+                    "streetAddress": "' . $deliveryAddress->getStreet()[0] . '",
+                    "addressLocality": "' . $deliveryAddress->getCity() . '",
+                    "addressRegion": "' . $deliveryAddress->getRegion(). '",
+                    "addressCountry": "' . $deliveryAddress->getCountryId() . '",
+                    "postalCode": "' . $deliveryAddress->getPostcode() . '"
+                  },
+                  "originAddress": {
+                    "@type": "PostalAddress",
+                    "name": "' . $origin['name'] . '",
+                    "streetAddress": "' . $origin['streetAddress'] . '",
+                    "addressLocality": "' . $origin['addressLocality'] . '",
+                    "addressRegion": "' . $origin['addressRegion']. '",
+                    "addressCountry": "' . $origin['addressCountry'] . '",
+                    "postalCode": "' . $origin['postalCode'] . '"
+                  },
+                  "expectedArrivalUntil": "' . $block->escapeHtml($this->getExpectedArrivalUntil()) . '",
+                  "carrier": {
+                    "@type": "Organization",
+                    "name": "' . $_order->getShippingDescription(). '"
+                  },
+                  ' . $itemShipped . ',
+                  "trackingNumber": "' . $block->escapeHtml($trackData->getTracking()) . '",
+                  "trackingUrl": "' . $block->escapeHtml($trackData->getUrl()) . '",
+                  "potentialAction": {
+                    "@type": "TrackAction",
+                    "url": "' . $block->escapeHtml($trackData->getUrl()) . '"
+                  },
+                  "partOfOrder": {
+                    "@type": "Order",
+                    "orderNumber": "' . $_order->getIncrementId() . '",
+                    "merchant": {
+                      "@type": "Organization",
+                      "name": "' . $_store->getName() . '"
+                    },
+                    "orderStatus": "http://schema.org/OrderProcessing"
+                  }
+                }</script>';
+}
+elseif(is_object($_order) && is_object($_store) && is_object($_shipment) && !$trackData) {
+    $deliveryAddress = $_order->getShippingAddress();
+    $billingAddress = $_order->getBillingAddress();
+
+    $itemShipped = '"itemShipped": [';
+    $_items = $_order->getAllItems();
+    $itemsCount = count($_items);
+    $ctr = 1;
+    foreach ($_items as $_item) {
+
+        if ($_item->getParentItem()) {
+            continue;
+        }
+        $_product = $_item->getProduct();
+        $_productUrl = $_product->getProductUrl();
+        $_productImgUrl = $this->getProductImgUrl($_product);
+        $itemShipped .= '{
+                    "@type": "Product",
+                    "name": "' . $_item->getName() . '",
+                    "sku": "' . $_item->getSku() . '",
+                    "url": "' . $_productUrl . '",
+                    "image": "' . $_productImgUrl . '"
+                    },';
+        $ctr++;
+    }
+    $itemShipped = rtrim($itemShipped, ',');
+    $itemShipped .= ']';
+    $markup .= '<script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "ParcelDelivery",
+                  "deliveryAddress": {
+                    "@type": "PostalAddress",
+                    "name": "' . $deliveryAddress->getFirstname() . ' ' .$deliveryAddress->getLastname() . '",
+                    "streetAddress": "' . $deliveryAddress->getStreet()[0] . '",
+                    "addressLocality": "' . $deliveryAddress->getCity() . '",
+                    "addressRegion": "' . $deliveryAddress->getRegion(). '",
+                    "addressCountry": "' . $deliveryAddress->getCountryId() . '",
+                    "postalCode": "' . $deliveryAddress->getPostcode() . '"
+                  },
+                  "originAddress": {
+                    "@type": "PostalAddress",
+                    "name": "' . $origin['name'] . '",
+                    "streetAddress": "' . $origin['streetAddress'] . '",
+                    "addressLocality": "' . $origin['addressLocality'] . '",
+                    "addressRegion": "' . $origin['addressRegion']. '",
+                    "addressCountry": "' . $origin['addressCountry'] . '",
+                    "postalCode": "' . $origin['postalCode'] . '"
+                  },
+                  "expectedArrivalUntil": "' . $block->escapeHtml($this->getExpectedArrivalUntil()) . '",
+                  "carrier": {
+                    "@type": "Organization",
+                    "name": "' . $_order->getShippingDescription(). '"
+                    
+                  },
+                  ' . $itemShipped . ',                 
+                  "partOfOrder": {
+                    "@type": "Order",
+                    "orderNumber": "' . $_order->getIncrementId() . '",
+                    "merchant": {
+                      "@type": "Organization",
+                      "name": "' . $_store->getName() . '"
+                    },
+                    "orderStatus": "http://schema.org/OrderProcessing"
+                  }
+                }</script>';
+}
+else {
+    $markup = '
+        <pre>
+                &lt;<span>script type="application/ld+json"</span><span>></span>
+                          "@context": "http://schema.org",
+                          "@type": "ParcelDelivery",
+                          "deliveryAddress": {
+                            "@type": "PostalAddress",
+                            "name": "John Frank",
+                            "streetAddress": "24 Willie Mays Plaza",
+                            "addressLocality": "San Francisco",
+                            "addressRegion": "CA",
+                            "addressCountry": "US",
+                            "postalCode": "94107"
+                          },
+                          "originAddress": {
+                            "@type": "PostalAddress",
+                            "name": "John Frank",
+                            "streetAddress": "25 Willie Mays Plaza",
+                            "addressLocality": "San Francisco",
+                            "addressRegion": "CA",
+                            "addressCountry": "US",
+                            "postalCode": "94107"
+                          },
+                          "expectedArrivalFrom": "2027-03-10T12:00:00-08:00",
+                          "expectedArrivalUntil": "2027-03-12T12:00:00-08:00",
+                          "carrier": {
+                            "@type": "Organization",
+                            "name": "FedEx",
+                            "url": "http://fedex.com/"
+                          },
+                          "itemShipped": {
+                            "@type": "Product",
+                            "name": "iPod Mini",
+                            "url": "http://apple.com/ipad32gb",
+                            "image": "http://apple.com/images/ipad32gb.jpg",
+                            "sku": "B00DR0PDNE",
+                            "description": "iPod Mini 32Gb White",
+                            "brand": {
+                              "@type": "Brand",
+                              "name": "Apple"
+                            },
+                            "color": "white"
+                          },
+                          "trackingNumber": "3453291231",
+                          "trackingUrl": "http://fedex.com/track/3453291231",
+                          "potentialAction": {
+                            "@type": "TrackAction",
+                            "url": "http://fedex.com/track/3453291231"
+                          }, 
+                          "partOfOrder": {
+                            "@type": "Order",
+                            "orderNumber": "176057",
+                            "merchant": {
+                              "@type": "Organization",
+                              "name": "Bob Dole",
+                              "sameAs": "http://www.freebase.com/m/0fhkx"
+                            },
+                            "orderStatus": "http://schema.org/OrderInTransit"
+                          }
+                        }   
+                    &lt;<span>/script</span>>
+            </pre>
+    ';
+}
+?>
+<?= $markup ?>

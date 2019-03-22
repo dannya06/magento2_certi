@@ -13,6 +13,11 @@ class BlockProductView
     * @var \Magento\Framework\App\Config\ScopeConfigInterface
     */
     protected $scopeConfig;
+
+    /**
+     * @var \Magento\Catalog\Model\ProductTypes\ConfigInterface
+     */
+    protected $productTypeConfig;
     
     /**
      *
@@ -26,9 +31,11 @@ class BlockProductView
      */
     public function __construct(
             \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+            \Magento\Catalog\Model\ProductTypes\ConfigInterface $productTypeConfig,
             \Magento\Framework\App\Request\Http $request)
     {
         $this->scopeConfig = $scopeConfig;
+        $this->productTypeConfig = $productTypeConfig;
         $this->request = $request;
     }
 
@@ -41,7 +48,10 @@ class BlockProductView
     public function afterShouldRenderQuantity(
         \Magento\Catalog\Block\Product\View $subject, $result)
     {
-        if ($this->request->getFullActionName() == 'catalog_product_view') {
+        $productType = $subject->getProduct()->getTypeId();
+        $isProductSet = $this->productTypeConfig->isProductSet($productType);
+
+        if (!$isProductSet && $this->request->getFullActionName() == 'catalog_product_view') {
             $removeQtySelector = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_REMOVE_QTY,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
             return !$removeQtySelector;
         }

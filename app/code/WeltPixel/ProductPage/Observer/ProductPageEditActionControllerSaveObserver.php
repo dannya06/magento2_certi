@@ -53,6 +53,11 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
      */
     protected $_mobileBreakPoint;
 
+    /**
+     * @var string
+     */
+    protected $_mobileBreakPointUnder;
+
 
     /**
      * @var \WeltPixel\ProductPage\Model\ProductPageFactory
@@ -127,6 +132,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
      * @param \Magento\Framework\Event\Observer $observer
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
@@ -135,14 +141,15 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         foreach ($this->_storeCollection as $store) {
 
             $this->_mobileBreakPoint = $this->_frontendHelper->getBreakpointM($store->getData('store_id'));
+            $this->_mobileBreakPointUnder = ((int) $this->_frontendHelper->getBreakpointM($store->getData('store_id')) - 1) . 'px';
 
             $imageAreaWidth = trim($this->_helper->getImageAreaWidth($store->getData('store_id')));
             $productAreaWidth = trim($this->_helper->getProductInfoAreaWidth($store->getData('store_id')));
-            $removeTabsBorder = $this->_helper->removeTabsBorder($store->getData('store_id'));
             $removeSwatchTooltip = $this->_helper->removeSwatchTooltip($store->getData('store_id'));
             $swatchOptions = $this->_helper->getSwatchOptions($store->getData('store_id'));
             $cssOptions = $this->_helper->getCssOptions($store->getData('store_id'));
             $backgroundArrows = $this->_helper->getBackgroundArrows($store->getData('store_id'));
+            $galleryThumbsNavDir = $this->_helper->getGalleryNavDir($store->getData('store_id'));
             $generatedCssDirectoryPath = DIRECTORY_SEPARATOR . 'frontend' .
                 DIRECTORY_SEPARATOR . 'web' .
                 DIRECTORY_SEPARATOR . 'css' .
@@ -154,16 +161,16 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
             $content = $this->_generateContent($imageAreaWidth, $productAreaWidth);
             $content .= $this->_generateSwatchCss($swatchOptions);
             $content .= $this->_generateBackgroundArrows($backgroundArrows);
-
-            if ($removeTabsBorder) {
-                $content .= $this->_addRemovedBorderCss();
+            if ($galleryThumbsNavDir == 'vertical') {
+                $content .= $this->_generateVerticalNavDirFix();
             }
+
 
             if ($removeSwatchTooltip) {
                 $content .= $this->_addRemoveSwatchTooltipCss();
             }
 
-            $content .= $this->_generateCssOptions($cssOptions);
+            $content .= $this->_generateCssOptions($cssOptions, $store->getData('store_id'));
 
             /** @var \Magento\Framework\Filesystem\Directory\WriteInterface|\Magento\Framework\Filesystem\Directory\Write $writer */
             $writer = $this->_writeFactory->create($directoryCode, \Magento\Framework\Filesystem\DriverPool::FILE);
@@ -267,16 +274,6 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         return $content;
     }
 
-    /**
-     * @return string
-     */
-    private function _addRemovedBorderCss()
-    {
-        $content = '.theme-pearl.catalog-product-view .product.data.items > .item.content {border: none}' . PHP_EOL;
-        $content .= '.theme-pearl.catalog-product-view .product.data.items .item.title .switch {border-left: none !important; border-right: none !important;}' . PHP_EOL;
-        return $content;
-    }
-
 
     /**
      * @return string;
@@ -316,6 +313,16 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                 width: $width;
                 height: $height;
                 min-width: $width;
+                &.image{
+                   &.selected{
+                    border: 1px solid #999999 !important;
+                   }
+                   &:hover{
+                        position: relative;
+		                overflow: visible;
+		                border: 1px solid #999999 !important;
+                     }
+                }
 	            &.color {
 	                &:before {
 		                visibility: hidden;
@@ -373,6 +380,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 		                }
 		                &:after {
 		                    visibility: visible;
+		                    font-size: $fontSize;
 		                }
 		                &[option-tooltip-value='#fff'],
 		                &[option-tooltip-value='#ffffff'] {
@@ -380,6 +388,12 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 		                        color: #000000;
 		                    }
 		                }
+		            }
+		             &.disabled{
+		              &:after {
+		               visibility: visible;
+		               content: '';
+		              }
 		            }
 		            &[option-tooltip-value='#fff'],
 		            &[option-tooltip-value='#ffffff'] {
@@ -442,16 +456,22 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 
     /**
      * @param array $cssOptions
+     * @param int $storeId
      * @return string
      */
-    private function _generateCssOptions($cssOptions)
+    private function _generateCssOptions($cssOptions, $storeId)
     {
+        $productVersion = $this->_helper->productVersion($storeId);
         $thumbBorder = $cssOptions['thumbnail_border'];
         $tabActiveBg = $cssOptions['tab_active_background'];
         $tabBg = $cssOptions['tab_background'];
         $tabTextActiveColor = $cssOptions['tab_text_active_color'];
         $tabTextColor = $cssOptions['tab_text_color'];
-        $tabContainerPadding = $cssOptions['tab_container_padding'];
+        $tabContainerPadding = '';
+        if($productVersion == '1' ||  $productVersion == '3'){
+            $tabContainerPadding = 'padding:'.$cssOptions['tab_container_padding'];
+        }
+
         $cssBG = $cssOptions['page_background_color'];
         $page_background_color = $cssBG != '' ? true : false;
         $pbc = '';
@@ -528,7 +548,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 					}
 				}
 				.product.info.detailed {
-					padding-top: 75px;
+					padding-top: 25px;
 				}
 			}
 			.product.media.product_v4,
@@ -579,10 +599,14 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
             }
             .fotorama__nav-wrap--vertical{
                   .fotorama__nav--thumbs .fotorama__nav__frame {
-                    border-bottom: 2px solid $cssBG;
-                    &:last-of-type {
+                  .fotorama__thumb {                 
+                        border-bottom: 2px solid $cssBG;
+                  }
+                  &:last-of-type {
+                    .fotorama__thumb {
                         border: none;
                     }
+                  }
 			    }
             }
           
@@ -622,14 +646,25 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                     background-color: $tabActiveBg !important;
                 }
             }
+            .page-main{
+                .columns{
+                    .product.info.detailed{
+                        .product.data.items > .item.content {
+                            $tabContainerPadding;
+                         @media (max-width: $this->_mobileBreakPointUnder) {
+                            padding: 10px;
+                            margin-top:0px !important;
+                         }
+                        }
+                    }            
+                }
+            }
             
-            .product.data.items > .item.content {
-                padding: $tabContainerPadding;
-                 @media (max-width: $this->_mobileBreakPoint) {
-                    padding: 10px;
-                    margin-top:0px !important;
-                 }
-                
+            
+            .product.info.detailed.toggle-bg{
+                .data.item.content.togglec{
+                    $tabContainerPadding;
+                } 
             }
                                     
         }
@@ -669,6 +704,25 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 			        box-shadow: none;
 			    }
 			}
+    	";
+
+        return $content;
+    }
+
+    /**
+     * @return string
+     */
+    private function _generateVerticalNavDirFix() {
+        $content = "   
+         	  .theme-pearl.catalog-product-view {
+                    .product.media {
+                        .fotorama__wrap {
+                            .fotorama__arr--next {
+                                right: 0 !important;
+                            }
+                        }
+         	        }         	    
+         	  }    	    
     	";
 
         return $content;

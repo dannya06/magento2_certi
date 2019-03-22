@@ -111,8 +111,10 @@ class GoogleCards extends \Magento\Framework\View\Element\Template
      */
     public function getDescription($product)
     {
-        if ($this->_helper->getDescriptionType()) {
+        if ($this->_helper->getDescriptionType() == 1) {
             return nl2br($product->getData('description'));
+        } elseif ($this->_helper->getDescriptionType() == 2){
+            return nl2br($product->getData('meta_description'));
         } else {
             return nl2br($product->getData('short_description'));
         }
@@ -225,6 +227,10 @@ class GoogleCards extends \Magento\Framework\View\Element\Template
      */
     public function getStoreName()
     {
+        $storeName = trim($this->_scopeConfig->getValue('general/store_information/name', \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+        if ($storeName) {
+            return $storeName;
+        }
         return $this->_storeManager->getStore()->getName();
     }
 

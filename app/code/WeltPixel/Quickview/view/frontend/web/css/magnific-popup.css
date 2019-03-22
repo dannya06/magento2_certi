@@ -238,7 +238,6 @@ button::-moz-focus-inner {
     left: 0;
     width: 100%;
     height: 100%;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
     opacity: 0;
     background: #000; }
 
@@ -373,4 +372,14 @@ img.mfp-img {
   0% { transform: perspective(120px) rotateX(0deg) rotateY(0deg) }
   50% { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) }
   100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg) }
+}
+.weltpixel-quickview-catalog-product-view #maincontent,
+.weltpixel_quickview-catalog_product-view #maincontent,
+.weltpixel-quickview-catalog-product-view #maincontent .columns,
+.weltpixel_quickview-catalog_product-view #maincontent .columns {
+  max-width: 100% !important;
+}
+.weltpixel-quickview-catalog-product-view #maincontent .columns .fotorama__nav-wrap--horizontal .fotorama__nav--thumbs,
+.weltpixel_quickview-catalog_product-view #maincontent .columns .fotorama__nav-wrap--horizontal .fotorama__nav--thumbs {
+  text-align: center;
 }

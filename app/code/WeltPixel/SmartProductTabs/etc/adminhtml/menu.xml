@@ -11,7 +11,7 @@
 		/>
 		<add
 				id="WeltPixel_SmartProductTabs::SmartProductTabs"
-				title="Smart Product Tabs"
+				title="Smart Product Tabs Settings"
 				module="WeltPixel_SmartProductTabs"
 				action="adminhtml/system_config/edit/section/weltpixel_smartproducttabs/"
 				sortOrder="10"

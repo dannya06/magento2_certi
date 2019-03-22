@@ -226,6 +226,9 @@ class CustomFooterEditActionControllerSaveObserver implements ObserverInterface
                         " . $footerIconColor . "
                     }
                 }
+                &.fullpagescroll {
+                    .page-wrapper .page-footer { position: fixed; }
+                }
             } ";
 
         return $content;

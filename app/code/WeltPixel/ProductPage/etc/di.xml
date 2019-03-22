@@ -14,4 +14,8 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Framework\Config\View">
+        <plugin name="weltpixel-productpage-framework-config-view"
+                type="WeltPixel\ProductPage\Plugin\FrameworkConfigView" sortOrder="10"/>
+    </type>
 </config>

@@ -29,7 +29,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
 					</div>
 				</div>
 			</div>
-			<div class=""col-sm-4 nopaddingright"">
+			<div class=""col-sm-4 custompadding"">
 				<div class=""c-live-text__outer mg-top-20-mob"">
 					<a href=""#"">
 						<img src=""{{media url=""wysiwyg/pearl_theme/homepage-v15/171002_bgw_us_4.jpg""}}"" alt="""" />
@@ -55,12 +55,12 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
 <div class=""container-v15"">
 	<div class=""row c-product-tray"">
 
-{{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" title=""NEW ARRIVALS"" products_count=""6"" template=""product/widget/content/grid_v16.phtml"" conditions_encoded=""{{widget_condition_1}}""}}
+{{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" title=""NEW ARRIVALS"" products_count=""6"" template=""product/widget/content/grid_v16.phtml"" conditions_encoded=""{{widget_condition_1}}""  type_name=""Catalog Products List""}}
 
 	</div>
 	<div class=""row c-product-tray"">
 
-{{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" title=""Beauty Problems Solved!"" products_count=""6"" template=""product/widget/content/grid_v16.phtml"" conditions_encoded=""{{widget_condition_2}}""}}
+{{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" title=""Beauty Problems Solved!"" products_count=""6"" template=""product/widget/content/grid_v16.phtml"" conditions_encoded=""{{widget_condition_2}}"" type_name=""Catalog Products List""}}
 
 	</div>
 </div>
@@ -92,7 +92,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
 </div>
 <div class=""container-v15"">
          <div class=""row c-product-tray"">
-{{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" title=""Mario Badescu"" products_count=""6"" template=""product/widget/content/grid_v16.phtml"" conditions_encoded=""{{widget_condition_3}}""}}
+{{widget type=""Magento\CatalogWidget\Block\Product\ProductsList"" title=""Mario Badescu"" products_count=""6"" template=""product/widget/content/grid_v16.phtml"" conditions_encoded=""{{widget_condition_3}}"" type_name=""Catalog Products List""}}
 	</div>
 </div>
 <div class=""container-v15"">

@@ -64,6 +64,15 @@ class Slider extends \Magento\Framework\Model\AbstractModel
      */
     public function getSliderBanerCollection()
     {
-        return $this->_bannerCollectionFactory->create()->addFieldToFilter('slider_id', $this->getId());
+        $bannerCollection = $this->_bannerCollectionFactory->create()->addFieldToFilter('slider_id', array('like' => '%' . $this->getId() . '%'));
+        // remove unwanted banners
+        foreach ($bannerCollection as $key => $banner) {
+            $sliderIds = explode(',', $banner->getSliderId());
+            if (!in_array($this->getId(), $sliderIds)) {
+                $bannerCollection->removeItemByKey($key);
+            }
+        }
+
+        return $bannerCollection;
     }
 }

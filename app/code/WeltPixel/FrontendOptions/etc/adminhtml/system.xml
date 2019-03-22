@@ -139,13 +139,12 @@
                     for more details on google fonts]]>
                     </comment>
                 </field>
-                <field id="h1__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h1__font____weight" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Weight</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
                     <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
                     <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
-                    for more details on google fonts.<br/><strong style="color:red;">Important:</strong>
-                    Use just numbers: 300, 400, 600, 700, 800, 900 ]]>
-                    </comment>
+                    for more details on google fonts.]]></comment>
                     <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
                         Can be defined from thin to thick characters. For example 400 is the same as normal,
                         and 700 is the same as bold</tooltip>
@@ -154,14 +153,20 @@
                     <label>Font Size</label>
                     <comment> Set the font size for H1 heading. Example: 30px</comment>
                 </field>
-                <field id="h1__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h1__font____style" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Style</label>
-                    <comment>Set font style for H1 heading. Example: normal</comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontStyle</source_model>
+                    <comment>Set font style for H1 heading.</comment>
                     <tooltip>The font-style property specifies the font style for a text like normal, italic. </tooltip>
                 </field>
+                <field id="h1__letter____spacing" translate="label" type="text" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Letter Spacing</label>
+                    <comment>Increase or decrease the space between characters in H1 heading. Range: -5.0 ... 50.0, value in pixels. Example: 0.7</comment>
+                    <validate>validate-number validate-no-empty validate-number-range number-range--5.0-50.0</validate>
+                </field>
                 <field id="h1__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Line Height(px)</label>
-                    <comment>Set line height for H1 heading. Example: 60px</comment>
+                    <label>Line Height</label>
+                    <comment>Set line height in pixels for H1 heading. Example: 60</comment>
                 </field>
             </group>
             <group id="h2" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -183,12 +188,12 @@
                     <comment><![CDATA[ Set character set for H2 heading. Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
                     </comment>
                 </field>
-                <field id="h2__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h2__font____weight" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Weight</label>
-                    <comment><![CDATA[ Set font weight for H2 heading. Please check <a href="https://developers.google.com/fonts/docs/getting_started"
-                    target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">
-                    Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
-                    </comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
+                    <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
+                    <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
+                    for more details on google fonts.]]></comment>
                     <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
                         Can be defined from thin to thick characters. For example 400 is the same as normal,
                         and 700 is the same as bold</tooltip>
@@ -197,10 +202,16 @@
                     <label>Font Size</label>
                     <comment> Set the font size for H2 heading. Example: 30px</comment>
                 </field>
-                <field id="h2__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h2__font____style" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Style</label>
-                    <comment>Set font style for H2 heading. Example: normal</comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontStyle</source_model>
+                    <comment>Set font style for H1 heading.</comment>
                     <tooltip>The font-style property specifies the font style for a text like normal, italic. </tooltip>
+                </field>
+                <field id="h2__letter____spacing" translate="label" type="text" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Letter Spacing</label>
+                    <comment>Increase or decrease the space between characters in H2 heading. Range: -5.0 ... 50.0, value in pixels. Example: 0.7</comment>
+                    <validate>validate-number validate-no-empty validate-number-range number-range--5.0-50.0</validate>
                 </field>
                 <field id="h2__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Line Height(px)</label>
@@ -228,10 +239,12 @@
                     <comment><![CDATA[Set character set for H3 heading. Example: Latin. Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
                     </comment>
                 </field>
-                <field id="h3__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h3__font____weight" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Weight</label>
-                    <comment><![CDATA[ Set font weight for H3 heading. Example: 900. Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300,400,600,700,800 ]]>
-                    </comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
+                    <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
+                    <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
+                    for more details on google fonts.]]></comment>
                     <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
                         Can be defined from thin to thick characters. For example 400 is the same as normal,
                         and 700 is the same as bold</tooltip>
@@ -240,10 +253,16 @@
                     <label>Font Size</label>
                     <comment> Set the font size for H3 heading. </comment>
                 </field>
-                <field id="h3__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h3__font____style" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Style</label>
-                    <comment>Set font style for H3 heading. Example: normal</comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontStyle</source_model>
+                    <comment>Set font style for H1 heading.</comment>
                     <tooltip>The font-style property specifies the font style for a text like normal, italic. </tooltip>
+                </field>
+                <field id="h3__letter____spacing" translate="label" type="text" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Letter Spacing</label>
+                    <comment>Increase or decrease the space between characters in H3 heading. Range: -5.0 ... 50.0, value in pixels. Example: 0.7</comment>
+                    <validate>validate-number validate-no-empty validate-number-range number-range--5.0-50.0</validate>
                 </field>
                 <field id="h3__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Line Height(px)</label>
@@ -270,13 +289,12 @@
                     <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a>
                     for more details on google fonts]]></comment>
                 </field>
-                <field id="h4__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h4__font____weight" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Weight</label>
-                    <comment><![CDATA[ Set font weight for H4 heading. Example: 900. <br/>Please check
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
+                    <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
                     <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
-                    for more details on google fonts.<br/><strong style="color:red;">Important:</strong>
-                    Use just numbers: 300, 400, 600, 700, 800, 900 ]]>
-                    </comment>
+                    for more details on google fonts.]]></comment>
                     <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
                         Can be defined from thin to thick characters. For example 400 is the same as normal,
                         and 700 is the same as bold</tooltip>
@@ -285,10 +303,16 @@
                     <label>Font Size</label>
                     <comment> Set the font size for H4 heading.</comment>
                 </field>
-                <field id="h4__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h4__font____style" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Style</label>
-                    <comment>Set font style for H4 heading. Example: normal</comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontStyle</source_model>
+                    <comment>Set font style for H1 heading.</comment>
                     <tooltip>The font-style property specifies the font style for a text like normal, italic. </tooltip>
+                </field>
+                <field id="h4__letter____spacing" translate="label" type="text" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Letter Spacing</label>
+                    <comment>Increase or decrease the space between characters in H4 heading. Range: -5.0 ... 50.0, value in pixels. Example: 0.7</comment>
+                    <validate>validate-number validate-no-empty validate-number-range number-range--5.0-50.0</validate>
                 </field>
                 <field id="h4__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Line Height(px)</label>
@@ -316,13 +340,12 @@
                     for more details on google fonts]]>
                     </comment>
                 </field>
-                <field id="h5__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h5__font____weight" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Weight</label>
-                    <comment><![CDATA[ Set font weight for H5 heading. Example: 900. <br/>Please check
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
+                    <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
                     <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
-                    for more details on google fonts.<br/><strong style="color:red;">Important:</strong>
-                    Use just numbers: 300, 400, 600, 700, 800, 900 ]]>
-                    </comment>
+                    for more details on google fonts.]]></comment>
                     <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
                         Can be defined from thin to thick characters. For example 400 is the same as normal,
                         and 700 is the same as bold</tooltip>
@@ -331,10 +354,16 @@
                     <label>Font Size</label>
                     <comment> Set the font size for H5 heading.</comment>
                 </field>
-                <field id="h5__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h5__font____style" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Style</label>
-                    <comment>Set font style for H5 heading. Example: normal</comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontStyle</source_model>
+                    <comment>Set font style for H1 heading.</comment>
                     <tooltip>The font-style property specifies the font style for a text like normal, italic. </tooltip>
+                </field>
+                <field id="h5__letter____spacing" translate="label" type="text" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Letter Spacing</label>
+                    <comment>Increase or decrease the space between characters in H5 heading. Range: -5.0 ... 50.0, value in pixels. Example: 0.7</comment>
+                    <validate>validate-number validate-no-empty validate-number-range number-range--5.0-50.0</validate>
                 </field>
                 <field id="h5__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Line Height(px)</label>
@@ -361,13 +390,12 @@
                     <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a>
                     for more details on google fonts]]></comment>
                 </field>
-                <field id="h6__font____weight" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h6__font____weight" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Weight</label>
-                    <comment><![CDATA[ Set font weight for H6 heading. Example: 900. <br/>Please check
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
+                    <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
                     <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
-                    for more details on google fonts.<br/><strong style="color:red;">Important:</strong>
-                    Use just numbers: 300, 400, 600, 700, 800, 900 ]]>
-                    </comment>
+                    for more details on google fonts.]]></comment>
                     <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
                         Can be defined from thin to thick characters. For example 400 is the same as normal,
                         and 700 is the same as bold</tooltip>
@@ -376,10 +404,16 @@
                     <label>Font Size</label>
                     <comment> Set the font size for H6 heading.</comment>
                 </field>
-                <field id="h6__font____style" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="h6__font____style" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Style</label>
-                    <comment>Set font style for H6 heading. Example: normal</comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontStyle</source_model>
+                    <comment>Set font style for H1 heading.</comment>
                     <tooltip>The font-style property specifies the font style for a text like normal, italic. </tooltip>
+                </field>
+                <field id="h6__letter____spacing" translate="label" type="text" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Letter Spacing</label>
+                    <comment>Increase or decrease the space between characters in H6 heading. Range: -5.0 ... 50.0, value in pixels. Example: 0.7</comment>
+                    <validate>validate-number validate-no-empty validate-number-range number-range--5.0-50.0</validate>
                 </field>
                 <field id="h6__line____height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Line Height(px)</label>
@@ -407,26 +441,30 @@
                     for more details on google fonts]]>
                     </comment>
                 </field>
-                <field id="font____weight__regular" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="font____weight__regular" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Weight</label>
-                    <comment><![CDATA[ Set font weight for default paragraphs. Example: 900. <br/>Please check
-                        <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
-                        for more details on google fonts.<br/><strong style="color:red;">Important:</strong>
-                        Use just numbers: 300, 400, 600, 700, 800, 900 ]]>
-                    </comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
+                    <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
+                    <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
+                    for more details on google fonts.]]></comment>
                     <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
                         Can be defined from thin to thick characters. For example 400 is the same as normal,
-                        and 700 is the same as bold
-                    </tooltip>
+                        and 700 is the same as bold</tooltip>
                 </field>
                 <field id="font____size__base" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Size</label>
                     <comment> Set the font size for default paragraphs. If left blank, default font size is set to 14px.</comment>
                 </field>
-                <field id="font____style__base" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="font____style__base" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Style</label>
-                    <comment>Set font style for default paragraphs. Example: normal</comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontStyle</source_model>
+                    <comment>Set font style for H1 heading.</comment>
                     <tooltip>The font-style property specifies the font style for a text like normal, italic. </tooltip>
+                </field>
+                <field id="font__letter____spacing" translate="label" type="text" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Letter Spacing</label>
+                    <comment>Increase or decrease the space between characters in text. Range: -5.0 ... 50.0, value in pixels. Example: 0.7</comment>
+                    <validate>validate-number validate-no-empty validate-number-range number-range--5.0-50.0</validate>
                 </field>
                 <field id="line____height__computed" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Line Height(px)</label>
@@ -512,13 +550,15 @@
                     <strong style="color:red;">Important:</strong>This setting is applied on all buttons, default and primary.]]>
                     </comment>
                 </field>
-                <field id="button__font____weight" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="button__font____weight" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Weight</label>
-                    <comment><![CDATA[ Set font weight for buttons. Example: 400<br/>
-                    Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details on google fonts.<br/>
-                    <strong style="color:red;">Important:</strong> This setting is applied on all buttons, default and primary. ]]>
-                    </comment>
-                    <tooltip>Use just numbers from: 300, 400, 600, 700, 800</tooltip>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
+                    <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
+                    <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
+                    for more details on google fonts.]]></comment>
+                    <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
+                        Can be defined from thin to thick characters. For example 400 is the same as normal,
+                        and 700 is the same as bold</tooltip>
                 </field>
                 <field id="button__font____size" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font Size</label>
@@ -529,6 +569,11 @@
                 <field id="button__line____height" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Line Height(px)</label>
                     <comment>Set the Line Height for the default buttons text. Example: 18px</comment>
+                </field>
+                <field id="button__letter____spacing" translate="label" type="text" sortOrder="135" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Letter Spacing</label>
+                    <comment>Increase or decrease the space between characters for the default buttons text. Range: -5.0 ... 50.0, value in pixels. Example: 0.7</comment>
+                    <validate>validate-number validate-no-empty validate-number-range number-range--5.0-50.0</validate>
                 </field>
             </group>
             <group id="primary_buttons" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -633,11 +678,12 @@
                     <comment><![CDATA[ Set character set for Input text. Example: Latin. <br/> Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank">this</a> for more details on google fonts]]>
                     </comment>
                 </field>
-                <field id="form____element____input__font____weight" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="form____element____input__font____weight" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Input Font Weight</label>
-                    <comment><![CDATA[ Set font weight for Input text. Example: 900. <br/> Please check <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a> for more details
-                    on google fonts.<br/><strong style="color:red;">Important:</strong> Use just numbers, one from: 300, 400, 600, 700, 800, 900 ]]>
-                    </comment>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\FontWeight</source_model>
+                    <comment><![CDATA[ Set font weight for H1 heading. Example: 900. <br/>Please check
+                    <a href="https://developers.google.com/fonts/docs/getting_started" target="_blank" >this</a>
+                    for more details on google fonts.]]></comment>
                     <tooltip>The font-weight property sets how thick or thin characters in text should be displayed.
                         Can be defined from thin to thick characters. For example 400 is the same as normal,
                         and 700 is the same as bold</tooltip>
@@ -740,6 +786,42 @@
                     <label>Old Price Line Trough</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Display old price Strikethrough, if product has Special price set.</comment>
+                </field>
+            </group>
+            <group id="contact_options" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Contact Options</label>
+                <field id="contact_version" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Contact Page Version</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\ContactFormVersions</source_model>
+                    <comment>Select Contact Page Version. Version 1 is default Magento, Version 2 is WeltPixel Contact Page</comment>
+                </field>
+                <field id="top_image" translate="label" type="image" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Upload Top Image</label>
+                    <validate>required-entry</validate>
+                    <comment>The image must be in .jpg, .png, or. gif format</comment>
+                    <backend_model>WeltPixel\FrontendOptions\Model\Config\Backend\Image</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/frontend_options</upload_dir>
+                    <base_url type="media" scope_info="1">weltpixel/frontend_options</base_url>
+                    <depends>
+                        <field id="contact_version">v2</field>
+                    </depends>
+                </field>
+                <field id="enable_block" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Contact Block</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="contact_version">v2</field>
+                    </depends>
+                </field>
+                <field id="block_id" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Select Block</label>
+                    <source_model>WeltPixel\FrontendOptions\Model\Config\Source\BlockCollection</source_model>
+                    <comment><![CDATA[ Select block <strong style="color:red;">"Pearl Contact CMS block"</strong> to use contact page V2 sample data. Block will be added between the top image and contact form.  ]]></comment>
+                    <depends>
+                        <field id="enable_block">1</field>
+                        <field id="contact_version">v2</field>
+                    </depends>
                 </field>
             </group>
         </section>

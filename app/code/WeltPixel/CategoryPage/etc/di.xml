@@ -14,4 +14,11 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Framework\Config\View">
+        <plugin name="weltpixel-categorypage-config-view"
+                type="WeltPixel\CategoryPage\Plugin\ConfigView" sortOrder="10"/>
+    </type>
+    <type name="Magento\Catalog\Model\Category\DataProvider">
+        <plugin name="weltpixel-categorypage-category-dataprovider" type="WeltPixel\CategoryPage\Plugin\Category\DataProvider" sortOrder="1" />
+    </type>
 </config>

@@ -42,7 +42,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
 <div class=""clearfix""></div>
 <h2 class=""center hp-title""><span class=""subtitle"">The hottest</span>
 New Arrivals</h2>
-{{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Products"" products_type=""new_products""}}
+{{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Products"" products_type=""new_products"" type_name=""WeltPixel - Products Carousel Widget""}}
 
 <div class=""clearfix""></div>
 <div class=""col-xs-12 col-sm-4 img-4 custom-padding"">
@@ -84,7 +84,7 @@ New Arrivals</h2>
 <div class=""clearfix""></div>
 <h2 class=""center hp-title""><span class=""subtitle"">Most Popular</span>
 Tops</h2>
-{{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Products"" products_type=""new_products""}}
+{{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Products"" products_type=""new_products"" type_name=""WeltPixel - Products Carousel Widget""}}
 
 <div class=""clearfix""></div>
 
@@ -95,14 +95,21 @@ Tops</h2>
 .page-wrapper .breadcrumbs {display: none;}
 .theme-pearl .page-wrapper .page-main {padding: 0px;}",
 "Home Page V2",1column,,,home-page-v2,"","
-<section id=""slider"" class=""container-v2 slider-parallax full-screen"">
-    <div class=""full-screen"" style=""background: url( {{media url=""wysiwyg/pearl_theme/b10.jpg""}} );; background-size: cover;background-position:center center;"">
+<section id=""slider"" class=""container-v2 slider-parallax full-screen hide-mob"">
+    <div class=""full-screen"" style=""background: url( {{media url=""wysiwyg/pearl_theme/b10-mob.png""}} );; background-size: cover;background-position:center center;"">
         <div class=""clearfix"">
             &nbsp;
         </div>
     </div>
 </section>
 
+<section id=""slider"" class=""container-v2 slider-parallax full-screen hide-desk"">
+    <div class=""full-screen"" style=""background: url( {{media url=""wysiwyg/pearl_theme/b10.jpg""}} );; background-size: cover;background-position:center center;"">
+        <div class=""clearfix"">
+            &nbsp;
+        </div>
+    </div>
+</section>
 
 <div id=""content"" class=""container-v2 pos-bg"">
 
@@ -271,7 +278,7 @@ New Arrivals</h2>
 <h2 class=""center hp-title""><span class=""subtitle"">Take a look at</span>
 Staff picks</h2>
 
-{{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Products"" products_type=""new_products""}}
+{{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Products"" products_type=""new_products"" type_name=""WeltPixel - Products Carousel Widget""}}
 
 </div>
 
@@ -339,7 +346,7 @@ Staff picks</h2>
 }
 ","
 .page-main {
-    margin-top: -130px;
+    margin-top: -175px;
 }
 .promo-overlay .title {
     position: absolute;
@@ -493,7 +500,7 @@ Staff picks</h2>
 </div>
 <div class=""clearfix topmargin bottommargin container-v4"">
    <div class=""col-xs-12 col-sm-4"">
-      <div class=""col-xs-12 nopadding-mob"">
+      <div class=""col-xs-12 nopadding-mob-v4"">
          <div class=""promo"">
             <div class=""promo-image"">
                <a href="""">
@@ -506,7 +513,7 @@ Staff picks</h2>
             </div>
          </div>
       </div>
-      <div class=""col-xs-12 mg-sec-6 nopadding-mob"">
+      <div class=""col-xs-12 mg-sec-6 nopadding-mob-v4"">
          <div class=""promo"">
             <div class=""promo-image"">
                <a href="""">

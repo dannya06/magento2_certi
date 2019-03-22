@@ -1,4 +1,5 @@
 <?php
+
 namespace WeltPixel\ReviewsWidget\Block\Widget;
 
 use Magento\Catalog\Model\Product;
@@ -82,7 +83,8 @@ class Review extends \Magento\Review\Block\Product\Review implements \Magento\Wi
         \Magento\Framework\Registry $registry,
         \Magento\Review\Model\ResourceModel\Review\CollectionFactory $collectionFactory,
         array $data = []
-    ) {
+    )
+    {
         $this->_coreRegistry = $registry;
         $this->_reviewsColFactory = $collectionFactory;
         $this->urlEncoder = $urlEncoder;
@@ -94,7 +96,13 @@ class Review extends \Magento\Review\Block\Product\Review implements \Magento\Wi
         $this->customerUrl = $customerUrl;
         parent::__construct($context, $registry, $collectionFactory, $data);
 
-        $this->jsLayout = isset($data['jsLayout']) ? $data['jsLayout'] : [];
+        $this->jsLayout = [
+            'components' => [
+                'review-form' => [
+                    'component' => 'Magento_Review/js/view/review'
+                ]
+            ]
+        ];
         $this->setTabTitle();
     }
 
@@ -203,9 +211,13 @@ class Review extends \Magento\Review\Block\Product\Review implements \Magento\Wi
         return $productId;
     }
 
+    /**
+     * @return string
+     */
     public function _toHtml()
     {
-        $this->setTemplate('widget/reviewform.phtml');
+        $template = 'widget/reviewform.phtml';
+        $this->setTemplate($template);
         return parent::_toHtml();
     }
 

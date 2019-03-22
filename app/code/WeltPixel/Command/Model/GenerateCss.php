@@ -86,12 +86,23 @@ class GenerateCss
             "WeltPixel_ProductPage::css/weltpixel_product_store_" . $storeCode .".css"
         ];
 
-        $this->filesystem->cleanupFilesystem(
+        $cssDirectories =
             [
-                DirectoryList::TMP_MATERIALIZATION_DIR
-            ]
-        );
+                '/frontend/' . $theme . '/' . $locale . '/css',
+                '/frontend/' . $theme . '/' . $locale . '/WeltPixel_CategoryPage/css',
+                '/frontend/' . $theme . '/' . $locale . '/WeltPixel_CustomHeader/css',
+                '/frontend/' . $theme . '/' . $locale . '/WeltPixel_CustomFooter/css',
+                '/frontend/' . $theme . '/' . $locale . '/WeltPixel_ProductPage/css',
+                '/frontend/' . $theme . '/' . $locale . '/WeltPixel_FrontendOptions/css',
+            ];
 
+        $mainDirectoryPath = $this->directoryList->getPath(DirectoryList::TMP_MATERIALIZATION_DIR);
+        foreach ($cssDirectories as $directory) {
+            $directoryPath = $mainDirectoryPath . $directory;
+            if ($this->file->isExists($directoryPath)) {
+                $this->file->deleteDirectory($directoryPath);
+            }
+        }
 
         foreach ($filesToGenerate as $file) {
             $path = $file;
@@ -146,6 +157,30 @@ class GenerateCss
                     $filePath = str_replace('.css', '.min.css', $filePath);
                     $newPath = str_replace('.css', '.min.css', $newPath);
                     copy($filePath, $newPath);
+                }
+            }
+
+            /** Gzip compression on cloud */
+            if (strpos($filePath, '-temp.css') !== false ) {
+                $filePath = str_replace('-temp.css', '', $filePath);
+                $filePath .= '.css';
+            }
+
+            $gzippedNormalfilePath = str_replace('.css', '.css.gz', $filePath);
+            $gzippedMinifiedfilePath = str_replace('.css', '.css.gz', $minifiedfilePath);
+
+            $gzippedFilesToCheck = [
+                $filePath => $gzippedNormalfilePath,
+                $minifiedfilePath => $gzippedMinifiedfilePath
+            ];
+
+            foreach ($gzippedFilesToCheck as $normalfilePath => $gzippedfilePath) {
+                if ($this->file->isExists($gzippedfilePath)) {
+                    $this->file->deleteFile($gzippedfilePath);
+
+                    $fileContent = $this->file->fileGetContents($normalfilePath);
+                    $gzContent = gzencode($fileContent, 9);
+                    $this->file->filePutContents($gzippedfilePath, $gzContent);
                 }
             }
         }

@@ -7,5 +7,18 @@
         <attribute name="weltpixel_mm_display_mode" />
         <attribute name="weltpixel_mm_columns_number" />
         <attribute name="weltpixel_mm_column_width" />
+        <attribute name="weltpixel_mm_top_block_type" />
+        <attribute name="weltpixel_mm_top_block_cms" />
+        <attribute name="weltpixel_mm_top_block" />
+        <attribute name="weltpixel_mm_right_block_type" />
+        <attribute name="weltpixel_mm_right_block_cms" />
+        <attribute name="weltpixel_mm_right_block" />
+        <attribute name="weltpixel_mm_bottom_block_type" />
+        <attribute name="weltpixel_mm_bottom_block_cms" />
+        <attribute name="weltpixel_mm_bottom_block" />
+        <attribute name="weltpixel_mm_left_block_type" />
+        <attribute name="weltpixel_mm_left_block_cms" />
+        <attribute name="weltpixel_mm_left_block" />
+        <attribute name="weltpixel_mm_mob_hide_allcat" />
     </group>
 </config>

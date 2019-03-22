@@ -178,4 +178,36 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         return json_encode($brekpoints);
     }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function getContactPageVersion($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/contact_options/contact_version', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function getTopImage($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/contact_options/top_image', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function isEnabledBlock($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/contact_options/enable_block', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+    /**
+     * @return string
+     */
+    public function getContactBlockId($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/contact_options/block_id', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
 }

@@ -5,7 +5,7 @@ define(['jquery'], function ($) {
 		headerRightMiniCart: $('.header_right > .minicart-wrapper'),
 
 		headerLinks: function () {
-			if (($('body').hasClass('wp-device-l')) || $('body').hasClass('wp-device-xl') ) {
+			if (($('body').hasClass('mobile-nav')) || ($('body').hasClass('wp-device-l')) || $('body').hasClass('wp-device-xl') ) {
 				if (!this.headerLinks_1.hasClass('moved-header')) {
 					this.headerLinks_1.insertBefore(this.headerRightMiniCart);
 					$('.header_right > .header.links .authorization-link a[data-post]').hide();

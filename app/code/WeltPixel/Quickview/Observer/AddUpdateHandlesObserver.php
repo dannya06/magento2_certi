@@ -30,7 +30,8 @@ class AddUpdateHandlesObserver implements ObserverInterface
     const XML_PATH_QUICKVIEW_REMOVE_PRODUCT_IMAGE = 'weltpixel_quickview/general/remove_product_image';
     const XML_PATH_QUICKVIEW_REMOVE_PRODUCT_IMAGE_THUMB = 'weltpixel_quickview/general/remove_product_image_thumb';
     const XML_PATH_QUICKVIEW_REMOVE_AVAILABILITY = 'weltpixel_quickview/general/remove_availability';
-    
+    const XML_PATH_QUICKVIEW_SEO_NOINDEX = 'weltpixel_quickview/seo/no_index';
+
     /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\App\Request\Http $request
@@ -90,6 +91,11 @@ class AddUpdateHandlesObserver implements ObserverInterface
         $removeAvailability = $this->scopeConfig->getValue(self::XML_PATH_QUICKVIEW_REMOVE_AVAILABILITY,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);        
         if ($removeAvailability) {
             $layout->getUpdate()->addHandle('weltpixel_quickview_removeavailability');
+        }
+
+        $seoNoIndex = $this->scopeConfig->getValue(self::XML_PATH_QUICKVIEW_SEO_NOINDEX,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        if ($seoNoIndex) {
+            $layout->getUpdate()->addHandle('weltpixel_quickview_seo_addnoindex');
         }
         
         return $this;

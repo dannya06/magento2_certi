@@ -3,12 +3,12 @@
     <body>
         <!-- impressions merge with ProductPage -->
         <referenceBlock name="category.products.list" >
-            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/enable">
+            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/product_click_tracking">
                 <argument name='template' xsi:type='string'>WeltPixel_CategoryPage::product/list.phtml</argument>
             </action>
         </referenceBlock>
         <referenceBlock name="search_result_list" >
-            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/enable">
+            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/product_click_tracking">
                 <argument name='template' xsi:type='string'>WeltPixel_CategoryPage::product/list.phtml</argument>
             </action>
         </referenceBlock>
@@ -16,17 +16,17 @@
 
         <!-- product clicks for cross, related, upsell merge with OwlCarouselSlider module -->
         <referenceBlock name="checkout.cart.crosssell" >
-            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/enable">
+            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/product_click_tracking">
                 <argument name='template' xsi:type='string'>WeltPixel_OwlCarouselSlider::product/list/items.phtml</argument>
             </action>
         </referenceBlock>
         <referenceBlock name="product.info.upsell" >
-            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/enable">
+            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/product_click_tracking">
                 <argument name='template' xsi:type='string'>WeltPixel_OwlCarouselSlider::product/list/items.phtml</argument>
             </action>
         </referenceBlock>
         <referenceBlock name="catalog.product.related" >
-            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/enable">
+            <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/product_click_tracking">
                 <argument name='template' xsi:type='string'>WeltPixel_OwlCarouselSlider::product/list/items.phtml</argument>
             </action>
         </referenceBlock>

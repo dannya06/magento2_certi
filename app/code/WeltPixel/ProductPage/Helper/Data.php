@@ -8,6 +8,66 @@ namespace WeltPixel\ProductPage\Helper;
  */
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
+    const PAGE_VERSION_NO_GALLERY = [2, 4];
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $_storeManager;
+    /**
+     * @var \WeltPixel\MobileDetect\Helper\Data
+     */
+    protected $mobileDetectHelper;
+
+    /**
+     * Data constructor.
+     * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \WeltPixel\MobileDetect\Helper\Data $mobileDetectHelper
+     */
+    public function __construct(
+        \Magento\Framework\App\Helper\Context $context,
+        \WeltPixel\MobileDetect\Helper\Data $mobileDetectHelper,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
+    ) {
+        parent::__construct($context);
+        $this->_storeManager = $storeManager;
+        $this->mobileDetectHelper = $mobileDetectHelper;
+    }
+
+    /**
+     * Get store identifier
+     *
+     * @return  int
+     */
+    public function getStoreId()
+    {
+        return $this->_storeManager->getStore()->getId();
+    }
+
+    /**
+     * @param int $storeId
+     * @return boolean
+     */
+    public function productVersion($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/version/version', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return boolean
+     */
+    public function moveDescriptionsTabs($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/general/move_description_tabs_under_info_area', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return boolean
+     */
+    public function getPositionProductInfo($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/general/position_product_info', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
     /**
      * @param int $storeId
      * @return boolean
@@ -44,15 +104,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int $storeId
      * @return boolean
      */
-    public function removeTabsBorder($storeId = null) {
-        return $this->scopeConfig->getValue('weltpixel_product_page/general/remove_tabs_border', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
-    }
-
-
-    /**
-     * @param int $storeId
-     * @return boolean
-     */
     public function removeSwatchTooltip($storeId = null) {
         return !$this->scopeConfig->getValue('weltpixel_product_page/general/display_swatch_tooltip', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
@@ -64,6 +115,31 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getTabsLayout($storeId = null) {
         return $this->scopeConfig->getValue('weltpixel_product_page/general/tabs_layout', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+
+    /**
+     * @param int $storeId
+     * @return boolean
+     */
+    public function getTabsVersion($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/general/tabs_version', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return boolean
+     */
+    public function getAccordionVersion($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/general/accordion_version', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return boolean
+     */
+    public function isAccordionCollapsible($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/general/accordion_collapsible', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
 
@@ -98,4 +174,29 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	public function getBackgroundArrows($storeId = null) {
         return $this->scopeConfig->getValue('weltpixel_product_page/gallery/arrows_bg', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
 	}
+
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getGalleryNavDir($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/gallery/navdir', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function getMagnifierEnabled($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/magnifier/enabled', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+	public function getMagnifierEventType($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_product_page/magnifier/eventtype', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
 }

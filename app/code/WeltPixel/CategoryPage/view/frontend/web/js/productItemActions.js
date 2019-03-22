@@ -123,7 +123,18 @@ define(['jquery'], function (jQuery) {
             var productItem = '.products-grid .product-item',
                 productItemHeight = {};
             jQuery(productItem).each(function() {
-                var height = jQuery(this).outerHeight();
+                /** if height was already set
+                 * keep this height for all the new items
+                 * loaded by ajaxInfiniteScroll
+                 */
+                if (jQuery(this).filter('[style*=height]').length) {
+                    var height = parseInt(jQuery(this).css('height'));
+                    productItemHeight[height] = height;
+                    return false;
+                } else {
+                    var height = jQuery(this).outerHeight();
+                }
+
                 productItemHeight[height] = height;
             });
             var finalHeight = productItemHeight[Object.keys(productItemHeight)[Object.keys(productItemHeight).length - 1]];

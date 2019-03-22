@@ -216,6 +216,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int $storeId
      * @return mixed
      */
+    public function getSerachOptionsVersion($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/version', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
     public function getSerachOptionsWidth($storeId = null) {
         return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/width', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
@@ -290,6 +298,95 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getHeaderIconSize($storeId = null) {
         return $this->scopeConfig->getValue('weltpixel_custom_header/icons/icon_size', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getBackgroundColorSearchv2($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/background_v2', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getBackgroundOpacitySearchv2($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/background_opacity', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getInputBackgroundColor($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/background_input', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getMainSearchElementsColor($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/main_elements_color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function magnifierIconIsEnabled($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/display_magnifier', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getMagnifierBackgroundColor($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/magnifier_background_color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getInputBorders($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/input_borders', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getSearchInputFontSize($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/input_font_size', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getBorderWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/border_widthv2', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getPlaceholderText($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/placeholder_text', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+    /* @param int $storeId
+     * @return string
+     */
+    public function getCustomHtml($storeId = null){
+        return trim($this->scopeConfig->getValue('weltpixel_custom_header/search_options/customHtml', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId));
     }
 
     /**

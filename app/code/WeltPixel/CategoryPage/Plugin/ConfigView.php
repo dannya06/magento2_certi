@@ -71,6 +71,49 @@ class ConfigView {
         }
 
         return $result;
+    }
 
+    /**
+     * @param \Magento\Framework\Config\View $subject
+     * @param array $result
+     * @param string $module
+     * @param string $mediaType
+     * @return array
+     */
+    public function afterGetMediaEntities(\Magento\Framework\Config\View $subject, array $result, $module, $mediaType)
+    {
+        foreach ($result as $mediaId => &$options) {
+            switch ($mediaId) {
+                case "category_page_grid" :
+                case "category_page_grid_hover" :
+                    $gridImageWidth = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_CATEGORYPAGE_IMAGE_GRID_WIDTH,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+                    $gridImageHeight = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_CATEGORYPAGE_IMAGE_GRID_HEIGHT,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+                    if (strlen($gridImageWidth)) {
+                        $options['width'] = $gridImageWidth;
+                    }
+                    if (strlen($gridImageHeight)) {
+                        $options['height'] = $gridImageHeight;
+                    }
+                    if ($mediaId == 'category_page_grid_hover') {
+                        $options['type'] = 'weltpixel_hover_image';
+                    }
+                    break;
+                case "category_page_list" :
+                case "category_page_list_hover" :
+                    $listImageWidth = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_CATEGORYPAGE_IMAGE_LIST_WIDTH,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+                    $listImageHeight = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_CATEGORYPAGE_IMAGE_LIST_HEIGHT,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+                    if (strlen($listImageWidth)) {
+                        $options['width'] = $listImageWidth;
+                    }
+                    if (strlen($listImageHeight)) {
+                        $options['height'] = $listImageHeight;
+                    }
+                    if ($mediaId == 'category_page_list_hover') {
+                        $options['type'] = 'weltpixel_hover_image';
+                    }
+                    break;
+            }
+        }
+        return $result;
     }
 }

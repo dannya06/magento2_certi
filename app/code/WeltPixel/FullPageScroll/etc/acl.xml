@@ -12,7 +12,7 @@
 				</resource>
 				<resource id="WeltPixel_Backend::WeltPixel" >
 					<resource id="WeltPixel_FullPageScroll::FullPageScroll_Label" sortOrder="60" title="FullPageScroll" >
-						<resource id="WeltPixel_FullPageScroll::FullPageScroll" sortOrder="10" title="FullPageScroll" />
+						<resource id="WeltPixel_FullPageScroll::FullPageScroll" sortOrder="10" title="FullPageScroll Settings" />
 					</resource>
 				</resource>
 			</resource>

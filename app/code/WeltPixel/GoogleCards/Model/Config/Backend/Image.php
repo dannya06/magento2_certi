@@ -60,13 +60,17 @@ class Image extends \Magento\Config\Model\Config\Backend\Image
     public function beforeSave()
     {
         $value = $this->getValue();
+        $file = $this->getFileData();
         $deleteFlag = is_array($value) && !empty($value['delete']);
 
-        if (empty($_FILES)) {
-            return;
+        if (empty($file)) {
+            if ($this->getOldValue() &&  $deleteFlag) {
+                $this->_mediaDirectory->delete(self::UPLOAD_DIR . '/' . $this->getOldValue());
+            }
+            return parent::beforeSave();
         }
 
-        $fileTmpName = $_FILES['groups']['tmp_name'][$this->getGroupId()]['fields'][$this->getField()]['value'];
+        $fileTmpName = $file['tmp_name'];
 
         if ($this->getOldValue() && ($fileTmpName || $deleteFlag)) {
             $this->_mediaDirectory->delete(self::UPLOAD_DIR . '/' . $this->getOldValue());

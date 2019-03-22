@@ -27,6 +27,10 @@ class Description implements ArrayInterface
             array(
                 'value' => '1',
                 'label' => __('Long Description')
+            ),
+            array(
+                'value' => '2',
+                'label' => __('Meta Description')
             )
         );
     }

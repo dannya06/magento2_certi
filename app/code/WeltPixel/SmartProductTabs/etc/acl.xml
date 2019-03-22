@@ -6,13 +6,13 @@
 				<resource id="Magento_Backend::stores">
 					<resource id="Magento_Backend::stores_settings">
 						<resource id="Magento_Config::config">
-							<resource id="WeltPixel_SmartProductTabs::SmartProductTabsSettings" title="WeltPixel SmartProductTabs" sortOrder="260" />
+							<resource id="WeltPixel_SmartProductTabs::SmartProductTabsSettings" title="WeltPixel Smart Product Tabs" sortOrder="260" />
 						</resource>
 					</resource>
 				</resource>
 				<resource id="WeltPixel_Backend::WeltPixel" >
-					<resource id="WeltPixel_SmartProductTabs::SmartProductTabs_Label" sortOrder="70" title="SmartProductTabs" >
-						<resource id="WeltPixel_SmartProductTabs::SmartProductTabs" sortOrder="10" title="SmartProductTabs" />
+					<resource id="WeltPixel_SmartProductTabs::SmartProductTabs_Label" sortOrder="70" title="Smart Product Tabs" >
+						<resource id="WeltPixel_SmartProductTabs::SmartProductTabs" sortOrder="10" title="Smart Product Tabs Settings" />
 					</resource>
 				</resource>
 			</resource>

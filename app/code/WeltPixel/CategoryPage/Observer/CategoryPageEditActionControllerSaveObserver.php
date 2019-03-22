@@ -485,7 +485,8 @@ $wrapperClass {
     .swatch-option {
         outline: none !important;
         position: relative;
-        &.color {
+        &.color,
+        &.image{
             border: none !important;
             &:before {
                 visibility: hidden;
@@ -731,7 +732,7 @@ $wrapperClass {
                 text-align: $priceAlign !important;
                 .price-container {
                     .price-label {
-                        display: none;
+                        display: block !important;
                     }
                     .price {
                         font-size: $priceFontSize !important;
@@ -963,169 +964,209 @@ $wrapperClass {
         $select_border_width = strlen(trim($true)) ? 'border-width: ' . $selectOBW . ';' : 'border-width: 0px 0px 1px 0px;';
 
         $content = "
-.toolbar.toolbar-products {
-	$background_color
-	$border_color
-	$padding
-	.label_style() {
-		$label_font_size
-		$label_font_color
-	}
-    label {
-        .label_style;
-        span {
-            .label_style;
+    #layered-filter-block {
+        &.filter {
+            .block-content.filter-content {
+                .block-subtitle {
+                    border-style: solid;
+                    border-width: 0 0 1px 0;
+                    $select_border_color
+                }
+            }
+        }
+        .block-content.filter-content {
+            .filter-options {
+                .filter-options-item {
+                    .filter-options-title {
+                        border-style: solid;
+                        border-width: 0 0 1px 0;
+                        $select_border_color
+                        &:after {
+                            color: $select_arrow_c;
+                        }
+                        &:hover {
+                            &:after {
+                                color: $select_arrow_hover_c;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
-	select.sorter-options {
-		$select_font_size
-		$select_font_color
-		$select_border_width
-		$select_min_height
-		$select_line_height
-		border-style: solid;
-		$select_border_color
-		box-shadow: unset;
-		$backgroundSelectImage
-		$select_border_radius
-		background-size: 12px;
-		&:focus {
-		    $select_border_focus_color
-			$backgroundSelectImageHover
-		}
-		option {
-			$select_option_font_color
-		}
-	}
-	.modes {
-		#modes-label {
-			.label_style;
-		}
-		.modes-mode {
-			$grid_list_background_color
-			$grid_list_border_color
-			$grid_list_icon_color
-			&:before {
-				$grid_list_icon_color
-				$grid_list_icon_size
-			}
-			&:hover {
-				$grid_list_background_hover_color
-				$grid_list_border_hover_color
-				&:before {
-					$grid_list_icon_hover_color
-					$grid_list_icon_size
-				}
-			}
-			&.active {
-				$grid_list_background_active_color
-				$grid_list_border_active_color
-				$grid_list_icon_active_color
-				&:before {
-					$grid_list_icon_active_color
-					$grid_list_icon_size
-				}
-			}
-		}
-	}
-	p#toolbar-amount { 
-		.label_style;
-	}
-	.pages {
-		#paging-label {
-			.label_style;
-		} 
-		ul.pages-items {
-			li {
-				&.item {
-					a.page {
-						$pagination_font_size
-						$pagination_font_color
-						$pagination_background_color
-						$pagination_border_color
-						$pagination_border_radius
-						$pagination_min_width
-						$pagination_min_height
-						&:hover {
-							$pagination_font_hover_color
-							$pagination_background_hover_color
-							$pagination_border_hover_color
-						}
-						span {
-						    width: 100%;
-						    $pagination_font_line_height
-						}
-					}
-					&.current {
-						strong.page {
-						    $pagination_font_size
-							$pagination_font_active_color
-							$pagination_background_active_color
-							$pagination_border_active_color
-							$pagination_border_radius
+    .toolbar.toolbar-products {
+        $background_color
+        $border_color
+        $padding
+        .label_style() {
+            $label_font_size
+            $label_font_color
+        }
+        label {
+            .label_style;
+            span {
+                .label_style;
+            }
+        }
+        select.sorter-options,
+        select.limiter-options {
+            $select_font_size
+            $select_font_color
+            $select_border_width
+            $select_min_height
+            $select_line_height
+            border-style: solid;
+            $select_border_color
+            box-shadow: unset;
+            $backgroundSelectImage
+            $select_border_radius
+            background-size: 12px;
+            padding: 0px 30px 2px 5px;
+            &:focus {
+                $select_border_focus_color
+                $backgroundSelectImageHover
+                background-size: 12px;
+            }
+            option {
+                $select_option_font_color
+                &:hover,
+                &:checked {
+                    background-color: #eeeeee;
+                }
+            }
+        }
+        select.limiter-options {
+            padding: 0 15px 2px 5px;
+        }
+        .modes {
+            #modes-label {
+                .label_style;
+            }
+            .modes-mode {
+                $grid_list_background_color
+                $grid_list_border_color
+                $grid_list_icon_color
+                &:before {
+                    $grid_list_icon_color
+                    $grid_list_icon_size
+                }
+                &:hover {
+                    $grid_list_background_hover_color
+                    $grid_list_border_hover_color
+                    &:before {
+                        $grid_list_icon_hover_color
+                        $grid_list_icon_size
+                    }
+                }
+                &.active {
+                    $grid_list_background_active_color
+                    $grid_list_border_active_color
+                    $grid_list_icon_active_color
+                    &:before {
+                        $grid_list_icon_active_color
+                        $grid_list_icon_size
+                    }
+                }
+            }
+        }
+        p#toolbar-amount { 
+            .label_style;
+        }
+        .pages {
+            #paging-label {
+                .label_style;
+            } 
+            ul.pages-items {
+                li {
+                    &.item {
+                        a.page {
+                            $pagination_font_size
+                            $pagination_font_color
+                            $pagination_background_color
+                            $pagination_border_color
+                            $pagination_border_radius
                             $pagination_min_width
                             $pagination_min_height
+                            &:hover {
+                                $pagination_font_hover_color
+                                $pagination_background_hover_color
+                                $pagination_border_hover_color
+                            }
                             span {
                                 width: 100%;
                                 $pagination_font_line_height
                             }
-						}
-					}
-					&.pages-item-previous,
-					&.pages-item-next {
-						a {
-							$pagination_next_prev_font_size
-							$pagination_next_prev_font_color
-							$pagination_next_prev_background_color
-							$pagination_next_prev_border_color
-							$pagination_border_radius
-							&:before {
-								$pagination_next_prev_font_color
-								$pagination_next_prev_font_size
-
-							}
-							&:hover {
-								$pagination_next_prev_background_hover_color
-								$pagination_next_prev_border_hover_color
-								&:before {
-									$pagination_next_prev_font_hover_color
-								}
-							}
-						}
-
-					}
-				}
-			}
-		}
-	}
-	.field.limiter {
-		label { 
-			.label_style;
-			span {
+                        }
+                        &.current {
+                            strong.page {
+                                $pagination_font_size
+                                $pagination_font_active_color
+                                $pagination_background_active_color
+                                $pagination_border_active_color
+                                $pagination_border_radius
+                                $pagination_min_width
+                                $pagination_min_height
+                                span {
+                                    width: 100%;
+                                    $pagination_font_line_height
+                                }
+                            }
+                        }
+                        &.pages-item-previous,
+                        &.pages-item-next {
+                            a {
+                                $pagination_next_prev_font_size
+                                $pagination_next_prev_font_color
+                                $pagination_next_prev_background_color
+                                $pagination_next_prev_border_color
+                                $pagination_border_radius
+                                &:before {
+                                    $pagination_next_prev_font_color
+                                    $pagination_next_prev_font_size
+    
+                                }
+                                &:hover {
+                                    $pagination_next_prev_background_hover_color
+                                    $pagination_next_prev_border_hover_color
+                                    &:before {
+                                        $pagination_next_prev_font_hover_color
+                                    }
+                                }
+                            }
+    
+                        }
+                    }
+                }
+            }
+        }
+        .field.limiter {
+            label { 
                 .label_style;
-			}
-		}
-		.limiter-text {
-			.label_style;
-		} 
-	}
-	.toolbar-sorter.sorter {
-		label {
-		    .label_style;
-		}
-		.sorter-action {
-			&:before {
-				$direction_font_size
-				$direction_font_color
-			}
-			&:hover {
-				&:before {
-					$direction_font_hover_color
-				}
-			}
-		}
-	}
-}
+                span {
+                    .label_style;
+                }
+            }
+            .limiter-text {
+                .label_style;
+            } 
+        }
+        .toolbar-sorter.sorter {
+            label {
+                .label_style;
+            }
+            .sorter-action {
+                &:before {
+                    $direction_font_size
+                    $direction_font_color
+                }
+                &:hover {
+                    &:before {
+                        $direction_font_hover_color
+                    }
+                }
+            }
+        }
+    }
         ";
 
         return $content;

@@ -142,6 +142,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return mixed
      */
+    public function getTextLoadPrevious()
+    {
+        return $this->getConfigValue('advanced', 'text_loadprevious');
+    }
+
+    /**
+     * @return mixed
+     */
     public function getTextNoMore()
     {
         return $this->getConfigValue('advanced', 'text_nomore');
@@ -194,7 +202,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             return $category->getId();
         }
 
-        return false;
+        return $this->_getRootCategoryId();
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function _getRootCategoryId() {
+        $currentStoreId = $this->_storeManager->getStore()->getId();
+        return $this->_storeManager->getStore($currentStoreId)->getRootCategoryId();
     }
 
     public function getAjaxReloadPaginationUrl()

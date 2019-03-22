@@ -42,6 +42,11 @@ class SmartProductTabs extends Attributes
 	 */
 	protected $_moduleEnable = 'weltpixel_smartproducttabs/general/enable_smartproducttabs';
 
+    /**
+     * @var string
+     */
+    protected $_blockMatchingLogic = 'weltpixel_smartproducttabs/general/block_matching_logic';
+
 	/**
 	 * protected $eavConfig;
 	 *
@@ -61,7 +66,17 @@ class SmartProductTabs extends Attributes
 		if (!$this->_product) {
 			$this->_product = $this->_coreRegistry->registry('product');
 		}
-		return $this->_product->getAttributeText($this->getProductAttributeA());
+
+        $option = '';
+
+        if ($this->_scopeConfig->getValue($this->_blockMatchingLogic, $this->_scopeValue)) {
+            $option = $this->_product->getAttributeText($this->getProductAttributeA());
+        } else {
+            $attr = $this->_product->getResource()->getAttribute($this->getProductAttributeA());
+            $option = $attr->setStoreId(0)->getSource()->getOptionText($this->_product->getData($this->getProductAttributeA()));
+        }
+
+        return $option;
 	}
 
 	/**
@@ -72,7 +87,17 @@ class SmartProductTabs extends Attributes
 		if (!$this->_product) {
 			$this->_product = $this->_coreRegistry->registry('product');
 		}
-		return $this->_product->getAttributeText($this->getProductAttributeB());
+
+		$option = '';
+
+		if ($this->_scopeConfig->getValue($this->_blockMatchingLogic, $this->_scopeValue)) {
+            $option = $this->_product->getAttributeText($this->getProductAttributeB());
+        } else {
+            $attr = $this->_product->getResource()->getAttribute($this->getProductAttributeB());
+            $option = $attr->setStoreId(0)->getSource()->getOptionText($this->_product->getData($this->getProductAttributeB()));
+        }
+
+        return $option;
 	}
 
 	/**
@@ -83,7 +108,17 @@ class SmartProductTabs extends Attributes
 		if (!$this->_product) {
 			$this->_product = $this->_coreRegistry->registry('product');
 		}
-		return $this->_product->getAttributeText($this->getProductAttributeC());
+
+        $option = '';
+
+        if ($this->_scopeConfig->getValue($this->_blockMatchingLogic, $this->_scopeValue)) {
+            $option = $this->_product->getAttributeText($this->getProductAttributeC());
+        } else {
+            $attr = $this->_product->getResource()->getAttribute($this->getProductAttributeC());
+            $option = $attr->setStoreId(0)->getSource()->getOptionText($this->_product->getData($this->getProductAttributeC()));
+        }
+
+        return $option;
 	}
 
 	/**
@@ -105,13 +140,13 @@ class SmartProductTabs extends Attributes
 	 */
 	private function getProductAttributeB()
 	{
-		if (empty($this->_data['attribute_smartproducttabs'])) {
-			$this->_data['attribute_smartproducttabs'] = $this->_scopeConfig->getValue(
+		if (empty($this->_data['attribute_smartproducttabsb'])) {
+			$this->_data['attribute_smartproducttabsb'] = $this->_scopeConfig->getValue(
 				$this->_moduleAttributeSet[1],
 				$this->_scopeValue
 			);
 		}
-		return $this->_data['attribute_smartproducttabs'];
+		return $this->_data['attribute_smartproducttabsb'];
 	}
 
 	/**
@@ -119,13 +154,13 @@ class SmartProductTabs extends Attributes
 	 */
 	private function getProductAttributeC()
 	{
-		if (empty($this->_data['attribute_smartproducttabs'])) {
-			$this->_data['attribute_smartproducttabs'] = $this->_scopeConfig->getValue(
+		if (empty($this->_data['attribute_smartproducttabsc'])) {
+			$this->_data['attribute_smartproducttabsc'] = $this->_scopeConfig->getValue(
 				$this->_moduleAttributeSet[2],
 				$this->_scopeValue
 			);
 		}
-		return $this->_data['attribute_smartproducttabs'];
+		return $this->_data['attribute_smartproducttabsc'];
 	}
 
 	/**
@@ -158,7 +193,7 @@ class SmartProductTabs extends Attributes
 		if (!isset($productAttribute)) {
 			return false;
 		}
-		$productAttributeOption = str_replace(' ', '-', strtolower($this->getProductAttributeOptionA()));
+		$productAttributeOption = str_replace(' ', '-', strtolower($this->getProductAttributeOptionB()));
 		$productAttributeOption = preg_replace('/[^A-Za-z0-9\-]/', '', $productAttributeOption);
 		$staticBlockIdentifier = $this->getLayout()
 			->createBlock('Magento\Cms\Block\Block')
@@ -179,7 +214,7 @@ class SmartProductTabs extends Attributes
 		if (!isset($productAttribute)) {
 			return false;
 		}
-		$productAttributeOption = str_replace(' ', '-', strtolower($this->getProductAttributeOptionA()));
+		$productAttributeOption = str_replace(' ', '-', strtolower($this->getProductAttributeOptionC()));
 		$productAttributeOption = preg_replace('/[^A-Za-z0-9\-]/', '', $productAttributeOption);
 		$staticBlockIdentifier = $this->getLayout()
 			->createBlock('Magento\Cms\Block\Block')

@@ -96,5 +96,40 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ]
             );
         }
+
+        if (version_compare($context->getVersion(), '1.1.2') < 0) {
+            $setup->getConnection()->addColumn(
+                $setup->getTable('weltpixel_owlcarouselslider_banners'),
+                'wrap_link',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => '255',
+                    'nullable' => true,
+                    'default' => '0',
+                    'comment' => 'Wrap Link',
+                    'after' => 'url'
+                ]
+            );
+        }
+
+        if (version_compare($context->getVersion(), '1.1.3') < 0) {
+            $setup->getConnection()->modifyColumn(
+                $setup->getTable('weltpixel_owlcarouselslider_banners'),
+                'slider_id',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 255,
+                ]
+            );
+
+            $setup->getConnection()->modifyColumn(
+                $setup->getTable('weltpixel_owlcarouselslider_banners'),
+                'sort_order',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 255,
+                ]
+            );
+        }
     }
 }

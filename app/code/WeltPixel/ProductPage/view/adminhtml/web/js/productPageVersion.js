@@ -45,8 +45,7 @@ define([
 								if (elValue == null) {
 									elValue = '';
 								}
-
-								if (elmVal != elValue) {
+								if (elm.length && (elmVal != elValue)) {
 									if (elInherit.prop('checked', true)) {
 										// unchecked + add value
 										elInherit.prop('checked', false);

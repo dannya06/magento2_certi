@@ -5,7 +5,7 @@
             <label>Lazy Loading</label>
             <tab>weltpixel</tab>
             <resource>WeltPixel_LazyLoading::LazyLoadingSettings</resource>
-            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="general" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Settings</label>
                 <field id="enable" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable</label>
@@ -13,7 +13,15 @@
                     <comment><![CDATA[Lazy Loading is also available in <a target="_blank" href="https://www.weltpixel.com/owl-carousel-and-slider.html">Banner Slider and OWL Carousel - Free Extension</a>, you can enable lazy loading for sliders and carousels using admin options.]]></comment>
                 </field>
             </group>
-            <group id="notification" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+
+            <group id="compatibility_notification" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <fieldset_css>weltpixel-recommended-header active</fieldset_css>
+                <field id="notification_msg" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>WeltPixel\LazyLoading\Block\Adminhtml\System\Config\LazyLoadingCompatibilityNotice</frontend_model>
+                </field>
+            </group>
+
+            <group id="notification" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Lazy Load Tips</label>
                 <fieldset_css>weltpixel-recommended-header active</fieldset_css>
                 <field id="notification_msg" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
