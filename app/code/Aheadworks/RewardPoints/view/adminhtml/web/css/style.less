@@ -48,11 +48,100 @@
   padding-right: 0.6rem;
 }
 
-.aw-reward-points-customers-index .sticky-header .admin__data-grid-actions-wrap .admin__data-grid-action-export button span,
-.aw-reward-points-customers-index .sticky-header .admin__data-grid-actions-wrap .aw-reward-points__data-grid-action-import button span {
-  display: none;
+.aw-reward-points-customers-index .sticky-header .admin__data-grid-actions-wrap,
+.aw_reward_points-customers-index .sticky-header .admin__data-grid-actions-wrap {
+  .admin__data-grid-action-export button span,
+  .aw-reward-points__data-grid-action-import button span {
+    display: none;
+  }
 }
 
 .no-more-selection {
     font-weight: 700;
+}
+
+.aw_reward_points-earning_rules-index,
+.aw-reward-points-earning-rules-index {
+  .data-grid {
+    .name-column {
+      min-width: 230px;
+    }
+
+    .date-column {
+      min-width: 105px;
+    }
+  }
+}
+
+.aw-reward-points-earning-rules-edit,
+.aw_reward_points-earning_rules-edit {
+    #rule_conditions_fieldset {
+
+        .legend {
+            border-bottom: 1px solid #cac3b4;
+            width: 100%;
+
+            span {
+                font-size: 1.7rem;
+                padding: 7px 0 10px;
+                font-weight: 600;
+                display: inline-block;
+            }
+        }
+
+        .label {
+            font-weight: 600;
+        }
+    }
+
+    .rule_actions_fieldset {
+        .action-type-group {
+            padding-top: 0;
+
+            .admin__additional-info {
+                font-size: 1.2rem;
+                padding-top: 0;
+            }
+        }
+    }
+}
+
+.aw-reward-points.promo_settings_fieldset.labels-dynamic-rows {
+  .select_field {
+    width: 20%;
+
+    .admin__field.select_field {
+      width: 100%;
+    }
+  }
+
+  .action_delete_button._disabled {
+    opacity: 1;
+
+    button {
+      visibility: hidden;
+    }
+  }
+
+  td {
+    &._disabled {
+      opacity: 1;
+    }
+
+    .admin__field .admin__field-label {
+      display: none;
+    }
+  }
+
+  td:nth-child(2), th:nth-child(2) {
+    padding-left: 1rem;
+  }
+
+  .admin__control-table-wrapper {
+    overflow: visible;
+
+      .admin__field-tooltip-action {
+        margin-left: 0;
+      }
+  }
 }

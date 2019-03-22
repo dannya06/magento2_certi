@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -204,10 +204,11 @@
                 </item>
             </argument>
         </column>
-        <column name="comment_to_admin">
+        <column name="comment_to_admin" class="Aheadworks\RewardPoints\Ui\Component\Listing\Columns\Transaction\CommentToAdmin">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                     <item name="label" xsi:type="string" translate="true">Comment To Admin</item>
                 </item>
             </argument>

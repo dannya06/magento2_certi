@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Test\Unit\Plugin\Model\Sales;
 
@@ -61,9 +61,9 @@ class InvoicePluginTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Test afterAfterSave method
+     * Test afterSave method
      */
-    public function testAfterAfterSaveMethod()
+    public function testAfterSaveMethod()
     {
         $entityId = 1;
 
@@ -81,6 +81,6 @@ class InvoicePluginTest extends \PHPUnit\Framework\TestCase
             ->getMock();
         $this->object->afterPay($invoiceMock);
 
-        $this->object->afterAfterSave($this->invoiceMock);
+        $this->object->afterSave($this->invoiceMock);
     }
 }

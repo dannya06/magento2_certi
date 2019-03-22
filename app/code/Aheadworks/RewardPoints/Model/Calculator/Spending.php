@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\Calculator;
 
@@ -286,7 +286,6 @@ class Spending
         if ($shareCoveredValue = $this->config->getShareCoveredValue($websiteId)) {
             $shareCoveredValue = max(0, intval($shareCoveredValue));
             $maxTotal = $maxTotal * $shareCoveredValue / 100;
-            $baseItemsTotal = $baseItemsTotal * $shareCoveredValue / 100;
         }
 
         if (!$maxTotal) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -48,6 +48,84 @@
             </field>
             <field name="base_aw_reward_points">
                 <aspect name="to_order_item" />
+            </field>
+        </fieldset>
+        <fieldset id="quote_convert_earn_item">
+            <field name="product_id">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="product_type">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="is_children_calculated">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_row_total">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_row_total_incl_tax">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_discount_amount">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_aw_reward_points_amount">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="qty">
+                <aspect name="to_earn_item" />
+            </field>
+        </fieldset>
+        <fieldset id="invoice_convert_earn_item">
+            <field name="product_id">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="product_type">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="is_children_calculated">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_row_total">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_row_total_incl_tax">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_discount_amount">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_aw_reward_points_amount">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="qty">
+                <aspect name="to_earn_item" />
+            </field>
+        </fieldset>
+        <fieldset id="creditmemo_convert_earn_item">
+            <field name="product_id">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="product_type">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="is_children_calculated">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_row_total">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_row_total_incl_tax">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_discount_amount">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="base_aw_reward_points_amount">
+                <aspect name="to_earn_item" />
+            </field>
+            <field name="qty">
+                <aspect name="to_earn_item" />
             </field>
         </fieldset>
     </scope>

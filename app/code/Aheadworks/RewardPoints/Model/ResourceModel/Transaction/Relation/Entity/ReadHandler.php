@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\ResourceModel\Transaction\Relation\Entity;
 
@@ -54,10 +54,20 @@ class ReadHandler implements ExtensionInterface
             $entitiesData = $connection->fetchAssoc($select, ['id' => $entityId]);
             $resultIds = [];
             foreach ($entitiesData as $entityData) {
-                $resultIds[$entityData['entity_type']] = [
-                    'entity_id'    => $entityData['entity_id'],
-                    'entity_label' => $entityData['entity_label']
-                ];
+                if (isset($resultIds[$entityData['entity_type']])) {
+                    $resultIds[$entityData['entity_type']] = array_merge(
+                        [$resultIds[$entityData['entity_type']]],
+                        [[
+                            'entity_id'    => $entityData['entity_id'],
+                            'entity_label' => $entityData['entity_label']
+                        ]]
+                    );
+                } else {
+                    $resultIds[$entityData['entity_type']] = [
+                        'entity_id'    => $entityData['entity_id'],
+                        'entity_label' => $entityData['entity_label']
+                    ];
+                }
             }
             $entity->setEntities($resultIds);
         }

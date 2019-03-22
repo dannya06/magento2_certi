@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model;
 
@@ -127,7 +127,8 @@ class Sender
                 ]
             ),
             $sender,
-            [$customerName => $customer->getEmail()]
+            $customer->getEmail(),
+            $customerName
         );
         return $notifiedStatus;
     }
@@ -139,18 +140,25 @@ class Sender
      * @param array $templateOptions
      * @param array $templateVars
      * @param string $from
-     * @param array $to
+     * @param string $recipientEmail
+     * @param string $recipientName
      * @return int
      */
-    private function send($templateId, array $templateOptions, array $templateVars, $from, array $to)
-    {
+    private function send(
+        $templateId,
+        array $templateOptions,
+        array $templateVars,
+        $from,
+        $recipientEmail,
+        $recipientName
+    ) {
         try {
             $this->transportBuilder
                 ->setTemplateIdentifier($templateId)
                 ->setTemplateOptions($templateOptions)
                 ->setTemplateVars($templateVars)
                 ->setFrom($from)
-                ->addTo($to);
+                ->addTo($recipientEmail, $recipientName);
             $this->transportBuilder->getTransport()->sendMessage();
         } catch (\Exception $e) {
             return NotifiedStatus::NO;

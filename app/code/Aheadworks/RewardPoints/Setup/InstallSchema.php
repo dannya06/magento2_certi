@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Setup;
 
@@ -14,12 +14,27 @@ use Aheadworks\RewardPoints\Model\Source\NotifiedStatus;
 use Aheadworks\RewardPoints\Model\Source\SubscribeStatus;
 use Aheadworks\RewardPoints\Model\Source\Transaction\Type;
 use Aheadworks\RewardPoints\Model\Source\Transaction\Status;
+use Aheadworks\RewardPoints\Setup\Updater\Schema\Updater;
 
 /**
  * Class \Aheadworks\RewardPoints\Setup\InstallSchema
  */
 class InstallSchema implements InstallSchemaInterface
 {
+    /**
+     * @var Updater
+     */
+    private $updater;
+
+    /**
+     * @param Updater $updater
+     */
+    public function __construct(
+        Updater $updater
+    ) {
+        $this->updater = $updater;
+    }
+
     /**
      * Installs DB schema for the Aheadworks_RewardPoints module
      *
@@ -645,6 +660,9 @@ class InstallSchema implements InstallSchemaInterface
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->setComment('Aheadworks Reward Points Transaction Adjusted History');
         $installer->getConnection()->createTable($table);
+
+        $this->updater->update144($setup);
+        $this->updater->update150($setup);
 
         $installer->endSetup();
     }

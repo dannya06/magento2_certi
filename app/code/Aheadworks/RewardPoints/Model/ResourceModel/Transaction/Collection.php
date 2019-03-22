@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\ResourceModel\Transaction;
 
@@ -146,14 +146,27 @@ class Collection extends AbstractCollection implements TransactionSearchResultsI
     }
 
     /**
+     * Add sort order for expired soon transactions
+     *
+     * @return $this
+     */
+    public function addOrderExpiredSoon()
+    {
+        $this->addOrder('ISNULL(expiration_date), expiration_date, transaction_id', self::SORT_ORDER_ASC);
+        return $this;
+    }
+
+    /**
      * Add will expire transaction filter to collection
      *
      * @return $this
+     * @throws \Exception
      */
     public function addWillExpireTransactionFilter()
     {
         $now = new \DateTime('now', new \DateTimeZone('UTC'));
-        $now->add(new \DateInterval('P' . $this->config->getExpirationReminderDays() . 'D'));
+        $reminderDaysCount = $this->config->getExpirationReminderDays() ? : 0;
+        $now->add(new \DateInterval('P' . $reminderDaysCount . 'D'));
 
         $this->addFieldToFilter('expiration_date', ['notnull' => true]);
         $this->addFieldToFilter(new \Zend_Db_Expr('DATE(expiration_date)'), ['lteq' => $now->format('Y-m-d')]);
@@ -329,10 +342,7 @@ class Collection extends AbstractCollection implements TransactionSearchResultsI
                     if ($data[$linkageColumnName] == $id) {
                         switch ($fieldName) {
                             case 'entities':
-                                $result[$data['entity_type']] = [
-                                    'entity_id'    => $data['entity_id'],
-                                    'entity_label' => $data['entity_label']
-                                ];
+                                $result = $this->addEntityData($result, $data);
                                 break;
                             case 'balance_adjusted':
                                 $result += $data['balance'];
@@ -349,5 +359,61 @@ class Collection extends AbstractCollection implements TransactionSearchResultsI
                 $item->setData($fieldName, $result);
             }
         }
+    }
+
+    /**
+     * Add entity data
+     *
+     * @param $result
+     * @param $data
+     * @return mixed
+     */
+    private function addEntityData($result, $data)
+    {
+        $entityType = $data['entity_type'];
+        if (isset($result[$entityType])) {
+            if (is_array(reset($result[$entityType]))) {
+                $result[$entityType][] =
+                    $this->getEntityData($data);
+            } else {
+                $result = $this->mergeEntityData($result, $data);
+            }
+        } else {
+            $result[$entityType] =
+                $this->getEntityData($data);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Merge entity data
+     *
+     * @param $result
+     * @param $data
+     * @return mixed
+     */
+    private function mergeEntityData($result, $data)
+    {
+        $entityType = $data['entity_type'];
+        $result[$entityType] = array_merge(
+            [$result[$entityType]],
+            [$this->getEntityData($data)]
+        );
+        return $result;
+    }
+
+    /**
+     * Get entity data
+     *
+     * @param array $data
+     * @return array
+     */
+    private function getEntityData($data)
+    {
+        return [
+            'entity_id'    => $data['entity_id'],
+            'entity_label' => $data['entity_label']
+        ];
     }
 }

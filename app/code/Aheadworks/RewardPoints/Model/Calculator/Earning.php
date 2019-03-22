@@ -1,19 +1,25 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\Calculator;
 
+use Aheadworks\RewardPoints\Model\Calculator\Earning\Calculator;
+use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItem;
+use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemsResolver;
+use Aheadworks\RewardPoints\Model\Calculator\Earning\Predictor;
 use Aheadworks\RewardPoints\Model\Source\Calculation\PointsEarning;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Quote\Api\Data\TotalsInterface;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Api\Data\CartInterface;
+use Magento\Quote\Model\Quote;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\InvoiceInterface;
-use Magento\Sales\Api\Data\OrderInterface;
 use Aheadworks\RewardPoints\Model\Config;
-use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class Earning
@@ -28,99 +34,200 @@ class Earning
     private $config;
 
     /**
-     * @var RateCalculator
+     * @var EarnItemsResolver
      */
-    private $rateCalculator;
+    private $earnItemsResolver;
 
     /**
-     * @var OrderRepositoryInterface
+     * @var Calculator
      */
-    private $orderRepository;
+    private $calculator;
+
+    /**
+     * @var Predictor
+     */
+    private $predictor;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     /**
      * @param Config $config
-     * @param RateCalculator $rateCalculator
-     * @param OrderRepositoryInterface $orderRepository
+     * @param EarnItemsResolver $earnItemsResolver
+     * @param Calculator $calculator
+     * @param Predictor $predictor
+     * @param StoreManagerInterface $storeManager
+     * @param Logger $logger
      */
     public function __construct(
         Config $config,
-        RateCalculator $rateCalculator,
-        OrderRepositoryInterface $orderRepository
+        EarnItemsResolver $earnItemsResolver,
+        Calculator $calculator,
+        Predictor $predictor,
+        StoreManagerInterface $storeManager,
+        Logger $logger
     ) {
         $this->config = $config;
-        $this->rateCalculator = $rateCalculator;
-        $this->orderRepository = $orderRepository;
+        $this->earnItemsResolver = $earnItemsResolver;
+        $this->calculator = $calculator;
+        $this->predictor = $predictor;
+        $this->storeManager = $storeManager;
+        $this->logger = $logger;
     }
 
     /**
-     * Retrieve calculation earning points value
+     * Retrieve calculation earning points value by quote
      *
-     * @param int $customerId
-     * @param OrderInterface|CreditmemoInterface|TotalsInterface|InvoiceInterface $object
+     * @param CartInterface|Quote $quote
+     * @param int|null $customerId
      * @param int|null $websiteId
-     * @return int
+     * @return ResultInterface
      */
-    public function calculation($object, $customerId, $websiteId = null)
+    public function calculationByQuote($quote, $customerId, $websiteId = null)
     {
-        $baseSubTotal = 0;
-        $shippingDiscount = 0;
-        if ($object instanceof InvoiceInterface || $object instanceof CreditmemoInterface) {
-            $order = $this->getOrderById($object->getOrderId());
-            if ($order) {
-                // Checking if discount shipping amount was added in first invoices
-                if ($object instanceof InvoiceInterface && count($order->getInvoiceCollection()->getItems()) == 1) {
-                    $shippingDiscount = $order->getBaseShippingDiscountAmount()
-                        + $order->getBaseAwRewardPointsShippingAmount();
-                }
-
-                if ($object instanceof CreditmemoInterface) {
-                    // Calculate how much shipping discount should be applied
-                    // basing on how much shipping should be refunded
-                    $creditmemoBaseShippingAmount = (float)$object->getBaseShippingAmount();
-                    if ($creditmemoBaseShippingAmount) {
-                        $shippingDiscount = $creditmemoBaseShippingAmount *
-                            ($order->getBaseAwRewardPointsShippingAmount() + $order->getBaseShippingDiscountAmount()) /
-                            $order->getBaseShippingAmount();
-                    }
-                }
-            }
+        $websiteId = $websiteId ? $websiteId : $this->getCurrentWebsiteId();
+        if (!$websiteId) {
+            return $this->calculator->getEmptyResult();
         }
-        if ($object instanceof TotalsInterface) {
-            $shippingDiscount = $object->getBaseShippingDiscountAmount()
-                + $object->getExtensionAttributes()->getBaseAwRewardPointsShippingAmount();
+        if (!$customerId) {
+            $customerId = $this->config->getDefaultCustomerGroupIdForGuest();
+        }
+        $beforeTax = $this->config->getPointsEarningCalculation($websiteId) == PointsEarning::BEFORE_TAX;
+        try {
+            /** @var EarnItem[] $items */
+            $items = $this->earnItemsResolver->getItemsByQuote($quote, $beforeTax);
+            $result = $this->calculator->calculate($items, $customerId, $websiteId);
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage());
+            $result = $this->calculator->getEmptyResult();
         }
 
-        switch ($this->config->getPointsEarningCalculation($websiteId)) {
-            case PointsEarning::BEFORE_TAX:
-                $baseSubTotal = $object->getBaseGrandTotal()
-                    - $object->getBaseShippingAmount()
-                    + $shippingDiscount
-                    - $object->getBaseTaxAmount();
-                break;
-            case PointsEarning::AFTER_TAX:
-                $baseSubTotal = $object->getBaseGrandTotal()
-                    - $object->getBaseShippingAmount()
-                    + $shippingDiscount;
-                break;
-        }
-        if ($baseSubTotal <= 0) {
-            return 0;
-        }
-        return $this->rateCalculator->calculateEarnPoints($customerId, $baseSubTotal, $websiteId);
+        return $result;
     }
 
     /**
-     * Retrieve order object by id
+     * Retrieve calculation earning points value by invoice
      *
-     * @param int $orderId
-     * @return OrderInterface|bool
+     * @param InvoiceInterface $invoice
+     * @param int $customerId
+     * @param int|null $websiteId
+     * @return ResultInterface
      */
-    private function getOrderById($orderId)
+    public function calculationByInvoice($invoice, $customerId, $websiteId = null)
+    {
+        $websiteId = $websiteId ? $websiteId : $this->getCurrentWebsiteId();
+        if (!$websiteId) {
+            return $this->calculator->getEmptyResult();
+        }
+        $beforeTax = $this->config->getPointsEarningCalculation($websiteId) == PointsEarning::BEFORE_TAX;
+        try {
+            /** @var EarnItem[] $items */
+            $items = $this->earnItemsResolver->getItemsByInvoice($invoice, $beforeTax);
+            $result = $this->calculator->calculate($items, $customerId, $websiteId);
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage());
+            $result = $this->calculator->getEmptyResult();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve calculation earning points value by credit memo
+     *
+     * @param CreditmemoInterface $creditmemo
+     * @param int $customerId
+     * @param int|null $websiteId
+     * @return ResultInterface
+     */
+    public function calculationByCreditmemo($creditmemo, $customerId, $websiteId = null)
+    {
+        $websiteId = $websiteId ? $websiteId : $this->getCurrentWebsiteId();
+        if (!$websiteId) {
+            return $this->calculator->getEmptyResult();
+        }
+        $beforeTax = $this->config->getPointsEarningCalculation($websiteId) == PointsEarning::BEFORE_TAX;
+        try {
+            /** @var EarnItem[] $items */
+            $items = $this->earnItemsResolver->getItemsByCreditmemo($creditmemo, $beforeTax);
+            $result = $this->calculator->calculate($items, $customerId, $websiteId);
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage());
+            $result = $this->calculator->getEmptyResult();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve calculation earning points value by product.
+     *
+     * @param ProductInterface $product
+     * @param bool $mergeRuleIds
+     * @param int|null $customerId
+     * @param int|null $websiteId
+     * @param int|null $customerGroupId
+     * @return ResultInterface
+     */
+    public function calculationByProduct(
+        $product,
+        $mergeRuleIds,
+        $customerId,
+        $websiteId = null,
+        $customerGroupId = null
+    ) {
+        $websiteId = $websiteId ? $websiteId : $this->getCurrentWebsiteId();
+        if (!$websiteId) {
+            return $this->calculator->getEmptyResult();
+        }
+        $beforeTax = $this->config->getPointsEarningCalculation($websiteId) == PointsEarning::BEFORE_TAX;
+        try {
+            /** @var EarnItem[] $items */
+            $items = $this->earnItemsResolver->getItemsByProduct($product, $beforeTax);
+            if (isset($customerGroupId)) {
+                $result = $this->predictor->calculateMaxPointsForCustomerGroup(
+                    $items,
+                    $websiteId,
+                    $customerGroupId,
+                    $mergeRuleIds
+                );
+            } elseif ($customerId) {
+                $result = $this->predictor->calculateMaxPointsForCustomer(
+                    $items,
+                    $customerId,
+                    $websiteId,
+                    $mergeRuleIds
+                );
+            } else {
+                $result = $this->predictor->calculateMaxPointsForGuest($items, $websiteId, $mergeRuleIds);
+            }
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage());
+            $result = $this->calculator->getEmptyResult();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get current website
+     *
+     * @return int|null
+     */
+    private function getCurrentWebsiteId()
     {
         try {
-            return $this->orderRepository->get($orderId);
-        } catch (NoSuchEntityException $e) {
-            return false;
+            $currentWebsite = $this->storeManager->getWebsite();
+        } catch (LocalizedException $e) {
+            return null;
         }
+        return $currentWebsite->getId();
     }
 }

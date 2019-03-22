@@ -1,12 +1,13 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Controller\Block;
 
 use Aheadworks\RewardPoints\Block\Product\View\Discount;
+use Aheadworks\RewardPoints\Block\Product\View\Earning;
 use Aheadworks\RewardPoints\Block\Product\View\Share;
 use Aheadworks\RewardPoints\Block\Customer\RewardPointsBalance\Toplink;
 use Magento\Framework\Translate\InlineInterface;
@@ -92,6 +93,9 @@ class Render extends \Magento\Framework\App\Action\Action
         foreach ($blocks as $key => $blockName) {
             $class = '';
             switch ($blockName) {
+                case 'aw_reward_points.product.view.earning':
+                    $class = Earning::class;
+                    break;
                 case 'aw_reward_points.product.view.discount':
                     $class = Discount::class;
                     break;

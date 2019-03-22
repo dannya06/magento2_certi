@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\ResourceModel\PointsSummary\Grid;
 
@@ -105,6 +105,23 @@ class Collection extends SearchResult
         $select->columns(
             ['customer_name' => $nameExpr]
         );
+
+        return $this;
+    }
+
+    /**
+     * Add customer name filter
+     *
+     * @param null|string|array $condition
+     * @return $this
+     */
+    private function addCustomerNameFilter($condition)
+    {
+        $select = $this->getSelect();
+        $connection = $this->getResource()->getConnection();
+        $nameExpr = $connection->getConcatSql(['firstname', 'lastname'], ' ');
+        $sqlCondition = $connection->prepareSqlCondition($nameExpr, $condition);
+        $select->where($sqlCondition);
 
         return $this;
     }
@@ -262,8 +279,7 @@ class Collection extends SearchResult
     public function addFieldToFilter($field, $condition = null)
     {
         if ($field == 'customer_name') {
-            $field = ['firstname', 'lastname'];
-            $condition = [$condition, $condition];
+            return $this->addCustomerNameFilter($condition);
         } elseif (in_array($field, ['lifetime_sales', 'points', 'points_earn', 'points_spend'])) {
             if (key($condition) == 'lteq') {
                 $field = [$field, $field];

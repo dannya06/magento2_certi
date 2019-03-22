@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -28,6 +28,14 @@
                         <argument name="label" xsi:type="string">Customers</argument>
                         <argument name="resource" xsi:type="string">Aheadworks_RewardPoints::aw_reward_points_customers</argument>
                         <argument name="controller" xsi:type="string">customers</argument>
+                    </arguments>
+                </block>
+                <block class="Aheadworks\RewardPoints\Block\Adminhtml\Page\Menu\Item" name="aw_reward_points_menu_item.earning_rules">
+                    <arguments>
+                        <argument name="path" xsi:type="string">*/earning_rules/index</argument>
+                        <argument name="label" xsi:type="string">Points Earning Rules</argument>
+                        <argument name="resource" xsi:type="string">Aheadworks_RewardPoints::aw_reward_points_earning_rules</argument>
+                        <argument name="controller" xsi:type="string">earning_rules</argument>
                     </arguments>
                 </block>
                 <block class="Aheadworks\RewardPoints\Block\Adminhtml\Page\Menu\Item" name="aw_reward_points_menu_item.settings">

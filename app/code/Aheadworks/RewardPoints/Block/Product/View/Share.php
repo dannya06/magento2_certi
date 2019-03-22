@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Block\Product\View;
 
@@ -125,7 +125,11 @@ class Share extends \Magento\Framework\View\Element\Template
      */
     private function getProduct()
     {
-        return $this->productRepository->getById($this->_request->getParam('id'));
+        $productId = $this->getRequest()->getParam('product_id', null)
+            ? $this->getRequest()->getParam('product_id')
+            : $this->getRequest()->getParam('id');
+
+        return $this->productRepository->getById($productId);
     }
 
     /**

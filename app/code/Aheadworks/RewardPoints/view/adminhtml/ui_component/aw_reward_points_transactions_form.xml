@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -352,7 +352,7 @@
                                 <item name="dataType" xsi:type="string">text</item>
                                 <item name="dataScope" xsi:type="string">customer_id</item>
                                 <item name="fit" xsi:type="boolean">false</item>
-                                <item name="label" xsi:type="string">Customer Id</item>
+                                <item name="label" xsi:type="string" translate="true">Customer Id</item>
                                 <item name="showFallbackReset" xsi:type="boolean">false</item>
                                 <item name="elementTmpl" xsi:type="string">ui/dynamic-rows/cells/text</item>
                             </item>
@@ -365,7 +365,7 @@
                                 <item name="dataType" xsi:type="string">text</item>
                                 <item name="dataScope" xsi:type="string">customer_name</item>
                                 <item name="fit" xsi:type="boolean">false</item>
-                                <item name="label" xsi:type="string">Customer Name</item>
+                                <item name="label" xsi:type="string" translate="true">Customer Name</item>
                                 <item name="showFallbackReset" xsi:type="boolean">false</item>
                                 <item name="elementTmpl" xsi:type="string">ui/dynamic-rows/cells/text</item>
                             </item>
@@ -378,7 +378,7 @@
                                 <item name="dataType" xsi:type="string">text</item>
                                 <item name="dataScope" xsi:type="string">customer_email</item>
                                 <item name="fit" xsi:type="boolean">false</item>
-                                <item name="label" xsi:type="string">Customer Email</item>
+                                <item name="label" xsi:type="string" translate="true">Customer Email</item>
                                 <item name="showFallbackReset" xsi:type="boolean">false</item>
                                 <item name="elementTmpl" xsi:type="string">ui/dynamic-rows/cells/text</item>
                             </item>
@@ -392,7 +392,7 @@
                                 <item name="dataType" xsi:type="string">text</item>
                                 <item name="dataScope" xsi:type="string">website_id</item>
                                 <item name="fit" xsi:type="boolean">false</item>
-                                <item name="label" xsi:type="string">Web Site</item>
+                                <item name="label" xsi:type="string" translate="true">Web Site</item>
                                 <item name="showFallbackReset" xsi:type="boolean">false</item>
                                 <item name="template" xsi:type="string">Aheadworks_RewardPoints/ui/dynamic-rows/templates/cells/select-text</item>
                             </item>
@@ -404,7 +404,7 @@
                                 <item name="componentType" xsi:type="string">actionDelete</item>
                                 <item name="dataType" xsi:type="string">text</item>
                                 <item name="fit" xsi:type="boolean">false</item>
-                                <item name="label" xsi:type="string">Actions</item>
+                                <item name="label" xsi:type="string" translate="true">Actions</item>
                                 <item name="sortOrder" xsi:type="string">50</item>
                                 <item name="additionalClasses" xsi:type="string">data-grid-actions-cell</item>
                                 <item name="template" xsi:type="string">Magento_Backend/dynamic-rows/cells/action-delete</item>

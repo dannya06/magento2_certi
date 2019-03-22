@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 // @codingStandardsIgnoreFile
 
@@ -13,7 +13,7 @@ $messages = $block->getMessages();
 <?php if (count($messages)) : ?>
     <div class="aw_reward_points__information-bar">
         <?php foreach ($messages as $message): ?>
-            <div class="message-notice notice message">
+            <div class="message-success success message">
                 <div><?php /* @noEscape */ echo $message ?></div>
             </div>
         <?php endforeach; ?>

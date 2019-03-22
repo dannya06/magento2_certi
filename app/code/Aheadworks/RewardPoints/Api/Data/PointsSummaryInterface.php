@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Api\Data;
 
@@ -27,6 +27,7 @@ interface PointsSummaryInterface
     const DAILY_SHARE_POINTS = 'daily_share_points';
     const MONTHLY_SHARE_POINTS = 'monthly_share_points';
     const DAILY_SHARE_POINTS_DATE = 'daily_share_points_date';
+    const MONTHLY_SHARE_POINTS_DATE = 'monthly_share_points_date';
     const IS_AWARDED_FOR_NEWSLETTER_SIGNUP = 'is_awarded_for_newsletter_signup';
     const BALANCE_UPDATE_NOTIFICATION_STATUS = 'balance_update_notification_status';
     const EXPIRATION_NOTIFICATION_STATUS = 'expiration_notification_status';
@@ -196,6 +197,21 @@ interface PointsSummaryInterface
      * @return string
      */
     public function getDailySharePointsDate();
+
+    /**
+     * Set current date for monthly reward points
+     *
+     * @param string $monthlySharePointsDate
+     * @return PointsSummaryInterface
+     */
+    public function setMonthlySharePointsDate($monthlySharePointsDate);
+
+    /**
+     * Get current date for monthly reward points
+     *
+     * @return string
+     */
+    public function getMonthlySharePointsDate();
 
     /**
      * Set if Customer is Awarded for Newsletter Signup

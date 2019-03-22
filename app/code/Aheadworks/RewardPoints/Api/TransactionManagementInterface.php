@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Api;
 
@@ -31,6 +31,7 @@ interface TransactionManagementInterface
      * @param string $commentToCustomer
      * @param string $commentToCustomerPlaceholder
      * @param string $commentToAdmin
+     * @param string $commentToAdminPlaceholder
      * @param int $websiteId
      * @param int $transactionType
      * @param array $arguments
@@ -44,6 +45,7 @@ interface TransactionManagementInterface
         $commentToCustomer = null,
         $commentToCustomerPlaceholder = null,
         $commentToAdmin = null,
+        $commentToAdminPlaceholder = null,
         $websiteId = null,
         $transactionType = TransactionType::BALANCE_ADJUSTED_BY_ADMIN,
         $arguments = []

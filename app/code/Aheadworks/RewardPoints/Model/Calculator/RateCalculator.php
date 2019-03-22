@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\Calculator;
 
@@ -147,9 +147,34 @@ class RateCalculator
      */
     public function calculateEarnPoints($customerId, $amount, $websiteId = null)
     {
+        return (int)$this->calculateEarnPointsRaw($customerId, $amount, $websiteId);
+    }
+
+    /**
+     * Calculate earn points (raw, without rounding)
+     *
+     * @param int $customerId
+     * @param float $amount
+     * @param int|null $websiteId
+     * @return float
+     */
+    public function calculateEarnPointsRaw($customerId, $amount, $websiteId = null)
+    {
         $this->setCustomerId($customerId);
         $rate = $this->getEarnRate($websiteId);
-        return (int)$this->calculateRate($rate->getBaseAmount(), $rate->getPoints(), $amount);
+        return $this->calculateRate($rate->getBaseAmount(), $rate->getPoints(), $amount);
+    }
+
+    /**
+     * Calculate earn points by rate (raw, without rounding)
+     *
+     * @param EarnRateInterface $rate
+     * @param float $amount
+     * @return float
+     */
+    public function calculateEarnPointsByRateRaw($rate, $amount)
+    {
+        return $this->calculateRate($rate->getBaseAmount(), $rate->getPoints(), $amount);
     }
 
     /**

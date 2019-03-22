@@ -1,12 +1,12 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Block\Information\Messages;
 
-use Magento\Framework\Exception\NoSuchEntityException;
+use Aheadworks\RewardPoints\Model\Calculator\ResultInterface;
 
 /**
  * Class Cart
@@ -20,12 +20,7 @@ class Cart extends AbstractMessages
      */
     public function canShow()
     {
-        $customerRewardPointsEarnRate = $this->customerRewardPointsService
-            ->isCustomerRewardPointsEarnRate($this->getCustomerId());
-        $customerRewardPointsEarnRateByGroup = $this->customerRewardPointsService
-            ->isCustomerRewardPointsEarnRateByGroup($this->getCustomerId());
-
-        return $customerRewardPointsEarnRateByGroup && $customerRewardPointsEarnRate && $this->getEarnPoints() > 0;
+        return $this->getEarnPoints() > 0;
     }
 
     /**
@@ -58,11 +53,11 @@ class Cart extends AbstractMessages
      */
     public function getEarnPoints()
     {
-        try {
-            $cartTotal = $this->cartTotalRepository->get($this->checkoutSession->getQuote()->getId());
-        } catch (NoSuchEntityException $e) {
-            return 0;
-        }
-        return $this->earningCalculator->calculation($cartTotal, $this->getCustomerId());
+        /** @var ResultInterface $calculationResult */
+        $calculationResult = $this->earningCalculator->calculationByQuote(
+            $this->checkoutSession->getQuote(),
+            $this->getCustomerId()
+        );
+        return $calculationResult->getPoints();
     }
 }

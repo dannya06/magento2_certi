@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -18,4 +18,40 @@
             </argument>
         </arguments>
     </type> -->
+
+    <virtualType name="Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\DataProcessor" type="Aheadworks\RewardPoints\Model\Data\Processor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="status" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\DataProcessor\Status</item>
+                <item name="discardSubsequentRules" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\DataProcessor\DiscardSubsequentRules</item>
+                <item name="website" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\DataProcessor\Website</item>
+                <item name="customerGroup" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\DataProcessor\CustomerGroup</item>
+                <item name="action" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\DataProcessor\Action</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\MetaProcessor" type="Aheadworks\RewardPoints\Model\Data\Processor" />
+    <type name="Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\FormDataProvider">
+        <arguments>
+            <argument name="dataProcessor" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\DataProcessor</argument>
+            <argument name="metaProcessor" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\EarnRule\MetaProcessor</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\PostDataProcessor" type="Aheadworks\RewardPoints\Model\Data\Processor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="website" xsi:type="object">Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\PostDataProcessor\Website</item>
+                <item name="customerGroup" xsi:type="object">Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\PostDataProcessor\CustomerGroup</item>
+                <item name="fromToDates" xsi:type="object">Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\PostDataProcessor\Date</item>
+                <item name="condition" xsi:type="object">Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\PostDataProcessor\Condition</item>
+                <item name="action" xsi:type="object">Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\PostDataProcessor\Action</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\Save">
+        <arguments>
+            <argument name="postDataProcessor" xsi:type="object">Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\PostDataProcessor</argument>
+        </arguments>
+    </type>
 </config>

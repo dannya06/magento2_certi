@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -148,6 +148,18 @@
                 <field id="is_display_invitation_to_register" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Display an invitation to register</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="category_product_promo_text" translate="label,comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Promo text on categories</label>
+                    <comment><![CDATA[Will be displayed when a product matches 2 or more rules]]></comment>
+                </field>
+                <field id="product_promo_text_registered" translate="label,comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Promo text for registered customers on product pages</label>
+                    <comment><![CDATA[Use "%X" as a variable to show a number of points. Leave empty to disable.]]></comment>
+                </field>
+                <field id="product_promo_text_not_logged_in" translate="label,comment" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Promo text for not logged in visitors on product pages</label>
+                    <comment><![CDATA[Use "%X" as a variable to show a number of points. Leave empty to disable.]]></comment>
                 </field>
             </group>
             <group id="notifications" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
