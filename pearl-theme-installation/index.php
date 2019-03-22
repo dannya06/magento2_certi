@@ -90,28 +90,34 @@ unset($storeList['admin']);
     <div class="row step-descr">
         <div class="col-md-4">
             <h2>Step 1</h2>
-            <p>In this step we run the upgrade scripts and clear the Magento cache</p>
+            <p>In this step we make sure the Pearl Theme installation requirements are met.</p>
         </div>
         <div class="col-md-4">
             <h2>Step 2</h2>
-            <p>In this step we clear the cache and regenerate the theme specific less files. </p>
+            <p>In this step we run the upgrade scripts and clear the Magento cache.</p>
         </div>
         <div class="col-md-4">
             <h2>Step 3</h2>
-            <p>In this step the Pearl theme can be activated for a desired store view, or globally, using the GLOBAL input. </p>
+            <p>In this step we clear the cache and regenerate the theme specific less files. </p>
         </div>
     </div>
     <div class="row step-descr row-2">
         <div class="col-md-4">
             <h2>Step 4</h2>
-            <p>In this step you can configure your store, import predefined demo versions.</p>
+            <p>In this step the Pearl theme can be activated for a desired store view, or globally, using the GLOBAL input. </p>
         </div>
         <div class="col-md-4">
             <h2>Step 5</h2>
-            <p>In this step you can configure your store, using different configuration options.</p>
+            <p>In this step you can configure your store, import predefined demo versions.</p>
         </div>
         <div class="col-md-4">
             <h2>Step 6</h2>
+            <p>In this step you can configure your store, using different configuration options.</p>
+        </div>
+    </div>
+    <div class="row step-descr row-3">
+        <div class="center-aligned col-md-4">
+            <h2>Step 7</h2>
             <p>In this step we cleanup the cache and generate the theme specific files after the customizations.</p>
         </div>
     </div>
@@ -145,9 +151,13 @@ unset($storeList['admin']);
                     <a href="#step-6" type="button" class="btn btn-default btn-circle" disabled="disabled">6</a>
                     <p>Step 6</p>
                 </div>
-                <div class="stepwizard-step" style="display: none">
+                <div class="stepwizard-step">
                     <a href="#step-7" type="button" class="btn btn-default btn-circle" disabled="disabled">7</a>
                     <p>Step 7</p>
+                </div>
+                <div class="stepwizard-step" style="display: none">
+                    <a href="#step-8" type="button" class="btn btn-default btn-circle" disabled="disabled">8</a>
+                    <p>Step 8</p>
                 </div>
             </div>
         </div>
@@ -156,22 +166,31 @@ unset($storeList['admin']);
             <div class="row setup-content" id="step-1">
                 <div class="col-xs-12 col-md-7 col-md-offset-3">
                     <div class="col-md-12 title-cus">
-                        <h3>Install Pearl Theme and included extensions</h3>
+                        <h3>Installation requirements check</h3>
                         <div class="content">
-                            <p>This step will clean cache and run the upgrades for the modules.</p>
+                            <p>This step will make sure the Pearl Theme installation requirements are met.</p>
                         </div>
-                        <div class="checkbox text-center">
-                            <label>
-                                <input type="checkbox" name="skip" id="skip-step-1">Skip this step
-                            </label>
-                        </div>
-                        <div class="text-center">
+                        <div class="text-center btn-wrapper">
                             <button class="btn btn-primary nextBtn btn-lg text-uppercase btn-proc-1" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row setup-content" id="step-2">
+                <div class="col-xs-12 col-md-10 col-md-offset-1">
+                    <div class="col-md-12 title-cus">
+                        <h3>Install Pearl Theme and selected extensions</h3>
+                        <div class="content">
+                            <p>This step will clean cache and run the upgrades for the selected modules.</p>
+                            <ul id="modules_list"></ul>
+                        </div>
+                        <div class="text-center btn-wrapper">
+                            <button class="btn btn-primary nextBtn btn-lg text-uppercase btn-proc-1" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row setup-content" id="step-3">
                 <div class="col-xs-12 col-md-6 col-md-offset-3">
                     <div class="col-md-12 title-cus">
                         <h3>Theme specific less generation</h3>
@@ -180,16 +199,16 @@ unset($storeList['admin']);
                         </div>
                         <div class="checkbox text-center">
                             <label>
-                                <input type="checkbox" name="skip" id="skip-step-2">Skip this step
+                                <input type="checkbox" name="skip" id="skip-step-3">Skip this step
                             </label>
                         </div>
-                        <div class="text-center">
+                        <div class="text-center btn-wrapper">
                             <button class="btn btn-primary nextBtn btn-lg text-uppercase" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row setup-content" id="step-3">
+            <div class="row setup-content" id="step-4">
                 <div class="col-xs-12 col-md-6 col-md-offset-3">
                     <div class="col-md-12 title-cus">
                         <h3>Theme Activation</h3>
@@ -207,16 +226,16 @@ unset($storeList['admin']);
                         </div>
                         <div class="checkbox text-center">
                             <label>
-                                <input type="checkbox" name="skip" id="skip-step-3">Skip this step
+                                <input type="checkbox" name="skip" id="skip-step-4">Skip this step
                             </label>
                         </div>
-                        <div class="text-center">
+                        <div class="text-center btn-wrapper">
                             <button class="btn btn-primary nextBtn btn-lg text-uppercase" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row setup-content" id="step-4">
+            <div class="row setup-content" id="step-5">
                 <div class="col-xs-12 col-md-6 col-md-offset-3">
                     <div class="col-md-12 title-cus">
                         <h3>Import Demo Configuration</h3>
@@ -249,16 +268,16 @@ unset($storeList['admin']);
                         </div>
                         <div class="checkbox text-center">
                             <label>
-                                <input type="checkbox" name="skip" id="skip-step-4">Skip this step
+                                <input type="checkbox" name="skip" id="skip-step-5">Skip this step
                             </label>
                         </div>
-                        <div class="text-center">
+                        <div class="text-center btn-wrapper">
                             <button class="btn btn-primary nextBtn btn-lg text-uppercase" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row setup-content" id="step-5">
+            <div class="row setup-content" id="step-6">
                 <div class="col-xs-12 col-md-3 col-lg-3">
                     <div class="col-md-12">
                         <h3>Design Options</h3>
@@ -340,10 +359,10 @@ unset($storeList['admin']);
                         </div>
                         <div class="checkbox text-center">
                             <label>
-                                <input type="checkbox" name="skip" id="skip-step-5">Skip this step
+                                <input type="checkbox" name="skip" id="skip-step-6">Skip this step
                             </label>
                         </div>
-                        <div class="text-center title-cus">
+                        <div class="text-center btn-wrapper title-cus">
                             <button class="btn btn-primary nextBtn btn-lg text-uppercase mg-btm-step-5" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
                         </div>
                     </div>
@@ -361,7 +380,7 @@ unset($storeList['admin']);
                     <div class="preview-footer"></div>
                 </div>
             </div>
-            <div class="row setup-content" id="step-6">
+            <div class="row setup-content" id="step-7">
                 <div class="col-xs-12 col-md-6 col-md-offset-3">
                     <div class="col-md-12">
                         <h3>Cache cleanup</h3>
@@ -380,16 +399,16 @@ unset($storeList['admin']);
                         </div>
                         <div class="checkbox text-center">
                             <label>
-                                <input type="checkbox" name="skip" id="skip-step-6">Skip this step
+                                <input type="checkbox" name="skip" id="skip-step-7">Skip this step
                             </label>
                         </div>
-                        <div class="text-center title-cus">
+                        <div class="text-center btn-wrapper title-cus">
                             <button class="btn btn-primary nextBtn btn-lg text-uppercase" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Processing" type="button" >Proceed</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row setup-content" id="step-7">
+            <div class="row setup-content" id="step-8">
                 <div class="col-xs-6 col-md-offset-3">
                     <div class="col-md-12">
                         <div class="success-container">

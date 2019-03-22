@@ -32,13 +32,6 @@ if (!isset($_POST['storeCode'])) {
     die;
 }
 
-if (!isset($_POST['demoVersion'])) {
-    $result['error'] = true;
-    $result['msg'] = 'Please specify the demo version!';
-    echo json_encode($result);
-    die;
-}
-
 $bootstrap = \Magento\Framework\App\Bootstrap::create(BP, $_SERVER);
 $objectManager = $bootstrap->getObjectManager();
 
@@ -47,14 +40,12 @@ $cli->setAutoExit(false);
 
 $applicationName = 'Pearl Installation';
 $commands = [
-    'weltpixel:import:demo' => [
+    'weltpixel:theme:activate' => [
         '--store='.$_POST['storeCode'],
-        '--demoVersion='.$_POST['demoVersion']
+        '--themePath=Pearl/weltpixel_custom'
     ],
-    'weltpixel:less:generate' => [],
     'cache:clean' => []
 ];
-
 
 $resultMsg = '';
 
@@ -81,7 +72,7 @@ try {
     $result['error'] = true;
 }
 
-if (strpos($result['msg'], 'Exception') !== false) {
+if (strpos($result['msg'], '[Exception]') !== false) {
     $result['error'] = true;
 }
 

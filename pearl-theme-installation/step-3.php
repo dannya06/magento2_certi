@@ -24,39 +24,26 @@ HTML;
     exit(1);
 }
 
-
-if (!isset($_POST['storeCode'])) {
-    $result['error'] = true;
-    $result['msg'] = 'Please specify the store code!';
-    echo json_encode($result);
-    die;
-}
-
 $bootstrap = \Magento\Framework\App\Bootstrap::create(BP, $_SERVER);
 $objectManager = $bootstrap->getObjectManager();
 
 $cli = $objectManager->get('Magento\Framework\Console\Cli');
 $cli->setAutoExit(false);
 
+
 $applicationName = 'Pearl Installation';
 $commands = [
-    'weltpixel:theme:activate' => [
-        '--store='.$_POST['storeCode'],
-        '--themePath=Pearl/weltpixel_custom'
-    ],
-    'cache:clean' => []
+    'weltpixel:cleanup',
+    'weltpixel:less:generate'
 ];
 
 $resultMsg = '';
 
 try {
-    foreach ($commands as $command => $params) {
-        $argvInputParams = [$applicationName, $command];
-        foreach ($params as $param) {
-            $argvInputParams[] = $param;
-        }
-
-        $input = new \Symfony\Component\Console\Input\ArgvInput($argvInputParams);
+    foreach ($commands as $command) {
+        $input = new \Symfony\Component\Console\Input\ArgvInput(array(
+            $applicationName, $command
+        ));
 
         $output = new Symfony\Component\Console\Output\BufferedOutput();
         $cli->run($input, $output);
@@ -69,10 +56,6 @@ try {
     $result['msg'] = $resultMsg;
 } catch (Exception $ex) {
     $result['msg'] = $ex->getMessage();
-    $result['error'] = true;
-}
-
-if (strpos($result['msg'], '[Exception]') !== false) {
     $result['error'] = true;
 }
 

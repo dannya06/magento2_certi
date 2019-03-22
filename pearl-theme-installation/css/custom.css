@@ -1,3 +1,6 @@
+.btn-wrapper {
+    clear: both;
+}
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {pointer-events: none;}
 .result-container {
     padding: 10px;
@@ -303,4 +306,49 @@ p.sub-title{
 input[type="checkbox"]:focus,
 input[type="checkbox"]:active{
     outline:none ;
+}
+
+#modules_list {
+    width: 100%;
+    margin: 0 auto;
+    list-style-type: none;
+    float: none;
+    padding: 10px 0 40px;
+    max-width: 768px;
+    clear: both;
+    display: block;
+}
+#modules_list > li {
+    float: left;
+    min-width: 256px;
+}
+#modules_list li:last-child {
+    margin-bottom: 10px;
+}
+#modules_list fieldset {
+    float: left;
+}
+#modules_list fieldset input[type="checkbox"] {
+    float: left;
+    margin: 2px 10px 10px 0;
+    width: auto;
+    cursor: pointer;
+}
+#modules_list fieldset label.mandatory {
+    color: #7f7f7f;
+}
+#modules_list fieldset label.new-module {
+    color: #f30d49;
+}
+#modules_list fieldset label {
+    float: left;
+    width: auto;
+    margin: 0;
+    line-height: 1.2em;
+    cursor: pointer;
+}
+#step-2 .checkbox {
+    display: block;
+    float: left;
+    width: 100%;
 }
