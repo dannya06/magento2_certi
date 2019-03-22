@@ -21,6 +21,8 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Aheadworks\Blog\Model\Converter\Condition as ConditionConverter;
 use Aheadworks\Blog\Model\Rule\ProductFactory;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
 
 /**
  * Class Post
@@ -102,6 +104,11 @@ abstract class Post extends \Magento\Backend\App\Action
     private $productRuleFactory;
 
     /**
+     * @var SerializeInterface
+     */
+    private $serializer;
+
+    /**
      * @param Context $context
      * @param PostRepositoryInterface $postRepository
      * @param PostInterfaceFactory $postDataFactory
@@ -116,6 +123,7 @@ abstract class Post extends \Magento\Backend\App\Action
      * @param DataPersistorInterface $dataPersistor
      * @param ConditionConverter $conditionConverter
      * @param ProductFactory $productRuleFactory
+     * @param SerializeFactory $serializeFactory
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -132,7 +140,8 @@ abstract class Post extends \Magento\Backend\App\Action
         StoreManagerInterface $storeManager,
         DataPersistorInterface $dataPersistor,
         ConditionConverter $conditionConverter,
-        ProductFactory $productRuleFactory
+        ProductFactory $productRuleFactory,
+        SerializeFactory $serializeFactory
     ) {
         parent::__construct($context);
         $this->postRepository = $postRepository;
@@ -148,6 +157,7 @@ abstract class Post extends \Magento\Backend\App\Action
         $this->dataPersistor = $dataPersistor;
         $this->conditionConverter = $conditionConverter;
         $this->productRuleFactory = $productRuleFactory;
+        $this->serializer = $serializeFactory->create();
     }
 
     /**
@@ -199,7 +209,7 @@ abstract class Post extends \Magento\Backend\App\Action
                 $arrayForConvertation = $conditionArray['conditions']['1'];
             }
         } elseif (isset($postData['product_condition']) && !empty($postData['product_condition'])) {
-            $arrayForConvertation = unserialize($postData['product_condition']);
+            $arrayForConvertation = $this->serializer->unserialize($postData['product_condition']);
         } else {
             $productRule = $this->productRuleFactory->create();
             $arrayForConvertation = $productRule->setConditions([])->getConditions()->asArray();

@@ -12,7 +12,8 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\View\LayoutInterface;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Layout\ProcessorInterface;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
 
 /**
  * Test for \Aheadworks\Blog\Block\Ajax
@@ -41,6 +42,11 @@ class AjaxTest extends \PHPUnit\Framework\TestCase
     private $requestMock;
 
     /**
+     * @var SerializeInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $serializerMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
@@ -60,11 +66,17 @@ class AjaxTest extends \PHPUnit\Framework\TestCase
                 'request' => $this->requestMock
             ]
         );
+        $this->serializerMock = $this->getMockForAbstractClass(SerializeInterface::class);
+        $serializeFactoryMock = $this->createPartialMock(SerializeFactory::class, ['create']);
+        $serializeFactoryMock->expects($this->once())
+            ->method('create')
+            ->willReturn($this->serializerMock);
 
         $this->block = $objectManager->getObject(
             Ajax::class,
             [
-                'context' => $contextMock
+                'context' => $contextMock,
+                'serializeFactory' => $serializeFactoryMock
             ]
         );
     }
@@ -91,6 +103,10 @@ class AjaxTest extends \PHPUnit\Framework\TestCase
                     '_secure' => $isSecure,
                 ]
             )->willReturn($url);
+        $this->serializerMock->expects($this->once())
+            ->method('serialize')
+            ->with(['url' => $url])
+            ->willReturn($expected);
 
         $this->assertEquals($expected, $this->block->getScriptOptions());
     }

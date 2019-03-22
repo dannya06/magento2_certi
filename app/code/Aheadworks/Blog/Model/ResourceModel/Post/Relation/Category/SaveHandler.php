@@ -10,6 +10,7 @@ use Magento\Framework\App\ResourceConnection;
 use Aheadworks\Blog\Api\Data\PostInterface;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
+use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
 
 /**
  * Class SaveHandler
@@ -51,7 +52,7 @@ class SaveHandler implements ExtensionInterface
         $toDelete = array_diff($categoryIdsOrig, $categoryIds);
 
         $connection = $this->getConnection();
-        $tableName = $this->resourceConnection->getTableName('aw_blog_post_category');
+        $tableName = $this->resourceConnection->getTableName(ResourcePost::BLOG_POST_CATEGORY_TABLE);
 
         if ($toInsert) {
             $data = [];
@@ -82,7 +83,7 @@ class SaveHandler implements ExtensionInterface
     {
         $connection = $this->getConnection();
         $select = $connection->select()
-            ->from($this->resourceConnection->getTableName('aw_blog_post_category'), 'category_id')
+            ->from($this->resourceConnection->getTableName(ResourcePost::BLOG_POST_CATEGORY_TABLE), 'category_id')
             ->where('post_id = :id');
         return $connection->fetchCol($select, ['id' => $entityId]);
     }

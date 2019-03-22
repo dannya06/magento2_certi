@@ -12,6 +12,8 @@ use Magento\Store\Model\Store;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
+use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
+use Aheadworks\Blog\Model\ResourceModel\Tag as ResourceTag;
 
 /**
  * Class TagCloudItem
@@ -43,7 +45,7 @@ class TagCloudItem extends AbstractDb
      */
     protected function _construct()
     {
-        $this->_init('aw_blog_tag', 'id');
+        $this->_init(ResourceTag::BLOG_TAG_TABLE, 'id');
     }
 
     /**
@@ -66,9 +68,9 @@ class TagCloudItem extends AbstractDb
     public function getPostCount($tagId, $storeId)
     {
         $select = $this->getConnection()->select()
-            ->from(['post_tag_table' => $this->_resources->getTableName('aw_blog_post_tag')], [])
+            ->from(['post_tag_table' => $this->_resources->getTableName(ResourcePost::BLOG_POST_TAG_TABLE)], [])
             ->joinLeft(
-                ['post_store_table' => $this->_resources->getTableName('aw_blog_post_store')],
+                ['post_store_table' => $this->_resources->getTableName(ResourcePost::BLOG_POST_STORE_TABLE)],
                 'post_tag_table.post_id = post_store_table.post_id',
                 []
             )

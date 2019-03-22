@@ -14,6 +14,8 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Ui\Api\Data\BookmarkInterfaceFactory;
 use Magento\Authorization\Model\UserContextInterface;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
 
 /**
  * Test for \Aheadworks\Blog\Ui\Component\Post\Listing\Bookmark
@@ -64,6 +66,11 @@ class BookmarkTest extends \PHPUnit\Framework\TestCase
     private $objectManager;
 
     /**
+     * @var SerializeInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $serializerMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
@@ -72,6 +79,11 @@ class BookmarkTest extends \PHPUnit\Framework\TestCase
     {
         $this->objectManager = new ObjectManager($this);
 
+        $this->serializerMock = $this->getMockForAbstractClass(SerializeInterface::class);
+        $serializeFactoryMock = $this->createPartialMock(SerializeFactory::class, ['create']);
+        $serializeFactoryMock->expects($this->once())
+            ->method('create')
+            ->willReturn($this->serializerMock);
         $processorMock = $this->getMockBuilder(Processor::class)
             ->setMethods(['register'])
             ->disableOriginalConstructor()
@@ -120,7 +132,8 @@ class BookmarkTest extends \PHPUnit\Framework\TestCase
                 'userContext' => $userContextMock,
                 'context' => $this->contextMock,
                 'bookmarkRepository' => $this->bookmarkRepositoryMock,
-                'data' => ['config' => []]
+                'data' => ['config' => []],
+                'serializeFactory' => $serializeFactoryMock
             ]
         );
     }
@@ -180,6 +193,9 @@ class BookmarkTest extends \PHPUnit\Framework\TestCase
             ['like' => 'Vi'],
             $config['views'][self::VIEW_INDEX]['data']['filters']['applied']['title']
         );
+        $this->serializerMock->expects($this->any())
+            ->method('serialize')
+            ->willReturn('');
     }
 
     /**

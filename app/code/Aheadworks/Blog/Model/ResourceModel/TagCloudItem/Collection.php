@@ -18,6 +18,7 @@ use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Psr\Log\LoggerInterface;
+use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
 
 /**
  * Class Collection
@@ -77,12 +78,12 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         parent::_initSelect();
         $this->getSelect()
             ->joinLeft(
-                ['post_tag_table' => $this->getTable('aw_blog_post_tag')],
+                ['post_tag_table' => $this->getTable(ResourcePost::BLOG_POST_TAG_TABLE)],
                 'main_table.id = post_tag_table.tag_id',
                 []
             )
             ->joinLeft(
-                ['post_table' => $this->getTable('aw_blog_post')],
+                ['post_table' => $this->getTable(ResourcePost::BLOG_POST_TABLE)],
                 'post_tag_table.post_id = post_table.id',
                 []
             )
@@ -120,7 +121,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         if (!$this->getFlag('post_count_joined')) {
             $this->getSelect()
                 ->joinLeft(
-                    ['post_store_table' => $this->getTable('aw_blog_post_store')],
+                    ['post_store_table' => $this->getTable(ResourcePost::BLOG_POST_STORE_TABLE)],
                     'post_tag_table.post_id = post_store_table.post_id',
                     []
                 )
@@ -187,7 +188,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         if ($this->getFilter('category_id')) {
             $select = $this->getSelect();
             $select->joinLeft(
-                ['post_category_table' => $this->getTable('aw_blog_post_category')],
+                ['post_category_table' => $this->getTable(ResourcePost::BLOG_POST_CATEGORY_TABLE)],
                 'post_tag_table.post_id = post_category_table.post_id',
                 []
             )->group('main_table.id');

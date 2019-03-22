@@ -134,7 +134,7 @@ class Category extends \Magento\Framework\View\Element\Template implements Ident
      * @param int $categoryItemIndex
      * @return string
      */
-    public function getAdditionalClass(int $categoryItemIndex)
+    public function getAdditionalClass($categoryItemIndex)
     {
         $categoryLimit = $this->getNumCategoriesToDisplay();
         if ($categoryLimit > 0 && $categoryItemIndex > $categoryLimit) {
@@ -152,7 +152,7 @@ class Category extends \Magento\Framework\View\Element\Template implements Ident
      * @param int $categoryItemIndex
      * @return bool
      */
-    public function isNeedToDisplayShowMoreLinks(int $categoryItemIndex)
+    public function isNeedToDisplayShowMoreLinks($categoryItemIndex)
     {
         $categoryLimit = $this->getNumCategoriesToDisplay();
         if ($categoryLimit > 0 && $categoryItemIndex > $categoryLimit) {

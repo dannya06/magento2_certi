@@ -41,7 +41,7 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
      */
     protected function _afterLoad()
     {
-        $this->attachStores('aw_blog_category_store', 'id', 'category_id');
+        $this->attachStores(ResourceCategory::BLOG_CATEGORY_STORE_TABLE, 'id', 'category_id');
         return parent::_afterLoad();
     }
 
@@ -50,7 +50,7 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
      */
     protected function _renderFiltersBefore()
     {
-        $this->joinStoreLinkageTable('aw_blog_category_store', 'id', 'category_id');
+        $this->joinStoreLinkageTable(ResourceCategory::BLOG_CATEGORY_STORE_TABLE, 'id', 'category_id');
         parent::_renderFiltersBefore();
     }
 }

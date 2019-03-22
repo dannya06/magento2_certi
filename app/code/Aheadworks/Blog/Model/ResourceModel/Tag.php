@@ -14,11 +14,17 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
  */
 class Tag extends AbstractDb
 {
+    /**#@+
+     * Constants defined for tables
+     */
+    const BLOG_TAG_TABLE = 'aw_blog_tag';
+    /**#@-*/
+
     /**
      * {@inheritdoc}
      */
     protected function _construct()
     {
-        $this->_init('aw_blog_tag', 'id');
+        $this->_init(self::BLOG_TAG_TABLE, 'id');
     }
 }

@@ -7,8 +7,7 @@
 namespace Aheadworks\Blog\Test\Unit\Model\Plugin;
 
 use Aheadworks\Blog\Model\Plugin\Product;
-use Aheadworks\Blog\Model\Rule\Condition\Product\Attributes as BlogProductAttributes;
-use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\CatalogRule\Model\Rule\Condition\Product as BlogProductAttributes;
 use Aheadworks\Blog\Model\Indexer\ProductPost\Processor as ProductPostProcessor;
 use Magento\Framework\Indexer\StateInterface;
 use Magento\Catalog\Model\Product as ProductModel;
@@ -30,11 +29,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     private $blogProductAttributesMock;
 
     /**
-     * @var ProductRepository|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $productRepositoryMock;
-
-    /**
      * @var StateInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexerStateMock;
@@ -51,7 +45,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['loadAttributeOptions', 'getAttributeOption'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->productRepositoryMock = $this->getMockForAbstractClass(ProductRepositoryInterface::class);
         $this->indexerStateMock = $this->getMockForAbstractClass(
             StateInterface::class,
             [],
@@ -66,7 +59,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
             Product::class,
             [
                 'blogProductAttributes' => $this->blogProductAttributesMock,
-                'productRepository' => $this->productRepositoryMock,
                 'indexerState' => $this->indexerStateMock
             ]
         );
@@ -77,25 +69,17 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      */
     public function testBeforeSave()
     {
-        $productId = 1;
         $productClimate = ['All-Weather', 'Cold'];
         $attributeOption = ['climate' => 'Climate'];
-
         $productMock = $this->getMockBuilder(ProductModel::class)
-            ->setMethods(['getId', 'getData'])
+            ->setMethods(['getId', 'getOrigData'])
             ->disableOriginalConstructor()
             ->getMock();
+
         $productMock->expects($this->once())
-            ->method('getId')
-            ->willReturn($productId);
-        $productMock->expects($this->once())
-            ->method('getData')
+            ->method('getOrigData')
             ->with('climate')
             ->willReturn($productClimate);
-        $this->productRepositoryMock->expects($this->once())
-            ->method('getById')
-            ->with($productId)
-            ->willReturn($productMock);
         $this->blogProductAttributesMock->expects($this->once())
             ->method('loadAttributeOptions')
             ->willReturnSelf();

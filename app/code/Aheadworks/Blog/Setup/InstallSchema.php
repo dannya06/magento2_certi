@@ -10,6 +10,10 @@ use Aheadworks\Blog\Model\Source\Post\Status as PostStatus;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Aheadworks\Blog\Model\ResourceModel\Category as ResourceCategory;
+use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
+use Aheadworks\Blog\Model\ResourceModel\Indexer\ProductPost as ResourceProductPost;
+use Aheadworks\Blog\Model\ResourceModel\Tag as ResourceTag;
 
 /**
  * Class InstallSchema
@@ -32,7 +36,7 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_post'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_post'))
+            ->newTable($installer->getTable(ResourcePost::BLOG_POST_TABLE))
             ->addColumn(
                 'id',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -161,10 +165,10 @@ class InstallSchema implements InstallSchemaInterface
                 'Allowed Customer Groups'
             )
             ->addIndex(
-                $installer->getIdxName('aw_blog_post', ['status', 'publish_date']),
+                $installer->getIdxName(ResourcePost::BLOG_POST_TABLE, ['status', 'publish_date']),
                 ['status', 'publish_date']
             )->addIndex(
-                $installer->getIdxName('aw_blog_post', ['url_key']),
+                $installer->getIdxName(ResourcePost::BLOG_POST_TABLE, ['url_key']),
                 ['url_key']
             )->setComment('Blog Post');
         $installer->getConnection()->createTable($table);
@@ -173,7 +177,7 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_category'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_category'))
+            ->newTable($installer->getTable(ResourceCategory::BLOG_CATEGORY_TABLE))
             ->addColumn(
                 'id',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -229,10 +233,10 @@ class InstallSchema implements InstallSchemaInterface
                 [],
                 'Meta Description'
             )->addIndex(
-                $installer->getIdxName('aw_blog_category', ['status']),
+                $installer->getIdxName(ResourceCategory::BLOG_CATEGORY_TABLE, ['status']),
                 ['status']
             )->addIndex(
-                $installer->getIdxName('aw_blog_category', ['url_key']),
+                $installer->getIdxName(ResourceCategory::BLOG_CATEGORY_TABLE, ['url_key']),
                 ['url_key']
             )->setComment('Blog Category');
         $installer->getConnection()->createTable($table);
@@ -241,7 +245,7 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_tag'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_tag'))
+            ->newTable($installer->getTable(ResourceTag::BLOG_TAG_TABLE))
             ->addColumn(
                 'id',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -267,7 +271,7 @@ class InstallSchema implements InstallSchemaInterface
                 ['nullable' => false, 'default' => \Magento\Framework\DB\Ddl\Table::TIMESTAMP_INIT_UPDATE],
                 'Updated At'
             )->addIndex(
-                $installer->getIdxName('aw_blog_tag', ['name']),
+                $installer->getIdxName(ResourceTag::BLOG_TAG_TABLE, ['name']),
                 ['name']
             )->setComment('Blog Tag');
         $installer->getConnection()->createTable($table);
@@ -276,7 +280,7 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_category_store'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_category_store'))
+            ->newTable($installer->getTable(ResourceCategory::BLOG_CATEGORY_STORE_TABLE))
             ->addColumn(
                 'category_id',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -290,19 +294,29 @@ class InstallSchema implements InstallSchemaInterface
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Store Id'
             )->addIndex(
-                $installer->getIdxName('aw_blog_category_store', ['category_id']),
+                $installer->getIdxName(ResourceCategory::BLOG_CATEGORY_STORE_TABLE, ['category_id']),
                 ['category_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_category_store', ['store_id']),
+                $installer->getIdxName(ResourceCategory::BLOG_CATEGORY_STORE_TABLE, ['store_id']),
                 ['store_id']
             )->addForeignKey(
-                $installer->getFkName('aw_blog_category_store', 'category_id', 'aw_blog_category', 'id'),
+                $installer->getFkName(
+                    ResourceCategory::BLOG_CATEGORY_STORE_TABLE,
+                    'category_id',
+                    ResourceCategory::BLOG_CATEGORY_TABLE,
+                    'id'
+                ),
                 'category_id',
-                $installer->getTable('aw_blog_category'),
+                $installer->getTable(ResourceCategory::BLOG_CATEGORY_TABLE),
                 'id',
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->addForeignKey(
-                $installer->getFkName('aw_blog_category_store', 'store_id', 'store', 'store_id'),
+                $installer->getFkName(
+                    ResourceCategory::BLOG_CATEGORY_STORE_TABLE,
+                    'store_id',
+                    'store',
+                    'store_id'
+                ),
                 'store_id',
                 $installer->getTable('store'),
                 'store_id',
@@ -314,7 +328,7 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_post_store'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_post_store'))
+            ->newTable($installer->getTable(ResourcePost::BLOG_POST_STORE_TABLE))
             ->addColumn(
                 'post_id',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -328,19 +342,29 @@ class InstallSchema implements InstallSchemaInterface
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Store Id'
             )->addIndex(
-                $installer->getIdxName('aw_blog_post_store', ['post_id']),
+                $installer->getIdxName(ResourcePost::BLOG_POST_STORE_TABLE, ['post_id']),
                 ['post_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_post_store', ['store_id']),
+                $installer->getIdxName(ResourcePost::BLOG_POST_STORE_TABLE, ['store_id']),
                 ['store_id']
             )->addForeignKey(
-                $installer->getFkName('aw_blog_post_store', 'post_id', 'aw_blog_post', 'id'),
+                $installer->getFkName(
+                    ResourcePost::BLOG_POST_STORE_TABLE,
+                    'post_id',
+                    ResourcePost::BLOG_POST_TABLE,
+                    'id'
+                ),
                 'post_id',
-                $installer->getTable('aw_blog_post'),
+                $installer->getTable(ResourcePost::BLOG_POST_TABLE),
                 'id',
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->addForeignKey(
-                $installer->getFkName('aw_blog_post_store', 'store_id', 'store', 'store_id'),
+                $installer->getFkName(
+                    ResourcePost::BLOG_POST_STORE_TABLE,
+                    'store_id',
+                    'store',
+                    'store_id'
+                ),
                 'store_id',
                 $installer->getTable('store'),
                 'store_id',
@@ -352,7 +376,7 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_post_category'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_post_category'))
+            ->newTable($installer->getTable(ResourcePost::BLOG_POST_CATEGORY_TABLE))
             ->addColumn(
                 'category_id',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -366,21 +390,31 @@ class InstallSchema implements InstallSchemaInterface
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Post Id'
             )->addIndex(
-                $installer->getIdxName('aw_blog_post_category', ['category_id']),
+                $installer->getIdxName(ResourcePost::BLOG_POST_CATEGORY_TABLE, ['category_id']),
                 ['category_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_post_category', ['post_id']),
+                $installer->getIdxName(ResourcePost::BLOG_POST_CATEGORY_TABLE, ['post_id']),
                 ['post_id']
             )->addForeignKey(
-                $installer->getFkName('aw_blog_post_category', 'category_id', 'aw_blog_category', 'id'),
+                $installer->getFkName(
+                    ResourcePost::BLOG_POST_CATEGORY_TABLE,
+                    'category_id',
+                    ResourceCategory::BLOG_CATEGORY_TABLE,
+                    'id'
+                ),
                 'category_id',
-                $installer->getTable('aw_blog_category'),
+                $installer->getTable(ResourceCategory::BLOG_CATEGORY_TABLE),
                 'id',
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->addForeignKey(
-                $installer->getFkName('aw_blog_post_category', 'post_id', 'aw_blog_post', 'id'),
+                $installer->getFkName(
+                    ResourcePost::BLOG_POST_CATEGORY_TABLE,
+                    'post_id',
+                    ResourcePost::BLOG_POST_TABLE,
+                    'id'
+                ),
                 'post_id',
-                $installer->getTable('aw_blog_post'),
+                $installer->getTable(ResourcePost::BLOG_POST_TABLE),
                 'id',
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->setComment('Blog Post To Category Relation Table');
@@ -390,7 +424,7 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_post_tag'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_post_tag'))
+            ->newTable($installer->getTable(ResourcePost::BLOG_POST_TAG_TABLE))
             ->addColumn(
                 'tag_id',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -404,21 +438,31 @@ class InstallSchema implements InstallSchemaInterface
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Post Id'
             )->addIndex(
-                $installer->getIdxName('aw_blog_post_tag', ['tag_id']),
+                $installer->getIdxName(ResourcePost::BLOG_POST_TAG_TABLE, ['tag_id']),
                 ['tag_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_post_tag', ['post_id']),
+                $installer->getIdxName(ResourcePost::BLOG_POST_TAG_TABLE, ['post_id']),
                 ['post_id']
             )->addForeignKey(
-                $installer->getFkName('aw_blog_post_tag', 'tag_id', 'aw_blog_tag', 'id'),
+                $installer->getFkName(
+                    ResourcePost::BLOG_POST_TAG_TABLE,
+                    'tag_id',
+                    ResourceTag::BLOG_TAG_TABLE,
+                    'id'
+                ),
                 'tag_id',
-                $installer->getTable('aw_blog_tag'),
+                $installer->getTable(ResourceTag::BLOG_TAG_TABLE),
                 'id',
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->addForeignKey(
-                $installer->getFkName('aw_blog_post_tag', 'post_id', 'aw_blog_post', 'id'),
+                $installer->getFkName(
+                    ResourcePost::BLOG_POST_TAG_TABLE,
+                    'post_id',
+                    ResourcePost::BLOG_POST_TABLE,
+                    'id'
+                ),
                 'post_id',
-                $installer->getTable('aw_blog_post'),
+                $installer->getTable(ResourcePost::BLOG_POST_TABLE),
                 'id',
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->setComment('Blog Post To Tag Relation Table');
@@ -428,10 +472,10 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_product_post'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_product_post'))
+            ->newTable($installer->getTable(ResourceProductPost::BLOG_PRODUCT_POST_TABLE))
             ->addColumn(
                 'product_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
                 null,
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Product Id'
@@ -448,22 +492,32 @@ class InstallSchema implements InstallSchemaInterface
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Store Id'
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post', ['product_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_TABLE, ['product_id']),
                 ['product_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post', ['post_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_TABLE, ['post_id']),
                 ['post_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post', ['store_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_TABLE, ['store_id']),
                 ['store_id']
             )->addForeignKey(
-                $installer->getFkName('aw_blog_product_post', 'post_id', 'aw_blog_post', 'id'),
+                $installer->getFkName(
+                    ResourceProductPost::BLOG_PRODUCT_POST_TABLE,
+                    'post_id',
+                    ResourcePost::BLOG_POST_TABLE,
+                    'id'
+                ),
                 'post_id',
-                $installer->getTable('aw_blog_post'),
+                $installer->getTable(ResourcePost::BLOG_POST_TABLE),
                 'id',
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->addForeignKey(
-                $installer->getFkName('aw_blog_product_post', 'store_id', 'store', 'store_id'),
+                $installer->getFkName(
+                    ResourceProductPost::BLOG_PRODUCT_POST_TABLE,
+                    'store_id',
+                    'store',
+                    'store_id'
+                ),
                 'store_id',
                 $installer->getTable('store'),
                 'store_id',
@@ -475,10 +529,10 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_product_post_idx'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_product_post_idx'))
+            ->newTable($installer->getTable(ResourceProductPost::BLOG_PRODUCT_POST_INDEX_TABLE))
             ->addColumn(
                 'product_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
                 null,
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Product Id'
@@ -495,13 +549,13 @@ class InstallSchema implements InstallSchemaInterface
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Store Id'
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post_idx', ['product_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_INDEX_TABLE, ['product_id']),
                 ['product_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post_idx', ['post_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_INDEX_TABLE, ['post_id']),
                 ['post_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post_idx', ['store_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_INDEX_TABLE, ['store_id']),
                 ['store_id']
             )->setComment('Blog Product Post Indexer Idx');
         $installer->getConnection()->createTable($table);
@@ -510,10 +564,10 @@ class InstallSchema implements InstallSchemaInterface
          * Create table 'aw_blog_product_post_tmp'
          */
         $table = $installer->getConnection()
-            ->newTable($installer->getTable('aw_blog_product_post_tmp'))
+            ->newTable($installer->getTable(ResourceProductPost::BLOG_PRODUCT_POST_TMP_TABLE))
             ->addColumn(
                 'product_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
                 null,
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Product Id'
@@ -530,13 +584,13 @@ class InstallSchema implements InstallSchemaInterface
                 ['unsigned' => true, 'nullable' => false, 'primary' => true],
                 'Store Id'
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post_tmp', ['product_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_TMP_TABLE, ['product_id']),
                 ['product_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post_tmp', ['post_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_TMP_TABLE, ['post_id']),
                 ['post_id']
             )->addIndex(
-                $installer->getIdxName('aw_blog_product_post_tmp', ['store_id']),
+                $installer->getIdxName(ResourceProductPost::BLOG_PRODUCT_POST_TMP_TABLE, ['store_id']),
                 ['store_id']
             )->setComment('Blog Product Post Indexer Tmp');
         $installer->getConnection()->createTable($table);

@@ -12,6 +12,7 @@ use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
+use Aheadworks\Blog\Model\ResourceModel\Indexer\ProductPost as ResourceProductPost;
 
 /**
  * Class ReadHandler
@@ -59,8 +60,8 @@ class ReadHandler implements ExtensionInterface
             $connection = $this->resourceConnection->getConnectionByName(
                 $this->metadataPool->getMetadata(PostInterface::class)->getEntityConnectionName()
             );
-            $productLinkField = $this->metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
-            $productPostTable = $this->resourceConnection->getTableName('aw_blog_product_post');
+            $productLinkField = $this->metadataPool->getMetadata(CategoryInterface::class)->getIdentifierField();
+            $productPostTable = $this->resourceConnection->getTableName(ResourceProductPost::BLOG_PRODUCT_POST_TABLE);
             $select = $connection->select()
                 ->from($productPostTable, 'product_id')
                 ->joinRight(

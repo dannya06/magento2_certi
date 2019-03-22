@@ -21,6 +21,8 @@ use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Aheadworks\Blog\Model\Converter\Condition as ConditionConverter;
 use Aheadworks\Blog\Model\Indexer\ProductPost\Processor;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
 
 /**
  * Post repository
@@ -79,6 +81,11 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
     private $indexProcessor;
 
     /**
+     * @var SerializeInterface
+     */
+    private $serializer;
+
+    /**
      * @param PostFactory $postFactory
      * @param PostInterfaceFactory $postDataFactory
      * @param PostRegistry $postRegistry
@@ -89,6 +96,7 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
      * @param EntityManager $entityManager
      * @param ConditionConverter $conditionConverter
      * @param Processor $indexProcessor
+     * @param SerializeFactory $serializeFactory
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -101,7 +109,8 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
         JoinProcessorInterface $extensionAttributesJoinProcessor,
         EntityManager $entityManager,
         ConditionConverter $conditionConverter,
-        Processor $indexProcessor
+        Processor $indexProcessor,
+        SerializeFactory $serializeFactory
     ) {
         $this->postFactory = $postFactory;
         $this->postDataFactory = $postDataFactory;
@@ -113,6 +122,7 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
         $this->entityManager = $entityManager;
         $this->conditionConverter = $conditionConverter;
         $this->indexProcessor = $indexProcessor;
+        $this->serializer = $serializeFactory->create();
     }
 
     /**
@@ -140,7 +150,7 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
             ConditionInterface::class
         );
         if (is_array($productCondition)) {
-            $postModel->setProductCondition(serialize($productCondition));
+            $postModel->setProductCondition($this->serializer->serialize($productCondition));
         }
         $this->checkAtCharacterForTwitterData($postModel);
         $this->checkCustomerGroupsData($postModel);
@@ -212,8 +222,6 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
             foreach ($filterGroup->getFilters() as $filter) {
                 if ($filter->getField() == PostInterface::STORE_IDS) {
                     $collection->addStoreFilter($filter->getValue());
-                } elseif ($filter->getField() == PostInterface::CATEGORY_IDS) {
-                    $collection->addCategoryFilter($filter->getValue());
                 } elseif ($filter->getField() == 'tag_id') {
                     $collection->addTagFilter($filter->getValue());
                 } elseif ($filter->getField() == 'product_id') {
@@ -284,7 +292,7 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
     private function convertPostConditionsToDataModel(PostInterface $post)
     {
         if ($post->getProductCondition()) {
-            $conditionArray = unserialize($post->getProductCondition());
+            $conditionArray = $this->serializer->unserialize($post->getProductCondition());
             $conditionDataModel = $this->conditionConverter
                 ->arrayToDataModel($conditionArray);
             $post->setProductCondition($conditionDataModel);
@@ -344,7 +352,7 @@ class PostRepository implements \Aheadworks\Blog\Api\PostRepositoryInterface
      * @param string $twitterValue
      * @return string
      */
-    private function insertAtCharacter(string $twitterValue)
+    private function insertAtCharacter($twitterValue)
     {
         $at_character = '@';
         if ($twitterValue[0] != $at_character) {

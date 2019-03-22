@@ -9,6 +9,7 @@ namespace Aheadworks\Blog\Model\ResourceModel\Indexer;
 use Aheadworks\Blog\Api\Data\PostInterface;
 use Aheadworks\Blog\Api\PostRepositoryInterface;
 use Aheadworks\Blog\Model\Source\Post\Status;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\Indexer\Table\StrategyInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -25,6 +26,14 @@ use Aheadworks\Blog\Model\Post;
  */
 class ProductPost extends AbstractResource implements IdentityInterface
 {
+    /**#@+
+     * Constants defined for tables
+     */
+    const BLOG_PRODUCT_POST_TABLE = 'aw_blog_product_post';
+    const BLOG_PRODUCT_POST_INDEX_TABLE = 'aw_blog_product_post_idx';
+    const BLOG_PRODUCT_POST_TMP_TABLE = 'aw_blog_product_post_tmp';
+    /**#@-*/
+
     /**
      * @var int
      */
@@ -87,7 +96,7 @@ class ProductPost extends AbstractResource implements IdentityInterface
      */
     protected function _construct()
     {
-        $this->_init('aw_blog_product_post', 'product_id');
+        $this->_init(self::BLOG_PRODUCT_POST_TABLE, 'product_id');
     }
 
     /**
@@ -170,16 +179,24 @@ class ProductPost extends AbstractResource implements IdentityInterface
 
         $data = [];
         foreach ($postList as $post) {
-            // If conditions is set
             if ($post->getProductRule()->getConditions()->getConditions()) {
-                foreach ($this->storeManager->getStores() as $store) {
-                    if (in_array($store->getId(), $post->getStoreIds()) || in_array(0, $post->getStoreIds())) {
-                        foreach ($post->getProductRule()->getMatchingProductIds($store->getId()) as $productId) {
-                            $data[] = [
-                                'product_id' => $productId,
-                                'post_id'    => $post->getId(),
-                                'store_id'   => $store->getId()
-                            ];
+                $websiteIds = $this->getWebsiteIdsByStoreIds($post->getStoreIds());
+                $productIds = $post->getProductRule()->setWebsiteIds($websiteIds)->getProductIds();
+
+                foreach ($productIds as $productId => $validationByWebsite) {
+                    foreach ($websiteIds as $websiteId) {
+                        if ($stores = $this->getWebsiteStores($websiteId)) {
+                            if (empty($validationByWebsite[$websiteId])) {
+                                continue;
+                            }
+                            /** @var Store $store */
+                            foreach ($stores as $store) {
+                                $data[] = [
+                                    'product_id' => $productId,
+                                    'post_id' => $post->getId(),
+                                    'store_id' => $store->getId()
+                                ];
+                            }
                         }
                     }
                 }
@@ -245,5 +262,45 @@ class ProductPost extends AbstractResource implements IdentityInterface
             }
         }
         return $identities;
+    }
+
+    /**
+     * Get stores associated with website
+     *
+     * @param $websiteId
+     * @return mixed
+     */
+    private function getWebsiteStores($websiteId)
+    {
+        try {
+            return $this->storeManager->getWebsite($websiteId)->getStores();
+        } catch (\Exception $exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Retrieve website ids by store ids
+     *
+     * @param array $storeIds
+     * @return array
+     */
+    private function getWebsiteIdsByStoreIds($storeIds)
+    {
+        $websiteIds = [];
+        foreach ($storeIds as $storeId) {
+            if ($storeId == 0) {
+                foreach ($this->storeManager->getWebsites() as $website) {
+                    $websiteIds[] = $website->getId();
+                }
+            } else {
+                try {
+                    $websiteIds[] = $this->storeManager->getStore($storeId)->getWebsiteId();
+                } catch (NoSuchEntityException $e) {
+                }
+            }
+        }
+
+        return array_unique($websiteIds);
     }
 }

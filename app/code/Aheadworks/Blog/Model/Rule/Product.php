@@ -6,21 +6,30 @@
 
 namespace Aheadworks\Blog\Model\Rule;
 
-use Aheadworks\Blog\Model\Rule\Condition\CombineFactory;
+use Magento\CatalogRule\Model\Rule\Condition\CombineFactory;
 use Magento\CatalogRule\Model\Rule\Action\CollectionFactory as ActionCollectionFactory;
 use Aheadworks\Blog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Aheadworks\Blog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use Magento\Framework\Data\FormFactory;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Framework\Model\ResourceModel\Iterator as ResourceIterator;
+use Magento\Catalog\Model\ProductFactory as ProductModelFactory;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Customer\Model\Session;
+use Magento\CatalogRule\Helper\Data as RuleHelperData;
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\Stdlib\DateTime;
+use Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Catalog\Model\Product\Visibility as CatalogProductVisibility;
 
 /**
  * Class Product
  *
  * @package Aheadworks\Blog\Model\Rule
  */
-class Product extends \Magento\Rule\Model\AbstractModel
+class Product extends \Magento\CatalogRule\Model\Rule
 {
     /**
      * @var CombineFactory
@@ -33,9 +42,9 @@ class Product extends \Magento\Rule\Model\AbstractModel
     private $actionCollectionFactory;
 
     /**
-     * @var ProductCollectionFactory
+     * @var CatalogProductVisibility
      */
-    private $productCollectionFactory;
+    private $catalogProductVisibility;
 
     /**
      * @param Context $context
@@ -45,6 +54,16 @@ class Product extends \Magento\Rule\Model\AbstractModel
      * @param CombineFactory $combineFactory
      * @param ActionCollectionFactory $actionCollectionFactory
      * @param ProductCollectionFactory $productCollectionFactory
+     * @param CatalogProductVisibility $catalogProductVisibility
+     * @param ProductModelFactory $productFactory
+     * @param ResourceIterator $resourceIterator
+     * @param StoreManagerInterface $storeManager
+     * @param Session $customerSession
+     * @param RuleHelperData $catalogRuleData
+     * @param TypeListInterface $cacheTypesList
+     * @param DateTime $dateTime
+     * @param RuleProductProcessor $ruleProductProcessor
+     * @param CollectionFactory $catalogProductCollectionFactory
      * @param array $data
      */
     public function __construct(
@@ -55,12 +74,42 @@ class Product extends \Magento\Rule\Model\AbstractModel
         CombineFactory $combineFactory,
         ActionCollectionFactory $actionCollectionFactory,
         ProductCollectionFactory $productCollectionFactory,
+        CatalogProductVisibility $catalogProductVisibility,
+        ProductModelFactory $productFactory,
+        ResourceIterator $resourceIterator,
+        StoreManagerInterface $storeManager,
+        Session $customerSession,
+        RuleHelperData $catalogRuleData,
+        TypeListInterface $cacheTypesList,
+        DateTime $dateTime,
+        RuleProductProcessor $ruleProductProcessor,
+        CollectionFactory $catalogProductCollectionFactory,
         array $data = []
     ) {
         $this->combineFactory = $combineFactory;
         $this->actionCollectionFactory = $actionCollectionFactory;
-        $this->productCollectionFactory = $productCollectionFactory;
-        parent::__construct($context, $registry, $formFactory, $localeDate, null, null, $data);
+        $this->catalogProductVisibility = $catalogProductVisibility;
+        parent::__construct(
+            $context,
+            $registry,
+            $formFactory,
+            $localeDate,
+            $catalogProductCollectionFactory,
+            $storeManager,
+            $combineFactory,
+            $actionCollectionFactory,
+            $productFactory,
+            $resourceIterator,
+            $customerSession,
+            $catalogRuleData,
+            $cacheTypesList,
+            $dateTime,
+            $ruleProductProcessor,
+            null,
+            null,
+            [],
+            $data
+        );
     }
 
     /**
@@ -99,18 +148,37 @@ class Product extends \Magento\Rule\Model\AbstractModel
     }
 
     /**
-     * Get validated product ids
+     * Get array of product ids which are matched by rule
      *
-     * @param int $storeId
      * @return array
      */
-    public function getMatchingProductIds($storeId = 0)
+    public function getProductIds()
     {
-        $this->setCollectedAttributes([]);
+        if ($this->_productIds === null) {
+            $this->_productIds = [];
+            $this->setCollectedAttributes([]);
 
-        /** @var ProductCollection $productCollection */
-        $productCollection = $this->productCollectionFactory->create();
-        $this->getConditions()->collectValidatedAttributes($productCollection, $storeId);
-        return array_unique($productCollection->getAllIds());
+            if ($this->getWebsiteIds()) {
+                /** @var $productCollection \Magento\Catalog\Model\ResourceModel\Product\Collection */
+                $productCollection = $this->_productCollectionFactory->create();
+                $productCollection->addWebsiteFilter($this->getWebsiteIds());
+                $productCollection->setVisibility($this->catalogProductVisibility->getVisibleInCatalogIds());
+                if ($this->_productsFilter) {
+                    $productCollection->addIdFilter($this->_productsFilter);
+                }
+                $this->getConditions()->collectValidatedAttributes($productCollection);
+
+                $this->_resourceIterator->walk(
+                    $productCollection->getSelect(),
+                    [[$this, 'callbackValidateProduct']],
+                    [
+                        'attributes' => $this->getCollectedAttributes(),
+                        'product' => $this->_productFactory->create()
+                    ]
+                );
+            }
+        }
+
+        return $this->_productIds;
     }
 }

@@ -6,6 +6,10 @@
 
 namespace Aheadworks\Blog\Block;
 
+use Magento\Framework\View\Element\Template\Context;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
+
 /**
  * Class Ajax
  *
@@ -13,6 +17,25 @@ namespace Aheadworks\Blog\Block;
  */
 class Ajax extends \Magento\Framework\View\Element\Template
 {
+    /**
+     * @var SerializeInterface
+     */
+    private $serializer;
+
+    /**
+     * @param Context $context
+     * @param array $data
+     * @param SerializeFactory $serializeFactory
+     */
+    public function __construct(
+        Context $context,
+        SerializeFactory $serializeFactory,
+        array $data = []
+    ) {
+        parent::__construct($context, $data);
+        $this->serializer = $serializeFactory->create();
+    }
+
     /**
      * Retrieve script options encoded to json
      *
@@ -29,6 +52,6 @@ class Ajax extends \Magento\Framework\View\Element\Template
                 ]
             )
         ];
-        return json_encode($params);
+        return $this->serializer->serialize($params);
     }
 }

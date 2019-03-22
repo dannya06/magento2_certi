@@ -565,7 +565,7 @@ class Post extends AbstractModel implements PostInterface, IdentityInterface
         if ($this->_appState->getAreaCode() == \Magento\Framework\App\Area::AREA_FRONTEND) {
             $identities[] = self::CACHE_TAG;
         }
-        if (count($this->getRelatedProductIds())) {
+        if (is_array($this->getRelatedProductIds()) && count($this->getRelatedProductIds())) {
             $identities[] = CatalogProduct::CACHE_TAG;
         }
         return $identities;

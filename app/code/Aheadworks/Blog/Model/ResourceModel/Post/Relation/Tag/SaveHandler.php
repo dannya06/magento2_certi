@@ -11,6 +11,8 @@ use Aheadworks\Blog\Api\Data\PostInterface;
 use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
+use Aheadworks\Blog\Model\ResourceModel\Tag as ResourceTag;
+use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
 
 /**
  * Class SaveHandler
@@ -92,7 +94,7 @@ class SaveHandler implements ExtensionInterface
         }
         if ($toDelete) {
             $this->getConnection()->delete(
-                $this->resourceConnection->getTableName('aw_blog_post_tag'),
+                $this->resourceConnection->getTableName(ResourcePost::BLOG_POST_TAG_TABLE),
                 [
                     'post_id = ?' => $entityId,
                     'tag_id IN (?)' => array_keys(array_uintersect($entityTags, $toDelete, 'strcasecmp'))
@@ -114,9 +116,9 @@ class SaveHandler implements ExtensionInterface
     {
         $connection = $this->getConnection();
         $select = $connection->select()
-            ->from(['tag' => $this->resourceConnection->getTableName('aw_blog_tag')], ['id', 'name'])
+            ->from(['tag' => $this->resourceConnection->getTableName(ResourceTag::BLOG_TAG_TABLE)], ['id', 'name'])
             ->joinLeft(
-                ['tag_post' => $this->resourceConnection->getTableName('aw_blog_post_tag')],
+                ['tag_post' => $this->resourceConnection->getTableName(ResourcePost::BLOG_POST_TAG_TABLE)],
                 'tag.id = tag_post.tag_id',
                 ['post_id']
             )
@@ -161,7 +163,7 @@ class SaveHandler implements ExtensionInterface
             ];
         }
         $this->getConnection()->insertMultiple(
-            $this->resourceConnection->getTableName('aw_blog_post_tag'),
+            $this->resourceConnection->getTableName(ResourcePost::BLOG_POST_TAG_TABLE),
             $data
         );
     }

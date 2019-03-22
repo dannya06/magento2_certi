@@ -9,6 +9,8 @@ namespace Aheadworks\Blog\Model\ResourceModel\Validator;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\TypeResolver;
+use Aheadworks\Blog\Model\ResourceModel\Category as ResourceCategory;
+use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
 
 /**
  * Class UrlKeyIsUnique
@@ -60,8 +62,8 @@ class UrlKeyIsUnique
             ->getConnectionByName($metaData->getEntityConnectionName());
 
         $checkTables = [
-            $this->resourceConnection->getTableName('aw_blog_post'),
-            $this->resourceConnection->getTableName('aw_blog_category')
+            $this->resourceConnection->getTableName(ResourcePost::BLOG_POST_TABLE),
+            $this->resourceConnection->getTableName(ResourceCategory::BLOG_CATEGORY_TABLE)
         ];
         foreach ($checkTables as $table) {
             $select = $connection->select()

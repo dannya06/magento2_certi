@@ -130,9 +130,14 @@ define([
                 file = {};
 
             try {
-                file.path = this.getImagePath(this.decodeUrl(encodedUrl));
-                file.url = this.mediaUrl + file.path;
-                file.name = this.getImageName(file.path);
+                if (encodedUrl.indexOf('___directive') === -1) {
+                    file.url = encodedUrl;
+                    file.name = this.getImageName(encodedUrl);
+                } else {
+                    file.path = this.getImagePath(this.decodeUrl(encodedUrl));
+                    file.url = this.mediaUrl + file.path;
+                    file.name = this.getImageName(file.path);
+                }
                 self.addFile(file);
             } catch (error) {
                 self.notifyError(this.errorNotice);

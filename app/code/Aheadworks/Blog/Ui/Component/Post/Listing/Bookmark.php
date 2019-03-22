@@ -12,6 +12,8 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Ui\Api\Data\BookmarkInterfaceFactory;
 use Magento\Ui\Api\BookmarkManagementInterface;
 use Magento\Ui\Api\BookmarkRepositoryInterface;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
 
 /**
  * Class Bookmark
@@ -32,11 +34,17 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
     protected $userContext;
 
     /**
+     * @var SerializeInterface
+     */
+    protected $serializer;
+
+    /**
      * @param ContextInterface $context
      * @param BookmarkRepositoryInterface $bookmarkRepository
      * @param BookmarkManagementInterface $bookmarkManagement
      * @param BookmarkInterfaceFactory $bookmarkFactory
      * @param UserContextInterface $userContext
+     * @param SerializeFactory $serializeFactory
      * @param array $components
      * @param array $data
      */
@@ -46,11 +54,13 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
         BookmarkManagementInterface $bookmarkManagement,
         BookmarkInterfaceFactory $bookmarkFactory,
         UserContextInterface $userContext,
+        SerializeFactory $serializeFactory,
         array $components = [],
         array $data = []
     ) {
         $this->bookmarkFactory = $bookmarkFactory;
         $this->userContext = $userContext;
+        $this->serializer = $serializeFactory->create();
         parent::__construct($context, $bookmarkRepository, $bookmarkManagement, $components, $data);
     }
 
@@ -160,7 +170,7 @@ class Bookmark extends \Magento\Ui\Component\Bookmark
             ->setNamespace(self::BLOG_LISTING_NAMESPACE)
             ->setIdentifier($index)
             ->setTitle($label)
-            ->setConfig(json_encode($config));
+            ->setConfig($this->serializer->serialize($config));
         $this->bookmarkRepository->save($bookmark);
     }
 
