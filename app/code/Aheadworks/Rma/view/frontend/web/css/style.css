@@ -413,3 +413,6 @@ table.hover-light tr:hover td {
 .aw-rma-new-guest .fieldset .field .control {
     width: 55%;
 }
+.aw-rma-list-toolbar .limiter {
+    float: right;
+}

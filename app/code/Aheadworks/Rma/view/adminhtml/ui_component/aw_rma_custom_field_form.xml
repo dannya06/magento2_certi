@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -156,7 +156,7 @@
         </field>
         <field name="editable_admin_for_status_ids">
             <argument name="data" xsi:type="array">
-                <item name="options" xsi:type="object">Aheadworks\Rma\Model\Source\Request\Status</item>
+                <item name="options" xsi:type="object">Aheadworks\Rma\Model\Source\CustomField\EditAt</item>
                 <item name="config" xsi:type="array">
                     <item name="dataType" xsi:type="string">number</item>
                     <item name="label" xsi:type="string" translate="true">Admin Can Edit On</item>

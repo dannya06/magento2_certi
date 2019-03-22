@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Service;
 
@@ -186,7 +186,8 @@ class RequestService implements RequestManagementInterface
                 $this->requestNotifier->notifyAboutStatusChangeOnEmail($request, $causedByAdmin, $storeId);
             }
             if ($request->getThreadMessage()) {
-                $this->addThreadMessage($request);
+                $notify = !$statusChanged;
+                $this->addThreadMessage($request, $causedByAdmin, $notify);
             }
 
             $connection->commit();
@@ -202,17 +203,20 @@ class RequestService implements RequestManagementInterface
      * Add thread message
      *
      * @param RequestInterface $request
+     * @param bool $causedByAdmin
+     * @param bool $notify
      * @return $this
      */
-    private function addThreadMessage($request)
+    private function addThreadMessage($request, $causedByAdmin, $notify)
     {
         $ownerId = !empty($request->getCustomerId()) ? $request->getCustomerId() : 0;
         $request->getThreadMessage()
             ->setRequestId($request->getId())
             ->setOwnerId($ownerId)
             ->setOwnerType($request->getLastReplyBy())
-            ->setIsAuto(false);
-        $this->threadMessageManagement->addThreadMessage($request->getThreadMessage());
+            ->setIsAuto(false)
+            ->setIsInternal($causedByAdmin && $request->getThreadMessage()->isInternal());
+        $this->threadMessageManagement->addThreadMessage($request->getThreadMessage(), $notify);
 
         return $this;
     }

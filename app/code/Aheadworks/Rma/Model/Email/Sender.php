@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Email;
 
@@ -42,7 +42,7 @@ class Sender
             ->setTemplateOptions($emailMetadata->getTemplateOptions())
             ->setTemplateVars($emailMetadata->getTemplateVariables())
             ->setFrom(['name' => $emailMetadata->getSenderName(), 'email' => $emailMetadata->getSenderEmail()])
-            ->addTo([$emailMetadata->getRecipientName() => $emailMetadata->getRecipientEmail()])
+            ->addTo($emailMetadata->getRecipientEmail(), $emailMetadata->getRecipientName())
             ->getTransport()
             ->sendMessage();
     }

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request\Email\Processor;
 
@@ -27,7 +27,7 @@ class CustomerReply extends AbstractProcessor
     protected function prepareRequestTemplateVariables()
     {
         $requestVariables = [
-            'url' => $this->getCustomerRmaUrl()
+            'admin_url' => $this->getAdminRmaUrl()
         ];
 
         return $requestVariables;
@@ -46,7 +46,7 @@ class CustomerReply extends AbstractProcessor
      */
     protected function getRecipientName()
     {
-        return $this->getRequest()->getCustomerName();
+        return $this->getSenderName();
     }
 
     /**
@@ -54,6 +54,6 @@ class CustomerReply extends AbstractProcessor
      */
     protected function getRecipientEmail()
     {
-        return $this->getRequest()->getCustomerEmail();
+        return $this->getSenderEmail();
     }
 }

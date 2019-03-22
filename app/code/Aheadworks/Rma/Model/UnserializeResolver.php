@@ -1,10 +1,12 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model;
+
+use Aheadworks\Rma\Model\Serialize\Factory;
 
 /**
  * Class UnserializeResolver
@@ -13,6 +15,19 @@ namespace Aheadworks\Rma\Model;
  */
 class UnserializeResolver
 {
+    /**
+     * @var Factory;
+     */
+    private $factory;
+
+    /**
+     * @param Factory $factory
+     */
+    public function __construct(Factory $factory)
+    {
+        $this->factory = $factory;
+    }
+
     /**
      * Unserialize the given string
      *
@@ -51,10 +66,7 @@ class UnserializeResolver
      */
     private function jsonDecodeString($string)
     {
-        $result = json_decode($string, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \InvalidArgumentException('Unable to unserialize value.');
-        }
-        return $result;
+        $serializer = $this->factory->create();
+        return $serializer->unserialize($string);
     }
 }

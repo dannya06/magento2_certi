@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Block\Customer\Request;
 
@@ -107,6 +107,7 @@ class ThreadList extends Template
             ->create();
         $this->searchCriteriaBuilder
             ->addFilter(ThreadMessageInterface::REQUEST_ID, $this->getRequestId())
+            ->addFilter(ThreadMessageInterface::IS_INTERNAL, 0)
             ->addSortOrder($sortOrder);
 
         return $this->threadMessageRepository

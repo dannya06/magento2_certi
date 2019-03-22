@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\ResourceModel\CustomField;
 
@@ -57,10 +57,10 @@ class Collection extends AbstractCollection
         $connection = $this->getConnection();
         $select = $this->getConnection()->select()
             ->from(
-                ['cf' => 'aw_rma_custom_field'],
+                ['cf' => $this->getTable('aw_rma_custom_field')],
                 ['cf_id' => 'cf.id', 'enabled_count' => new \Zend_Db_Expr('COUNT(cf.id)')]
             )->joinLeft(
-                ['cfo' => 'aw_rma_custom_field_option'],
+                ['cfo' => $this->getTable('aw_rma_custom_field_option')],
                 'cf.id = cfo.field_id'
             )->where('cf.type IN (?)', [Type::SELECT, Type::MULTI_SELECT])
             ->where('cfo.enabled = ?', 1)
@@ -97,7 +97,7 @@ class Collection extends AbstractCollection
     {
         $this->getSelect()
             ->joinLeft(
-                ['cfs' => 'aw_rma_custom_field_status'],
+                ['cfs' => $this->getTable('aw_rma_custom_field_status')],
                 'main_table.id = cfs.field_id',
                 []
             )->where('cfs.status_type in (?)', [StatusType::CUSTOMER_VISIBLE, StatusType::CUSTOMER_EDITABLE])
@@ -111,9 +111,15 @@ class Collection extends AbstractCollection
      */
     protected function _afterLoad()
     {
-        $this->attachRelationTable('aw_rma_custom_field_website', 'id', 'field_id', 'website_id', 'website_ids');
         $this->attachRelationTable(
-            'aw_rma_custom_field_status',
+            $this->getTable('aw_rma_custom_field_website'),
+            'id',
+            'field_id',
+            'website_id',
+            'website_ids'
+        );
+        $this->attachRelationTable(
+            $this->getTable('aw_rma_custom_field_status'),
             'id',
             'field_id',
             'status',
@@ -121,7 +127,7 @@ class Collection extends AbstractCollection
             [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::CUSTOMER_VISIBLE]]
         );
         $this->attachRelationTable(
-            'aw_rma_custom_field_status',
+            $this->getTable('aw_rma_custom_field_status'),
             'id',
             'field_id',
             'status',
@@ -129,7 +135,7 @@ class Collection extends AbstractCollection
             [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::ADMIN_EDITABLE]]
         );
         $this->attachRelationTable(
-            'aw_rma_custom_field_status',
+            $this->getTable('aw_rma_custom_field_status'),
             'id',
             'field_id',
             'status',
@@ -137,7 +143,7 @@ class Collection extends AbstractCollection
             [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::CUSTOMER_EDITABLE]]
         );
         $this->attachRelationTable(
-            'aw_rma_custom_field_frontend_label',
+            $this->getTable('aw_rma_custom_field_frontend_label'),
             'id',
             'field_id',
             ['store_id', 'value'],
@@ -162,14 +168,14 @@ class Collection extends AbstractCollection
     protected function _renderFiltersBefore()
     {
         $this->joinLinkageTable(
-            'aw_rma_custom_field_website',
+            $this->getTable('aw_rma_custom_field_website'),
             'id',
             'field_id',
             'website_ids',
             'website_id'
         );
         $this->joinLinkageTable(
-            'aw_rma_custom_field_status',
+            $this->getTable('aw_rma_custom_field_status'),
             'id',
             'field_id',
             'visible_for_status_ids',
@@ -177,7 +183,7 @@ class Collection extends AbstractCollection
             [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::CUSTOMER_VISIBLE]]
         );
         $this->joinLinkageTable(
-            'aw_rma_custom_field_status',
+            $this->getTable('aw_rma_custom_field_status'),
             'id',
             'field_id',
             'editable_admin_for_status_ids',
@@ -185,7 +191,7 @@ class Collection extends AbstractCollection
             [['field' => 'status_type', 'condition' => '=', 'value' => StatusType::ADMIN_EDITABLE]]
         );
         $this->joinLinkageTable(
-            'aw_rma_custom_field_status',
+            $this->getTable('aw_rma_custom_field_status'),
             'id',
             'field_id',
             'editable_for_status_ids',

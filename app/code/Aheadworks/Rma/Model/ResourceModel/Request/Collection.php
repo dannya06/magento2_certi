@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\ResourceModel\Request;
 
@@ -111,7 +111,7 @@ class Collection extends AbstractCollection
     protected function _renderFiltersBefore()
     {
         $this->joinLinkageTable(
-            'aw_rma_request_item',
+            $this->getTable('aw_rma_request_item'),
             'id',
             'request_id',
             'item_id',
@@ -122,7 +122,7 @@ class Collection extends AbstractCollection
             if (strpos($filter['field'], 'custom_field_') !== false) {
                 $fieldId = (int)str_replace('custom_field_', '', $filter['field']);
                 $this->joinLinkageTable(
-                    'aw_rma_request_custom_field_value',
+                    $this->getTable('aw_rma_request_custom_field_value'),
                     'id',
                     'entity_id',
                     $filter['field'],
@@ -141,7 +141,7 @@ class Collection extends AbstractCollection
     protected function _afterLoad()
     {
         $this->attachRelationTable(
-            'aw_rma_request_custom_field_value',
+            $this->getTable('aw_rma_request_custom_field_value'),
             'id',
             'entity_id',
             ['field_id', 'value'],

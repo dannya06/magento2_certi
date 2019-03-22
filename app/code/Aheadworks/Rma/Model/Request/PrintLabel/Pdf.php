@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request\PrintLabel;
 
@@ -282,10 +282,10 @@ class Pdf
             ->deltaY(10);
 
         foreach ($request->getOrderItems() as $item) {
-            $this->pdfDocument->deltaY(10);
-            $this->insertOrderItemRow($item);
-            $this->pdfDocument->deltaY(12);
-            $this->insertOrderItemCustomField($item, $storeId);
+            $additionalDeltaY = $this->pdfDocument->getY();
+            $this->pdfDocument->deltaY(5);
+            $this->insertOrderItemRow($item, $storeId, $additionalDeltaY);
+            $this->pdfDocument->setY($additionalDeltaY - 12);
             $this->pdfDocument
                 ->drawLine(550)
                 ->deltaY(12);
@@ -322,9 +322,11 @@ class Pdf
      * Insert order item row
      *
      * @param RequestItemInterface $item
+     * @param int $storeId
+     * @param int $additionalDeltaY
      * @return $this
      */
-    private function insertOrderItemRow($item)
+    private function insertOrderItemRow($item, $storeId, &$additionalDeltaY)
     {
         $offsetX = 10;
         $count = 0;
@@ -339,6 +341,13 @@ class Pdf
             );
             $offsetX += $column['width'];
             $count++;
+            if ($additionalDeltaY > $this->pdfDocument->getY()) {
+                $additionalDeltaY = $this->pdfDocument->getY();
+            }
+            if ($fieldName == 'name') {
+                $this->pdfDocument->deltaY($additionalDeltaY - $this->pdfDocument->getY() + 12);
+                $this->insertOrderItemCustomField($item, $storeId, $additionalDeltaY);
+            }
             if ($count < $columnCount) {
                 $this->pdfDocument->setY($yPos);
             }
@@ -352,13 +361,17 @@ class Pdf
      *
      * @param RequestItemInterface $item
      * @param int $storeId
+     * @param int $additionalDeltaY
      * @return $this
      */
-    private function insertOrderItemCustomField($item, $storeId)
+    private function insertOrderItemCustomField($item, $storeId, &$additionalDeltaY)
     {
         $customFieldValueBlockLen = 80;
         foreach ($item->getCustomFields() as $customField) {
             $offsetX = 20;
+            if ($additionalDeltaY >= $this->pdfDocument->getY()) {
+                $additionalDeltaY = $this->pdfDocument->getY() - 12;
+            }
             $value = $this->customFieldResolver
                 ->getValue($customField->getFieldId(), $customField->getValue(), $storeId);
             $label = $this->customFieldResolver->getLabel($customField->getFieldId(), $storeId);

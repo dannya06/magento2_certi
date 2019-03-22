@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Ui\Component\Form\Request;
 
@@ -24,6 +24,8 @@ use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Form\Field;
 use Magento\Ui\Component\Form\Element\Input;
+use Magento\Ui\Component\Form\Element\DataType\Text;
+use Magento\Ui\Component\Form\Element\ActionDelete;
 
 /**
  * Class CustomFields
@@ -100,12 +102,20 @@ class CustomFields extends Container
     {
         $status = $this->getRequestStatus();
         $refersTo = $this->getData('config/refersTo') ? : Refers::REQUEST;
-        foreach ($this->getCustomFields($refersTo) as $customField) {
+        $addActionDelete = $this->getData('config/addActionDelete');
+        foreach ($this->getCustomFields($refersTo, $status) as $customField) {
             $config = $this->mapper->map($customField, $status);
             $this->createComponent(
                 $this->getCustomFieldName($customField),
                 Field::NAME,
                 $config
+            );
+        }
+        if ($addActionDelete) {
+            $this->createComponent(
+                'action_delete',
+                ActionDelete::NAME,
+                $this->getActionDeleteConfig()
             );
         }
 
@@ -127,14 +137,21 @@ class CustomFields extends Container
      * Retrieve custom fields
      *
      * @param string $refersTo
+     * @param int $status
      * @return CustomFieldInterface[]
+     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function getCustomFields($refersTo)
+    private function getCustomFields($refersTo, $status)
     {
         $this->searchCriteriaBuilder
             ->addFilter(CustomFieldInterface::REFERS, $refersTo)
-            ->addFilter(CustomFieldInterface::OPTIONS, 'enabled')
-            ->addFilter(CustomFieldInterface::WEBSITE_IDS, $this->storeManager->getWebsite()->getId());
+            ->addFilter(CustomFieldInterface::OPTIONS, 'enabled');
+        if ($status != EditAt::NEW_REQUEST_PAGE) {
+            $requestStoreId = $this->getRequest()->getStoreId();
+            $websiteId = $this->storeManager->getStore($requestStoreId)->getWebsiteId();
+            $this->searchCriteriaBuilder->addFilter(CustomFieldInterface::WEBSITE_IDS, $websiteId);
+        }
 
         return $this->customFieldRepository
             ->getList($this->searchCriteriaBuilder->create())
@@ -148,6 +165,7 @@ class CustomFields extends Container
      * @param string $type
      * @param array $config
      * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function createComponent($fieldName, $type, $config)
     {
@@ -167,15 +185,51 @@ class CustomFields extends Container
      * Retrieve request status
      *
      * @return int
+     * @throws NoSuchEntityException
      */
     private function getRequestStatus()
+    {
+        $request = $this->getRequest();
+
+        return !empty($request) ? $request->getStatusId() : EditAt::NEW_REQUEST_PAGE;
+    }
+
+    /**
+     * Retrieve request
+     *
+     * @return RequestInterface|null
+     * @throws NoSuchEntityException
+     */
+    private function getRequest()
     {
         $id = $this->getContext()->getRequestParam(
             $this->getContext()->getDataProvider()->getRequestFieldName()
         );
+        return !empty($id) ? $this->requestRepository->get($id) : null;
+    }
 
-        return !empty($id)
-            ? $this->requestRepository->get($id)->getStatusId()
-            : EditAt::NEW_REQUEST_PAGE;
+    /**
+     * Retrieve action delete config
+     *
+     * @return array
+     */
+    private function getActionDeleteConfig()
+    {
+        return [
+            'componentType' => 'actionDelete',
+            'component' => 'Aheadworks_Rma/js/ui/dynamic-rows/action-delete',
+            'dataType' => 'text',
+            'label' => __('Actions'),
+            'template' => 'Magento_Backend/dynamic-rows/cells/action-delete',
+            'imports' => [
+                'visible' => '${ $.provider }:data.newRequest'
+            ],
+            'additionalClasses' => [
+                'control-table-options-cell' => true
+            ],
+            'columnsHeaderClasses' => [
+                'control-table-options-th' => true
+            ]
+        ];
     }
 }

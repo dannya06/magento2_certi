@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\CustomField\Renderer\Backend;
 
@@ -10,6 +10,7 @@ use Aheadworks\Rma\Api\Data\CustomFieldInterface;
 use Aheadworks\Rma\Model\CustomField\AvailabilityChecker;
 use Aheadworks\Rma\Model\Source\CustomField\EditAt;
 use Aheadworks\Rma\Model\Source\CustomField\Type;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class Mapper
@@ -24,10 +25,22 @@ class Mapper
     private $availabilityChecker;
 
     /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
      * @var array
      */
     private $formElementMap = [
         Type::TEXT => 'input'
+    ];
+
+    /**
+     * @var array
+     */
+    private $formComponentMap = [
+        Type::SELECT => 'Aheadworks_Rma/js/ui/form/element/select'
     ];
 
     /**
@@ -50,11 +63,14 @@ class Mapper
 
     /**
      * @param AvailabilityChecker $availabilityChecker
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        AvailabilityChecker $availabilityChecker
+        AvailabilityChecker $availabilityChecker,
+        StoreManagerInterface $storeManager
     ) {
         $this->availabilityChecker = $availabilityChecker;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -81,11 +97,17 @@ class Mapper
         $result['formElement'] = isset($this->formElementMap[$type])
             ? $this->formElementMap[$type]
             : $type;
+        if (isset($this->formComponentMap[$type])) {
+            $result['component'] = $this->formComponentMap[$type];
+        }
         $result['disabled'] = !$this->isEditable($customField, $requestStatus);
         if (in_array($type, [Type::SELECT, Type::MULTI_SELECT])) {
             $result['caption'] = $result['disabled'] ? __('Please select') : false;
         }
         $result = array_merge($result, $this->getValidationRules($customField));
+        $result['visibleOnStoreIds'] = $this->getStoreIdsByWebsiteIds($customField->getWebsiteIds());
+        $result['visible'] = false;
+        $result['requestFieldType'] = 'customField';
 
         return $result;
     }
@@ -147,5 +169,23 @@ class Mapper
     private function isEditable($customField, $requestStatus)
     {
         return $this->availabilityChecker->canEditableAdminByStatus($customField->getId(), $requestStatus);
+    }
+
+    /**
+     * Retrieve store ids by website ids
+     *
+     * @param array $websiteIds
+     * @return array
+     */
+    private function getStoreIdsByWebsiteIds($websiteIds)
+    {
+        $storeIds = [];
+        foreach ($this->storeManager->getStores() as $store) {
+            if (in_array($store->getWebsiteId(), $websiteIds)) {
+                $storeIds[] = $store->getId();
+            }
+        }
+
+        return $storeIds;
     }
 }

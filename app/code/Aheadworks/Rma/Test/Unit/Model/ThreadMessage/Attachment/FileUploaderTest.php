@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Test\Unit\Model\ThreadMessage\Attachment;
 
@@ -83,6 +83,7 @@ class FileUploaderTest extends TestCase
         $baseMediaUrl = 'https://ecommerce.aheadworks.com/pub/media/';
         $tmpMediaPath = '/tmp/media';
         $fileName = 'file.jpg';
+        $fileId = base64_encode($fileName);
         $fileSize = '123';
         $fileCode = 'img';
         $filePath = '/var/www/mysite/pub/media/aw_rma/media';
@@ -145,7 +146,8 @@ class FileUploaderTest extends TestCase
                 'url' => $baseMediaUrl . FileUploader::FILE_DIR . '/' . $fileName,
                 'path' => $filePath,
                 'full_path' => $filePath . '/' . $fileName,
-                'file_name' => $fileName
+                'file_name' => $fileName,
+                'id' => $fileId
             ],
             $this->model->setAllowedExtensions($allowedExtensions)->saveToTmpFolder($fileCode)
         );

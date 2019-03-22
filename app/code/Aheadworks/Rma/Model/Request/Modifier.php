@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request;
 
@@ -118,13 +118,18 @@ class Modifier
      * @param bool $causedByAdmin
      * @param int $storeId
      * @return RequestInterface
+     * @throws LocalizedException
      */
     public function modifyRequestBeforeCreate($request, $causedByAdmin, $storeId)
     {
         $status = $this->config->isAllowAutoApprove($storeId)
             ? RequestStatus::APPROVED
             : RequestStatus::PENDING_APPROVAL;
-        $order = $this->orderRepository->get($request->getOrderId());
+        try {
+            $order = $this->orderRepository->get($request->getOrderId());
+        } catch (\Exception $e) {
+            throw new LocalizedException(__('Incorrect order id.'));
+        }
         $request
             ->setStoreId($order->getStoreId())
             ->setPaymentMethod($order->getPayment()->getMethod())

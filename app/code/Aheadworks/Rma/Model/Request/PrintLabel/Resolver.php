@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request\PrintLabel;
 
@@ -14,7 +14,7 @@ use Magento\Framework\Api\AttributeInterface;
 use Magento\Framework\Api\CustomAttributesDataInterface;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Customer\Api\AddressMetadataInterface;
-use Aheadworks\Rma\Model\Request\Resolver\Order as OrderResolver;
+use Aheadworks\Rma\Model\Request\Resolver\Customer as CustomerResolver;
 
 /**
  * Class Resolver
@@ -44,29 +44,29 @@ class Resolver
     private $availabilityChecker;
 
     /**
-     * @var OrderResolver
+     * @var CustomerResolver
      */
-    private $orderResolver;
+    private $customerResolver;
 
     /**
      * @param DataObjectHelper $dataObjectHelper
      * @param RequestPrintLabelInterfaceFactory $requestPrintLabelFactory
      * @param AddressMetadataInterface $addressMetadata
      * @param AvailabilityChecker $availabilityChecker
-     * @param OrderResolver $orderResolver
+     * @param CustomerResolver $customerResolver
      */
     public function __construct(
         DataObjectHelper $dataObjectHelper,
         RequestPrintLabelInterfaceFactory $requestPrintLabelFactory,
         AddressMetadataInterface $addressMetadata,
         AvailabilityChecker $availabilityChecker,
-        OrderResolver $orderResolver
+        CustomerResolver $customerResolver
     ) {
         $this->dataObjectHelper = $dataObjectHelper;
         $this->requestPrintLabelFactory = $requestPrintLabelFactory;
         $this->addressMetadata = $addressMetadata;
         $this->availabilityChecker = $availabilityChecker;
-        $this->orderResolver = $orderResolver;
+        $this->customerResolver = $customerResolver;
     }
 
     /**
@@ -78,7 +78,7 @@ class Resolver
     public function resolve($request)
     {
         $requestPrintLabelEntity = $this->requestPrintLabelFactory->create();
-        $address = $this->orderResolver->getAddress($request->getOrderId());
+        $address = $this->customerResolver->getAddress($request);
 
         $this->dataObjectHelper->populateWithArray(
             $requestPrintLabelEntity,

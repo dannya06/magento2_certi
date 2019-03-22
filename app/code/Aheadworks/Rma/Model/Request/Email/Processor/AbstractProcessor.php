@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request\Email\Processor;
 
@@ -199,8 +199,10 @@ abstract class AbstractProcessor
             'text_id' => $this->getRequest()->getIncrementId(),
             'customer_name' => $this->getRequest()->getCustomerName(),
         ];
-        if ($this->getRequest()->getThreadMessage()) {
-            $requestVariables['notify_comment_text'] = $this->getRequest()->getThreadMessage()->getText();
+
+        $threadMessage = $this->getRequest()->getThreadMessage();
+        if ($this->isThreadMessageAvailable($threadMessage)) {
+            $requestVariables['notify_comment_text'] = $threadMessage->getText();
         }
 
         $requestVariables = array_merge($requestVariables, $this->prepareRequestTemplateVariables());
@@ -210,6 +212,17 @@ abstract class AbstractProcessor
         ];
 
         return $templateVariables;
+    }
+
+    /**
+     * Check if thread message is available
+     *
+     * @param $threadMessage
+     * @return bool
+     */
+    protected function isThreadMessageAvailable($threadMessage)
+    {
+        return $threadMessage && !$threadMessage->isInternal();
     }
 
     /**

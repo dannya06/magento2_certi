@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -42,6 +42,32 @@
         <service class="Aheadworks\Rma\Api\RequestManagementInterface" method="getPrintLabelUrl"/>
         <resources>
             <resource ref="Aheadworks_Rma::manage_rma"/>
+        </resources>
+    </route>
+
+    <!-- Managing RMA Customer Request -->
+    <route url="/V1/awRmaCustomerRequest/:externalLink" method="GET">
+        <service class="Aheadworks\Rma\Api\RequestRepositoryInterface" method="getByExternalLink"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/awRmaCustomerRequest" method="POST">
+        <service class="Aheadworks\Rma\Api\CustomerRequestManagementInterface" method="createRequest"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/awRmaCustomerRequest" method="PUT">
+        <service class="Aheadworks\Rma\Api\CustomerRequestManagementInterface" method="updateRequest"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/awRmaRequest/printLabel" method="GET">
+        <service class="Aheadworks\Rma\Api\CustomerRequestManagementInterface" method="getRequestPrintLabelUrl"/>
+        <resources>
+            <resource ref="anonymous" />
         </resources>
     </route>
 
@@ -114,6 +140,38 @@
         <service class="Aheadworks\Rma\Api\ThreadMessageManagementInterface" method="getAttachment"/>
         <resources>
             <resource ref="Aheadworks_Rma::manage_rma"/>
+        </resources>
+    </route>
+
+    <!-- Managing RMA Canned Responses -->
+    <route url="/V1/awRmaCannedResponse/:cannedResponseId" method="GET">
+        <service class="Aheadworks\Rma\Api\CannedResponseRepositoryInterface" method="get"/>
+        <resources>
+            <resource ref="Aheadworks_Rma::canned_responses"/>
+        </resources>
+    </route>
+    <route url="/V1/awRmaCannedResponse/search" method="GET">
+        <service class="Aheadworks\Rma\Api\CannedResponseRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Aheadworks_Rma::canned_responses"/>
+        </resources>
+    </route>
+    <route url="/V1/awRmaCannedResponse" method="POST">
+        <service class="Aheadworks\Rma\Api\CannedResponseRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="Aheadworks_Rma::canned_responses"/>
+        </resources>
+    </route>
+    <route url="/V1/awRmaCannedResponse/:id" method="PUT">
+        <service class="Aheadworks\Rma\Api\CannedResponseRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="Aheadworks_Rma::canned_responses"/>
+        </resources>
+    </route>
+    <route url="/V1/awRmaCannedResponse/:cannedResponseId" method="DELETE">
+        <service class="Aheadworks\Rma\Api\CannedResponseRepositoryInterface" method="deleteById"/>
+        <resources>
+            <resource ref="Aheadworks_Rma::canned_responses"/>
         </resources>
     </route>
 </routes>

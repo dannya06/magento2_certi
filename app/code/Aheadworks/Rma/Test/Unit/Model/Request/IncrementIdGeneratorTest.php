@@ -1,12 +1,13 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Test\Unit\Model\Request;
 
 use Aheadworks\Rma\Model\Request\IncrementIdGenerator;
+use Aheadworks\Rma\Model\ResourceModel\Request;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use PHPUnit\Framework\TestCase;
@@ -31,6 +32,11 @@ class IncrementIdGeneratorTest extends TestCase
     private $connectionMock;
 
     /**
+     * @var Request|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $requestResourceMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
@@ -39,6 +45,7 @@ class IncrementIdGeneratorTest extends TestCase
     {
         $objectManager = new ObjectManager($this);
         $this->connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->requestResourceMock = $this->createMock(Request::class);
         $resourceConnectionMock = $this->getMockBuilder(ResourceConnection::class)
             ->setMethods(['getConnection'])
             ->disableOriginalConstructor()
@@ -50,7 +57,8 @@ class IncrementIdGeneratorTest extends TestCase
         $this->model = $objectManager->getObject(
             IncrementIdGenerator::class,
             [
-                'resourceConnection' => $resourceConnectionMock
+                'resourceConnection' => $resourceConnectionMock,
+                'requestResource' => $this->requestResourceMock
             ]
         );
     }
@@ -61,6 +69,11 @@ class IncrementIdGeneratorTest extends TestCase
     public function testGenerate()
     {
         $entityStatus['Auto_increment'] = 1;
+        $tableName = 'aw_rma_request';
+
+        $this->requestResourceMock->expects($this->once())
+            ->method('getMainTable')
+            ->willReturn($tableName);
         $this->connectionMock->expects($this->once())
             ->method('showTableStatus')
             ->with('aw_rma_request')
@@ -78,9 +91,14 @@ class IncrementIdGeneratorTest extends TestCase
     public function testGenerateOnException()
     {
         $entityStatus['Auto_increment'] = null;
+        $tableName = 'aw_rma_request';
+
+        $this->requestResourceMock->expects($this->once())
+            ->method('getMainTable')
+            ->willReturn($tableName);
         $this->connectionMock->expects($this->once())
             ->method('showTableStatus')
-            ->with('aw_rma_request')
+            ->with($tableName)
             ->willReturn($entityStatus);
 
         $this->model->generate();

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model;
 
@@ -152,6 +152,22 @@ class ThreadMessage extends AbstractModel implements ThreadMessageInterface
     public function setIsAuto($isAuto)
     {
         return $this->setData(self::IS_AUTO, $isAuto);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isInternal()
+    {
+        return $this->getData(self::IS_INTERNAL);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIsInternal($isInternal)
+    {
+        return $this->setData(self::IS_INTERNAL, $isInternal);
     }
 
     /**

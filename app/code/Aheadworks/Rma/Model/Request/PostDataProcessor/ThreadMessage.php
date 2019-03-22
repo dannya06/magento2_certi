@@ -1,13 +1,14 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request\PostDataProcessor;
 
 use Aheadworks\Rma\Api\Data\RequestInterface;
 use Aheadworks\Rma\Api\Data\ThreadMessageInterface;
+use Magento\Framework\Stdlib\BooleanUtils;
 
 /**
  * Class ThreadMessage
@@ -16,6 +17,21 @@ use Aheadworks\Rma\Api\Data\ThreadMessageInterface;
  */
 class ThreadMessage implements ProcessorInterface
 {
+
+    /**
+     * @var BooleanUtils
+     */
+    private $booleanUtils;
+
+    /**
+     * @param BooleanUtils $booleanUtils
+     */
+    public function __construct(
+        BooleanUtils $booleanUtils
+    ) {
+        $this->booleanUtils = $booleanUtils;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -23,6 +39,12 @@ class ThreadMessage implements ProcessorInterface
     {
         if ($this->isThreadMessageEmpty($data) && $this->isThreadMessageAttachmentEmpty($data)) {
             $data[RequestInterface::THREAD_MESSAGE] = null;
+        }
+        if (isset($data[RequestInterface::THREAD_MESSAGE][ThreadMessageInterface::IS_INTERNAL])) {
+            $data[RequestInterface::THREAD_MESSAGE][ThreadMessageInterface::IS_INTERNAL] =
+                $this->booleanUtils->toBoolean(
+                    $data[RequestInterface::THREAD_MESSAGE][ThreadMessageInterface::IS_INTERNAL]
+                );
         }
 
         return $data;

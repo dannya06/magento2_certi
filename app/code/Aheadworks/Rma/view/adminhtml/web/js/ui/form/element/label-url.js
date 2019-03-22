@@ -1,7 +1,7 @@
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 define([
     'Magento_Ui/js/form/element/abstract'
@@ -10,34 +10,24 @@ define([
 
     return Abstract.extend({
         defaults: {
-            elementTmpl: 'Aheadworks_Rma/ui/form/element/label_url'
+            elementTmpl: 'Aheadworks_Rma/ui/form/element/label_url',
+            links: {
+                elementLabel: '${ $.provider }:${ $.dataScope }' + '_label',
+                elementUrl: '${ $.provider }:${ $.dataScope }' + '_url',
+                elementAfter: '${ $.provider }:${ $.dataScope }' + '_after'
+            }
         },
 
         /**
-         * Retrieve label for field
+         * Initializes observable properties of instance
          *
-         * @returns {String}
+         * @returns {LabelUrl} Chainable
          */
-        getLabel: function() {
-            return this.source.get(this.dataScope + '_label');
-        },
+        initObservable: function () {
+            this._super()
+                .track(['elementLabel', 'elementUrl', 'elementAfter']);
 
-        /**
-         * Retrieve url for field
-         *
-         * @returns {String}
-         */
-        getUrl: function() {
-            return this.source.get(this.dataScope + '_url');
-        },
-
-        /**
-         * Retrieve data after element
-         *
-         * @returns {String}
-         */
-        getAfter: function() {
-            return this.source.get(this.dataScope + '_after');
+            return this;
         }
     });
 });

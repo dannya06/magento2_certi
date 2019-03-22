@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Service;
 
@@ -73,7 +73,9 @@ class ThreadMessageService implements ThreadMessageManagementInterface
                 $request->setThreadMessage($threadMessage);
                 $causedByAdmin = $threadMessage->getOwnerType() == Owner::ADMIN;
 
-                $this->threadMessageNotifier->notifyAboutNewMessage($request, $causedByAdmin);
+                if (!$threadMessage->isInternal()) {
+                    $this->threadMessageNotifier->notifyAboutNewMessage($request, $causedByAdmin);
+                }
             }
         } catch (\Exception $e) {
             throw new LocalizedException(__('Could not post new message.'), $e);

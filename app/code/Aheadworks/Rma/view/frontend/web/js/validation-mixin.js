@@ -1,7 +1,7 @@
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 define([
     'jquery'
@@ -16,5 +16,6 @@ define([
             },
             $.mage.__('Please select order item(s).')
         );
+        return $.mage.validation;
     }
 });

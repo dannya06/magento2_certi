@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Ui\Component\Form\Request;
 
@@ -202,6 +202,9 @@ class ThreadList extends Container
         }
         if ($threadMessage->isAuto()) {
             $classNames[] = 'auto';
+        }
+        if ($threadMessage->isInternal()) {
+            $classNames[] = 'internal';
         }
 
         return implode(' ', $classNames);

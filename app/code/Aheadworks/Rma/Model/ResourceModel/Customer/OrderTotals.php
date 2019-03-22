@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\ResourceModel\Customer;
 
@@ -149,9 +149,9 @@ class OrderTotals extends AbstractDb
     {
         $connection = $this->getConnection();
         $select = $connection->select()
-            ->from($this->getTable('sales_order'), [])
-            ->where('sales_order.store_id IN (?)', $this->getStoreIds($storeId))
-            ->where('sales_order.state IN (?)', [SalesOrder::STATE_COMPLETE]);
+            ->from(['sales_order_table' => $this->getTable('sales_order')], [])
+            ->where('sales_order_table.store_id IN (?)', $this->getStoreIds($storeId))
+            ->where('sales_order_table.state IN (?)', [SalesOrder::STATE_COMPLETE]);
 
         return $select;
     }
