@@ -1349,7 +1349,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-                "reference": "b2c76f7ac967e6b7ca1e6b60819b7c09ca7d008a"
+                "reference": "b5140746340ab297bb22ef35b89cb1d227a7ed3e"
             },
             "replace": {
                 "icubeus/module-osc": "self.version",
@@ -1385,7 +1385,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-03-22T08:08:56+00:00"
+            "time": "2019-03-25T06:44:53+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
