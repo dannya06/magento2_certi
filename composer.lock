@@ -1222,47 +1222,6 @@
             "time": "2018-06-06 02:57:37"
         },
         {
-            "name": "icubeus/magento2-checkout",
-            "version": "2.1.22",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "10b40c8c05f90ab7cc771976ca8fc5644e3685a0"
-            },
-            "replace": {
-                "icubeus/module-core": "self.version",
-                "icubeus/module-osc": "self.version"
-            },
-            "type": "magento2-component",
-            "autoload": {
-                "files": [
-                    "src/module-core/registration.php",
-                    "src/module-osc/registration.php"
-                ],
-                "psr-4": {
-                    "Mageplaza\\Core\\": "src/module-core",
-                    "Mageplaza\\Osc\\": "src/module-osc"
-                }
-            },
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "icubeus",
-                    "email": "sales@icube.us"
-                }
-            ],
-            "description": "Custom checkout with payment grouping for Indonesia CLient",
-            "homepage": "https://github.com/icubeus/magento2-checkout",
-            "keywords": [
-                "magento",
-                "magento2"
-            ],
-            "time": "2019-01-10 08:17:30"
->>>>>>> 2c68e92d9... 15294813 - update SmileElasticsuite
-        },
-        {
             "name": "icubeus/magento2-citykecamatan",
             "version": "2.0.2",
             "source": {
