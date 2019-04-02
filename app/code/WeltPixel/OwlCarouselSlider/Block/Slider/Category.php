@@ -19,6 +19,7 @@ class Category extends \WeltPixel\OwlCarouselSlider\Block\Slider\Products  imple
         return [
             'WELTPIXEL_PRODUCTS_LIST_WIDGET',
             $this->_storeManager->getStore()->getId(),
+            $this->_storeManager->getStore()->getCurrentCurrency()->getCode(),
             $this->_design->getDesignTheme()->getId(),
             $this->getData('products_type'),
             $this->getData('category')

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
@@ -42,6 +42,6 @@ class ProductPerformanceByCategory extends ProductPerformance
             ->group($this->getGroupByFields(['category.category_id']));
         $select = $this->addFilterByCreatedAt($select, 'order');
 
-        $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+        $this->safeInsertFromSelect($select, $this->getIdxTable(), array_keys($columns));
     }
 }

@@ -14,12 +14,21 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
  */
 class Post extends AbstractDb
 {
+    /**#@+
+     * Constants defined for tables
+     */
+    const BLOG_POST_TABLE = 'aw_blog_post';
+    const BLOG_POST_CATEGORY_TABLE = 'aw_blog_post_category';
+    const BLOG_POST_STORE_TABLE = 'aw_blog_post_store';
+    const BLOG_POST_TAG_TABLE = 'aw_blog_post_tag';
+    /**#@-*/
+
     /**
      * @return void
      */
     protected function _construct()
     {
-        $this->_init('aw_blog_post', 'id');
+        $this->_init(self::BLOG_POST_TABLE, 'id');
     }
 
     /**

@@ -7,4 +7,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Catalog\Model\Category\DataProvider">
+        <plugin name="weltpixel-designelements-category-dataprovider" type="WeltPixel\DesignElements\Plugin\Category\DataProvider" sortOrder="1" />
+    </type>
 </config>

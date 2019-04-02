@@ -1,7 +1,10 @@
 <?php
+
 namespace WeltPixel\Sitemap\Model\ResourceModel\Cms;
 
 use Magento\Cms\Api\Data\PageInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\Cms\Api\GetUtilityPageIdentifiersInterface;
 
 /**
  * Class Page
@@ -9,6 +12,11 @@ use Magento\Cms\Api\Data\PageInterface;
  */
 class Page extends \Magento\Sitemap\Model\ResourceModel\Cms\Page
 {
+    /**
+     * @var GetUtilityPageIdentifiersInterface
+     */
+    private $getUtilityPageIdentifiers;
+
     /**
      * Retrieve cms page collection array
      *
@@ -30,8 +38,8 @@ class Page extends \Magento\Sitemap\Model\ResourceModel\Cms\Page
         )->where(
             'main_table.is_active = 1'
         )->where(
-            'main_table.identifier != ?',
-            \Magento\Cms\Model\Page::NOROUTE_PAGE_ID
+            'main_table.identifier NOT IN (?)',
+            $this->getUtilityPageIdentifiers()->execute()
         )->where(
             'store_table.store_id IN(?)',
             [0, $storeId]
@@ -47,6 +55,17 @@ class Page extends \Magento\Sitemap\Model\ResourceModel\Cms\Page
         }
 
         return $pages;
+    }
+
+    /**
+     * @return \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    private function getUtilityPageIdentifiers()
+    {
+        if (!$this->getUtilityPageIdentifiers) {
+            $this->getUtilityPageIdentifiers = ObjectManager::getInstance()->get(GetUtilityPageIdentifiersInterface::class);
+        }
+        return $this->getUtilityPageIdentifiers;
     }
 
 }

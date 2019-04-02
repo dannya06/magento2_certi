@@ -35,8 +35,25 @@ class Breadcrumbs extends \Magento\Framework\View\Element\Template
      */
     public function getCrumbs()
     {
-        return $this->_catalogSession->getBreadcrumbData();
+        $crumbs = $this->_catalogSession->getBreadcrumbData() ? $this->_catalogSession->getBreadcrumbData() : [];
+
+        $crumbsWithLinks  = [];
+        foreach ($crumbs as $crumb) {
+            if (isset($crumb['link']) && strlen($crumb['link'])) {
+                $crumbsWithLinks[] = $crumb;
+            }
+        }
+
+        return $crumbsWithLinks;
     }
 
+    /**
+     * @return $this
+     */
+    protected function _prepareLayout()
+    {
+        parent::_prepareLayout();
 
+        $this->getLayout()->createBlock(\Magento\Catalog\Block\Breadcrumbs::class);
+    }
 }

@@ -1,0 +1,38 @@
+<?php
+$subscriber = $this->getSubscriber();
+
+if ($subscriber) {
+
+    $subscriberUrl = $this->getSubscriberConfirmationUrl();
+    $markup = '<script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "EmailMessage",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "target": "' . $subscriberUrl . '",
+                    "name": "Confirm Email"
+                  },
+                  "description": "Confirm Email"
+                }
+            </script>';
+} else {
+    $markup = '
+        <pre>
+            &lt;<span>script type="application/ld+json"</span><span>></span>
+                {
+                  "@context": "http://schema.org",
+                  "@type": "EmailMessage",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "target": "http://example.com/customer/account/createPassword",
+                    "name": "Confirm Email"
+                  },
+                  "description": "Confirm Email"
+                }
+            &lt;<span>/script</span>>
+        </pre>
+    ';
+}
+?>
+<?= $markup ?>

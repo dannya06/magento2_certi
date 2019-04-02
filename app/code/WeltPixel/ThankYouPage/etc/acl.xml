@@ -6,13 +6,13 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="WeltPixel_ThankYouPage::ThankYouPageSettings" title="WeltPixel Custom Thank You Page" sortOrder="300" />
+                            <resource id="WeltPixel_ThankYouPage::ThankYouPageSettings" title="WeltPixel Success Page" sortOrder="300" />
                         </resource>
                     </resource>
                 </resource>
                 <resource id="WeltPixel_Backend::WeltPixel" >
-                    <resource id="WeltPixel_ThankYouPage::ThankYouPage_Label" sortOrder="100" title="Custom Thank You Page" >
-                        <resource id="WeltPixel_ThankYouPage::ThankYouPage" sortOrder="10" title="Thank You Page Settings" />
+                    <resource id="WeltPixel_ThankYouPage::ThankYouPage_Label" sortOrder="100" title="Success Page" >
+                        <resource id="WeltPixel_ThankYouPage::ThankYouPage" sortOrder="10" title="Success Page Settings" />
                     </resource>
                 </resource>
             </resource>

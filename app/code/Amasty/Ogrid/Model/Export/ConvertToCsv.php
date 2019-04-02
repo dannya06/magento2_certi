@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -48,7 +48,9 @@ class ConvertToCsv extends \Magento\Ui\Model\Export\ConvertToCsv
         }
 
         foreach ($bookmarksCols as $key => $colItem) {
-            if ($colItem['visible'] == true && stripos($key, "amasty_ogrid_product") !== false) {
+            if (!empty($colItem['visible'])
+                && $colItem['visible'] == true
+                && stripos($key, "amasty_ogrid_product") !== false) {
                 $availableProductDetails[$key] = $colItem['amogrid_title'];
             }
         }

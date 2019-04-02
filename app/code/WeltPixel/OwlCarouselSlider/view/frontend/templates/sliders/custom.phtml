@@ -33,6 +33,7 @@
                     $showDescription = array_key_exists('show_description', $banner)
                         ? $banner['show_description'] : false;
                     $url = array_key_exists('url', $banner) ? $banner['url'] : null;
+                    $wrapLink = array_key_exists('wrap_link', $banner) ? $banner['wrap_link'] : false;
                     $target = array_key_exists('target', $banner) ? $banner['target'] : '_blank';
                     $bannerType = array_key_exists('banner_type', $banner) ? $banner['banner_type'] : '';
                     if ($bannerType == 1) {
@@ -40,6 +41,7 @@
                     }
                     $desktopimage = array_key_exists('image', $banner) ? $banner['image'] : '';
                     $mobileimage = array_key_exists('mobile_image', $banner) ? $banner['mobile_image'] : '';
+                    if(!$desktopimage && $mobileimage) $desktopimage = $mobileimage;
                     $altText = array_key_exists('alt_text', $banner) ? $banner['alt_text'] : '';
                     $video = array_key_exists('video', $banner) ? $banner['video'] : '';
                     $custom = array_key_exists('custom', $banner) ? $banner['custom'] : '';
@@ -53,42 +55,45 @@
                     $gaPromoPosition = array_key_exists('ga_promo_position', $banner) ? $banner['ga_promo_position'] : '';
 
                     $image = $desktopimage;
-                    if ($mobileimage) {
+                    if ($mobileimage && $this->isMobile()) {
                         $image = $mobileimage;
                     }
+
                 ?>
 
-                    <div class="banner-item banner-<?php echo $banner['id']; ?>" style="margin:0px 4px">
+                    <div class="banner-item banner-<?php echo $banner['id']; ?>">
                         <?php if ($bannerType == 1) : ?>
                             <?php if (!$buttonText): ?>
                                 <?php if (isset($url)): ?>
-                                <a href="<?php echo $url; ?>" target="<?php echo $target; ?>"
-                                    <?php if($isGatEnabled):?>
-                                        data-track-promo-id="<?php echo $gaPromoId; ?>"
-                                        data-track-promo-name="<?php echo $gaPromoName; ?>"
-                                        data-track-promo-creative="<?php echo $gaPromoCreative; ?>"
-                                        data-track-promo-position="<?php echo $gaPromoPosition; ?>"
-                                    <?php endif;?>
-                                >
+                                    <a href="<?php echo $url; ?>" target="<?php echo $target; ?>"
+                                        <?php if($isGatEnabled):?>
+                                            data-track-promo-id="<?php echo $gaPromoId; ?>"
+                                            data-track-promo-name="<?php echo $gaPromoName; ?>"
+                                            data-track-promo-creative="<?php echo $gaPromoCreative; ?>"
+                                            data-track-promo-position="<?php echo $gaPromoPosition; ?>"
+                                        <?php endif;?>
+                                    >
                                 <?php endif; ?>
+                            <?php endif; ?>
+
+                            <span class="banner-image">
+                                <img
+                                    <?php if (!$sliderGeneral['lazyLoad']) : ?>
+                                        src="<?php echo $mediaUrl . $image; ?>"
                                     <?php endif; ?>
-                                        <span class="banner-image">
-                                            <img src="<?php echo $mediaUrl . $image; ?>"
-                                                <?php if ($mobileimage) : ?>
-                                                 data-src-mobile="<?php echo $mediaUrl . $mobileimage ?>"
-                                                <?php endif; ?>
-                                                <?php if ($image) : ?>
-                                                 data-src-desktop="<?php echo $mediaUrl . $desktopimage ?>"
-                                                <?php endif; ?>
-                                                 alt="<?php echo $altText; ?>" title="<?php echo $altText; ?>"
-                                                <?php echo $sliderGeneral['lazyLoad'] ? 'data-src="' . $mediaUrl
-                                                    . $image . '" data-src-retina="' . $mediaUrl . $image
-                                                    . '" class="owl-lazy"' : '' ?>
-                                            />
-                                        </span>
-                                    <?php if (!$buttonText): ?>
+                                    <?php if ($mobileimage) : ?>
+                                        data-src-mobile="<?php echo $mediaUrl . $mobileimage ?>"
+                                    <?php endif; ?>
+                                    <?php if ($image) : ?>
+                                        data-src-desktop="<?php echo $mediaUrl . $desktopimage ?>"
+                                    <?php endif; ?>
+                                    alt="<?php echo $altText; ?>" title="<?php echo $altText; ?>" <?php echo $sliderGeneral['lazyLoad'] ? 'data-src="' . $mediaUrl . $image . '" data-src-retina="' . $mediaUrl . $image . '" class="owl-lazy"' : '' ?>
+                                />
+                            </span>
+
+                            <?php if (!$buttonText): ?>
                                 <?php if (isset($url)): ?>
-                                </a>
+                                    </a>
                                 <?php endif; ?>
                             <?php endif; ?>
                         <?php elseif ($bannerType == 3) : ?>
@@ -107,19 +112,51 @@
                             <?php endif; ?>
                         <?php elseif ($bannerType == 2) : ?>
                             <span class="banner-video">
-                                <?php echo $video; ?>
+                                  <?php echo $this->getVideoHtml($video);  ?>
                             </span>
                         <?php endif; ?>
                         <div class="content_slider">
+
                             <?php if ($showTitle && $title) : ?>
-                                <span class="banner-title"><?php echo $title; ?></span>
+                                <?php if($url != NULL): ?>
+                                    <a href="<?php echo $url; ?>" target="<?php echo $target; ?>"
+                                        <?php if($isGatEnabled):?>
+                                            data-track-promo-id="<?php echo $gaPromoId; ?>"
+                                            data-track-promo-name="<?php echo $gaPromoName; ?>"
+                                            data-track-promo-creative="<?php echo $gaPromoCreative; ?>"
+                                            data-track-promo-position="<?php echo $gaPromoPosition; ?>"
+                                        <?php endif;?>
+                                    >
+                                        <span class="banner-title"><?php echo $title; ?></span>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="banner-title"><?php echo $title; ?></span>
+                                <?php endif; ?>
                             <?php endif; ?>
 
                             <?php if ($showDescription && $description) : ?>
-                                <span class="banner-description"><?php echo $description; ?></span>
+                                <?php if($url != NULL): ?>
+                                    <a href="<?php echo $url; ?>" target="<?php echo $target; ?>"
+                                        <?php if($isGatEnabled):?>
+                                            data-track-promo-id="<?php echo $gaPromoId; ?>"
+                                            data-track-promo-name="<?php echo $gaPromoName; ?>"
+                                            data-track-promo-creative="<?php echo $gaPromoCreative; ?>"
+                                            data-track-promo-position="<?php echo $gaPromoPosition; ?>"
+                                        <?php endif;?>
+                                    >
+                                        <span class="banner-description"><?php echo $description; ?></span>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="banner-description"><?php echo $description; ?></span>
+                                <?php endif;?>
                             <?php endif; ?>
 
                             <div class="buttons">
+                                <?php if ($customCss): ?>
+                                    <style scoped>
+                                        <?php echo $customCss; ?>
+                                    </style>
+                                <?php endif; ?>
                                 <?php if ($buttonText && $url): ?>
                                     <a class="action primary" href="<?php echo $url; ?>" target="<?php echo $target; ?>"
                                         <?php if($isGatEnabled):?>
@@ -133,12 +170,20 @@
                                 <?php if ($customContent): ?>
                                     <div class="clearfix"></div>
                                     <div class="custom_content">
-                                        <?php echo $customContent; ?>
-                                        <?php if ($customCss): ?>
-                                            <style>
-                                                <?php echo $customCss; ?>
-                                            </style>
-                                        <?php endif; ?>
+                                        <?php if($wrapLink && $url != NULL): ?>
+                                            <a href="<?php echo $url; ?>" target="<?php echo $target; ?>"
+                                                <?php if($isGatEnabled):?>
+                                                    data-track-promo-id="<?php echo $gaPromoId; ?>"
+                                                    data-track-promo-name="<?php echo $gaPromoName; ?>"
+                                                    data-track-promo-creative="<?php echo $gaPromoCreative; ?>"
+                                                    data-track-promo-position="<?php echo $gaPromoPosition; ?>"
+                                                <?php endif;?>
+                                            >
+                                                <?php echo $customContent; ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <?php echo $customContent; ?>
+                                        <?php endif;?>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -148,11 +193,24 @@
             <?php endforeach; ?>
         </div>
         <div id="pre-div">
-            <div class="cssload-loader">
-                <div class="cssload-inner cssload-one"></div>
-                <div class="cssload-inner cssload-two"></div>
-                <div class="cssload-inner cssload-three"></div>
-            </div>
+            <?php $loaderHelper = $this->helper('WeltPixel\OwlCarouselSlider\Helper\ImageLoader'); ?>
+            <?php if ($loaderHelper->useDefaultLoader() ) : ?>
+                <div class="cssload-loader">
+                    <div class="cssload-inner cssload-one"></div>
+                    <div class="cssload-inner cssload-two"></div>
+                    <div class="cssload-inner cssload-three"></div>
+                </div>
+            <?php else : ?>
+                <table class="imageloader-loader">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <img src="<?= $loaderHelper->getLoadingImageUrl() ?>" />
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -170,6 +228,75 @@
 
                     var stagePadding = slider_config.stagePadding != '' ? parseInt(slider_config.stagePadding) : 0;
                     var animate_Out = slider_config.transition != 'fadeOut' ? true : false;
+
+                    <?php if ($imageAdjustmentRequired) : ?>
+                        var mobileBreakPoint = <?php echo $this->getMobileBreakPoint(); ?>;
+                        function adjustOwlImages() {
+                            var windowWidth = $(window).width();
+
+                            $('.banner-image img').each(function () {
+                                if (windowWidth < mobileBreakPoint) {
+                                    if ($(this).attr('data-src-mobile')) {
+                                        if ($(this).attr('data-src-retina')) {
+                                            $(this).attr('data-src', $(this).attr('data-src-mobile'));
+                                            $(this).attr('data-src-retina', $(this).attr('data-src-mobile'));
+                                        }
+                                    }
+                                    if ($(this).attr('src')) {
+                                        $(this).attr('src', $(this).attr('data-src-mobile'));
+                                    }
+                                } else {
+                                    if ($(this).attr('data-src-desktop')) {
+                                        if ($(this).attr('data-src-retina')) {
+                                            $(this).attr('data-src', $(this).attr('data-src-desktop'));
+                                            $(this).attr('data-src-retina', $(this).attr('data-src-desktop'));
+                                        }
+                                    }
+                                    if ($(this).attr('src')) {
+                                        $(this).attr('src', $(this).attr('data-src-desktop'));
+                                    }
+                                }
+                            });
+                        }
+
+                    $('.owl-carousel-custom-'+slider_id).on('resized.owl.carousel', function (event) {
+                        var $this = $(this);
+                        $this.find('.owl-height').css('height', $this.find('.owl-item.active').height());
+                    });
+
+                    $('.owl-carousel-custom-'+slider_id).on('changed.owl.carousel', function (event) {
+                        var $that = $(this);
+                        setTimeout(function(){
+                            $that.find('.owl-height').css('height', $that.find('.owl-item.active').height());
+                        }, 100);
+                    });
+
+                    $(window).resize(function(){
+                        adjustOwlImages();
+                    });
+
+                    adjustOwlImages();
+
+                    <?php endif; ?>
+
+                    /** Lazyload bug when fewer items exist in the carousel then the ones displayed */
+                    $('.owl-carousel-custom-'+slider_id).on('initialized.owl.carousel', function(event){
+                        var scopeSize = event.page.size;
+                        for (var i = 0; i < scopeSize; i++){
+                            var imgsrc = $(event.target).find('.owl-item').eq(i).find('img').attr('data-src');
+                            if ($(event.target).find('.owl-item').eq(i).find('img').attr('src')) {
+                                $(event.target).find('.owl-item').eq(i).find('img').attr('src', imgsrc);
+                                $(event.target).find('.owl-item').eq(i).find('img').attr('style', 'opacity: 1;');
+                            }
+                        }
+                    });
+
+                    $('.owl-carousel-custom-'+slider_id).on('loaded.owl.lazy', function (event) {
+                        var $that = $(this);
+                        setTimeout(function(){
+                            $that.find('.owl-height').css('height', $that.find('.owl-item.active').height());
+                        }, 100);
+                    });
 
                     $('.owl-carousel-custom-'+slider_id).owlCarousel({
                         nav               :parseInt(slider_config.nav) == 1 ? true : false,
@@ -207,37 +334,6 @@
                         }
                     });
 
-                    <?php if ($imageAdjustmentRequired) : ?>
-                        var mobileBreakPoint = <?php echo $this->getMobileBreakPoint(); ?>;
-                        function adjustOwlImages() {
-                            var windowWidth = $(window).width();
-
-                            $('.banner-image img').each(function() {
-                                if (windowWidth < mobileBreakPoint ) {
-                                    if ($(this).attr('data-src-mobile')) {
-                                        $(this).attr('src', $(this).attr('data-src-mobile'));
-                                    }
-                                } else {
-                                    if ($(this).attr('data-src-desktop')) {
-                                        $(this).attr('src', $(this).attr('data-src-desktop'));
-                                    }
-                                }
-                            });
-
-                            setTimeout(function(){
-                                $('.owl-carousel-custom-'+slider_id).trigger('next.owl.carousel', [0]);
-                            }, 10);
-                            setTimeout(function(){
-                                $('.owl-carousel-custom-'+slider_id).trigger('prev.owl.carousel', [0]);
-                            }, 100);
-                        }
-
-                        $(window).resize(_.debounce(function(){
-                            adjustOwlImages();
-                        }, 200));
-
-                        adjustOwlImages();
-                    <?php endif; ?>
                 });
             });
     </script>

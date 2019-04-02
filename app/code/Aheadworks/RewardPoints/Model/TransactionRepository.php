@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model;
 
@@ -184,7 +184,11 @@ class TransactionRepository implements TransactionRepositoryInterface
 
         if ($sortOrders = $criteria->getSortOrders()) {
             foreach ($sortOrders as $order) {
-                $collection->addOrder($order->getField(), $order->getDirection());
+                if ($order->getField() == TransactionInterface::EXPIRED_SOON) {
+                    $collection->addOrderExpiredSoon();
+                } else {
+                    $collection->addOrder($order->getField(), $order->getDirection());
+                }
             }
         }
 

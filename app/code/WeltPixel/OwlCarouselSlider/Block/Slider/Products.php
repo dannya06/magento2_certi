@@ -27,16 +27,25 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
     protected $_categoryFactory;
 
     /**
-     * Internal constructor, that is called from real constructor
-     *
-     * @param \Magento\Catalog\Block\Product\Context                                $context
-     * @param \WeltPixel\OwlCarouselSlider\Helper\Products                          $helperProducts
-     * @param \WeltPixel\OwlCarouselSlider\Helper\Custom                            $helperCustom
-     * @param \Magento\Catalog\Model\Product\Visibility                             $catalogProductVisibility
-     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory        $productsCollectionFactory
-     * @param \Magento\Reports\Model\ResourceModel\Product\CollectionFactory        $reportsCollectionFactory
-     * @param \Magento\Reports\Block\Product\Widget\Viewed\Proxy                    $viewedProductsBlock
-     * @param \Magento\Catalog\Model\CategoryFactory                                $categoryFactory
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $_scopeConfig;
+
+    /**
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     */
+    protected $_localeDate;
+
+    /**
+     * Products constructor.
+     * @param \Magento\Catalog\Block\Product\Context $context
+     * @param \WeltPixel\OwlCarouselSlider\Helper\Products $helperProducts
+     * @param \WeltPixel\OwlCarouselSlider\Helper\Custom $helperCustom
+     * @param \Magento\Catalog\Model\Product\Visibility $catalogProductVisibility
+     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productsCollectionFactory
+     * @param \Magento\Reports\Model\ResourceModel\Product\CollectionFactory $reportsCollectionFactory
+     * @param \Magento\Reports\Block\Product\Widget\Viewed\Proxy $viewedProductsBlock
+     * @param \Magento\Catalog\Model\CategoryFactory $categoryFactory
      * @param array $data
      */
     public function __construct(
@@ -66,11 +75,14 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
             $this->_currentProduct = $this->_coreRegistry->registry('current_product');
         }
 
+        $this->_localeDate = $context->getLocaleDate();
+        $this->_scopeConfig = $context->getScopeConfig();
+
         parent::__construct($context, $data);
-        $this->_isScopePrivate = false;
+        $this->_isScopePrivate = true;
     }
 
-    /**
+     /**
      * {@inheritdoc}
      */
     protected function _construct()
@@ -93,10 +105,13 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
         return [
             'WELTPIXEL_PRODUCTS_LIST_WIDGET',
             $this->_storeManager->getStore()->getId(),
+            $this->_storeManager->getStore()->getCurrentCurrency()->getCode(),
             $this->_design->getDesignTheme()->getId(),
             $this->getData('products_type')
         ];
     }
+
+
 
 
     /**
@@ -240,7 +255,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
             return [];
         };
 
-        $_collection->setVisibility($this->_catalogProductVisibility->getVisibleInCatalogIds());
+         $_collection->setVisibility($this->_catalogProductVisibility->getVisibleInCatalogIds());
 
         if ($random) {
             $allIds = $_collection->getAllIds();
@@ -255,12 +270,129 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
             $_collection->addIdFilter($randomIds);
         };
 
+        /** Prepare filter by period */
+        $storeId = $this->getStoreId();
+        $currentDate = $this->_localeDate->date();
+        $period = $this->_sliderConfiguration['period'];
+        switch ($period) {
+            case 'last_day':
+                $yesterday = $this->_localeDate->date(strtotime('-1 day', $currentDate->getTimestamp()))->format('Y-m-d');
+                $periodFilter['from'] = $yesterday;
+                $periodFilter['to'] = $yesterday;
+                break;
+            case 'last_week':
+                $daysArr = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', ];
+                $firstDay = $this->_scopeConfig->getValue(
+                    'general/locale/firstday',
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                    $storeId
+                );
+
+                $previousWeek = strtotime('-1 week +1 day', $currentDate->getTimestamp());
+                $startWeek = strtotime('last ' . $daysArr[$firstDay] . ' midnight +1 day', $previousWeek);
+                $endWeek = strtotime('+6 day', $startWeek);
+
+                $periodFilter['from'] = $this->_localeDate->date($startWeek)->format('Y-m-d');
+                $periodFilter['to'] = $this->_localeDate->date($endWeek)->format('Y-m-d');
+                break;
+            case 'last_month':
+                $firstDay = strtotime('first day of previous month', $currentDate->getTimestamp());
+                $lastDay = strtotime('last day of previous month', $currentDate->getTimestamp());
+
+                $periodFilter['from'] = $this->_localeDate->date($firstDay)->format('Y-m-d');
+                $periodFilter['to'] = $this->_localeDate->date($lastDay)->format('Y-m-d');
+                break;
+            case 'last_year':
+                $firstDay = strtotime('first day of previous year', $currentDate->getTimestamp());
+                $lastDay = strtotime('last day of previous year', $currentDate->getTimestamp());
+
+                $periodFilter['from'] = $this->_localeDate->date($firstDay)->format('Y-m-d');
+                $periodFilter['to'] = $this->_localeDate->date($lastDay)->format('Y-m-d');
+                break;
+            default:
+                $periodFilter = [];
+        }
+        /** End prepare filter by period */
+
         $_collection = $this->_addProductAttributesAndPrices($_collection);
+
         $_collection->getSelect()
             ->join(['bestsellers' => $_collection->getTable('sales_bestsellers_aggregated_yearly')],
                 'e.entity_id = bestsellers.product_id AND bestsellers.store_id = '.$this->getStoreId(),
-                ['qty_ordered','rating_pos'])
-            ->order('rating_pos');
+                ['qty_ordered','rating_pos','period'])
+            ->order('rating_pos')
+        ;
+
+        /** Filter products collection by period */
+        if ($periodFilter) {
+            $from = $periodFilter['from'];
+            $to = $periodFilter['to'];
+
+            $_collection->getSelect()
+                ->where("bestsellers.period >= '$from'")
+                ->where("bestsellers.period <= '$to'")
+            ;
+        }
+        /** End filter products collection by period */
+
+        /** Configurable products from simple product added as well into best seller list */
+        $_conn = $_collection->getResource()->getConnection();
+        $select = $_conn->select('*')
+            ->from($_collection->getTable('sales_bestsellers_aggregated_yearly AS sbay'))
+            ->joinLeft(
+                ['cpsl' => $_collection->getTable('catalog_product_super_link')],
+                'sbay.product_id = cpsl.product_id',
+                ['parent_id']
+            )
+            ->where('sbay.store_id = ' . $this->getStoreId())
+            ->where(
+                'cpsl.parent_id IS NOT NULL'
+            )
+        ;
+
+        /** Filter products collection by period */
+        if ($periodFilter) {
+            $from = $periodFilter['from'];
+            $to = $periodFilter['to'];
+
+            $select
+                ->where("sbay.period >= '$from'")
+                ->where("sbay.period <= '$to'")
+            ;
+        }
+        /** End filter products collection by period */
+
+        $result = $_conn->fetchAll($select);
+        $configurableParents = [];
+
+        foreach ($result as $item) {
+            $configurableParents[$item['parent_id']] = $item['rating_pos'];
+        }
+
+        $configurableProductsCollection = $this->_productCollectionFactory->create();
+        $configurableProductsCollection->addAttributeToFilter('entity_id',  ['in' => array_keys($configurableParents)]);
+        $configurableProductsCollection->setVisibility($this->_catalogProductVisibility->getVisibleInCatalogIds());
+        $configurableProductsCollection = $this->_addProductAttributesAndPrices($configurableProductsCollection);
+
+        $items = clone $_collection;
+        foreach ($_collection as $key => $item) {
+            $_collection->removeItemByKey($key);
+            $configurableParents[$key] = $item->getData('rating_pos');
+        }
+
+        asort($configurableParents);
+        foreach ($configurableParents as $key => $ratingPos) {
+            $item = $items->getItemById($key);
+            if (!$item) {
+                $item = $configurableProductsCollection->getItemById($key);
+                $item->setData('rating_pos', $ratingPos);
+            }
+
+            if ($item) {
+                $_collection->addItem($item);
+            }
+        }
+        /** Configurable products from simple product added as well into best seller list */
 
         $_collection->addStoreFilter($this->getStoreId())->setCurPage(1);
 

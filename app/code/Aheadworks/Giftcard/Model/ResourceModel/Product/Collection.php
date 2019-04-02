@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Model\ResourceModel\Product;
 
@@ -194,11 +194,13 @@ class Collection extends ProductCollection
             foreach ($this as $item) {
                 $result = '';
                 $id = $item->getData($columnName);
+                $templates = [];
                 foreach ($connection->fetchAll($select) as $data) {
                     if ($data[$linkageColumnName] == $id) {
                         switch ($fieldName) {
                             case 'aw_gc_email_templates':
-                                $result[] = $data[$columnNameRelationTable];
+                                array_push($templates, $data[$columnNameRelationTable]);
+                                $result = $templates;
                                 break;
                             default:
                                 $result = $data[$columnNameRelationTable];

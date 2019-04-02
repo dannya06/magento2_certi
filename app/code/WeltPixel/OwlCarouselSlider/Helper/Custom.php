@@ -53,9 +53,7 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
     public function getSliderConfigOptions($sliderId)
     {
         if($this->_sliderId != $sliderId && is_null($this->_configFieldsSlider)) {
-
             $this->_sliderId = $sliderId;
-
             $this->_configFieldsSlider = [
                 'title',
                 'show_title',
@@ -68,6 +66,7 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
                 'margin',
                 'merge',
                 'URLhashListener',
+                'wrap_link',
                 'stagePadding',
                 'lazyLoad',
                 'transition',
@@ -94,6 +93,7 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
                 'show_description',
                 'status',
                 'url',
+                'wrap_link',
                 'banner_type',
                 'image',
                 'mobile_image',
@@ -126,15 +126,34 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         $sliderBannersCollection = $slider->getSliderBanerCollection();
-        $sliderBannersCollection->setOrder('sort_order', 'ASC');
+        // $sliderBannersCollection->setOrder('sort_order', 'ASC');
 
-        $bannerConfig = [];
+        $banners = [];
         foreach ($sliderBannersCollection as $banner) {
 
             if (!$this->validateBannerDisplayDate($banner) || !$banner->getStatus()) {
                 continue;
             }
 
+            // reorder banners
+            $sortOrder = @unserialize($banner->getSortOrder());
+            if ($sortOrder === false) {
+                $sortOrder = $banner->getSortOrder();
+            } else {
+                $sortOrder = $sortOrder[$sliderId];
+            }
+
+            if (isset($banners[$sortOrder])) {
+                $sortOrder = $this->_incrementSortOrder($sortOrder, $banners);
+            }
+
+            $banners[$sortOrder] = $banner;
+        }
+
+        ksort($banners);
+
+        $bannerConfig = [];
+        foreach ($banners as $banner) {
             $bannerDetails = [];
             foreach ($this->_configFieldsBanner as $field) {
                 $bannerDetails[$field] = $banner->getData($field);
@@ -148,6 +167,21 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
         $configData->setBannerConfig($bannerConfig);
 
         return $configData;
+    }
+
+    /**
+     * @param $sortOrder
+     * @param $banners
+     * @return mixed
+     */
+    private function _incrementSortOrder($sortOrder, $banners)
+    {
+        $sortOrder++;
+        if (array_key_exists($sortOrder, $banners)) {
+            $sortOrder = $this->_incrementSortOrder($sortOrder, $banners);
+        }
+
+        return $sortOrder;
     }
 
     /**

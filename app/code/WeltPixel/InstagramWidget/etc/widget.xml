@@ -55,7 +55,7 @@
             <parameter name="feed_type" xsi:type="select" visible="true" sort_order="90"
                        source_model="WeltPixel\InstagramWidget\Model\Config\Source\FeedType">
                 <label translate="true">Feed Type</label>
-                <description translate="true">Customize what Instafeed fetches</description>
+                <description translate="true">Customize what Instafeed fetches. (Tag and Location was removed by Instagram)</description>
             </parameter>
             <parameter name="user_id" xsi:type="text"  visible="true" sort_order="100" required="true">
                 <label translate="true">User Id</label>

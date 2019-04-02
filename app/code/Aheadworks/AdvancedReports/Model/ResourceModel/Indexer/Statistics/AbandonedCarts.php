@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
@@ -58,7 +58,7 @@ class AbandonedCarts extends AbstractResource
             ->group($this->getGroupByFields([]));
         $select = $this->addFilterByCreatedAt($select, 'main_table');
 
-        $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+        $this->safeInsertFromSelect($select, $this->getIdxTable(), array_keys($columns));
     }
 
     /**

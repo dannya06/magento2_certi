@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -19,6 +19,7 @@
             <id>7</id>
         </editable_for_status_ids>
         <editable_admin_for_status_ids>
+            <id>-1</id>
             <id>7</id>
         </editable_admin_for_status_ids>
         <is_required>1</is_required>
@@ -52,7 +53,7 @@
             <id>-1</id>
         </editable_for_status_ids>
         <editable_admin_for_status_ids>
-            <id>none</id>
+            <id>-1</id>
         </editable_admin_for_status_ids>
         <is_required>1</is_required>
         <is_display_in_label>1</is_display_in_label>
@@ -91,7 +92,7 @@
             <id>-1</id>
         </editable_for_status_ids>
         <editable_admin_for_status_ids>
-            <id>none</id>
+            <id>-1</id>
         </editable_admin_for_status_ids>
         <is_required>1</is_required>
         <is_display_in_label>1</is_display_in_label>

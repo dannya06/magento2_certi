@@ -7,7 +7,13 @@
 namespace Aheadworks\Blog\Block\Widget;
 
 use Magento\Widget\Block\BlockInterface;
-use Aheadworks\Blog\Block\Post\ListingFactory ;
+use Aheadworks\Blog\Block\Post\ListingFactory;
+use Aheadworks\Blog\Api\PostRepositoryInterface;
+use Aheadworks\Blog\Model\Config;
+use Aheadworks\Blog\Model\Url;
+use Magento\Framework\View\Element\Template\Context;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
 
 /**
  * Tag Cloud Widget
@@ -25,6 +31,33 @@ class RecentPost extends \Aheadworks\Blog\Block\Sidebar\Recent implements BlockI
      * @var string
      */
     protected $_template = 'Aheadworks_Blog::widget/recent_post/default.phtml';
+
+    /**
+     * @var SerializeInterface
+     */
+    private $serializer;
+
+    /**
+     * @param Context $context
+     * @param PostRepositoryInterface $postRepository
+     * @param ListingFactory $postListingFactory
+     * @param Config $config
+     * @param SerializeFactory $serializeFactory
+     * @param Url $url
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        PostRepositoryInterface $postRepository,
+        ListingFactory $postListingFactory,
+        Config $config,
+        Url $url,
+        SerializeFactory $serializeFactory,
+        array $data = []
+    ) {
+        parent::__construct($context, $postRepository, $postListingFactory, $config, $url, $data);
+        $this->serializer = $serializeFactory->create();
+    }
 
     /**
      * Is ajax request or not
@@ -62,7 +95,7 @@ class RecentPost extends \Aheadworks\Blog\Block\Sidebar\Recent implements BlockI
     public function getWidgetEncodeData()
     {
         return base64_encode(
-            serialize(
+            $this->serializer->serialize(
                 [
                     'name' => $this->getNameInLayout(),
                     'number_to_display' => $this->getData('number_to_display'),

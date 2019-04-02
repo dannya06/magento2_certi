@@ -6,24 +6,41 @@ class Custom extends \Magento\Framework\View\Element\Template implements \Magent
     protected $_sliderId;
     protected $_sliderConfiguration;
     protected $_helperCustom;
+    protected $_mobileHelperData;
+    protected $_filterProvider;
+
 
     /**
      * Custom constructor.
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \WeltPixel\OwlCarouselSlider\Helper\Custom $helperCustom
+     * @param \Magento\Cms\Model\Template\FilterProvider $filterProvider
+     * @param \WeltPixel\MobileDetect\Helper\Data $mobileHelperData
      * @param array $data
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \WeltPixel\OwlCarouselSlider\Helper\Custom $helperCustom,
-
+        \Magento\Cms\Model\Template\FilterProvider $filterProvider,
+        \WeltPixel\MobileDetect\Helper\Data $mobileHelperData,
         array $data = []
     )
     {
         $this->_helperCustom = $helperCustom;
+        $this->_mobileHelperData = $mobileHelperData;
+        $this->_filterProvider = $filterProvider;
         $this->setTemplate('sliders/custom.phtml');
-
         parent::__construct($context, $data);
+    }
+
+    /**
+     * @param $video
+     * @return mixed
+     */
+    public function getVideoHtml($video){
+        $storeId = $this->_storeManager->getStore()->getId();
+
+        return $this->_filterProvider->getBlockFilter()->setStoreId($storeId)->filter($video);
     }
 
     public function getSliderConfiguration()
@@ -71,6 +88,13 @@ class Custom extends \Magento\Framework\View\Element\Template implements \Magent
      */
     public function getMobileBreakPoint() {
         return $this->_helperCustom->getMobileBreakpoint();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMobile(){
+        return $this->_mobileHelperData->isMobile();
     }
 
 }

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\Service;
 
@@ -12,6 +12,8 @@ use Aheadworks\RewardPoints\Api\Data\TransactionInterface;
 use Aheadworks\RewardPoints\Api\CustomerRewardPointsManagementInterface;
 use Aheadworks\RewardPoints\Api\TransactionManagementInterface;
 use Aheadworks\RewardPoints\Model\Calculator\RateCalculator;
+use Aheadworks\RewardPoints\Model\Calculator\ResultInterface;
+use Aheadworks\RewardPoints\Model\Comment\Admin\AppliedEarningRules;
 use Aheadworks\RewardPoints\Model\Config;
 use Aheadworks\RewardPoints\Model\Comment\CommentPoolInterface;
 use Aheadworks\RewardPoints\Model\DateTime;
@@ -255,11 +257,12 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
 
         if ($customerId) {
             $this->setCustomerId($customerId);
-            $rewardPointsForPurchase = $this->earningCalculator->calculation($invoice, $customerId, $websiteId);
+            /** @var ResultInterface $calculationResult */
+            $calculationResult = $this->earningCalculator->calculationByInvoice($invoice, $customerId, $websiteId);
             $transactionType = TransactionType::POINTS_REWARDED_FOR_ORDER;
 
             return $this->createTransaction(
-                $rewardPointsForPurchase,
+                $calculationResult->getPoints(),
                 $this->getExpirationDate($websiteId),
                 $this->getCommentToCustomer($transactionType)->renderComment([
                     TransactionEntityType::ORDER_ID => [
@@ -268,17 +271,31 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     ]
                 ]),
                 $this->getCommentToCustomer($transactionType)->getLabel(),
-                null,
+                $this->getAdminComment(
+                    AppliedEarningRules::COMMENT_FOR_APPLIED_EARNING_RULES,
+                    TransactionEntityType::EARN_RULE_ID,
+                    $calculationResult->getAppliedRuleIds()
+                ),
+                $this->getAdminCommentPlaceholder(
+                    AppliedEarningRules::COMMENT_FOR_APPLIED_EARNING_RULES,
+                    $calculationResult->getAppliedRuleIds()
+                ),
                 $websiteId,
                 $transactionType,
                 [
-                    TransactionEntitySaveHandler::TRANSACTION_ENTITY_TYPE => [
+                    TransactionEntitySaveHandler::TRANSACTION_ENTITY_TYPE => array_merge(
                         [
-                            'entity_type' => TransactionEntityType::ORDER_ID,
-                            'entity_id' => $order->getEntityId(),
-                            'entity_label' => $order->getIncrementId()
-                        ]
-                    ]
+                            [
+                                'entity_type' => TransactionEntityType::ORDER_ID,
+                                'entity_id' => $order->getEntityId(),
+                                'entity_label' => $order->getIncrementId()
+                            ],
+                        ],
+                        $this->getRuleEntitiesData(
+                            TransactionEntityType::EARN_RULE_ID,
+                            $calculationResult->getAppliedRuleIds()
+                        )
+                    )
                 ],
                 $order->getStoreId()
             );
@@ -301,6 +318,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     $this->getExpirationDate($websiteId),
                     $this->getCommentToCustomer($transactionType)->renderComment(),
                     $this->getCommentToCustomer($transactionType)->getLabel(),
+                    null,
                     null,
                     $websiteId,
                     $transactionType
@@ -329,6 +347,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     $this->getCommentToCustomer($transactionType)->renderComment(),
                     $this->getCommentToCustomer($transactionType)->getLabel(),
                     null,
+                    null,
                     $websiteId,
                     $transactionType
                 );
@@ -353,6 +372,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     $this->getCommentToCustomer($transactionType)->renderComment(),
                     $this->getCommentToCustomer($transactionType)->getLabel(),
                     null,
+                    null,
                     $websiteId,
                     $transactionType
                 );
@@ -376,6 +396,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     $this->getExpirationDate($websiteId),
                     $this->getCommentToCustomer($transactionType)->renderComment(),
                     $this->getCommentToCustomer($transactionType)->getLabel(),
+                    null,
                     null,
                     $websiteId,
                     $transactionType
@@ -415,6 +436,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     ]
                 ]),
                 $this->getCommentToCustomer($transactionType)->getLabel(),
+                null,
                 null,
                 $websiteId,
                 $transactionType,
@@ -456,6 +478,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                         ]
                     ]),
                     $this->getCommentToCustomer($transactionType)->getLabel(),
+                    null,
                     null,
                     $websiteId,
                     $transactionType,
@@ -512,6 +535,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     ]
                 ]),
                 $this->getCommentToCustomer($transactionType)->getLabel(),
+                null,
                 null,
                 $websiteId,
                 $transactionType,
@@ -575,6 +599,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                 ]),
                 $this->getCommentToCustomer($transactionType)->getLabel(),
                 null,
+                null,
                 $websiteId,
                 $transactionType,
                 [
@@ -630,6 +655,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                 ]),
                 $this->getCommentToCustomer($transactionType)->getLabel(),
                 null,
+                null,
                 $websiteId,
                 $transactionType,
                 [
@@ -668,11 +694,16 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
 
         if ($customerId && $order && $this->config->isCancelEarnedPointsRefundOrder($websiteId)) {
             $this->setCustomerId($customerId);
-            $points = -$this->earningCalculator->calculation($creditmemo, $customerId, $websiteId);
+            /** @var ResultInterface $calculationResult */
+            $calculationResult = $this->earningCalculator->calculationByCreditmemo(
+                $creditmemo,
+                $customerId,
+                $websiteId
+            );
             $transactionType = TransactionType::CANCEL_EARNED_POINTS_FOR_REFUND_ORDER;
 
             return $this->createTransaction(
-                $points,
+                -$calculationResult->getPoints(),
                 $this->getExpirationDate($websiteId),
                 $this->getCommentToCustomer($transactionType)->renderComment([
                     TransactionEntityType::ORDER_ID => [
@@ -685,22 +716,36 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     ]
                 ]),
                 $this->getCommentToCustomer($transactionType)->getLabel(),
-                null,
+                $this->getAdminComment(
+                    AppliedEarningRules::COMMENT_FOR_APPLIED_EARNING_RULES,
+                    TransactionEntityType::EARN_RULE_ID,
+                    $calculationResult->getAppliedRuleIds()
+                ),
+                $this->getAdminCommentPlaceholder(
+                    AppliedEarningRules::COMMENT_FOR_APPLIED_EARNING_RULES,
+                    $calculationResult->getAppliedRuleIds()
+                ),
                 $websiteId,
                 $transactionType,
                 [
-                    TransactionEntitySaveHandler::TRANSACTION_ENTITY_TYPE => [
+                    TransactionEntitySaveHandler::TRANSACTION_ENTITY_TYPE => array_merge(
                         [
-                            'entity_type' => TransactionEntityType::ORDER_ID,
-                            'entity_id' => $order->getEntityId(),
-                            'entity_label' => $order->getIncrementId()
+                            [
+                                'entity_type' => TransactionEntityType::ORDER_ID,
+                                'entity_id' => $order->getEntityId(),
+                                'entity_label' => $order->getIncrementId()
+                            ],
+                            [
+                                'entity_type' => TransactionEntityType::CREDIT_MEMO_ID,
+                                'entity_id' => $creditmemo->getEntityId(),
+                                'entity_label' => $creditmemo->getIncrementId()
+                            ],
                         ],
-                        [
-                            'entity_type' => TransactionEntityType::CREDIT_MEMO_ID,
-                            'entity_id' => $creditmemo->getEntityId(),
-                            'entity_label' => $creditmemo->getIncrementId()
-                        ]
-                    ]
+                        $this->getRuleEntitiesData(
+                            TransactionEntityType::EARN_RULE_ID,
+                            $calculationResult->getAppliedRuleIds()
+                        )
+                    )
                 ],
                 $creditmemo->getStoreId()
             );
@@ -724,6 +769,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                 $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER],
                 null,
                 $transactionData[TransactionInterface::COMMENT_TO_ADMIN],
+                null,
                 $transactionData[TransactionInterface::WEBSITE_ID],
                 TransactionType::BALANCE_ADJUSTED_BY_ADMIN
             );
@@ -884,7 +930,8 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
      */
     public function sendNotification($customerId, $notifiedType, $data, $websiteId = null)
     {
-        if (null == $this->getCustomerId()) {
+        if ($customerId != $this->getCustomerId()) {
+            $this->resetCustomer();
             $this->setCustomerId($customerId);
         }
         $this->resetRewardPointsDetailsCache($customerId);
@@ -974,6 +1021,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
             $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER],
             $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER_PLACEHOLDER],
             $transactionData[TransactionInterface::COMMENT_TO_ADMIN],
+            $transactionData[TransactionInterface::COMMENT_TO_ADMIN_PLACEHOLDER],
             $transactionData[TransactionInterface::WEBSITE_ID],
             $transactionData[TransactionInterface::TYPE]
         );
@@ -998,6 +1046,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
         $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER] = null;
         $transactionData[TransactionInterface::COMMENT_TO_CUSTOMER_PLACEHOLDER] = null;
         $transactionData[TransactionInterface::COMMENT_TO_ADMIN] = __("IMPORT: Balance adjusted");
+        $transactionData[TransactionInterface::COMMENT_TO_ADMIN_PLACEHOLDER] = null;
         $transactionData[TransactionInterface::WEBSITE_ID] = $websiteId;
         $transactionData[TransactionInterface::TYPE] = TransactionType::BALANCE_IMPORTED_BY_ADMIN;
 
@@ -1127,9 +1176,8 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
      */
     private function getCustomerMonthlySharePoints($customerId)
     {
-        if (!$this->dateTime->isCurrentMonthDate(
-            $this->pointsSummaryService->getCustomerDailySharePointsDate($customerId)
-        )) {
+        $monthlySharePointsDate = $this->pointsSummaryService->getCustomerMonthlySharePointsDate($customerId);
+        if ($this->dateTime->isNextMonthDate($monthlySharePointsDate) || !$monthlySharePointsDate) {
             $this->pointsSummaryService->resetPointsSummaryDailyShare($customerId);
         }
         return $this->pointsSummaryService->getCustomerMonthlySharePoints($customerId);
@@ -1233,6 +1281,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
      * @param  string $commentToCustomer
      * @param  string $commentToCustomerPlaceholder
      * @param  string $commentToAdmin
+     * @param  string $commentToAdminPlaceholder
      * @param  int $transactionType
      * @param  int $websiteId
      * @param  int $transactionType
@@ -1248,6 +1297,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
         $commentToCustomer = null,
         $commentToCustomerPlaceholder = null,
         $commentToAdmin = null,
+        $commentToAdminPlaceholder = null,
         $websiteId = null,
         $transactionType = TransactionType::BALANCE_ADJUSTED_BY_ADMIN,
         $arguments = [],
@@ -1284,6 +1334,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                 $commentToCustomer,
                 $commentToCustomerPlaceholder,
                 $commentToAdmin,
+                $commentToAdminPlaceholder,
                 $websiteId,
                 $transactionType,
                 $arguments
@@ -1498,11 +1549,10 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
     private function getCustomerTransactions($customerId, $websiteId = null, $additionalFilters = [])
     {
         $expirationDateSort = $this->sortOrderBuilder
-            ->setField('ISNULL(expiration_date), expiration_date, transaction_id')
-            ->setDirection(SortOrder::SORT_ASC)
+            ->setField(TransactionInterface::EXPIRED_SOON)
             ->create();
         $balanceSort = $this->sortOrderBuilder
-            ->setField('balance')
+            ->setField(TransactionInterface::BALANCE)
             ->setDirection(SortOrder::SORT_DESC)
             ->create();
         $this->searchCriteriaBuilder
@@ -1620,5 +1670,60 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
         } catch (NoSuchEntityException $e) {
             return false;
         }
+    }
+
+    /**
+     * Get admin comment
+     *
+     * @param string $type
+     * @param string $entityType
+     * @param array $ruleIds
+     * @return string|null
+     */
+    private function getAdminComment($type, $entityType, $ruleIds)
+    {
+        $adminComment = null;
+        if (!empty($ruleIds)) {
+            $adminComment = $this->commentPool->get($type)->renderComment(
+                [$entityType => $this->getRuleEntitiesData($entityType, $ruleIds)]
+            );
+        }
+        return $adminComment;
+    }
+
+    /**
+     * Get admin comment placeholder
+     *
+     * @param string $type
+     * @param array $ruleIds
+     * @return string|null
+     */
+    private function getAdminCommentPlaceholder($type, $ruleIds)
+    {
+        $adminCommentPlaceholder = null;
+        if (!empty($ruleIds)) {
+            $adminCommentPlaceholder = $this->commentPool->get($type)->getLabel();
+        }
+        return $adminCommentPlaceholder;
+    }
+
+    /**
+     * Get rule entities data
+     *
+     * @param string $entityType
+     * @param int[] $ruleIds
+     * @return array
+     */
+    private function getRuleEntitiesData($entityType, $ruleIds)
+    {
+        $entitiesData = [];
+        foreach ($ruleIds as $ruleId) {
+            $entitiesData[] = [
+                'entity_type' => $entityType,
+                'entity_id' => $ruleId,
+                'entity_label' => $ruleId
+            ];
+        }
+        return $entitiesData;
     }
 }

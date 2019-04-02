@@ -1,5 +1,7 @@
 <?php
 $_helper = $this->helper('WeltPixel\FrontendOptions\Helper\Data');
+$_designeElementsHelper = $this->helper('WeltPixel\DesignElements\Helper\Data');
+if ($_designeElementsHelper->isResponsiveHelpersEnabled()) :
 ?>
 <script>
 require(['jquery', 'designelements_base' ],
@@ -13,3 +15,4 @@ function   ($, SEMICOLONBASE) {
     });
 });
 </script>
+<?php endif; ?>

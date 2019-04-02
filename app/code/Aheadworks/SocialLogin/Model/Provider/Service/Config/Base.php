@@ -16,7 +16,6 @@ class Base implements ConfigInterface
      */
     protected $baseUri;
 
-
     /**
      * @param array $scopes
      * @param string|null $baseUri

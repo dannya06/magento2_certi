@@ -12,11 +12,20 @@ title,identifier,content,is_active
         <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle address-v3"">
             <h4 class=""mini-logo""><img alt=""Logo"" src=""{{media url=""wysiwyg/pearl_theme/logo_white.png""}}""
                 style=""width:100px""></h4>
-            <p class=""details-v3""><i class=""icon icon-location""></i>9087S Divamus Faucibus Str., <br>
-                City name, Postal Code, <br>
-                PA 19130, United States. <br><br>
-                <i class=""icon  icon-phone3""></i> (1800) 000 000<br>
-                <i class=""icon  icon-line-mail""></i> contact@domain.com</p>
+                <a href=""https://www.google.com/maps/search/?api=1&query=City+Hall%2C+New+York%2C+NY"" class=""white-lnk"">
+                    <p class=""details-v3"">
+                        <i class=""icon icon-location""></i>
+                        9087S Divamus Faucibus Str., <br>
+                        City name, Postal Code, <br>
+                        PA 19130, United States.
+                    </p>
+                </a>
+                <a href=""tel:123-456-7890"" class=""white-lnk"">
+                    <i class=""icon  icon-phone3""></i> (1800) 000 000<br>
+                </a>
+                <a href=""mailto:contact@domain.com"" class=""white-lnk mg-desk-v3"">
+                    <i class=""icon  icon-line-mail""></i> contact@domain.com
+                </a>
         </div>
         <!-- FOOTER COLUMN #1 BEGIN -->
 

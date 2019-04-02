@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -35,6 +35,14 @@
                         <argument name="label" xsi:type="string">Custom Fields</argument>
                         <argument name="resource" xsi:type="string">Aheadworks_Rma::custom_fields</argument>
                         <argument name="controller" xsi:type="string">customfield</argument>
+                    </arguments>
+                </block>
+                <block class="Aheadworks\Rma\Block\Adminhtml\Page\Menu\Item" name="aw_rma_menu_item.canned_responses">
+                    <arguments>
+                        <argument name="path" xsi:type="string">*/cannedresponse/index</argument>
+                        <argument name="label" xsi:type="string">Canned Responses</argument>
+                        <argument name="resource" xsi:type="string">Aheadworks_Rma::canned_responses</argument>
+                        <argument name="controller" xsi:type="string">cannedresponse</argument>
                     </arguments>
                 </block>
                 <block class="Aheadworks\Rma\Block\Adminhtml\Page\Menu\Item" name="aw_rma_menu_item.settings">

@@ -9,6 +9,8 @@ namespace Aheadworks\Blog\Controller\Block;
 use Aheadworks\Blog\Block\Widget\RecentPost;
 use Magento\Framework\Translate\InlineInterface;
 use Magento\Framework\App\Action\Context;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
 
 /**
  * Class Render
@@ -23,15 +25,23 @@ class Render extends \Magento\Framework\App\Action\Action
     private $translateInline;
 
     /**
+     * @var SerializeInterface
+     */
+    private $serializer;
+
+    /**
      * @param Context $context
      * @param InlineInterface $translateInline
+     * @param SerializeFactory $serializeFactory
      */
     public function __construct(
         Context $context,
-        InlineInterface $translateInline
+        InlineInterface $translateInline,
+        SerializeFactory $serializeFactory
     ) {
         parent::__construct($context);
         $this->translateInline = $translateInline;
+        $this->serializer = $serializeFactory->create();
     }
 
     /**
@@ -51,7 +61,7 @@ class Render extends \Magento\Framework\App\Action\Action
         $data = $this->getBlocks($blocks);
 
         $this->translateInline->processResponseBody($data);
-        $this->getResponse()->appendBody(json_encode($data));
+        $this->getResponse()->appendBody($this->serializer->serialize($data));
     }
 
     /**
@@ -65,13 +75,13 @@ class Render extends \Magento\Framework\App\Action\Action
         if (!$blocks) {
             return [];
         }
-        $blocks = json_decode($blocks);
+        $blocks = $this->serializer->unserialize($blocks);
 
         $data = [];
         $layout = $this->_view->getLayout();
         foreach ($blocks as $blockDataEncode) {
             try {
-                $blockData = unserialize(base64_decode($blockDataEncode));
+                $blockData = $this->serializer->unserialize(base64_decode($blockDataEncode));
                 $blockName = '';
                 if (isset($blockData['name'])) {
                     $blockName = $blockData['name'];

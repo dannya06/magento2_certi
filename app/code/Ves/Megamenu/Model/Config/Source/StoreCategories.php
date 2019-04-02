@@ -31,6 +31,7 @@ use Magento\Catalog\Model\Locator\LocatorInterface;
 class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractElement
 {
     const CATEGORY_TREE_ID = 'CATALOG_PRODUCT_CATEGORY_TREE';
+    const MENU_CACHE_TAG = 'menu_editor_categories';
     /**
      * @var \Magento\Framework\View\LayoutInterface
      */
@@ -112,10 +113,10 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
      * @param bool|int $pageSize
      * @return \Magento\Catalog\Model\ResourceModel\Category\Collection or array
      */
-    public function getCategoryCollection($isActive = true, $level = false, $sortBy = false, $pageSize = false)
+    public function getCategoryCollection($isActive = true, $level = false, $sortBy = 'position', $pageSize = false)
     {
         $collection = $this->categoryCollectionFactory->create();
-        $collection->addAttributeToSelect('*');        
+        //$collection->addAttributeToSelect('*');        
         
         // select only active categories
         if ($isActive) {
@@ -153,34 +154,13 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
             return $this->categoriesTrees[$filter];
         }
 
-        // @var $matchingNamesCollection \Magento\Catalog\Model\ResourceModel\Category\Collection
-        $matchingNamesCollection = $this->getCategoryCollection();
-        if ($filter !== null) {
-            $matchingNamesCollection->addAttributeToFilter(
-                'name',
-                ['like' => $this->dbHelper->addLikeEscape($filter, ['position' => 'any'])]
-            );
-        }
-
-        $matchingNamesCollection->addAttributeToSelect('path')
-            ->addAttributeToFilter('entity_id', ['neq' => CategoryModel::TREE_ROOT_ID]);
-
-        $shownCategoriesIds = [];
-
-        /*
-            * @var \Magento\Catalog\Model\Category $category
-        */
-        foreach ($matchingNamesCollection as $category) {
-            foreach (explode('/', $category->getPath()) as $parentId) {
-                $shownCategoriesIds[$parentId] = 1;
-            }
-        }
-
         // @var $collection \Magento\Catalog\Model\ResourceModel\Category\Collection
         $collection = $this->getCategoryCollection();
 
-        $collection->addAttributeToFilter('entity_id', ['in' => array_keys($shownCategoriesIds)])
-            ->addAttributeToSelect(['name', 'is_active', 'parent_id']);
+        if (!empty($filter)) {
+           $collection->addAttributeToFilter('entity_id', ['in' => $this->getCategoryIdsByName(null,$filter)]);
+        }
+        $collection->addAttributeToSelect(['name', 'is_active', 'parent_id']);
 
         $categoryById = [
                          CategoryModel::TREE_ROOT_ID => [
@@ -211,22 +191,17 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
 
     }//end getCategoriesTree()
 
-
-    public function getCategoriesCollection($menuCatgories = [], $filter = null, $_store_id = null)
+    /**
+     * Looks like this method can be safely removed
+     * @param $menuCategories
+     * @param $filter
+     * @param $_store_id
+     * @return array
+     */
+    private function getCategoryIdsByName($menuCategories = [], $filter = null, $_store_id = null)
     {
-        krsort($menuCatgories);
-        $cache_cat_key = implode("_", $menuCatgories);
-        $categoryTree = $this->getCacheManager()->load(self::CATEGORY_TREE_ID .'_'.$cache_cat_key. '_' . $filter.'_'.$_store_id);
-
-        if ($categoryTree) {
-            return unserialize($categoryTree);
-        }
-
-        $storeId = $this->_storeManager->getStore()->getId();
-
         // @var $matchingNamesCollection \Magento\Catalog\Model\ResourceModel\Category\Collection
         $matchingNamesCollection = $this->getCategoryCollection();
-
         if ($filter !== null) {
             $matchingNamesCollection->addAttributeToFilter(
                 'name',
@@ -235,14 +210,14 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
         }
 
         $matchingNamesCollection->addAttributeToSelect('path')
-            ->addAttributeToFilter('entity_id', ['neq' => CategoryModel::TREE_ROOT_ID])
-            ->setStoreId($storeId);
+            ->addAttributeToFilter('entity_id', ['neq' => CategoryModel::TREE_ROOT_ID]);
 
-
-        if (!empty($menuCatgories)) {
-            $matchingNamesCollection->addAttributeToFilter('entity_id', ['in' => $menuCatgories]);
-        } 
-
+        if($_store_id !== null ) {
+            $matchingNamesCollection->setStoreId($_store_id);
+        }
+        if (!empty($menuCategories)) {
+            $matchingNamesCollection->addAttributeToFilter('entity_id', ['in' => $menuCategories]);
+        }
         $shownCategoriesIds = [];
 
         /*
@@ -253,11 +228,28 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
                 $shownCategoriesIds[$parentId] = 1;
             }
         }
+        return array_keys($shownCategoriesIds);
+    }
+
+    public function getCategoriesCollection($menuCategories = [], $filter = null, $_store_id = null)
+    {
+        krsort($menuCategories);
+        $cache_cat_key = implode("_", $menuCategories);
+        $categoryTree = $this->getCacheManager()->load(self::CATEGORY_TREE_ID .'_'.$cache_cat_key. '_' . $filter.'_'.$_store_id);
+
+        if ($categoryTree) {
+            return unserialize($categoryTree);
+        }
+
+        $storeId = $_store_id;
+        if($storeId === null){
+            $storeId = $this->_storeManager->getStore()->getId();
+        }
 
         /* @var $collection \Magento\Catalog\Model\ResourceModel\Category\Collection */
         $collection = $this->getCategoryCollection();
 
-        $collection->addAttributeToFilter('entity_id', ['in' => array_keys($shownCategoriesIds)])
+        $collection->addAttributeToFilter('entity_id', ['in' => $this->getCategoryIdsByName($menuCategories, $filter, $storeId)])
             ->addAttributeToSelect(['name', 'is_active', 'parent_id'])
             ->setStoreId($storeId);
 
@@ -302,7 +294,11 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
         }
     }
 
-    public function getCategoryList() {
+    public function getCategoryList($root_id = 0) {
+        $categoryList = $this->getCacheManager()->load(self::CATEGORY_TREE_ID .'_BACKEND_MENU_EDITOR_ROOT'.$root_id);
+        if ($categoryList) {
+            return unserialize($categoryList);
+        }
         $categoriesTrees = $this->getCategoriesTree();
         if($categoriesTrees) {
             foreach ($categoriesTrees as $category) {
@@ -324,7 +320,17 @@ class StoreCategories extends \Magento\Framework\Data\Form\Element\AbstractEleme
 
             $categoryLabel .= $this->_getSpaces($category['level']) . '(ID:' . $category['value'] . ') ' . $category['label'];
             $category['label'] = $categoryLabel;
-        } 
+        }
+        $this->getCacheManager()->save(
+            serialize($list),
+            self::CATEGORY_TREE_ID .'_BACKEND_MENU_EDITOR_ROOT'.$root_id,
+            [
+                \Magento\Catalog\Model\Category::CACHE_TAG,
+                \Magento\Framework\App\Cache\Type\Block::CACHE_TAG,
+                self::MENU_CACHE_TAG
+            ],
+            3600
+        );
         return $list;
     }
 

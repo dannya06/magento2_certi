@@ -1,0 +1,37 @@
+<?php
+$customer = $block->getCustomer();
+
+if ($customer) {
+
+    $markup = '<script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "EmailMessage",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "target": "' . $this->getFrontendUrl('customer/account') . '",
+                    "name": "Sign In"
+                  },
+                  "description": "Sign In"
+                }
+            </script>';
+} else {
+    $markup = '
+        <pre>
+            &lt;<span>script type="application/ld+json"</span><span>></span>
+                {
+                  "@context": "http://schema.org",
+                  "@type": "EmailMessage",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "target": "http://example.com/customer/account",
+                    "name": "Sign In"
+                  },
+                  "description": "Sign In"
+                }
+            &lt;<span>/script</span>>
+        </pre>
+    ';
+}
+?>
+<?= $markup ?>

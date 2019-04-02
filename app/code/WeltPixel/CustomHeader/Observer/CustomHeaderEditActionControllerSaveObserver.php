@@ -166,6 +166,30 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         return $this;
     }
 
+    /**
+     * Convert HEX in RGB
+     *
+     * @param string $hex
+     * @return string
+     */
+    private function hex2rgb($hex)
+    {
+        $hex = str_replace("#", "", $hex);
+
+        if (strlen($hex) == 3) {
+            $r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+            $g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+            $b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+        } else {
+            $r = hexdec(substr($hex, 0, 2));
+            $g = hexdec(substr($hex, 2, 2));
+            $b = hexdec(substr($hex, 4, 2));
+        }
+        $rgb = array($r, $g, $b);
+        //return implode(",", $rgb); // returns the rgb values separated by commas
+        return $rgb; // returns an array with the rgb values
+    }
+
 
     /**
      * Generate the less css content for the header options
@@ -235,6 +259,15 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $serachOptionsColor = $this->_helper->getSerachOptionsColor($storeId);
         $serachOptionsPlaceHolderColor = $this->_helper->getSerachOptionsPlaceHolderColor($storeId);
         $serachOptionsFontSize = $this->_helper->getSerachOptionsFontSize($storeId);
+        $backgroundColorSearchv2 = $this->_helper->getBackgroundColorSearchv2($storeId);
+        $backgroundOpacitySearchv2 = $this->_helper->getBackgroundOpacitySearchv2($storeId);
+        $inputBackgroundColor = $this->_helper->getInputBackgroundColor($storeId);
+        $mainSearchElementsColor = $this->_helper->getMainSearchElementsColor($storeId);
+        $magnifierBackgroundColor = $this->_helper->getMagnifierBackgroundColor($storeId);
+        $inputBorders = $this->_helper->getInputBorders($storeId);
+        $searchInputFontSize = $this->_helper->getSearchInputFontSize($storeId);
+        $borderWidth = $this->_helper->getBorderWidth($storeId);
+
 
         $headerIconSize = $this->_helper->getHeaderIconSize($storeId);
         $headerIconColor = $this->_helper->getHeaderIconColor($storeId);
@@ -246,14 +279,16 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
 
         $topHeaderWidth = strlen(trim($topHeaderWidth)) ? 'max-width:' . $topHeaderWidth . ' !important;' : '';
 
+        $topHeaderLinkColorImportant = strlen(trim($topHeaderLinkColor)) ? 'color:' . $topHeaderLinkColor . '!important;' : '';
+
         $topHeaderLinkColor = strlen(trim($topHeaderLinkColor)) ? 'color:' . $topHeaderLinkColor . ';' : '';
+
         $topHeaderActiveLinkColor = strlen(trim($topHeaderActiveLinkColor)) ? '&:active { color: ' . $topHeaderActiveLinkColor . '; }' : '';
         $topHeaderHoverLinkColor = strlen(trim($topHeaderHoverLinkColor)) ? '&:hover { color: ' . $topHeaderHoverLinkColor . ' !important; }' : '';
 
         $topHeaderSubmenuLinkColor = strlen(trim($topHeaderSubmenuLinkColor)) ? 'color:' . $topHeaderSubmenuLinkColor . ' !important;' : '';
         $topHeaderSubmenuHoverLinkColor = strlen(trim($topHeaderSubmenuHoverLinkColor)) ? '&:hover { color: ' . $topHeaderSubmenuHoverLinkColor . ' !important; }' : '';
 
-        $topHeaderTextColor = strlen(trim($topHeaderTextColor)) ? 'color:' . $topHeaderTextColor . ' !important;' : '';
         $topHeaderBackgroundColor = strlen(trim($topHeaderBackgroundColor)) ? 'background-color:' . $topHeaderBackgroundColor . ' !important;' : '';
         $topHeaderBorderBottomColor = strlen(trim($topHeaderBorderBottomColor)) ? 'border-bottom: 1px solid ' . $topHeaderBorderBottomColor . ';' : '';
         $middleHeaderWidth = strlen(trim($middleHeaderWidth)) ? 'max-width:' . $middleHeaderWidth . ';' : '';
@@ -261,12 +296,35 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $bottomHeaderWidth = strlen(trim($bottomHeaderWidth)) ? 'max-width:' . $bottomHeaderWidth . ';' : '';
         $bottomHeaderPadding = strlen(trim($bottomHeaderPadding)) ? '@media (max-width: ' . $bottomHeaderPadding . '){ padding-right: 15px !important; padding-left: 15px !important; }' : '';
         $bottomHeaderBackgroundColor = strlen(trim($bottomHeaderBackgroundColor)) ? 'background-color:' . $bottomHeaderBackgroundColor . ' !important;' : 'background-color: transparent !important;';
+        $bottomHeaderBorderHoverColor = strlen(trim($bottomHeaderHoverLinkColor)) ? 'border-color:' . $bottomHeaderHoverLinkColor . '40 !important;' : '';
         $bottomHeaderLinkColor = strlen(trim($bottomHeaderLinkColor)) ? 'color:' . $bottomHeaderLinkColor . ' !important;' : '';
+        $bottomHeaderLinkColorShadow = strlen(trim($bottomHeaderHoverLinkColor)) ? 'text-shadow: 0 0 0 ' . $bottomHeaderHoverLinkColor . ' !important;' : '';
+        $bottomHeaderLinkColorHover = strlen(trim($bottomHeaderHoverLinkColor)) ? 'color: ' . $bottomHeaderHoverLinkColor . ' !important;' : '';
         $bottomHeaderHoverLinkColor = strlen(trim($bottomHeaderHoverLinkColor)) ? '&:hover { color: ' . $bottomHeaderHoverLinkColor . ' !important; }' : '';
-        $bottomNavigationShadow = strlen(trim($bottomNavigationShadow)) ? '-webkit-box-shadow: ' . $bottomNavigationShadow . '; -moz-box-shadow: ' . $bottomNavigationShadow . '; box-shadow: ' . $bottomNavigationShadow . ';' : '';
+        $bottomNavigationShadow = strlen(trim($bottomNavigationShadow)) ? '-webkit-box-shadow: ' . $bottomNavigationShadow . '; -moz-box-shadow: ' . $bottomNavigationShadow . '; -o-box-shadow: ' . $bottomNavigationShadow . '; box-shadow: ' . $bottomNavigationShadow . ';' : '';
 
         $serachOptionsWidth = strlen(trim($serachOptionsWidth)) ? 'width: ' . $serachOptionsWidth . ';' : '';
         $serachOptionsHeight = strlen(trim($serachOptionsHeight)) ? 'height: ' . $serachOptionsHeight . ';' : '';
+
+        if($inputBorders == 0){
+            $inputBorders = strlen(trim($inputBorders)) ? 'border:' . $borderWidth . 'px solid ' . $mainSearchElementsColor . '!important;'  : '';
+
+        }else{
+            $inputBorders = strlen(trim($inputBorders)) ? 'border:none !important; border-bottom:' . $borderWidth . 'px solid ' . $mainSearchElementsColor . '!important; '  : '';
+        }
+
+        $rgba = 'background-color: rgba(' . implode(",", array_values($this->hex2rgb($backgroundColorSearchv2))) . ',' . $backgroundOpacitySearchv2 .' ) !important;';
+        $backgroundColorSearchv2 = strlen(trim($backgroundColorSearchv2)) ? $rgba : '';
+
+        $inputBackgroundColor = strlen(trim($inputBackgroundColor)) ? 'background-color:' . $inputBackgroundColor . '!important;'  : '';
+        $mainSearchElementsColor = strlen(trim($mainSearchElementsColor)) ? 'color:' . $mainSearchElementsColor . '!important;'   : '';
+        $magnifierBackgroundColor = strlen(trim($magnifierBackgroundColor)) ? 'background-color:' . $magnifierBackgroundColor . ';'  : '';
+        $searchInputFontSize = strlen(trim($searchInputFontSize)) ? 'font-size:' . $searchInputFontSize . 'px !important;'  : '';
+
+
+
+
+
 
         if (!$serachOptionsBorderWidth) {
             $serachOptionsBorderWidth = [];
@@ -300,7 +358,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $serachOptionsBorderColor = strlen(trim($serachOptionsBorderColor)) ? 'border-color: ' . $serachOptionsBorderColor . ';' : 'border-color: #000000;';
         $serachOptionsBackground = strlen(trim($serachOptionsBackground)) ? 'background-color: ' . $serachOptionsBackground . ';' : 'background-color: transparent;';
         $serachOptionsColor = strlen(trim($serachOptionsColor)) ? 'color: ' . $serachOptionsColor . ';' : 'color: initial;';
-        $serachOptionsPlaceHolderColor = strlen(trim($serachOptionsPlaceHolderColor)) ? 'color: ' . $serachOptionsPlaceHolderColor . ';' : 'color: #000000;';
+        $serachOptionsPlaceHolderColor = strlen(trim($serachOptionsPlaceHolderColor)) ? 'color: ' . $serachOptionsPlaceHolderColor . '!important;' : 'color: #000000;';
         $serachOptionsFontSize = strlen(trim($serachOptionsFontSize)) ? 'font-size: ' . $serachOptionsFontSize . ';' : 'font-size: 15px;';
 
         $headerIconSize = strlen(trim($headerIconSize)) ? 'font-size: ' . $headerIconSize . ' !important;' : 'font-size: 16px !important;';
@@ -308,6 +366,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $headerIconHoverColor = strlen(trim($headerIconHoverColor)) ? 'color: ' . $headerIconHoverColor . ' !important' : 'color: inherit';
 
         $bkColorMobile = (int)$this->_mobileBreakPoint - 1 . 'px';
+        $maxBkColorMobile = (int)$this->_mobileBreakPoint . 'px';
 
         // sticky header
         $stickyHeaderBackgroundColor = $stickyHeaderBackgroundColor && strlen(trim($stickyHeaderBackgroundColor)) ? 'background-color:' . $stickyHeaderBackgroundColor . ' !important;' : 'background-color: #ffffff !important;';
@@ -316,7 +375,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $stickyNavigationBorderColor = $stickyNavigationBorderColor && strlen(trim($stickyNavigationBorderColor)) ? 'border-color:' . $stickyNavigationBorderColor . ' !important;' : '';
         $stickyNavigationBorderHoverColor = $stickyNavigationBorderHoverColor && strlen(trim($stickyNavigationBorderHoverColor)) ? 'border-color:' . $stickyNavigationBorderHoverColor . ' !important;' : '';
         $stickySearchBorderColor = $stickySearchBorderColor && strlen(trim($stickySearchBorderColor)) ? 'border-color:' . $stickySearchBorderColor . ' !important;' : '';
-        $stickySearchBackgroundColor = $stickySearchBackgroundColor && strlen(trim($stickySearchBackgroundColor)) ? 'background-color:' . $stickySearchBackgroundColor . ' !important;' : '';
+        $stickySearchBackgroundColor = $stickySearchBackgroundColor && strlen(trim($stickySearchBackgroundColor)) ? 'background-color:' . $stickySearchBackgroundColor . ' !important;' : 'background-color: transparent !important;';
 
         //        Generate Less
         $content .= "
@@ -362,6 +421,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             }
         }
         .panel.wrapper {
+            color: initial;
             $topHeaderBorderBottomColor
             $topHeaderBackgroundColor
         }
@@ -370,6 +430,11 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 $globalPromoTextColor
                 $globalPromoBackgroundColor
                 a.close-global-notification {
+                    $globalPromoTextColor
+                }
+                .wpx-i,
+                .wpx-link,
+                #buttons a{
                     $globalPromoTextColor
                 }
             }
@@ -406,7 +471,24 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                         $topHeaderHoverLinkColor
                     }
                 }
+                .customer-menu {
+                    ul.header.links {
+                        li {
+                            a {
+                                $topHeaderSubmenuLinkColor
+                                &:visited {
+                                    $topHeaderSubmenuLinkColor
+                                }
+                                $topHeaderSubmenuHoverLinkColor
+                            }
+                        }
+                    }
+                }
             }
+            .customer-welcome .action.switch:after{
+              $topHeaderLinkColor
+            }
+           
             .switcher-currency,
             .switcher-language {
                 strong {
@@ -421,7 +503,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 }
                 .switcher-trigger {
                     &:after {
-                        $topHeaderLinkColor
+                        $topHeaderLinkColorImportant
                         $topHeaderActiveLinkColor
                         $topHeaderHoverLinkColor
                     }
@@ -451,6 +533,59 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 }
             }
         }
+        .modal{
+                $backgroundColorSearchv2
+                .close-sec{
+                    a{
+                        &:before{
+                          $mainSearchElementsColor
+                        }
+                    }
+                }
+                .actions.wpx-pos-search{
+                    button{
+                        $magnifierBackgroundColor
+                    }
+                }
+                #search{
+                 $inputBackgroundColor
+                 $mainSearchElementsColor
+                 $inputBorders
+                 $searchInputFontSize
+                     &::-webkit-input-placeholder {                
+                        $searchInputFontSize
+                     }
+                     &::-moz-placeholder{
+                        $searchInputFontSize
+                     }
+                     &:-ms-input-placeholder{
+                        $searchInputFontSize
+                     }
+                     &:-moz-placeholder{
+                        $searchInputFontSize
+                     }
+                }
+                @media (max-width: $bkColorMobile) {
+                    #search.horizontally-white{
+                      &::-webkit-input-placeholder {
+                            font-size:18px !important;
+                         }
+                         &::-moz-placeholder{
+                            font-size:18px !important;
+                         }
+                         &:-ms-input-placeholder{
+                            font-size:18px !important;
+                         }
+                         &:-moz-placeholder{
+                            font-size:18px !important;
+                         }
+                    }
+                }
+                
+                .action.search:before{
+                   $mainSearchElementsColor
+                }
+        }
     }
     .header.content {
         .nav-toggle {
@@ -461,11 +596,6 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 &:before {
                     $headerIconColor
                 }
-            }
-        }
-        .block-search {
-            .control {
-                $middleHeaderBackgroundColor
             }
         }
     }
@@ -489,6 +619,14 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
     .block-search .action.search:before {
         $headerIconSize
     }
+    .block-search {
+        &.minisearch-v2 .open-modal-search {
+            $headerIconColor;
+            &:hover {
+                $headerIconHoverColor;
+            }
+        }
+    }
     .header.links .authorization-link a:before,
 	.minicart-wrapper .action.showcart:before {
 	    $headerIconColor;
@@ -508,7 +646,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
 }
 
 .nav-sections {
-    $bottomHeaderBackgroundColor
+    background-color: transparent !important;
     .nav-sections-items {
         $bottomHeaderBackgroundColor
     }
@@ -528,8 +666,53 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
 			    }
             }
         }
+        ul li.level0 {
+            & > a.bold-menu {
+                $bottomHeaderLinkColorHover
+                &:visited {
+                    $bottomHeaderLinkColorHover
+                }
+            }
+            li > a:hover {
+                $bottomHeaderLinkColorHover
+            }
+        }
+        ul li.level0:hover > a { $bottomHeaderLinkColorHover }
         @media (max-width: $bkColorMobile) {
 	        background-color: inherit !important;
+	    }
+	    .megamenu {
+	        .submenu [data-has-children] {
+	            @media (min-width: $this->_mobileBreakPoint) {
+	                a {
+                        &:hover {
+                            span:last-child {
+                                $bottomHeaderBorderHoverColor
+                            }
+                        }
+	                }
+	            }
+	        }
+	    }
+    }
+    .megamenu a.bold-menu,
+    .megamenu a:hover,
+    .megamenu.level1:not(.parent):hover,
+    .megamenu.level2:hover {
+        $bottomHeaderLinkColorShadow
+        $bottomHeaderLinkColorHover
+        & > a {
+            $bottomHeaderLinkColorShadow
+            $bottomHeaderLinkColorHover
+            &:hover {
+                $bottomHeaderLinkColorShadow
+                $bottomHeaderLinkColorHover
+            }
+        }
+    }
+    .nav-sections-item-content .navigation {
+        @media only screen and (max-width: $maxBkColorMobile) {
+	        border-top: 0 none !important;
 	    }
     }
     @media (max-width: $bkColorMobile) {
@@ -569,13 +752,17 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             $stickyHeaderElementsColor
         }
     }
+    .nav-sections {
+        .navigation,
+        .nav-sections-items {
+            background-color: transparent !important;
+        }
+    }
     .navigation ul li.level0 > a,
     .navigation ul li.level0 > a:visited {
         $stickyHeaderElementsColor
-        $stickyNavigationBorderColor
         &:hover {
             $stickyHeaderElementsHoverColor
-            $stickyNavigationBorderHoverColor
         }
         li > a,
         li > a:visited {
@@ -583,6 +770,44 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             &:hover {
                 $stickyHeaderElementsHoverColor
             }
+        }
+    }
+    .navigation ul li.level0 > a:hover,
+    .navigation ul li.level0 > a.bold-menu {
+        $bottomHeaderLinkColorHover
+        &:visited {
+            $bottomHeaderLinkColorHover
+        }
+    }
+    .navigation ul li.level0.active > a,
+    .navigation ul li.level0.has-active > a {
+        $stickyNavigationBorderColor
+        &:hover {
+            $stickyNavigationBorderHoverColor
+        }
+    }
+    .minicart-wrapper {
+        .action.showcart {
+            &:before {
+                $stickyHeaderElementsColor
+            }
+            &:hover {
+                &:before {
+                    $stickyHeaderElementsHoverColor
+                }
+            }
+        }
+    }
+    .block-search {
+        .label {
+            &:before {
+                    $stickyHeaderElementsColor
+                }
+                &:hover {
+                    &:before {
+                        $stickyHeaderElementsHoverColor
+                    }
+                }
         }
     }
     .header_right {
@@ -594,6 +819,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             input {
                 $stickyHeaderElementsColor
                 $stickySearchBorderColor
+                $stickySearchBackgroundColor
             }
             .action.search {
                 &:before {
@@ -607,39 +833,34 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             }
         }
     }
-    .header.content {
-        .block-search {
-            .field.search {
-                label {
-                    $stickyHeaderElementsColor
-                }
-                .control {
-                    $stickySearchBackgroundColor
-                }
+    .block-search {
+        .field.search {
+            label {
+                $stickyHeaderElementsColor
+            }
+            .control {
+                $stickySearchBackgroundColor
+            }
+        }
+        &.minisearch-v2 .open-modal-search {
+            $stickyHeaderElementsColor
+            &:hover {
+                $stickyHeaderElementsHoverColor
             }
         }
     }
-    .page-header,
-    .header.content,
-    .header.links .authorization-link a {
-        &:before {
-            $stickyHeaderElementsColor
-        }
-        &:hover {
-            $stickyHeaderElementsHoverColor
-            &:before {
-                $stickyHeaderElementsHoverColor
-            }
-        }
-        .nav-toggle,
-        .minicart-wrapper .action.showcart {
-            &:before {
-                $stickyHeaderElementsColor
-            }
-            &:hover {
-                $stickyHeaderElementsHoverColor
+    .header.content {
+        .authorization-link,
+        .minicart-wrapper {
+            a {
                 &:before {
+                    $stickyHeaderElementsColor
+                }
+                &:hover {
                     $stickyHeaderElementsHoverColor
+                    &:before {
+                        $stickyHeaderElementsHoverColor
+                    }
                 }
             }
         }
@@ -651,6 +872,8 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 $stickySearchBackgroundColor
                 $stickyHeaderElementsColor
                 $stickySearchBorderColor
+            }
+            input:not(.vertically-black):not(.horizontally-white){
                 &::-webkit-input-placeholder { $stickyHeaderElementsColor }
                 &::-moz-placeholder { $stickyHeaderElementsColor }
                 &:-ms-input-placeholder { $stickyHeaderElementsColor }
@@ -667,14 +890,58 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 }
             }
         }
+        .nav-toggle {
+            &:before {
+                $stickyHeaderElementsColor
+            }
+            &:hover {
+                $stickyHeaderElementsHoverColor
+                &:before {
+                    $stickyHeaderElementsHoverColor
+                }
+            }
+        }
+        .modal{
+           .modal-content{
+              .block-search.wpx-block-search{
+                   #search{
+                      $inputBackgroundColor;
+                   }
+              }
+           }
+        }
+    }
+    .header.links .authorization-link {
+        margin-left: 0;
+    }
+    .minicart-wrapper .action.showcart {
+        &:before {
+            $stickyHeaderElementsColor
+        }
+        &:hover {
+            &:before {
+                $stickyHeaderElementsHoverColor
+            }
+        }
     }
 }
 .page-header.page-header-v4.sticky-header {
     .header.content {
         z-index: 1;
     }
+    .wrap{
+        .modal-content{
+            #search.horizontally-white{
+                &::-webkit-input-placeholder { $serachOptionsPlaceHolderColor }
+                &::-moz-placeholder { $serachOptionsPlaceHolderColor }
+                &:-ms-input-placeholder { $serachOptionsPlaceHolderColor }
+                &:-moz-placeholder { $serachOptionsPlaceHolderColor }
+            }
+        }
+    }
+    
+    
     .panel.wrapper {
-        z-index: 10;
         background-color: transparent !important;
         #switcher-currency {
             &.switcher {
@@ -730,10 +997,8 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         ul li.level0 > a,
         ul li.level0 > a:visited {
             $stickyHeaderElementsColor
-            $stickyNavigationBorderColor
             &:hover {
                 $stickyHeaderElementsHoverColor
-                $stickyNavigationBorderHoverColor
             }
         }
     }
@@ -772,7 +1037,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             $storeId
         );
 
-        $logoRatio = false;
+        $logoRatio = 2.85;
         if ($logoSrc) {
             $logoSrc = $this->_dir->getPath('media') . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $logoSrc;
             $imgPathArr = explode('.', $logoSrc);
@@ -790,74 +1055,113 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             }
         }
 
-        if ($logoRatio && ($logoWidth || $logoHeight)) {
-            $logoImgSizeCss = '';
+        $logoImgSizeCss = '';
 
-            if ($logoWidth && !$logoHeight) {
-                $logoHeight = (int) ($logoWidth / $logoRatio);
-            } elseif (!$logoWidth && $logoHeight) {
-                $logoWidth = (int) ($logoHeight * $logoRatio);
-            }
-
-            $logoImgSizeCss .= "width: ${logoWidth}px;";
-            $logoImgSizeCss .= "height: ${logoHeight}px;";
-
-            /** This is for the admin image width height proper usage */
-            $content .= "
-@media (min-width: $this->_mobileBreakPoint) {
-    :root .theme-pearl {
-        .page-wrapper {
-            .page-header {
-                .logo {
-                    img {
-                        $logoImgSizeCss
-                    }
-                }
-            }
-        }
-    }
-}
-            ";
+        if ($logoWidth && !$logoHeight) {
+            $logoHeight = 'auto';
+        } elseif (!$logoWidth && $logoHeight) {
+            $logoWidth = 'auto';
+        } elseif (!$logoWidth && !$logoHeight) {
+            $logoWidth = 96;
+            $logoHeight = 34;
         }
 
-        // sticky header logo width and height
-        if ($logoRatio) {
-            $stickyLogoHeight = 34;
-            $stickyLogoWidth = (int) ($stickyLogoHeight * $logoRatio);
-            $stickyLogoImgSizeCss = '';
-            $stickyLogoImgSizeCss .= "width: ${stickyLogoWidth}px;";
-            $stickyLogoImgSizeCss .= "height: ${stickyLogoHeight}px;";
+        $logoImgMxWidthCss = "max-width: ${logoWidth}px;";
+        $logoImgSizeCss .= is_int($logoWidth) ? "width: ${logoWidth}px;" : "width: ${logoWidth};";
+        $logoImgSizeCss .= is_int($logoHeight) ? "height: ${logoHeight}px;" : "height: ${logoHeight};";
 
-            $content .= "
-@media (min-width: $this->_mobileBreakPoint) {
-    :root .theme-pearl {
-        .page-wrapper {
-            .page-header.sticky-header {
-                .logo {
-                    img {
-                        $stickyLogoImgSizeCss
-                    }
-                }
-            }
-        }
-    }
-}
-            ";
-            $stickyMenuOffsetLeft = $stickyLogoWidth > 100 ? 146 * -1 : ($stickyLogoWidth + 46) * -1;
-
-            $stickyMenuOffsetLeftCss = "left: ${stickyMenuOffsetLeft}px !important;";
-
-            $content .= "
-                .page-header-v2.sticky-header,
-                .page-header-v1.sticky-header {
-                    .megamenu.level-top-fullwidth {
-                        .fullwidth {
-                            $stickyMenuOffsetLeftCss
+        /** This is for the admin image width height proper usage */
+        $content .= "
+            @media (min-width: $this->_mobileBreakPoint) {
+                :root .theme-pearl {
+                    .page-wrapper {
+                        .page-header {
+                            .logo {
+                                img {
+                                    $logoImgSizeCss
+                                }
+                            }
                         }
                     }
                 }
-            ";
+            }
+        ";
+
+        // sticky header logo width and height
+        $stickyLogoHeight = 34;
+        $stickyLogoWidth = (int) ($stickyLogoHeight * $logoRatio);
+        // recalc logo width and height
+        if ($stickyLogoWidth > 200) {
+            $stickyLogoWidth = 200;
+            $stickyLogoHeight = (int) ($stickyLogoWidth / $logoRatio);
         }
+        $stickyLogoImgSizeCss = '';
+        $stickyLogoImgSizeCss .= "width: ${stickyLogoWidth}px;";
+        $stickyLogoImgSizeCss .= "height: ${stickyLogoHeight}px;";
+
+        $mainSearchElementsColor = $this->_helper->getMainSearchElementsColor($storeId);
+        $mainSearchElementsColor = strlen(trim($mainSearchElementsColor)) ? 'color:' . $mainSearchElementsColor . '!important;'   : '';
+
+        $content .= "
+            @media (min-width: $this->_mobileBreakPoint) {
+                :root .theme-pearl {
+                    .page-wrapper {
+                        .page-header.sticky-header {
+                             .wrap .modal .block-search .action.search:before{
+                              $mainSearchElementsColor
+                            }
+                            .logo {
+                                img {
+                                    $stickyLogoImgSizeCss
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            @media (max-width: $this->_mobileBreakPoint) {
+                :root .theme-pearl {
+                    .page-wrapper {
+                        .page-header {
+                            .logo {
+                                img {
+                                    $stickyLogoImgSizeCss
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ";
+
+        $logoMargin = (int) ($stickyLogoHeight / 2) * -1;
+        $logoMarginCss = "margin-top: ${logoMargin}px;";
+
+        $stickyNavOffsetLeft = $stickyLogoWidth > 200 ? 220 : $stickyLogoWidth + 20;
+        $stickyNavOffsetLeftCss = "left: ${stickyNavOffsetLeft}px !important;";
+
+        $v3stickyNavOffsetLeft = $stickyLogoWidth > 200 ? 230 : $stickyLogoWidth + 30;
+        $v3stickyNavOffsetLeftCss = "margin-left: ${v3stickyNavOffsetLeft}px !important;";
+
+        $content .= "
+            :root .theme-pearl {
+                .page-wrapper {
+                    .page-header.sticky-header:not(.page-header-v4) {
+                        .logo {
+                            $logoMarginCss
+                        }
+                        .sections.nav-sections {
+                            $stickyNavOffsetLeftCss
+                        }
+                        &.page-header-v3 {
+                            .sections.nav-sections {
+                                $v3stickyNavOffsetLeftCss
+                            }
+                        }
+                    }
+                }
+            }
+        ";
 
         return $content;
 

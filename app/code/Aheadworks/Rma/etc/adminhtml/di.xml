@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -10,6 +10,18 @@
     <type name="Aheadworks\Rma\Model\Request\Email\UrlBuilder">
         <arguments>
             <argument name="frontendUrlBuilder" xsi:type="object">Magento\Framework\Url</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Backend\Block\Widget\Button\Toolbar">
+        <plugin name="addCustomButtonSalesView" type="Aheadworks\Rma\Plugin\Block\WidgetButtonToolbarPlugin" />
+    </type>
+    <type name="Aheadworks\Rma\Ui\DataProvider\Request\Form\DownloadOrderDataProcessor\Composite">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="orderItems" xsi:type="object">Aheadworks\Rma\Ui\DataProvider\Request\Form\DownloadOrderDataProcessor\OrderItems</item>
+                <item name="orderInfo" xsi:type="object">Aheadworks\Rma\Ui\DataProvider\Request\Form\DownloadOrderDataProcessor\OrderInfo</item>
+                <item name="customerInfo" xsi:type="object">Aheadworks\Rma\Ui\DataProvider\Request\Form\DownloadOrderDataProcessor\CustomerInfo</item>
+            </argument>
         </arguments>
     </type>
 </config>

@@ -42,6 +42,63 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @return mixed
+     */
+    public function isGoogleMapEnabled()
+    {
+        return $this->_thankYouPageOptions['google_map']['enable'];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isWesupplyIntegrationEnabled()
+    {
+        if ($this->isWesupplyModuleEnabled()) {
+            $enabledWeSupply = $this->scopeConfig->getValue(
+                'wesupply_api/integration/wesupply_enabled',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            );
+            $enabledNotificationSignupBox = $this->scopeConfig->getValue(
+                'wesupply_api/step_4/checkout_page_notification',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            );
+
+            if ($enabledWeSupply && $enabledNotificationSignupBox) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isOrderInfoEnabled()
+    {
+        return $this->_thankYouPageOptions['order_info']['enable'];
+    }
+
+    /**
+     * @return string
+     */
+    public function showCustomerInfo()
+    {
+        return $this->_thankYouPageOptions['order_info']['customer_info'];
+    }
+
+    /**
+     * @return string
+     */
+    public function showProductInfo()
+    {
+        return $this->_thankYouPageOptions['order_info']['product_info'];
+    }
+
+    /**
      * @return string
      */
     public function getPageTitle()
@@ -71,6 +128,46 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getOrderDetailsSortOrder()
     {
         return isset($this->_thankYouPageOptions['order_details']['sort_order']) ? $this->_thankYouPageOptions['order_details']['sort_order'] : 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGoogleMapSortOrder()
+    {
+        return isset($this->_thankYouPageOptions['google_map']['sort_order']) ? $this->_thankYouPageOptions['google_map']['sort_order'] : 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWesupplyIntegrationSortOrder()
+    {
+        return isset($this->_thankYouPageOptions['wesupply_integration']['sort_order']) ? $this->_thankYouPageOptions['wesupply_integration']['sort_order'] : 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderInfoSortOrder()
+    {
+        return isset($this->_thankYouPageOptions['order_info']['sort_order']) ? $this->_thankYouPageOptions['order_info']['sort_order'] : 0;
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getGoogleApiKey()
+    {
+        return isset($this->_thankYouPageOptions['google_map']['api_key']) ? trim($this->_thankYouPageOptions['google_map']['api_key']) : false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGoogleMapSettings()
+    {
+        return $this->_thankYouPageOptions['google_map'];
     }
 
     /**
@@ -190,10 +287,19 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getAvailableBlockElements()
     {
+        $blocks = [];
         $blocksForOutput = [];
 
         if ($this->isOrderDetailsEnabled()) {
             $blocksForOutput['checkout.success'] = $this->getOrderDetailsSortOrder();
+        }
+
+        if ($this->isGoogleMapEnabled()) {
+            $blocksForOutput['weltpixel.checkout.google.map'] = $this->getGoogleMapSortOrder();
+        }
+
+        if ($this->isOrderInfoEnabled()) {
+            $blocksForOutput['weltpixel.checkout.order.info'] = $this->getOrderInfoSortOrder();
         }
 
         if ($this->isCreateAccountEnabled()) {
@@ -210,6 +316,84 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         asort($blocksForOutput);
 
-        return array_keys($blocksForOutput);
+        // Insert WeSupply Notification Signup Box
+        if ($this->isWesupplyIntegrationEnabled()) {
+            $blocks = $this->insertAfter($blocksForOutput, 'checkout.success', ['wesupply.notification' => 0]);
+        } else {
+            $blocks = $blocksForOutput;
+        }
+
+        return array_keys($blocks);
+    }
+
+    /**
+     * Insert a key/value pair after a specific key in given array
+     * If key doesn't exist, value is prepend to the beginning of the array
+     *
+     * @param array $array
+     * @param $key
+     * @param array $new
+     * @return array
+     */
+    private function insertAfter(array $array, $key, array $new)
+    {
+        $keys = array_keys($array);
+        $index = array_search($key, $keys);
+        $pos = false === $index ? 0 : $index + 1;
+
+        return array_merge(
+            array_slice($array, 0, $pos),
+            $new,
+            array_slice($array, $pos)
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getRegistrationTemplate()
+    {
+        $template = 'WeltPixel_ThankYouPage/registration';
+        return $template;
+    }
+
+    /**
+     * Whether a module is enabled in the configuration or not
+     *
+     * @param string $moduleName Fully-qualified module name
+     * @return boolean
+     */
+    public function isModuleEnabled($moduleName)
+    {
+        return $this->_moduleManager->isEnabled($moduleName);
+    }
+
+    /**
+     * Whether a module output is permitted by the configuration or not
+     *
+     * @param string $moduleName Fully-qualified module name
+     * @return boolean
+     */
+    public function isOutputEnabled($moduleName)
+    {
+        return $this->_moduleManager->isOutputEnabled($moduleName);
+    }
+
+    /**
+     * Check if WeSupply Integration module is enabled
+     *
+     * @return mixed
+     */
+    public function isWesupplyModuleEnabled()
+    {
+        if (
+            $this->isModuleEnabled('WeSupply_Toolbox') &&
+            $this->isOutputEnabled('WeSupply_Toolbox')
+        ) {
+
+            return true;
+        }
+
+        return false;
     }
 }

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Setup;
 
@@ -10,6 +10,7 @@ use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 
 /**
  * Class InstallSchema
@@ -43,7 +44,8 @@ class InstallSchema implements InstallSchemaInterface
         $this->addCustomFieldTables($installer)
             ->addRequestStatusTables($installer)
             ->addRequestTables($installer)
-            ->addMessageTables($installer);
+            ->addMessageTables($installer)
+            ->addCannedResponseTables($installer);
         $this->upgradeSchema120->install($installer);
 
         $installer->endSetup();
@@ -394,7 +396,7 @@ class InstallSchema implements InstallSchemaInterface
                 'customer_id',
                 $installer->getTable('customer_entity'),
                 'entity_id',
-                Table::ACTION_CASCADE
+                Table::ACTION_SET_NULL
             )
             ->setComment('RMA Request');
         $installer->getConnection()->createTable($table);
@@ -527,7 +529,7 @@ class InstallSchema implements InstallSchemaInterface
                 $installer->getFkName(
                     'aw_rma_request_item_custom_field_value',
                     'field_id',
-                    'aw_rma_custom_field',
+                    $installer->getTable('aw_rma_custom_field'),
                     'id'
                 ),
                 'field_id',
@@ -604,6 +606,13 @@ class InstallSchema implements InstallSchemaInterface
                 ['nullable' => false, 'default' => 0],
                 'Is Auto'
             )
+            ->addColumn(
+                'is_internal',
+                Table::TYPE_BOOLEAN,
+                null,
+                ['nullable' => false, 'default' => 0],
+                'Is Internal Message'
+            )
             ->addForeignKey(
                 $installer->getFkName('aw_rma_thread_message', 'request_id', 'aw_rma_request', 'id'),
                 'request_id',
@@ -650,6 +659,107 @@ class InstallSchema implements InstallSchemaInterface
             ->setComment('RMA Thread Attachments');
         $installer->getConnection()->createTable($table);
 
+        return $this;
+    }
+
+    /**
+     * Add canned response tables
+     *
+     * @param SchemaSetupInterface $installer
+     * @return $this
+     */
+    private function addCannedResponseTables(SchemaSetupInterface $installer)
+    {
+        /**
+         * Create table 'aw_rma_canned_response'
+         */
+        $table = $installer->getConnection()
+            ->newTable($installer->getTable('aw_rma_canned_response'))
+            ->addColumn(
+                'id',
+                Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                'Canned Response ID'
+            )->addColumn(
+                'title',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => false],
+                'Canned Response Title'
+            )->addColumn(
+                'created_at',
+                Table::TYPE_TIMESTAMP,
+                null,
+                ['nullable' => false, 'default' => Table::TIMESTAMP_INIT],
+                'Canned Response Time'
+            )->addColumn(
+                'updated_at',
+                Table::TYPE_TIMESTAMP,
+                null,
+                ['nullable' => false, 'default' => Table::TIMESTAMP_INIT_UPDATE],
+                'Canned Response Modification Time'
+            )->addColumn(
+                'is_active',
+                Table::TYPE_BOOLEAN,
+                null,
+                ['nullable' => false, 'default' => true],
+                'Is Canned Response Active'
+            )->addIndex(
+                $installer->getIdxName(
+                    $installer->getTable('aw_rma_canned_response'),
+                    ['title'],
+                    AdapterInterface::INDEX_TYPE_FULLTEXT
+                ),
+                ['title'],
+                ['type' => AdapterInterface::INDEX_TYPE_FULLTEXT]
+            )->setComment('Canned Response');
+        $installer->getConnection()->createTable($table);
+
+        /**
+         * Create table 'aw_rma_canned_response_text'
+         */
+        $table = $installer->getConnection()
+            ->newTable($installer->getTable('aw_rma_canned_response_text'))
+            ->addColumn(
+                'response_id',
+                Table::TYPE_INTEGER,
+                null,
+                ['unsigned' => true, 'nullable' => false, 'primary' => true],
+                'Response ID'
+            )->addColumn(
+                'store_id',
+                Table::TYPE_SMALLINT,
+                null,
+                ['unsigned' => true, 'nullable' => false, 'primary' => true],
+                'Store ID'
+            )->addColumn(
+                'value',
+                Table::TYPE_TEXT,
+                '2M',
+                ['nullable' => false],
+                'Value'
+            )->addIndex(
+                $installer->getIdxName('aw_rma_canned_response_text', ['response_id']),
+                ['response_id']
+            )->addIndex(
+                $installer->getIdxName('aw_rma_canned_response_text', ['store_id']),
+                ['store_id']
+            )->addForeignKey(
+                $installer->getFkName('aw_rma_canned_response_text', 'response_id', 'aw_rma_canned_response', 'id'),
+                'response_id',
+                $installer->getTable('aw_rma_canned_response'),
+                'id',
+                Table::ACTION_CASCADE
+            )->addForeignKey(
+                $installer->getFkName('aw_rma_canned_response_text', 'store_id', 'store', 'store_id'),
+                'store_id',
+                $installer->getTable('store'),
+                'store_id',
+                Table::ACTION_CASCADE
+            )->setComment('AW Rma Canned Response Text Table');
+        $installer->getConnection()->createTable($table);
+        
         return $this;
     }
 }

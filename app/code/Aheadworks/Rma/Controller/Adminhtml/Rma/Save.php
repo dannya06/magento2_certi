@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Rma;
 
@@ -91,8 +91,8 @@ class Save extends Action
             try {
                 $data = $this->requestPostDataProcessor->prepareEntityData($data);
                 $requestEntity = $this->performSave($data);
-                $this->dataPersistor->clear('aw_rma_custom_field');
-                $this->messageManager->addSuccessMessage(__('Return has been successfully updated.'));
+                $this->dataPersistor->clear('aw_rma_request');
+                $this->messageManager->addSuccessMessage(__('Return has been successfully saved.'));
                 if ($this->getRequest()->getParam('back') == 'edit') {
                     return $resultRedirect->setPath('*/*/edit', ['id' => $requestEntity->getId()]);
                 }
@@ -102,7 +102,7 @@ class Save extends Action
             } catch (\RuntimeException $e) {
                 $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\Exception $e) {
-                $this->messageManager->addExceptionMessage($e, __('Something went wrong while updating the return.'));
+                $this->messageManager->addExceptionMessage($e, __('Something went wrong while saving the return.'));
             }
             $this->dataPersistor->set('aw_rma_request', $data);
             $id = isset($data['id']) ? $data['id'] : false;
@@ -119,6 +119,7 @@ class Save extends Action
      *
      * @param array $data
      * @return RmaRequestInterface
+     * @throws LocalizedException
      */
     private function performSave($data)
     {
@@ -129,6 +130,23 @@ class Save extends Action
             RmaRequestInterface::class
         );
 
-        return $this->requestManagement->updateRequest($requestObject, true);
+        if ($this->isUpdateRequest($data)) {
+            $request = $this->requestManagement->updateRequest($requestObject, true);
+        } else {
+            $request = $this->requestManagement->createRequest($requestObject, true);
+        }
+
+        return $request;
+    }
+
+    /**
+     * Check if update request
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function isUpdateRequest($data)
+    {
+        return isset($data['id']) && !empty($data['id']);
     }
 }

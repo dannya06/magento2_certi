@@ -8,7 +8,6 @@ $result = array(
     'error' => false
 );
 
-
 try {
     require $bootstrapPath;
 } catch (\Exception $e) {
@@ -27,38 +26,116 @@ HTML;
 $bootstrap = \Magento\Framework\App\Bootstrap::create(BP, $_SERVER);
 $objectManager = $bootstrap->getObjectManager();
 
-$cli = $objectManager->get('Magento\Framework\Console\Cli');
-$cli->setAutoExit(false);
+$result = ['error' => true, 'msg' => 'unknown error occurred!'];
+$directory = $objectManager->get('\Magento\Framework\Filesystem\DirectoryList');
+$appPath = $directory->getPath('app') . DIRECTORY_SEPARATOR;
+$codeDir = 'code';
+$codePath = $appPath . $codeDir . DIRECTORY_SEPARATOR;
 
+if (!file_exists($codePath)) {
+    $result['msg'] = 'Directory "' . $codeDir . '" does not exist under ' . $appPath;
 
-$applicationName = 'Pearl Installation';
-$commands = [
-    'cache:clean',
-    'setup:upgrade'
+    echo json_encode($result);
+    die;
+}
+
+$nameSpaces = ['WeltPixel', 'WeSupply'];
+$modulesList = 'Module(s):';
+$mandatory = [
+    'Backend',
+    'FrontendOptions',
+    'DesignElements',
+    'CustomHeader',
+    'CustomFooter',
+    'ProductPage',
+    'CategoryPage',
+    'Command',
+    'SampleData',
+    'LazyLoading',
+    'OwlCarouselSlider',
 ];
-
+$modules = [];
 $resultMsg = '';
 
 try {
-    foreach ($commands as $command) {
-        $input = new \Symfony\Component\Console\Input\ArgvInput(array(
-            $applicationName, $command
-        ));
+    $moduleManager = $objectManager->get('\Magento\Framework\Module\Manager');
+    $modulesListManager = $objectManager->get('\Magento\Framework\Module\FullModuleList');
+    $resourceInterface = $objectManager->get('\Magento\Framework\Module\ResourceInterface');
 
-        $output = new Symfony\Component\Console\Output\BufferedOutput();
-        $cli->run($input, $output);
+    $isNewCount = 0;
+    $modulesCount = 0;
+    foreach ($nameSpaces as $space) {
+        $spacePath = $codePath . $space;
+        if (file_exists($spacePath) && is_dir($spacePath)) {
+            $ignore = ['.', '..'];
+            $directories = scandir($spacePath);
 
-        $content = $output->fetch();
+            foreach ($directories as $module) {
+                if (in_array($module, $ignore)) {
+                    continue;
+                }
+                $modulePath = $spacePath . DIRECTORY_SEPARATOR . $module;
+                if (is_dir($modulePath)) {
 
-        $resultMsg .= str_replace(PHP_EOL, "<br/>", $content);
+                    $moduleName = $space . '_' . $module;
+
+                    $isNew = '0';
+                    if (
+                        $modulesListManager->has($moduleName) &&
+                        !$resourceInterface->getDataVersion($moduleName)
+                    ) {
+                        $isNew = '1';
+                        $isNewCount++;
+                    }
+
+                    $isActive = '0';
+                    if (
+                        $moduleManager->isOutputEnabled($moduleName) &&
+                        $moduleManager->isEnabled($moduleName)
+                    ) {
+                        $isActive = '1';
+                    }
+
+                    $modulesList .= ' ' . $space . '_' . $module . ',';
+                    $modules[$module] = [
+                        'isNew' => $isNew,
+                        'active' => $isActive,
+                        'selectable' => in_array($module, $mandatory) ? '1' : '0',
+                        'name' => $module,
+                        'value' => $moduleName
+                    ];
+                }
+                $modulesCount++;
+            }
+        }
     }
 
-    $result['msg'] = $resultMsg;
+    // move WeltPixel_Backend module at the top of array
+    if (array_key_exists('Backend', $modules)) {
+        $backend = $modules['Backend'];
+        unset($modules['Backend']);
+        $modules = array_values($modules);
+        array_unshift($modules, $backend);
+    }
+
+    if (!$modules) {
+        $result['msg'] = 'We couldn\'t find any module(s) uploaded under ' . $codePath;
+
+        echo json_encode($result);
+        die;
+    }
+
+    $allNew = $isNewCount == $modulesCount ? '1' : '0';
+
+    $result['error'] = false;
+    $result['msg'] = $modulesList;
+    $result['modules'] = $modules;
+    $result['allNew'] = $allNew;
+
 } catch (Exception $ex) {
     $result['msg'] = $ex->getMessage();
     $result['error'] = true;
 }
-
 
 echo json_encode($result);
 die;

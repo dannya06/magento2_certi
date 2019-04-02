@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Test\Unit\Model\Service;
 
@@ -34,6 +34,8 @@ use Magento\Sales\Api\Data\OrderStatusHistoryInterface;
 use Magento\Sales\Api\Data\OrderStatusHistoryInterfaceFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Aheadworks\Giftcard\Model\Import\GiftcardCode as ImportGiftcardCode;
+use Magento\Store\Model\StoreManagerInterface as StoreManager;
+use Magento\Store\Api\Data\StoreInterface;
 
 /**
  * Class GiftcardServiceTest
@@ -124,6 +126,11 @@ class GiftcardServiceTest extends \PHPUnit\Framework\TestCase
     private $importGiftcardCodeMock;
 
     /**
+     * StoreManager|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $storeManagerMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
@@ -132,6 +139,7 @@ class GiftcardServiceTest extends \PHPUnit\Framework\TestCase
     {
         $objectManager = new ObjectManager($this);
         $this->giftcardRepositoryMock = $this->getMockForAbstractClass(GiftcardRepositoryInterface::class);
+        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManager::class);
         $this->searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
             ->setMethods(['addFilter', 'create'])
             ->disableOriginalConstructor()
@@ -197,7 +205,8 @@ class GiftcardServiceTest extends \PHPUnit\Framework\TestCase
                 'orderStatusHistoryFactory' => $this->orderStatusHistoryFactoryMock,
                 'orderRepository' => $this->orderRepositoryMock,
                 'codeGenerator' => $this->codeGeneratorMock,
-                'importGiftcardCode' => $this->importGiftcardCodeMock
+                'importGiftcardCode' => $this->importGiftcardCodeMock,
+                'storeManager' => $this->storeManagerMock
             ]
         );
     }
@@ -301,6 +310,7 @@ class GiftcardServiceTest extends \PHPUnit\Framework\TestCase
         $storeId = 1;
         $customerEmail = 'email@gmail.com';
         $giftcardBalance = 10;
+        $websiteId = 1;
 
         $customerMock = $this->getMockForAbstractClass(CustomerInterface::class);
         $customerMock->expects($this->once())
@@ -309,6 +319,15 @@ class GiftcardServiceTest extends \PHPUnit\Framework\TestCase
         $this->customerSessionMock->expects($this->once())
             ->method('getCustomer')
             ->willReturn($customerMock);
+
+        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock->expects($this->once())
+            ->method('getWebsiteId')
+            ->willReturn($websiteId);
+        $this->storeManagerMock->expects($this->once())
+            ->method('getStore')
+            ->with($storeId)
+            ->willReturn($storeMock);
 
         $searchCriteriaMock = $this->getMockBuilder(SearchCriteria::class)
             ->setMethods([])
@@ -329,6 +348,10 @@ class GiftcardServiceTest extends \PHPUnit\Framework\TestCase
         $this->searchCriteriaBuilderMock->expects($this->at(3))
             ->method('addFilter')
             ->with(GiftcardInterface::EMAIL_SENT, [EmailStatus::SENT, EmailStatus::NOT_SEND], 'in')
+            ->willReturnSelf();
+        $this->searchCriteriaBuilderMock->expects($this->at(4))
+            ->method('addFilter')
+            ->with(GiftcardInterface::WEBSITE_ID, $websiteId)
             ->willReturnSelf();
         $this->searchCriteriaBuilderMock->expects($this->once())
             ->method('create')

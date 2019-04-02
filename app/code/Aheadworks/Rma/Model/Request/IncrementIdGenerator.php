@@ -1,11 +1,12 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request;
 
+use Aheadworks\Rma\Model\ResourceModel\Request;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -23,11 +24,20 @@ class IncrementIdGenerator
     private $connection;
 
     /**
-     * @param ResourceConnection $resourceConnection
+     * @var Request
      */
-    public function __construct(ResourceConnection $resourceConnection)
-    {
+    private $requestResource;
+
+    /**
+     * @param ResourceConnection $resourceConnection
+     * @param Request $requestResource
+     */
+    public function __construct(
+        ResourceConnection $resourceConnection,
+        Request $requestResource
+    ) {
         $this->connection = $resourceConnection->getConnection();
+        $this->requestResource = $requestResource;
     }
 
     /**
@@ -48,7 +58,8 @@ class IncrementIdGenerator
      */
     private function getNextIncrementId()
     {
-        $entityStatus = $this->connection->showTableStatus('aw_rma_request');
+        $tableName = $this->requestResource->getMainTable();
+        $entityStatus = $this->connection->showTableStatus($tableName);
         if (empty($entityStatus['Auto_increment'])) {
             throw new LocalizedException(__('Cannot get autoincrement value'));
         }

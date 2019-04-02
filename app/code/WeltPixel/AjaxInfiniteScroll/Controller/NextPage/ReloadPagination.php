@@ -9,6 +9,7 @@ use Magento\Framework\Json\Helper\Data;
 use Psr\Log\LoggerInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 
 
 class ReloadPagination extends \Magento\Framework\App\Action\Action
@@ -44,6 +45,7 @@ class ReloadPagination extends \Magento\Framework\App\Action\Action
      */
     protected $resultFactory;
 
+
     /**
      * ReloadPagination constructor.
      * @param Context $context
@@ -60,6 +62,8 @@ class ReloadPagination extends \Magento\Framework\App\Action\Action
         LoggerInterface $logger,
         CategoryRepositoryInterface $categoryRepository,
         StoreManagerInterface $storeManager
+
+
     ) {
         $this->_resultPageFactory = $resultPageFactory;
         $this->_jsonHelper = $jsonHelper;
@@ -67,8 +71,9 @@ class ReloadPagination extends \Magento\Framework\App\Action\Action
         $this->_logger = $logger;
         $this->_categoryRepository = $categoryRepository;
         $this->_storeManager = $storeManager;
-
         parent::__construct($context);
+
+
     }
 
     /**
@@ -87,16 +92,17 @@ class ReloadPagination extends \Magento\Framework\App\Action\Action
         }
 
         if ($isAjax) {
-            $category = $this->_categoryRepository->get($params['category_id'], $this->_storeManager->getStore()->getId());
-            if ($category) {
+            $filterParams = $this->_getUrlFilterParams($params['pager_url']);
+            $category = (isset($params['category_id']) && !empty($params['category_id'])) ? $this->_categoryRepository->get($params['category_id'], $this->_storeManager->getStore()->getId()) : false;
 
+            if ($category) {
                 $layout = $this->_resultPageFactory->create()->getLayout();
                 $productList = $layout->createBlock('Magento\Catalog\Block\Product\ListProduct');
 
-                $collection = $productList
-                    ->setCategoryId($category->getId())
-                    ->getLoadedProductCollection()
-                    ->setCurPage($params['p']);
+                $collection = $productList->setCategoryId($category->getId())
+                    ->injectAttributeFilters($filterParams)
+                    ->getLoadedProductCollection();
+                $collection = $collection->setCurPage($params['p']);
 
                 $pagerBlock = $layout
                     ->createBlock('Magento\Catalog\Block\Product\Widget\Html\Pager')
@@ -119,6 +125,7 @@ class ReloadPagination extends \Magento\Framework\App\Action\Action
                     'errors' => true
                 ];
             }
+
         }
 
         try {
@@ -129,6 +136,28 @@ class ReloadPagination extends \Magento\Framework\App\Action\Action
             $this->_logger->critical($e);
             return $this->jsonResponse($e->getMessage());
         }
+    }
+
+
+    /**
+     * @param $urlParam
+     * @return array
+     */
+    protected function _getUrlFilterParams($urlParam) {
+        $url = explode("?", $urlParam);
+        $urlParamArr = (isset($url[1])) ? explode("&", $url[1]) : false;
+        $params = [];
+        if(!$urlParamArr) {
+            return $params;
+        }
+        foreach($urlParamArr as $urlParam) {
+            $paramArr = explode('=', $urlParam);
+            $paramStrClean = urldecode($paramArr[1]);
+            if($paramArr[0] != 'q')
+                $params[$paramArr[0]] = explode(',', $paramStrClean);
+        }
+
+        return $params;
     }
 
     /**

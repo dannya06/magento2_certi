@@ -30,6 +30,7 @@ if ($enableSlider) {
 /** WeltPixel_GoogleTagManager */
 $currentProduct = $this->getProduct();
 $listValue = '';
+$slideBy = 1;
 $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
 ?>
 <?php
@@ -45,6 +46,7 @@ switch ($type = $block->getType()) {
             $title = ($sliderConfiguration['title']) ? $sliderConfiguration['title'] : __('Related Products');
             $items = $block->getAllItems();
             $limit = $block->getPositionLimit();
+            $slideBy = $sliderConfiguration['slide_by'];
             $shuffle = (int) $block->isShuffled();
             $canItemsAddToCart = $block->canItemsAddToCart();
 
@@ -69,6 +71,7 @@ switch ($type = $block->getType()) {
             $limit = 0;
             $shuffle = 0;
             $canItemsAddToCart = $block->canItemsAddToCart();
+            $slideBy = $sliderConfiguration['slide_by'];
 
             $showWishlist = $displaySocial['display_wishlist'];
             $showCompare = $displaySocial['display_compare'];
@@ -89,7 +92,7 @@ switch ($type = $block->getType()) {
             $items = $block->getAllItems();
             $limit = $block->getPositionLimit();
             $shuffle = (int) $block->isShuffled();
-
+            $slideBy = $sliderConfiguration['slide_by'];
             $showWishlist = $displaySocial['display_wishlist'];
             $showCompare = $displaySocial['display_compare'];
             $showCart = false;
@@ -111,7 +114,7 @@ switch ($type = $block->getType()) {
             $items = $block->getItemCollection()->getItems();
             $limit = $block->getItemLimit('upsell');
             $shuffle = 0;
-
+            $slideBy = $sliderConfiguration['slide_by'];
             $showWishlist = $displaySocial['display_wishlist'];
             $showCompare = $displaySocial['display_compare'];
             $showCart = false;
@@ -131,7 +134,7 @@ switch ($type = $block->getType()) {
             $image = 'cart_cross_sell_products';
             $title = ($sliderConfiguration['title']) ? $sliderConfiguration['title'] : __('More Choices:');
             $items = $block->getItemCollection();
-
+            $slideBy = $sliderConfiguration['slide_by'];
             $showWishlist = $displaySocial['display_wishlist'];
             $showCompare = $displaySocial['display_compare'];
             $showCart = true;
@@ -151,7 +154,7 @@ switch ($type = $block->getType()) {
             $image = 'cart_cross_sell_products';
             $title = ($sliderConfiguration['title']) ? $sliderConfiguration['title'] : __('More Choices:');
             $items = $block->getItems();
-
+            $slideBy = $sliderConfiguration['slide_by'];
             $showWishlist = $displaySocial['display_wishlist'];
             $showCompare = $displaySocial['display_compare'];
             $showCart = true;
@@ -173,7 +176,7 @@ switch ($type = $block->getType()) {
             $image = 'new_products_content_widget_grid';
             $title = ($sliderConfiguration['title']) ? $sliderConfiguration['title'] : __('New Products');
             $items = $exist;
-
+            $slideBy = $sliderConfiguration['slide_by'];
             $showWishlist = $displaySocial['display_wishlist'];
             $showCompare = $displaySocial['display_compare'];
             $showCart = true;
@@ -227,6 +230,7 @@ switch ($type = $block->getType()) {
 	                autoplayTimeout     :(slider_config.autoplayTimeout > 0 && slider_config.autoplayTimeout != null) ? parseInt(slider_config.autoplayTimeout) : 3000,
 	                autoplayHoverPause  :parseInt(slider_config.autoplayHoverPause) == 1 ? true : false,
 	                autoHeight          :false,
+                    slideBy             :'<?php echo $slideBy ?>',
 
 
 	                responsive:{
@@ -359,7 +363,7 @@ switch ($type = $block->getType()) {
 
                             <div class="product-item-info <?php /* @escapeNotVerified */ echo $available; ?>">
                                 <?php /* @escapeNotVerified */ echo '<!-- ' . $image . '-->' ?>
-                                <a <?php if ($gtmHelper->isEnabled()) :
+                                <a <?php if ($gtmHelper->isProductClickTrackingEnabled()) :
                                         echo $this->helper('WeltPixel\GoogleTagManager\Helper\Data')->addProductClick($_item, $iterator-1, $listValue);
                                     endif; ?>
                                         href="<?php /* @escapeNotVerified */ echo $block->getProductUrl($_item) ?>" class="product photo product-item-photo">
@@ -444,13 +448,26 @@ switch ($type = $block->getType()) {
                         <?php endforeach ?>
                     </ol>
                     <?php if($enableSlider) : ?>
-					<div id="pre-div">
-						<div class="cssload-loader">
-							<div class="cssload-inner cssload-one"></div>
-							<div class="cssload-inner cssload-two"></div>
-							<div class="cssload-inner cssload-three"></div>
-						</div>
-					</div>
+                    <div id="pre-div">
+                        <?php $loaderHelper = $this->helper('WeltPixel\OwlCarouselSlider\Helper\ImageLoader'); ?>
+                        <?php if ($loaderHelper->useDefaultLoader() ) : ?>
+                            <div class="cssload-loader">
+                                <div class="cssload-inner cssload-one"></div>
+                                <div class="cssload-inner cssload-two"></div>
+                                <div class="cssload-inner cssload-three"></div>
+                            </div>
+                        <?php else : ?>
+                            <table class="imageloader-loader">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="<?= $loaderHelper->getLoadingImageUrl() ?>" />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
+                    </div>
 					<?php endif; ?>
                 </div>
             </div>

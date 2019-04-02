@@ -29,6 +29,7 @@ Delete,Delete
 "Are you sure you wan't to delete a ""${ $.$data.url }"" record?","Are you sure you wan't to delete a ""${ $.$data.url }"" record?"
 "All Store Views","All Store Views"
 "You can edit visibility in sitemap for each Product / Category / CMS Page. Go to desired element -> Edit -> WeltPixel Options -> Visibility in Sitemap [ Yes / No ]","You can edit visibility in sitemap for each Product / Category / CMS Page. Go to desired element -> Edit -> WeltPixel Options -> Visibility in Sitemap [ Yes / No ]"
+"Sitemap Settings","Sitemap Settings"
 "WeltPixel Options","WeltPixel Options"
 "Exclude from Sitemap","Exclude from Sitemap"
 "Url Information","Url Information"

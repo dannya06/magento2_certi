@@ -1,6 +1,7 @@
 <?php
 $dataHelper = $this->helper("Ves\Megamenu\Helper\Data");
 $editor     = $this->helper("Ves\Megamenu\Helper\Editor");
+$enable_admin_ajax = $dataHelper->getConfig("general_settings/enable_admin_ajax");
 $menu       = $block->getMenu();
 $structure  = json_decode($menu->getStructure(), true);
 $menuItems  = $menu->getData('menuItems');
@@ -16,11 +17,15 @@ if (is_array($structure)) {
 $mediaUrl = $block->getMediaUrl();
 $html     = json_encode($items);
 $icons    = $block->getIcons();
+$store_categories = [];
+if(!$enable_admin_ajax) {
+    $store_categories = $block->getStoreCategories();
+}
 $options  = [
 'items'                 => $items,
 'fields'                => $dataHelper->jsQuoteEscape($fields),
 'editor'                => json_encode($editor->getWysiwygConfig()),
-'storeCategories'       => $block->getStoreCategories(),
+'storeCategories'       => $store_categories,
 'icons'                 => $icons,
 'ajaxSaveItemUrl'       => $block->getAjaxSaveItemUrl(),
 'ajaxSaveMenuUrl'       => $block->getAjaxSaveMenuUrl(),
@@ -49,11 +54,11 @@ if ($design) {
         </div>
 
         <div class="menu_type">
-            <button type="button" data-bind="event: { click: setMenuType('horizontal') }, css: { _active: 'horizontal' == modeClass() }">
-                <?php echo __('Horizontal'); ?>
-            </button>
             <button type="button" class="_active" data-bind="event: { click: setMenuType('vertical') }, css: { _active: 'vertical' == modeClass() }">
                 <?php echo __('Vertical'); ?>
+            </button>
+            <button type="button" data-bind="event: { click: setMenuType('horizontal') }, css: { _active: 'horizontal' == modeClass() }">
+                <?php echo __('Horizontal'); ?>
             </button>
         </div>
     </div>
@@ -167,8 +172,12 @@ if ($design) {
         <fieldset class="fieldset admin__fieldset ">
             <div class="admin__field field " data-ui-id="import-wordress-form-fieldset-element-form-field-import-categories">
                 <label class="label admin__field-label" for="blogimport_import_categories" data-ui-id="import-wordress-form-fieldset-element-select-import-categories-label"><span><?php echo __('Category'); ?></span></label>
-                <div class="admin__field-control control">
-                    <?php echo $editor->getCategoriesHtml() ?>
+                <div class="admin__field-control control" id="loadStoreCategories">
+                    <?php 
+                    if(!$enable_admin_ajax) { 
+                        echo $editor->getCategoriesHtml();
+                    }
+                    ?>
                 </div>
             </div>
         </fieldset>
@@ -413,10 +422,15 @@ if ($design) {
     </li>
 </script>
 <script>
+    <?php if($enable_admin_ajax) { ?>
+    var store_categories = [];
+    var _list_category_options = '';
+    var _tree_categories_html = '';
+    var ajax_load_categories = "<?php echo $this->getUrl("vesmegamenu/menu/ajaxGetCategories"); ?>";
+    <?php } ?>
     window.megamenu = <?php echo \Zend_Json::encode($options); ?>;
 </script>
 <script>
-    
     require(['jquery'], function($) {
         jQuery(document).ready(function($) {
             $("body").append("<div class='ves-notify'></div>");
@@ -450,6 +464,30 @@ if ($design) {
                     $('.font_google, .font_char_subset').hide();
                 }
             }).change();
+            <?php if($enable_admin_ajax) { ?>
+            $.ajax({
+                url: ajax_load_categories,
+                method: "GET",
+                cache: true,
+                dataType: 'json',
+                beforeSend: function(){
+                    $(".ves-spinner").show();
+                    console.log("\n - Before send ajax load categories...");
+                },
+                success: function(dataResponse){
+                    store_categories = window.megamenu.storeCategories = dataResponse.store_categories;
+                    _tree_categories_html = '<select data-bind="value: loadcategory">';
+                    _tree_categories_html += dataResponse.tree_html;
+                    _tree_categories_html += '</select>';
+                    _list_category_options = dataResponse.tree_html;
+                    $("#loadStoreCategories").html(_tree_categories_html);
+                    $("#option-category").html(_list_category_options);
+                    $("#option-parentcat").html(_list_category_options);
+                    $(".ves-spinner").hide();
+                    console.log("\n - Completely ajax load categories...");
+                }
+            });
+            <?php } ?>
         });
     });
 </script>

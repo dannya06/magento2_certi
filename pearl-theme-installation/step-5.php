@@ -32,44 +32,9 @@ if (!isset($_POST['storeCode'])) {
     die;
 }
 
-if (!isset($_POST['homePage'])) {
+if (!isset($_POST['demoVersion'])) {
     $result['error'] = true;
-    $result['msg'] = 'Please specify the Home Page version!';
-    echo json_encode($result);
-    die;
-}
-
-if (!isset($_POST['header'])) {
-    $result['error'] = true;
-    $result['msg'] = 'Please specify the Header version!';
-    echo json_encode($result);
-    die;
-}
-
-if (!isset($_POST['categoryColumns'])) {
-    $result['error'] = true;
-    $result['msg'] = 'Please specify the Category Page columns!';
-    echo json_encode($result);
-    die;
-}
-
-if (!isset($_POST['productVersion'])) {
-    $result['error'] = true;
-    $result['msg'] = 'Please specify the Product Page version!';
-    echo json_encode($result);
-    die;
-}
-
-if (!isset($_POST['preFooter'])) {
-    $result['error'] = true;
-    $result['msg'] = 'Please specify if enable Pre-footer or not!';
-    echo json_encode($result);
-    die;
-}
-
-if (!isset($_POST['footer'])) {
-    $result['error'] = true;
-    $result['msg'] = 'Please specify the Footer version!';
+    $result['msg'] = 'Please specify the demo version!';
     echo json_encode($result);
     die;
 }
@@ -82,15 +47,11 @@ $cli->setAutoExit(false);
 
 $applicationName = 'Pearl Installation';
 $commands = [
-    'weltpixel:theme:configurator' => [
+    'weltpixel:import:demo' => [
         '--store='.$_POST['storeCode'],
-        '--homePage='.$_POST['homePage'],
-        '--header='.$_POST['header'],
-        '--categoryPage='.$_POST['categoryColumns'],
-        '--productPage='.$_POST['productVersion'],
-        '--preFooter='.$_POST['preFooter'],
-        '--footer='.$_POST['footer'],
+        '--demoVersion='.$_POST['demoVersion']
     ],
+    'weltpixel:less:generate' => [],
     'cache:clean' => []
 ];
 

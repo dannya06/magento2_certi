@@ -4,9 +4,9 @@
         <plugin name="weltpixel-categorypage-head"
                 type="WeltPixel\CategoryPage\Plugin\Head" sortOrder="1"/>
     </type>
-    <type name="Magento\Framework\Config\View">
-        <plugin name="weltpixel-categorypage-config-view"
-                type="WeltPixel\CategoryPage\Plugin\ConfigView" sortOrder="10"/>
+    <type name="Magento\Swatches\Helper\Media">
+        <plugin name="weltpixel-categorypage-swatches-media"
+                type="WeltPixel\CategoryPage\Plugin\SwatchesMedia" sortOrder="10"/>
     </type>
-    <preference for="Magento\Catalog\Block\Product\ImageBuilder" type="WeltPixel\CategoryPage\Block\Product\ImageBuilder" />
+    <preference for="Magento\Catalog\Block\Product\ImageFactory" type="WeltPixel\CategoryPage\Block\Product\ImageFactory" />
 </config>

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request\Order;
 
@@ -163,7 +163,9 @@ class Item
                     $max += $childrenMax;
                 }
             } else {
-                $max = $item->getQtyInvoiced() - $item->getQtyRefunded();
+                $max = $excludeRequestId
+                    ? $item->getQtyInvoiced()
+                    : $item->getQtyInvoiced() - $item->getQtyRefunded();
                 $requestItems = $this->getAllRequestItems($item->getOrderId(), $excludeRequestId);
                 foreach ($requestItems as $requestItem) {
                     if ($requestItem->getItemId() == $item->getId()) {
@@ -219,7 +221,8 @@ class Item
      */
     private function getAllRequestItems($orderId, $excludeRequestId = false)
     {
-        if (!isset($this->requestsItemsByOrderId[$orderId])) {
+        $cacheKey = implode('-', [$orderId, (int)$excludeRequestId]);
+        if (!isset($this->requestsItemsByOrderId[$cacheKey])) {
             $this->searchCriteriaBuilder->addFilter(RequestInterface::ORDER_ID, $orderId);
             if ($excludeRequestId) {
                 $this->searchCriteriaBuilder->addFilter(RequestInterface::ID, $excludeRequestId, 'nin');
@@ -230,10 +233,10 @@ class Item
             foreach ($requestItems as $requestItem) {
                 $requestOrderItems = array_merge($requestOrderItems, $requestItem->getOrderItems());
             }
-            $this->requestsItemsByOrderId[$orderId] = $requestOrderItems;
+            $this->requestsItemsByOrderId[$cacheKey] = $requestOrderItems;
         }
 
-        return $this->requestsItemsByOrderId[$orderId];
+        return $this->requestsItemsByOrderId[$cacheKey];
     }
 
     /**

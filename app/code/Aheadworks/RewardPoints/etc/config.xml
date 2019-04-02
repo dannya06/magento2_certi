@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -31,6 +31,9 @@
                 <social_button_style></social_button_style>
                 <is_display_invitation_to_newsletter>1</is_display_invitation_to_newsletter>
                 <is_display_invitation_to_register>1</is_display_invitation_to_register>
+                <category_product_promo_text>Get extra points!</category_product_promo_text>
+                <product_promo_text_registered><![CDATA[<p>Buy this product and get <strong>%X</strong> point(s)!</p>]]></product_promo_text_registered>
+                <product_promo_text_not_logged_in><![CDATA[<p>Get up to <strong>%X</strong> point(s) for purchase! Login to see an actual value.</p>]]></product_promo_text_not_logged_in>
             </frontend>
             <notifications>
                 <is_subscribe_customers_to_notifications_by_default>1</is_subscribe_customers_to_notifications_by_default>

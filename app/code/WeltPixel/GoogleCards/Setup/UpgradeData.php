@@ -35,22 +35,13 @@ class UpgradeData implements UpgradeDataInterface
     )
     {
         if (version_compare($context->getVersion(), "1.0.5", "<")) {
-            $group = 'General';
             $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
             if (!$eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'item_condition')) {
-
-
-                $entityTypeId = $eavSetup->getEntityTypeId('catalog_product');
-                $attributeSetId = $eavSetup->getDefaultAttributeSetId($entityTypeId);
-                $eavSetup->addAttributeGroup($entityTypeId, $attributeSetId, $group, 10);
-                $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
                 $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'item_condition');
-
                 $eavSetup->addAttribute(
                     \Magento\Catalog\Model\Product::ENTITY,
                     'item_condition',
                     [
-                        'group' => $group,
                         'type' => 'varchar',
                         'backend' => '',
                         'frontend' => '',

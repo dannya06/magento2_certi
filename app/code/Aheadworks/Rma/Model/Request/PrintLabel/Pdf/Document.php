@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request\PrintLabel\Pdf;
 
@@ -124,10 +124,22 @@ class Document
         $x = self::X_OFFSET + $addToX;
         $text = wordwrap($text, $blockLen, '\n');
         $lines = explode('\n', $text);
+        $fullCountOfLines = count($lines);
         foreach ($lines as $line) {
-            $this->page->drawText($line, $x, $this->y, $charset);
-            if (++$count < count($lines)) {
-                $this->deltaY($yStep);
+            if (strlen($line) > $blockLen) {
+                $lineParts = str_split($line, $blockLen);
+                $fullCountOfLines += count($lineParts);
+                foreach ($lineParts as $linePart) {
+                    $this->page->drawText($linePart, $x, $this->y, $charset);
+                    if ($count++ < count($lineParts)) {
+                        $this->deltaY($yStep);
+                    }
+                }
+            } else {
+                $this->page->drawText($line, $x, $this->y, $charset);
+                if (++$count < $fullCountOfLines) {
+                    $this->deltaY($yStep);
+                }
             }
         }
 

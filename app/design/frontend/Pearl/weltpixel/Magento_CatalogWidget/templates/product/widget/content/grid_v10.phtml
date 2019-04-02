@@ -56,11 +56,6 @@
                                 <?php
                                 echo $block->getProductPriceHtml($_item, $type);
                                 ?>
-
-                                <?php if ($templateType): ?>
-                                    <?php echo $block->getReviewsSummaryHtml($_item, $templateType) ?>
-                                <?php endif; ?>
-
                             </div>
                         </div>
                         <?php echo($iterator == count($items)+1) ? '</li>' : '' ?>

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Service;
 
@@ -111,6 +111,7 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
                     'isTodayDate',
                     'getTodayDate',
                     'getExpirationDate',
+                    'isNextMonthDate'
                 ]
             )
             ->getMock();
@@ -517,6 +518,11 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getTodayDate')
             ->willReturn($today);
 
+        $this->dateTimeMock->expects($this->any())
+            ->method('isTodayDate')
+            ->with(null)
+            ->willReturn(false);
+
         $this->pointsSummaryMock->expects($this->once())
             ->method('setDailyReviewPoints')
             ->with(0)
@@ -538,6 +544,7 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
      */
     private function expectedSetupPointsSummaryExistsCustomer($customerId, $summaryId, $oldPoints, $newPoints)
     {
+        $nextMonthDate = '2018-11-16';
         $storeMock = $this->getMockBuilder(StoreInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getWebsiteId'])
@@ -558,6 +565,10 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
         $this->pointsSummaryMock->expects($this->once())
             ->method('getSummaryId')
             ->willReturn($summaryId);
+
+        $this->pointsSummaryMock->expects($this->once())
+            ->method('getMonthlySharePointsDate')
+            ->willReturn($nextMonthDate);
 
         $this->dateTimeMock->expects($this->any())
             ->method('isTodayDate')

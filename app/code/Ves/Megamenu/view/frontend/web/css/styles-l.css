@@ -749,14 +749,14 @@ print {
         margin: 0 5px 0 0;
         position: relative
     }
-    .ves-megamenu .navigation .level0>a {
+    .ves-megamenu .navigation .level0>a,.ves-megamenu .navigation .content-type-parentcart .level1>a {
         font-size: 16px;
         text-transform: uppercase;
         display: block;
         padding: 0 15px;
         font-weight: 600
     }
-    .ves-megamenu .navigation .level0>a .cat-label {
+    .ves-megamenu .navigation .level0>a .cat-label,.ves-megamenu .navigation .content-type-parentcart .level1>a .cat-label {
         position: absolute;
         top: -10px;
         right: 0;
@@ -764,14 +764,13 @@ print {
         font-size: 14px;
         line-height: 22px
     }
-    .ves-megamenu .navigation .level0>a>span {
+    .ves-megamenu .navigation .level0>a>span,.ves-megamenu .navigation .content-type-parentcart .level1>a>span {
         position: relative;
         display: inline-block;
-        *display: inline;
         zoom: 1
     }
     .ves-megamenu .navigation .level0>a>span.drill-opener,
-    .ves-megamenu .navigation .level0>a>span.opener {
+    .ves-megamenu .navigation .level0>a>span.opener,.ves-megamenu .navigation .content-type-parentcart .level1>a>span.opener,,.ves-megamenu .navigation .content-type-parentcart .level1>a>span.drill-opener {
         display: none
     }
     .ves-megamenu .navigation .level0.current>a {
@@ -1378,10 +1377,12 @@ print {
         z-index: 99
     }
     .ves-megamenu .navigation .level0.vertical-item>.submenu {
-        display: block !important;
         padding: 0;
         -webkit-box-shadow: 4px 2px 6px rgba(0, 0, 0, 0.2);
         box-shadow: 4px 2px 6px rgba(0, 0, 0, 0.2)
+    }
+    .ves-megamenu.alway-show .navigation .level0.vertical-item>.submenu {
+        display: block !important;
     }
     .ves-megamenu .navigation .level0.vertical-item>.submenu>.submenu-inner {
         padding: 0
@@ -1504,5 +1505,7 @@ print {
     .navigation ul {
         padding: 0 8px
     }
-   
+    .ves-megamenu ul.ui-menu.ui-widget.ui-widget-content.ui-corner-all {
+        display: block!important;
+    }
 }

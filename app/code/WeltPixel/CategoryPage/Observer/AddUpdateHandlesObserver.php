@@ -77,25 +77,27 @@ class AddUpdateHandlesObserver implements ObserverInterface
             $layout->getUpdate()->addHandle('weltpixel_categorypage_removeswatch');
         }
 
+        $categoryData = [];
         if ($this->registry->registry('current_category')) {
             $categoryData = $this->registry->registry('current_category')->getData();
-            $hideTitle = isset($categoryData['weltpixel_hide_title']) ? $categoryData['weltpixel_hide_title'] : 0;
-            $hideBreadcrumbs = isset($categoryData['weltpixel_hide_breadcrumbs']) ? $categoryData['weltpixel_hide_breadcrumbs'] : '0';
-    
-            if ($hideTitle) {
-                $layout->getUpdate()->addHandle('weltpixel_categorypage_removetitle');
+        }
+
+        $hideTitle = isset($categoryData['weltpixel_hide_title']) ? $categoryData['weltpixel_hide_title'] : 0;
+        $hideBreadcrumbs = isset($categoryData['weltpixel_hide_breadcrumbs']) ? $categoryData['weltpixel_hide_breadcrumbs'] : '0';
+
+        if ($hideTitle) {
+            $layout->getUpdate()->addHandle('weltpixel_categorypage_removetitle');
+        }
+        if ($displayBreadcrumbs || $hideBreadcrumbs) {
+            $layout->getUpdate()->addHandle('weltpixel_categorypage_removebreadcrumb');
+            $title = [];
+            $path = $this->catalogData->getBreadcrumbPath();
+
+            foreach ($path as $name => $breadcrumb) {
+                $title[] = $breadcrumb['label'];
             }
-            if ($displayBreadcrumbs || $hideBreadcrumbs) {
-                $layout->getUpdate()->addHandle('weltpixel_categorypage_removebreadcrumb');
-                $title = [];
-                $path = $this->catalogData->getBreadcrumbPath();
-    
-                foreach ($path as $name => $breadcrumb) {
-                    $title[] = $breadcrumb['label'];
-                }
-    
-                $this->pageConfig->getTitle()->set(join($this->getTitleSeparator(), array_reverse($title)));
-            }
+
+            $this->pageConfig->getTitle()->set(join($this->getTitleSeparator(), array_reverse($title)));
         }
 
         return $this;

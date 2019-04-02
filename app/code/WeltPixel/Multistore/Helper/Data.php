@@ -84,7 +84,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $image = $this->getStoreImage($storeId);
 
         if ($image) {
-            $imagePath = '/weltpixel/multistore/logo/' . $image;
+            $imagePath = 'weltpixel/multistore/logo/' . $image;
             $imageUrl = $this->_currentStore->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
             return $imageUrl . $imagePath;
         } else {
@@ -100,7 +100,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $image = $this->getStoreInactiveImage($storeId);
 
         if ($image) {
-            $imagePath = '/weltpixel/multistore/logo_inactive/' . $image;
+            $imagePath = 'weltpixel/multistore/logo_inactive/' . $image;
             $imageUrl = $this->_currentStore->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
 
             return $imageUrl . $imagePath;
@@ -118,6 +118,36 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             return $this->scopeConfig->getValue('weltpixel_multistore/general/one_row', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
         } else {
             return $this->_multistoreOptions['general']['one_row'];
+        }
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getBarBgColor($storeId = 0) {
+        if(!$this->displayInOneRow()){
+            return false;
+        }
+        if ($storeId) {
+            return $this->scopeConfig->getValue('weltpixel_multistore/general/bar_bg_color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_multistoreOptions['general']['bar_bg_color'];
+        }
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getBarWidth($storeId = 0) {
+        if(!$this->displayInOneRow()){
+            return false;
+        }
+        if ($storeId) {
+            return $this->scopeConfig->getValue('weltpixel_multistore/general/bar_width', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_multistoreOptions['general']['bar_width'];
         }
     }
 
@@ -157,7 +187,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $imgHeight = $this->_multistoreOptions['general']['img_height'];
         }
 
-        $imgHeight = ($imgHeight) ? $imgHeight : '40px';
+        $imgHeight = ($imgHeight) ? $imgHeight : '39px';
 
         return $imgHeight;
     }

@@ -1,16 +1,13 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button;
 
-use Aheadworks\Rma\Api\RequestRepositoryInterface;
 use Aheadworks\Rma\Model\Source\Request\Status;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
-use Aheadworks\Rma\Model\Request\Resolver\Status as StatusResolver;
-use Magento\Backend\Block\Widget\Context;
 use Magento\Ui\Component\Control\Container;
 
 /**
@@ -18,38 +15,8 @@ use Magento\Ui\Component\Control\Container;
  *
  * @package Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button
  */
-class Save implements ButtonProviderInterface
+class Save extends ButtonAbstract implements ButtonProviderInterface
 {
-    /**
-     * @var Context
-     */
-    private $context;
-
-    /**
-     * @var RequestRepositoryInterface
-     */
-    private $requestRepository;
-
-    /**
-     * @var StatusResolver
-     */
-    private $statusResolver;
-
-    /**
-     * @param Context $context
-     * @param RequestRepositoryInterface $requestRepository
-     * @param StatusResolver $statusResolver
-     */
-    public function __construct(
-        Context $context,
-        RequestRepositoryInterface $requestRepository,
-        StatusResolver $statusResolver
-    ) {
-        $this->context = $context;
-        $this->requestRepository = $requestRepository;
-        $this->statusResolver = $statusResolver;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -90,56 +57,31 @@ class Save implements ButtonProviderInterface
      */
     private function getButton($action)
     {
-        if (!$this->statusResolver->isAvailableActionForStatus($action['action'], $this->getRmaRequest(), true)) {
-            return [];
+        if ($this->isAvailableAction($action['action'])) {
+            return [
+                'label'          => __($action['label']),
+                'class'          => 'save primary',
+                'data_attribute' => $action['data_attribute'],
+                'sort_order'     => $action['sort_order']
+            ];
         }
 
-        return [
-            'label'          => __($action['label']),
-            'class'          => 'save primary',
-            'data_attribute' => [
-                'mage-init'  => [
-                    'buttonAdapter' => [
-                        'actions' => [
-                            [
-                                'targetName' => 'aw_rma_request_form.aw_rma_request_form',
-                                'actionName' => 'save',
-                                'params' => [
-                                    true,
-                                    array_merge($action['params'], ['back' => 'edit'])
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-            ],
-            'sort_order'     => $action['sort_order']
-        ];
+        return [];
     }
 
     /**
-     * Sort buttons by sort order
+     * Check is available action
      *
-     * @param array $itemA
-     * @param array $itemB
-     * @return int
+     * @param string $action
+     * @return bool
      */
-    public function sortButtons(array $itemA, array $itemB)
+    protected function isAvailableAction($action)
     {
-        $sortOrderA = isset($itemA['sort_order']) ? intval($itemA['sort_order']) : 0;
-        $sortOrderB = isset($itemB['sort_order']) ? intval($itemB['sort_order']) : 0;
+        if (null === $this->getRmaRequest()) {
+            return $action == 'save';
+        }
 
-        return $sortOrderA - $sortOrderB;
-    }
-
-    /**
-     * Retrieve RMA request
-     *
-     * @return \Aheadworks\Rma\Api\Data\RequestInterface
-     */
-    private function getRmaRequest()
-    {
-        return $this->requestRepository->get($this->context->getRequest()->getParam('id'));
+        return parent::isAvailableAction($action);
     }
 
     /**
@@ -153,39 +95,67 @@ class Save implements ButtonProviderInterface
             [
                 'action' => 'approve',
                 'label' => 'Approve',
-                'params' => ['status_id' => Status::APPROVED],
+                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::APPROVED]),
                 'sort_order' => 80
             ],
             [
                 'action' => 'package_received',
                 'label' => 'Confirm Package Receiving',
-                'params' => ['status_id' => Status::PACKAGE_RECEIVED],
+                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::PACKAGE_RECEIVED]),
                 'sort_order' => 80
             ],
             [
                 'action' => 'issue_refund',
                 'label' => 'Issue Refund',
-                'params' => ['status_id' => Status::ISSUE_REFUND],
+                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::ISSUE_REFUND]),
                 'sort_order' => 80
             ],
             [
                 'action' => 'close',
                 'label' => 'Close',
-                'params' => ['status_id' => Status::CLOSED],
+                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::CLOSED]),
                 'sort_order' => 85
             ],
             [
                 'action' => 'cancel',
                 'label' => 'Cancel',
-                'params' => ['status_id' => Status::CANCELED],
+                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::CANCELED]),
                 'sort_order' => 90
             ],
             [
-                'action' => 'update',
+                'action' => 'save',
                 'label' => 'Save',
-                'params' => ['back' => 'edit'],
+                'data_attribute' => ['mage-init' => [], 'form-role' => 'save'],
                 'sort_order' => 100
             ],
         ];
+    }
+
+    /**
+     * Prepare data attribute
+     *
+     * @param array $params
+     * @return array
+     */
+    private function prepareDataAttribute($params)
+    {
+        $dataAttribute = [
+            'mage-init'  => [
+                'buttonAdapter' => [
+                    'actions' => [
+                        [
+                            'targetName' => 'aw_rma_request_form.aw_rma_request_form',
+                            'actionName' => 'save',
+                            'params' => [
+                                true,
+                                array_merge($params, ['back' => 'edit'])
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+        ];
+
+        return $dataAttribute;
     }
 }

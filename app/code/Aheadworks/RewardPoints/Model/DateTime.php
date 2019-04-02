@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model;
 
@@ -80,27 +80,20 @@ class DateTime
     }
 
     /**
-     * Is current month now
+     * Is the following month now
      *
      * @param string $date
      * @return boolean
      */
-    public function isCurrentMonthDate($date)
+    public function isNextMonthDate($date)
     {
         if ($date == null) {
             return false;
         }
-        return $this->getMonthDate() == $this->date($date)->format(self::DATETIME_PHP_MONTH);
-    }
-
-    /**
-     * Retrieve current month
-     *
-     * @return string
-     */
-    public function getMonthDate()
-    {
-        return $this->date()->format(self::DATETIME_PHP_MONTH);
+        $currentDate = $this->date();
+        $monthlySharePointsDate = $this->date($date);
+        $diffInMonths = (int) $monthlySharePointsDate->diff($currentDate)->format('%m');
+        return $diffInMonths > 0 ? : false;
     }
 
     /**

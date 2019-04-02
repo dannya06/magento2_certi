@@ -6,6 +6,7 @@
 
 namespace Aheadworks\Blog\Model\ResourceModel\Post;
 
+use Aheadworks\Blog\Api\Data\PostInterface;
 use Aheadworks\Blog\Model\Post;
 use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
 use Aheadworks\Blog\Model\Source\Post\CustomerGroups;
@@ -19,6 +20,8 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\DB\Select;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Framework\EntityManager\MetadataPool;
+use Aheadworks\Blog\Model\ResourceModel\Indexer\ProductPost as ResourceProductPost;
+use Aheadworks\Blog\Model\ResourceModel\Tag as ResourceTag;
 
 /**
  * Class Collection
@@ -94,13 +97,26 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
      */
     protected function _afterLoad()
     {
-        $this->attachStores('aw_blog_post_store', 'id', 'post_id');
+        $this->attachStores(ResourcePost::BLOG_POST_STORE_TABLE, 'id', 'post_id');
         $this->attachCategories();
         $this->attachTagNames();
         if ($this->getFlag(self::IS_NEED_TO_ATTACH_RELATED_PRODUCT_IDS)) {
             $this->attachRelatedProductIds();
         }
         return parent::_afterLoad();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addFieldToFilter($field, $condition = null)
+    {
+        if ($field == PostInterface::CATEGORY_IDS
+            || (is_array($field) && in_array(PostInterface::CATEGORY_IDS, $field))
+        ) {
+            return $this->addCategoryFilter($condition);
+        }
+        return parent::addFieldToFilter($field, $condition);
     }
 
     /**
@@ -170,7 +186,7 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
      */
     protected function _renderFiltersBefore()
     {
-        $this->joinStoreLinkageTable('aw_blog_post_store', 'id', 'post_id');
+        $this->joinStoreLinkageTable(ResourcePost::BLOG_POST_STORE_TABLE, 'id', 'post_id');
         $this->joinCategoryLinkageTable();
         $this->joinTagLinkageTable();
         $this->joinRelatedProductLinkageTable();
@@ -187,7 +203,7 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
         if ($this->getFilter('category_id')) {
             $select = $this->getSelect();
             $select->joinLeft(
-                ['category_linkage_table' => $this->getTable('aw_blog_post_category')],
+                ['category_linkage_table' => $this->getTable(ResourcePost::BLOG_POST_CATEGORY_TABLE)],
                 'main_table.id = category_linkage_table.post_id',
                 []
             )
@@ -205,7 +221,7 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
         if ($this->getFilter('tag_id')) {
             $select = $this->getSelect();
             $select->joinLeft(
-                ['tag_linkage_table' => $this->getTable('aw_blog_post_tag')],
+                ['tag_linkage_table' => $this->getTable(ResourcePost::BLOG_POST_TAG_TABLE)],
                 'main_table.id = tag_linkage_table.post_id',
                 []
             )
@@ -223,7 +239,7 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
         if ($this->getFilter('product_id')) {
             $select = $this->getSelect();
             $select->joinLeft(
-                ['product_post_linkage_table' => $this->getTable('aw_blog_product_post')],
+                ['product_post_linkage_table' => $this->getTable(ResourceProductPost::BLOG_PRODUCT_POST_TABLE)],
                 'main_table.id = product_post_linkage_table.post_id',
                 []
             )
@@ -249,7 +265,7 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
         if (count($postIds)) {
             $connection = $this->getConnection();
             $select = $connection->select()
-                ->from(['category_linkage_table' => $this->getTable('aw_blog_post_category')])
+                ->from(['category_linkage_table' => $this->getTable(ResourcePost::BLOG_POST_CATEGORY_TABLE)])
                 ->where('category_linkage_table.post_id IN (?)', $postIds);
             $result = $connection->fetchAll($select);
             /** @var \Magento\Framework\DataObject $item */
@@ -277,9 +293,9 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
         if (count($postIds)) {
             $connection = $this->getConnection();
             $select = $connection->select()
-                ->from(['tags_table' => $this->getTable('aw_blog_tag')])
+                ->from(['tags_table' => $this->getTable(ResourceTag::BLOG_TAG_TABLE)])
                 ->joinLeft(
-                    ['tag_post_linkage_table' => $this->getTable('aw_blog_post_tag')],
+                    ['tag_post_linkage_table' => $this->getTable(ResourcePost::BLOG_POST_TAG_TABLE)],
                     'tags_table.id = tag_post_linkage_table.tag_id',
                     ['post_id' => 'tag_post_linkage_table.post_id']
                 )
@@ -311,7 +327,7 @@ class Collection extends \Aheadworks\Blog\Model\ResourceModel\AbstractCollection
             $productLinkField = $this->metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
             $connection = $this->getConnection();
             $select = $connection->select()
-                ->from(['product_post_linkage_table' => $this->getTable('aw_blog_product_post')])
+                ->from(['product_post_linkage_table' => $this->getTable(ResourceProductPost::BLOG_PRODUCT_POST_TABLE)])
                 ->joinRight(
                     ['product_entity' => $this->getTable('catalog_product_entity')],
                     'product_post_linkage_table.product_id = product_entity.' . $productLinkField,

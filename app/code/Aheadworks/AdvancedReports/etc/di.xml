@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Aheadworks\AdvancedReports\Ui\DataProvider\MetadataInterface" type="Aheadworks\AdvancedReports\Ui\DataProvider\Metadata" />
+    <preference for="Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Module\ExpressionInterface" type="Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Module\Expression"/>
     <type name="Magento\Framework\Mview\View\StateInterface">
         <plugin name="aw_arep_disable_change_mode" type="Aheadworks\AdvancedReports\Model\Plugin\IndexerMode" />
     </type>

@@ -1,13 +1,15 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Observer;
 
+use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Aheadworks\Giftcard\Api\Data\Giftcard\OrderInterfaceFactory as GiftcardOrderInterfaceFactory;
 use Aheadworks\Giftcard\Api\Data\Giftcard\OrderInterface as GiftcardOrderInterface;
@@ -37,18 +39,26 @@ class QuoteSubmitBeforeObserver implements ObserverInterface
     private $dataObjectHelper;
 
     /**
+     * @var DataObjectProcessor
+     */
+    private $dataObjectProcessor;
+
+    /**
      * @param OrderExtensionFactory $orderExtensionFactory
      * @param GiftcardOrderInterfaceFactory $giftcardOrderFactory
      * @param DataObjectHelper $dataObjectHelper
+     * @param DataObjectProcessor $dataObjectProcessor
      */
     public function __construct(
         OrderExtensionFactory $orderExtensionFactory,
         GiftcardOrderInterfaceFactory $giftcardOrderFactory,
-        DataObjectHelper $dataObjectHelper
+        DataObjectHelper $dataObjectHelper,
+        DataObjectProcessor $dataObjectProcessor
     ) {
         $this->orderExtensionFactory = $orderExtensionFactory;
         $this->giftcardOrderFactory = $giftcardOrderFactory;
         $this->dataObjectHelper = $dataObjectHelper;
+        $this->dataObjectProcessor = $dataObjectProcessor;
     }
 
     /**
@@ -77,7 +87,7 @@ class QuoteSubmitBeforeObserver implements ObserverInterface
                 $orderGiftcard = $this->giftcardOrderFactory->create();
                 $this->dataObjectHelper->populateWithArray(
                     $orderGiftcard,
-                    $quoteGiftcard->getData(),
+                    $this->dataObjectProcessor->buildOutputDataArray($quoteGiftcard, QuoteInterface::class),
                     GiftcardOrderInterface::class
                 );
                 $orderGiftcard->setId(null);

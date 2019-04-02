@@ -1,20 +1,22 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
 use Aheadworks\AdvancedReports\Model\Flag;
 use Aheadworks\AdvancedReports\Model\FlagFactory;
 use Aheadworks\AdvancedReports\Model\Config;
+use Magento\Framework\DB\Select;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\Indexer\Table\StrategyInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Eav\Api\AttributeRepositoryInterface;
+use Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Module\ExpressionBuilder as ModuleExpressionBuilder;
 
 /**
  * Class AbstractResource
@@ -50,6 +52,11 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
     private $reportsFlag;
 
     /**
+     * @var ModuleExpressionBuilder
+     */
+    protected $moduleExpressionBuilder;
+
+    /**
      * @var string
      */
     private $catalogLinkField;
@@ -65,6 +72,21 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
     private $offset;
 
     /**
+     * Other discounts expressions
+     *
+     * @var array
+     */
+    private $otherDiscounts = [
+        'Magento_CustomerBalance' => 'COALESCE(main_table.base_customer_balance_amount, 0.0)',
+        'Magento_GiftCard' => 'COALESCE(main_table.base_gift_cards_amount, 0.0)',
+        'Magento_Reward' => 'COALESCE(main_table.base_reward_currency_amount, 0.0)',
+        'Aheadworks_StoreCredit' => 'ABS(COALESCE(main_table.base_aw_store_credit_amount, 0.0))',
+        'Aheadworks_RewardPoints' => 'ABS(COALESCE(main_table.base_aw_reward_points_amount, 0.0))',
+        'Aheadworks_Giftcard' => 'ABS(COALESCE(main_table.base_aw_giftcard_amount, 0.0))',
+        'Aheadworks_Raf' => 'ABS(COALESCE(main_table.base_aw_raf_amount, 0.0))'
+    ];
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param TimezoneInterface $localeDate
@@ -72,6 +94,7 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
      * @param MetadataPool $metadataPool
      * @param AttributeRepositoryInterface $attributeRepository
      * @param FlagFactory $reportsFlagFactory
+     * @param ModuleExpressionBuilder $moduleExpressionBuilder
      * @param string|null $connectionName
      */
     public function __construct(
@@ -82,6 +105,7 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
         MetadataPool $metadataPool,
         AttributeRepositoryInterface $attributeRepository,
         FlagFactory $reportsFlagFactory,
+        ModuleExpressionBuilder $moduleExpressionBuilder,
         $connectionName = null
     ) {
         parent::__construct($context, $tableStrategy, $connectionName);
@@ -90,6 +114,7 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
         $this->metadataPool = $metadataPool;
         $this->attributeRepository = $attributeRepository;
         $this->reportsFlag = $reportsFlagFactory->create();
+        $this->moduleExpressionBuilder = $moduleExpressionBuilder;
     }
 
     /**
@@ -127,6 +152,20 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
     public function clearTemporaryIndexTable()
     {
         $this->getConnection()->truncateTable($this->getIdxTable());
+    }
+
+    /**
+     * Safe insert from select to avoid lock Magento tables during reindex
+     *
+     * @param Select $select
+     * @param string $table
+     * @param array $fields
+     */
+    protected function safeInsertFromSelect($select, $table, $fields)
+    {
+        $connection = $this->getConnection();
+        $connection->query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;');
+        $connection->query($select->insertFromSelect($table, $fields));
     }
 
     /**
@@ -266,5 +305,24 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
         }
 
         return $manufacturerAttr;
+    }
+
+    /**
+     * Get other discounts expression
+     *
+     * @return string
+     */
+    protected function getOtherDiscountsExpression()
+    {
+        foreach ($this->otherDiscounts as $moduleName => $expression) {
+            $this->moduleExpressionBuilder->addExpression($moduleName, $expression);
+        }
+
+        $otherDiscountsExpression = $this->moduleExpressionBuilder
+            ->setGroupExpression('SUM')
+            ->setDefaultEmptyExpression('0.0')
+            ->create();
+
+        return $otherDiscountsExpression;
     }
 }

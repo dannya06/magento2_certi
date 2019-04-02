@@ -11,7 +11,7 @@ class ViewPreProcessorChain extends ViewPreprocessorAbstract {
     public function afterGetContent(
         \Magento\Framework\View\Asset\PreProcessor\Chain $subject, $result)
     {
-       return $this->_getContent($result);
+       return $this->_getContent($subject, $result);
     }
 
 }

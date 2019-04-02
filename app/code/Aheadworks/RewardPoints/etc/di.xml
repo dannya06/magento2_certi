@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Aheadworks\RewardPoints\Api\EarnRateRepositoryInterface" type="Aheadworks\RewardPoints\Model\EarnRateRepository" />
+    <preference for="Aheadworks\RewardPoints\Api\EarnRuleRepositoryInterface" type="Aheadworks\RewardPoints\Model\EarnRule\Repository" />
+    <preference for="Aheadworks\RewardPoints\Api\EarnRuleManagementInterface" type="Aheadworks\RewardPoints\Model\EarnRule\Management" />
     <preference for="Aheadworks\RewardPoints\Api\ProductShareRepositoryInterface" type="Aheadworks\RewardPoints\Model\ProductShareRepository" />
     <preference for="Aheadworks\RewardPoints\Api\SpendRateRepositoryInterface" type="Aheadworks\RewardPoints\Model\SpendRateRepository" />
     <preference for="Aheadworks\RewardPoints\Api\TransactionRepositoryInterface" type="Aheadworks\RewardPoints\Model\TransactionRepository" />
@@ -16,8 +18,13 @@
     <preference for="Aheadworks\RewardPoints\Api\CustomerRewardPointsManagementInterface" type="Aheadworks\RewardPoints\Model\Service\CustomerRewardPointsService" />
     <preference for="Aheadworks\RewardPoints\Api\RewardPointsCartManagementInterface" type="Aheadworks\RewardPoints\Model\Service\RewardPointsCartService" />
     <preference for="Aheadworks\RewardPoints\Api\ProductShareManagementInterface" type="Aheadworks\RewardPoints\Model\Service\ProductShareService" />
+    <preference for="Aheadworks\RewardPoints\Api\Data\ActionInterface" type="Aheadworks\RewardPoints\Model\Action" />
+    <preference for="Aheadworks\RewardPoints\Api\Data\ConditionInterface" type="Aheadworks\RewardPoints\Model\Condition" />
     <preference for="Aheadworks\RewardPoints\Api\Data\CustomerRewardPointsDetailsInterface" type="Aheadworks\RewardPoints\Model\CustomerRewardPointsDetails" />
     <preference for="Aheadworks\RewardPoints\Api\Data\EarnRateInterface" type="Aheadworks\RewardPoints\Model\EarnRate" />
+    <preference for="Aheadworks\RewardPoints\Api\Data\EarnRateSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    <preference for="Aheadworks\RewardPoints\Api\Data\EarnRuleInterface" type="Aheadworks\RewardPoints\Model\EarnRule" />
+    <preference for="Aheadworks\RewardPoints\Api\Data\EarnRuleSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Aheadworks\RewardPoints\Api\Data\ProductShareInterface" type="Aheadworks\RewardPoints\Model\ProductShare" />
     <preference for="Aheadworks\RewardPoints\Api\Data\SpendRateInterface" type="Aheadworks\RewardPoints\Model\SpendRate" />
     <preference for="Aheadworks\RewardPoints\Api\Data\TransactionInterface" type="Aheadworks\RewardPoints\Model\Transaction" />
@@ -25,6 +32,10 @@
     <preference for="Aheadworks\RewardPoints\Api\Data\PointsSummaryInterface" type="Aheadworks\RewardPoints\Model\PointsSummary" />
     <preference for="Aheadworks\RewardPoints\Model\Comment\CommentPoolInterface" type="Aheadworks\RewardPoints\Model\Comment\CommentPool" />
     <preference for="Aheadworks\RewardPoints\Model\Comment\CommentInterface" type="Aheadworks\RewardPoints\Model\Comment\CommentDefault" />
+    <preference for="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemInterface" type="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItem" />
+    <preference for="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemInterface" type="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\Item" />
+    <preference for="Aheadworks\RewardPoints\Model\Calculator\ResultInterface" type="Aheadworks\RewardPoints\Model\Calculator\Result" />
+    <preference for="Aheadworks\RewardPoints\Api\Data\StorefrontLabelsInterface" type="Aheadworks\RewardPoints\Model\StorefrontLabels" />
     
     <type name="Aheadworks\RewardPoints\Model\Comment\CommentPool">
         <arguments>
@@ -41,6 +52,7 @@
                 <item name="comment_reimbursed_spent_reward_points" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentReimbursedSpentRewardPoints</item>
                 <item name="comment_reimbursed_spent_reward_points_on_order_cancel" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentReimbursedSpentRewardPointsOrderCancel</item>
                 <item name="comment_cancel_earned_points_for_refund_order" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CancelEarnedPointsForRefundOrder</item>
+                <item name="comment_for_applied_earning_rules" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\Admin\AppliedEarningRules</item>
             </argument>
         </arguments>
     </type>
@@ -111,6 +123,12 @@
             <argument name="label" xsi:type="string">Cancel earned points for refund order %order_id, Credit Memo %creditmemo_id</argument>
         </arguments>
     </virtualType>
+    <type name="Aheadworks\RewardPoints\Model\Comment\Admin\AppliedEarningRules">
+        <arguments>
+            <argument name="type" xsi:type="const">Aheadworks\RewardPoints\Model\Comment\Admin\AppliedEarningRules::COMMENT_FOR_APPLIED_EARNING_RULES</argument>
+            <argument name="label" xsi:type="string">Rules: %rule_ids</argument>
+        </arguments>
+    </type>
 
     <type name="Magento\Framework\View\Layout\ScheduledStructure\Helper">
         <plugin name="aw_rewardpoints_scheduled_structure" type="Aheadworks\RewardPoints\Plugin\Magento\Framework\View\Layout\ScheduledStructure\HelperPlugin"/>
@@ -160,6 +178,18 @@
     <type name="Magento\Sales\Model\Order\Creditmemo">
         <plugin name="aw_reward_points_collect_totals" type="Aheadworks\RewardPoints\Plugin\Model\Order\CreditmemoPlugin"/>
     </type>
+    <type name="Magento\Catalog\Model\Product">
+        <plugin name="aw_reward_points_reindex" type="Aheadworks\RewardPoints\Plugin\Indexer\Product\Save\ApplyRulesAfterReindex"/>
+    </type>
+    <type name="Magento\Catalog\Block\Product\AbstractProduct">
+        <plugin name="aw_rewardpoints_product_list" type="Aheadworks\RewardPoints\Plugin\Block\Product\AbstractProductPlugin"/>
+    </type>
+    <type name="Magento\CatalogSearch\Block\SearchResult\ListProduct">
+        <plugin name="aw_rewardpoints_product_list" type="Aheadworks\RewardPoints\Plugin\Block\Product\AbstractProductPlugin"/>
+    </type>
+    <type name="Magento\GroupedProduct\Block\Product\View\Type\Grouped">
+        <plugin name="aw_rewardpoints_product_list" type="Aheadworks\RewardPoints\Plugin\Block\Product\GroupedTypePlugin"/>
+    </type>
 
     <type name="Magento\Framework\EntityManager\MetadataPool">
         <arguments>
@@ -167,6 +197,10 @@
                 <item name="Aheadworks\RewardPoints\Api\Data\EarnRateInterface" xsi:type="array">
                     <item name="entityTableName" xsi:type="string">aw_rp_earn_rate</item>
                     <item name="identifierField" xsi:type="string">rate_id</item>
+                </item>
+                <item name="Aheadworks\RewardPoints\Api\Data\EarnRuleInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">aw_rp_earn_rule</item>
+                    <item name="identifierField" xsi:type="string">id</item>
                 </item>
                 <item name="Aheadworks\RewardPoints\Api\Data\SpendRateInterface" xsi:type="array">
                     <item name="entityTableName" xsi:type="string">aw_rp_spend_rate</item>
@@ -183,6 +217,11 @@
                 <item name="Aheadworks\RewardPoints\Api\Data\ProductShareInterface" xsi:type="array">
                     <item name="entityTableName" xsi:type="string">aw_rp_product_share</item>
                     <item name="identifierField" xsi:type="string">share_id</item>
+                </item>
+                <item name="Aheadworks\RewardPoints\Api\Data\StorefrontLabelsInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">aw_rp_label</item>
+                    <!-- Id field does not exist in the table -->
+                    <item name="identifierField" xsi:type="string">id</item>
                 </item>
             </argument>
         </arguments>
@@ -204,6 +243,23 @@
                         <item name="adjustedHistoryReader" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\Transaction\Relation\AdjustedHistory\ReadHandler</item>
                     </item>
                 </item>
+                <item name="Aheadworks\RewardPoints\Api\Data\EarnRuleInterface" xsi:type="array">
+                    <item name="create" xsi:type="array">
+                        <item name="websiteCreator" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Relation\Website\SaveHandler</item>
+                        <item name="customerGroupCreator" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Relation\CustomerGroup\SaveHandler</item>
+                        <item name="storefrontLabelsCreator" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\StorefrontLabelsEntity\Relation\StorefrontLabels\SaveHandler</item>
+                    </item>
+                    <item name="read" xsi:type="array">
+                        <item name="websiteReader" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Relation\Website\ReadHandler</item>
+                        <item name="customerGroupReader" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Relation\CustomerGroup\ReadHandler</item>
+                        <item name="storefrontLabelsReader" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\StorefrontLabelsEntity\Relation\StorefrontLabels\ReadHandler</item>
+                    </item>
+                    <item name="update" xsi:type="array">
+                        <item name="websiteUpdater" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Relation\Website\SaveHandler</item>
+                        <item name="customerGroupUpdater" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Relation\CustomerGroup\SaveHandler</item>
+                        <item name="storefrontLabelsUpdater" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\StorefrontLabelsEntity\Relation\StorefrontLabels\SaveHandler</item>
+                    </item>
+                </item>
             </argument>
         </arguments>
     </type>
@@ -216,6 +272,15 @@
                 <item name="Aheadworks\RewardPoints\Api\Data\TransactionInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
                 <item name="Aheadworks\RewardPoints\Api\Data\PointsSummaryInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
                 <item name="Aheadworks\RewardPoints\Api\Data\ProductShareInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
+                <item name="Aheadworks\RewardPoints\Api\Data\EarnRuleInterface" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Hydrator</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Hydrator">
+        <arguments>
+            <argument name="additionalHydrators" xsi:type="array">
+                <item name="condition" xsi:type="object">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Hydrator\Condition</item>
+                <item name="action" xsi:type="object">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Hydrator\Action</item>
             </argument>
         </arguments>
     </type>
@@ -243,6 +308,15 @@
             <argument name="resourceModel" xsi:type="string">Magento\Customer\Model\ResourceModel\Customer</argument>
         </arguments>
     </type>
+
+    <type name="Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="const">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule::MAIN_TABLE_NAME</argument>
+            <argument name="eventPrefix" xsi:type="string">aw_rp_earn_rule_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">earn_rule_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule</argument>
+        </arguments>
+    </type>
     
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
@@ -250,6 +324,114 @@
                 <item name="aw_reward_points_transaction_grid_data_source" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\Transaction\Grid\Collection</item>
                 <item name="aw_reward_points_transaction_customers_listing_data_source" xsi:type="string">Magento\Customer\Model\ResourceModel\Grid\Collection</item>
                 <item name="aw_reward_points_customers_grid_data_source" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\PointsSummary\Grid\Collection</item>
+                <item name="aw_reward_points_earning_rules_listing_data_source" xsi:type="string">Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Aheadworks\RewardPoints\Model\Repository\CollectionProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="filter" xsi:type="object">Aheadworks\RewardPoints\Model\Repository\CollectionProcessor\FilterProcessor</item>
+                <item name="sort_order" xsi:type="object">Aheadworks\RewardPoints\Model\Repository\CollectionProcessor\SortOrderProcessor</item>
+                <item name="pagination" xsi:type="object">Aheadworks\RewardPoints\Model\Repository\CollectionProcessor\PaginationProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\RewardPoints\Model\EarnRateRepository">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">Aheadworks\RewardPoints\Model\Repository\CollectionProcessor</argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\RewardPoints\Model\EarnRule\Repository">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">Aheadworks\RewardPoints\Model\Repository\CollectionProcessor</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Aheadworks\RewardPoints\Model\EarnRule\Action\Type\RateMultiplier" type="Aheadworks\RewardPoints\Model\EarnRule\Action\Type">
+        <arguments>
+            <argument name="title" xsi:type="string">Multiply a default earn rate</argument>
+            <argument name="processor" xsi:type="object">Aheadworks\RewardPoints\Model\EarnRule\Action\Processor\RateMultiplier</argument>
+            <argument name="attributeCodes" xsi:type="array">
+                <item name="0" xsi:type="string">multiplier</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Aheadworks\RewardPoints\Model\EarnRule\Action\Type\FixedAmount" type="Aheadworks\RewardPoints\Model\EarnRule\Action\Type">
+        <arguments>
+            <argument name="title" xsi:type="string">Add a fixed amount of points in addition to earning rate</argument>
+            <argument name="processor" xsi:type="object">Aheadworks\RewardPoints\Model\EarnRule\Action\Processor\FixedAmount</argument>
+            <argument name="attributeCodes" xsi:type="array">
+                <item name="0" xsi:type="string">amount</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Aheadworks\RewardPoints\Model\EarnRule\Action\TypePool">
+        <arguments>
+            <argument name="types" xsi:type="array">
+                <item name="rate_multiplier" xsi:type="object">Aheadworks\RewardPoints\Model\EarnRule\Action\Type\RateMultiplier</item>
+                <item name="fixed_amount" xsi:type="object">Aheadworks\RewardPoints\Model\EarnRule\Action\Type\FixedAmount</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessorPool">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="default" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessor\Simple</item>
+                <item name="configurable" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessor\Configurable</item>
+                <item name="bundle" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessor\Bundle</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\QuoteProcessor\ItemGroupConverter" type="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\ItemGroupConverter">
+        <arguments>
+            <argument name="fieldset" xsi:type="string">quote_convert_earn_item</argument>
+            <argument name="aspect" xsi:type="string">to_earn_item</argument>
+        </arguments>
+    </virtualType>
+    <type name="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\QuoteProcessor">
+        <arguments>
+            <argument name="itemGroupConverter" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\QuoteProcessor\ItemGroupConverter</argument>
+        </arguments>
+    </type>
+    <virtualType name="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\InvoiceProcessor\ItemGroupConverter" type="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\ItemGroupConverter">
+        <arguments>
+            <argument name="fieldset" xsi:type="string">invoice_convert_earn_item</argument>
+            <argument name="aspect" xsi:type="string">to_earn_item</argument>
+        </arguments>
+    </virtualType>
+    <type name="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\InvoiceProcessor">
+        <arguments>
+            <argument name="itemGroupConverter" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\InvoiceProcessor\ItemGroupConverter</argument>
+        </arguments>
+    </type>
+    <virtualType name="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\CreditmemoProcessor\ItemGroupConverter" type="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\ItemGroupConverter">
+        <arguments>
+            <argument name="fieldset" xsi:type="string">creditmemo_convert_earn_item</argument>
+            <argument name="aspect" xsi:type="string">to_earn_item</argument>
+        </arguments>
+    </virtualType>
+    <type name="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\CreditmemoProcessor">
+        <arguments>
+            <argument name="itemGroupConverter" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\CreditmemoProcessor\ItemGroupConverter</argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor\TypeProcessorPool">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="default" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor\TypeProcessor\Simple</item>
+                <item name="configurable" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor\TypeProcessor\Configurable</item>
+                <item name="grouped" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor\TypeProcessor\Grouped</item>
+                <item name="bundle" xsi:type="object">Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor\TypeProcessor\Bundle</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver\Pool">
+        <arguments>
+            <argument name="resolvers" xsi:type="array">
+                <item name="default" xsi:type="object">Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver\Simple</item>
+                <item name="configurable" xsi:type="object">Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver\Configurable</item>
             </argument>
         </arguments>
     </type>

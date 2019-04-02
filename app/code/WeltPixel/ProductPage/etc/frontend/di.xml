@@ -10,10 +10,10 @@
     </type>
     <type name="Magento\Catalog\Block\Product\View\Gallery">
         <plugin name="weltpixel-productpage-block-product-view-gallery"
-                type="WeltPixel\ProductPage\Plugin\BlockProductViewGallery" sortOrder="10"/>
+                type="WeltPixel\ProductPage\Plugin\BlockProductViewGallery" sortOrder="20"/>
     </type>
-    <type name="Magento\Framework\Config\View">
-        <plugin name="weltpixel-productpage-framework-config-view"
-                type="WeltPixel\ProductPage\Plugin\FrameworkConfigView" sortOrder="10"/>
+    <type name="Magento\Swatches\Helper\Media">
+        <plugin name="weltpixel-productpage-swatches-media"
+                type="WeltPixel\ProductPage\Plugin\SwatchesMedia" sortOrder="20"/>
     </type>
 </config>

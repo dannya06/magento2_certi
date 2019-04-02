@@ -5,7 +5,7 @@
             <resource id="Magento_Backend::admin">
                 <resource id="WeltPixel_Backend::WeltPixel">
                     <resource id="WeltPixel_Sitemap::Sitemap_Label" sortOrder="100" title="Sitemap" >
-                        <resource id="WeltPixel_Sitemap::Sitemap" title="Sitemap" translate="title" sortOrder="10" />
+                        <resource id="WeltPixel_Sitemap::Sitemap" title="Sitemap Settings" translate="title" sortOrder="10" />
                     </resource>
                 </resource>
             </resource>

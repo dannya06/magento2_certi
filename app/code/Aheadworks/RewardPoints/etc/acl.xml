@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -16,6 +16,7 @@
                             <resource id="Aheadworks_RewardPoints::aw_reward_points_transaction_save" title="Save Transactions" translate="title" sortOrder="10" />
                         </resource>
                         <resource id="Aheadworks_RewardPoints::aw_reward_points_customers" title="Customers" translate="title" sortOrder="20" />
+                        <resource id="Aheadworks_RewardPoints::aw_reward_points_earning_rules" title="Points Earning Rules" translate="title" sortOrder="30" />
                     </resource>
                 </resource>
                 <resource id="Magento_Backend::stores">

@@ -56,7 +56,6 @@ class Callback extends AbstractAction
 
         $response = null;
         try {
-
             $factory = $this->providerManagement->getEnabledFactory($providerCode);
             $service = $factory->createService();
 
@@ -66,7 +65,6 @@ class Callback extends AbstractAction
             $this->stateHelper->setAccount($account);
 
             $this->forwardToOriginalAction();
-
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), $this->getRequest()->getParams());
             $this->messageManager->addErrorMessage(__('Something went wrong.'));

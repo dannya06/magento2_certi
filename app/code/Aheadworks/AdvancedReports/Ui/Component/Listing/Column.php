@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Ui\Component\Listing;
 
@@ -22,7 +22,7 @@ class Column extends \Magento\Ui\Component\Listing\Columns\Column
         '#b34852' => ['subtotal', 'conversion_rate', 'abandoned_carts'],
         '#036485' => ['tax', 'customers_count'],
         '#ff748e' => ['shipping'],
-        '#8450d5' => ['discount'],
+        '#8450d5' => ['discount', 'other_discount'],
         '#77523f' => ['total', 'total_sales_percent', 'abandoned_carts_total'],
         '#00a2ff' => ['invoiced', 'total_sales'],
         '#a5927d' => ['refunded', 'abandonment_rate'],

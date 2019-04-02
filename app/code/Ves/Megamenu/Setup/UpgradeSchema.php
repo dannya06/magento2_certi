@@ -38,6 +38,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $installer->startSetup();
         $tableItems = $installer->getTable('ves_megamenu_item');
 
+
         //Update for version 1.1.5
         if (version_compare($context->getVersion(), '1.1.3', '<')) {
                 $installer->getConnection()->addColumn(
@@ -415,13 +416,13 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 )->addColumn(
                     'menu_data',
                     Table::TYPE_TEXT,
-                    '256k',
+                    '2M',
                     ['unsigned' => true],
                     'Menu Data'
                 )->addColumn(
                     'menu_structure',
                     Table::TYPE_TEXT,
-                    '256k',
+                    '2M',
                     ['unsigned' => true],
                     'Menu Structure'
                 )->addColumn(
@@ -520,6 +521,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
          //Update for version 1.1.6
         if (version_compare($context->getVersion(), '1.1.6', '<')) {
+            $foreignKeys = $this->getForeignKeys($installer);
+            $this->dropForeignKeys($installer, $foreignKeys);
             $tableCache = $installer->getTable('ves_megamenu_cache');
             $installer->getConnection()->addColumn(
                 $tableCache,
@@ -532,6 +535,47 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ]
             );
         }
+
+        //Update for version 1.1.7
+        if (version_compare($context->getVersion(), '1.1.7', '<')) {
+            $foreignKeys = $this->getForeignKeys($installer);
+            $this->dropForeignKeys($installer, $foreignKeys);
+            $installer->getConnection()->addColumn(
+                $tableItems,
+                'child_col_type',
+                [
+                    'type'     => Table::TYPE_TEXT,
+                    'nullable' => true,
+                    'length' => 50,
+                    'comment'  => 'Child Column type: normal or bootstrap'
+                ]
+            );
+        }
+        //Update for version 1.1.8
+        if (version_compare($context->getVersion(), '1.1.8', '<')) {
+            $installer->getConnection()->addColumn(
+                $tableItems,
+                'submenu_sorttype',
+                [
+                    'type'     => Table::TYPE_TEXT,
+                    'nullable' => true,
+                    'length' => 50,
+                    'comment'  => 'Sub menu sort type'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $tableItems,
+                'isgroup_level',
+                [
+                    'type'     => Table::TYPE_SMALLINT,
+                    'nullable' => true,
+                    'length' => 4,
+                    'comment'  => 'Is Group Level for sub menu items with type parent category'
+                ]
+            );
+        }
+        
         $installer->endSetup();
     }
 
@@ -576,7 +620,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $keysTree = $setup->getConnection()->getForeignKeysTree();
         foreach ($keysTree as $indexes) {
             foreach ($indexes as $index) {
-                if ($index['REF_TABLE_NAME'] == $setup->getTable('ves_megamenu_menu_customergroup')
+                if ($index['REF_TABLE_NAME'] == $setup->getTable('customer_group')
                     && $index['REF_COLUMN_NAME'] == 'customer_group_id'
                 ) {
                     $foreignKeys[] = $index;

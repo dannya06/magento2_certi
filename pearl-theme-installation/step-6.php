@@ -24,6 +24,56 @@ HTML;
     exit(1);
 }
 
+
+if (!isset($_POST['storeCode'])) {
+    $result['error'] = true;
+    $result['msg'] = 'Please specify the store code!';
+    echo json_encode($result);
+    die;
+}
+
+if (!isset($_POST['homePage'])) {
+    $result['error'] = true;
+    $result['msg'] = 'Please specify the Home Page version!';
+    echo json_encode($result);
+    die;
+}
+
+if (!isset($_POST['header'])) {
+    $result['error'] = true;
+    $result['msg'] = 'Please specify the Header version!';
+    echo json_encode($result);
+    die;
+}
+
+if (!isset($_POST['categoryColumns'])) {
+    $result['error'] = true;
+    $result['msg'] = 'Please specify the Category Page columns!';
+    echo json_encode($result);
+    die;
+}
+
+if (!isset($_POST['productVersion'])) {
+    $result['error'] = true;
+    $result['msg'] = 'Please specify the Product Page version!';
+    echo json_encode($result);
+    die;
+}
+
+if (!isset($_POST['preFooter'])) {
+    $result['error'] = true;
+    $result['msg'] = 'Please specify if enable Pre-footer or not!';
+    echo json_encode($result);
+    die;
+}
+
+if (!isset($_POST['footer'])) {
+    $result['error'] = true;
+    $result['msg'] = 'Please specify the Footer version!';
+    echo json_encode($result);
+    die;
+}
+
 $bootstrap = \Magento\Framework\App\Bootstrap::create(BP, $_SERVER);
 $objectManager = $bootstrap->getObjectManager();
 
@@ -32,10 +82,18 @@ $cli->setAutoExit(false);
 
 $applicationName = 'Pearl Installation';
 $commands = [
-    'weltpixel:less:generate' => [],
-    'cache:clean' => [],
-    'weltpixel:cleanup' => []
+    'weltpixel:theme:configurator' => [
+        '--store='.$_POST['storeCode'],
+        '--homePage='.$_POST['homePage'],
+        '--header='.$_POST['header'],
+        '--categoryPage='.$_POST['categoryColumns'],
+        '--productPage='.$_POST['productVersion'],
+        '--preFooter='.$_POST['preFooter'],
+        '--footer='.$_POST['footer'],
+    ],
+    'cache:clean' => []
 ];
+
 
 $resultMsg = '';
 
@@ -54,25 +112,6 @@ try {
         $content = $output->fetch();
 
         $resultMsg .= str_replace(PHP_EOL, "<br/>", $content);
-    }
-
-    if (isset($_POST['deleteInstaller']) && $_POST['deleteInstaller'] == '1') {
-        $filesToDelete = [
-            'index.php',
-            'step-1.php',
-            'step-2.php',
-            'step-3.php',
-            'step-4.php',
-            'step-5.php',
-            'step-6.php',
-        ];
-        foreach ($filesToDelete as $file) {
-            shell_exec('rm ' . __DIR__ . '/' . $file);
-        }
-
-        shell_exec('mv ' . __DIR__ . '/index.php.noinstall ' . __DIR__ . '/index.php');
-
-        $resultMsg .= 'This GUI wizard has been deleted.';
     }
 
     $result['msg'] = $resultMsg;

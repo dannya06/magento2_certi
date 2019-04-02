@@ -21,14 +21,12 @@
                 .ias-load-more,
                 .ias-no-more {
                     position: relative;
-                    bottom: -120px;
                 }
-                .ias-spinner {
-                    bottom: -100px;
+
+                .ias-load-prev{
+                    position: relative;
+                    bottom: 20px;
                 }
-            }
-            .toolbar-products:last-of-type {
-                margin-bottom: 100px;
             }
         }
     }
@@ -54,6 +52,29 @@
                 display: block;
                 float: none;
                 text-align: center;
+            }
+            .ias-load-prev{
+                position: relative;
+                bottom: 20px;
+                margin: 0 auto;
+                clear: both;
+                display: block;
+                float: none;
+                text-align: center;
+            }
+        }
+    }
+}
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    .column.main {
+        &.infinite-scroll {
+            .product-items {
+                .ias-no-more {
+                    &.mg-top-msg{
+                        margin-top: 80px;
+                    }
+                }
             }
         }
     }

@@ -4,5 +4,7 @@
         <plugin name="weltpixel-owlcarouselslider-config-view"
                 type="WeltPixel\OwlCarouselSlider\Plugin\ConfigView" sortOrder="20"/>
     </type>
-    <preference for="Magento\Catalog\Block\Product\ImageBuilder" type="WeltPixel\OwlCarouselSlider\Block\Product\ImageBuilder" />
+    <preference for="Magento\Catalog\Block\Product\ImageFactory" type="WeltPixel\OwlCarouselSlider\Block\Product\ImageFactory" />
+    <preference for="Magento\Reports\Model\ResourceModel\Product\Index\Viewed\Collection"
+                type="WeltPixel\OwlCarouselSlider\Model\ResourceModel\Product\Index\Viewed\Collection"/>
 </config>

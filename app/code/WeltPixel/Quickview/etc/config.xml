@@ -10,6 +10,7 @@
                 <enable_product_listing>1</enable_product_listing>
                 <enable_shopping_checkout_product_buttons>1</enable_shopping_checkout_product_buttons>
                 <enable_zoom>false</enable_zoom>
+                <zoom_eventtype>hover</zoom_eventtype>
                 <remove_availability>0</remove_availability>
                 <remove_goto_product_button>0</remove_goto_product_button>
                 <remove_product_image>0</remove_product_image>
@@ -18,7 +19,14 @@
                 <remove_short_description>0</remove_short_description>
                 <remove_sku>0</remove_sku>
                 <scroll_to_top>1</scroll_to_top>
-            </general>            
+                <quickview_type>default</quickview_type>
+                <close_on_bgclick>1</close_on_bgclick>
+            </general>
+            <seo>
+                <no_follow>1</no_follow>
+                <no_index>1</no_index>
+                <add_canonical_link>1</add_canonical_link>
+            </seo>
         </weltpixel_quickview>      
     </default>
 </config>

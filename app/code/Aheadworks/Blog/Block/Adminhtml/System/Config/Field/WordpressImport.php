@@ -6,6 +6,10 @@
 
 namespace Aheadworks\Blog\Block\Adminhtml\System\Config\Field;
 
+use Magento\Backend\Block\Template\Context;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
+
 /**
  * Fieldset renderer for Wordpress import
  */
@@ -20,6 +24,25 @@ class WordpressImport extends \Magento\Config\Block\System\Config\Form\Field
      * @var string
      */
     protected $_template = 'Aheadworks_Blog::system/config/wordpress_import.phtml';
+
+    /**
+     * @var SerializeInterface
+     */
+    private $serializer;
+
+    /**
+     * @param Context $context
+     * @param array $data
+     * @param SerializeFactory $serializeFactory
+     */
+    public function __construct(
+        Context $context,
+        SerializeFactory $serializeFactory,
+        array $data = []
+    ) {
+        parent::__construct($context, $data);
+        $this->serializer = $serializeFactory->create();
+    }
 
     /**
      * @inheritDoc
@@ -47,6 +70,6 @@ class WordpressImport extends \Magento\Config\Block\System\Config\Form\Field
             'importInputSelector' => '#' . self::IMPORT_FILE_INPUT_ID
         ];
 
-        return json_encode($params);
+        return $this->serializer->serialize($params);
     }
 }

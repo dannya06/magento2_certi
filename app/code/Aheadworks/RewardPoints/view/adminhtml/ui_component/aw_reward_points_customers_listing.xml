@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -120,7 +120,7 @@
                         </item>
                         <item name="caption" xsi:type="string">Select...</item>
                         <item name="dataScope" xsi:type="string">expiration_notification_status</item>
-                        <item name="label" xsi:type="string" translate="true">Balance Update Notifications (status)</item>
+                        <item name="label" xsi:type="string" translate="true">Points Expiration Notification (status)</item>
                     </item>
                 </argument>
             </filterSelect>

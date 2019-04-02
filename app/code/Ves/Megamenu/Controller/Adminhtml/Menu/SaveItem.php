@@ -129,6 +129,7 @@ class SaveItem extends \Magento\Backend\App\Action
                 }
                 if(isset($fields[$x]) && $fields[$x]['type']=='editor'){
                     $item[$x] = $this->heleprData->decodeImg($y);
+                    $item[$x] = $this->heleprData->decodeUrl($item[$x]);
                 }
             } 
 

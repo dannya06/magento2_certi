@@ -258,6 +258,10 @@ class FrontendOptionsEditActionControllerSaveObserver implements ObserverInterfa
                 continue;
             }
             foreach ($frontendGroup as $id => $frontendValue) {
+                if ($id == 'top_image') {
+                    // exclude weltpixel_frontend_options/contact_options/top_image option
+                    continue;
+                }
                 //ignore _characterset admin options in frontend generation
                 //they are used only in google font url creation
                 $characterSetOption = strpos($id, '_characterset');
@@ -269,13 +273,24 @@ class FrontendOptionsEditActionControllerSaveObserver implements ObserverInterfa
                             $frontendValue = "'" . $frontendValue . "', sans-serif";
                         }
                     }
-                    /** add border css to color as well */
+                    /** add border css to color and px to letter-spacing as well */
                     switch ($id) {
                         case 'button__border' :
                         case 'button__hover__border' :
                             $frontendValue .= ' 1px solid';
                             break;
+                        case 'h1__letter____spacing':
+                        case 'h2__letter____spacing':
+                        case 'h3__letter____spacing':
+                        case 'h4__letter____spacing':
+                        case 'h5__letter____spacing':
+                        case 'h6__letter____spacing':
+                        case 'font__letter____spacing':
+                        case 'button__letter____spacing':
+                            $frontendValue .= 'px';
+                            break;
                     }
+
                     $content .= '@' . str_replace('____', '-', $id) . ': ' . $frontendValue . ';' . PHP_EOL;
                 }
             }

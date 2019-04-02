@@ -14,10 +14,10 @@ class FrameworkConfigView
 
 
     /**
-    * @var \Magento\Framework\App\Config\ScopeConfigInterface
-    */
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
     protected $scopeConfig;
-    
+
     /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      */
@@ -45,9 +45,9 @@ class FrameworkConfigView
     {
         $result = $proceed($module, $mediaType, $mediaId);
 
-        if ( ($module == 'Magento_Catalog') && ($mediaType == Image::MEDIA_TYPE_CONFIG_NODE) ) {
+        if (($module == 'Magento_Catalog') && ($mediaType == Image::MEDIA_TYPE_CONFIG_NODE)) {
             /** Big image size overwrite */
-            if ( ($mediaId == 'product_page_image_medium') || ($mediaId == 'product_page_image_medium_no_frame') ) {
+            if (($mediaId == 'product_page_image_medium') || ($mediaId == 'product_page_image_medium_no_frame')) {
                 $width = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_IMAGE_MAIN_WIDTH, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
                 $height = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_IMAGE_MAIN_HEIGHT, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
 
@@ -73,6 +73,47 @@ class FrameworkConfigView
             }
         }
 
+        return $result;
+    }
+
+    /**
+     * @param \Magento\Framework\Config\View $subject
+     * @param array $result
+     * @param string $module
+     * @param string $mediaType
+     * @return array
+     */
+    public function afterGetMediaEntities(\Magento\Framework\Config\View $subject, array $result, $module, $mediaType)
+    {
+        if (($module == 'Magento_Catalog')) {
+            foreach ($result as $mediaId => &$options) {
+                /** Big image size overwrite */
+                if (($mediaId == 'product_page_image_medium') || ($mediaId == 'product_page_image_medium_no_frame')) {
+                    $width = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_IMAGE_MAIN_WIDTH, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+                    $height = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_IMAGE_MAIN_HEIGHT, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+
+                    if ($width) {
+                        $options['width'] = $width;
+                    }
+                    if ($height) {
+                        $options['height'] = $height;
+                    }
+                }
+
+                /** Thumb image size overwrite */
+                if ($mediaId == 'product_page_image_small') {
+                    $width = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_IMAGE_THUMB_WIDTH, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+                    $height = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_IMAGE_THUMB_HEIGHT, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+
+                    if ($width) {
+                        $options['width'] = $width;
+                    }
+                    if ($height) {
+                        $options['height'] = $height;
+                    }
+                }
+            }
+        }
         return $result;
     }
 }

@@ -3,6 +3,7 @@
 /** @var $_helper WeltPixel\ThankYouPage\Helper\Data */
 $_helper = $this->helper('WeltPixel\ThankYouPage\Helper\Data');
 $pageSubtitle = $_helper->getPageSubTitle();
+$_order = $block->getLastOrder();
 ?>
 <?php /** @var $block \Magento\Checkout\Block\Onepage\Success */ ?>
 <div class="checkout-page-title-wrapper thank-you-page">

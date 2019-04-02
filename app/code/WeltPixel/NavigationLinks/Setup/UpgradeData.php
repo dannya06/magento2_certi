@@ -94,6 +94,157 @@ class UpgradeData implements UpgradeDataInterface
 		    ]);
 	    }
 
+        if (version_compare($context->getVersion(), '1.2.1') < 0) {
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_top_block', [
+                'type' => 'text',
+                'label' => 'Top Custom HTML',
+                'input' => 'text',
+                'required' => false,
+                'sort_order' => 4,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'wysiwyg_enabled' => true,
+                'group' => 'WeltPixel Mega Menu Options',
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_right_block', [
+                'type' => 'text',
+                'label' => 'Right Custom HTML',
+                'input' => 'text',
+                'required' => false,
+                'sort_order' => 5,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'wysiwyg_enabled' => true,
+                'group' => 'WeltPixel Mega Menu Options',
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_bottom_block', [
+                'type' => 'text',
+                'label' => 'Bottom Custom HTML',
+                'input' => 'text',
+                'required' => false,
+                'sort_order' => 6,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'wysiwyg_enabled' => true,
+                'group' => 'WeltPixel Mega Menu Options',
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_left_block', [
+                'type' => 'text',
+                'label' => 'Left Custom HTML',
+                'input' => 'text',
+                'required' => false,
+                'sort_order' => 7,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'wysiwyg_enabled' => true,
+                'group' => 'WeltPixel Mega Menu Options',
+            ]);
+        }
+
+        if (version_compare($context->getVersion(), '1.2.2') < 0) {
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_top_block_type', [
+                'type' => 'varchar',
+                'label' => 'Top Block',
+                'input' => 'select',
+                'default' => 'none',
+                'required' => false,
+                'sort_order' => 8,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'WeltPixel Mega Menu Options'
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_top_block_cms', [
+                'type' => 'varchar',
+                'label' => 'Top CMS Block',
+                'input' => 'select',
+                'required' => false,
+                'sort_order' => 9,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'WeltPixel Mega Menu Options'
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_right_block_type', [
+                'type' => 'varchar',
+                'label' => 'Right Block',
+                'input' => 'select',
+                'default' => 'none',
+                'required' => false,
+                'sort_order' => 10,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'WeltPixel Mega Menu Options'
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_right_block_cms', [
+                'type' => 'varchar',
+                'label' => 'Right CMS Block',
+                'input' => 'select',
+                'required' => false,
+                'sort_order' => 11,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'WeltPixel Mega Menu Options'
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_bottom_block_type', [
+                'type' => 'varchar',
+                'label' => 'Bottom Block',
+                'input' => 'select',
+                'default' => 'none',
+                'required' => false,
+                'sort_order' => 12,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'WeltPixel Mega Menu Options'
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_bottom_block_cms', [
+                'type' => 'varchar',
+                'label' => 'Bottom CMS Block',
+                'input' => 'select',
+                'required' => false,
+                'sort_order' => 13,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'WeltPixel Mega Menu Options'
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_left_block_type', [
+                'type' => 'varchar',
+                'label' => 'Left Block',
+                'input' => 'select',
+                'default' => 'none',
+                'required' => false,
+                'sort_order' => 14,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'WeltPixel Mega Menu Options'
+            ]);
+
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_left_block_cms', [
+                'type' => 'varchar',
+                'label' => 'Left CMS Block',
+                'input' => 'select',
+                'required' => false,
+                'sort_order' => 15,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'WeltPixel Mega Menu Options'
+            ]);
+
+        }
+
+        if (version_compare($context->getVersion(), '1.2.3') < 0) {
+            $catalogSetup->addAttribute(Category::ENTITY, 'weltpixel_mm_mob_hide_allcat', [
+                'type' => 'int',
+                'label' => 'Hide Mobile Link "All [category name]"',
+                'input' => 'select',
+                'required' => false,
+                'sort_order' => 16,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'wysiwyg_enabled' => false,
+                'is_html_allowed_on_front' => false,
+                'group' => 'WeltPixel Mega Menu Options',
+                'default' => 0,
+                'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean'
+            ]);
+        }
+
         $setup->endSetup();
     }
 }

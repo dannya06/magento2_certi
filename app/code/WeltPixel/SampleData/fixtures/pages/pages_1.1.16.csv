@@ -7,7 +7,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
 			<div class=""wpb_content_element"">
 				<h1><span>Autumn Mood</span><br>
 				<span>Collection</span></h1>
-				<p><span><a class=""link-with-effect wpx-white"" href=""#"">Shop Collection</a></span></p>
+				<p class=""link-with-effect-p""><span><a class=""link-with-effect wpx-white"" href=""#"">Shop Collection</a></span></p>
 			</div>
 		</div>
 	</div>
@@ -161,79 +161,123 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
 }
 ",,"
 .page-main {
-    margin-top: -175px !important;
+    margin-top: -160px !important;
 }
-.page-wrapper > .page-header:not(.sticky-header) .header.content .block-search input:focus {
-	border-color: #ffffff;
+.page-wrapper > .page-header:not(.sticky-header) .header.content .block-search input,
+.page-wrapper > .page-header:not(.sticky-header) .header.content .block-search input:focus,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .header.content .block-search input,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .header.content .block-search input:focus {
+    border-color: #ffffff;
 }
 .page-wrapper > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0 > a,
+.page-wrapper > .header-placeholder > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0 > a,
 .page-wrapper > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0 > a:visited,
-.page-wrapper > .page-header:not(.sticky-header) .block-search .action.search:before {
-	color: #ffffff !important
+.page-wrapper > .header-placeholder > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0 > a:visited,
+.page-wrapper > .page-header:not(.sticky-header) .block-search .action.search:before,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .block-search .action.search:before {
+    color: #ffffff !important
 }
-.page-wrapper > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0.has-active > a {
+.page-wrapper > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0.has-active > a,
+.page-wrapper > .header-placeholder > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0.has-active > a {
     border-color: #ffffff;
 }
 .page-wrapper > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0 > a:active,
+.page-wrapper > .header-placeholder > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0 > a:active,
 .page-wrapper > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0 > a:hover,
+.page-wrapper > .header-placeholder > .nav-sections:not(.sticky-header-nav) .navigation ul li.level0 > a:hover,
 .page-wrapper > .page-header:not(.sticky-header) .minicart-wrapper a.action:active,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .minicart-wrapper a.action:active,
 .page-wrapper > .page-header:not(.sticky-header) .minicart-wrapper a.action:hover,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .minicart-wrapper a.action:hover,
 .page-wrapper > .page-header:not(.sticky-header) .header.links a:active,
-.page-wrapper > .page-header:not(.sticky-header) .header.links a:hover {
-	color: #cccccc !important;
-}
-.page-wrapper > .page-header:not(.sticky-header) .block-search .action.search:before {
-	color: #ffffff !important
-}
-.page-wrapper > .page-header:not(.sticky-header) #search::-webkit-input-placeholder {
-	color: #ffffff; opacity: 1;
-}
-.page-wrapper > .page-header:not(.sticky-header)  #search:-moz-placeholder {
-	color: #ffffff; opacity: 1;
-}
-.page-wrapper > .page-header:not(.sticky-header) #search::-moz-placeholder {
-	color: #ffffff; opacity: 1;
-}
-.page-wrapper > .page-header:not(.sticky-header) #search:-ms-input-placeholder {
-	color: #ffffff; opacity: 1;
-}
-.page-wrapper > .page-header:not(.sticky-header) #search::-ms-input-placeholder {
-	color: #ffffff; opacity: 1;
-}
-.page-wrapper > .page-header:not(.sticky-header)  .header.links .authorization-link a:before,
-.page-wrapper > .page-header:not(.sticky-header) .minicart-wrapper .action.showcart:before{
-    color:white !important;
-}
-.page-wrapper > .page-header:not(.sticky-header) div.header_right > ul.header.links.moved-header > li.authorization-link > a:before{
-    color:white !important;
-}
-.page-wrapper > .page-header:not(.sticky-header) #switcher-currency-trigger {
-    color: white;
-}
-.page-wrapper > .page-header:not(.sticky-header) #switcher-currency-trigger:hover {
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .header.links a:active,
+.page-wrapper > .page-header:not(.sticky-header) .header.links a:hover,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .header.links a:hover {
     color: #cccccc !important;
 }
-.nav-toggle:before{
+.page-wrapper > .page-header.sticky-header #search::-webkit-input-placeholder,
+.page-wrapper > .header-placeholder > .page-header.sticky-header #search::-webkit-input-placeholder {
+    color: initial !important; opacity: 1;
+}
+.page-wrapper > .page-header.sticky-header #search:-moz-placeholder,
+.page-wrapper > .header-placeholder > .page-header.sticky-header #search:-moz-placeholder {
+    color: initial !important; opacity: 1;
+}
+.page-wrapper > .page-header.sticky-header #search::-moz-placeholder,
+.page-wrapper > .header-placeholder > .page-header.sticky-header #search::-moz-placeholder {
+    color: initial !important; opacity: 1;
+}
+.page-wrapper > .page-header.sticky-header #search:-ms-input-placeholder,
+.page-wrapper > .header-placeholder > .page-header #search:-ms-input-placeholder {
+    color: initial !important; opacity: 1;
+}
+.page-wrapper > .page-header.sticky-header #search::-ms-input-placeholder,
+.page-wrapper > .header-placeholder > .page-header.sticky-header #search::-ms-input-placeholder {
+    color: initial !important; opacity: 1;
+}
+.page-wrapper > .page-header:not(.sticky-header) .block-search .action.search:before,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .block-search .action.search:before {
+    color: #ffffff !important
+}
+.page-wrapper > .page-header:not(.sticky-header) #search::-webkit-input-placeholder,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) #search::-webkit-input-placeholder {
+    color: #ffffff; opacity: 1;
+}
+.page-wrapper > .page-header:not(.sticky-header)  #search:-moz-placeholder,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header)  #search:-moz-placeholder {
+    color: #ffffff; opacity: 1;
+}
+.page-wrapper > .page-header:not(.sticky-header) #search::-moz-placeholder,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) #search::-moz-placeholder {
+    color: #ffffff; opacity: 1;
+}
+.page-wrapper > .page-header:not(.sticky-header) #search:-ms-input-placeholder,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) #search:-ms-input-placeholder {
+    color: #ffffff; opacity: 1;
+}
+.page-wrapper > .page-header:not(.sticky-header) #search::-ms-input-placeholder,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) #search::-ms-input-placeholder {
+    color: #ffffff; opacity: 1;
+}
+.page-wrapper > .page-header:not(.sticky-header)  .header.links .authorization-link a:before,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header)  .header.links .authorization-link a:before,
+.page-wrapper > .page-header:not(.sticky-header) .minicart-wrapper .action.showcart:before,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) .minicart-wrapper .action.showcart:before{
+    color:white !important;
+}
+.page-wrapper > .page-header:not(.sticky-header) div.header_right > ul.header.links.moved-header > li.authorization-link > a:before,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) div.header_right > ul.header.links.moved-header > li.authorization-link > a:before{
+    color:white !important;
+}
+.page-wrapper > .page-header:not(.sticky-header) #switcher-currency-trigger,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) #switcher-currency-trigger {
     color: white;
 }
-","
-.page-main {
-    margin-top: -136px !important;
+.page-wrapper > .page-header:not(.sticky-header) #switcher-currency-trigger:hover,
+.page-wrapper > .header-placeholder > .page-header:not(.sticky-header) #switcher-currency-trigger:hover {
+    color: #cccccc !important;
 }
-",,"
+.nav-toggle:before,
+.page-header-v2 .compare.wrapper .action.compare,
+.page-header-v2 .compare.wrapper .action.compare:hover,
+.page-header-v2 .compare.wrapper .counter.qty,
+.page-header-v2 .compare.wrapper .counter.qty:hover{
+    color: white;
+}
+",,,"
 require(['jquery'], function ($) {
-    $(".bg-img").each(function () {
+    $("".bg-img"").each(function () {
         var urlImg = $(this).attr('src'),
             parent = $(this).parent();
-        $(this).css("visibility", "hidden");
+        $(this).css(""visibility"", ""hidden"");
         parent.css({
-            'background': 'url("' + urlImg + '") no-repeat 50% 0',
+            'background': 'url(""' + urlImg + '"") no-repeat 50% 0',
             'background-size': 'cover',
             'background-position': 'center'
         });
     });
-    $(".open-newsletter").on('click', function () {
-        $(".newsletter-subscribe").slideToggle("slow");
+    $("".open-newsletter"").on('click', function () {
+        $("".newsletter-subscribe"").slideToggle(""slow"");
     });
     var navToggle = $('.header.content').find('.nav-toggle');
     if (!navToggle.is(':visible')) {

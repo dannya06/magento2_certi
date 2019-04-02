@@ -10,6 +10,8 @@ use Magento\Framework\App\ResourceConnection;
 use Aheadworks\Blog\Api\Data\PostInterface;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
+use Aheadworks\Blog\Model\ResourceModel\Tag as ResourceTag;
+use Aheadworks\Blog\Model\ResourceModel\Post as ResourcePost;
 
 /**
  * Class ReadHandler
@@ -48,9 +50,9 @@ class ReadHandler implements ExtensionInterface
                 $this->metadataPool->getMetadata(PostInterface::class)->getEntityConnectionName()
             );
             $select = $connection->select()
-                ->from(['tag' => $this->resourceConnection->getTableName('aw_blog_tag')], 'name')
+                ->from(['tag' => $this->resourceConnection->getTableName(ResourceTag::BLOG_TAG_TABLE)], 'name')
                 ->joinLeft(
-                    ['tag_post' => $this->resourceConnection->getTableName('aw_blog_post_tag')],
+                    ['tag_post' => $this->resourceConnection->getTableName(ResourcePost::BLOG_POST_TAG_TABLE)],
                     'tag.id = tag_post.tag_id',
                     []
                 )->where('tag_post.post_id = :id', $entityId);

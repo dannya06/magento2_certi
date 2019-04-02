@@ -6,6 +6,7 @@
                 <display_swatch_tooltip>1</display_swatch_tooltip>
                 <image_area_width>60%</image_area_width>
                 <move_description_tabs_under_info_area>0</move_description_tabs_under_info_area>
+                <position_product_info>1</position_product_info>
                 <product_info_area_width>35%</product_info_area_width>
                 <qty_select_maxvalue>10</qty_select_maxvalue>
                 <qty_type>select</qty_type>
@@ -15,9 +16,12 @@
                 <remove_qty_box>0</remove_qty_box>
                 <remove_sku>0</remove_sku>
                 <remove_stock_availability>0</remove_stock_availability>
-                <remove_tabs_border>0</remove_tabs_border>
+                <accordion_version>0</accordion_version>
+                <accordion_collapsible>0</accordion_collapsible>
+                <tabs_version>0</tabs_version>
                 <remove_wishlist>1</remove_wishlist>
                 <tabs_layout>tab</tabs_layout>
+                <accordion_version>0</accordion_version>
             </general>
             <gallery>
                 <arrows>true</arrows>

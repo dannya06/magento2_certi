@@ -71,6 +71,14 @@
                     </depends>
                     <comment/>
                 </field>
+                <field id="text_loadprevious" translate="label comment" type="text" sortOrder="225" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>"Load Previous items" Button Text</label>
+                    <depends>
+                        <field id="weltpixel_infinite_scroll/general/ajax_catalog">1</field>
+                        <field id="weltpixel_infinite_scroll/general/ajax_catalog_mode">infinite_scroll</field>
+                    </depends>
+                    <comment/>
+                </field>
                 <field id="text_nomore" translate="label comment" type="text" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>"No More Items" Text</label>
                     <depends>
@@ -106,6 +114,25 @@
                     </depends>
                     <comment>This helps search engines more accurately index your content and serve to users the most relevant page.</comment>
                 </field>
+                <comment>
+                    <![CDATA[
+                        <script type="text/javascript">
+                            require(['jquery', 'domReady!'], function(){
+                                if (jQuery('#weltpixel_infinite_scroll_general_ajax_catalog').val() != 1){
+                                    jQuery('#weltpixel_infinite_scroll_advanced').closest('.section-config').hide();
+                                }
+
+                                jQuery('#weltpixel_infinite_scroll_general_ajax_catalog').on('change', function(){
+                                    if (this.value != 1) {
+                                        jQuery('#weltpixel_infinite_scroll_advanced').closest('.section-config').hide();
+                                    } else {
+                                        jQuery('#weltpixel_infinite_scroll_advanced').closest('.section-config').show();
+                                    }
+                                })
+                            });
+                        </script>
+                    ]]>
+                </comment>
             </group>
         </section>
     </system>

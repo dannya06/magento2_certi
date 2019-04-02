@@ -119,19 +119,19 @@ class BlockProductViewGallery
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_NAV,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 break;
             case "gallery/loop" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_LOOP,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_LOOP,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/keyboard" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_KEYBOARD,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_KEYBOARD,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/arrows" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_ARROWS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_ARROWS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/arrows_bg" :
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_ARROWS_BG,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 break;
             case "gallery/caption" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_CAPTION,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_CAPTION,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/transition/duration" :
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_TRANSITION_DURATION,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
@@ -140,7 +140,7 @@ class BlockProductViewGallery
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_TRANSITION_EFFECT,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 break;
             case "gallery/navarrows" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_NAVARROWS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_NAVARROWS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/navtype" :
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_NAVTYPE,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
@@ -149,22 +149,22 @@ class BlockProductViewGallery
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_GALLERY_NAVDIR,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 break;
             case "gallery/allowfullscreen" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_ALLOWFULLSCREEN,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_ALLOWFULLSCREEN,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/fullscreen/nav" :
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_NAV,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 break;
             case "gallery/fullscreen/loop" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_LOOP,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_LOOP,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/fullscreen/navdir" :
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_NAVDIR,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
                 break;
             case "gallery/fullscreen/arrows" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_ARROWS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_ARROWS,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/fullscreen/caption" :
-                $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_CAPTION,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $result = filter_var($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_CAPTION,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE), FILTER_VALIDATE_BOOLEAN);
                 break;
             case "gallery/fullscreen/transition/duration" :
                 $result = $this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_PRODUCTPAGE_FULLSCREEN_TRANSITION_DURATION,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);

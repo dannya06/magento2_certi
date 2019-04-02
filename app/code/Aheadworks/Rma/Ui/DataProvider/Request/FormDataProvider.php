@@ -1,12 +1,11 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Ui\DataProvider\Request;
 
-use Aheadworks\Rma\Api\Data\RequestInterface as RmaRequestInterface;
 use Aheadworks\Rma\Model\ResourceModel\Request\CollectionFactory;
 use Aheadworks\Rma\Model\ResourceModel\Request\Collection;
 use Magento\Framework\App\Request\DataPersistorInterface;
@@ -71,7 +70,7 @@ class FormDataProvider extends AbstractDataProvider
         $id = $this->request->getParam($this->getRequestFieldName());
         if (!empty($dataFromForm)) {
             $id = $dataFromForm['id'];
-            $data = $dataFromForm;
+            $data = $this->prepareDataAfterError($dataFromForm);
             $this->dataPersistor->clear('aw_rma_request');
         } else {
             $requests = $this->getCollection()->addFieldToFilter('id', $id)->getItems();
@@ -88,6 +87,22 @@ class FormDataProvider extends AbstractDataProvider
     }
 
     /**
+     * Prepare data after error
+     *
+     * @param array $data
+     * @return array
+     */
+    private function prepareDataAfterError($data)
+    {
+        $data['thread_message'] = isset($data['thread_message']) && !empty($data['thread_message'])
+            ? $data['thread_message']
+            : '';
+        $data['error_after_save'] = true;
+
+        return $data;
+    }
+
+    /**
      * Prepare data
      *
      * @param array $data
@@ -96,9 +111,16 @@ class FormDataProvider extends AbstractDataProvider
     private function prepareData($data)
     {
         if (isset($data['id']) && !empty($data['id'])) {
-            $data['newRequest'] = true;
-        } else {
             $data['newRequest'] = false;
+            $data['editRequest'] = true;
+        } else {
+            if ($orderId = $this->request->getParam('order_id')) {
+                $data['sales_order_selected'] = [
+                    0 => ['entity_id' => $orderId]
+                ];
+            }
+            $data['newRequest'] = true;
+            $data['editRequest'] = false;
         }
         $data = $this->prepareCustomFields($data);
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
+* Copyright 2019 aheadWorks. All rights reserved.
 * See LICENSE.txt for license details.
 */
 -->
@@ -18,6 +18,7 @@
     <preference for="Aheadworks\Rma\Api\Data\StatusSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Aheadworks\Rma\Api\RequestRepositoryInterface" type="Aheadworks\Rma\Model\RequestRepository" />
     <preference for="Aheadworks\Rma\Api\RequestManagementInterface" type="Aheadworks\Rma\Model\Service\RequestService" />
+    <preference for="Aheadworks\Rma\Api\CustomerRequestManagementInterface" type="Aheadworks\Rma\Model\Service\CustomerRequestService" />
     <preference for="Aheadworks\Rma\Api\Data\RequestInterface" type="Aheadworks\Rma\Model\Request" />
     <preference for="Aheadworks\Rma\Api\Data\RequestSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Aheadworks\Rma\Api\Data\RequestItemInterface" type="Aheadworks\Rma\Model\Request\Item" />
@@ -28,7 +29,11 @@
     <preference for="Aheadworks\Rma\Api\Data\ThreadMessageInterface" type="Aheadworks\Rma\Model\ThreadMessage" />
     <preference for="Aheadworks\Rma\Api\Data\ThreadMessageSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Aheadworks\Rma\Api\Data\ThreadMessageAttachmentInterface" type="Aheadworks\Rma\Model\ThreadMessage\Attachment" />
+    <preference for="Aheadworks\Rma\Api\Data\CannedResponseInterface" type="Aheadworks\Rma\Model\CannedResponse" />
+    <preference for="Aheadworks\Rma\Api\CannedResponseRepositoryInterface" type="Aheadworks\Rma\Model\CannedResponseRepository" />
+    <preference for="Aheadworks\Rma\Api\Data\CannedResponseSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Aheadworks\Rma\Model\Email\EmailMetadataInterface" type="Aheadworks\Rma\Model\Email\EmailMetadata" />
+    <preference for="Aheadworks\Rma\Model\Serialize\SerializerInterface" type="Aheadworks\Rma\Model\Serialize\Json" />
     <type name="Magento\Framework\EntityManager\MetadataPool">
         <arguments>
             <argument name="metadata" xsi:type="array">
@@ -46,6 +51,10 @@
                 </item>
                 <item name="Aheadworks\Rma\Api\Data\ThreadMessageInterface" xsi:type="array">
                     <item name="entityTableName" xsi:type="string">aw_rma_thread_message</item>
+                    <item name="identifierField" xsi:type="string">id</item>
+                </item>
+                <item name="Aheadworks\Rma\Api\Data\CannedResponseInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">aw_rma_canned_response</item>
                     <item name="identifierField" xsi:type="string">id</item>
                 </item>
             </argument>
@@ -71,6 +80,7 @@
                 <item name="Aheadworks\Rma\Api\Data\CustomFieldInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
                 <item name="Aheadworks\Rma\Api\Data\StatusInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
                 <item name="Aheadworks\Rma\Api\Data\ThreadMessageInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
+                <item name="Aheadworks\Rma\Api\Data\CannedResponseInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
             </argument>
         </arguments>
     </type>
@@ -140,6 +150,17 @@
                         <item name="attachmentUpdater" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\ThreadMessage\Relation\Attachment\SaveHandler</item>
                     </item>
                 </item>
+                <item name="Aheadworks\Rma\Api\Data\CannedResponseInterface" xsi:type="array">
+                    <item name="create" xsi:type="array">
+                        <item name="storeResponseValueCreator" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\CannedResponse\Relation\StoreResponseValue\SaveHandler</item>
+                    </item>
+                    <item name="read" xsi:type="array">
+                        <item name="storeResponseValueReader" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\CannedResponse\Relation\StoreResponseValue\ReadHandler</item>
+                    </item>
+                    <item name="update" xsi:type="array">
+                        <item name="storeResponseValueUpdater" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\CannedResponse\Relation\StoreResponseValue\SaveHandler</item>
+                    </item>
+                </item>
             </argument>
         </arguments>
     </type>
@@ -149,6 +170,8 @@
                 <item name="aw_rma_custom_field_listing_data_source" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\CustomField\Grid\Collection</item>
                 <item name="aw_rma_status_listing_data_source" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\Status\Grid\Collection</item>
                 <item name="aw_rma_request_listing_data_source" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\Request\Grid\Collection</item>
+                <item name="aw_rma_canned_response_listing_data_source" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\CannedResponse\Grid\Collection</item>
+                <item name="aw_rma_request_order_listing_data_source" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\Order\Grid\Collection</item>
             </argument>
         </arguments>
     </type>
@@ -174,6 +197,14 @@
             <argument name="eventPrefix" xsi:type="string">aw_rma_request_listing_collection</argument>
             <argument name="eventObject" xsi:type="string">request_listing_collection</argument>
             <argument name="resourceModel" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\Request</argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\Rma\Model\ResourceModel\CannedResponse\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">aw_rma_canned_response</argument>
+            <argument name="eventPrefix" xsi:type="string">aw_rma_canned_response_listing_collection</argument>
+            <argument name="eventObject" xsi:type="string">request_listing_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Aheadworks\Rma\Model\ResourceModel\CannedResponse</argument>
         </arguments>
     </type>
     <virtualType name="Aheadworks\Rma\Model\Request\PrintLabel\Address\Form\AttributeMeta\Modifier\Attribute\Prefix"
@@ -278,6 +309,7 @@
                     </item>
                     <item name="available_for_actions" xsi:type="array">
                         <item name="0" xsi:type="string">update</item>
+                        <item name="1" xsi:type="string">save</item>
                     </item>
                 </item>
                 <!-- CLOSED -->
@@ -289,6 +321,7 @@
                     </item>
                     <item name="available_for_actions" xsi:type="array">
                         <item name="0" xsi:type="string">update</item>
+                        <item name="1" xsi:type="string">save</item>
                     </item>
                 </item>
                 <!-- ISSUE_REFUND -->
@@ -299,6 +332,7 @@
                     <item name="available_for_actions" xsi:type="array">
                         <item name="0" xsi:type="string">update</item>
                         <item name="1" xsi:type="string">close</item>
+                        <item name="2" xsi:type="string">create_credit_memo</item>
                     </item>
                 </item>
                 <!-- PACKAGE_RECEIVED -->
@@ -311,6 +345,7 @@
                         <item name="0" xsi:type="string">update</item>
                         <item name="1" xsi:type="string">close</item>
                         <item name="2" xsi:type="string">issue_refund</item>
+                        <item name="3" xsi:type="string">create_replacement_order</item>
                     </item>
                 </item>
                 <!-- PACKAGE_SENT -->

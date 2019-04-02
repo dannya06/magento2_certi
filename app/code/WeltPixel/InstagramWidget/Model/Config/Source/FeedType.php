@@ -5,6 +5,7 @@ class FeedType implements \Magento\Framework\Option\ArrayInterface
 {
     /**
      * Options getter
+     * Tagged, Location Deprecated
      *
      * @return array
      */
@@ -12,13 +13,14 @@ class FeedType implements \Magento\Framework\Option\ArrayInterface
     {
         return [
             ['value' => 'user', 'label' => __('User')],
-            ['value' => 'tagged', 'label' => __('Tagged')],
-            ['value' => 'location', 'label' => __('Location')]
+//            ['value' => 'tagged', 'label' => __('Tagged')],
+//            ['value' => 'location', 'label' => __('Location')]
         ];
     }
 
     /**
      * Get options in "key-value" format
+     * Tagged, Location Deprecated
      *
      * @return array
      */
@@ -26,8 +28,8 @@ class FeedType implements \Magento\Framework\Option\ArrayInterface
     {
         return [
             'user' => __('User'),
-            'tagged' => __('Tagged'),
-            'location' => __('Location')
+//            'tagged' => __('Tagged'),
+//            'location' => __('Location')
         ];
     }
 }

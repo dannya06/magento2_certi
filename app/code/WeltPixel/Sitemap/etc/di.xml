@@ -3,7 +3,6 @@
     <preference for="Magento\Sitemap\Model\ResourceModel\Catalog\Category" type="WeltPixel\Sitemap\Model\ResourceModel\Catalog\Category"/>
     <preference for="Magento\Sitemap\Model\ResourceModel\Catalog\Product" type="WeltPixel\Sitemap\Model\ResourceModel\Catalog\Product"/>
     <preference for="Magento\Sitemap\Model\ResourceModel\Cms\Page" type="WeltPixel\Sitemap\Model\ResourceModel\Cms\Page"/>
-    <preference for="Magento\Sitemap\Model\Sitemap" type="WeltPixel\Sitemap\Model\Rewrite\Sitemap"/>
     <type name="Magento\Sitemap\Model\Sitemap">
         <plugin name="weltpixel-sitemap-model-sitemap"
                 type="WeltPixel\Sitemap\Plugin\Sitemap" sortOrder="1"/>
@@ -22,5 +21,8 @@
             <argument name="eventObject" xsi:type="string">sitemap_grid_collection</argument>
             <argument name="resourceModel" xsi:type="string">WeltPixel\Sitemap\Model\ResourceModel\Sitemap</argument>
         </arguments>
+    </type>
+    <type name="Magento\Catalog\Model\Category\DataProvider">
+        <plugin name="weltpixel-sitemap-category-dataprovider" type="WeltPixel\Sitemap\Plugin\Category\DataProvider" sortOrder="1" />
     </type>
 </config>

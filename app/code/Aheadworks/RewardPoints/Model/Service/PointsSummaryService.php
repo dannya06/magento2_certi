@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\Service;
 
@@ -136,6 +136,18 @@ class PointsSummaryService
     {
         $pointsSummary = $this->getPointsSymmary($customerId);
         return $pointsSummary->getDailySharePointsDate();
+    }
+
+    /**
+     * Retrieve customer monthly share date
+     *
+     * @param int $customerId
+     * @return string
+     */
+    public function getCustomerMonthlySharePointsDate($customerId)
+    {
+        $pointsSummary = $this->getPointsSymmary($customerId);
+        return $pointsSummary->getMonthlySharePointsDate();
     }
 
     /**
@@ -292,8 +304,8 @@ class PointsSummaryService
      * @param DataObject|TransactionInterface|null $data
      * @param bool isTransaction
      * @return PointsSummaryInterface
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @throws NoSuchEntityException
+     * @throws \Exception
      */
     private function setupPointsSummary($customerId, $data = null, $isTransaction = false)
     {
@@ -367,8 +379,10 @@ class PointsSummaryService
             $pointsSummary->setDailySharePointsDate($this->dateTime->getTodayDate());
         }
 
-        if (!$this->dateTime->isCurrentMonthDate($pointsSummary->getDailySharePointsDate())) {
+        $monthlySharePointsDate = $pointsSummary->getMonthlySharePointsDate();
+        if ($this->dateTime->isNextMonthDate($monthlySharePointsDate) || !$monthlySharePointsDate) {
             $pointsSummary->setMonthlySharePoints(0);
+            $pointsSummary->setMonthlySharePointsDate($this->dateTime->getTodayDate());
         }
 
         return $pointsSummary;

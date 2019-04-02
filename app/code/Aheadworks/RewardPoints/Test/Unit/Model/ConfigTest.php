@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Test\Unit\Model;
 
@@ -183,5 +183,81 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
             ->willReturn(true);
 
         $this->assertTrue($this->object->isPointsBalanceTopLinkAtFrontend());
+    }
+
+    /**
+     * Test getCategoryProductPromoText method
+     */
+    public function testGetCategoryProductPromoText()
+    {
+        $storeId = 1;
+        $text = '<p>Sample text</p>';
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(
+                Config::XML_PATH_AW_REWARDPOINTS_CATEGORY_PRODUCT_PROMO_TEXT,
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            )
+            ->willReturn($text);
+
+        $this->assertEquals($text, $this->object->getCategoryProductPromoText($storeId));
+    }
+
+    /**
+     * Test getProductPromoTextForRegisteredCustomers method
+     */
+    public function testGetProductPromoTextForRegisteredCustomers()
+    {
+        $storeId = 1;
+        $text = '<p>Sample text</p>';
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(
+                Config::XML_PATH_AW_REWARDPOINTS_PRODUCT_PROMO_TEXT_REGISTERED,
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            )
+            ->willReturn($text);
+
+        $this->assertEquals($text, $this->object->getProductPromoTextForRegisteredCustomers($storeId));
+    }
+
+    /**
+     * Test getProductPromoTextForNotLoggedInVisitors method
+     */
+    public function testGetProductPromoTextForNotLoggedInVisitors()
+    {
+        $storeId = 1;
+        $text = '<p>Sample text</p>';
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(
+                Config::XML_PATH_AW_REWARDPOINTS_PRODUCT_PROMO_TEXT_NOT_LOGGED_IN,
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            )
+            ->willReturn($text);
+
+        $this->assertEquals($text, $this->object->getProductPromoTextForNotLoggedInVisitors($storeId));
+    }
+
+    /**
+     * Test getDefaultCustomerGroupIdForGuest method
+     */
+    public function testGetDefaultCustomerGroupIdForGuest()
+    {
+        $storeId = 1;
+        $customerGroupId = '2';
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(
+                Config::XML_PATH_DEFAULT_CUSTOMER_GROUP_ID,
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            )
+            ->willReturn($customerGroupId);
+
+        $this->assertEquals($customerGroupId, $this->object->getDefaultCustomerGroupIdForGuest($storeId));
     }
 }

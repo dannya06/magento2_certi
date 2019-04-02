@@ -5,7 +5,7 @@
  /*jshint browser:true jquery:true*/
  define([
     "jquery",
-    "tinymce",
+    "wysiwygAdapter",
     "Magento_Ui/js/modal/prompt",
     "Magento_Ui/js/modal/confirm",
     "Magento_Ui/js/modal/alert",
@@ -208,7 +208,7 @@
                 }
                 $('.modals-overlay').remove();
                 $('body').removeClass("_has-modal");
-                $('.modal-slide').removeClass("_show");
+                $('.modal-slide').last().removeClass("_show");
                 $('.loading-old, .loading-mask').css({"z-index":""});
                 $('.loading-mask').hide();
                 $('[role="dialog"]').show().addClass("vespoupp");

@@ -65,6 +65,16 @@ class Save extends \Magento\Backend\App\Action
         $this->_exportHelper = $exportHelper;
         $this->_filesystem = $filesystem;
     }
+     /**
+     * Check the permission to run it
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Ves_Setup::export');
+
+    }//end _isAllowed()
 
     /**
      * Forward to edit

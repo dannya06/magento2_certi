@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Setup;
 
@@ -47,6 +47,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         if (version_compare($context->getVersion(), '2.5.0', '<')) {
             $this->addCustomerSalesIndexes($setup);
+        }
+
+        if (version_compare($context->getVersion(), '2.7.0', '<')) {
+            $this->addPointsCreditColumn($setup);
         }
     }
 
@@ -4322,5 +4326,44 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
             )->setComment('Arep Customer Sales Range');
         $installer->getConnection()->createTable($table);
+    }
+
+    /**
+     * Add pints and credit column to index table
+     *
+     * @param SchemaSetupInterface $installer
+     * @return $this
+     */
+    private function addPointsCreditColumn(SchemaSetupInterface $installer)
+    {
+        $connection = $installer->getConnection();
+        $orderBasedIdxTables = [
+            'aw_arep_sales_overview',
+            'aw_arep_sales_overview_idx',
+            'aw_arep_sales_overview_coupon_code',
+            'aw_arep_sales_overview_coupon_code_idx',
+            'aw_arep_location',
+            'aw_arep_location_idx',
+            'aw_arep_coupon_code',
+            'aw_arep_coupon_code_idx',
+            'aw_arep_payment_type',
+            'aw_arep_payment_type_idx',
+        ];
+
+        foreach ($orderBasedIdxTables as $table) {
+            $connection->addColumn(
+                $installer->getTable($table),
+                'other_discount',
+                [
+                    'type'      => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length'    => '12,4',
+                    'nullable'  => false,
+                    'after'     => 'discount',
+                    'comment'   => 'Other Discounts'
+                ]
+            );
+        }
+
+        return $this;
     }
 }

@@ -47,7 +47,7 @@ class ViewPreprocessorAbstract {
      * @param $result
      * @return mixed
      */
-    protected function _getContent($result) {
+    protected function _getContent($subject, $result) {
         /** Default custom less variables used in theme */
         $replaceString = '@icon_label__font-size: 12px;' . PHP_EOL;
         $replaceString .= '@icon__font-size: 16px;' . PHP_EOL;
@@ -58,16 +58,40 @@ class ViewPreprocessorAbstract {
         $replaceString .= '@breadcrumbs__font-style: italic;' . PHP_EOL;
 
         $storeCode = $this->_storage->getData('generation_store_code');
+        $isPearlResource = true;
 
         /** Request directly from url, direct css fetching */
         if (!$storeCode) {
             $resource = $this->_request->getParam('resource', false);
+            if (strpos($resource, 'adminhtml/') === 0 ) {
+                return $result;
+            }
             if ($resource) {
                 $storeCode = $this->_storeManager->getStore()->getCode();
+                $isPearlResourceNeeded = strpos($resource, 'frontend/Pearl/');
+                if ($isPearlResourceNeeded === false) {
+                    $isPearlResource = false;
+                }
+            } else {
+                /** Grunt less generation fix */
+                if ($subject instanceof \Magento\Framework\View\Asset\PreProcessor\Chain) {
+                    $targetPath = $subject->getTargetAssetPath();
+                    $pathOptions = explode('/', $targetPath);
+                    $isPearlResourceNeeded = strpos($targetPath, 'frontend/Pearl/');
+                    if ($isPearlResourceNeeded === false) {
+                        $isPearlResource = false;
+                    } elseif (isset($pathOptions[5]) && in_array($pathOptions[5], ['styles-m.less', 'styles-l.less'])) {
+                        $storeThemesLocales = $this->utilityHelper->getStoreThemesLocales();
+                        $themePath = $pathOptions['1'] . '/' . $pathOptions[2] . '/' . $pathOptions[3];
+                        if (isset($storeThemesLocales[$themePath])) {
+                            $storeCode = $storeThemesLocales[$themePath];
+                        }
+                    }
+                }
             }
         }
 
-        if ($storeCode) {
+        if ($isPearlResource && $storeCode) {
             if ($this->utilityHelper->isPearlThemeUsed($storeCode)) {
                 $replaceString = "@import '../WeltPixel_FrontendOptions/css/source/module/_store_" . $storeCode . "_extend.less';";
             }

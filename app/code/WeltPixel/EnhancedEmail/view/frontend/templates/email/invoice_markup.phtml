@@ -1,0 +1,71 @@
+<?php
+$_invoice = $block->getInvoice();
+$markup = '';
+if (is_object($_invoice)) {
+    $_order = $_invoice->getOrder();
+    $_store = $this->getStoreData();
+    $_payment = $_order->getPayment();
+    $_paymentInfo = $_order->getPayment()->getMethodInstance();
+    $markup = '<script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "Invoice",
+                  "accountId": "' . $_order->getCustomerId() . '",
+                  "url": "' . $this->getFrontUrl('sales/order/invoice', array('order_id' => $_order->getId())) . '",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "url": "' . $this->getFrontUrl('sales/order/invoice', array('order_id' => $_order->getId())) . '"
+                  },
+                  "minimumPaymentDue": {
+                    "@type": "PriceSpecification",
+                    "price": "' . $this->getFormatedPrice($_invoice->getGrandTotal()) . '"
+                  },
+                  "paymentDue": "' . $this->getFormatedDate($_order->getCreatedAt()) . '",
+                  "paymentMethod": "' . $_paymentInfo->getTitle() . '",
+                  "paymentMethodId": "' . $_payment->getMethod() . '",
+                  "provider": {
+                    "@type": "Organization",
+                    "name": "' . $_store->getFrontendName() . '"
+                  },
+                  "totalPaymentDue": {
+                    "@type": "PriceSpecification",
+                    "price": "' . $this->getFormatedPrice($_invoice->getGrandTotal()) . '"
+                  }
+                }
+            </script>';
+} else {
+    $markup = '
+        <pre>
+            &lt;<span>script type="application/ld+json"</span><span>></span>
+                {
+                  "@context": "http://schema.org",
+                  "@type": "Invoice",
+                  "accountId": "123-456-789",
+                  "url": "https://www.example.com/orderID=123-4567890-1234567",
+                    "potentialAction": {
+                    "@type": "ViewAction",
+                        "url": "https://www.example.com/orderID=123-4567890-1234567"
+                    }
+                    }
+                  "minimumPaymentDue": {
+                    "@type": "PriceSpecification",
+                    "price": "$199.99"
+                  },
+                  "paymentDue": "2015-11-22T08:00:00+00:00",
+                  "paymentStatus": "PaymentAutomaticallyApplied",
+                  "provider": {
+                    "@type": "Organization",
+                    "name": "Organization Name"
+                  },
+                  "totalPaymentDue": {
+                    "@type": "PriceSpecification",
+                    "price": "$199.99"
+                  }
+                }
+            &lt;<span>/script</span>>
+        </pre>
+    ';
+}
+?>
+
+<?= $markup ?>

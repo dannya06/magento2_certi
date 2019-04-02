@@ -17,7 +17,7 @@ $_helper = $this->helper('WeltPixel\ThankYouPage\Helper\Data');
                             "config": {
                                 "registrationUrl": "<?= /* @escapeNotVerified */ $block->getCreateAccountUrl() ?>",
                                 "email": "<?= /* @escapeNotVerified */ $block->getEmailAddress() ?>",
-                                "template": "WeltPixel_ThankYouPage/registration",
+                                "template": "<?= $_helper->getRegistrationTemplate() ?>",
                                 "description": <?= json_encode(nl2br($_helper->getCreateAccountDescription())) ?>,
                                 "emailLabel": <?= json_encode($_helper->getCreateAccountEmailLabel())  ?>,
                                 "afterCreationLabel": <?= json_encode(nl2br($_helper->getCreateAccountAfterCreationLabel())) ?>

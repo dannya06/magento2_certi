@@ -4,28 +4,40 @@ define(['jquery', 'jquery/ui', 'domReady'], function ($) {
     var quickcart =
         {
             initialize: function() {
-                if (this.getIsEnabled()) {
-                    $('.quickcart-content-wrapper').on('click', '.qty-update', function () {
-                        quickcart.updateQty($(this));
-                    });
-                    $('.showcart').on('click', function () {
-                        quickcart.checkSafariBrowser($(this));
-                    });
-                    if (this.openMinicart()) {
-                        var minicart = $('.minicart-wrapper');
-                        minicart.on('contentLoading', function () {
-                            minicart.on('contentUpdated', function () {
-                                minicart.find('[data-role="dropdownDialog"]').dropdownDialog("open");
-                            });
-                        });
+                var ua = window.navigator.userAgent;
+                var msie = ua.indexOf("MSIE ");
+
+                $('.quickcart-content-wrapper').on('click', '.qty-update', function () {
+                    quickcart.updateQty($(this));
+                });
+                $('.showcart').on('click', function () {
+                    if(quickcart.checkSafariBrowser()){
+                        $('.page-wrapper').css('overflow-x','visible');
                     }
-                }
-            },
-            getIsEnabled: function () {
-                if (window.quickcartEnabled == 1) {
-                    return true;
-                } else {
-                    return false;
+                    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)){
+                        $('.block-quickcart').addClass('quickCartIE');
+                    }
+                });
+                $('.quickcart-content-wrapper').on('click', '.close', function () {
+                    $('.page-wrapper').css('overflow-x','hidden');
+                    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)){
+                        $('.block-quickcart').removeClass('quickCartIE');
+                    }
+                });
+                $('.quickcart-content-wrapper').on('click', '.product-item-photo, .product-item-name a', function () {
+                    var href = $(this).attr('href');
+                    window.location.href = href;
+                });
+                if (this.openMinicart()) {
+                    var minicart = $('.minicart-wrapper');
+                    minicart.on('contentLoading', function () {
+                        minicart.on('contentUpdated', function () {
+                            if(quickcart.checkSafariBrowser()){
+                                $('.page-wrapper').css('overflow-x','visible');
+                            }
+                            minicart.find('[data-role="dropdownDialog"]').dropdownDialog("open");
+                        });
+                    });
                 }
             },
             openMinicart: function() {
@@ -65,12 +77,12 @@ define(['jquery', 'jquery/ui', 'domReady'], function ($) {
             deleteCartItem: function (el) {
                 el.closest('.product-item-details').find('.product .action.delete').trigger('click');
             },
-            checkSafariBrowser: function (el) {
+            checkSafariBrowser: function () {
                 var is_safari =  navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1 &&  navigator.userAgent.indexOf('Android') == -1
                 if (is_safari){
-                    $('.page-wrapper').css('overflow-x','visible')
+                    return true;
                 }else{
-                    $('.page-wrapper').css('overflow-x','hidden')
+                    return false;
                 }
             }
         };

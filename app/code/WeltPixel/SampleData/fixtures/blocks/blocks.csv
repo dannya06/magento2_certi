@@ -14,7 +14,7 @@ title,identifier,content,is_active
 <div class=""col-sm-3 col-xs-6"">
 <i class=""footer-icon icon-line-clock""></i>
 <p class=""pre-footer-subtitle"">24/7 Support</p>
-<p class=""pre-footer-title"">1-800-000-0000</p>
+<a href=""tel:1-800-000-0000""><p class=""pre-footer-title"">1-800-000-0000</p></a>
 </div>
 
 <div class=""col-sm-3 col-xs-6"">
@@ -35,16 +35,16 @@ title,identifier,content,is_active
    <div class=""footer-v1-content"">
       <div class=""col-sm-3 col-xs-12 nopaddingleft"">
      		<h4 class=""mini-logo""><img alt=""Logo"" src=""{{media url=""wysiwyg/pearl_theme/pearl_logo.png""}}"" style=""width:100px""></h4>
-            <p>New York, NY, 00841</p>
-	         <p>1-800-000-0000</p>
-	         <p>yourmail@yourdomain.com</p>
+            <a href=""https://www.google.com/maps/search/City+Hall,+New+York,+NY/@40.5055317,-75.2220421,6.71z""><p>New York, NY, 00841</p></a>
+            <a href=""tel:1-800-000-0000""><p>1-800-000-0000</p></a>
+            <a href=""mailto:support@weltpixel.com""><p>support@weltpixel.com</p></a>
       </div>
       <div class=""col-sm-3 col-xs-12 nopaddingleft"">
          <p class=""footer-title"">Pearl Theme</p>
          <ul class=""footer links"">
             <li class=""nav item""><a href=""https://www.weltpixel.com/magento-2-theme-pearl/"" target=""_blank"">Buy Pearl Theme</a></li>
             <li class=""nav item""><a href=""https://www.weltpixel.com/resources/PearlTheme/User-Guide-WeltPixel-Pearl-Theme-Magento2.html"" target=""_blank"">User Guide</a></li>
-            <li class=""nav item""><a href=""http://pearl.weltpixel.com/pearl.weltpixel.com/admin/demologin"" target=""_blank"">Demo Admin</a></li>
+            <li class=""nav item""><a href=""http://pearl.weltpixel.com/admin/demologin"" target=""_blank"">Demo Admin</a></li>
             <li class=""nav item""><a href=""https://support.weltpixel.com/hc/en-us"" target=""_blank"">Help Center</a></li>
          </ul>
       </div>

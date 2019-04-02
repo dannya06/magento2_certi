@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model;
 
@@ -196,6 +196,22 @@ class PointsSummary extends \Magento\Framework\Model\AbstractModel implements Po
     public function getDailySharePointsDate()
     {
         return $this->getData(self::DAILY_SHARE_POINTS_DATE);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    public function setMonthlySharePointsDate($monthlySharePointsDate)
+    {
+        return $this->setData(self::MONTHLY_SHARE_POINTS_DATE, $monthlySharePointsDate);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    public function getMonthlySharePointsDate()
+    {
+        return $this->getData(self::MONTHLY_SHARE_POINTS_DATE);
     }
 
     /**

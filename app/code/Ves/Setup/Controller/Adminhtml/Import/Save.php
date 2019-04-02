@@ -90,6 +90,16 @@ class Save extends \Magento\Backend\App\Action
         $this->_vesImport        = $vesImport;
         $this->mediaConfig       = $mediaConfig;
     }
+    /**
+     * Check the permission to run it
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Ves_Setup::import');
+
+    }//end _isAllowed()
 
     /**
      * Forward to edit
@@ -143,9 +153,10 @@ class Save extends \Magento\Backend\App\Action
                         $tables = $_module['tables'];
                         foreach ($tables as $tablename => $rows) {
                             $table_name = $this->_resource->getTableName($tablename);
+                            $exist = false;
                             $connection->query("SET FOREIGN_KEY_CHECKS=0;");
                             if(false !== strpos($table_name, "ves_")){
-                                $exist = false;
+                                
                                 $check_query = "SHOW TABLES LIKE '".$table_name."'";
                                 $total = $connection->fetchAll($check_query);
                                 if(count($total) > 0) {
@@ -154,6 +165,9 @@ class Save extends \Magento\Backend\App\Action
                                 if(!$overwrite && $exist) {
                                     //$connection->query("TRUNCATE `".$table_name."`");
                                 }
+                            }
+                            if((false !== strpos($table_name, "cms_page")) || (false !== strpos($table_name, "cms_block")) ){
+                                $exist = true;
                             }
                             if($overwrite) {
                                 // Overide CMS Page, Static Block

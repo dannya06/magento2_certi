@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\Service;
 
@@ -71,6 +71,7 @@ class TransactionService implements TransactionManagementInterface
         $commentToCustomer = null,
         $commentToCustomerPlaceholder = null,
         $commentToAdmin = null,
+        $commentToAdminPlaceholder = null,
         $websiteId = null,
         $transactionType = TransactionType::BALANCE_ADJUSTED_BY_ADMIN,
         $arguments = []
@@ -99,6 +100,7 @@ class TransactionService implements TransactionManagementInterface
         $transaction->setCommentToCustomer($commentToCustomer);
         $transaction->setCommentToCustomerPlaceholder($commentToCustomerPlaceholder);
         $transaction->setCommentToAdmin($commentToAdmin);
+        $transaction->setCommentToAdminPlaceholder($commentToAdminPlaceholder);
         $transaction->setType($transactionType);
         $transaction->setStatus($status);
         $transaction->setCreatedBy($adminUserId);

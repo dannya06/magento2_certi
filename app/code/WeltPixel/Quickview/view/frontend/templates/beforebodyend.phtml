@@ -1,35 +1,18 @@
+<?php
+$_helper = $this->helper('WeltPixel\Quickview\Helper\Data');
+$customCss = $_helper->getCustomCSS();
+$zoomType = $_helper->getZoomType();
+?>
 <script>
     require(["jquery", 'underscore', 'Magento_Ui/js/modal/modal'], function ($, _, modal) {
+        <?php if ($zoomType == 'hover') : ?>
         $(document).ready(function() {
-            var documentPadding = 50;
-            var firstAttempt = true;
-            var lastHeight = 0, curHeight = 0;
-            var parentBody = window.parent.document.body;
-            $('.mfp-preloader', parentBody).css('display', 'none');
-            $('.mfp-iframe-holder .mfp-content', parentBody).css('width', '100%');
-
-            $('.mfp-iframe-scaler iframe', parentBody).animate({'opacity': 1}, 2000);
-            $('.reviews-actions a').attr('target', '_parent');
-            $('.product-social-links a').attr('target', '_parent');
-            $('body').css('overflow', 'hidden');
-
-            setInterval(function(){
-                if (firstAttempt) {
-                    curHeight =  $('.page-wrapper').outerHeight(true) + documentPadding;
-                } else {
-                    curHeight =  $('.page-wrapper').outerHeight(true);
-                }
-                documentHeight =  curHeight + "px";
-                if ( curHeight != lastHeight ) {
-                    $('.mfp-iframe-holder .mfp-content', parentBody).animate({
-                        'height': documentHeight
-                    }, 500);
-                    lastHeight = curHeight;
-                    firstAttempt = false;
-                }
-            }, 500);
+            $('.fotorama__stage').live('mouseleave', function() {
+                $('.magnify-lens').addClass('magnify-hidden');
+                $('.magnifier-preview').addClass('magnify-hidden');
+            });
         });
-
+        <?php endif; ?>
         /** Events listener **/
         $(document).on('ajaxComplete', function (event, xhr, settings) {
             var parentBody = window.parent.document.body;
@@ -41,14 +24,14 @@
                 if (_.isObject(result.messages)) {
                     var messageLength = result.messages.messages.length;
                     var message = result.messages.messages[0];
-                    if (messageLength && message.type == 'success') {
+                    if (messageLength) {
                         cartMessage = message.text;
                     }
                 }
                 if (_.isObject(result.cart) && _.isObject(result.messages)) {
                     var messageLength = result.messages.messages.length;
                     var message = result.messages.messages[0];
-                    if (messageLength && message.type == 'success') {
+                    if (messageLength) {
                         cartMessage = message.text;
                     }
                 }
@@ -96,10 +79,6 @@
         });
     });
 </script>
-<?php
-$_helper = $this->helper('WeltPixel\Quickview\Helper\Data');
-$customCss = $_helper->getCustomCSS();
-?>
 <?php if (strlen($customCss)) : ?>
 <style>
 <?php echo $customCss; ?>

@@ -60,7 +60,7 @@ class MobileImage extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Abs
             $imageSrc = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA)
                 . $banner->getMobileImage();
 
-            return '<image width="150" height="50" src ="' . $imageSrc . '" alt="' . $banner->getMobileImage() . '" >';
+            return '<image width="150" src ="' . $imageSrc . '" alt="' . $banner->getMobileImage() . '" />';
         }
 
         return '';

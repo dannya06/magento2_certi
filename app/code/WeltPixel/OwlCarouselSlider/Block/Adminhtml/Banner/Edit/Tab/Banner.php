@@ -193,7 +193,7 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
         if ($slider->getId()) {
             $elements['slider_id'] = $fieldset->addField(
                 'slider_id',
-                'select',
+                'multiselect',
                 [
                     'label'    => __('Slider'),
                     'name'     => 'slider_id',
@@ -211,7 +211,7 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
         } else {
             $elements['slider_id'] = $fieldset->addField(
                 'slider_id',
-                'select',
+                'multiselect',
                 [
                     'label'    => __('Slider'),
                     'name'     => 'slider_id',
@@ -231,7 +231,7 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
                 'label'    => __('URL'),
                 'name'     => 'url',
                 'required' => false,
-                'note'    => 'Set the URL where the banner/button should link when clicked on. URL Note 1: set the URL without your store base url, ex. /women.html; URL Note 2: if 
+                'note'    => 'Set the URL where the banner/button/custom HTML content should link when clicked on. URL Note 1: set the URL without your store base url, ex. /women.html; URL Note 2: if 
                 "Text Button" option is filled, URL will be linked to the button instead of banner.',
             ]
         );
@@ -310,7 +310,7 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
                 'label'    => __('Button Text'),
                 'name'     => 'button_text',
                 'required' => false,
-                'note'     => __('Insert the text which is displayed on the button. To display the button make sure you fill the URL filed also.')
+                'note'     => __('Insert the text which is displayed on the button. To display the button make sure you fill the URL field also.')
             ]
         );
 
@@ -410,6 +410,22 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
                 'required' => false,
             ]
         );
+
+        $elements['wrap_link'] = $fieldset->addField(
+            'wrap_link',
+            'select',
+            [
+                'name'     => 'wrap_link',
+                'label'    => __('Set Link For Custom HTML Content'),
+                'title'    => __('Wrap Link'),
+                'required' => false,
+                'options'  => [
+                    1 => __('Yes'),
+                    0 => __('No'),
+                ],
+                'note'    => 'If set to YES, custom HTML content block will be set as link/anchor. Make sure you fill the URL field also. '
+            ]
+        );
     
         $elements['custom_css'] = $fieldset->addField(
             'custom_css',
@@ -423,9 +439,9 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
             ]
         );
         
-        $dateFormat = $this->_localeDate->getDateFormat();
+        $dateFormat = $this->_localeDate->getDateFormatWithLongYear();
         $timeFormat = $this->_localeDate->getTimeFormat();
-        
+
         if ($dataObj->hasData('valid_from')) {
             $datetime = new \DateTime($dataObj->getData('valid_from'));
             $dataObj->setData('valid_from',

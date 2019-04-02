@@ -24,6 +24,11 @@ class Updater implements Setup\SampleData\InstallerInterface
     /**
      * @var array
      */
+    private $blockIds;
+
+    /**
+     * @var array
+     */
     private $blocksToCreate;
 
     /**
@@ -44,6 +49,7 @@ class Updater implements Setup\SampleData\InstallerInterface
         $this->blocksToCreate = [];
         $this->pagesToCreate = [];
         $this->sliderIds = null;
+        $this->blockIds = null;
     }
 
     /**
@@ -60,9 +66,10 @@ class Updater implements Setup\SampleData\InstallerInterface
      * @param array $sliderIds
      * @return $this
      */
-    public function setPagesToCreate($pagesCsv, $sliderIds = null) {
+    public function setPagesToCreate($pagesCsv, $sliderIds = null, $blockIds = null) {
         array_push($this->pagesToCreate, $pagesCsv);
         $this->sliderIds = $sliderIds;
+        $this->blockIds = $blockIds;
         return $this;
     }
 
@@ -72,7 +79,7 @@ class Updater implements Setup\SampleData\InstallerInterface
     public function install()
     {
         if (count($this->pagesToCreate)) {
-            $this->page->install($this->pagesToCreate, $this->sliderIds);
+            $this->page->install($this->pagesToCreate, $this->sliderIds, $this->blockIds);
         }
         if (count($this->blocksToCreate)) {
             $this->block->install($this->blocksToCreate);
@@ -81,5 +88,6 @@ class Updater implements Setup\SampleData\InstallerInterface
         $this->pagesToCreate = [];
         $this->blocksToCreate = [];
         $this->sliderIds = null;
+        $this->blockIds = null;
     }
 }

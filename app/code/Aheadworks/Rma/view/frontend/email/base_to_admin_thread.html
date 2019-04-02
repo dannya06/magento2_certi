@@ -4,7 +4,7 @@
 <p>
     {{trans
         'Customer %customer_name has added a new comment to RMA <a href="%admin_url">#%request_text_id</a>'
-        admin_url=$request.getAdminUrl() request_text_id=$request.getTextId()
+    customer_name=$request.getCustomerName() admin_url=$request.getAdminUrl() request_text_id=$request.getTextId()
     |raw}}
 </p>
 <p>

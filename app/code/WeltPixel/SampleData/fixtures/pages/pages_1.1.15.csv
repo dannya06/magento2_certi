@@ -1,13 +1,13 @@
 title,page_layout,meta_keywords,meta_description,identifier,content_heading,content,is_active,sort_order,layout_update_xml,custom_theme,custom_root_template,custom_layout_update_xml,custom_theme_from,custom_theme_to,css_global,css_phone_small,css_phone,css_tablet_small,css_tablet,css_desktop,css_desktop_large,custom_js
 "Home Page V12",1column,,,home-page-v12,"","
 <div class=""container-v12 slider-v1-cat"">
-    {{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Category"" category=""category/24""}}
+    {{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Category"" category=""category/24"" type_name=""WeltPixel - Custom Category Product Carousel""}}
 </div>
 <div class=""container-v12"">
     {{widget_nr_1}}
 </div>
 <div class=""container-v12 slider-v2-cat"">
-    {{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Category"" category=""category/24""}}
+    {{widget type=""WeltPixel\OwlCarouselSlider\Block\Slider\Category"" category=""category/24"" type_name=""WeltPixel - Custom Category Product Carousel""}}
 </div>
 <div class=""container-v12"">
     <div class=""scaled-text-base"">
@@ -76,7 +76,7 @@ Use this flexible solution and grow your business.</span></h3>
 </div>
 <div class=""container-v12"">
     <div class=""row-instagram-v12 nomarginleft"">
-        {{widget type=""WeltPixel\InstagramWidget\Block\Widget\Instagram"" instagram_client_id=""e21514b30c9d44d4b48c52bade4b56ed"" instagram_access_token=""6199620633.e21514b.092dd49e04644ff588ea1e0d78c8e09a"" title=""#PEARL GLASSES ON INSTAGRAM"" description=""Pearl Theme. We would love to meet you."" images_per_row=""col-6"" limit=""6"" sort_by=""none"" resolution=""standard_resolution"" feed_type=""tagged"" tag_name=""pearlglasses""}}
+        {{widget type=""WeltPixel\InstagramWidget\Block\Widget\Instagram"" instagram_client_id=""e21514b30c9d44d4b48c52bade4b56ed"" instagram_access_token=""6199620633.e21514b.092dd49e04644ff588ea1e0d78c8e09a"" title=""#PEARL GLASSES ON INSTAGRAM"" description=""Pearl Theme. We would love to meet you.""  images_per_row=""col-6""  limit=""6""  sort_by=""none"" resolution=""standard_resolution"" feed_type=""user"" user_id=""6199620633""}}
     </div>
 </div>
 ",1,,,,,,,,"

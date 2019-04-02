@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model;
 
@@ -134,6 +134,22 @@ class Transaction extends \Magento\Framework\Model\AbstractModel implements Tran
     public function getCommentToAdmin()
     {
         return $this->getData(self::COMMENT_TO_ADMIN);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCommentToAdminPlaceholder($commentToAdminPlaceholder)
+    {
+        return $this->setData(self::COMMENT_TO_ADMIN_PLACEHOLDER, $commentToAdminPlaceholder);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCommentToAdminPlaceholder()
+    {
+        return $this->getData(self::COMMENT_TO_ADMIN_PLACEHOLDER);
     }
 
     /**

@@ -2,9 +2,7 @@
 namespace Aheadworks\SocialLogin\Model\Account;
 
 use Aheadworks\SocialLogin\Api\Data\AccountInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Asset\Repository as AssetRepository;
-
 
 /**
  * Class ImageProvider

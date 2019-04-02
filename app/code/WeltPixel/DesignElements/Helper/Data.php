@@ -50,4 +50,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 			'scrollTopDuration' => $this->_elementsOptions['general']['btt_duration'],
 		);
 	}
+
+    /**
+     * @return bool
+     */
+	public function isResponsiveHelpersEnabled() {
+        return $this->_elementsOptions['general']['responsive_helpers'];
+    }
 }

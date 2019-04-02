@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model;
 
@@ -18,6 +18,7 @@ class Config
      * Constants for config path.
      */
     const XML_PATH_SHIPPING_INCLUDES_TAX = 'tax/calculation/shipping_includes_tax';
+    const XML_PATH_DEFAULT_CUSTOMER_GROUP_ID = 'customer/create_account/default_group';
     const XML_PATH_AW_REWARDPOINTS_POINTS_EARNING_CALCULATION =
         'aw_rewardpoints/calculation/points_earning_calculation';
     const XML_PATH_AW_REWARDPOINTS_IS_APPLYING_POINTS_TO_SHIPPING =
@@ -48,6 +49,12 @@ class Config
     const XML_PATH_AW_REWARDPOINTS_IS_DISPLAY_DISCOUNT_INFO = 'aw_rewardpoints/frontend/is_display_discount_info';
     const XML_PATH_AW_REWARDPOINTS_IS_DISPLAY_SHARE_LINKS = 'aw_rewardpoints/frontend/is_display_social_button';
     const XML_PATH_AW_REWARDPOINTS_FRONTED_EXPLAINER_PAGE = 'aw_rewardpoints/frontend/rewardpoints_program_page';
+    const XML_PATH_AW_REWARDPOINTS_CATEGORY_PRODUCT_PROMO_TEXT
+        = 'aw_rewardpoints/frontend/category_product_promo_text';
+    const XML_PATH_AW_REWARDPOINTS_PRODUCT_PROMO_TEXT_REGISTERED
+        = 'aw_rewardpoints/frontend/product_promo_text_registered';
+    const XML_PATH_AW_REWARDPOINTS_PRODUCT_PROMO_TEXT_NOT_LOGGED_IN
+        = 'aw_rewardpoints/frontend/product_promo_text_not_logged_in';
     const XML_PATH_AW_REWARDPOINTS_SENDER_IDENTITY =
         'aw_rewardpoints/notifications/email_sender';
     const XML_PATH_AW_REWARDPOINTS_BALANCE_UPDATE_TEMPLATE_IDENTITY =
@@ -370,15 +377,60 @@ class Config
     /**
      * Retrieve config value for Reward program explainer page on Frontend
      *
-     * @param null|int $websiteId
+     * @param null|int $storeId
      * @return string
      */
-    public function getFrontendExplainerPage($websiteId = null)
+    public function getFrontendExplainerPage($storeId = null)
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_AW_REWARDPOINTS_FRONTED_EXPLAINER_PAGE,
-            ScopeInterface::SCOPE_WEBSITE,
-            $websiteId
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    /**
+     * Retrieve config value for product promo text on categories
+     *
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getCategoryProductPromoText($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_AW_REWARDPOINTS_CATEGORY_PRODUCT_PROMO_TEXT,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    /**
+     * Retrieve config value for product promo text for registered customers
+     *
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getProductPromoTextForRegisteredCustomers($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_AW_REWARDPOINTS_PRODUCT_PROMO_TEXT_REGISTERED,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    /**
+     * Retrieve config value for product promo text for not logged in visitors
+     *
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getProductPromoTextForNotLoggedInVisitors($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_AW_REWARDPOINTS_PRODUCT_PROMO_TEXT_NOT_LOGGED_IN,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
         );
     }
 
@@ -516,6 +568,21 @@ class Config
             self::XML_PATH_AW_REWARDPOINTS_EXPIRATION_REMINDER_DAYS,
             ScopeInterface::SCOPE_WEBSITE,
             $websiteId
+        );
+    }
+
+    /**
+     * Get default customer group id for guest
+     *
+     * @param null|int $storeId
+     * @return int
+     */
+    public function getDefaultCustomerGroupIdForGuest($storeId = null)
+    {
+        return (int)$this->scopeConfig->getValue(
+            self::XML_PATH_DEFAULT_CUSTOMER_GROUP_ID,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
         );
     }
 }

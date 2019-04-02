@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Location;
 
@@ -61,6 +61,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             'tax' => 'SUM(COALESCE(main_table.tax' . $rateField . ', 0))',
             'shipping' => 'SUM(COALESCE(main_table.shipping' . $rateField . ', 0))',
             'discount' => 'SUM(COALESCE(main_table.discount' . $rateField . ', 0))',
+            'other_discount' => 'SUM(COALESCE(main_table.other_discount' . $rateField . ', 0))',
             'total' => 'SUM(COALESCE(main_table.total' . $rateField . ', 0))',
             'invoiced' => 'SUM(COALESCE(main_table.invoiced' . $rateField . ', 0))',
             'refunded' => 'SUM(COALESCE(main_table.refunded' . $rateField . ', 0))',

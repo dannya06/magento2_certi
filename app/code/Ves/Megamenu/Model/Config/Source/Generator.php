@@ -19,7 +19,7 @@
  * @license    http://www.venustheme.com/LICENSE-1.0.html
  */
 
-namespace Ves\Megamenu\Helper;
+namespace Ves\Megamenu\Model\Config\Source;
 
 class Generator extends \Magento\Framework\App\Helper\AbstractHelper
 {

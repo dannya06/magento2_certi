@@ -9,6 +9,7 @@
         <referenceBlock name="page.top" remove="true" />
         <referenceBlock name="copyright" remove="true" />
         <referenceBlock name="authentication-popup" remove="true" />
+        <referenceContainer name="page.messages" remove="true" />
         <!--remove the short description-->
         <referenceBlock name="product.info.overview">
             <action method="setTemplate" ifconfig="weltpixel_quickview/general/remove_short_description">
@@ -28,11 +29,20 @@
 
         <referenceContainer name="before.body.end">
             <block class="Magento\Framework\View\Element\Template" name="welpixel.quickview.beforebodyend" template="WeltPixel_Quickview::beforebodyend.phtml" />
+            <block class="Magento\Framework\View\Element\Template" name="welpixel.quickview.popupversion">
+                <action method="setTemplate">
+                    <argument name="template" xsi:type="helper" helper="WeltPixel\Quickview\Helper\Data::getVersionTemplate"/>
+                </action>
+            </block>
         </referenceContainer>
 
         <referenceContainer name="product.info.social" remove="true"/>
 
         <referenceBlock name="product.info.details" remove="true"/>
+
+        <referenceContainer name="content">
+            <block ifconfig="weltpixel_quickview/seo/add_canonical_link" class="WeltPixel\Quickview\Block\Canonical" name="product.canonical"  />
+        </referenceContainer>
 
         <!-- for 2.1 -->
         <referenceBlock name="product.info.addtocart">

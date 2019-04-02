@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Api\Data;
 
@@ -26,6 +26,7 @@ interface ThreadMessageInterface extends ExtensibleDataInterface
     const OWNER_NAME = 'owner_name';
     const OWNER_ID = 'owner_id';
     const IS_AUTO = 'is_auto';
+    const IS_INTERNAL = 'is_internal';
     const ATTACHMENTS = 'attachments';
     /**#@-*/
 
@@ -148,6 +149,21 @@ interface ThreadMessageInterface extends ExtensibleDataInterface
      * @return $this
      */
     public function setIsAuto($isAuto);
+
+    /**
+     * Check is internal
+     *
+     * @return bool
+     */
+    public function isInternal();
+
+    /**
+     * Set is internal
+     *
+     * @param bool $isInternal
+     * @return $this
+     */
+    public function setIsInternal($isInternal);
 
     /**
      * Get attachments

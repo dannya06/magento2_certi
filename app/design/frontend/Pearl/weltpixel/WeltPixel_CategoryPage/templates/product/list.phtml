@@ -1,8 +1,4 @@
 <?php
-/**
- * Copyright © 2015 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
 use Magento\Framework\App\Action\Action;
 
 // @codingStandardsIgnoreFile
@@ -28,7 +24,6 @@ $displaySwatches = $_weltpixelHelper->displaySwatches();
 
 /** WeltPixel_GoogleTagManager  */
 $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
-
 ?>
 
 <?php if (!$_productCollection->count()): ?>
@@ -77,11 +72,11 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
                     <?php if ($viewMode == 'grid'): ?>
                     <div class="product_image">
                         <?php endif; ?>
-                        <a <?php if ($gtmHelper->isEnabled()) :
+                        <a data-wpproductlabel="1" data-product-id="<?php echo $_product->getId() ?>" <?php if ($gtmHelper->isProductClickTrackingEnabled()) :
                                 echo $this->helper('WeltPixel\GoogleTagManager\Helper\Data')->addProductClick($_product, $iterator-1);
                             endif; ?>
                             href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">
-                            <?php echo $productImage->toHtml(); ?>
+                            <?php  echo $productImage->toHtml() ?>
                         </a>
                         <?php if (($displayWishlist != 0 && $displayWishlist != 5) || ($displayCompare != 0 && $displayCompare != 5)): ?>
                             <div class="product actions product-item-actions">
@@ -222,7 +217,9 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
         <script type="text/x-magento-init">
         {
             "[data-role=tocart-form], .form.map.checkout": {
-                "catalogAddToCart": {}
+                "catalogAddToCart": {
+                    "product_sku": "<?= /* @NoEscape */ $_product->getSku() ?>"
+                }
             }
         }
 

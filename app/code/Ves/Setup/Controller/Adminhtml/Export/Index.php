@@ -52,4 +52,14 @@ class Index extends \Magento\Backend\App\Action
             ->addBreadcrumb(__('Export'), __('Export'));
         return $resultPage;
     }
+    /**
+     * Check the permission to run it
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Ves_Setup::export');
+
+    }//end _isAllowed()
 }

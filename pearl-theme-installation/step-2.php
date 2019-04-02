@@ -30,24 +30,36 @@ $objectManager = $bootstrap->getObjectManager();
 $cli = $objectManager->get('Magento\Framework\Console\Cli');
 $cli->setAutoExit(false);
 
-
 $applicationName = 'Pearl Installation';
-$commands = [
-    'weltpixel:cleanup',
-    'weltpixel:less:generate'
-];
+
+$commands = [];
+$modulesEnable = $_POST['modulesEnable'];
+$commands['module:enable'] = [];
+foreach ($modulesEnable as $name) {
+    $commands['module:enable'][] = $name;
+}
+
+$modulesDisable = $_POST['modulesDisable'];
+$commands['module:disable'] = [];
+foreach ($modulesDisable as $name) {
+    $commands['module:disable'][] = $name;
+}
+
+$commands['cache:clean'] = [];
+$commands['setup:upgrade'] = [];
 
 $resultMsg = '';
 
 try {
-    foreach ($commands as $command) {
-        $input = new \Symfony\Component\Console\Input\ArgvInput(array(
-            $applicationName, $command
-        ));
+    foreach ($commands as $command => $params) {
+        $argvInputParams = [$applicationName, $command];
+        foreach ($params as $param) {
+            $argvInputParams[] = $param;
+        }
 
+        $input = new \Symfony\Component\Console\Input\ArgvInput($argvInputParams);
         $output = new Symfony\Component\Console\Output\BufferedOutput();
         $cli->run($input, $output);
-
         $content = $output->fetch();
 
         $resultMsg .= str_replace(PHP_EOL, "<br/>", $content);

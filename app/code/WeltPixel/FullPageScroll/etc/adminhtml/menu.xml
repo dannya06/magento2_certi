@@ -11,7 +11,7 @@
 		/>
 		<add
 				id="WeltPixel_FullPageScroll::FullPageScroll"
-				title="Full Page Scroll"
+				title="Full Page Scroll Settings"
 				module="WeltPixel_FullPageScroll"
 				action="adminhtml/system_config/edit/section/weltpixel_fullpagescroll/"
 				sortOrder="60"

@@ -2,12 +2,20 @@
 namespace Aheadworks\SocialLogin\Model;
 
 use Aheadworks\SocialLogin\Api\Data\AccountInterface;
+use Aheadworks\SocialLogin\Model\ResourceModel\Account as AccountResource;
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Registry;
+use Magento\Framework\Stdlib\DateTime\DateTimeFactory;
 
 /**
  * Class Account
  */
-class Account extends \Magento\Framework\Model\AbstractModel implements AccountInterface
+class Account extends AbstractModel implements AccountInterface
 {
     /**
      * @var CustomerRepositoryInterface
@@ -15,26 +23,26 @@ class Account extends \Magento\Framework\Model\AbstractModel implements AccountI
     protected $customerRepository;
 
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\DateTimeFactory
+     * @var DateTimeFactory
      */
     protected $dateTimeFactory;
 
     /**
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
+     * @param Context $context
+     * @param Registry $registry
      * @param CustomerRepositoryInterface $customerRepository
-     * @param \Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateTimeFactory
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
+     * @param DateTimeFactory $dateTimeFactory
+     * @param AbstractResource $resource
+     * @param AbstractDb $resourceCollection
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
+        Context $context,
+        Registry $registry,
         CustomerRepositoryInterface $customerRepository,
-        \Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateTimeFactory,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        DateTimeFactory $dateTimeFactory,
+        AbstractResource $resource = null,
+        AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
@@ -47,7 +55,7 @@ class Account extends \Magento\Framework\Model\AbstractModel implements AccountI
      */
     protected function _construct()
     {
-        $this->_init('Aheadworks\SocialLogin\Model\ResourceModel\Account');
+        $this->_init(AccountResource::class);
     }
 
     /**
@@ -189,7 +197,7 @@ class Account extends \Magento\Framework\Model\AbstractModel implements AccountI
     /**
      * {@inheritdoc}
      */
-    public function setCustomer(\Magento\Customer\Api\Data\CustomerInterface $customer)
+    public function setCustomer(CustomerInterface $customer)
     {
         return $this->setCustomerId($customer->getId());
     }

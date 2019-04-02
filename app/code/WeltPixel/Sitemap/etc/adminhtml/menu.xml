@@ -11,7 +11,7 @@
         />
         <add
                 id="WeltPixel_Sitemap::Sitemap"
-                title="Sitemap"
+                title="Sitemap Settings"
                 module="WeltPixel_Sitemap"
                 action="weltpixelsitemap/sitemap"
                 sortOrder="10"

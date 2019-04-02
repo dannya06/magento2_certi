@@ -8,7 +8,6 @@
             <parameter name="product_id" xsi:type="block" visible="true" required="true" sort_order="10">
                 <label translate="true">Product</label>
                 <description>Select the product</description>
-                <!--<block class="Magento\Cms\Block\Adminhtml\Block\Widget\Chooser">-->
                 <block class="WeltPixel\ReviewsWidget\Block\Adminhtml\Widget\ProductChooser">
                     <data>
                         <item name="button" xsi:type="array">

@@ -94,6 +94,13 @@ class InstallSchema implements InstallSchemaInterface
                 255,
                 ['nullable' => true, 'default' => ''],
                 'Banner Url'
+            )
+            ->addColumn(
+                'wrap_link',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                null,
+                ['nullable' => true, 'default' => '0'],
+                'Wrap Link'
             )->addColumn(
                 'target',
                 \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,

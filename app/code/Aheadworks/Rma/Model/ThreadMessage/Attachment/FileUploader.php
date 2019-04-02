@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\ThreadMessage\Attachment;
 
@@ -84,6 +84,7 @@ class FileUploader
             $result['url'] = $this->getMediaUrl($result['file']);
             $result['full_path'] = $this->getFullPath($result);
             $result['file_name'] = $result['file'];
+            $result['id'] = base64_encode($result['file_name']);
         } catch (\Exception $e) {
             $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
         }

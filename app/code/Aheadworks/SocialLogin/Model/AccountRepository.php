@@ -2,7 +2,7 @@
 namespace Aheadworks\SocialLogin\Model;
 
 use Aheadworks\SocialLogin\Api\AccountRepositoryInterface;
-use Aheadworks\SocialLogin\Api\Data;
+use Aheadworks\SocialLogin\Api\AccountSearchInterface;
 use Aheadworks\SocialLogin\Api\Data\AccountInterface;
 use Aheadworks\SocialLogin\Exception\InvalidSocialAccountException;
 use Aheadworks\SocialLogin\Model\ResourceModel\Account\CollectionFactory as AccountCollectionFactory;
@@ -10,6 +10,9 @@ use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
+/**
+ * Class AccountRepository.
+ */
 class AccountRepository implements AccountRepositoryInterface
 {
     /**
@@ -28,18 +31,26 @@ class AccountRepository implements AccountRepositoryInterface
     protected $accountCollectionFactory;
 
     /**
+     * @var AccountSearchInterface
+     */
+    private $accountSearch;
+
+    /**
      * @param ResourceModel\Account $resource
      * @param AccountFactory $accountFactory
      * @param AccountCollectionFactory $accountCollectionFactory
+     * @param AccountSearchInterface $accountSearch
      */
     public function __construct(
         ResourceModel\Account $resource,
         AccountFactory $accountFactory,
-        AccountCollectionFactory $accountCollectionFactory
+        AccountCollectionFactory $accountCollectionFactory,
+        AccountSearchInterface $accountSearch
     ) {
         $this->resource = $resource;
         $this->accountFactory = $accountFactory;
         $this->accountCollectionFactory = $accountCollectionFactory;
+        $this->accountSearch = $accountSearch;
     }
 
     /**
@@ -75,20 +86,9 @@ class AccountRepository implements AccountRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getBySocialId($type, $socialId)
+    public function getBySocialId($type, $socialId, $websiteId = null)
     {
-        /** @var \Aheadworks\SocialLogin\Model\ResourceModel\Account\Collection $accountCollection */
-        $accountCollection = $this->accountCollectionFactory->create();
-        $accountCollection->addFieldToFilter(AccountInterface::TYPE, $type)
-            ->addFieldToFilter(AccountInterface::SOCIAL_ID, $socialId);
-
-        /** @var AccountInterface $account */
-        $account = $accountCollection->getFirstItem();
-
-        if (!$account->getId()) {
-            throw new NoSuchEntityException(__('Account with social_id "%1" does not exist.', $socialId));
-        }
-        return $account;
+        return $this->accountSearch->getBySocialId($type, $socialId, $websiteId);
     }
 
     /**

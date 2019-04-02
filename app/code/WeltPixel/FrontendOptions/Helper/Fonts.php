@@ -153,7 +153,7 @@ class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
             }
         }
         
-        $fontUrl = implode('|', $normalizedFontOptions);
+        $fontUrl = implode('%7C', $normalizedFontOptions);
         
         if ($subset) {
             $fontUrl .= '&subset=' . $subset;

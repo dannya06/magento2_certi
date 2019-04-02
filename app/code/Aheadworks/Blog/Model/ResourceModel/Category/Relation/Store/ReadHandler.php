@@ -10,6 +10,7 @@ use Magento\Framework\App\ResourceConnection;
 use Aheadworks\Blog\Api\Data\CategoryInterface;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
+use Aheadworks\Blog\Model\ResourceModel\Category as ResourceCategory;
 
 /**
  * Class ReadHandler
@@ -48,7 +49,7 @@ class ReadHandler implements ExtensionInterface
                 $this->metadataPool->getMetadata(CategoryInterface::class)->getEntityConnectionName()
             );
             $select = $connection->select()
-                ->from($this->resourceConnection->getTableName('aw_blog_category_store'), 'store_id')
+                ->from($this->resourceConnection->getTableName(ResourceCategory::BLOG_CATEGORY_STORE_TABLE), 'store_id')
                 ->where('category_id = :id');
             $storeIds = $connection->fetchCol($select, ['id' => $entityId]);
             $entity->setStoreIds($storeIds);

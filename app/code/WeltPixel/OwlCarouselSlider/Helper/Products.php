@@ -14,6 +14,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_scopeConfig;
 
     const SYS_PATH = 'weltpixel_owl_carousel_config/';
+    const GENERAL_NAV = '1';
+    const GENERAL_DOTS = '1';
+    const GENERAL_CENTER = '0';
+    const GENERAL_ITEMS = '5';
+    const GENERAL_STAGE_PADDING = '0';
 
     /**
      * @param \Magento\Framework\App\Helper\Context  $context
@@ -37,19 +42,16 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $configFields = [
             'status',
             'title',
+            'period',
             'show_price',
             'show_addto',
             'show_wishlist',
             'show_compare',
-            'nav',
-            'dots',
-            'center',
-            'items',
             'loop',
             'margin',
+            'slide_by',
             'merge',
             'URLhashListener',
-            'stagePadding',
             'lazyLoad',
             'autoplay',
             'autoplayTimeout',
@@ -80,12 +82,37 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             'stagePadding_brk4',
         ];
 
-        $sliderConfig = [];
-        $sysPath = self::SYS_PATH . $type;
+        // default general settings
+        $sliderConfig = [
+            'nav' => self::GENERAL_NAV,
+            'dots' => self::GENERAL_DOTS,
+            'center' => self::GENERAL_CENTER,
+            'items' => self::GENERAL_ITEMS,
+            'stagePadding' => self::GENERAL_STAGE_PADDING,
+        ];
 
+        $sysPath = self::SYS_PATH . $type;
         foreach ($configFields as $field) {
             $configPath = $sysPath . '/' . $field;
-            $sliderConfig[$field] = $this->_getConfigValue($configPath);
+            // get default value if setting of current break point is null
+            switch ($field) {
+                case 'stagePadding_brk1':
+                case 'stagePadding_brk2':
+                case 'stagePadding_brk3':
+                case 'stagePadding_brk4':
+                    $configVal = $this->_getConfigValue($configPath);
+                    $sliderConfig[$field] = $configVal != NULL ? $configVal : '0';
+                    break;
+                case 'items_brk1':
+                case 'items_brk2':
+                case 'items_brk3':
+                case 'items_brk4':
+                    $configVal = $this->_getConfigValue($configPath);
+                    $sliderConfig[$field] = $configVal != NULL ? $configVal : '5';
+                default:
+                    $sliderConfig[$field] = $this->_getConfigValue($configPath);
+                    break;
+            }
         }
 
         return $sliderConfig;

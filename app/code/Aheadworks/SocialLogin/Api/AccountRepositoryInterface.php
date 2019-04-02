@@ -29,12 +29,15 @@ interface AccountRepositoryInterface
 
     /**
      * Get Account by id
-     * @param string $socialId
      * @param string $type
+     * @param string $socialId
+     * @param int|null $websiteId
      * @return AccountInterface
      * @throws NoSuchEntityException
+     * @deprecated
+     * @see \Aheadworks\SocialLogin\Api\AccountSearchInterface
      */
-    public function getBySocialId($type, $socialId);
+    public function getBySocialId($type, $socialId, $websiteId = null);
 
     /**
      * Delete Account

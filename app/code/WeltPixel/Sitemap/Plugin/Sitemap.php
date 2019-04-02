@@ -50,11 +50,13 @@ class Sitemap
         $sitemap->setId($data['id']);
         $sitemap->setUrl($data['url']);
         $sitemap->setUpdatedAt($data['updated_at']);
+        $sitemap->setPriority($data['priority']);
+        $sitemap->setChangeFrequency($data['changefreq']);
 
 
         $sitemapRow = new \Magento\Framework\DataObject(
             [
-                'changefreq' => $data['changefreq'],
+                'change_frequency' => $data['changefreq'],
                 'priority' => $data['priority'],
                 'collection' => [$sitemap],
             ]

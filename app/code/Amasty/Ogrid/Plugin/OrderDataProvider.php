@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 
@@ -32,7 +32,9 @@ class OrderDataProvider
      */
     protected $columnsForceLoad = [
         'amasty_ogrid_base_subtotal',
-        'amasty_ogrid_subtotal'
+        'amasty_ogrid_subtotal',
+        'amasty_ogrid_total_due',
+        'amasty_ogrid_total_paid'
     ];
 
     /**
@@ -150,7 +152,7 @@ class OrderDataProvider
                     )
                 ) {
 
-                    $this->_getColumn($filter->getField())->changeFilter($filter);
+                    $this->getColumn($filter->getField())->changeFilter($filter);
                 }
             } else {
                 if ($filter->getField() != 'is_preorder') {
@@ -158,7 +160,7 @@ class OrderDataProvider
                         $filter->setField($filter->getField());
                     } else {
                         if ($this->registry->registry('am_order_attribute') &&
-                            $filter->getField() == $this->registry->registry('am_order_attribute')) {
+                            in_array($filter->getField(), $this->registry->registry('am_order_attribute'))) {
                             $filter->setField('amorderattr.' . $filter->getField());
                         } else {
                             $filter->setField('main_table.' . $filter->getField());
@@ -193,15 +195,18 @@ class OrderDataProvider
                 }
             }
 
+            $prefix = \Amasty\Ogrid\Model\Column::TABLE_PREFIX;
+            $tableName = $prefix . $collection->getTable('sales_order');
+
             if ($this->isColumnVisible($activeBookmark, 'amasty_ogrid_sales_order_protect_code')) {
                 $collection->getSelect()->columns(
-                    ['amasty_ogrid_sales_order_protect_code' => 'amasty_ogrid_sales_order.protect_code']
+                    ['amasty_ogrid_sales_order_protect_code' => $tableName . '.protect_code']
                 );
             }
 
             if ($this->isColumnVisible($activeBookmark, 'amasty_ogrid_sales_order_store_id')) {
                 $collection->getSelect()->columns(
-                    ['amasty_ogrid_sales_order_store_id' => 'amasty_ogrid_sales_order.store_id']
+                    ['amasty_ogrid_sales_order_store_id' => $tableName . '.store_id']
                 );
             }
 

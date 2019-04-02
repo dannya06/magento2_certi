@@ -6,8 +6,11 @@
             <tab>weltpixel</tab>
             <resource>WeltPixel_Multistore::MultistoreSettings</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_pearl" translate="label" type="hidden" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>WeltPixel\Multistore\Block\Adminhtml\System\Config\Form\IsPearl</frontend_model>
+                </field>
                 <label>Multi Store General Settings</label>
-                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Multi Store</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Enable/Disable Multi Store. All settings should be made per storeview. See tooltip.</comment>
@@ -59,6 +62,28 @@
                         <field id="enable">1</field>
                     </depends>
                 </field>
+                <field id="bar_bg_color" translate="label" type="text" sortOrder="33" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Row background color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set the background color for the store view row. Example: #000000</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="one_row">1</field>
+                    </depends>
+                </field>
+                <field id="bar_width" translate="label comment" type="text" sortOrder="35" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Row width</label>
+                    <validate>validate-css-length</validate>
+                    <comment>Set the store view row width. Example: 1280px</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="one_row">1</field>
+                        <field id="is_pearl">0</field>
+                    </depends>
+                </field>
+
                 <field id="visibility" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Visibile on storefront</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

@@ -27,6 +27,10 @@
 	z-index: 9;
 }
 
+.fullpagescroll .header-placeholder header {
+	position: relative;
+}
+
 .fullpagescroll .page-wrapper {min-height: 100%;}
 .fullpagescroll header .block-search {
 	transition: margin-top 0.5s ease 0s;
@@ -38,6 +42,11 @@
 		position: fixed;
 		left: 0;
 		width: 100%;
+	}
+	.fullpagescroll:not(.mobile-nav) .page-header .nav-sections.sticky-header-nav,
+	.fullpagescroll:not(.mobile-nav) .page-header.sticky-header .nav-sections,
+	.fullpagescroll:not(.mobile-nav) .header-placeholder .page-header .nav-sections {
+		width: inherit;
 	}
 	.fullpagescroll .nav-sections {
 		z-index: 2;

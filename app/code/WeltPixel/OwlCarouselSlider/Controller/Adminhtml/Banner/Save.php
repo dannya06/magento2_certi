@@ -85,7 +85,7 @@ class Save extends \WeltPixel\OwlCarouselSlider\Controller\Adminhtml\Banner
             }
 
 
-            /** Moble Image verifictions */
+            /** Mobile Image verifications */
             $bannerMobileImage = $this->getRequest()->getFiles('mobile_image');
 
             $fileMobileName = ($bannerMobileImage && array_key_exists('name', $bannerMobileImage)) ? $bannerMobileImage['name'] : null;
@@ -144,6 +144,10 @@ class Save extends \WeltPixel\OwlCarouselSlider\Controller\Adminhtml\Banner
                 ->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i');
             $data['valid_to'] = $localeDate->date($data['valid_to'])
                 ->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i');
+
+            if (is_array($data['slider_id'])) {
+                $data['slider_id'] = implode(',', $data['slider_id']);
+            }
 
             $bannerModel->setData($data);
 

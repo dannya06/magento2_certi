@@ -27,23 +27,34 @@ class AddUpdateHandlesObserver implements ObserverInterface
      */
     protected $productRepository;
 
+    /**
+     * @var \WeltPixel\ThankYouPage\Helper\Data
+     */
+    protected $_helper;
+
     const XML_PATH_THANKYOUPAGE_ENABLED = 'weltpixel_thankyoupage/general/enable';
 
     /**
+     * AddUpdateHandlesObserver constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\App\Request\Http $request
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param ProductRepositoryInterface $productRepository
+     * @param \WeltPixel\ThankYouPage\Helper\Data $helper
      */
-    public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-                                \Magento\Framework\App\Request\Http $request,
-                                \Magento\Store\Model\StoreManagerInterface $storeManager,
-                                ProductRepositoryInterface $productRepository)
+    public function __construct(
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\App\Request\Http $request,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        ProductRepositoryInterface $productRepository,
+        \WeltPixel\ThankYouPage\Helper\Data $helper
+    )
     {
         $this->scopeConfig = $scopeConfig;
         $this->request = $request;
         $this->_storeManager = $storeManager;
         $this->productRepository = $productRepository;
+        $this->_helper = $helper;
     }
     
     /**
@@ -65,6 +76,10 @@ class AddUpdateHandlesObserver implements ObserverInterface
 
         if ($isThankYouPageModuleEnabled) {
             $layout->getUpdate()->addHandle('weltpixel_checkout_onepage_success');
+        }
+
+        if ($this->_helper->isWesupplyModuleEnabled()) {
+            $layout->getUpdate()->addHandle('weltpixel_wesupply_integration');
         }
 
         return $this;

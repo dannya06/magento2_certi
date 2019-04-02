@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\Request;
 
@@ -67,7 +67,7 @@ class Validator extends AbstractValidator
             /** @var \Magento\Sales\Model\Order $order */
             $order = $this->orderRepository->get($request->getOrderId());
         } catch (NoSuchEntityException $e) {
-            $this->_addMessages([$e->getMessage()]);
+            $this->_addMessages([_('Incorrect order id.')]);
         }
         if (empty($request->getOrderItems())) {
             $this->_addMessages([__('No item(s) for request specified.')]);
@@ -89,7 +89,7 @@ class Validator extends AbstractValidator
             $this->_addMessages([__('Incorrect customer data.')]);
         }
 
-        if (!$this->requestOrder->isAllowedForOrder($order)) {
+        if (!$request->getId() && !$this->requestOrder->isAllowedForOrder($order)) {
             $this->_addMessages([__('You can\'t request RMA for the given order.')]);
         }
 

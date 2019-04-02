@@ -427,7 +427,7 @@ class Owl
         <div id="slide1-slideInDown">
             <div class="boder-table">
                 <span class="separator">Chair Collection</span>
-                <span class="year">2017</span>
+                <span class="year">2018</span>
             </div>
             <div class="small-text-v9-slider mg-top display-block-desktop">Without retails shops and middleman, luxury</div>
             <div class="small-text-v9-slider mg-top-bottom display-block-desktop">becomes affordable</div>
@@ -452,7 +452,7 @@ class Owl
         <div id="slide2-slideInLeft" >
             <div class="boder-table">
                 <span class="separator">Sofa Collection</span>
-                <span class="year">2017</span>
+                <span class="year">2018</span>
             </div>
             <div class="small-text-v9-slider mg-top">Without retails shops and middleman, luxury</div>
             <div class="small-text-v9-slider mg-top-bottom">becomes affordable</div>
@@ -485,7 +485,7 @@ class Owl
         <div id="slide3-lightSpeedIn" >
             <div class="boder-table">
                 <span class="separator">Table Collection</span>
-                <span class="year">2017</span>
+                <span class="year">2018</span>
             </div>
             <div class="small-text-v9-slider mg-top">Without retails shops and middleman, luxury</div>
             <div class="small-text-v9-slider mg-top-bottom">becomes affordable</div>
@@ -836,7 +836,7 @@ class Owl
                                 <div class="inner">
                                   <div class="text">
                                     <div class="text-custom-slider none-mob">
-                                      <div>SS 2017 Collection</div>
+                                      <div>SS 2018 Collection</div>
                                       <div class="second-line">Out now</div>
                                     </div>
                                   </div>
@@ -851,7 +851,7 @@ class Owl
                                 <div class="inner">
                                   <div class="text">
                                     <div class="text-custom-slider none-mob">
-                                      <div>SS 2017 Collection</div>
+                                      <div>SS 2018 Collection</div>
                                       <div class="second-line">Out now</div>
                                     </div>
                                   </div>
@@ -900,6 +900,78 @@ class Owl
 
                 unset($slider);
 
+                break;
+            }
+            case '1.1.20' : {
+
+                $slider = $this->sliderFactory->create();
+
+                $sliderData = array(
+                    'status' => 1,
+                    'title' => 'Favorite Brands Slider',
+                    'show_title' => 0,
+                    'slider_content' => NULL,
+                    'nav' => 0,
+                    'dots' => 1,
+                    'center' => 0,
+                    'items' => 20,
+                    'loop' => 1,
+                    'margin' => 50,
+                    'stagePadding' => 50,
+                    'lazyLoad' => 0,
+                    'transition' => 'slide',
+                    'autoplay' => 1,
+                    'autoplayTimeout' => 4000,
+                    'autoplayHoverPause' => 1,
+                    'autoHeight' => 0,
+                    'nav_brk1' => 0,
+                    'items_brk1' => 2,
+                    'nav_brk2' => 0,
+                    'items_brk2' => 3,
+                    'nav_brk3' => 0,
+                    'items_brk3' => 5,
+                    'nav_brk4' => 1,
+                    'items_brk4' => 7,
+                );
+
+                $slider->addData($sliderData);
+                $slider->save();
+
+                $sliderId = $slider->getData('id');
+                $sliderIds[] = $sliderId;
+
+                for ($i = 1; $i < 8; $i++) {
+                    $banner = $this->bannerFactory->create();
+                    $bannerData = array(
+                        'status' => 1,
+                        'title' => 'Client ' . $i,
+                        'show_title' => 0,
+                        'description' => NULL,
+                        'show_description' => 0,
+                        'banner_type' => 1,
+                        'display_position' => NULL,
+                        'slider_id' => $sliderId,
+                        'url' => NULL,
+                        'target' => '_self',
+                        'video' => NULL,
+                        'image' => "weltpixel/owlcarouselslider/images/c/l/client-{$i}.png",
+                        'custom' => NULL,
+                        'alt_text' => NULL,
+                        'button_text' => NULL,
+                        'custom_content' => NULL,
+                        'custom_css' => NULL,
+                        'valid_from' => '2015-01-01 12:00:00',
+                        'valid_to' => '2030-01-01 12:00:00',
+                        'sort_order' => $i
+                    );
+
+                    $banner->addData($bannerData);
+                    $banner->save();
+
+                    unset($banner);
+                }
+
+                unset($slider);
                 break;
             }
         }

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Plugin\Model\Sales;
 
@@ -51,7 +51,7 @@ class InvoicePlugin
      * @param Invoice $subject
      * @return Invoice
      */
-    public function afterAfterSave(Invoice $subject)
+    public function afterSave(Invoice $subject)
     {
         if ($this->isInvoicePaid) {
             $this->customerRewardPointsService->addPointsForPurchases($subject->getEntityId());

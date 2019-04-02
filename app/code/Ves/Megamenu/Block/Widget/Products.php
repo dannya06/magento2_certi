@@ -33,17 +33,16 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 	 */
 	protected $_collection;
 
-	/**
-	 * @param \Magento\Catalog\Block\Product\Context $context      
-	 * @param \Ves\Megamenu\Model\Product            $productModel 
-	 * @param array                                  $data         
-	 */
+	protected $httpContext;
+	
 	public function __construct(
 		\Magento\Catalog\Block\Product\Context $context,
 		\Ves\Megamenu\Model\Product $productModel,
+		\Magento\Framework\App\Http\Context $httpContext,
 		array $data = []
 	) {
 		$this->_productModel = $productModel;
+		$this->httpContext = $httpContext;
 		parent::__construct($context, $data );
 	}
 
@@ -83,7 +82,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 		'VES_MEGAMENU_PRODUCT',
 		$this->_storeManager->getStore()->getId(),
 		$this->_design->getDesignTheme()->getId(),
-		$this->httpContext->getValue(CustomerContext::CONTEXT_GROUP),
+		$this->httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_GROUP),
 		'template' => $this->getTemplate(),
 		$this->getConfig("number_item")
 		];

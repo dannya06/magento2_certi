@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\StoreCredit\Model;
 
@@ -100,7 +100,10 @@ class Sender
                 ]
             ),
             $sender,
-            [$customerName => $customer->getEmail()]
+            [
+                'name' => $customerName,
+                'email' => $customer->getEmail()
+            ]
         );
         return $notifiedStatus;
     }
@@ -123,7 +126,7 @@ class Sender
                 ->setTemplateOptions($templateOptions)
                 ->setTemplateVars($templateVars)
                 ->setFrom($from)
-                ->addTo($to);
+                ->addTo($to['email'], $to['name']);
             $this->transportBuilder->getTransport()->sendMessage();
         } catch (\Exception $e) {
             return NotifiedStatus::NO;

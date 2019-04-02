@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Api;
 
@@ -27,7 +27,7 @@ interface RequestRepositoryInterface
      * @param int $requestId
      * @param bool $noCache
      * @return \Aheadworks\Rma\Api\Data\RequestInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function get($requestId, $noCache = false);
 
@@ -36,7 +36,7 @@ interface RequestRepositoryInterface
      *
      * @param string $externalLink
      * @return \Aheadworks\Rma\Api\Data\RequestInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getByExternalLink($externalLink);
 

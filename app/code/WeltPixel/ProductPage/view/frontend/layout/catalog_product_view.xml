@@ -21,5 +21,13 @@
 				<argument name="template" xsi:type="string">WeltPixel_ProductPage::product/view/addtocart.phtml</argument>
 			</action>
 		</referenceBlock>
+		<referenceBlock name="product.info.details">
+			<action method="setTemplate">
+				<argument name="template" xsi:type="string">WeltPixel_ProductPage::product/view/details.phtml</argument>
+			</action>
+		</referenceBlock>
+		<referenceContainer name="before.body.end">
+			<block class="Magento\Framework\View\Element\Template" name="welpixel.productpage.magnifierzoom" template="WeltPixel_ProductPage::product/view/magnifierzoom.phtml" />
+		</referenceContainer>
 	</body>
 </page>

@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Api\Data;
 
@@ -22,6 +22,7 @@ interface TransactionInterface
     const COMMENT_TO_CUSTOMER = 'comment_to_customer';
     const COMMENT_TO_CUSTOMER_PLACEHOLDER = 'comment_to_customer_placeholder';
     const COMMENT_TO_ADMIN = 'comment_to_admin';
+    const COMMENT_TO_ADMIN_PLACEHOLDER = 'comment_to_admin_placeholder';
     const BALANCE = 'balance';
     const CURRENT_BALANCE = 'current_balance';
     const TRANSACTION_DATE = 'transaction_date';
@@ -34,6 +35,12 @@ interface TransactionInterface
     const BALANCE_UPDATE_NOTIFIED = 'balance_update_notified';
     const EXPIRATION_NOTIFIED = 'expiration_notified';
     const CREATED_BY = 'created_by';
+    /**#@-*/
+
+    /**#@+
+     * Constants for custom sort orders.
+     */
+    const EXPIRED_SOON = 'expired_soon';
     /**#@-*/
 
     /**
@@ -140,6 +147,21 @@ interface TransactionInterface
      * @return string
      */
     public function getCommentToAdmin();
+
+    /**
+     * Set comment to admin placeholder
+     *
+     * @param string $commentToAdminPlaceholder
+     * @return TransactionInterface
+     */
+    public function setCommentToAdminPlaceholder($commentToAdminPlaceholder);
+
+    /**
+     * Get comment to admin placeholder
+     *
+     * @return string
+     */
+    public function getCommentToAdminPlaceholder();
 
     /**
      * Set balance

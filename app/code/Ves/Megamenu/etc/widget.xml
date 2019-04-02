@@ -33,12 +33,88 @@
 			</parameter>
 		</parameters>
 	</widget>
+	<widget id="ves_megamenu_categories" class="Ves\Megamenu\Block\Widget\Categories">
+		<label translate="true">Ves Megamenu: Catalog Categories</label>
+		<description translate="true">Show list or grid categories as menu items</description>
+		<parameters>
+			<parameter name="title" xsi:type="text" visible="true">
+				<label translate="true">Title</label>
+			</parameter>
+			<parameter name="custom_link" xsi:type="text" visible="true">
+				<label translate="true">Title Link</label>
+			</parameter>
+			<parameter name="source_type" xsi:type="select" visible="true">
+				<label translate="true">Category Source Type</label>
+				<options>
+					<option name="parent" value="parent" selected="true">
+						<label translate="true">Get Child Categories Of Parent</label>
+					</option>
+					<option name="selected_categories" value="selected_categories">
+						<label translate="true">Selected Categories</label>
+					</option>
+				</options>
+			</parameter>
+			<parameter name="categories" xsi:type="multiselect" visible="true" source_model="Ves\Megamenu\Model\Config\Source\CategoryList">
+				<label translate="true">Select Categories</label>
+				<depends><parameter name="source_type" value="selected_categories" /></depends>
+			</parameter>
+			<parameter name="parent_category" xsi:type="text" visible="true">
+				<label translate="true">Parent Category Id</label>
+				<description translate="true"><![CDATA[Input category id to get all children categories]]></description>
+				<depends><parameter name="source_type" value="parent" /></depends>
+			</parameter>
+			<parameter name="limit" xsi:type="text" visible="true">
+				<label translate="true">Limit Items</label>
+				<description translate="true"><![CDATA[Input Limit sub categories to show. Empty to show all]]></description>
+				<depends><parameter name="source_type" value="parent" /></depends>
+			</parameter>
+			<parameter name="show_name" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+				<label translate="true">Show Category Name</label>
+			</parameter>
+			<parameter name="show_image" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+				<label translate="true">Show Category Icon</label>
+			</parameter>
+			<parameter name="image_width" xsi:type="text" visible="true">
+				<label translate="true">Image Width</label>
+				<description translate="true"><![CDATA[Input Image Width. ex: 100]]></description>
+				<depends><parameter name="show_image" value="1" /></depends>
+			</parameter>
+			<parameter name="image_height" xsi:type="text" visible="true">
+				<label translate="true">Image Height</label>
+				<description translate="true"><![CDATA[Input Image Height. Ex: 100]]></description>
+				<depends><parameter name="show_image" value="1" /></depends>
+			</parameter>
+			<parameter name="show_more_items" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+				<label translate="true">Show More Items Link</label>
+			</parameter>
+			<parameter name="layout_template" xsi:type="select" visible="true">
+				<label translate="true">Layout Template</label>
+				<options>
+					<option name="listing" value="listing" selected="true">
+						<label translate="true">Listing</label>
+					</option>
+					<option name="grid" value="grid">
+						<label translate="true">Grid</label>
+					</option>
+				</options>
+			</parameter>
+			<parameter name="number_column" xsi:type="text" visible="true">
+				<label translate="true">Number Columns</label>
+				<description translate="true"><![CDATA[Input number of column to display. Ex: 1]]></description>
+				<depends><parameter name="layout_template" value="grid" /></depends>
+			</parameter>
+			<parameter name="custom_template" xsi:type="text" visible="true">
+				<label translate="true">Or Input Custom Template</label>
+				<description translate="true"><![CDATA[Example: Ves_Megamenu::widget/category_custom.phtml]]></description>
+			</parameter>
+		</parameters>
+	</widget>
 	<widget id="ves_megamenu_product_carousel" class="Ves\Megamenu\Block\Widget\Products">
 		<label translate="true">Ves Megamenu: Products</label>
 		<description translate="true"></description>
 		<parameters>
 			<parameter name="widget_title" xsi:type="text" visible="true">
-				<label translate="true">Titlte</label>
+				<label translate="true">Title</label>
 			</parameter>
 			<parameter name="addition_class" xsi:type="text"  visible="true">
 				<label translate="true">Addtion Class</label>

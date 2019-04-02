@@ -99,6 +99,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'header' => __('Slider ID'),
                 'type'   => 'number',
                 'index'  => 'slider_id',
+                'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Banner\Helper\Renderer\SliderIds',
                 'header_css_class' => 'col-id',
                 'column_css_class' => 'col-id',
             ]
@@ -130,6 +131,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'width'    => '50px',
                 'filter'   => false,
                 'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Banner\Helper\Renderer\Image',
+                'align'  => 'center',
             ]
         );
 
@@ -140,6 +142,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'width'    => '50px',
                 'filter'   => false,
                 'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Banner\Helper\Renderer\MobileImage',
+                'align'  => 'center',
             ]
         );
 
@@ -219,7 +222,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareMassaction()
     {
-        $this->setMassactionIdField('entity_id');
+        $this->setMassactionIdField('id');
         
         $this->getMassactionBlock()->setFormFieldName('banner');
 

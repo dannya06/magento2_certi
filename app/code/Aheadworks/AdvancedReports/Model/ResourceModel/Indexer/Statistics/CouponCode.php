@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
@@ -41,7 +41,11 @@ class CouponCode extends AbstractResource
             'tax' => 'SUM(COALESCE(main_table.base_tax_amount, 0.0))',
             'shipping' => 'SUM(COALESCE(main_table.base_shipping_amount, 0.0))',
             'discount' => 'ABS(SUM(COALESCE(main_table.base_discount_amount, 0.0)))',
-            'total' => 'SUM(COALESCE(main_table.base_grand_total, 0.0))',
+            'other_discount' => $this->getOtherDiscountsExpression(),
+            'total' => 'SUM(COALESCE(main_table.base_subtotal, 0.0) 
+                        + COALESCE(main_table.base_discount_amount, 0.0) 
+                        + COALESCE(main_table.base_tax_amount, 0.0) 
+                        + COALESCE(main_table.base_shipping_amount, 0.0))',
             'invoiced' => 'SUM(COALESCE(main_table.base_total_invoiced, 0.0))',
             'refunded' => 'SUM(COALESCE(main_table.base_total_refunded, 0.0))',
             'to_global_rate' => 'main_table.base_to_global_rate'
@@ -62,6 +66,6 @@ class CouponCode extends AbstractResource
             );
         $select = $this->addFilterByCreatedAt($select, 'main_table');
 
-        $this->getConnection()->query($select->insertFromSelect($this->getIdxTable(), array_keys($columns)));
+        $this->safeInsertFromSelect($select, $this->getIdxTable(), array_keys($columns));
     }
 }

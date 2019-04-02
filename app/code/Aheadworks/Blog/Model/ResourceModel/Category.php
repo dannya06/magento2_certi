@@ -14,12 +14,19 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
  */
 class Category extends AbstractDb
 {
+    /**#@+
+     * Constants defined for tables
+     */
+    const BLOG_CATEGORY_TABLE = 'aw_blog_category';
+    const BLOG_CATEGORY_STORE_TABLE = 'aw_blog_category_store';
+    /**#@-*/
+
     /**
      * @return void
      */
     protected function _construct()
     {
-        $this->_init('aw_blog_category', 'id');
+        $this->_init(self::BLOG_CATEGORY_TABLE, 'id');
     }
 
     /**

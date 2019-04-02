@@ -47,14 +47,32 @@ $(document).ready(function () {
                 var ajaxParams = {};
 
                 switch (curStepBtn) {
-                    case 'step-3':
-                        ajaxParams.storeCode = $('#theme-activation-store-code').val();
+                    case 'step-2':
+                        curInputs = curStep.find("input[type='checkbox']");
+                        if (curInputs.length) {
+                            var modulesEnable = [];
+                            var modulesDisable = [];
+                            for (var i = 0; i < curInputs.length; i++) {
+                                if (!$(curInputs[i]).prop('checked')) {
+                                    var inputVal = $(curInputs[i]).val();
+                                    modulesDisable.push(inputVal);
+                                } else {
+                                    var inputVal = $(curInputs[i]).val();
+                                    modulesEnable.push(inputVal);
+                                }
+                            }
+                        }
+                        ajaxParams.modulesEnable = modulesEnable;
+                        ajaxParams.modulesDisable = modulesDisable;
                         break;
                     case 'step-4':
+                        ajaxParams.storeCode = $('#theme-activation-store-code').val();
+                        break;
+                    case 'step-5':
                         ajaxParams.storeCode = $('#demo-configuration-store-code').val();
                         ajaxParams.demoVersion = $('#demo-configuration-version').val();
                         break;
-                    case 'step-5':
+                    case 'step-6':
                         ajaxParams.storeCode = $('#theme-configuration-store-code').val();
                         ajaxParams.homePage = $('#theme-configuration-home-page').val();
                         ajaxParams.header = $('#theme-configuration-header').val();
@@ -64,7 +82,7 @@ $(document).ready(function () {
                         ajaxParams.preFooter = $('#theme-configuration-prefooter').val();
                         ajaxParams.footer = $('#theme-configuration-footer').val();
                         break;
-                    case 'step-6':
+                    case 'step-7':
                         ajaxParams.deleteInstaller = $('#delete-installer').val();
                 }
 
@@ -79,6 +97,26 @@ $(document).ready(function () {
                         if (!data.error) {
                             nextStepWizard.removeAttr('disabled').trigger('click');
                             $('.result-container').append("<p class='success'>" + curStepBtn.toUpperCase() + ": <br/> " + data.msg + "</p>");
+
+                            if (typeof data.modules != 'undefined' && data.modules.length) {
+                                $('#modules_list').html('');
+                                data.modules.forEach(function(el) {
+                                    var checked = el.active == '1' || el.isNew == '1' ? 'checked="checked"' : '';
+                                    var disabled = el.selectable == '1' ? 'disabled="disabled"' : '';
+                                    var required = el.selectable == '1' ? ' (mandatory) ' : '';
+                                    var requiredClass = el.selectable == '1' ? ' mandatory' : '';
+                                    var isNew = el.isNew == '1' && data.allNew != '1' ? '(new)' : '';
+                                    var isNewClass = el.isNew == '1' && data.allNew != '1' ? 'new-module' : '';
+                                    var html ='<li clss="form-group">';
+                                    html +='<fieldset>';
+                                    html += '<input id="' + el.value.toLocaleLowerCase() + '" type="checkbox" name="' + el.value.toLocaleLowerCase() + '" value="' + el.value + '" ' + checked + ' ' + disabled + ' />';
+                                    html += '<label class="' + isNewClass + requiredClass + '" for="' + el.value.toLocaleLowerCase() + '">' + el.name + ' ' + required + isNew + '</label>';
+                                    html += '</fieldset>';
+                                    html += '</li>';
+
+                                    $('#modules_list').append(html);
+                                });
+                            }
                         } else {
                             $('.result-container').append("<p class='error'>" + curStepBtn.toUpperCase() + ": <br/> "  + data.msg + "</p>");
                         }

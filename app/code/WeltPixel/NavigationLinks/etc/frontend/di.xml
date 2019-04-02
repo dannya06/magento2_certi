@@ -6,4 +6,8 @@
     </type>
     <preference for="Magento\Theme\Block\Html\Topmenu" type="WeltPixel\NavigationLinks\Block\Html\Topmenu" />
     <preference for="Magento\Catalog\Plugin\Block\Topmenu" type="WeltPixel\NavigationLinks\Plugin\Block\Topmenu" />
+    <type name="Magento\Framework\View\Page\Config\Structure">
+        <plugin name="weltpixel-navigationlinks-page-config-structure"
+                type="WeltPixel\NavigationLinks\Plugin\PageConfigStructure" sortOrder="5"/>
+    </type>
 </config>

@@ -51,8 +51,12 @@
                                         <div class="actions-primary">
                                             <?php if ($_item->isSaleable()): ?>
                                                 <?php if ($_item->getTypeInstance()->hasRequiredOptions($_item)): ?>
-                                                    <button class="action tocart primary"
-                                                            data-mage-init='{"redirectUrl":{"url":"<?php /* @escapeNotVerified */ echo $block->getAddToCartUrl($_item) ?>"}}'
+                                                    <?php
+                                                    $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
+                                                    $postData = $postDataHelper->getPostData($block->getAddToCartUrl($_item), ['product' => $_item->getEntityId()])
+                                                    ?>
+                                                    <button class="false action tocart primary"
+                                                            data-post='<?php /* @escapeNotVerified */ echo $postData; ?>'
                                                             type="button" title="<?php /* @escapeNotVerified */ echo __('Add to Cart') ?>">
                                                         <span><?php /* @escapeNotVerified */ echo __('Add to Cart') ?></span>
                                                     </button>
@@ -61,7 +65,7 @@
                                                     $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
                                                     $postData = $postDataHelper->getPostData($block->getAddToCartUrl($_item), ['product' => $_item->getEntityId()])
                                                     ?>
-                                                    <button class="action tocart primary"
+                                                    <button class="false action tocart primary"
                                                             data-post='<?php /* @escapeNotVerified */ echo $postData; ?>'
                                                             type="button" title="<?php /* @escapeNotVerified */ echo __('Add to Cart') ?>">
                                                         <span><?php /* @escapeNotVerified */ echo __('Add to Cart') ?></span>
@@ -113,10 +117,6 @@
                             <?php
                             echo $block->getProductPriceHtml($_item, $type);
                             ?>
-
-                            <?php if ($templateType): ?>
-                                <?php echo $block->getReviewsSummaryHtml($_item, $templateType) ?>
-                            <?php endif; ?>
                         </div>
                         <?php echo($iterator == count($items)+1) ? '</li>' : '' ?>
                     <?php endforeach ?>

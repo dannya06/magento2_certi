@@ -284,7 +284,7 @@
         requestTime: 0,
         ajaxCount: 0,
         clickTarget: '',
-        modeClass: ko.observable('horizontal'),
+        modeClass: ko.observable('vertical'),
 
         initialize: function () {
             this.importedIndex = [];
@@ -353,7 +353,7 @@
                 self.activeFirstItem();
 
                 if (window.megamenu.desktopTemplate == 'horizontal') {
-                    self.setMenuType('horizontal');
+                    self.setMenuType('vertical');
                 }
 
                 jQuery('.minicolor').each( function() {
@@ -414,6 +414,15 @@
                 innerScroll: true,
                 title: ''
             };
+            if("" == $("#loadStoreCategories").html()){
+                if(typeof(_tree_categories_html) !== 'undefined' && typeof(ajax_load_categories) !== 'undefined'){
+                    if(_tree_categories_html) {
+                        $("#loadStoreCategories").html(_tree_categories_html);
+                    } else {
+                        this.ajaxGetStoreCategories(ajax_load_categories);
+                    }
+                }
+            }
             var popup = modal(options, jQuery('#import-form'));
             jQuery('#import-form').modal('openModal');
         },
@@ -431,12 +440,39 @@
                 }
             }
         },
-
+        ajaxGetStoreCategories: function (ajax_url) {
+            if(typeof(store_categories) == 'undefined') {
+                var store_categories = [];
+            }
+            if(store_categories.length == 0 ){
+                jQuery.ajax({
+                    url: ajax_url,
+                    method: "GET",
+                    cache: true,
+                    dataType: 'json',
+                    beforeSend: function(){
+                        jQuery(".ves-spinner").show();
+                    },
+                    success: function(dataResponse){
+                        store_categories = window.megamenu.storeCategories = dataResponse.store_categories;
+                        _tree_categories_html = '<select data-bind="value: loadcategory">';
+                        _tree_categories_html += dataResponse.tree_html;
+                        _tree_categories_html += '</select>';
+                        $("#loadStoreCategories").html(_tree_categories_html);
+                        jQuery(".ves-spinner").hide();
+                    }
+                });
+            }
+            return store_categories;
+        },
         importSubCategory: function() {
             var selectedCat;
             var catId               = this.loadcategory();
             var currentLevel        = 0;
             var storeCategories     = window.megamenu.storeCategories;
+            if(typeof(store_categories) !== 'undefined' &&  typeof(ajax_load_categories) !== 'undefined' && (storeCategories.length == 0 || storeCategories==null || storeCategories=='')) {
+                storeCategories = window.megamenu.storeCategories = this.ajaxGetStoreCategories(ajax_load_categories);
+            }
             this.getSelectedCategory(storeCategories, catId);
 
             if (this.importSelectedCategory) {
@@ -523,7 +559,35 @@
                 this.activeFirstItem();
             }
         },
-
+        initStoreCategories: function (){
+            if(typeof(ajax_load_categories) !== 'undefined'){
+                if(("" == $("#option-category").html()) || ("" == $("#option-parentcat").html()) ){
+                    if(typeof(_list_category_options) !== 'undefined' && (_list_category_options == '' || _list_category_options == null)){
+                        $.ajax({
+                            url: ajax_load_categories,
+                            method: "GET",
+                            cache: true,
+                            dataType: 'json',
+                            beforeSend: function(){
+                                $(".ves-spinner").show();
+                            },
+                            success: function(dataResponse){
+                                _list_category_options = dataResponse.tree_html;
+                                $("#option-category").html(_list_category_options);
+                                $("#option-parentcat").html(_list_category_options);
+                                $(".ves-spinner").hide();
+                                console.log("\n - Completely ajax load categories...");
+                            }
+                        });
+                    } else if(typeof(_list_category_options) !== 'undefined' && _list_category_options) {
+                        console.log("\n - Load list category options...")
+                        $("#option-category").html(_list_category_options);
+                        $("#option-parentcat").html(_list_category_options);
+                    }
+                }
+            }
+            
+        },
         removeItem: function(item) {
             this.items.remove(item);
             $("[data-id=" + item.item_id + "]").remove();
@@ -557,6 +621,7 @@
             if (item) {
                 this.selectedItem(ko.toJS(item));
                 this.editorVisible(true);
+                this.initStoreCategories();
                 this.itemForEditing(item);
                 this.activeCurrentItem();
                 this.animateSwitcher();
@@ -788,11 +853,21 @@
                     tinymce.EditorManager.execCommand('mceRemoveEditor',true, id);
                     tinymce.execCommand('mceRemoveControl', true, id);
                     var key = jQuery(element).data("key");
-                    editor = new tinyMceWysiwygSetup(id, config);
+                    config = JSON.parse(config);
+                    config['forced_root_block'] = false;
+                    editor = new wysiwygSetup(id, config);
                     if(typeof(editor)=='undefined'){
                         jQuery('.action-wysiwyg').hide();
                     }
-                    editor.turnOn();
+                    editor.toggle();
+
+                    jQuery('#'+id)
+                        .addClass('wysiwyg-editor')
+                        .data(
+                            'wysiwygEditor',
+                            editor
+                        );
+                                                
                     varienGlobalEvents.clearEventHandlers("open_browser_callback");
                     varienGlobalEvents.attachEventHandler("open_browser_callback", editor.openFileBrowser);
 

@@ -2,140 +2,12 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Ogrid
  */
 -->
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
-    <listingToolbar name="listing_top">
-        <argument name="data" xsi:type="array">
-            <item name="config" xsi:type="array">
-                <item name="tableSelector" xsi:type="string">table.data-grid-draggable</item>
-            </item>
-        </argument>
-        <exportButton name="export_button" class="Amasty\Ogrid\Ui\Component\ExportButton" />
-        <columnsControls name="columns_controls" class="Amasty\Ogrid\Ui\Component\Columns">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="component" xsi:type="string">Amasty_Ogrid/js/grid/controls/columns</item>
-                    <item name="tabsData" xsi:type="array">
-                        <item name="general" xsi:type="string" translate="true">General</item>
-                        <item name="product" xsi:type="string" translate="true">Product</item>
-                        <item name="customer" xsi:type="string" translate="true">Customer</item>
-                        <item name="billing" xsi:type="string" translate="true">Billing</item>
-                        <item name="shipping" xsi:type="string" translate="true">Shipping</item>
-                        <item name="unassigned" xsi:type="string" translate="true">Other</item>
-                    </item>
-                    <item name="productColsData" xsi:type="array">
-                        <item name="amasty_ogrid_product_name" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">text</item>
-                            <item name="label" xsi:type="string" translate="true">Name</item>
-                        </item>
-                        <item name="amasty_ogrid_product_sku" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">text</item>
-                            <item name="label" xsi:type="string" translate="true">SKU</item>
-                        </item>
-                        <item name="amasty_ogrid_product_product_type" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">text</item>
-                            <item name="label" xsi:type="string" translate="true">Type</item>
-                        </item>
-                        <item name="amasty_ogrid_product_product_options" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string"></item>
-                            <item name="label" xsi:type="string" translate="true">Options</item>
-                        </item>
-                        <item name="amasty_ogrid_product_base_price" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Price (Base)</item>
-                        </item>
-                        <item name="amasty_ogrid_product_price" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Price (Purchased)</item>
-                        </item>
-                        <item name="amasty_ogrid_product_tax_percent" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Tax Percent</item>
-                        </item>
-                        <item name="amasty_ogrid_product_base_tax_amount" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Tax Amount (Base)</item>
-                        </item>
-                        <item name="amasty_ogrid_product_tax_amount" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Tax Amount (Purchased)</item>
-                        </item>
-                        <item name="amasty_ogrid_product_discount_percent" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Discount Percent</item>
-                        </item>
-                        <item name="amasty_ogrid_product_base_discount_amount" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Discount Amount (Base)</item>
-                        </item>
-                        <item name="amasty_ogrid_product_discount_amount" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Discount Amount (Purchased)</item>
-                        </item>
-                        <item name="amasty_ogrid_product_qty_ordered" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Qty Ordered</item>
-                        </item>
-                        <item name="amasty_ogrid_product_qty_invoiced" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Qty Invoiced</item>
-                        </item>
-                        <item name="amasty_ogrid_product_qty_shipped" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Qty Shipped</item>
-                        </item>
-                        <item name="amasty_ogrid_product_qty_refunded" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Qty Refunded</item>
-                        </item>
-                        <item name="amasty_ogrid_product_qty_canceled" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Qty Canceled</item>
-                        </item>
-                        <item name="amasty_ogrid_product_base_row_total" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Row Total (Base)</item>
-                        </item>
-                        <item name="amasty_ogrid_product_row_total" xsi:type="array">
-                            <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filter" xsi:type="string">textRange</item>
-                            <item name="label" xsi:type="string" translate="true">Row Total (Purchased)</item>
-                        </item>
-                    </item>
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">sales_order_grid.sales_order_grid.listing_top.bookmarks</item>
-                        <item name="namespace" xsi:type="string">current</item>
-                    </item>
-                    <item name="clientConfig" xsi:type="array">
-                        <item name="saveUrl" xsi:type="url" path="amasty_ogrid/index/bookmarks"/>
-                        <item name="validateBeforeSave" xsi:type="boolean">false</item>
-                    </item>
-                </item>
-            </argument>
-        </columnsControls>
-    </listingToolbar>
-    <columns name="sales_order_columns" class="Amasty\Ogrid\Ui\Component\Listing\Columns">
+    <columns name="sales_order_columns">
         <column name="increment_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array"><item name="tab" xsi:type="string">general</item>
@@ -261,14 +133,6 @@
                 </item>
             </argument>
         </column>
-        <actionsColumn name="actions">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="tab" xsi:type="string">general</item>
-                </item>
-            </argument>
-        </actionsColumn>
-
         <column name="amasty_ogrid_coupon_code">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -279,7 +143,6 @@
                 </item>
             </argument>
         </column>
-
         <column name="amasty_ogrid_tax_amount" class="Amasty\Ogrid\Ui\Component\Listing\Column\OrderTax">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -290,7 +153,6 @@
                 </item>
             </argument>
         </column>
-
         <column name="amasty_ogrid_order_comments" class="Amasty\Ogrid\Ui\Component\Listing\Column\OrderComments">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -304,7 +166,6 @@
                 </item>
             </argument>
         </column>
-
         <column name="amasty_ogrid_shipping_description">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -315,7 +176,6 @@
                 </item>
             </argument>
         </column>
-
         <column name="amasty_ogrid_base_subtotal" class="Magento\Sales\Ui\Component\Listing\Column\Price">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -326,6 +186,28 @@
                 </item>
             </argument>
         </column>
+
+        <column name="amasty_ogrid_total_due" class="Magento\Sales\Ui\Component\Listing\Column\Price">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="tab" xsi:type="string">general</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="label" xsi:type="string" translate="true">Total Due</item>
+                </item>
+            </argument>
+        </column>
+        <column name="amasty_ogrid_total_paid" class="Magento\Sales\Ui\Component\Listing\Column\Price">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="tab" xsi:type="string">general</item>
+                    <item name="visible" xsi:type="boolean">false</item>
+                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="label" xsi:type="string" translate="true">Total Paid</item>
+                </item>
+            </argument>
+        </column>
+
         <column name="amasty_ogrid_subtotal" class="Magento\Sales\Ui\Component\Listing\Column\PurchasedPrice">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -512,5 +394,12 @@
                 </item>
             </argument>
         </column>
+        <actionsColumn name="actions">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="tab" xsi:type="string">general</item>
+                </item>
+            </argument>
+        </actionsColumn>
     </columns>
 </listing>

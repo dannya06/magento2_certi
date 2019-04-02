@@ -50,7 +50,7 @@ abstract class AbstractConfig
      */
     protected function getValue(
         $path,
-        $scopeType = ScopeInterface::SCOPE_STORE,
+        $scopeType = ScopeInterface::SCOPE_WEBSITE,
         $scopeCode = null
     ) {
         return $this->scopeConfig->getValue($this->preparePath($path), $scopeType, $scopeCode);
@@ -67,7 +67,7 @@ abstract class AbstractConfig
      */
     protected function getSerializedValue(
         $path,
-        $scopeType = ScopeInterface::SCOPE_STORE,
+        $scopeType = ScopeInterface::SCOPE_WEBSITE,
         $scopeCode = null,
         $default = null
     ) {
@@ -92,7 +92,7 @@ abstract class AbstractConfig
      */
     protected function isSetFlag(
         $path,
-        $scopeType = ScopeInterface::SCOPE_STORE,
+        $scopeType = ScopeInterface::SCOPE_WEBSITE,
         $scopeCode = null
     ) {
         return $this->scopeConfig->isSetFlag($this->preparePath($path), $scopeType, $scopeCode);

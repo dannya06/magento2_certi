@@ -14,6 +14,13 @@ if ($menu = $this->getMenu()) {
 		$menuItems = $menu->getData('menuItems');
 		$structure = json_decode($menu->getStructure(), true);
 		$html = '';
+		$categories = [];
+		foreach ($menuItems as $item) {
+			if (isset($item['link_type']) && $item['link_type'] == 'category_link' && isset($item['category']) && !in_array($item['category'], $categories)) {
+				$categories[] = $item['category'];
+			}
+		}
+		$data->setMenuCategories($categories);
 		if(is_array($structure)){
 			foreach ($structure as $k => $v) {
 				$itemData = $data->renderMenuItemData($v, [], $menuItems);

@@ -1,15 +1,14 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Giftcard\Model\Import;
 
 use Aheadworks\Giftcard\Model\Import\Exception\ImportValidatorException;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Ui\Component\Filters;
 use Magento\Ui\Component\Filters\Type\Select;
 use Magento\Ui\Component\MassAction\Filter;
@@ -70,26 +69,18 @@ abstract class AbstractImport
     private $request;
 
     /**
-     * @var UrlInterface
-     */
-    private $url;
-
-    /**
      * @param DataObjectHelper $dataObjectHelper
      * @param Filter $filter
      * @param RequestInterface $request
-     * @param UrlInterface $url
      */
     public function __construct(
         DataObjectHelper $dataObjectHelper,
         Filter $filter,
-        RequestInterface $request,
-        UrlInterface $url
+        RequestInterface $request
     ) {
         $this->dataObjectHelper = $dataObjectHelper;
         $this->filter = $filter;
         $this->request = $request;
-        $this->url = $url;
     }
 
     /**
@@ -134,7 +125,7 @@ abstract class AbstractImport
      */
     public function getUrlToLogFile()
     {
-        return $this->url->getBaseUrl(['_type' => UrlInterface::URL_TYPE_WEB]) . $this->getPathToLogFile();
+        return $this->getPathToLogFile();
     }
 
     /**

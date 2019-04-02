@@ -6,6 +6,7 @@
 
 <?php
     $helper = $this->helper('WeltPixel\AjaxInfiniteScroll\Helper\Data');
+    $displaySwatchClass = '';
     if ($helper->isAjaxCatalogEnabled()) {
         $ajaxCatalogMode = $helper->getAjaxCatalogMode();
         switch ($ajaxCatalogMode) {
@@ -16,6 +17,7 @@
                     window.LoadMore = '<?php echo $helper->getLoadMore() ? (int) trim($helper->getLoadMore()) : 0; ?>';
                     window.negativeMargin = '<?php echo $helper->getLoadingEarly() ? (int) trim($helper->getNegativeMargin()) : '0'; ?>';
                     window.textNext = '<?php echo $helper->getTextLoadNext(); ?>';
+                    window.textPrevious = '<?php echo $helper->getTextLoadPrevious(); ?>';
                     window.textNoMore = '<?php echo $helper->getTextNoMore(); ?>';
                 </script>
                 <?php
@@ -36,6 +38,7 @@
     }
 ?>
 <?php if ($helper->isAjaxCatalogEnabled()): ?>
+<div class="ajax-infinite-scroll-js">
     <script>
         require(['jquery', 'ajaxinfinitescroll'], function($){
             $(function($) {
@@ -43,12 +46,27 @@
                 window.textLoadingMore = '<?php echo $helper->getTextLoading() ?>';
                 window.showCanonical = '<?php echo $helper->isEnabledCanonicalPrevNext() ?>';
                 window.ajaxCanonicalRefresh = '<?php echo $helper->getAjaxRefreshCanonicalUrl() ?>';
+                window.displaySwatchClass = '<?php echo $displaySwatchClass; ?>';
                 if (window.ajaxCatalog == 'infiniteScroll') {
                     ajaxInfiniteScroll.initInfiniteScroll();
                 } else if (window.ajaxCatalog == 'nextPage') {
                     ajaxInfiniteScroll.initNextPage();
                 }
+
+                $('.product.photo.product-item-photo').on('click', function(e) {
+                    if(!e.metaKey) {
+                        var page = $(this).attr('data-item-page');
+                        var url = window.location.href;
+                        ajaxInfiniteScroll.resetIasPagination(page, url);
+                        var href = $(this).attr('href');
+                        window.location.href = href;
+                    }
+
+                })
+
             });
         });
     </script>
+</div>
+
 <?php endif; ?>

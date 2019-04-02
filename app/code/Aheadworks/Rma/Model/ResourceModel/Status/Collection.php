@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model\ResourceModel\Status;
 
@@ -34,14 +34,14 @@ class Collection extends AbstractCollection
     protected function _afterLoad()
     {
         $this->attachRelationTable(
-            'aw_rma_request_status_frontend_label',
+            $this->getTable('aw_rma_request_status_frontend_label'),
             'id',
             'status_id',
             ['store_id', 'value'],
             'frontend_labels'
         );
         $this->attachRelationTable(
-            'aw_rma_request_status_email_template',
+            $this->getTable('aw_rma_request_status_email_template'),
             'id',
             'status_id',
             ['store_id', 'value', 'custom_text'],
@@ -49,7 +49,7 @@ class Collection extends AbstractCollection
             [['field' => 'template_type', 'condition' => '=', 'value' => TemplateType::CUSTOMER]]
         );
         $this->attachRelationTable(
-            'aw_rma_request_status_email_template',
+            $this->getTable('aw_rma_request_status_email_template'),
             'id',
             'status_id',
             ['store_id', 'value', 'custom_text'],
@@ -57,7 +57,7 @@ class Collection extends AbstractCollection
             [['field' => 'template_type', 'condition' => '=', 'value' => TemplateType::ADMIN]]
         );
         $this->attachRelationTable(
-            'aw_rma_request_status_thread_template',
+            $this->getTable('aw_rma_request_status_thread_template'),
             'id',
             'status_id',
             ['store_id', 'value'],

@@ -75,7 +75,6 @@ class Link extends Callback
             $this->accountRepository->save($account);
 
             $this->stateHelper->clear();
-
         } catch (InvalidSocialAccountException $e) {
             $this->messageManager->addErrorMessage(__('Social account already taken'));
         } catch (\Exception $e) {

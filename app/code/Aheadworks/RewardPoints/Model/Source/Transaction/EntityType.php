@@ -1,19 +1,19 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Model\Source\Transaction;
 
-use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
 /**
  * Class EntityType
  *
  * @package Aheadworks\RewardPoints\Model\Source
  */
-class EntityType implements ArrayInterface
+class EntityType implements OptionSourceInterface
 {
     /**#@+
      * Entity type values
@@ -21,6 +21,7 @@ class EntityType implements ArrayInterface
     const ORDER_ID = 1;
     const CREDIT_MEMO_ID = 2;
     const TRANSACTION_ID = 3;
+    const EARN_RULE_ID = 4;
     /**#@-*/
 
     /**
@@ -40,6 +41,10 @@ class EntityType implements ArrayInterface
             [
                 'value' => self::TRANSACTION_ID,
                 'label' => __('Transaction Id')
+            ],
+            [
+                'value' => self::EARN_RULE_ID,
+                'label' => __('Earning Rule Id')
             ]
         ];
     }
@@ -54,7 +59,8 @@ class EntityType implements ArrayInterface
         return [
             self::ORDER_ID,
             self::CREDIT_MEMO_ID,
-            self::TRANSACTION_ID
+            self::TRANSACTION_ID,
+            self::EARN_RULE_ID
         ];
     }
 }

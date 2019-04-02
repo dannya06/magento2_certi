@@ -19,6 +19,7 @@ class AddUpdateHandlesObserver implements ObserverInterface
     const XML_PATH_PRODUCTPAGE_REMOVE_BREADCRUMBS = 'weltpixel_product_page/general/remove_breadcrumbs';
     const XML_PATH_PRODUCTPAGE_MOVE_TABS = 'weltpixel_product_page/general/move_description_tabs_under_info_area';
     const XML_PATH_PRODUCTPAGE_VERSION = 'weltpixel_product_page/version/version';
+    const XML_PATH_PRODUCTPAGE_ACCORDION_VERSION = 'weltpixel_product_page/general/accordion_version';
 
     /**
      * AddUpdateHandlesObserver constructor.
@@ -49,7 +50,7 @@ class AddUpdateHandlesObserver implements ObserverInterface
         $layout = $observer->getData('layout');
         $fullActionName = $observer->getData('full_action_name');
 
-        if ($fullActionName != 'catalog_product_view') {
+        if (!in_array($fullActionName, ['checkout_cart_configure', 'catalog_product_view'])) {
             return $this;
         }
 
@@ -63,6 +64,7 @@ class AddUpdateHandlesObserver implements ObserverInterface
         $removeBreadcrumbs = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_REMOVE_BREADCRUMBS, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $moveTabseAvailability = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_MOVE_TABS, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $version = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_VERSION, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $accordionVersion = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_ACCORDION_VERSION, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
         if ($removeAvailability) {
             $layout->getUpdate()->addHandle('weltpixel_productpage_removeavailability');

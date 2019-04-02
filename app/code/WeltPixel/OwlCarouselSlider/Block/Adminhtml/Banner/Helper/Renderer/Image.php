@@ -60,7 +60,7 @@ class Image extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractR
             $imageSrc = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA)
                 . $banner->getImage();
 
-            return '<image width="150" height="50" src ="' . $imageSrc . '" alt="' . $banner->getImage() . '" >';
+            return '<image width="150" src ="' . $imageSrc . '" alt="' . $banner->getImage() . '" />';
         }
 
         return '';

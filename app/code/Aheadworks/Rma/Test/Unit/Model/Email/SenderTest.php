@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Test\Unit\Model\Email;
 
@@ -114,7 +114,7 @@ class SenderTest extends TestCase
             ->willReturnSelf();
         $this->transportBuilderMock->expects($this->once())
             ->method('addTo')
-            ->with([$emailMetadata['recipient_name'] => $emailMetadata['recipient_email']])
+            ->with($emailMetadata['recipient_email'], $emailMetadata['recipient_name'])
             ->willReturnSelf();
         $this->transportBuilderMock->expects($this->once())
             ->method('getTransport')

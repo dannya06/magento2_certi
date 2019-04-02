@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\Rma\Model;
 
@@ -30,8 +30,8 @@ class Config
     const XML_PATH_CONTACTS_DEPARTMENT_NAME = 'aw_rma/contacts/department_name';
     const XML_PATH_CONTACTS_DEPARTMENT_EMAIL = 'aw_rma/contacts/department_email';
     const XML_PATH_CONTACTS_DEPARTMENT_ADDRESS = 'aw_rma/contacts/department_address';
-    const XML_PATH_EMAIL_NOTIFICATION_REPLY_BY_ADMIN = 'aw_rma/email/template_to_admin_thread';
-    const XML_PATH_EMAIL_NOTIFICATION_REPLY_BY_CUSTOMER = 'aw_rma/email/template_to_customer_thread';
+    const XML_PATH_EMAIL_NOTIFICATION_REPLY_BY_ADMIN = 'aw_rma/email/template_to_customer_thread';
+    const XML_PATH_EMAIL_NOTIFICATION_REPLY_BY_CUSTOMER = 'aw_rma/email/template_to_admin_thread';
     const XML_PATH_FILE_ATTACHMENTS_ALLOW_ATTACH_FILES = 'aw_rma/file_attachments/allow_attach_files';
     const XML_PATH_FILE_ATTACHMENTS_MAX_UPLOAD_FILE_SIZE = 'aw_rma/file_attachments/max_upload_file_size';
     const XML_PATH_FILE_ATTACHMENTS_ALLOW_FILE_EXTENSIONS = 'aw_rma/file_attachments/allow_file_extensions';

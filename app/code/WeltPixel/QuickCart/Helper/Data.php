@@ -17,23 +17,51 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	 * @var array
 	 */
 	protected $_quickcartOptions;
-	
-	
-	/**
-	 * Constructor
-	 *
-	 * @param \Magento\Framework\App\Helper\Context $context
-	 * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-	 */
+
+    /**
+     * Data constructor.
+     * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     */
 	public function __construct(
 			\Magento\Framework\App\Helper\Context $context,
 			\Magento\Store\Model\StoreManagerInterface $storeManager
 	) {
 		parent::__construct($context);
-		
+
 		$this->_storeManager = $storeManager;
 		$this->_quickcartOptions = $this->scopeConfig->getValue('weltpixel_quick_cart', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 	}
+
+    /**
+     * Check if QuickCart is enabled
+     *
+     * @return mixed
+     */
+	public function quicartIsEnabled()
+    {
+        return $this->scopeConfig->getValue(
+            'weltpixel_quick_cart/general/enable',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $this->getStoreId());
+    }
+
+    /**
+     * Check if should open mini-cart after an item was added
+     *
+     * @return mixed
+     */
+    public function openMinicart()
+    {
+        if ($this->quicartIsEnabled()) {
+            return $this->scopeConfig->getValue(
+                'weltpixel_quick_cart/general/open_minicart',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                $this->getStoreId());
+        }
+
+        return false;
+    }
 	
 	/**
 	 * @return int

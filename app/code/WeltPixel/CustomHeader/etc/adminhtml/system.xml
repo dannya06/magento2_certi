@@ -40,7 +40,7 @@
                 </field>
                 <field id="background_color" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Background Color</label>
-                    <comment>Set background color of the [weltpixel_global_promo_message] static block. Example: #FFE8E8</comment>
+                    <comment>Set background color for [weltpixel_global_promo_message] static block. Example: #FFE8E8</comment>
                     <validate>color {required:false, hash:true}</validate>
                     <depends>
                         <field id="enable">1</field>
@@ -55,12 +55,12 @@
                 </field>
                 <field id="link_color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Link Color</label>
-                    <comment>Set color for Links on Top Header. Example: #FFFFFF</comment>
+                    <comment>Set link color in Header Navigation, only applies for level 0 categories.Example: #000000</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="hover_link_color" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Hover Link Color</label>
-                    <comment>Set hover color on links from Top Header. Example: #F3F3F3</comment>
+                    <comment>Set link color on hover, for Header Level 0 Navigation and all subcategories from dropdown menu . Example: #CCCCCC</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="active_link_color" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -85,7 +85,7 @@
                 </field>
                 <field id="background_color" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Background Color</label>
-                    <comment>Set Background color of Top Header. Example: #000000</comment>
+                    <comment>Set Background color for Top Header. Example: #000000</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="border_bottom_color" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -114,7 +114,7 @@
                 </field>
                 <field id="background" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Background</label>
-                    <comment>Set background color of Header Navigation. Example: #FFFFFF</comment>
+                    <comment>Set background color for Header Navigation. Example: #FFFFFF</comment>
                     <validate>color {required:false, hash:true}</validate>
                 </field>
                 <field id="link_color" translate="label" type="text" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -183,16 +183,16 @@
                     </depends>
                 </field>
                 <field id="sticky_elements_color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sticky Header Elements Color</label>
-                    <comment>Select color for elements in Header, when is sticky.</comment>
+                    <label>Sticky Header Link Color</label>
+                    <comment>Set link color in Sticky Header Navigation, only applies for level 0 categories.Example: #000000</comment>
                     <validate>color {required:false, hash:true}</validate>
                     <depends>
                         <field id="advanced_colors">1</field>
                     </depends>
                 </field>
                 <field id="sticky_elements_hover_color" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sticky Header Elements Color on Hover</label>
-                    <comment>Select color on hover for elements in Header, when is sticky.</comment>
+                    <label>Sticky Header Link Color on Hover</label>
+                    <comment>Set link color on hover, for Sticky Header Level 0 Navigation and all subcategories from dropdown menu . Example: #CCCCCC</comment>
                     <validate>color {required:false, hash:true}</validate>
                     <depends>
                         <field id="advanced_colors">1</field>
@@ -265,19 +265,104 @@
                         <field id="version">0</field>
                     </depends>
                 </field>
-                <field id="placeholder_color" translate="label" type="text" sortOrder="245" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="placeholder_color" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Placeholder color</label>
                     <comment>Set placeholder font color from Search field. Example: #5C5C5C</comment>
                     <validate>color {required:false, hash:true}</validate>
-                    <depends>
-                        <field id="version">0</field>
-                    </depends>
                 </field>
                 <field id="font_size" translate="label" type="text" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font size</label>
                     <comment>Set font size for Search field text. Example: 12px</comment>
                     <depends>
                         <field id="version">0</field>
+                    </depends>
+                </field>
+                <field id="background_v2" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Background Color</label>
+                    <comment>Set background color for Search V2. Example: #000000</comment>
+                    <validate>color {required:false, hash:true} validate-no-empty</validate>
+                    <depends>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="background_opacity" translate="label" type="text" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Background Opacity</label>
+                    <comment>Set background opacity for Search V2. Value range:0.00 - 1.00. Example: 0.95</comment>
+                    <validate>validate-number validate-greater-than-zero validate-no-empty validate-number-range number-range-0.00-1.00</validate>
+                    <depends>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="background_input" translate="label" type="text" sortOrder="260" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Input Background Color</label>
+                    <comment>Set background color for input. Example: #575757</comment>
+                    <validate>color {required:false, hash:true} validate-no-empty</validate>
+                    <depends>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="main_elements_color" translate="label" type="text" sortOrder="270" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Main Search Elements Color</label>
+                    <comment>Set color for main elements: search input text color, border color, close button color, magnifier color. Example: #FFFFFF</comment>
+                    <validate>color {required:false, hash:true} validate-no-empty</validate>
+                    <depends>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="display_magnifier" translate="label" type="select" sortOrder="280" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Magnifier Icon</label>
+                    <comment>Display magnifier icon on the right side of the input.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="magnifier_background_color" translate="label" type="text" sortOrder="290" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Magnifier Background Color</label>
+                    <comment>Set background color for magnifier box. Example: #000000</comment>
+                    <validate>color {required:false, hash:true} validate-no-empty</validate>
+                    <depends>
+                        <field id="display_magnifier">1</field>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="input_borders" translate="label" type="select" sortOrder="295" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Input Borders</label>
+                    <comment>Select border position for search input.</comment>
+                    <source_model>WeltPixel\CustomHeader\Model\Config\Source\BorderPosition</source_model>
+                    <depends>
+                        <field id="weltpixel_custom_header/general/ajax_catalog">1</field>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="border_widthv2" translate="label" type="text" sortOrder="296" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Border Width</label>
+                    <comment>See border width for search input. Example: 3</comment>
+                    <validate>validate-number validate-greater-than-zero validate-no-empty</validate>
+                    <depends>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="input_font_size" translate="label" type="text" sortOrder="297" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Search Input Font Size</label>
+                    <comment>Set font size search input. Example: 18</comment>
+                    <validate>validate-number validate-greater-than-zero validate-no-empty</validate>
+                    <depends>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="placeholder_text" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Placeholder Text</label>
+                    <comment>Set placeholder text. Example: Type at least 3 characters to search entire store</comment>
+                    <depends>
+                        <field id="version">1</field>
+                    </depends>
+                </field>
+                <field id="customHtml" translate="label" type="textarea" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom CSS/HTML</label>
+                    <comment>Insert custom HTML/CSS</comment>
+                    <depends>
+                        <field id="version">1</field>
                     </depends>
                 </field>
             </group>

@@ -63,6 +63,8 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected $_items = [];
 
+    protected $_logged_customer_group_id;
+
     /**
      * @param \Magento\Framework\Model\ResourceModel\Db\Context $context        
      * @param \Magento\Store\Model\StoreManagerInterface        $storeManager   
@@ -319,6 +321,22 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
     }
 
+    public function setLoggedCustomerGroupId($customer_group_id = 0)
+    {
+        $this->_logged_customer_group_id = $customer_group_id;
+        return $this;
+    }
+
+
+    public function getLoggedCustomerGroupId()
+    {
+        if($this->_logged_customer_group_id){
+            return $this->_logged_customer_group_id;
+        }else{
+            return 0;
+        }
+    }
+
     protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
     {
         if ($object->getData('is_preview')) {
@@ -446,6 +464,10 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                             $menuItems = unserialize(base64_decode($menuData['menu_items']));
                             $this->getConnection()->insertMultiple($itemsTable, $menuItems);
                             unset($menuData['menu_items']);
+                        }elseif (isset($menuData['params'])) {
+                            $menuItems = json_decode($menuData['params'], true);
+                            $this->getConnection()->insertMultiple($itemsTable, $menuItems);
+                            unset($menuData['params']);
                         }
                         $menuData['current_version'] = $version;
                         $object->setData($menuData);
@@ -468,7 +490,7 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             } else {
                 $stores = (array)$object->getData('stores');
             }
-
+            $customer_groups = (array)$object->getCustomerGroupIds();
             $select = $this->getConnection()->select()->from(
                 ['cb' => $this->getMainTable()]
                 )->join(
@@ -487,7 +509,25 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     $select->where('cb.menu_id <> ?', intval($object->getId()));
                 }
 
-                if ($this->getConnection()->fetchRow($select)) {
+                $select2 = $this->getConnection()->select()->from(
+                ['mm' => $this->getMainTable()]
+                )->join(
+                ['mmg' => $this->getTable('ves_megamenu_menu_customergroup')],
+                'mm.menu_id = mmg.menu_id',
+                []
+                )->where(
+                'mm.alias = ?',
+                $object->getData('alias')
+                )->where(
+                'mmg.customer_group_id IN (?)',
+                $customer_groups
+                );
+
+                if ($object->getId()) {
+                    $select2->where('mm.menu_id <> ?', intval($object->getId()));
+                }
+
+                if ($this->getConnection()->fetchRow($select) && $this->getConnection()->fetchRow($select2)) {
                     return false;
                 }
 
@@ -510,6 +550,17 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     ->where(
                         "cbs.store_id IN (0,?)",
                         $storeId
+                        );
+                }
+                if($customer_group_id=$this->getLoggedCustomerGroupId()){
+                    $select->join(
+                        ["mcg" => $this->getTable("ves_megamenu_menu_customergroup")],
+                        "{$mainTable}.menu_id = mcg.menu_id",
+                        []
+                        )
+                    ->where(
+                        "mcg.customer_group_id IN (?)",
+                        $customer_group_id
                         );
                 }
                 $select->from($this->getMainTable())->where($field . '=?', $value);

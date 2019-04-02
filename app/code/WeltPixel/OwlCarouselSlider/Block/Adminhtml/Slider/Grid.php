@@ -155,7 +155,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareMassaction()
     {
-        $this->setMassactionIdField('entity_id');
+        $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('slider');
 
         $this->getMassactionBlock()->addItem(
@@ -168,7 +168,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         );
 
         $status = $this->_status->getAllAvailableStatuses();
-        array_unshift($status, ['label' => '', 'value' => '']);
+
         $this->getMassactionBlock()->addItem(
             'status',
             [

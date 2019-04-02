@@ -1,0 +1,36 @@
+<?php
+$sharingUrl = $this->getWishlistSharingUrl();
+
+if ($sharingUrl) {
+    $markup = '<script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "EmailMessage",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "target": "' . $sharingUrl . '",
+                    "name": "View Whishlist"
+                  },
+                  "description": "View Whishlist"
+                }
+            </script>';
+} else {
+    $markup = '
+        <pre>
+            &lt;<span>script type="application/ld+json"</span><span>></span>
+                {
+                  "@context": "http://schema.org",
+                  "@type": "EmailMessage",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "target": "http://example.com/view/whishlist",
+                    "name": "View Whishlist"
+                  },
+                  "description": "View Whishlist"
+                }
+            &lt;<span>/script</span>>
+        </pre>
+    ';
+}
+?>
+<?= $markup ?>

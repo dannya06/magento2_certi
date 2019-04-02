@@ -17,6 +17,8 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\View;
 use Magento\Framework\View\Layout;
+use Aheadworks\Blog\Model\Serialize\SerializeInterface;
+use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
 
 /**
  * Test for \Aheadworks\Blog\Controller\Block\Render
@@ -55,6 +57,11 @@ class RenderTest extends \PHPUnit\Framework\TestCase
     private $viewMock;
 
     /**
+     * @var SerializeInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $serializerMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
@@ -86,6 +93,12 @@ class RenderTest extends \PHPUnit\Framework\TestCase
             true,
             ['appendBody']
         );
+        $this->serializerMock = $this->getMockForAbstractClass(SerializeInterface::class);
+        $serializeFactoryMock = $this->createPartialMock(SerializeFactory::class, ['create']);
+        $serializeFactoryMock->expects($this->once())
+            ->method('create')
+            ->willReturn($this->serializerMock);
+
         $this->viewMock = $this->getMockBuilder(View::class)
             ->setMethods(['loadLayout', 'getLayout'])
             ->disableOriginalConstructor()
@@ -104,7 +117,8 @@ class RenderTest extends \PHPUnit\Framework\TestCase
             Render::class,
             [
                 'context' => $contextMock,
-                'translateInline' => $this->translateInlineMock
+                'translateInline' => $this->translateInlineMock,
+                'serializeFactory' => $serializeFactoryMock
             ]
         );
     }
@@ -137,18 +151,18 @@ class RenderTest extends \PHPUnit\Framework\TestCase
     public function testExecuteBlockIsAjax()
     {
         $blockName = RecentPost::WIDGET_NAME_PREFIX . 'name';
-        $block = base64_encode(
-            serialize(
-                [
-                    'name' => $blockName,
-                    'number_to_display' => 'number_to_display',
-                    'title' => 'title',
-                    'template' => 'template'
-                ]
-            )
-        );
+        $blockArr = [
+            'name' => $blockName,
+            'number_to_display' => 'number_to_display',
+            'title' => 'title',
+            'template' => 'template'
+        ];
+        $encodedBlock = json_encode($blockArr);
+        $block = base64_encode($encodedBlock);
         $blocks = [$block];
+        $encodedBlocks = json_encode($blocks);
         $expected = [$block => 'html content'];
+        $encodedExpected = json_encode($expected);
 
         $this->requestMock->expects($this->once())
             ->method('isAjax')
@@ -157,8 +171,18 @@ class RenderTest extends \PHPUnit\Framework\TestCase
             ->method('getParam')
             ->willReturnMap(
                 [
-                    ['blocks', null, json_encode($blocks)]
+                    ['blocks', null, $encodedBlocks]
                 ]
+            );
+        $this->serializerMock->expects($this->exactly(2))
+            ->method('unserialize')
+            ->withConsecutive(
+                [$encodedBlocks],
+                [$encodedBlock]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $blocks,
+                $blockArr
             );
 
         $blockInstanceMock = $this->getMockBuilder(RecentPost::class)
@@ -187,9 +211,13 @@ class RenderTest extends \PHPUnit\Framework\TestCase
             ->method('processResponseBody')
             ->with($expected)
             ->willReturnSelf();
+        $this->serializerMock->expects($this->once())
+            ->method('serialize')
+            ->with($expected)
+            ->willReturn($encodedExpected);
         $this->responseMock->expects($this->once())
             ->method('appendBody')
-            ->with(json_encode($expected));
+            ->with($encodedExpected);
 
         $this->controller->execute();
     }

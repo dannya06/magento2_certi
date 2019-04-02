@@ -1,16 +1,20 @@
 <?php
 namespace Aheadworks\SocialLogin\Model\ResourceModel\Account;
 
+use Aheadworks\SocialLogin\Model\Account;
+use Aheadworks\SocialLogin\Model\ResourceModel\Account as AccountResource;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+
 /**
  * Class Collection
  */
-class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+class Collection extends AbstractCollection
 {
     /**
      * {@inheritdoc}
      */
     protected function _construct()
     {
-        $this->_init('Aheadworks\SocialLogin\Model\Account', 'Aheadworks\SocialLogin\Model\ResourceModel\Account');
+        $this->_init(Account::class, AccountResource::class);
     }
 }

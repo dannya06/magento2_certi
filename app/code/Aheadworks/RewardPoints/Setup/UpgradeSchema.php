@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Setup;
 
@@ -10,6 +10,7 @@ use Aheadworks\RewardPoints\Model\Source\NotifiedStatus;
 use Aheadworks\RewardPoints\Model\Source\SubscribeStatus;
 use Aheadworks\RewardPoints\Model\Source\Transaction\Status;
 use Magento\Framework\App\State;
+use Magento\Framework\App\Area;
 use Aheadworks\RewardPoints\Model\Source\Transaction\EntityType;
 use Aheadworks\RewardPoints\Model\Source\Transaction\Type;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
@@ -17,10 +18,10 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Aheadworks\RewardPoints\Model\Comment\CommentPoolInterface;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Aheadworks\RewardPoints\Model\DateTime;
 use Aheadworks\RewardPoints\Model\Config;
+use Aheadworks\RewardPoints\Setup\Updater\Schema\Updater;
 
 /**
  * Class UpgradeSchema
@@ -51,27 +52,37 @@ class UpgradeSchema implements UpgradeSchemaInterface
     private $config;
 
     /**
+     * @var State
+     */
+    private $appState;
+
+    /**
+     * @var Updater
+     */
+    private $updater;
+
+    /**
      * @param State $appState
      * @param CommentPoolInterface $commentPool
      * @param OrderRepositoryInterface $orderRepository
      * @param DateTime $dateTime
      * @param Config $config
+     * @param Updater $updater
      */
     public function __construct(
         State $appState,
         CommentPoolInterface $commentPool,
         OrderRepositoryInterface $orderRepository,
         DateTime $dateTime,
-        Config $config
+        Config $config,
+        Updater $updater
     ) {
-        try {
-            $appState->setAreaCode('adminhtml');
-        } catch (LocalizedException $e) {
-        }
+        $this->appState = $appState;
         $this->commentPool = $commentPool;
         $this->orderRepository = $orderRepository;
         $this->dateTime = $dateTime;
         $this->config = $config;
+        $this->updater = $updater;
     }
 
     /**
@@ -83,7 +94,19 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->addTransactionTables($setup);
             $this->addColumnsToTransactionTable($setup);
             $this->addColumnsToPointsSummaryTable($setup);
-            $this->updateTransactionData($setup);
+            $this->appState->emulateAreaCode(
+                Area::AREA_ADMINHTML,
+                [$this, 'updateTransactionData'],
+                [$setup]
+            );
+        }
+
+        if ($context->getVersion() && version_compare($context->getVersion(), '1.4.4', '<')) {
+            $this->updater->update144($setup);
+        }
+
+        if ($context->getVersion() && version_compare($context->getVersion(), '1.5.0', '<')) {
+            $this->updater->update150($setup);
         }
     }
 

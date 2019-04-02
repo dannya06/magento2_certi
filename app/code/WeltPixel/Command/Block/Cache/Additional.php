@@ -3,19 +3,6 @@ namespace WeltPixel\Command\Block\Cache;
 
 class Additional extends \Magento\Backend\Block\Template
 {
-
-    /**
-     * Additional constructor.
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param array $data
-     */
-    public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        array $data = [])
-    {
-        parent::__construct($context, $data);
-    }
-
     /**
      * @return string
      */
@@ -29,14 +16,23 @@ class Additional extends \Magento\Backend\Block\Template
      */
     public function getStoreViews() {
         $storeCodes = [];
-        $stores = $this->_storeManager->getStores();
-        foreach ($stores as $store) {
-            $storeCodes[] = [
-                'value' => $store->getCode(),
-                'label' => $store->getName(),
-            ];
-        }
+        $websites = $this->_storeManager->getWebsites();
 
+        foreach ($websites as $website) {
+            $websiteName = $this->_escaper->escapeHtml($website->getName());
+            $groups = $website->getGroups();
+            foreach ($groups as $group) {
+                $storeName = $this->_escaper->escapeHtml($group->getName());
+                $stores = $group->getStores();
+                foreach ($stores as $storeView) {
+                    $storeViewName = $this->_escaper->escapeHtml($storeView->getName());
+                    $storeCodes[] = [
+                        'value' => $storeView->getCode(),
+                        'label' => $websiteName . ' > ' . $storeName . ' > ' . $storeViewName
+                    ];
+                }
+            }
+        }
 
         if (count($storeCodes) > 1) {
             array_unshift($storeCodes, [
@@ -49,5 +45,16 @@ class Additional extends \Magento\Backend\Block\Template
         }
 
         return $storeCodes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _toHtml()
+    {
+        if (!$this->getAuthorization()->isAllowed('WeltPixel_Command::LessCssGeneration')) {
+            return '';
+        }
+        return parent::_toHtml();
     }
 }

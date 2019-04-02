@@ -1,8 +1,8 @@
 <?php
 /**
-* Copyright 2016 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
+ * Copyright 2019 aheadWorks. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Calculator;
 
@@ -668,6 +668,55 @@ class RateCalculatorTest extends \PHPUnit\Framework\TestCase
             [14, 5, 1, 0,  0, 0, 1],
             [15, 1, 1, 9.99, 10, 10, 1],
             [15, 1, 1, 9.5, 10, 10, 1]
+        ];
+    }
+
+    /**
+     * Test calculateEarnPointsByRateRaw method
+     *
+     * @param float $baseAmount
+     * @param int $points
+     * @param float $amount
+     * @param float $result
+     * @dataProvider calculateEarnPointsByRateRawDataProvider
+     */
+    public function testCalculateEarnPointsByRateRaw($baseAmount, $points, $amount, $result)
+    {
+        $rateMock = $this->createMock(EarnRateInterface::class);
+        $rateMock->expects($this->once())
+            ->method('getBaseAmount')
+            ->willReturn($baseAmount);
+        $rateMock->expects($this->once())
+            ->method('getPoints')
+            ->willReturn($points);
+
+        $this->assertEquals($result, $this->object->calculateEarnPointsByRateRaw($rateMock, $amount));
+    }
+
+    /**
+     * @return array
+     */
+    public function calculateEarnPointsByRateRawDataProvider()
+    {
+        return [
+            [
+                'baseAmount' => 10,
+                'points' => 100,
+                'amount' => 2.5,
+                'result' => 25
+            ],
+            [
+                'baseAmount' => 100,
+                'points' => 10,
+                'amount' => 5,
+                'result' => 0.5
+            ],
+            [
+                'baseAmount' => 100,
+                'points' => 10,
+                'amount' => 0,
+                'result' => 0
+            ],
         ];
     }
 }

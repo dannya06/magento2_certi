@@ -28,6 +28,7 @@
     <preference for="Aheadworks\Blog\Api\Data\PostSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Aheadworks\Blog\Api\Data\TagSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Aheadworks\Blog\Api\Data\TagCloudItemSearchResultsInterface" type="Aheadworks\Blog\Model\ResourceModel\TagCloudItem\SearchResults" />
+    <preference for="Aheadworks\Blog\Model\Serialize\SerializeInterface" type="Aheadworks\Blog\Model\Serialize\Json" />
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">

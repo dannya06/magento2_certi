@@ -161,9 +161,9 @@ class Editor extends \Magento\Backend\Block\Widget\Form\Renderer\Fieldset\Elemen
             $length = $nextPosition - $firstPosition;
             $img = substr($str, $firstPosition, $length+2);
             $newImg = $this->_vesData->filter($img);
-            $f = strpos($newImg, 'src="', 0)+5;
-            $n = strpos($newImg, '"', $f+5);
-            $src = substr($newImg, $f, ($n-$f));
+            $f = @strpos($newImg, 'src="', 0)+5;
+            $n = @strpos($newImg, '"', $f+5);
+            $src = @substr($newImg, $f, ($n-$f));
             foreach ($widgetMedia as $k1 => $v1) {
                 if( strpos($img, $k1)){
                     $src1 = $src;
@@ -195,7 +195,7 @@ class Editor extends \Magento\Backend\Block\Widget\Form\Renderer\Fieldset\Elemen
         $html = $this->_menuItems = json_encode($item) . ',';
         $itemBuild = $item;
         $newChildren = [];
-        if(isset($data['children']) && count($data['children']>0)){
+        if(isset($data['children']) && count($data['children'])>0){
             foreach ($data['children'] as $k => $v) {
                 $newChildren[] = $this->renderMenuItem($v, $level, $itemBuild);
             }

@@ -1,0 +1,45 @@
+<?php
+$customer = $block->getCustomer();
+$back_url = $block->getBackUrl();
+
+if ($customer) {
+    $queryParams = [
+        '_query' => [
+            'id' => $customer->getId(),
+            'key' => $customer->getConfirmation(),
+            'back_url' => $back_url
+        ],
+        '_nosid' => 1
+    ];
+    $markup = '<script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "EmailMessage",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "target": "' . $this->getFrontendUrl('customer/account/confirm', $queryParams) . '",
+                    "name": "Confirm Email"
+                  },
+                  "description": "Confirm Email"
+                }
+            </script>';
+} else {
+    $markup = '
+        <pre>
+            &lt;<span>script type="application/ld+json"</span><span>></span>
+                {
+                  "@context": "http://schema.org",
+                  "@type": "EmailMessage",
+                  "potentialAction": {
+                    "@type": "ViewAction",
+                    "target": "http://example.com/confirm",
+                    "name": "Confirm Email"
+                  },
+                  "description": "Confirm Email"
+                }
+            &lt;<span>/script</span>>
+        </pre>
+    ';
+}
+?>
+<?= $markup ?>
