@@ -8,19 +8,19 @@
         "AFL-3.0"
     ],
     "require": {
-        "magento/product-community-edition": "2.3.0",
+        "magento/product-community-edition": "2.3.1",
         "composer/composer": "@alpha",
         "icubeus/magento2-citykecamatan": "^2.0",
         "icubeus/magento2-advancerate": "^2.0",
         "icubeus/magento2-veritranspayment": "dev-develop",
         "icubeus/magento2-confirmpayment": "dev-master",
         "icubeus/magento2-trackorder": "dev-master",
-        "smile/elasticsuite": "2.7.0",
+        "smile/elasticsuite": "^2.7.0",
         "icubeus/magento2-indonesianlanguage": "dev-master",
         "magepal/magento2-reindex": "^1.0",
         "ebizmarts/mailchimp-lib": "^3.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "msp/recaptcha": "2.0.1",
+        "msp/recaptcha": "2.0.2",
         "icubeus/magento2-osc": "dev-master",
         "icubeus/magento2-gosend": "^2.0"
     },
