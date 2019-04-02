@@ -4,11 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "771b16fefd0d7fe73773232aa58f2516",
-=======
-    "content-hash": "f863f457ac93c29fd53da3d7d751246a",
->>>>>>> add composer.json, lock and config.php
+    "hash": "4473e2305981aa9d8508977bb9e0e2c2",
+    "content-hash": "09fc1b9ebfc9649d523c1bf63280ba9c",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -161,7 +158,7 @@
                 "payment",
                 "payments"
             ],
-            "time": "2019-02-11T16:32:17+00:00"
+            "time": "2018-08-31 15:51:31"
         },
         {
             "name": "amzn/login-with-amazon-module",
@@ -344,7 +341,7 @@
                 }
             ],
             "description": "Braintree PHP Client Library",
-            "time": "2018-07-26T14:37:38+00:00"
+            "time": "2018-02-08 23:03:34"
         },
         {
             "name": "christian-riesen/base32",
@@ -432,7 +429,7 @@
             ],
             "description": "The stock Zend_Cache_Backend_File backend has extremely poor performance for cleaning by tags making it become unusable as the number of cached items increases. This backend makes many changes resulting in a huge performance boost, especially for tag cleaning.",
             "homepage": "https://github.com/colinmollenhour/Cm_Cache_Backend_File",
-            "time": "2018-04-05T15:28:43+00:00"
+            "time": "2016-05-02 16:24:47"
         },
         {
             "name": "colinmollenhour/cache-backend-redis",
@@ -468,7 +465,7 @@
             ],
             "description": "Zend_Cache backend using Redis with full support for tags.",
             "homepage": "https://github.com/colinmollenhour/Cm_Cache_Backend_Redis",
-            "time": "2018-05-15T16:02:25+00:00"
+            "time": "2017-10-05 20:50:44"
         },
         {
             "name": "colinmollenhour/credis",
@@ -508,7 +505,7 @@
             ],
             "description": "Credis is a lightweight interface to the Redis key-value store which wraps the phpredis library when available for better performance.",
             "homepage": "https://github.com/colinmollenhour/credis",
-            "time": "2018-05-07T14:45:04+00:00"
+            "time": "2017-07-05 15:32:38"
         },
         {
             "name": "colinmollenhour/php-redis-session-abstract",
@@ -545,7 +542,7 @@
             ],
             "description": "A Redis-based session handler with optimistic locking",
             "homepage": "https://github.com/colinmollenhour/php-redis-session-abstract",
-            "time": "2019-03-18T14:43:14+00:00"
+            "time": "2017-03-22 16:13:03"
         },
         {
             "name": "composer/ca-bundle",
@@ -601,7 +598,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2019-01-28T09:30:10+00:00"
+            "time": "2018-10-18 06:09:13"
         },
         {
             "name": "composer/composer",
@@ -681,7 +678,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2019-02-11T09:52:10+00:00"
+            "time": "2017-03-10 08:29:45"
         },
         {
             "name": "composer/semver",
@@ -743,7 +740,7 @@
                 "validation",
                 "versioning"
             ],
-            "time": "2019-03-19T17:25:45+00:00"
+            "time": "2016-08-30 16:08:34"
         },
         {
             "name": "composer/spdx-licenses",
@@ -804,7 +801,7 @@
                 "spdx",
                 "validator"
             ],
-            "time": "2018-11-01T09:45:54+00:00"
+            "time": "2018-11-01 09:45:54"
         },
         {
             "name": "composer/xdebug-handler",
@@ -879,7 +876,7 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "homepage": "https://github.com/container-interop/container-interop",
-            "time": "2017-02-14T19:40:03+00:00"
+            "time": "2017-02-14 19:40:03"
         },
         {
             "name": "donatj/phpuseragentparser",
@@ -1045,7 +1042,7 @@
                 "email",
                 "mailchimp"
             ],
-            "time": "2019-03-07T19:47:51+00:00"
+            "time": "2018-12-03 16:52:12"
         },
         {
             "name": "elasticsearch/elasticsearch",
@@ -1169,7 +1166,7 @@
                 "qrcode",
                 "symfony"
             ],
-            "time": "2017-10-22T18:56:00+00:00"
+            "time": "2017-11-08 17:04:47"
         },
         {
             "name": "fabrizioballiano/deferjavascripts",
@@ -1205,7 +1202,7 @@
                 }
             ],
             "description": "Moves all your javascripts to the very end of your HTML (only on frontend) making search engines and speed metering tools happy.",
-            "time": "2016-09-09T11:38:26+00:00"
+            "time": "2016-09-09 11:38:26"
         },
         {
             "name": "google/recaptcha",
@@ -1252,7 +1249,7 @@
                 "recaptcha",
                 "spam"
             ],
-            "time": "2018-08-05T09:31:53+00:00"
+            "time": "2018-08-05 09:31:53"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1317,7 +1314,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-04-22T15:46:56+00:00"
+            "time": "2018-04-22 15:46:56"
         },
         {
             "name": "guzzlehttp/promises",
@@ -1368,7 +1365,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20T10:07:11+00:00"
+            "time": "2016-12-20 10:07:11"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -1435,7 +1432,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2018-12-04T20:46:45+00:00"
+            "time": "2018-12-04 20:46:45"
         },
         {
             "name": "guzzlehttp/ringphp",
@@ -1486,7 +1483,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
-            "time": "2018-07-31T13:22:33+00:00"
+            "time": "2018-07-31 13:22:33"
         },
         {
             "name": "guzzlehttp/streams",
@@ -1536,7 +1533,7 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-10-12T19:18:40+00:00"
+            "time": "2014-10-12 19:18:40"
         },
         {
             "name": "icubeus/magento2-advancerate",
@@ -1564,7 +1561,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2019-03-06T09:59:57+00:00"
+            "time": "2018-06-06 02:57:37"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -1593,7 +1590,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2019-03-25T07:02:53+00:00"
+            "time": "2018-06-08 06:47:44"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -1622,7 +1619,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2018-07-17T05:12:36+00:00"
+            "time": "2018-07-17 05:12:36"
         },
         {
             "name": "icubeus/magento2-gosend",
@@ -1688,7 +1685,7 @@
                 }
             ],
             "description": "Indonesian language package for Magento 2",
-            "time": "2017-09-26T02:09:30+00:00"
+            "time": "2017-09-26 02:09:30"
         },
         {
             "name": "icubeus/magento2-osc",
@@ -1696,11 +1693,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-<<<<<<< HEAD
                 "reference": "b5140746340ab297bb22ef35b89cb1d227a7ed3e"
-=======
-                "reference": "bf61cb3b54d9cc5f71c31955bd74249980d83e17"
->>>>>>> add composer.json, lock and config.php
             },
             "replace": {
                 "icubeus/module-osc": "self.version",
@@ -1736,11 +1729,7 @@
                 "magento",
                 "magento2"
             ],
-<<<<<<< HEAD
             "time": "2019-03-25T06:44:53+00:00"
-=======
-            "time": "2019-03-21T02:37:08+00:00"
->>>>>>> add composer.json, lock and config.php
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -1771,7 +1760,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2019-03-06T02:54:31+00:00"
+            "time": "2019-03-06 02:54:31"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -1902,7 +1891,7 @@
                 "json",
                 "schema"
             ],
-            "time": "2019-01-14T23:55:14+00:00"
+            "time": "2018-02-14 22:26:30"
         },
         {
             "name": "khanamiryan/qrcode-detector-decoder",
@@ -2697,7 +2686,7 @@
                 "composer-installer",
                 "magento"
             ],
-            "time": "2017-12-29T16:45:24+00:00"
+            "time": "2017-12-29 16:45:24"
         },
         {
             "name": "magento/magento2-base",
@@ -7545,7 +7534,7 @@
                 "OSL-3.0",
                 "AFL-3.0"
             ],
-            "description": "N/A"
+            "time": "2017-06-21 14:56:23"
         },
         {
             "name": "magento/module-offline-shipping",
@@ -7586,7 +7575,7 @@
                 "OSL-3.0",
                 "AFL-3.0"
             ],
-            "description": "N/A"
+            "time": "2018-12-22 21:07:56"
         },
         {
             "name": "magento/module-page-cache",
@@ -7617,7 +7606,7 @@
                 "OSL-3.0",
                 "AFL-3.0"
             ],
-            "description": "N/A"
+            "time": "2018-11-05 09:00:11"
         },
         {
             "name": "magento/module-payment",
@@ -11617,9 +11606,17 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony EventDispatcher Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-01-16T18:35:49+00:00"
+            "description": "PHP port of the Javascript version of LESS http://lesscss.org (Originally maintained by Josh Schmidt)",
+            "homepage": "http://lessphp.gpeasy.com",
+            "keywords": [
+                "css",
+                "less",
+                "less.js",
+                "lesscss",
+                "php",
+                "stylesheet"
+            ],
+            "time": "2017-03-28 22:19:25"
         },
         {
             "name": "symfony/filesystem",
@@ -11667,9 +11664,14 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony Filesystem Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-02-07T11:40:08+00:00"
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "polyfill",
+                "pseudorandom",
+                "random"
+            ],
+            "time": "2018-07-04 16:31:37"
         },
         {
             "name": "symfony/finder",
@@ -11716,9 +11718,14 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony Finder Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-02-23T15:42:05+00:00"
+            "description": "Converts CSS styles into inline style attributes in your HTML code",
+            "homepage": "https://www.myintervals.com/emogrifier.php",
+            "keywords": [
+                "css",
+                "email",
+                "pre-processing"
+            ],
+            "time": "2018-12-10 10:36:30"
         },
         {
             "name": "symfony/inflector",
@@ -11947,7 +11954,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-09-21T13:07:52+00:00"
+            "time": "2016-08-06 14:39:51"
         },
         {
             "name": "symfony/polyfill-php56",
@@ -12003,7 +12010,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-09-21T06:26:08+00:00"
+            "time": "2018-11-20 15:27:04"
         },
         {
             "name": "symfony/polyfill-util",
@@ -12102,9 +12109,14 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony Process Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-01-16T19:07:26+00:00"
+            "description": "Formerly rhumsaa/uuid. A PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
+            "homepage": "https://github.com/ramsey/uuid",
+            "keywords": [
+                "guid",
+                "identifier",
+                "uuid"
+            ],
+            "time": "2018-01-20 00:28:24"
         },
         {
             "name": "symfony/property-access",
@@ -12278,7 +12290,14 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Temando multi-carrier shipping extension for Magento 2"
+            "description": "JSON Linter",
+            "keywords": [
+                "json",
+                "linter",
+                "parser",
+                "validator"
+            ],
+            "time": "2018-01-24 12:46:19"
         },
         {
             "name": "true/punycode",
@@ -12326,7 +12345,7 @@
             ],
             "time": "2016-11-16T10:37:54+00:00"
         },
-        {
+		{
             "name": "tubalmartin/cssmin",
             "version": "v4.1.1",
             "source": {
@@ -12378,6 +12397,37 @@
                 "yui"
             ],
             "time": "2018-01-15T15:26:51+00:00"
+        },
+            "bin": [
+                "cssmin"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "tubalmartin\\CssMin\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Túbal Martín",
+                    "homepage": "http://tubalmartin.me/"
+                }
+            ],
+            "description": "A PHP port of the YUI CSS compressor",
+            "homepage": "https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port",
+            "keywords": [
+                "compress",
+                "compressor",
+                "css",
+                "cssmin",
+                "minify",
+                "yui"
+            ],
+            "time": "2019-03-01 16:19:06"
         },
         {
             "name": "vertex/module-tax",
@@ -12501,7 +12551,9 @@
             "license": [
                 "proprietary"
             ],
-            "description": "Tools for communicating with Vertex Cloud and Vertex O-Series"
+            "description": "Symfony CssSelector Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-11-11 19:48:54"
         },
         {
             "name": "webonyx/graphql-php",
@@ -12546,7 +12598,9 @@
                 "api",
                 "graphql"
             ],
-            "time": "2018-09-02T14:59:54+00:00"
+            "description": "Symfony Debug Component",
+            "homepage": "https://symfony.com",
+            "time": "2016-07-30 07:22:48"
         },
         {
             "name": "yubico/u2flib-server",
@@ -12581,9 +12635,9 @@
             "license": [
                 "BSD-2-Clause"
             ],
-            "description": "Library for U2F implementation",
-            "homepage": "https://developers.yubico.com/php-u2flib-server",
-            "time": "2018-09-07T08:16:44+00:00"
+            "description": "Symfony EventDispatcher Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-11-21 14:20:20"
         },
         {
             "name": "zendframework/zend-captcha",
@@ -12641,7 +12695,9 @@
                 "captcha",
                 "zf"
             ],
-            "time": "2018-04-24T17:24:10+00:00"
+            "description": "Symfony Filesystem Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-11-11 19:48:54"
         },
         {
             "name": "zendframework/zend-code",
@@ -12694,7 +12750,9 @@
                 "code",
                 "zf2"
             ],
-            "time": "2018-08-13T20:36:59+00:00"
+            "description": "Symfony Finder Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-11-11 19:48:54"
         },
         {
             "name": "zendframework/zend-config",
@@ -12750,7 +12808,7 @@
                 "config",
                 "zf2"
             ],
-            "time": "2016-02-04T23:01:10+00:00"
+            "time": "2018-08-06 14:22:27"
         },
         {
             "name": "zendframework/zend-console",
@@ -12803,7 +12861,7 @@
                 "console",
                 "zf"
             ],
-            "time": "2018-01-25T19:08:04+00:00"
+            "time": "2018-09-21 13:07:52"
         },
         {
             "name": "zendframework/zend-crypt",
@@ -12853,7 +12911,9 @@
                 "crypt",
                 "zf2"
             ],
-            "time": "2016-02-03T23:46:30+00:00"
+            "description": "Symfony Process Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-11-11 11:18:13"
         },
         {
             "name": "zendframework/zend-db",
@@ -12911,7 +12971,7 @@
                 "db",
                 "zf"
             ],
-            "time": "2019-02-25T11:37:45+00:00"
+            "time": "2018-09-16 00:02:51"
         },
         {
             "name": "zendframework/zend-di",
@@ -13022,7 +13082,7 @@
                 "psr",
                 "psr-7"
             ],
-            "time": "2018-09-05T19:29:37+00:00"
+            "time": "2018-01-15 15:26:51"
         },
         {
             "name": "zendframework/zend-escaper",
@@ -13114,7 +13174,7 @@
                 "eventmanager",
                 "zf2"
             ],
-            "time": "2017-12-12T17:48:56+00:00"
+            "time": "2018-04-24 17:24:10"
         },
         {
             "name": "zendframework/zend-feed",
@@ -13175,7 +13235,7 @@
                 "feed",
                 "zf"
             ],
-            "time": "2018-08-01T13:53:20+00:00"
+            "time": "2016-10-24 13:23:32"
         },
         {
             "name": "zendframework/zend-filter",
@@ -13240,7 +13300,7 @@
                 "filter",
                 "zf"
             ],
-            "time": "2018-12-17T16:00:04+00:00"
+            "time": "2016-02-04 23:01:10"
         },
         {
             "name": "zendframework/zend-form",
@@ -13318,7 +13378,7 @@
                 "form",
                 "zf"
             ],
-            "time": "2018-12-11T22:51:29+00:00"
+            "time": "2018-01-25 19:08:04"
         },
         {
             "name": "zendframework/zend-http",
@@ -13373,7 +13433,7 @@
                 "zend",
                 "zf"
             ],
-            "time": "2019-02-07T17:47:08+00:00"
+            "time": "2016-02-03 23:46:30"
         },
         {
             "name": "zendframework/zend-hydrator",
@@ -13431,7 +13491,7 @@
                 "hydrator",
                 "zf2"
             ],
-            "time": "2016-02-18T22:38:26+00:00"
+            "time": "2018-04-09 13:21:36"
         },
         {
             "name": "zendframework/zend-i18n",
@@ -13499,7 +13559,7 @@
                 "i18n",
                 "zf"
             ],
-            "time": "2018-05-16T16:39:13+00:00"
+            "time": "2016-04-25 20:58:11"
         },
         {
             "name": "zendframework/zend-inputfilter",
@@ -13556,7 +13616,7 @@
                 "inputfilter",
                 "zf"
             ],
-            "time": "2019-01-30T16:58:51+00:00"
+            "time": "2018-09-05 19:29:37"
         },
         {
             "name": "zendframework/zend-json",
@@ -13611,7 +13671,7 @@
                 "json",
                 "zf2"
             ],
-            "time": "2016-02-04T21:20:26+00:00"
+            "time": "2018-04-25 15:48:53"
         },
         {
             "name": "zendframework/zend-loader",
@@ -13656,7 +13716,7 @@
                 "loader",
                 "zf"
             ],
-            "time": "2018-04-30T15:20:54+00:00"
+            "time": "2017-12-12 17:48:56"
         },
         {
             "name": "zendframework/zend-log",
@@ -13727,7 +13787,7 @@
                 "logging",
                 "zf2"
             ],
-            "time": "2018-04-09T21:59:51+00:00"
+            "time": "2018-12-17 16:00:04"
         },
         {
             "name": "zendframework/zend-mail",
@@ -13789,7 +13849,7 @@
                 "mail",
                 "zf"
             ],
-            "time": "2018-06-07T13:37:07+00:00"
+            "time": "2018-12-11 22:51:29"
         },
         {
             "name": "zendframework/zend-math",
@@ -13839,7 +13899,7 @@
                 "math",
                 "zf2"
             ],
-            "time": "2018-12-04T15:34:17+00:00"
+            "time": "2018-08-13 18:47:03"
         },
         {
             "name": "zendframework/zend-mime",
@@ -13890,7 +13950,7 @@
                 "mime",
                 "zf"
             ],
-            "time": "2018-05-14T19:02:50+00:00"
+            "time": "2016-02-18 22:38:26"
         },
         {
             "name": "zendframework/zend-modulemanager",
@@ -13950,7 +14010,7 @@
                 "modulemanager",
                 "zf"
             ],
-            "time": "2017-12-02T06:11:18+00:00"
+            "time": "2018-05-16 16:39:13"
         },
         {
             "name": "zendframework/zend-mvc",
@@ -14045,7 +14105,7 @@
                 "mvc",
                 "zf2"
             ],
-            "time": "2018-05-03T13:13:41+00:00"
+            "time": "2018-12-17 21:30:06"
         },
         {
             "name": "zendframework/zend-psr7bridge",
@@ -14094,7 +14154,7 @@
                 "psr",
                 "psr-7"
             ],
-            "time": "2016-05-10T21:44:39+00:00"
+            "time": "2016-02-04 21:20:26"
         },
         {
             "name": "zendframework/zend-serializer",
@@ -14151,7 +14211,7 @@
                 "serializer",
                 "zf"
             ],
-            "time": "2018-05-14T18:45:18+00:00"
+            "time": "2018-04-30 15:20:54"
         },
         {
             "name": "zendframework/zend-server",
@@ -14198,7 +14258,7 @@
                 "server",
                 "zf"
             ],
-            "time": "2018-04-30T22:21:28+00:00"
+            "time": "2018-04-09 21:59:51"
         },
         {
             "name": "zendframework/zend-servicemanager",
@@ -14250,7 +14310,7 @@
                 "servicemanager",
                 "zf2"
             ],
-            "time": "2018-06-22T14:49:54+00:00"
+            "time": "2018-12-04 15:34:17"
         },
         {
             "name": "zendframework/zend-session",
@@ -14317,7 +14377,7 @@
                 "session",
                 "zf"
             ],
-            "time": "2018-02-22T16:33:54+00:00"
+            "time": "2017-12-02 06:11:18"
         },
         {
             "name": "zendframework/zend-soap",
@@ -14370,7 +14430,7 @@
                 "soap",
                 "zf2"
             ],
-            "time": "2018-01-29T17:51:26+00:00"
+            "time": "2018-05-03 13:13:41"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -14429,7 +14489,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2016-04-12T21:17:31+00:00"
+            "time": "2016-05-10 21:44:39"
         },
         {
             "name": "zendframework/zend-text",
@@ -14477,7 +14537,7 @@
                 "text",
                 "zf"
             ],
-            "time": "2018-04-30T14:55:10+00:00"
+            "time": "2018-05-14 18:45:18"
         },
         {
             "name": "zendframework/zend-uri",
@@ -14524,7 +14584,7 @@
                 "uri",
                 "zf"
             ],
-            "time": "2019-02-27T21:39:04+00:00"
+            "time": "2018-04-30 22:21:28"
         },
         {
             "name": "zendframework/zend-validator",
@@ -14597,7 +14657,7 @@
                 "validator",
                 "zf2"
             ],
-            "time": "2019-01-29T22:26:39+00:00"
+            "time": "2018-06-22 14:49:54"
         },
         {
             "name": "zendframework/zend-view",
@@ -14754,7 +14814,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2017-12-06T07:11:42+00:00"
+            "time": "2018-02-22 16:33:54"
         },
         {
             "name": "doctrine/instantiator",
@@ -14808,7 +14868,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2017-07-22T11:58:36+00:00"
+            "time": "2018-01-29 17:51:26"
         },
         {
             "name": "doctrine/lexer",
@@ -14862,7 +14922,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2014-09-09T13:34:57+00:00"
+            "time": "2016-04-12 21:17:31"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
@@ -14948,8 +15008,7 @@
                     "email": "fabien@symfony.com"
                 }
             ],
-            "description": "A tool to automatically fix PHP code style",
-            "time": "2018-03-20T18:07:08+00:00"
+            "time": "2018-04-30 14:55:10"
         },
         {
             "name": "lusitanian/oauth",
@@ -15016,7 +15075,7 @@
                 "oauth",
                 "security"
             ],
-            "time": "2018-02-14T22:37:14+00:00"
+            "time": "2018-04-30 13:40:08"
         },
         {
             "name": "myclabs/deep-copy",
@@ -15064,7 +15123,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2018-06-11T23:09:50+00:00"
+            "time": "2018-12-13 21:23:15"
         },
         {
             "name": "pdepend/pdepend",
@@ -15103,9 +15162,16 @@
             "license": [
                 "BSD-3-Clause"
             ],
-            "description": "Official version of pdepend to be handled with Composer",
-            "time": "2017-12-13T13:21:38+00:00"
-        },
+            "description": "provides a system of helpers, output filters, and variable escaping",
+            "homepage": "https://github.com/zendframework/zend-view",
+            "keywords": [
+                "view",
+                "zf2"
+            ],
+            "time": "2018-12-10 16:37:55"
+        }
+    ],
+    "packages-dev": [
         {
             "name": "phar-io/manifest",
             "version": "1.0.1",
@@ -15158,8 +15224,13 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Component for reading phar.io manifest information from a PHP Archive (PHAR)",
-            "time": "2017-03-05T18:14:27+00:00"
+            "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
+            "homepage": "https://github.com/doctrine/instantiator",
+            "keywords": [
+                "constructor",
+                "instantiate"
+            ],
+            "time": "2015-06-14 21:17:01"
         },
         {
             "name": "phar-io/version",
@@ -15252,12 +15323,9 @@
                     "name": "SpacePossum"
                 }
             ],
-            "description": "sebastian/diff v2 backport support for PHP5.6",
-            "homepage": "https://github.com/PHP-CS-Fixer",
-            "keywords": [
-                "diff"
-            ],
-            "time": "2018-02-15T16:58:55+00:00"
+            "description": "A tool to automatically fix PHP code style",
+            "abandoned": "friendsofphp/php-cs-fixer",
+            "time": "2017-09-11 14:11:16"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -15403,13 +15471,8 @@
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Mike van Riel",
-                    "email": "me@mikevanriel.com"
-                }
-            ],
-            "time": "2017-07-14T14:27:02+00:00"
+            "description": "Official version of pdepend to be handled with Composer",
+            "time": "2017-01-10 13:45:16"
         },
         {
             "name": "phpmd/phpmd",
@@ -15648,7 +15711,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2017-11-27T13:52:08+00:00"
+            "time": "2013-10-10 15:34:57"
         },
         {
             "name": "phpunit/php-text-template",
@@ -15689,7 +15752,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2015-06-21T13:50:34+00:00"
+            "time": "2015-06-21 13:50:34"
         },
         {
             "name": "phpunit/php-timer",
@@ -15738,7 +15801,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2017-02-26T11:10:40+00:00"
+            "time": "2017-02-26 11:10:40"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -15787,7 +15850,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2017-11-27T05:48:46+00:00"
+            "time": "2017-12-04 08:55:13"
         },
         {
             "name": "phpunit/phpunit",
@@ -15871,7 +15934,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-08-03T13:59:28+00:00"
+            "time": "2014-05-02 07:13:40"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -15930,53 +15993,7 @@
                 "mock",
                 "xunit"
             ],
-            "abandoned": true,
-            "time": "2017-08-03T14:08:16+00:00"
-        },
-        {
-            "name": "sebastian/code-unit-reverse-lookup",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/code-unit-reverse-lookup.git",
-                "reference": "4419fcdb5eabb9caa61a27c7a1db532a6b55dd18"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/code-unit-reverse-lookup/zipball/4419fcdb5eabb9caa61a27c7a1db532a6b55dd18",
-                "reference": "4419fcdb5eabb9caa61a27c7a1db532a6b55dd18",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.6 || ^7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7 || ^6.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de"
-                }
-            ],
-            "description": "Looks up which function or method a line of code belongs to",
-            "homepage": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/",
-            "time": "2017-03-04T06:30:41+00:00"
+            "time": "2015-10-02 06:51:40"
         },
         {
             "name": "sebastian/comparator",
@@ -16040,7 +16057,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2017-03-03T06:26:08+00:00"
+            "time": "2017-01-29 09:50:25"
         },
         {
             "name": "sebastian/diff",
@@ -16092,7 +16109,7 @@
             "keywords": [
                 "diff"
             ],
-            "time": "2017-05-22T07:24:03+00:00"
+            "time": "2017-05-22 07:24:03"
         },
         {
             "name": "sebastian/environment",
@@ -16142,7 +16159,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2017-07-01T08:51:00+00:00"
+            "time": "2016-08-18 05:49:44"
         },
         {
             "name": "sebastian/exporter",
@@ -16209,7 +16226,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2017-04-03T13:19:02+00:00"
+            "time": "2016-06-17 09:04:28"
         },
         {
             "name": "sebastian/finder-facade",
@@ -16248,7 +16265,7 @@
             ],
             "description": "FinderFacade is a convenience wrapper for Symfony's Finder component.",
             "homepage": "https://github.com/sebastianbergmann/finder-facade",
-            "time": "2017-11-18T17:31:49+00:00"
+            "time": "2017-11-18 17:31:49"
         },
         {
             "name": "sebastian/global-state",
@@ -16441,7 +16458,7 @@
             ],
             "description": "Copy/Paste Detector (CPD) for PHP code.",
             "homepage": "https://github.com/sebastianbergmann/phpcpd",
-            "time": "2017-11-16T08:49:28+00:00"
+            "time": "2013-11-08 09:05:42"
         },
         {
             "name": "sebastian/recursion-context",
@@ -16494,49 +16511,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2017-03-03T06:23:57+00:00"
-        },
-        {
-            "name": "sebastian/resource-operations",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/resource-operations.git",
-                "reference": "ce990bb21759f94aeafd30209e8cfcdfa8bc3f52"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/resource-operations/zipball/ce990bb21759f94aeafd30209e8cfcdfa8bc3f52",
-                "reference": "ce990bb21759f94aeafd30209e8cfcdfa8bc3f52",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de"
-                }
-            ],
-            "description": "Provides a list of PHP built-in functions that operate on resources",
-            "homepage": "https://www.github.com/sebastianbergmann/resource-operations",
-            "time": "2015-07-28T20:34:47+00:00"
+            "time": "2016-10-03 07:41:43"
         },
         {
             "name": "sebastian/version",
@@ -16579,7 +16554,7 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2016-10-03T07:35:21+00:00"
+            "time": "2015-06-21 13:59:46"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -16630,7 +16605,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2017-12-19T21:44:46+00:00"
+            "time": "2014-05-01 03:07:07"
         },
         {
             "name": "symfony/config",
@@ -16834,7 +16809,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2019-02-23T15:17:42+00:00"
+            "time": "2017-01-28 00:04:57"
         },
         {
             "name": "symfony/polyfill-php70",
@@ -16887,13 +16862,7 @@
             ],
             "description": "Symfony polyfill backporting some PHP 7.0+ features to lower PHP versions",
             "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "time": "2018-09-21T06:26:08+00:00"
+            "time": "2018-11-11 19:48:54"
         },
         {
             "name": "symfony/polyfill-php72",
@@ -16998,7 +16967,7 @@
             ],
             "description": "Symfony Stopwatch Component",
             "homepage": "https://symfony.com",
-            "time": "2019-01-16T20:31:39+00:00"
+            "time": "2018-11-11 11:18:13"
         },
         {
             "name": "theseer/fdomdocument",

@@ -466,7 +466,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
                 $resource = $objectManager->create('Magento\Framework\App\ResourceConnection');
                 $connection = $resource->getConnection();
 
-                $sql = "Select * FROM amasty_extrafee_quote where quote_id = ".$quote->getId()." and option_id = ".$item['fee_id'];
+                $sql = "Select * FROM amasty_extrafee_quote where quote_id = ".$quote->getId()." and option_id = ".$item['entity_id'];
                 $result = $connection->fetchRow($sql);
 
                 if ($result['fee_id'] && $result['fee_amount']>0) {
