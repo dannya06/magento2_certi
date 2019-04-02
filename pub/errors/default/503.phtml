@@ -6,17 +6,21 @@
 ?>
 
 <div class="maintenance">
-	<img class="swift-logo" src="../../media/wysiwyg/maintenance.png">
 </div>
 <style type="text/css">
 	body,html{
 		height: 100%;
 	}
-	.page-main{
+	.page-main {
 		padding: 0;
 	    height: 100%;
+		background:url("../../media/wysiwyg/maintenance.png");
+	    background-size: 100% auto;
 	}
-	.page-main img {
-		max-width:100%;
+	@media screen and (max-width: 768px) {
+	  .page-main {
+	  	background-size: auto 100%;
+	    background-position: center center;
+	  }
 	}
 </style>
