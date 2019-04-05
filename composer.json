@@ -22,7 +22,8 @@
         "fabrizioballiano/deferjavascripts": "^1.0",
         "msp/recaptcha": "2.0.2",
         "icubeus/magento2-osc": "dev-master",
-        "icubeus/magento2-gosend": "^2.0"
+        "icubeus/magento2-gosend": "^2.0",
+        "icubeus/magento2-rapidflow": "7.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
