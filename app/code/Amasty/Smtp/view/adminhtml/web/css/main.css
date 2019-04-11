@@ -7,13 +7,8 @@
     width: 60px;
 }
 
-#row_amsmtp_smtp_test_email .amsmtp-buttoned-input {
-    margin-right: 195px;
-}
-
 #row_amsmtp_smtp_test_email #check_button {
-    float: right;
-    width: 160px;
+    margin-top: 10px;
 }
 
 #row_amsmtp_smtp_test_email #check_button.success {
@@ -73,4 +68,9 @@
     border: 1px solid #cccbca;
     padding: 0 3px;
     margin-top: 3px;
+}
+
+.amsmtp-notice {
+    margin-top: 10px;
+    display: none;
 }

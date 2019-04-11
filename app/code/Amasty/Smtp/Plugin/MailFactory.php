@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Smtp
  */
 
@@ -11,7 +11,6 @@ namespace Amasty\Smtp\Plugin;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Mail\TransportInterfaceFactory;
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Store\Model\ScopeInterface;
 
 class MailFactory {
 
@@ -34,58 +33,41 @@ class MailFactory {
     protected $helper;
 
     /**
-     * MailFactory constructor.
-     *
-     * @param ScopeConfigInterface     $scopeConfig
-     * @param ObjectManagerInterface   $objectManager
-     * @param \Amasty\Smtp\Helper\Data $helper
-     * @param string                   $instanceName
+     * @var \Amasty\Smtp\Model\Config
      */
+    private $config;
+
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ObjectManagerInterface $objectManager,
         \Amasty\Smtp\Helper\Data $helper,
-        $instanceName = 'Amasty\Smtp\Model\Transport'
+        \Amasty\Smtp\Model\Config $config,
+        $instanceName = \Amasty\Smtp\Model\Transport::class
     ) {
         $this->_instanceName = $instanceName;
         $this->scopeConfig = $scopeConfig;
         $this->_objectManager = $objectManager;
         $this->helper = $helper;
+        $this->config = $config;
     }
 
+    /**
+     * @param TransportInterfaceFactory $subject
+     * @param \Closure $proceed
+     * @param array $data
+     * @return mixed
+     */
     public function aroundCreate(
         TransportInterfaceFactory $subject,
         \Closure $proceed,
         array $data = []
     ) {
         $storeId = $this->helper->getCurrentStore();
-        
-        $smtpEnabled = $this->scopeConfig->isSetFlag(
-            'amsmtp/general/enable', ScopeInterface::SCOPE_STORE, $storeId
-        );
 
-        if ($smtpEnabled) {
-            $config = $this->scopeConfig->getValue(
-                'amsmtp/smtp', ScopeInterface::SCOPE_STORE, $storeId
-            );
-
-            $data['host'] = $config['server'];
-            $data['parameters'] = [
-                'port' => $config['port'],
-                'auth' => $config['auth'],
-                'ssl'  => $config['sec'],
-
-                'username' => trim($config['login']),
-                'password' => trim($config['passw']),
-            ];
-
-            if (!$data['parameters']['ssl']) {
-                unset($data['parameters']['ssl']);
-            }
-
+        if ($this->config->isSmtpEnable($storeId)) {
+            $data = array_merge($data, $this->config->getSmtpConfig($storeId));
             return $this->_objectManager->create($this->_instanceName, $data);
-        }
-        else {
+        } else {
             return $proceed($data);
         }
     }

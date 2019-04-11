@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Smtp
  */
 -->
@@ -17,6 +17,7 @@
             <group id="general" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Settings</label>
                 <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_class>amsmtp-enable</frontend_class>
                     <label>Enable SMTP For E-mail</label>
                     <comment>When disabled, the extension has no impact on Magento e-mail sending routines.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -48,10 +49,12 @@
                 <field id="server" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Server Address</label>
                     <comment>Either host name or IP address</comment>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="port" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Port</label>
                     <comment>Usually is 25, 587 or 465. Please consult with your service provider.</comment>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="auth" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Authentication Method</label>
@@ -59,16 +62,50 @@
                 </field>
                 <field id="login" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Login</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="auth" negative="0">login</field>
+                    </depends>
                 </field>
-                <field id="passw" translate="label comment" type="password" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="passw" translate="label comment" type="obscure" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Password</label>
+                    <validate>required-entry</validate>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <depends>
+                        <field id="auth" negative="0">login</field>
+                    </depends>
                 </field>
                 <field id="sec" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Connection Security</label>
                     <source_model>Amasty\Smtp\Model\Config\Source\Security</source_model>
                 </field>
-                <field id="test_email" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="use_custom_email_sender" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use Another Email Sender</label>
+                    <comment>Be careful! Use Sender with the same domain from where you send mail. Otherwise, your mail server can get into the ban because of spam.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="provider">0</field>
+                    </depends>
+                </field>
+                <field id="custom_sender_email" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sender Email</label>
+                    <validate>required-entry validate-email</validate>
+                    <depends>
+                        <field id="use_custom_email_sender">1</field>
+                        <field id="provider">0</field>
+                    </depends>
+                </field>
+                <field id="custom_sender_name" translate="label comment" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sender Name</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="use_custom_email_sender">1</field>
+                        <field id="provider">0</field>
+                    </depends>
+                </field>
+                <field id="test_email" translate="label comment" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Send Test E-mail To</label>
+                    <validate>validate-email</validate>
                     <frontend_model>Amasty\Smtp\Block\Config\Check</frontend_model>
                 </field>
             </group>

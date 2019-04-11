@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Smtp
  */
 
@@ -37,5 +37,16 @@ class Config extends Template
     {
         if ($this->_request->getParam('section') == 'amsmtp')
             return parent::_toHtml();
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams()
+    {
+        return [
+            'store' => $this->getRequest()->getParam('store'),
+            'website' => $this->getRequest()->getParam('website')
+        ];
     }
 }

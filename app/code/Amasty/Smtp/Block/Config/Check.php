@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Smtp
  */
 
@@ -26,7 +26,7 @@ class Check extends Field
             'Magento\Backend\Block\Widget\Button'
         )->setData([
             'id' => 'check_button',
-            'label' => __('Check Connection'),
+            'label' => __('Save and Check Connection'),
         ])
             ->setDataAttribute(
                 ['role' => 'amsmtp-check-button']

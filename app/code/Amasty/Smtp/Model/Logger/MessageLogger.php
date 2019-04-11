@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Smtp
  */
 
@@ -45,26 +45,32 @@ class MessageLogger
     protected $helper;
 
     /**
-     * MessageLogger constructor.
-     *
-     * @param ObjectManagerInterface   $objectManager
-     * @param ScopeConfigInterface     $scopeConfig
-     * @param DebugLogger              $debugLogger
-     * @param \Amasty\Smtp\Helper\Data $helper
-     * @param DateTime                 $coreDate
+     * @var \Amasty\Smtp\Model\LogFactory
      */
+    private $logFactory;
+
+    /**
+     * @var \Amasty\Smtp\Model\ResourceModel\Log
+     */
+    private $logResource;
+
     public function __construct(
         ObjectManagerInterface $objectManager,
         ScopeConfigInterface $scopeConfig,
         DebugLogger $debugLogger,
         \Amasty\Smtp\Helper\Data $helper,
-        DateTime $coreDate
+        DateTime $coreDate,
+        \Amasty\Smtp\Model\LogFactory $logFactory,
+        \Amasty\Smtp\Model\ResourceModel\Log $logResource
+
     ) {
         $this->objectManager = $objectManager;
         $this->scopeConfig = $scopeConfig;
         $this->coreDate = $coreDate;
         $this->debugLogger = $debugLogger;
         $this->helper = $helper;
+        $this->logFactory = $logFactory;
+        $this->logResource = $logResource;
     }
 
     public function log(MessageInterface $message)
@@ -72,40 +78,54 @@ class MessageLogger
         $storeId = $this->helper->getCurrentStore();
 
         if ($this->scopeConfig->isSetFlag(
-            'amsmtp/general/log', ScopeInterface::SCOPE_STORE, $storeId
+            'amsmtp/general/log',
+            ScopeInterface::SCOPE_STORE,
+            $storeId
         )) {
-            $recipients = $message->getRecipients();
-            $recipient = reset($recipients);
+            if (class_exists(\Zend\Mail\Message::class, false)) {
+                $recipients = current(\Zend\Mail\Message::fromString($message->getRawMessage())->getTo());
+                $recipients = array_keys($recipients);
+                $body = $message->getBody();
+
+                if ($body instanceof \Zend\Mime\Message) {
+                    $body = $body->generateMessage();
+                } else {
+                    $body = (string) $body;
+                }
+            } else {
+                $recipients = $message->getRecipients();
+                $body = ($message->getBody()) ? $message->getBody()->getRawContent() : '';
+            }
+
+            $recipient = implode(', ', $recipients);
 
             /** @var Log $logMessage */
-            $logMessage = $this->objectManager->create('Amasty\Smtp\Model\Log');
+            $logMessage = $this->logFactory->create();
             $logMessage->setData([
                 'created_at'        => $this->coreDate->gmtDate(),
                 'subject'           => $message->getSubject(),
-                'body'              => $message->getBody()->getRawContent(),
+                'body'              => $body,
                 'recipient_email'   => $recipient,
                 'status'            => Log::STATUS_PENDING
             ]);
 
-            $logMessage->save();
+            $this->logResource->save($logMessage);
 
             return $logMessage->getId();
-        }
-        else
+        } else {
             return false;
+        }
     }
 
     public function updateStatus($logId, $status)
     {
         $storeId = $this->helper->getCurrentStore();
 
-        if ($this->scopeConfig->isSetFlag(
-            'amsmtp/general/log', ScopeInterface::SCOPE_STORE, $storeId)
-        ) {
+        if ($this->scopeConfig->isSetFlag('amsmtp/general/log', ScopeInterface::SCOPE_STORE, $storeId)) {
             /** @var Log $logMessage */
-            $logMessage = $this->objectManager->create('Amasty\Smtp\Model\Log');
+            $logMessage = $this->logFactory->create();
 
-            $logMessage->load($logId);
+            $this->logResource->load($logMessage, $logId);
 
             if ($logMessage->getId()) {
                 $logMessage
@@ -118,11 +138,11 @@ class MessageLogger
     public function autoClear()
     {
         $days = $this->scopeConfig->getValue('amsmtp/clear/email');
+
         if ($days) {
             $this->debugLogger->log(__('Starting to auto clear debug log (after %1 days)', $days));
 
-            $logModel = $this->objectManager->get('Amasty\Smtp\Model\ResourceModel\Log');
-            $logModel->clear($days);
+            $this->logResource->clear($days);
         }
     }
 }

@@ -1,16 +1,16 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Smtp
  */
 
 namespace Amasty\Smtp\Model;
 
-use Amasty\Smtp\Model\Log;
 use Amasty\Smtp\Model\Logger\DebugLogger;
 use Amasty\Smtp\Model\Logger\MessageLogger;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Mail\MessageInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Magento\Store\Model\ScopeInterface;
@@ -43,34 +43,35 @@ class Transport extends \Zend_Mail_Transport_Smtp implements TransportInterface
     protected $helper;
 
     /**
-     * @param MessageInterface         $message
-     * @param ScopeConfigInterface     $scopeConfig
-     *
-     * @param Logger\MessageLogger     $messageLogger
-     * @param DebugLogger              $debugLogger
-     * @param \Amasty\Smtp\Helper\Data $helper
-     * @param  string                  $host OPTIONAL (Default: 127.0.0.1)
-     * @param array                    $parameters
-     *
+     * @var \Amasty\Smtp\Model\Config
      */
+    protected $config;
+
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    private $objectManager;
+
     public function __construct(
         MessageInterface $message,
         ScopeConfigInterface $scopeConfig,
         MessageLogger $messageLogger,
         DebugLogger $debugLogger,
         \Amasty\Smtp\Helper\Data $helper,
+        \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Amasty\Smtp\Model\Config $config,
         $host = '127.0.0.1',
-        array $parameters = array()
+        array $parameters = []
     ) {
-        if (!$message instanceof \Zend_Mail) {
-            throw new \InvalidArgumentException('The message should be an instance of \Zend_Mail');
-        }
         parent::__construct($host, $parameters);
+
         $this->_message = $message;
         $this->scopeConfig = $scopeConfig;
         $this->messageLogger = $messageLogger;
         $this->debugLogger = $debugLogger;
         $this->helper = $helper;
+        $this->objectManager = $objectManager;
+        $this->config = $config;
     }
 
     /**
@@ -82,13 +83,45 @@ class Transport extends \Zend_Mail_Transport_Smtp implements TransportInterface
     public function sendMessage()
     {
         $this->debugLogger->log(__('Ready to send e-mail at amsmtp/transport::sendMessage()'));
+
         try {
             $logId = $this->messageLogger->log($this->_message);
             $storeId = $this->helper->getCurrentStore();
+
             if (!$this->scopeConfig->isSetFlag(
-                'amsmtp/general/disable_delivery', ScopeInterface::SCOPE_STORE, $storeId
-            )) {
-                parent::send($this->_message);
+                'amsmtp/general/disable_delivery',
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            )
+            ) {
+                $this->setFromData($storeId, ScopeInterface::SCOPE_STORE);
+
+                if ($this->_message instanceof \Zend_Mail) {
+                    $this->modifyMessage();
+
+                    parent::send($this->_message);
+                } else {
+                    /** @var \Zend\Mail\Transport\Smtp $zendTransport */
+                    $zendTransport = $this->objectManager->get(\Zend\Mail\Transport\Smtp::class);
+
+                    $zendSmtpOptions = new \Zend\Mail\Transport\SmtpOptions([
+                        'name' => $this->_name,
+                        'host' => $this->_host,
+                        'port' => $this->_port,
+                        'connection_config' => $this->_config
+                    ]);
+
+                    if ($this->_auth) {
+                        $zendSmtpOptions->setConnectionClass($this->_auth);
+                    }
+
+                    $zendTransport->setOptions($zendSmtpOptions);
+
+                    $zendTransport->send(
+                        $this->modifyMessage(\Zend\Mail\Message::fromString($this->_message->getRawMessage()))
+                    );
+                }
+
                 $this->debugLogger->log(__('E-mail sent successfully at amsmtp/transport::sendMessage().'));
             } else {
                 $this->debugLogger->log(__('Actual delivery disabled under settings.'));
@@ -101,40 +134,33 @@ class Transport extends \Zend_Mail_Transport_Smtp implements TransportInterface
         }
     }
 
-    public function runTest($testEmail)
+    public function runTest($testEmail, $storeId, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
     {
-        if (fsockopen($this->_host, $this->_port, $errno, $errstr, 20))
-        {
+        if (fsockopen($this->_host, $this->_port, $errno, $errstr, 20)) {
             $this->debugLogger->log(__('Connection test successful: connected to %1', $this->_host . ':' . $this->_port));
 
-            if ($testEmail)
-            {
-                $from = $this->scopeConfig->getValue('trans_email/ident_general');
-                $this->debugLogger->log(__('Preparing to send test e-mail to %1 from %2', $testEmail, $from['email']));
+            if ($testEmail) {
+                $this->setFromData($storeId, $scope);
+                $this->debugLogger->log(__('Preparing to send test e-mail to %1 from %2', $testEmail, $this->_config['custom_sender']['email']));
 
                 $this->_message
-                    ->setMessageId()
                     ->addTo($testEmail)
                     ->setSubject(__('Amasty SMTP Email Test Message'))
-                    ->setBodyText(__('If you see this e-mail, your configuration is OK.'))
-                    ->setFrom($from['email'], $from['name'])
-                ;
+                    ->setBodyText(__('If you see this e-mail, your configuration is OK.'));
 
-                try
-                {
+                try {
                     $this->sendMessage();
                     $this->debugLogger->log(__('Test e-mail was sent successfully!'));
-                } catch (\Exception $e)
-                {
+                } catch (\Exception $e) {
                     $this->debugLogger->log(__('Test e-mail failed: %1', $e->getMessage()));
                     throw $e;
                 }
             }
-        }
-        else {
+        } else {
             $this->debugLogger->log(__(
                 'Connection test failed: connection to %1 failed. Error: %2',
-                $this->_host . ':' . $this->_port, $errstr . ' (' . $errno . ')'
+                $this->_host . ':' . $this->_port,
+                $errstr . ' (' . $errno . ')'
             ));
 
             throw new \Exception(__('Connection failed'));
@@ -144,5 +170,63 @@ class Transport extends \Zend_Mail_Transport_Smtp implements TransportInterface
     public function getMessage()
     {
         return $this->_message;
+    }
+
+    /**
+     * @param null|\Zend\Mail\Message $message
+     *
+     * @return bool|\Zend\Mail\Message
+     */
+    private function modifyMessage($message = null)
+    {
+        if (isset($this->_config['custom_sender'])) {
+            return $this->setFrom($this->_config['custom_sender']['email'], $this->_config['custom_sender']['name'], $message);
+        }
+
+        return false;
+    }
+
+    /**
+     * Set email sender
+     * Function for compatibility of Zend Framework 1 and 2
+     *
+     * @param string $email
+     * @param string $name
+     * @param \Zend\Mail\Message|null $message
+     *
+     * @return MessageInterface|\Zend\Mail\Message|null
+     */
+    private function setFrom($email, $name, $message = null)
+    {
+        if (class_exists(\Zend\Mail\Message::class, false) && $message instanceof \Zend\Mail\Message) {
+            $message->setFrom($email, $name);
+
+            return $message;
+        } else {
+            $this->_message->clearFrom();
+            $this->_message->setFrom($email, $name);
+        }
+
+        return $this->_message;
+    }
+
+    /**
+     * @param string $storeId
+     * @param string $scope
+     *
+     * @throws LocalizedException
+     */
+    private function setFromData($storeId, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    {
+        if (!isset($this->_config['custom_sender'])) {
+            $from = $this->config->getGeneralEmail($storeId, $scope);
+
+            if (empty($from['email']) || empty($from['name'])) {
+                throw new LocalizedException(__('\'Sender Email\' or \'Sender Name\' is empty. Please ensure that all values in the \'General Contact\' section are correctly set by visiting Stores > Configuration > General > Store Email Addresses.'));
+            }
+
+            $this->_config['custom_sender']['email'] = $from['email'];
+            $this->_config['custom_sender']['name'] = $from['name'];
+        }
     }
 }

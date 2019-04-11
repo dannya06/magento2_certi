@@ -1,10 +1,11 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Smtp
  */
 ?>
+<?php /** @var Amasty\Smtp\Block\Config $block */ ?>
 <script>
 require([
     'jquery',
@@ -23,7 +24,7 @@ require([
             test_email: '#amsmtp_smtp_test_email'
         },
         providers: <?= json_encode($block->getProviders(), true) ?>,
-        check_url: "<?= $this->getUrl('amasty_smtp/config/check') ?>",
+        check_url: "<?= $this->getUrl('amasty_smtp/config/check', $block->getParams()) ?>",
     });
 });
 </script>

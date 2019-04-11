@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Smtp
  */
 -->
@@ -17,6 +17,9 @@
             </general>
             <smtp>
                 <port>25</port>
+                <use_custom_email_sender>0</use_custom_email_sender>
+                <custom_sender_email></custom_sender_email>
+                <custom_sender_name></custom_sender_name>
             </smtp>
             <clear>
                 <email>30</email>
