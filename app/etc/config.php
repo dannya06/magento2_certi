@@ -230,7 +230,7 @@ return [
         'Magento_ThemeGraphQl' => 1,
         'Magento_Tinymce3' => 1,
         'Magento_Translation' => 1,
-        'Icube_Gosend' => 1,
+        'Icube_Gosend' => 0,
         'Magento_Ups' => 1,
         'Magento_SampleData' => 1,
         'Magento_CatalogUrlRewriteGraphQl' => 1,
@@ -258,7 +258,15 @@ return [
         'Smile_ElasticsuiteThesaurus' => 0,
         'Smile_ElasticsuiteTracker' => 0,
         'Smile_ElasticsuiteVirtualCategory' => 1,
+        'Xtento_XtCore' => 1,
+        'Swiftoms_InventoryUpdate' => 0,
+        'Swiftoms_OmsConnect' => 0,
+        'Swiftoms_OrderStatus' => 0,
+        'Swiftoms_Pickup' => 0,
+        'Swiftoms_Product' => 0,
         'Icube_Oscoverride' => 1,
+        'Unirgy_RapidFlow' => 1,
+        'Unirgy_RapidFlowPro' => 1,
         'Vertex_Tax' => 1,
         'Ves_All' => 1,
         'Ves_Megamenu' => 1,
@@ -293,9 +301,9 @@ return [
         'WeltPixel_SocialLogin' => 1,
         'WeltPixel_ThankYouPage' => 1,
         'WeltPixel_TitleRewrite' => 1,
-        'Xtento_XtCore' => 1,
+        'Xtento_OrderExport' => 1,
         'Xtento_ProductExport' => 1,
         'Xtento_TrackingImport' => 1,
-        'Xtento_OrderExport' => 1
+        'SwiftomsChannel_OrderExport' => 0
     ]
 ];
