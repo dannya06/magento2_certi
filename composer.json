@@ -23,7 +23,8 @@
         "msp/recaptcha": "2.0.2",
         "icubeus/magento2-osc": "dev-master",
         "icubeus/magento2-gosend": "^2.0",
-        "icubeus/magento2-rapidflow": "7.1.0"
+        "icubeus/magento2-rapidflow": "7.1.0",
+        "icubeus/magento2-swiftomschannel": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
@@ -106,6 +107,10 @@
         "icubeus-osc": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-osc.git"
+        },
+        "icubeus-swiftomschannel": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-swiftomschannel.git"
         }
     },
     "extra": {
