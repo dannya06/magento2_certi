@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "056231ce5bb11f2cd1814b47524395a1",
+    "content-hash": "e576d3fa75aca571a1b352acb89846c9",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -1869,11 +1869,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "dev-develop",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "4536e5afad7d78245bf2302e59fcd4d7ecbc6fcf"
+                "reference": "0836c53a40a6e350cb7d707094e03a33d9e16f5b"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -1930,7 +1930,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2019-04-02T11:59:28+00:00"
+            "time": "2019-05-03T03:39:17+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -17670,7 +17670,6 @@
     "minimum-stability": "alpha",
     "stability-flags": {
         "composer/composer": 15,
-        "icubeus/magento2-veritranspayment": 20,
         "icubeus/magento2-confirmpayment": 20,
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-indonesianlanguage": 20,
