@@ -201,3 +201,9 @@ example
     * * * * * sh /home/mage2user/site/current/clearvarnish.sh 1 2 >> /home/mage2user/site/current/var/logclearvarnish.log
 
     * * * * * sh /home/mage2user/site/current/clearcloudfront.sh 1 2 >> /home/mage2user/site/current/var/clearcloudfront.log
+
+
+
+MSI stock issue, please create cron below
+=============================================================
+	*/5 * * * * mysql -umage2user -pbr@veSmash35 m2webapp_delami < msi.sql 
