@@ -9,5 +9,5 @@ select 'default' as source_code,sku,qty as "quantity", cs.`is_in_stock` as "stat
 from cataloginventory_stock_item cs
 left join catalog_product_entity cp
 on cs.`product_id`=cp.`entity_id`
-where cp.`type_id`="simple") as c
+where cp.`type_id`="simple" and cs.`qty` IS NOT NULL) as c
 ON DUPLICATE KEY UPDATE `quantity`=c.`quantity`, `status`=c.`status`;
