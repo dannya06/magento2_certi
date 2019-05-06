@@ -206,4 +206,4 @@ example
 
 MSI stock issue, please create cron below
 =============================================================
-	*/5 * * * * mysql -umage2user -pbr@veSmash35 m2webapp_delami < msi.sql 
+	*/5 * * * * mysql -u[username] -p[password] m2webapp_delami < msi.sql 
