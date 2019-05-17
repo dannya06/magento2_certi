@@ -27,24 +27,34 @@
         <export id="customer" class="\Xtento\OrderExport\Model\Export\Data\Shared\Customer"/>
         <!-- Items -->
         <export id="items" class="\Xtento\OrderExport\Model\Export\Data\Shared\Items"/>
+        <!-- Magento Commerce RMA -->
+        <export id="eerma_general" class="\Xtento\OrderExport\Model\Export\Data\EeRma\General" />
         <!-- Third party entities -->
         <!--<export id="awrma_general" class="\Xtento\OrderExport\Model\Export\Data\awrma_general" />-->
         <!--<export id="boostrma_general" class="\Xtento\OrderExport\Model\Export\Data\boostrma_general" />-->
+        <!-- Custom: Shipment -->
+        <export id="msi_source" class="\Xtento\OrderExport\Model\Export\Data\Custom\Shipment\MsiSource"/>
         <!-- Third party -->
+        <export id="amasty_checkout" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\AmastyCheckout"/>
         <export id="amasty_deliverydate" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\AmastyDeliveryDate"/>
+        <export id="amasty_extrafee" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\AmastyExtraFee"/>
         <export id="amasty_giftcard" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\AmastyGiftCard"/>
         <export id="amasty_orderattributes" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\AmastyOrderAttributes"/>
         <export id="bss_checkoutcustomfield" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\BssCheckoutCustomField"/>
+        <export id="ime_paymetrictokenize" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\ImePaymetrictokenize"/>
+        <export id="m2epro" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\M2ePro"/>
+        <export id="swissup_checkoutfields" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\SwissupCheckoutfields"/>
         <export id="tig_postnl" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\TigPostnl"/>
+        <export id="wsa_shipperhq" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\ShipperHq"/>
+        <export id="wyomind_advancedinventory" class="\Xtento\OrderExport\Model\Export\Data\Custom\Order\WyomindAdvancedInventory"/>
     </data>
 </config>
 <!--
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2018-01-30T13:58:12+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-15T11:03:29+00:00
  * File:          app/code/Xtento/OrderExport/etc/xtento/orderexport_data.xml
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 -->

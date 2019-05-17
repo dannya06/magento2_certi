@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-03-07T16:49:53+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-12-02T14:57:13+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Manual.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Block\Adminhtml;
@@ -238,7 +237,7 @@ class Manual extends \Magento\Backend\Block\Template
             foreach ($settingsToFetch as $setting) {
                 $value = $profile['profile']->getData($setting);
                 if (($setting == 'export_filter_datefrom' || $setting == 'export_filter_dateto') && !empty($value)) {
-                    $value = $this->dateTimeFormatter->formatObject($this->_localeDate->date($value), $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT));
+                    $value = $this->dateTimeFormatter->formatObject($this->_localeDate->date(new \DateTime($value)), $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT));
                 }
                 $profileSettings[$profile['value']][$setting] = $value;
             }
@@ -253,53 +252,14 @@ class Manual extends \Magento\Backend\Block\Template
         return $this->allStatuses->toOptionArray($entity);
     }
 
-    public function getSession() {
+    public function getSession()
+    {
         return $this->_session;
     }
 
     protected function arrayToJsHash($name, $array)
     {
-        $html = 'window.' . $name . ' = $H({' . "\n";
-        $loopLength = 0;
-        foreach ($array as $index => $data) {
-            if (!empty($data) && is_array($data)) {
-                $loopLength++;
-            }
-        }
-        $loopCounter = 0;
-        foreach ($array as $index => $data) {
-            $loopCounter++;
-            $loopLength2 = count($array[$index]);
-            $loopCounter2 = 0;
-            if (is_array($data)) {
-                $html .= '\'' . $this->escapeStringJs($index) . '\': {' . "\n";
-                foreach ($data as $code => $label) {
-                    $loopCounter2++;
-                    $html .= '\'' . $this->escapeStringJs($code) . '\': \'' . $this->escapeStringJs($label) . '\'';
-                    if ($loopCounter2 !== $loopLength2) {
-                        $html .= ',';
-                    }
-                    $html .= "\n";
-                }
-                $html .= '}';
-                if ($loopCounter !== $loopLength) {
-                    $html .= ",\n";
-                }
-            } else {
-                $html .= '\'' . $this->escapeStringJs($index) . '\': ';
-                $html .= '\'' . $this->escapeStringJs($data) . '\'';
-                if ($loopCounter !== count($array)) {
-                    $html .= ",\n";
-                }
-            }
-        }
-        $html .= "});\n";
-        return $html;
-    }
-
-    protected function escapeStringJs($string)
-    {
-        return str_replace(["'", "\n", "\r"], ["\\'", " ", " "], $string);
+        return 'window.' . $name . ' = $H(' . json_encode($array) . ");\n";
     }
 
     protected function _toHtml()

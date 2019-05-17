@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2017-08-16T11:28:49+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-02-27T11:27:12+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Order/Payment.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Export\Data\Order;
@@ -165,6 +164,21 @@ class Payment extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                         }
                         break;
                     }
+                }
+            }
+        }
+
+        // MD_Authorizecim authorize_cards
+        if ($this->fieldLoadingRequired('md_authorizecim_cards')) {
+            $additionalData = $payment->getAdditionalInformation('md_authorizecim_cards');
+            if ($additionalData && is_array($additionalData)) {
+                $this->writeArray = & $returnArray['payment']['md_authorizecim_cards'];
+                foreach ($additionalData as $cardInfo) {
+                    if (!is_array($cardInfo)) continue;
+                    foreach ($cardInfo as $key => $value) {
+                        $this->writeValue($key, $value);
+                    }
+                    break;
                 }
             }
         }

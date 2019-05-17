@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2017-08-02T13:30:01+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-01-22T16:29:19+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Order/General.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Export\Data\Order;
@@ -59,7 +58,8 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                 \Xtento\OrderExport\Model\Export::ENTITY_SHIPMENT,
                 \Xtento\OrderExport\Model\Export::ENTITY_CREDITMEMO,
                 \Xtento\OrderExport\Model\Export::ENTITY_AWRMA,
-                \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA
+                \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA,
+                \Xtento\OrderExport\Model\Export::ENTITY_EERMA
             ],
         ];
     }
@@ -104,19 +104,18 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
         }
 
         // Sample code to export data from a 3rd party table (M1, must be ported)
-        /*if ($order->getId()) {
-            $resource = Mage::getSingleton('core/resource');
-            $readConnection = $resource->getConnection('core_read');
-            //$tableName = $resource->getTableName('catalog/product');
-            $query = 'SELECT admin_name FROM salesrep WHERE order_id = ' . (int)$order->getId() . ' LIMIT 1';
-            $adminUser = $readConnection->fetchOne($query);
-            $this->writeValue('admin_name', $adminUser);
-        }*/
+        /*$resource = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ResourceConnection');
+        $readConnection = $resource->getConnection();
+        //$tableName = $resource->getTableName('my_table');
+        $query = 'SELECT admin_name FROM salesrep WHERE order_id = ' . (int)$order->getId() . ' LIMIT 1';
+        $adminUser = $readConnection->fetchOne($query);
+        $this->writeValue('admin_name', $adminUser);*/
 
         // Last invoice, shipment, credit memo ID
         if ($order->getInvoiceCollection()
             && $order->hasInvoices()
             && ($this->fieldLoadingRequired('invoice_increment_id')
+                || $this->fieldLoadingRequired('invoice_entity_id')
                 || $this->fieldLoadingRequired('invoice_created_at_timestamp')
                 || $this->fieldLoadingRequired('invoice_updated_at_timestamp')
                 || $this->fieldLoadingRequired('invoice_count')
@@ -127,6 +126,7 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             if (!empty($invoiceCollection)) {
                 $lastInvoice = $invoiceCollection->getLastItem();
                 $this->writeValue('invoice_increment_id', $lastInvoice->getIncrementId());
+                $this->writeValue('invoice_entity_id', $lastInvoice->getId());
                 $this->writeValue(
                     'invoice_created_at_timestamp',
                     $this->dateHelper->convertDateToStoreTimestamp($lastInvoice->getCreatedAt())
@@ -140,6 +140,7 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
         if ($order->getShipmentsCollection()
             && $order->hasShipments()
             && ($this->fieldLoadingRequired('shipment_increment_id')
+                || $this->fieldLoadingRequired('shipment_entity_id')
                 || $this->fieldLoadingRequired('shipment_created_at_timestamp')
                 || $this->fieldLoadingRequired('shipment_updated_at_timestamp')
                 || $this->fieldLoadingRequired('shipment_count')
@@ -150,6 +151,7 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             if (!empty($shipmentCollection)) {
                 $lastShipment = $shipmentCollection->getLastItem();
                 $this->writeValue('shipment_increment_id', $lastShipment->getIncrementId());
+                $this->writeValue('shipment_entity_id', $lastShipment->getId());
                 $this->writeValue(
                     'shipment_created_at_timestamp',
                     $this->dateHelper->convertDateToStoreTimestamp($lastShipment->getCreatedAt())
@@ -163,6 +165,7 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
         if ($order->getCreditmemosCollection()
             && $order->hasCreditmemos()
             && ($this->fieldLoadingRequired('creditmemo_increment_id')
+                || $this->fieldLoadingRequired('creditmemo_entity_id')
                 || $this->fieldLoadingRequired('creditmemo_created_at_timestamp')
                 || $this->fieldLoadingRequired('creditmemo_updated_at_timestamp')
                 || $this->fieldLoadingRequired('creditmemo_count')
@@ -173,6 +176,7 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             if (!empty($creditmemoCollection)) {
                 $lastCreditmemo = $creditmemoCollection->getLastItem();
                 $this->writeValue('creditmemo_increment_id', $lastCreditmemo->getIncrementId());
+                $this->writeValue('creditmemo_entity_id', $lastCreditmemo->getId());
                 $this->writeValue(
                     'creditmemo_created_at_timestamp',
                     $this->dateHelper->convertDateToStoreTimestamp(

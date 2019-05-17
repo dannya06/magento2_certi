@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-04-20T14:05:56+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-12-21T10:47:58+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Entity/Category.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Entity;
@@ -76,15 +75,24 @@ class Category extends AbstractEntity
 
     public function runExport($forcedCollectionItem = false)
     {
+        $previousStoreId = false;
         if ($this->getProfile()) {
-            $storeId = $this->getProfile()->getStoreId();
-            if ($storeId) {
+            $profileStoreId = $this->getProfile()->getStoreId();
+            if ($profileStoreId) {
+                if ($this->storeManager->getStore()->getId() != $this->getProfile()->getStoreId()) {
+                    $previousStoreId = $this->storeManager->getStore()->getId();
+                    $this->storeManager->setCurrentStore($profileStoreId); // fixes catalog price rules
+                }
                 $rootCategory = $this->categoryRepository
-                    ->get($this->storeManager->getStore($storeId)->getRootCategoryId(), $storeId);
+                    ->get($this->storeManager->getStore($profileStoreId)->getRootCategoryId(), $profileStoreId);
                 $this->collection->addAttributeToFilter('path', ['like' => $rootCategory->getPath() . '/%']);
-                $this->collection->setStoreId($storeId);
+                $this->collection->setStoreId($profileStoreId);
             }
         }
-        return parent::runExport($forcedCollectionItem);
+        $result = parent::runExport($forcedCollectionItem);
+        if ($previousStoreId !== false) {
+            $this->storeManager->setCurrentStore($previousStoreId); // Reset store back to what it was before
+        }
+        return $result;
     }
 }

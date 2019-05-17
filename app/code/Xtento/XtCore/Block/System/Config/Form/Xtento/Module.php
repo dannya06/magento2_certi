@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_XtCore (2.1.0)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:54+00:00
- * Last Modified: 2017-11-29T19:10:14+00:00
+ * Product:       Xtento_XtCore
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-07T14:23:08+00:00
  * File:          app/code/Xtento/XtCore/Block/System/Config/Form/Xtento/Module.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\XtCore\Block\System\Config\Form\Xtento;
@@ -89,6 +88,7 @@ class Module extends \Magento\Config\Block\System\Config\Form\Fieldset
                     $cacheKey .= '_' . str_replace('.', '_', $moduleVersion);
                 }
             }
+            $cacheKey .= substr(md5(__DIR__), 0, 10); // Unique per Magento installation
             // Is the response cached?
             $cachedHtml = $cache->load($cacheKey);
             //$cachedHtml = false; // Test: disable cache
@@ -103,7 +103,8 @@ class Module extends \Magento\Config\Block\System\Config\Form\Fieldset
                     $version = $this->productMetadata->getVersion();
                     $extensionVersion = $dataModel->getValue();
                     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                        $storeHtml = file_get_contents($url . '?version=' . $version . '&d=' . $extensionVersion);
+                        $streamContext = stream_context_create(['http' => ['timeout' => 10]]);
+                        $storeHtml = file_get_contents($url . '?version=' . $version . '&d=' . $extensionVersion, false, $streamContext);
                     } else {
                         $client = new \Zend_Http_Client($url, ['timeout' => 10]);
                         $client->setParameterGet('version', $version);

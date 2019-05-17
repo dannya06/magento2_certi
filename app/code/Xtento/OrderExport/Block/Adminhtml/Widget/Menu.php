@@ -1,15 +1,16 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-04-11T13:47:40+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-10T19:17:42+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Widget/Menu.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Block\Adminhtml\Widget;
+
+use Xtento\XtCore\Helper\Utils;
 
 class Menu extends \Magento\Backend\Block\AbstractBlock
 {
@@ -65,17 +66,27 @@ class Menu extends \Magento\Backend\Block\AbstractBlock
     protected $adminhtmlData;
 
     /**
+     * @var Utils
+     */
+    protected $utilsHelper;
+
+    /**
+     * Menu constructor.
+     *
      * @param \Magento\Backend\Block\Context $context
      * @param \Magento\Backend\Helper\Data $adminhtmlData
+     * @param Utils $utilsHelper
      * @param array $data
      */
     public function __construct(
         \Magento\Backend\Block\Context $context,
         \Magento\Backend\Helper\Data $adminhtmlData,
+        Utils $utilsHelper,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->adminhtmlData = $adminhtmlData;
+        $this->utilsHelper = $utilsHelper;
     }
 
     protected function getMenu()
@@ -90,7 +101,7 @@ class Menu extends \Magento\Backend\Block\AbstractBlock
         <style>
         .icon-head { padding-left: 0px; }
         </style>
-        <div style="padding:8px; margin-bottom: 10px; border: 1px solid #e3e3e3; background: #f8f8f8; font-size:12px;">
+        <div style="padding:8px; border: 1px solid #e3e3e3; background: #f8f8f8; font-size:12px;">
             {$title}&nbsp;-&nbsp;
 EOT;
         foreach ($this->getMenu() as $controllerName => $entryConfig) {
@@ -115,7 +126,21 @@ EOT;
         $this->menuBar .= '<a href="http://support.xtento.com/wiki/Magento_2_Extensions:Magento_Order_Export_Module" target="_blank" style="font-weight: bold;">' . __(
                 'Get Help'
             ) . '</a>';
-        $this->menuBar .= '<div style="float:right;"><a href="http://www.xtento.com/" target="_blank" style="text-decoration:none;color:#57585B;"><img src="//www.xtento.com/media/images/extension_logo.png" alt="XTENTO" height="20" style="vertical-align:middle;"/> XTENTO Magento Extensions</a></div></div>';
+        $this->menuBar .= '</div>';
+        if (method_exists($this->utilsHelper, 'getExtensionStatusString')) {
+            // To avoid issues if someone didn't update XtCore for some reason
+            $extensionStatus = $this->utilsHelper->getExtensionStatusString('Xtento_OrderExport', 'Xtento\OrderExport\Model\System\Config\Backend\Server');
+            if (!empty($extensionStatus)) {
+                $this->menuBar .= '<div style="padding:8px; margin-bottom: 10px; border: 1px solid #e3e3e3; border-top:0; background: #f8f8f8; font-size:12px;">';
+                $this->menuBar .= '<div style="float:right;"><a href="https://www.xtento.com/" target="_blank" style="text-decoration:none;color:#57585B;"><img src="//www.xtento.com/media/images/extension_logo.png" alt="XTENTO" height="20" style="vertical-align:middle;"/> XTENTO Magento Extensions</a></div>';
+                $this->menuBar .= $extensionStatus;
+                $this->menuBar .= '</div>';
+            } else {
+                $this->menuBar .= "<br/><!--Could not retrieve extension status-->";
+            }
+        } else {
+            $this->menuBar .= "<br/><!--Outdated Xtento_XtCore-->";
+        }
 
         return $this->menuBar;
     }

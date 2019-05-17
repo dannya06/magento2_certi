@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2018-01-29T15:13:19+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-01-04T18:31:58+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Review/General.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Review;
@@ -47,8 +46,9 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
      * @param ProductRepositoryInterface $productRepository
      * @param \Magento\Tax\Model\Calculation $taxCalculation
-     * @param \Magento\Framework\App\ProductMetadata $productMetadata
+     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Catalog\Helper\Image $imageHelper
      * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param \Magento\Review\Model\ResourceModel\Review\CollectionFactory $reviewCollectionFactory
      * @param ParentProduct $parentProduct
@@ -68,8 +68,9 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         ProductRepositoryInterface $productRepository,
         \Magento\Tax\Model\Calculation $taxCalculation,
-        \Magento\Framework\App\ProductMetadata $productMetadata,
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Magento\Catalog\Helper\Image $imageHelper,
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Review\Model\ResourceModel\Review\CollectionFactory $reviewCollectionFactory,
         ParentProduct $parentProduct,
@@ -77,7 +78,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        parent::__construct($context, $registry, $dateHelper, $utilsHelper, $taxConfig, $resourceProduct, $storeManager, $attributeSetFactory, $localeDate, $productRepository, $taxCalculation, $productMetadata, $objectManager, $resource, $resourceCollection, $data);
+        parent::__construct($context, $registry, $dateHelper, $utilsHelper, $taxConfig, $resourceProduct, $storeManager, $attributeSetFactory, $localeDate, $productRepository, $taxCalculation, $productMetadata, $objectManager, $imageHelper, $resource, $resourceCollection, $data);
 
         $this->url = $urlBuilder;
         $this->reviewCollectionFactory = $reviewCollectionFactory;
@@ -161,8 +162,10 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
             if ($this->getStoreId()) {
                 $collection->addStoreFilter($this->getStoreId());
             }
-            $this->writeValue('total_product_rating_percentage', $collection->getColumnValues('rating_summary')[0]);
-            $this->writeValue('total_reviews', $collection->getColumnValues('reviews_count')[0]);
+            if ($collection->count() > 0) {
+                $this->writeValue('total_product_rating_percentage', $collection->getColumnValues('rating_summary')[0]);
+                $this->writeValue('total_reviews', $collection->getColumnValues('reviews_count')[0]);
+            }
         }
 
         $originalWriteArray = & $this->writeArray;
@@ -170,11 +173,8 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
         $productId = $review->getEntityPkValue();
         if ($productId > 0) {
             try {
-                $product = $this->productRepository->getById($productId);
+                $product = $this->productRepository->getById($productId, false, $this->getStoreId() ? $this->getStoreId() : null);
                 if ($product->getId()) {
-                    if ($this->getStoreId()) {
-                        $product->setStoreId($this->getStoreId());
-                    }
                     $this->writeArray = & $returnArray['product'];
                     $this->exportProductData($product, $this->writeArray);
                     $this->writeValue('entity_id', $product->getId());
@@ -185,6 +185,19 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
                         $fakedCollectionItem = new DataObject();
                         $fakedCollectionItem->setProduct($product);
                         $exportClass = $this->parentProduct;
+                        $exportClass->setProfile($this->getProfile());
+                        $exportClass->setShowEmptyFields($this->getShowEmptyFields());
+                        $returnData = $exportClass->getExportData(Export::ENTITY_PRODUCT, $fakedCollectionItem);
+                        if (is_array($returnData) && !empty($returnData)) {
+                            $this->writeArray = array_merge_recursive($this->writeArray, $returnData);
+                        }
+                    }
+                    // Add child items
+                    if ($this->fieldLoadingRequired('child_products')) {
+                        // Export categories for parent product
+                        $fakedCollectionItem = new DataObject();
+                        $fakedCollectionItem->setProduct($product);
+                        $exportClass = $this->objectManager->get('\Xtento\ProductExport\Model\Export\Data\Product\Children'); // Singleton
                         $exportClass->setProfile($this->getProfile());
                         $exportClass->setShowEmptyFields($this->getShowEmptyFields());
                         $returnData = $exportClass->getExportData(Export::ENTITY_PRODUCT, $fakedCollectionItem);

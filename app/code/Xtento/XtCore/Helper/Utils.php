@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_XtCore (2.1.0)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:54+00:00
- * Last Modified: 2017-08-16T08:52:13+00:00
+ * Product:       Xtento_XtCore
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-07T19:39:40+00:00
  * File:          app/code/Xtento/XtCore/Helper/Utils.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\XtCore\Helper;
@@ -27,19 +26,29 @@ class Utils extends \Magento\Framework\App\Helper\AbstractHelper
     protected $productMetadata;
 
     /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
      * Utils constructor.
+     *
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\Module\ModuleListInterface $moduleList
      * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\Module\ModuleListInterface $moduleList,
-        \Magento\Framework\App\ProductMetadataInterface $productMetadata
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
+        \Magento\Framework\ObjectManagerInterface $objectManager
+
     ) {
         parent::__construct($context);
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
+        $this->objectManager = $objectManager;
     }
 
     public function mageVersionCompare($version1, $version2, $operator)
@@ -59,13 +68,23 @@ class Utils extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @param $moduleName
+     *
+     * @return mixed
+     */
+    public function getExtensionVersion($moduleName)
+    {
+        return $this->moduleList->getOne($moduleName)['setup_version'];
+    }
+
+    /**
      * Is the module running in a Magento Enterprise Edition installation?
      *
      * @return bool
      */
     public function isMagentoEnterprise()
     {
-        return ($this->productMetadata->getEdition() == 'Enterprise');
+        return ($this->productMetadata->getEdition() == 'Enterprise' || $this->productMetadata->getEdition() == 'B2B');
     }
 
     /**
@@ -148,5 +167,79 @@ class Utils extends \Magento\Framework\App\Helper\AbstractHelper
             }
         }
         return [];
+    }
+
+    /**
+     * @param $moduleName
+     * @param $dataModelName
+     *
+     * @return string
+     */
+    public function getExtensionStatusString($moduleName, $dataModelName)
+    {
+        // Set up cache, using the Magento cache doesn't make sense as it won't cache if cache is disabled
+        try {
+            $cacheBackend = new \Zend_Cache_Backend();
+            $cache = \Zend_Cache::factory(
+                'Core',
+                'File',
+                ['lifetime' => 43200],
+                ['cache_dir' => $cacheBackend->getTmpDir()]
+            );
+        } catch (\Exception $e) {
+            return '';
+        }
+        $cacheKey = 'extstatus_' . $moduleName;
+        if ($moduleName !== '') {
+            $moduleVersion = $this->moduleList->getOne($moduleName)['setup_version'];
+            if (!empty($moduleVersion)) {
+                $cacheKey .= '_' . str_replace('.', '_', $moduleVersion);
+            }
+        }
+        $cacheKey .= substr(md5(__DIR__), 0, 10); // Unique per Magento installation
+        // Is the response cached?
+        $cachedHtml = $cache->load($cacheKey);
+        #$cachedHtml = false; // Test: disable cache
+        if ($cachedHtml !== false && $cachedHtml !== '') {
+            $storeJson = $cachedHtml;
+        } else {
+            try {
+                $dataModel = $this->objectManager->get($dataModelName);
+                $dataModel->afterLoad();
+                // Fetch info whether updates for the module are available
+                $url = 'ht' . 'tp://w' . 'ww.' . 'xte' . 'nto.' . 'co' . 'm/li' . 'cense/status';
+                $version = $this->productMetadata->getVersion();
+                $extensionVersion = $dataModel->getValue();
+                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    $streamContext = stream_context_create(['http' => ['timeout' => 5]]);
+                    $storeJson = file_get_contents($url . '?version=' . $version . '&d=' . $extensionVersion, false, $streamContext);
+                } else {
+                    $client = new \Zend_Http_Client($url, ['timeout' => 5]);
+                    $client->setParameterGet('version', $version);
+                    $client->setParameterGet('d', $extensionVersion);
+                    $response = $client->request('GET');
+                    // Post version
+                    /*$client = new Zend_Http_Client($url, ['timeout' => 5)];
+                    $client->setParameterPost('version', $version);
+                    $client->setParameterPost('d', $extensionVersion);
+                    $response = $client->request('POST');*/
+                    $storeJson = $response->getBody();
+                }
+                $cache->save($storeJson, $cacheKey);
+            } catch (\Exception $e) {
+                $cache->save('<!-- Empty/error response -->', $cacheKey);
+                return '';
+            }
+        }
+        if (preg_match('/There has been an error processing your request/', $storeJson)) {
+            return '';
+        }
+        $storeJson = @json_decode($storeJson, true);
+        if (isset($storeJson['html'])) {
+            $statusHtml = $storeJson['html'];
+        } else {
+            return '';
+        }
+        return $statusHtml;
     }
 }

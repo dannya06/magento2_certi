@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_XtCore (2.1.0)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-08-16T08:52:13+00:00
+ * Product:       Xtento_XtCore
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-02T15:00:53+00:00
  * File:          app/code/Xtento/XtCore/Model/System/Config/Backend/Server.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\XtCore\Model\System\Config\Backend;
@@ -86,7 +85,7 @@ class Server extends \Magento\Framework\App\Config\Value
                 base64_encode(
                     base64_encode(
                         $this->extId . ';' . trim($this->_config->getValue($this->configPath . 'serial')) . ';'
-                        . $sName2 . ';' . $this->urlBuilder->getUrl() . ';;;'
+                        . $sName2 . ';;;;'
                         . $this->request->getServer('SERVER_ADDR') . ';' . $sName1 . ';' . $this->version . ';'
                         . $this->_config->getValue($this->configPath . 'enabled') . ';'
                         . $this->moduleList->getOne($this->module)['setup_version'] . ';M2'

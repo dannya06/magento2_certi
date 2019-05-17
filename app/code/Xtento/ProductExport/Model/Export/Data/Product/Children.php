@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2017-04-24T19:43:01+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-05-13T13:13:21+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/Children.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Product;
@@ -46,8 +45,9 @@ class Children extends General
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
      * @param ProductRepositoryInterface $productRepository
      * @param \Magento\Tax\Model\Calculation $taxCalculation
-     * @param \Magento\Framework\App\ProductMetadata $productMetadata
+     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Catalog\Helper\Image $imageHelper
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
@@ -65,8 +65,9 @@ class Children extends General
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         ProductRepositoryInterface $productRepository,
         \Magento\Tax\Model\Calculation $taxCalculation,
-        \Magento\Framework\App\ProductMetadata $productMetadata,
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Magento\Catalog\Helper\Image $imageHelper,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -86,6 +87,7 @@ class Children extends General
             $taxCalculation,
             $productMetadata,
             $objectManager,
+            $imageHelper,
             $resource,
             $resourceCollection,
             $data
@@ -134,7 +136,7 @@ class Children extends General
             $originalWriteArray = & $this->writeArray;
             $this->writeArray = & $returnArray['child_products']; // Write on child_item level
 
-            if ($product->getTypeId() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE ) {
+            if ($product->getTypeId() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
                 $childProducts = $product->getTypeInstance()->getUsedProductCollection($product);
                 if ($this->fieldLoadingRequired('child_price')) {
                     $childPrices = [];
@@ -149,7 +151,7 @@ class Children extends General
                     }
                 }
             }
-            if ($product->getTypeId() === \Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE ) {
+            if ($product->getTypeId() === \Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE) {
                 $childProducts = $product->getTypeInstance(true)->getAssociatedProductCollection($product);
             }
             if ($product->getTypeId() === \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
@@ -190,7 +192,7 @@ class Children extends General
                     $originalWriteArray = & $this->writeArray;
                     $this->writeArray = & $this->writeArray['bundle_option'];
                     $bundleOption = $optionCollection->getItemById($childProduct->getOptionId());
-                    if ($bundleOption->getId()) {
+                    if ($bundleOption && $bundleOption->getId()) {
                         foreach ($bundleOption->getData() as $key => $value) {
                             $this->writeValue($key, $value);
                         }
@@ -214,6 +216,18 @@ class Children extends General
                     $fakedCollectionItem = new DataObject();
                     $fakedCollectionItem->setProduct($childProduct);
                     $exportClass = $this->objectManager->get('\Xtento\ProductExport\Model\Export\Data\Product\Categories'); // Singleton
+                    $exportClass->setProfile($this->getProfile());
+                    $exportClass->setShowEmptyFields($this->getShowEmptyFields());
+                    $returnData = $exportClass->getExportData(Export::ENTITY_PRODUCT, $fakedCollectionItem);
+                    if (is_array($returnData) && !empty($returnData)) {
+                        $this->writeArray = array_merge_recursive($this->writeArray, $returnData);
+                    }
+                }
+                if ($this->fieldLoadingRequired('stock')) {
+                    // Export stock info for child product
+                    $fakedCollectionItem = new DataObject();
+                    $fakedCollectionItem->setProduct($childProduct);
+                    $exportClass = $this->objectManager->get('\Xtento\ProductExport\Model\Export\Data\Product\Stock'); // Singleton
                     $exportClass->setProfile($this->getProfile());
                     $exportClass->setShowEmptyFields($this->getShowEmptyFields());
                     $returnData = $exportClass->getExportData(Export::ENTITY_PRODUCT, $fakedCollectionItem);

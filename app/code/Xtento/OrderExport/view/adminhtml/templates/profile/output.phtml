@@ -46,7 +46,7 @@
             ) ?></a><br/>
             <div name="buttons" style="overflow: auto; margin-bottom:5px; padding:5px; border: 1px solid #ccc;">
                 <button type="button" class="scalable" onclick="validateXslTemplate();">
-                    <span>Test XSL Template</span></button>
+                    <span><?php echo __('Test XSL Template')?></span></button>
                 &nbsp;
                 <button type="button" class="scalable" onclick="showFieldsAvailable();">
                     <span>Show fields available for export</span></button>
@@ -68,7 +68,7 @@
 
             <div name="buttons_bottom" style="margin-top:5px; padding:5px; border: 1px solid #ccc;">
                 <button type="button" class="scalable" onclick="validateXslTemplate();">
-                    <span>Test XSL Template</span></button>
+                    <span><?php echo __('Test XSL Template')?></span></button>
             </div>
         </div>
     </fieldset>
@@ -113,33 +113,36 @@
                 var s = document.createElement('script');
                 s.type = 'text/javascript';
                 s.async = true;
-                s.src = '<?php echo $block->getJs('ace/ace.js') ?>';
+                s.src = '<?php echo $block->getJs('ace/ace.min.js') ?>';
                 var x = document.getElementsByTagName('script')[0];
                 x.parentNode.insertBefore(s, x);
                 try {
                     s.onload = function () {
-                        if (typeof ace !== 'undefined' && typeof ace.edit !== 'undefined') {
-                            $('#xsl_template').hide();
-                            //ace.aceBaseUrl = "<?php echo $block->getJs('ace')?>";
-                            ace.config.set("basePath", "<?php echo $block->getJs('ace')?>");
-                            editor = ace.edit("editor");
-                            if (typeof editor !== 'undefined') {
-                                editor.setTheme("ace/theme/eclipse");
-                                editor.getSession().setMode("ace/mode/xml");
-                                editor.getSession().setUseWrapMode(true);
-                                editor.setBehavioursEnabled(false);
-                                editor.getSession().setValue($('#xsl_template').val());
-                                $('#edit_form').on('beforeSubmit', function(){
-                                    $('#xsl_template').val(editor.getSession().getValue());
-                                });
+                        window.require(["ace/ace"], function(a) {
+                            if (typeof ace !== 'undefined' && typeof ace.edit !== 'undefined') {
+                                $('#xsl_template').hide();
+                                ace.config.set("basePath", "<?php echo $block->getJs('ace')?>");
+                                ace.config.set("suffix", ".min.js");
+                                editor = ace.edit("editor");
+                                if (typeof editor !== 'undefined') {
+                                    editor.setTheme("ace/theme/eclipse");
+                                    editor.getSession().setMode("ace/mode/xml");
+                                    editor.getSession().setUseWrapMode(true);
+                                    editor.setBehavioursEnabled(false);
+                                    editor.getSession().setValue($('#xsl_template').val());
+                                    $('#edit_form').on('beforeSubmit', function () {
+                                        $('#xsl_template').val(editor.getSession().getValue());
+                                    });
+                                    window.editor = editor;
+                                } else {
+                                    $('#editor_div').hide();
+                                    $('#xsl_template').show();
+                                }
                             } else {
                                 $('#editor_div').hide();
                                 $('#xsl_template').show();
                             }
-                        } else {
-                            $('#editor_div').hide();
-                            $('#xsl_template').show();
-                        }
+                        });
                     }
                 }
                 catch (err) {

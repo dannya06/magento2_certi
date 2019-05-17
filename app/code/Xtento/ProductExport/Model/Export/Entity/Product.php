@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-05-06T12:08:01+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-12-21T10:48:33+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Entity/Product.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Entity;
@@ -96,13 +95,19 @@ class Product extends AbstractEntity
 
     public function runExport($forcedCollectionItem = false)
     {
+        $previousStoreId = false;
         if ($this->getProfile()) {
             if ($this->getProfile()->getStoreId()) {
-                $store = $this->storeManager->getStore($this->getProfile()->getStoreId());
+                $profileStoreId = $this->getProfile()->getStoreId();
+                if ($this->storeManager->getStore()->getId() != $profileStoreId) {
+                    $previousStoreId = $this->storeManager->getStore()->getId();
+                    $this->storeManager->setCurrentStore($profileStoreId); // fixes catalog price rules
+                }
+                $store = $this->storeManager->getStore($profileStoreId);
                 if ($store->getId()) {
                     $websiteId = $store->getWebsiteId();
                 } else {
-                    throw new LocalizedException(__('Product export failed. The specified store_id %1 does not exist anymore. Please update the profile in the Stores & Filters tab and select a valid store view.', $this->getProfile()->getStoreId()));
+                    throw new LocalizedException(__('Product export failed. The specified store_id %1 does not exist anymore. Please update the profile in the Stores & Filters tab and select a valid store view.', $profileStoreId));
                 }
                 $this->collection->getSelect()->joinLeft(
                     $this->resourceConnection->getTableName('catalog_product_index_price') . ' AS price_index',
@@ -114,9 +119,9 @@ class Product extends AbstractEntity
                         'final_price' => 'final_price'
                     ]
                 );
-                $this->collection->addStoreFilter($this->getProfile()->getStoreId());
-                $this->collection->setStore($this->getProfile()->getStoreId());
-                $this->collection->/*setStore($this->getProfile()->getStoreId())->addWebsiteFilter(Mage::app()->getStore($this->getProfile()->getStoreId())->getWebsiteId())->*/
+                $this->collection->addStoreFilter($profileStoreId);
+                $this->collection->setStore($profileStoreId);
+                $this->collection->/*setStore($profileStoreId)->addWebsiteFilter(Mage::app()->getStore($profileStoreId)->getWebsiteId())->*/
                     addAttributeToSelect("tax_class_id");
             }
             /** Add product reviews */
@@ -162,7 +167,11 @@ class Product extends AbstractEntity
                 $this->stockHelper->addInStockFilterToCollection($this->collection);
             }
         }
-        return parent::runExport($forcedCollectionItem);
+        $result = parent::runExport($forcedCollectionItem);
+        if ($previousStoreId !== false) {
+            $this->storeManager->setCurrentStore($previousStoreId); // Reset store back to what it was before
+        }
+        return $result;
     }
 
 

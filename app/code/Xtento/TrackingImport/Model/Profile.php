@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-03-22T12:17:45+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-07-11T12:36:07+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Profile.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model;
@@ -156,6 +155,14 @@ class Profile extends \Magento\Rule\Model\AbstractModel
         // Fix renamed "Object" condition class to "ObjectCondition" in import conditions, changed in version 2.0.9
         $this->setConditionsSerialized(str_replace('s:51:"Xtento\TrackingImport\Model\Import\Condition\Object"', 's:60:"Xtento\TrackingImport\Model\Import\Condition\ObjectCondition"', $this->getConditionsSerialized()));
         return parent::_afterLoad();
+    }
+
+    public function beforeDelete()
+    {
+        // Remove existing cronjobs
+        $this->cronHelper->removeCronjobsLike('trackingimport_profile_' . $this->getId() . '_%');
+
+        return parent::beforeDelete();
     }
 
     /**

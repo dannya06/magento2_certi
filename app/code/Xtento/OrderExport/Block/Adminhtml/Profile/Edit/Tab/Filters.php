@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-03-07T14:07:12+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-01-22T16:29:19+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Profile/Edit/Tab/Filters.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Block\Adminhtml\Profile\Edit\Tab;
@@ -51,7 +50,13 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
     protected $allStatuses;
 
     /**
+     * @var \Xtento\OrderExport\Helper\Entity
+     */
+    protected $entityHelper;
+
+    /**
      * Filters constructor.
+     *
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
@@ -62,6 +67,7 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
      * @param \Magento\Catalog\Model\Product\Type $productType
      * @param \Xtento\OrderExport\Model\System\Config\Source\Export\Status $exportStatus
      * @param \Xtento\XtCore\Model\System\Config\Source\Order\AllStatuses $allStatuses
+     * @param \Xtento\OrderExport\Helper\Entity $entityHelper
      * @param array $data
      */
     public function __construct(
@@ -75,6 +81,7 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
         \Magento\Catalog\Model\Product\Type $productType,
         \Xtento\OrderExport\Model\System\Config\Source\Export\Status $exportStatus,
         \Xtento\XtCore\Model\System\Config\Source\Order\AllStatuses $allStatuses,
+        \Xtento\OrderExport\Helper\Entity $entityHelper,
         array $data = []
     ) {
         $this->yesNo = $yesNo;
@@ -84,6 +91,7 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
         $this->rendererFieldset = $rendererFieldset;
         $this->productType = $productType;
         $this->allStatuses = $allStatuses;
+        $this->entityHelper = $entityHelper;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -117,6 +125,7 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
         $form = $this->_formFactory->create();
 
         $entity = $model->getEntity();
+        $entityName = $this->entityHelper->getEntityName($entity);
         $fieldset = $form->addFieldset(
             'object_filters',
             ['legend' => __('%1 Filters', ucwords($model->getEntity())), 'class' => 'fieldset-wide']
@@ -126,13 +135,13 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
             'export_filter_new_only',
             'select',
             [
-                'label' => __('Export only new %1s', $entity),
+                'label' => __('Export only new %1s', $entityName),
                 'name' => 'export_filter_new_only',
                 'values' => $this->yesNo->toOptionArray(),
                 'note' => __(
                     'Regardless whether you\'re using manual, cronjob or the event-based export, if set to yes, this setting will make sure every %1 gets exported only ONCE by this profile. This means, even if another export event gets called, if the %2 has been already exported by this profile, it won\'t be exported again. You can "reset" exported objects in the "Profile Export History" tab.<br/>Example usage: Set up a cronjob export which exports all "Processing" orders and set this to "Yes" - every "Processing" order will be exported only ONCE.',
-                    $entity,
-                    $entity
+                    $entityName,
+                    $entityName
                 )
             ]
         );
@@ -153,65 +162,66 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
             ]
         );
 
-        $dateFormat = $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT);
+        if ($entity !== Export::ENTITY_EERMA) {
+            $dateFormat = $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT);
+            $fieldset->addField(
+                'export_filter_datefrom',
+                'date',
+                [
+                    'label' => __('Date From'),
+                    'name' => 'export_filter_datefrom',
+                    'date_format' => $dateFormat,
+                    'image' => $this->getViewFileUrl('Magento_Theme::calendar.png'),
+                    'note' => __('Export only %1s created after date X (including day X).', $entity),
+                    'class' => 'validate-date'
+                ]
+            );
 
-        $fieldset->addField(
-            'export_filter_datefrom',
-            'date',
-            [
-                'label' => __('Date From'),
-                'name' => 'export_filter_datefrom',
-                'date_format' => $dateFormat,
-                'image' => $this->getViewFileUrl('Magento_Theme::calendar.png'),
-                'note' => __('Export only %1s created after date X (including day X).', $entity),
-                'class' => 'validate-date'
-            ]
-        );
+            $fieldset->addField(
+                'export_filter_dateto',
+                'date',
+                [
+                    'label' => __('Date To'),
+                    'name' => 'export_filter_dateto',
+                    'date_format' => $dateFormat,
+                    'image' => $this->getViewFileUrl('Magento_Theme::calendar.png'),
+                    'note' => __('Export only %1s created before date X (including day X).', $entity),
+                    'class' => 'validate-date'
+                ]
+            );
 
-        $fieldset->addField(
-            'export_filter_dateto',
-            'date',
-            [
-                'label' => __('Date To'),
-                'name' => 'export_filter_dateto',
-                'date_format' => $dateFormat,
-                'image' => $this->getViewFileUrl('Magento_Theme::calendar.png'),
-                'note' => __('Export only %1s created before date X (including day X).', $entity),
-                'class' => 'validate-date'
-            ]
-        );
+            $fieldset->addField(
+                'export_filter_last_x_days',
+                'text',
+                [
+                    'label' => __('Created during the last X days'),
+                    'name' => 'export_filter_last_x_days',
+                    'maxlength' => 5,
+                    'style' => 'width: 70px !important;" min="0',
+                    'note' => __(
+                        'Export only %1s created during the last X days (including day X). Only enter numbers here, nothing else. Leave empty if no "created during the last X days" filter should be applied.',
+                        $entity
+                    )
+                ]
+            )->setType('number');
 
-        $fieldset->addField(
-            'export_filter_last_x_days',
-            'text',
-            [
-                'label' => __('Created during the last X days'),
-                'name' => 'export_filter_last_x_days',
-                'maxlength' => 5,
-                'style' => 'width: 70px !important;" min="0',
-                'note' => __(
-                    'Export only %1s created during the last X days (including day X). Only enter numbers here, nothing else. Leave empty if no "created during the last X days" filter should be applied.',
-                    $entity
-                )
-            ]
-        )->setType('number');
+            $fieldset->addField(
+                'export_filter_older_x_minutes',
+                'text',
+                [
+                    'label' => __('Older than X minutes'),
+                    'name' => 'export_filter_older_x_minutes',
+                    'maxlength' => 10,
+                    'style' => 'width: 75px !important;" min="1',
+                    'note' => __(
+                        'Export only %1s which have been created at least X minutes ago. Only enter numbers here, nothing else. Leave empty if no filter should be applied.',
+                        $entity
+                    )
+                ]
+            )->setType('number');
+        }
 
-        $fieldset->addField(
-            'export_filter_older_x_minutes',
-            'text',
-            [
-                'label' => __('Older than X minutes'),
-                'name' => 'export_filter_older_x_minutes',
-                'maxlength' => 10,
-                'style' => 'width: 75px !important;" min="1',
-                'note' => __(
-                    'Export only %1s which have been created at least X minutes ago. Only enter numbers here, nothing else. Leave empty if no filter should be applied.',
-                    $entity
-                )
-            ]
-        )->setType('number');
-
-        if ($entity !== Export::ENTITY_SHIPMENT && $entity !== Export::ENTITY_QUOTE && $entity !== Export::ENTITY_CUSTOMER && $entity !== Export::ENTITY_AWRMA) {
+        if ($entity !== Export::ENTITY_SHIPMENT && $entity !== Export::ENTITY_QUOTE && $entity !== Export::ENTITY_CUSTOMER && $entity !== Export::ENTITY_EERMA && $entity !== Export::ENTITY_AWRMA) {
             // Not available for shipments
             $fieldset->addField(
                 'export_filter_status',
@@ -230,7 +240,7 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
             );
         }
 
-        if ($entity !== Export::ENTITY_QUOTE && $entity !== Export::ENTITY_CUSTOMER && $entity !== Export::ENTITY_AWRMA && $entity !== Export::ENTITY_BOOSTRMA) {
+        if ($entity !== Export::ENTITY_QUOTE && $entity !== Export::ENTITY_CUSTOMER && $entity !== Export::ENTITY_EERMA && $entity !== Export::ENTITY_AWRMA && $entity !== Export::ENTITY_BOOSTRMA) {
             $fieldset = $form->addFieldset(
                 'item_filters',
                 ['legend' => __('Item Filters'), 'class' => 'fieldset-wide']
@@ -253,7 +263,7 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
             );
         }
 
-        if ($entity !== Export::ENTITY_CUSTOMER && $entity !== Export::ENTITY_AWRMA && $entity !== Export::ENTITY_BOOSTRMA) {
+        if ($entity !== Export::ENTITY_CUSTOMER && $entity !== Export::ENTITY_AWRMA && $entity !== Export::ENTITY_EERMA && $entity !== Export::ENTITY_BOOSTRMA) {
             $renderer = $this->rendererFieldset->setTemplate(
                 'Magento_CatalogRule::promo/fieldset.phtml'
             )->setNewChildUrl(

@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2018-01-18T21:55:42+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-16T14:24:02+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model;
 
 use Magento\Framework\Exception\LocalizedException;
+use Xtento\XtCore\Helper\Utils;
 
 class Export extends \Magento\Framework\Model\AbstractModel
 {
@@ -24,6 +24,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
     const ENTITY_QUOTE = 'quote'; // Experimental
     const ENTITY_AWRMA = 'awrma'; // aheadWorks RMA, not yet implemented
     const ENTITY_BOOSTRMA = 'boostrma'; // BoostMyShop Product Return / RMA, not yet implemented
+    const ENTITY_EERMA = 'eerma'; // Magento Commerce (EE) RMA
 
     // Export types
     const EXPORT_TYPE_TEST = 0; // Test Export
@@ -118,6 +119,11 @@ class Export extends \Magento\Framework\Model\AbstractModel
     protected $scopeConfig;
 
     /**
+     * @var Utils
+     */
+    protected $utilsHelper;
+
+    /**
      * Export constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -139,6 +145,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Sales\Model\Order\ShipmentFactory $shipmentFactory
      * @param \Magento\Store\Model\App\Emulation $emulation
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param Utils $utilsHelper
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -163,6 +170,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         \Magento\Sales\Model\Order\ShipmentFactory $shipmentFactory,
         \Magento\Store\Model\App\Emulation $emulation,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        Utils $utilsHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -185,6 +193,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->shipmentFactory = $shipmentFactory;
         $this->scopeConfig = $scopeConfig;
         $this->emulation = $emulation;
+        $this->utilsHelper = $utilsHelper;
     }
 
     /**
@@ -209,6 +218,9 @@ class Export extends \Magento\Framework\Model\AbstractModel
         if (Mage::helper('xtcore/utils')->isExtensionInstalled('MDN_ProductReturn')) {
             $values[self::ENTITY_BOOSTRMA] = __('BoostMyShop RMA');
         }*/
+        if ($this->utilsHelper->isMagentoEnterprise() && $this->utilsHelper->isExtensionInstalled('Magento_Rma')) {
+            $values[self::ENTITY_EERMA] = __('Magento Commerce RMA');
+        }
         return $values;
     }
 
@@ -326,6 +338,10 @@ class Export extends \Magento\Framework\Model\AbstractModel
      */
     public function cronExport($filters)
     {
+        if (!$this->moduleHelper->isModuleEnabled()) {
+            return true;
+        }
+
         $this->setExportType(self::EXPORT_TYPE_CRONJOB);
         $this->beforeExport();
         $generatedFiles = $this->runExport($filters);
@@ -436,12 +452,9 @@ class Export extends \Magento\Framework\Model\AbstractModel
                     // Create one file per exported object
                     $generatedFiles = [];
                     foreach ($this->getReturnArrayWithObjects() as $returnObject) {
-                        $generatedFiles = array_merge(
-                            $generatedFiles,
-                            $this->objectManager->create(
-                                '\Xtento\OrderExport\Model\Output\\' . ucfirst($type)
-                            )->setProfile($this->getProfile())->convertData([$returnObject])
-                        );
+                        $generatedFiles += $this->objectManager->create(
+                            '\Xtento\OrderExport\Model\Output\\' . ucfirst($type)
+                        )->setProfile($this->getProfile())->convertData([$returnObject]);
                     }
                 } else {
                     // Create just one file for all exported objects
@@ -552,6 +565,11 @@ class Export extends \Magento\Framework\Model\AbstractModel
      */
     protected function saveFiles()
     {
+        $this->_eventManager->dispatch('xtento_orderexport_before_save_files',
+            [
+                'export' => $this
+            ]
+        );
         try {
             foreach ($this->getProfile()->getDestinations() as $destination) {
                 try {
@@ -597,6 +615,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->_registry->unregister('orderexport_profile');
         $this->_registry->register('orderexport_log', $logEntry);
         $this->_registry->register('orderexport_profile', $this->getProfile());
+        \Xtento\OrderExport\Helper\GracefulDie::enable();
     }
 
     /**
@@ -615,6 +634,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
             }
             $this->_registry->unregister('do_not_process_event_exports');
         }
+        \Xtento\OrderExport\Helper\GracefulDie::disable();
         $this->saveLog();
         $this->_registry->unregister('orderexport_profile');
         #echo "After export: " . memory_get_usage() . " (Difference: " . round((memory_get_usage() - $memBefore) / 1024 / 1024, 2) . " MB, " . (time() - $timeBefore) . " Secs) - Count: " . (count($exportIds)) . " -  Per entry: " . round(((memory_get_usage() - $memBefore) / 1024 / 1024) / (count($exportIds)), 2) . "<br>";
@@ -625,6 +645,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
                 'log' => $this->getLogEntry(),
                 'objects' => $this->getReturnArrayWithObjects(),
                 'files' => $this->getGeneratedFiles(),
+                'export' => $this
             ]
         );
         return $this;
@@ -734,22 +755,14 @@ class Export extends \Magento\Framework\Model\AbstractModel
                         }
                         unset($invoice);
                     }
-                    // Just send the invoice email even though the order has been invoiced already
-                    // Not yet ported to M2:
+                    // Just (re-)send the invoice email even though the order has been invoiced already
                     /*if ($doNotifyInvoice && !$order->canInvoice()) {
-                        $invoices = Mage::getResourceModel('sales/order_invoice_collection')
-                            ->setOrderFilter($order)
-                            ->addAttributeToSelect('entity_id')
-                            ->addAttributeToSort('entity_id', 'desc')
-                            ->setPage(1, 1);
+                        $invoices = $order->getInvoiceCollection();
                         $lastInvoice = $invoices->getFirstItem();
                         if ($lastInvoice->getId()) {
-                            $lastInvoice = Mage::getModel('sales/order_invoice')->load($lastInvoice->getId());
-                            if (!$lastInvoice->getEmailSent()) {
-                                $lastInvoice->setEmailSent(true);
-                                $lastInvoice->sendEmail(true, '');
-                                $lastInvoice->save();
-                            }
+                            $lastInvoice->setCustomerNoteNotify(true);
+                            $this->invoiceSender->send($lastInvoice);
+                            $lastInvoice->save();
                         }
                     }*/
                     // Ship order
@@ -773,22 +786,14 @@ class Export extends \Magento\Framework\Model\AbstractModel
                         }
                         unset($shipment);
                     }
-                    // Just send the shipment email even though the order has been shipped already
-                    // Not yet ported to M2:
+                    // Just (re-)send the shipment email even though the order has been shipped already
                     /*if ($doNotifyShipment && !$order->canShip()) {
-                        $shipments = Mage::getResourceModel('sales/order_shipment_collection')
-                            ->setOrderFilter($order)
-                            ->addAttributeToSelect('entity_id')
-                            ->addAttributeToSort('entity_id', 'desc')
-                            ->setPage(1, 1);
+                        $shipments = $order->getShipmentsCollection();
                         $lastShipment = $shipments->getFirstItem();
                         if ($lastShipment->getId()) {
-                            $lastShipment = Mage::getModel('sales/order_shipment')->load($lastShipment->getId());
-                            if (!$lastShipment->getEmailSent()) {
-                                $lastShipment->setEmailSent(true);
-                                $lastShipment->sendEmail(true, '');
-                                $lastShipment->save();
-                            }
+                            $lastShipment->setCustomerNoteNotify(true);
+                            $this->shipmentSender->send($lastShipment);
+                            $lastShipment->save();
                         }
                     }*/
                     $this->emulation->stopEnvironmentEmulation();
@@ -965,7 +970,11 @@ class Export extends \Magento\Framework\Model\AbstractModel
                 (time() - $this->getBeginTime())
             )
         );
-        $this->getLogEntry()->save();
+        if ($this->getLogEntry()->getResult() == Log::RESULT_SUCCESSFUL && $this->getLogEntry()->getRecordsExported() == 0) {
+            $this->getLogEntry()->delete();
+        } else {
+            $this->getLogEntry()->save();
+        }
         $this->errorEmailNotification();
         #$this->_registry->unregister('orderexport_log');
     }

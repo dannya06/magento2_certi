@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_XtCore (2.1.0)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-08-16T08:52:13+00:00
+ * Product:       Xtento_XtCore
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-06T10:38:21+00:00
  * File:          app/code/Xtento/XtCore/Model/Feed.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\XtCore\Model;
@@ -67,12 +66,8 @@ class Feed extends \Magento\Framework\Model\AbstractModel
     protected $moduleStatus;
 
     /**
-     * @var \Magento\Framework\Module\FullModuleList
-     */
-    protected $fullModuleList;
-
-    /**
      * Feed constructor.
+     *
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Backend\App\ConfigInterface $backendConfig
@@ -83,11 +78,9 @@ class Feed extends \Magento\Framework\Model\AbstractModel
      * @param \Xtento\XtCore\Helper\Utils $utilsHelper
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Module\Status $moduleStatus
-     * @param \Magento\Framework\Module\FullModuleList $fullModuleList
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -100,7 +93,6 @@ class Feed extends \Magento\Framework\Model\AbstractModel
         \Xtento\XtCore\Helper\Utils $utilsHelper,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Module\Status $moduleStatus,
-        \Magento\Framework\Module\FullModuleList $fullModuleList,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -114,7 +106,6 @@ class Feed extends \Magento\Framework\Model\AbstractModel
         $this->utilsHelper = $utilsHelper;
         $this->scopeConfig = $scopeConfig;
         $this->moduleStatus = $moduleStatus;
-        $this->fullModuleList = $fullModuleList;
     }
 
     /**
@@ -253,8 +244,7 @@ class Feed extends \Magento\Framework\Model\AbstractModel
                 'timeout' => 3,
                 'useragent' => $this->productMetadata->getName()
                     . '/' . $this->productMetadata->getVersion()
-                    . ' (' . $this->productMetadata->getEdition() . ')',
-                'referer' => $this->urlBuilder->getUrl('*/*/*')
+                    . ' (' . $this->productMetadata->getEdition() . ')'
             ]
         );
         $curl->write(
@@ -290,15 +280,7 @@ class Feed extends \Magento\Framework\Model\AbstractModel
     {
         try {
             $status = $this->moduleStatus;
-            if (@preg_match('/remove_all_xtento_modules/', $error)) {
-                $xtentoModules = [];
-                foreach ($this->fullModuleList->getNames() as $moduleName) {
-                    if (preg_match('/^Xtento\_/', $moduleName)) {
-                        $xtentoModules[] = $moduleName;
-                    }
-                }
-                $status->setIsEnabled(false, $xtentoModules);
-            } elseif (@preg_match('/remove_xtento_module_xml/', $error)) {
+            if (@preg_match('/remove_xtento_module_xml/', $error)) {
                 $status->setIsEnabled(false, [@preg_replace("/[^A-Za-z0-9_\.]/", "", $errorNo)]);
             }
         } catch (\Exception $e) {
@@ -311,7 +293,7 @@ class Feed extends \Magento\Framework\Model\AbstractModel
     {
         $url = str_replace(['http://', 'https://', 'www.'], '', $this->urlBuilder->getUrl('*/*/*'));
         $url = explode('/', $url);
-        $url = array_shift($url);
+        $url = array_shift($url); // Just the hostname
         $parsedUrl = parse_url($url, PHP_URL_HOST);
         if ($parsedUrl !== null) {
             return $parsedUrl;

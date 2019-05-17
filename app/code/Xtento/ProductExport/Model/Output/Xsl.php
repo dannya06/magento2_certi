@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2017-11-28T11:28:05+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-08-30T12:36:22+00:00
  * File:          app/code/Xtento/ProductExport/Model/Output/Xsl.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Output;
@@ -134,7 +133,13 @@ class Xsl extends AbstractOutput
         // Loop through each <file> node
         foreach ($outputFormats as $outputFormat) {
             $fileAttributes = $outputFormat->attributes();
-            $filename = $this->replaceFilenameVariables($this->getSimpleXmlElementAttribute($fileAttributes->filename), $exportArray);
+            $filename = trim($this->replaceFilenameVariables($this->getSimpleXmlElementAttribute($fileAttributes->filename), $exportArray));
+            $blacklistedFileExtensions = ['.php', '.phtml', '.htaccess'];
+            foreach ($blacklistedFileExtensions as $blacklistedFileExtension) {
+                while (preg_match('/\\' . $blacklistedFileExtension . '$/', $filename) === 1) {
+                    $filename = preg_replace('/\\' . $blacklistedFileExtension . '$/', '.txt', $filename);
+                }
+            }
 
             $charsetEncoding = $this->getSimpleXmlElementAttribute($fileAttributes->encoding);
             $charsetLocale = $this->getSimpleXmlElementAttribute($fileAttributes->locale);

@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2017-09-19T11:54:32+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-05-10T19:18:39+00:00
  * File:          app/code/Xtento/ProductExport/Setup/UpgradeSchema.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Setup;
@@ -35,6 +34,56 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 $setup->getTable('xtento_productexport_profile_history'),
                 $setup->getIdxName('xtento_productexport_profile_history', ['entity_id']),
                 ['entity_id']
+            );
+        }
+        if (version_compare($context->getVersion(), '2.7.3', '<')) {
+            $connection->addColumn(
+                $setup->getTable('xtento_productexport_profile'),
+                'category_mapping',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'nullable' => false,
+                    'length' => 16777215,
+                    'comment' => 'Category Mapping'
+                ]
+            );
+        }
+        if (version_compare($context->getVersion(), '2.7.4', '<')) {
+            $connection->addColumn(
+                $setup->getTable('xtento_productexport_profile'),
+                'taxonomy_source',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'nullable' => false,
+                    'length' => 255,
+                    'comment' => 'Taxonomy Source'
+                ]
+            );
+        }
+        if (version_compare($context->getVersion(), '2.8.5', '<')) {
+            $connection->addColumn(
+                $setup->getTable('xtento_productexport_profile'),
+                'remove_pub_folder_from_urls',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
+                    'nullable' => false,
+                    'default' => true,
+                    'length' => 1,
+                    'comment' => 'Remove pub folder from URLs'
+                ]
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.10.3', '<')) {
+            $connection->changeColumn(
+                $setup->getTable('xtento_productexport_destination'), 'port', 'port',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                    'length' => 5,
+                    'unsigned' => true,
+                    'nullable' => true,
+                    'comment' => 'Port'
+                ]
             );
         }
 

@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Product:       Xtento_XtCore (2.1.0)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-08-16T08:52:13+00:00
+ * Product:       Xtento_XtCore
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-01-09T14:44:02+00:00
  * File:          app/code/Xtento/XtCore/Setup/InstallData.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\XtCore\Setup;
 
+use Magento\Framework\Exception\SessionException;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -28,13 +28,23 @@ class InstallData implements InstallDataInterface
     private $configValueFactory;
 
     /**
-     * Init
+     * @var \Magento\Framework\App\State
+     */
+    private $appState;
+
+    /**
+     * InstallData constructor.
      *
      * @param \Magento\Framework\App\Config\ValueFactory $configValueFactory
+     * @param \Magento\Framework\App\State $appState
      */
-    public function __construct(\Magento\Framework\App\Config\ValueFactory $configValueFactory)
+    public function __construct(
+        \Magento\Framework\App\Config\ValueFactory $configValueFactory,
+        \Magento\Framework\App\State $appState
+    )
     {
         $this->configValueFactory = $configValueFactory;
+        $this->appState = $appState;
     }
 
     /**
@@ -45,6 +55,15 @@ class InstallData implements InstallDataInterface
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
+        try {
+            $this->doInstall();
+        } catch (SessionException $e) {
+            $this->appState->setAreaCode('adminhtml');
+            $this->doInstall();
+        }
+    }
+
+    protected function doInstall() {
         /** @var $configValue \Magento\Framework\App\Config\ValueInterface */
         $configValue = $this->configValueFactory->create();
         $configValue->load('xtcore/adminnotification/installation_date', 'path');

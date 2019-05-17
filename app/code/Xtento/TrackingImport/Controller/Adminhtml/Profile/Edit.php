@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-09-06T14:54:43+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-02-05T17:01:20+00:00
  * File:          app/code/Xtento/TrackingImport/Controller/Adminhtml/Profile/Edit.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Controller\Adminhtml\Profile;
@@ -61,14 +60,14 @@ class Edit extends \Xtento\TrackingImport\Controller\Adminhtml\Profile
 
         // Add check if no mapping/actions have been defined for the profile
         $profileConfiguration = $model->getConfiguration();
-        if (!isset($profileConfiguration['action']) || empty($profileConfiguration['action'])) {
+        if ($id && (!isset($profileConfiguration['action']) || empty($profileConfiguration['action']))) {
             $this->messageManager->addWarningMessage(
                 __(
                     'Warning: You haven\'t defined any import actions for this profile yet! Do not forget to define actions to execute for imported orders in the "Actions" tab below.'
                 )
             );
         }
-        if (!isset($profileConfiguration['mapping']) || empty($profileConfiguration['mapping'])) {
+        if ($id && (!isset($profileConfiguration['mapping']) || empty($profileConfiguration['mapping']))) {
             $this->messageManager->addWarningMessage(
                 __(
                     'Warning: You haven\'t defined the import mapping for this profile yet! Do not forget to define the mapping to map imported files in the "File Mapping" tab below.'

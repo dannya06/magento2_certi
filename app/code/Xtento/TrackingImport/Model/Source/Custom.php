@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-05-09T13:06:54+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-04-24T14:22:19+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Source/Custom.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\Source;
@@ -58,6 +57,6 @@ class Custom extends AbstractClass
         if (!$this->initConnection()) {
             return false;
         }
-        @$this->objectManager->create($this->getSource()->getCustomClass())->archiveFiles();
+        @$this->objectManager->create($this->getSource()->getCustomClass())->archiveFiles($filesToProcess, $forceDelete);
     }
 }

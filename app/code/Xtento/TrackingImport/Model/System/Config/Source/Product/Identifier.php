@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-03-07T14:03:00+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-03-03T22:01:39+00:00
  * File:          app/code/Xtento/TrackingImport/Model/System/Config/Source/Product/Identifier.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\System\Config\Source\Product;
@@ -25,6 +24,7 @@ class Identifier implements ArrayInterface
     {
         $identifiers[] = ['value' => 'sku', 'label' => __('SKU')];
         $identifiers[] = ['value' => 'entity_id', 'label' => __('Product ID (entity_id)')];
+        $identifiers[] = ['value' => 'order_item_id', 'label' => __('Order Item ID (order_item_id)')];
         $identifiers[] = ['value' => 'attribute', 'label' => __('Custom Product Attribute')];
         return $identifiers;
     }

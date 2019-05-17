@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2017-11-23T13:55:55+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-04-02T08:37:07+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/General.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Product;
@@ -20,6 +19,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
      */
     protected static $attributeSetCache = [];
     protected static $mediaGalleryBackend = false;
+    protected static $categoryMapping = null;
 
     /**
      * @var \Magento\Tax\Model\Config
@@ -62,9 +62,14 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
     protected $objectManager;
 
     /**
-     * @var \Magento\Framework\App\ProductMetadata
+     * @var \Magento\Framework\App\ProductMetadataInterface
      */
     protected $productMetadata;
+
+    /**
+     * @var \Magento\Catalog\Helper\Image
+     */
+    protected $imageHelper;
 
     /**
      * General constructor.
@@ -80,8 +85,9 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
      * @param ProductRepositoryInterface $productRepository
      * @param \Magento\Tax\Model\Calculation $taxCalculation
-     * @param \Magento\Framework\App\ProductMetadata $productMetadata
+     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Catalog\Helper\Image $imageHelper
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -98,8 +104,9 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         ProductRepositoryInterface $productRepository,
         \Magento\Tax\Model\Calculation $taxCalculation,
-        \Magento\Framework\App\ProductMetadata $productMetadata,
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Magento\Catalog\Helper\Image $imageHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -114,13 +121,15 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         $this->taxCalculation = $taxCalculation;
         $this->objectManager = $objectManager;
         $this->productMetadata = $productMetadata;
+        $this->imageHelper = $imageHelper;
     }
-
 
     public function getConfiguration()
     {
         // Reset cache
         self::$attributeSetCache = [];
+        self::$mediaGalleryBackend = false;
+        self::$categoryMapping = null;
 
         return [
             'name' => 'General product information',
@@ -163,11 +172,25 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
     }
 
     /**
-     * @param $product \Magento\Catalog\Model\Product
+     * @param \Magento\Catalog\Model\Product $product
      * @param $returnArray
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function exportProductData($product, &$returnArray)
     {
+        // Check if pub folder is being used
+        $usesPubFolder = false;
+        if ($this->getProfile()->getRemovePubFolderFromUrls()) {
+            $usesPubFolder = true;
+        } else {
+            $directoryList = $this->objectManager->get('\Magento\Framework\App\Filesystem\DirectoryList');
+            if ($directoryList->getUrlPath('pub') == '') {
+                $usesPubFolder = true;
+            }
+        }
+
+        // Set store
         if ($this->getStoreId()) {
             $product->setStoreId($this->getStoreId());
             $this->writeValue('store_id', $this->getStoreId());
@@ -207,13 +230,24 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
             }
             if ($key == 'image' || $key == 'small_image' || $key == 'thumbnail') {
                 $this->writeValue($key . '_raw', $value);
-                $this->writeValue(
-                    $key, $this->storeManager->getStore($this->getStoreId())
-                            ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/' . ltrim(
-                            $value,
-                            '/'
-                        )
-                );
+                $imageUrl = $this->storeManager->getStore($this->getStoreId())
+                        ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/' . ltrim(
+                        $value,
+                        '/'
+                    );
+                if ($usesPubFolder) {
+                    // Remove /pub/ from URL
+                    $imageUrl = str_replace('/pub/', '/', $imageUrl);
+                }
+                $this->writeValue($key, $imageUrl);
+                if ($this->fieldLoadingRequired($key . '_cache_url')) {
+                    $cacheUrl = $this->imageHelper->init($product, $key)->setImageFile($value)->getUrl();
+                    if ($usesPubFolder) {
+                        // Remove /pub/ from URL
+                        $cacheUrl = str_replace('/pub/', '/', $cacheUrl);
+                    }
+                    $this->writeValue($key . '_cache_url', $cacheUrl);
+                }
                 continue;
             }
             $attribute = $product->getResource()->getAttribute($key);
@@ -228,24 +262,29 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
             if ($attribute) {
                 if ($attribute->getFrontendInput() === 'media_image') {
                     $this->writeValue($key . '_raw', $value);
-                    $this->writeValue(
-                        $key, $this->storeManager->getStore($this->getStoreId())
-                                ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/' . ltrim(
-                                $value,
-                                '/'
-                            )
-                    );
+                    $imageLink = $this->storeManager->getStore($this->getStoreId())
+                            ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/' . ltrim(
+                            $value,
+                            '/'
+                        );
+                    if ($usesPubFolder) {
+                        // Remove /pub/ from URL
+                        $imageLink = str_replace('/pub/', '/', $imageLink);
+                    }
+                    $this->writeValue($key, $imageLink);
                     continue;
                 }
                 if ($attribute->getFrontendInput() === 'weee' || $attribute->getFrontendInput() === 'media_gallery') {
                     // Don't export certain frontend_input values
                     continue;
                 }
-                try {
-                    $attrText = $product->getAttributeText($key);
-                } catch (\Exception $e) {
-                    //echo "Problem with attribute $key: ".$e->getMessage();
-                    continue;
+                if ($attribute->usesSource()) {
+                    try {
+                        $attrText = $product->getAttributeText($key);
+                    } catch (\Exception $e) {
+                        //echo "Problem with attribute $key: ".$e->getMessage();
+                        continue;
+                    }
                 }
             }
             if (!empty($attrText)) {
@@ -272,14 +311,40 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         }
 
         // Extended fields
+        if ($this->fieldLoadingRequired('xtento_mapped_category')) {
+            if (self::$categoryMapping === null) {
+                self::$categoryMapping = @json_decode($this->getProfile()->getCategoryMapping(), true);
+            }
+            $mappedCategory = '';
+            $categoryIds = $product->getCategoryIds();
+            $longestPathCount = 0;
+            foreach ($categoryIds as $categoryId) {
+                if (isset(self::$categoryMapping[$categoryId]) && !empty(self::$categoryMapping[$categoryId])) {
+                    $taxonomyPath = self::$categoryMapping[$categoryId];
+                    if (stristr($taxonomyPath, '>') === false) {
+                        $mappedCategory = $taxonomyPath;
+                        break;
+                    }
+                    $pathLevel = substr_count($taxonomyPath, '>');
+                    if ($pathLevel > $longestPathCount) {
+                        // We want the deepest/longest taxonomy category mapped, so with most > as possible
+                        $longestPathCount = $pathLevel;
+                        $mappedCategory = $taxonomyPath;
+                    }
+                }
+            }
+            if (empty($mappedCategory)) {
+                // Fall back to default attribute
+                $mappedCategory = $product->getData('google_product_category');
+            }
+            $this->writeValue('xtento_mapped_category', $mappedCategory);
+        }
         if ($this->fieldLoadingRequired('product_url')) {
             $productUrl = $product->getProductUrl(false);
             if ($this->getProfile()->getExportUrlRemoveStore()) {
-                if (preg_match("/&/", $productUrl)) {
-                    $productUrl = preg_replace("/___store=(.*?)&/", "&", $productUrl);
-                } else {
-                    $productUrl = preg_replace("/\?___store=(.*)/", "", $productUrl);
-                }
+                /*$productUrl = preg_replace('/(&|\?)___store=[^&]*$/', '', $productUrl);
+                $productUrl = preg_replace('/(&|\?)___store=[^&]*&/', '$1', $productUrl);*/
+                $productUrl = strtok($productUrl, '?');
             }
             $this->writeValue('product_url', $productUrl);
         }
@@ -287,7 +352,25 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
             $this->writeValue('price', $this->getPrice($product));
         }
         if ($this->fieldLoadingRequired('final_price')) {
+            //$appEmulation = $this->objectManager->get('\Magento\Store\Model\App\Emulation');
+            //$appEmulation->startEnvironmentEmulation($this->getStoreId(), \Magento\Framework\App\Area::AREA_FRONTEND, true);
             $this->writeValue('final_price', $product->getPriceInfo()->getPrice('final_price')->getValue());
+            //$appEmulation->stopEnvironmentEmulation();
+        }
+        if ($this->fieldLoadingRequired('catalogrule_price')) {
+            // Unfortunately the code in CatalogRule\Pricing\Price\CatalogPriceRule ignores the current scope :(
+            $catalogRulePrice = $this->objectManager->get('Magento\CatalogRule\Model\ResourceModel\Rule')
+                ->getRulePrice(
+                    $this->objectManager->get('Magento\Framework\Stdlib\DateTime\TimezoneInterface')->scopeDate($this->getStoreId()),
+                    $this->storeManager->getStore($this->getStoreId())->getWebsiteId(),
+                    $this->getProfile()->getCustomerGroupId() ?: 0,
+                    $product->getId()
+                );
+            $catalogRulePrice = $catalogRulePrice ? floatval($catalogRulePrice) : null;
+            $this->writeValue('catalogrule_price', $catalogRulePrice);
+            //if ($catalogRulePrice) {
+            //    $catalogRulePrice = $this->priceCurrency->convertAndRound($catalogRulePrice, $this->getStoreId());
+            //}
         }
         if ($this->fieldLoadingRequired('attribute_set_name')) {
             $attributeSetId = $product->getAttributeSetId();
@@ -399,12 +482,34 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
                 $galleryReadHandler = $this->objectManager->get('\Magento\Catalog\Model\Product\Gallery\ReadHandler');
                 $galleryReadHandler->execute($product);
                 $mediaGalleryImages = $product->getMediaGalleryImages();
+                // ReadHandler only loads disabled=0 images, meaning, hidden images are not exported. To fix this, you must load the full product like this:
+                /*
+                $product = $product->load($product->getId());
+                $directory = $this->objectManager->get('\Magento\Framework\Filesystem')->getDirectoryRead(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA);
+                $mediaGalleryImages = $this->objectManager->create('\Magento\Framework\Data\CollectionFactory')->create();
+                $mediaConfig = $this->objectManager->get('\Magento\Catalog\Model\Product\Media\Config');
+                foreach ($product->getMediaGallery('images') as $image) {
+                    if (empty($image['value_id']) || $mediaGalleryImages->getItemById($image['value_id']) != null) {
+                        continue;
+                    }
+                    $image['url'] = $mediaConfig->getMediaUrl($image['file']);
+                    $image['id'] = $image['value_id'];
+                    $image['path'] = $directory->getAbsolutePath($mediaConfig->getMediaPath($image['file']));
+                    $mediaGalleryImages->addItem(new \Magento\Framework\DataObject($image));
+                }
+                */
                 if (!empty($mediaGalleryImages)) {
                     foreach ($mediaGalleryImages as $mediaGalleryImage) {
                         $this->writeArray = &$returnArray['images'][];
                         foreach ($mediaGalleryImage->getData() as $key => $value) {
+                            if ($key == 'url' && $usesPubFolder) {
+                                $value = str_replace('/pub/', '/', $value);
+                            }
                             $this->writeValue($key, $value);
                         }
+                        // Get correct image URL for store
+                        /*$storeImageUrl = $this->storeManager->getStore($this->getStoreId())->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/' . ltrim(str_replace('\\', '/', $mediaGalleryImage['file']), '/');
+                        $this->writeValue('url_store', $storeImageUrl);*/
                     }
                 }
             }
@@ -417,8 +522,10 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
             $originalWriteArray = & $this->writeArray;
             $this->writeArray = & $returnArray['custom_options'];
             // Unfortunately you can only fetch custom options with the product being loaded. No way to add all the fields on collection load.
-            $product->load($product->getId());
-            $productOptions = $product->getOptions();
+            $productCopy = clone $product;
+            $productCopy->clearInstance()->setStoreId($this->getStoreId())->load($product->getId());
+            // NOTE: If this doesn't work, we should try emulating environment like in the M1 version
+            $productOptions = $productCopy->getOptions();
             if (is_array($productOptions)) {
                 foreach ($productOptions as $productOption) {
                     $customOption = & $returnArray['custom_options'][];

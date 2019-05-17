@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2017-09-19T11:53:16+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-07T21:03:46+00:00
  * File:          app/code/Xtento/OrderExport/Setup/UpgradeSchema.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Setup;
@@ -35,6 +34,19 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 $setup->getTable('xtento_orderexport_profile_history'),
                 $setup->getIdxName('xtento_orderexport_profile_history', ['entity_id']),
                 ['entity_id']
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.9.0', '<')) {
+            $connection->changeColumn(
+                $setup->getTable('xtento_orderexport_destination'), 'port', 'port',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                    'length' => 5,
+                    'unsigned' => true,
+                    'nullable' => true,
+                    'comment' => 'Port'
+                ]
             );
         }
 

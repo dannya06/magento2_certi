@@ -1,19 +1,18 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
  * Last Modified: 2016-04-14T15:37:35+00:00
  * File:          app/code/Xtento/ProductExport/Model/System/Config/Backend/Server.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\System\Config\Backend;
 
 class Server extends \Xtento\XtCore\Model\System\Config\Backend\Server
 {
-    protected $version = 'cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=';
+    protected $version = '1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=';
 
     /**
      * Server constructor.

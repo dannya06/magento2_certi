@@ -1,18 +1,32 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-03-02T18:20:37+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-08-22T10:46:34+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/History/Grid.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Block\Adminhtml\History;
 
 class Grid extends \Magento\Backend\Block\Widget\Grid
 {
+    /**
+     * @return void
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+        if ($this->getRequest()->getParam('ajax_enabled', 0) == 1) {
+            $this->setData('use_ajax', true);
+            $this->setData('grid_url', $this->getUrl('*/history/grid', ['_current' => 1]));
+        } else {
+            $this->setData('use_ajax', false);
+        }
+    }
+
     protected function getFormMessages()
     {
         $formMessages = [

@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-04-17T12:35:36+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-01-12T17:34:28+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Condition/Product.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Condition;
@@ -98,8 +97,8 @@ class Product extends \Magento\CatalogRule\Model\Rule\Condition\Product
         $attributes = [];
         foreach ($productAttributes as $attribute) {
             /* @var $attribute \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
-            if (!$attribute->isAllowedForRuleCondition(
-            ) /* || !$attribute->getDataUsingMethod($this->_isUsedForRuleProperty)*/
+            if (!method_exists($attribute, 'isAllowedForRuleCondition') || !$attribute->isAllowedForRuleCondition()
+                /* || !$attribute->getDataUsingMethod($this->_isUsedForRuleProperty)*/
             ) {
                 continue;
             }
@@ -109,8 +108,8 @@ class Product extends \Magento\CatalogRule\Model\Rule\Condition\Product
         $this->_addSpecialAttributes($attributes);
 
         // Add custom attributes
-        $attributes['qty'] = __('Quantity in stock');
-        $attributes['type_id'] = __('Product Type');
+        //$attributes['qty'] = __('Quantity in stock');
+        //$attributes['type_id'] = __('Product Type');
 
         // Remove certain attributes
         foreach ($attributes as $attributeCode => $label) {

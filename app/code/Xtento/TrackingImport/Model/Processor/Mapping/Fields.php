@@ -1,20 +1,53 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-04-12T11:25:24+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-02-05T17:01:20+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Processor/Mapping/Fields.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\Processor\Mapping;
+
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\ObjectManagerInterface;
+use Xtento\TrackingImport\Helper\Entity;
+use Xtento\XtCore\Model\System\Config\Source\Order\AllStatuses;
+use Xtento\XtCore\Model\System\Config\Source\Shipping\Carriers;
 
 class Fields extends AbstractMapping
 {
     protected $importFields = null;
     protected $mappingType = 'fields';
+
+    /**
+     * @var Entity
+     */
+    protected $entityHelper;
+
+    /**
+     * Fields constructor.
+     *
+     * @param ObjectManagerInterface $objectManager
+     * @param ManagerInterface $eventManager
+     * @param Carriers $carriers
+     * @param AllStatuses $orderStatuses
+     * @param Entity $entityHelper
+     * @param array $data
+     */
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        ManagerInterface $eventManager,
+        Carriers $carriers,
+        AllStatuses $orderStatuses,
+        Entity $entityHelper,
+        array $data = []
+    ) {
+        parent::__construct($objectManager, $eventManager, $carriers, $orderStatuses, $data);
+        $this->entityHelper = $entityHelper;
+    }
+
 
     /*
      * [
@@ -165,13 +198,27 @@ class Fields extends AbstractMapping
             */
         ];
 
+        if ($this->entityHelper->getMagentoMSISupport()) {
+            $importFields['stock_id_settings'] = [
+                'label' => __('-- Multi-Source Inventory (MSI) --'),
+                'disabled' => true
+            ];
+            $importFields['source_code'] = [
+                'label' => __('Source Code'),
+                'default_values' => $this->getDefaultValues('msi_sources'),
+                'tooltip' => __(
+                    'Specify the source_code of the warehouse from where the shipment will be sent from.'
+                ),
+            ];
+        }
+
         // Custom event to add fields
-        $this->eventManager->dispatch(
-            'xtento_trackingimport_mapping_get_fields',
-            [
-                'importFields' => &$importFields,
-            ]
-        );
+        $additional = new \Magento\Framework\DataObject();
+        $this->eventManager->dispatch('xtento_trackingimport_mapping_get_fields', ['class' => $this, 'additional' => $additional]);
+        $additionalFields = $additional->getFields();
+        if ($additionalFields) {
+            $importFields = array_merge_recursive($importFields, $additionalFields);
+        }
 
         // Feature: merge fields from custom/fields.php so custom fields can be added
 

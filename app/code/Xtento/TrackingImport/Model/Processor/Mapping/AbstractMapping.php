@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-04-11T16:41:20+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-02-05T17:01:20+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Processor/Mapping/AbstractMapping.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\Processor\Mapping;
@@ -75,48 +74,50 @@ abstract class AbstractMapping extends DataObject
         $mappingData = $this->getMappingData();
 
         $mapping = [];
-        foreach ($mappingData as $id => $field) {
-            if (!isset($field['field'])) {
-                continue;
-            }
-            if (!isset($field['value'])) {
-                $value = '';
-            } else {
-                $value = $field['value'];
-            }
-            if (!isset($field['default_value'])) {
-                $defaultValue = false;
-            } else {
-                $defaultValue = $field['default_value'];
-            }
-            if (!isset($field['xml'])) {
-                $xml = false;
-            } else {
-                $xml = $field['xml'];
-            }
-            // Get data from mapping fields
-            $mappingFields = $this->getMappingFields();
-            if (!isset($mappingFields[$field['field']]) || !isset($mappingFields[$field['field']]['group'])) {
-                $group = false;
-            } else {
-                $group = $mappingFields[$field['field']]['group'];
-            }
+        if (is_array($mappingData) || is_object($mappingData)) {
+            foreach ($mappingData as $id => $field) {
+                if (!isset($field['field'])) {
+                    continue;
+                }
+                if (!isset($field['value'])) {
+                    $value = '';
+                } else {
+                    $value = $field['value'];
+                }
+                if (!isset($field['default_value'])) {
+                    $defaultValue = false;
+                } else {
+                    $defaultValue = $field['default_value'];
+                }
+                if (!isset($field['xml'])) {
+                    $xml = false;
+                } else {
+                    $xml = $field['xml'];
+                }
+                // Get data from mapping fields
+                $mappingFields = $this->getMappingFields();
+                if (!isset($mappingFields[$field['field']]) || !isset($mappingFields[$field['field']]['group'])) {
+                    $group = false;
+                } else {
+                    $group = $mappingFields[$field['field']]['group'];
+                }
 
-            // Get field configuration (based on XML)
-            $fieldConfiguration = $this->objectManager->create(
-                '\Xtento\TrackingImport\Model\Processor\Mapping\\' . ucfirst($this->mappingType) . '\Configuration'
-            )->getConfiguration($field['field'], $xml);
+                // Get field configuration (based on XML)
+                $fieldConfiguration = $this->objectManager->create(
+                    '\Xtento\TrackingImport\Model\Processor\Mapping\\' . ucfirst($this->mappingType) . '\Configuration'
+                )->getConfiguration($field['field'], $xml);
 
-            // Return field
-            $mapping[$id] = [
-                'id' => $id,
-                'field' => $field['field'],
-                'value' => $value,
-                'default_value' => $defaultValue,
-                'xml' => $xml,
-                'config' => $fieldConfiguration,
-                'group' => $group
-            ];
+                // Return field
+                $mapping[$id] = [
+                    'id' => $id,
+                    'field' => $field['field'],
+                    'value' => $value,
+                    'default_value' => $defaultValue,
+                    'xml' => $xml,
+                    'config' => $fieldConfiguration,
+                    'group' => $group
+                ];
+            }
         }
         $this->mapping = $mapping;
 
@@ -164,6 +165,14 @@ abstract class AbstractMapping extends DataObject
         if ($entity == 'yesno') {
             $defaultValues[0] = __('No');
             $defaultValues[1] = __('Yes');
+        }
+        if ($entity == 'msi_sources') {
+            $msiSourceList = $this->objectManager->get('\Magento\Inventory\Model\SourceRepository')->getList();
+            $msiSources = [];
+            foreach (array_keys($msiSourceList->getItems()) as $msiSource) {
+                $msiSources[$msiSource] = $msiSource;
+            }
+            return $msiSources;
         }
         return $defaultValues;
     }

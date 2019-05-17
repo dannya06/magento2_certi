@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-05-07T12:25:09+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-06-25T15:04:27+00:00
  * File:          app/code/Xtento/OrderExport/Helper/Module.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Helper;
@@ -62,6 +61,7 @@ class Module extends \Xtento\XtCore\Helper\AbstractModule
 
     public function isModuleProperlyInstalled()
     {
+        return true; // Not required, Magento 2 does the job of handling upgrades better than Magento 1
         // Check if DB table(s) have been created.
         return ($this->resource->getConnection('core_read')->showTableStatus(
                 $this->resource->getTableName('xtento_orderexport_profile')

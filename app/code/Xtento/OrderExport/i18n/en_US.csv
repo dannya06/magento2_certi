@@ -69,6 +69,7 @@ Event,Event
 "All Store Views","All Store Views"
 "Add New Profile","Add New Profile"
 "Duplicate Profile","Duplicate Profile"
+"Load Sample Profile","Load Sample Profile"
 "Save Profile","Save Profile"
 "Delete Profile","Delete Profile"
 "Cronjob Export","Cronjob Export"
@@ -189,7 +190,7 @@ Sales,Sales
 "Execution Log","Execution Log"
 "Sales Export - Execution Log","Sales Export - Execution Log"
 "This log entry (ID: %1) does not exist anymore.","This log entry (ID: %1) does not exist anymore."
-"There is nothing to download. No files have been saved with this export. (Log ID: %1)","There is nothing to download. No files have been saved with this export. (Log ID: %1)"
+"There is nothing to download. No files have been saved with this export, or you disabled ""Save local copies of exports"" in the profile. (Log ID: %1)","There is nothing to download. No files have been saved with this export, or you disabled ""Save local copies of exports"" in the profile. (Log ID: %1)"
 "File not found in local backup directory: %1 (Log ID: %2)","File not found in local backup directory: %1 (Log ID: %2)"
 "One or more files of this export have been deleted from the local backup directory. Please click <a href=""%1"">here</a> to download the remaining existing files. (Log ID: %2)","One or more files of this export have been deleted from the local backup directory. Please click <a href=""%1"">here</a> to download the remaining existing files. (Log ID: %2)"
 "This log entry does not exist anymore.","This log entry does not exist anymore."
@@ -212,13 +213,14 @@ Sales,Sales
 %1,%1
 "Export Profiles","Export Profiles"
 "Sales Export - Profiles","Sales Export - Profiles"
+"Wizard Export Folder","Wizard Export Folder"
 "This profile does not exist anymore.","This profile does not exist anymore."
 "Profile has been deleted successfully.","Profile has been deleted successfully."
 "No profile ID supplied.","No profile ID supplied."
 "No files have been exported by the XSL Template, or the system temporary folder is not writable. Please check your XSL Template for filters/errors.","No files have been exported by the XSL Template, or the system temporary folder is not writable. Please check your XSL Template for filters/errors."
 "The profile has been duplicated. Please make sure to enable it.","The profile has been duplicated. Please make sure to enable it."
 "This profile no longer exists.","This profile no longer exists."
-"Warning: You have enabled ""Export each %1 separately"". However, no unique variable was added to the ""filename"" of your output file in the ""Output Format"" tab. Because of this, when the export runs, multiple files with the same name will be created, and thus just one file gets saved, which is wrong. Please make sure to add a unique variable to the ""filename"" in the ""Output Format"" tab, so multiple files with unique filenames will be generated. A valid unique variable is %%lastincrementid%% for example which is the last increment id.","Warning: You have enabled ""Export each %1 separately"". However, no unique variable was added to the ""filename"" of your output file in the ""Output Format"" tab. Because of this, when the export runs, multiple files with the same name will be created, and thus just one file gets saved, which is wrong. Please make sure to add a unique variable to the ""filename"" in the ""Output Format"" tab, so multiple files with unique filenames will be generated. A valid unique variable is %%lastincrementid%% for example which is the last increment id."
+"Warning: You have enabled ""Export each %1 separately"". However, no unique variable was added to the ""filename"" of your output file in the ""Output Format"" tab. Because of this, when the export runs, multiple files with the same name will be created, and thus just one file gets saved, which is wrong. Please make sure to add a unique variable to the ""filename"" in the ""Output Format"" tab, so multiple files with unique filenames will be generated. A valid unique variable is %lastincrementid% for example which is the last increment id.","Warning: You have enabled ""Export each %1 separately"". However, no unique variable was added to the ""filename"" of your output file in the ""Output Format"" tab. Because of this, when the export runs, multiple files with the same name will be created, and thus just one file gets saved, which is wrong. Please make sure to add a unique variable to the ""filename"" in the ""Output Format"" tab, so multiple files with unique filenames will be generated. A valid unique variable is %lastincrementid% for example which is the last increment id."
 "Edit %1 Export Profile '%2'","Edit %1 Export Profile '%2'"
 "New Profile","New Profile"
 "Please select profiles to delete.","Please select profiles to delete."
@@ -237,7 +239,9 @@ Tools,Tools
 "%1 profiles have been added, %2 profiles have been updated, %3 destinations have been added, %4 destinations have been updated.","%1 profiles have been added, %2 profiles have been updated, %3 destinations have been added, %4 destinations have been updated."
 "No profile ID found in job_code.","No profile ID found in job_code."
 "Profile ID %1 does not seem to exist anymore.","Profile ID %1 does not seem to exist anymore."
+"EE RMAs","EE RMAs"
 "Undefined Entity","Undefined Entity"
+"EE RMA","EE RMA"
 "Could not find export entity ""%1""","Could not find export entity ""%1"""
 "Import failed. Decoding of JSON import format failed.","Import failed. Decoding of JSON import format failed."
 "Local Directory","Local Directory"
@@ -276,6 +280,7 @@ Shipments,Shipments
 "Credit Memos","Credit Memos"
 Customers,Customers
 Quotes,Quotes
+"Magento Commerce RMA","Magento Commerce RMA"
 "Test Export","Test Export"
 "Grid Export","Grid Export"
 "Event Export","Event Export"
@@ -343,7 +348,8 @@ is,is
 "Twice Daily (12am, 12pm)","Twice Daily (12am, 12pm)"
 "No profiles available. Add and enable export profiles for the %1 entity first.","No profiles available. Add and enable export profiles for the %1 entity first."
 Successful,Successful
-"After order creation (Event: sales_order_place_after)","After order creation (Event: sales_order_place_after)"
+"After order creation (Event: xtento_orderexport_sales_order_service_place_after)","After order creation (Event: xtento_orderexport_sales_order_service_place_after)"
+"Alternative Event: After order creation (Event: sales_order_place_after)","Alternative Event: After order creation (Event: sales_order_place_after)"
 "After order modification (Event: sales_order_save_after)","After order modification (Event: sales_order_save_after)"
 "After order placement completed (Event: sales_order_payment_place_end)","After order placement completed (Event: sales_order_payment_place_end)"
 "After invoice creation (Event: sales_order_invoice_register)","After invoice creation (Event: sales_order_invoice_register)"
@@ -354,7 +360,7 @@ Successful,Successful
 "After customer account gets modified","After customer account gets modified"
 "After customer address gets modified","After customer address gets modified"
 "Profile: %1","Profile: %1"
-"Export %1s","Export %1s"
+"Export %1","Export %1"
 Profile,Profile
 "Starting ID","Starting ID"
 "from the beginning","from the beginning"
@@ -372,6 +378,15 @@ label,label
 Export,Export
 "An error occured. Please reload this page or run the export WITHOUT the ""Serve file to browser after exporting"" option to see the real error message.","An error occured. Please reload this page or run the export WITHOUT the ""Serve file to browser after exporting"" option to see the real error message."
 "Exporting... Please wait...","Exporting... Please wait..."
+"New Sales Export Profile","New Sales Export Profile"
+"Would you like to load one of our sample export profiles? This will overwrite settings you have made in this profile, if any.","Would you like to load one of our sample export profiles? This will overwrite settings you have made in this profile, if any."
+Loading...,Loading...
+"Select Profile","Select Profile"
+Options,Options
+"Please select...","Please select..."
+"Create Export Destination (/var/salesexport/)","Create Export Destination (/var/salesexport/)"
+"Cancel / Start With Empty Profile","Cancel / Start With Empty Profile"
+"Load Profile","Load Profile"
 "No test ID specified. Please specify a test ID to export right next to the ""Show fields available for export"" button.","No test ID specified. Please specify a test ID to export right next to the ""Show fields available for export"" button."
 "This test ID does NOT exist in Magento. Please specify an existing ID to export right next to the ""Show fields available for export"" button.","This test ID does NOT exist in Magento. Please specify an existing ID to export right next to the ""Show fields available for export"" button."
 "Data is based on","Data is based on"
@@ -383,6 +398,7 @@ Export,Export
 Filename,Filename
 Encoding,Encoding
 "Looking for certain fields or field names? Please use the ""Show fields available for export"" function.","Looking for certain fields or field names? Please use the ""Show fields available for export"" function."
+"Test XSL Template","Test XSL Template"
 "Test / Validation Results","Test / Validation Results"
 "Tools - Export Settings","Tools - Export Settings"
 "<b>Note:</b> You can select profiles and destinations to export here, and later on import them into another Magento installation for example.","<b>Note:</b> You can select profiles and destinations to export here, and later on import them into another Magento installation for example."
@@ -397,6 +413,12 @@ Encoding,Encoding
 "<b>Note:</b> You can upload previously exported settings and import them here. Passwords for destinations must be entered again, they won't be imported.","<b>Note:</b> You can upload previously exported settings and import them here. Passwords for destinations must be entered again, they won't be imported."
 "Update existing profiles if the profile/destination name matches","Update existing profiles if the profile/destination name matches"
 "Import Settings","Import Settings"
+"Sample Templates","Sample Templates"
+Feeds,Feeds
+"There was a problem talking to the XTENTO Profile Service. Please try again later or contact us if this issue persists.","There was a problem talking to the XTENTO Profile Service. Please try again later or contact us if this issue persists."
+"There was a problem creating the export folder: ","There was a problem creating the export folder: "
+"There was a problem creating the export destination.","There was a problem creating the export destination."
+"There was a problem downloading the profile template. Please try again later or contact us if this issue persists.","There was a problem downloading the profile template. Please try again later or contact us if this issue persists."
 "Order Export Module","Order Export Module"
 "Extension Configuration","Extension Configuration"
 "Server Name","Server Name"

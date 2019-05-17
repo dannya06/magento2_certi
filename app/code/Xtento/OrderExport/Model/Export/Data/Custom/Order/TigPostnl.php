@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2018-01-30T14:53:21+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-08-07T11:38:22+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Custom/Order/TigPostnl.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Export\Data\Custom\Order;
@@ -90,7 +89,7 @@ class TigPostnl extends \Xtento\OrderExport\Model\Export\Data\AbstractData
         // Fetch fields to export
         $order = $collectionItem->getOrder();
 
-        if ($this->fieldLoadingRequired('pakjegemak_address') || $this->fieldLoadingRequired('pakjegemak_order')) {
+        if ($this->fieldLoadingRequired('pakjegemak_order')) {
             try {
                 $this->writeArray = & $returnArray['pakjegemak_order'];
                 $postNLOrder = $this->objectManager->create('\TIG\PostNL\Model\OrderFactory')->create();
@@ -103,32 +102,7 @@ class TigPostnl extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     $this->writeValue('delivery_date_formatted', $this->localeDate->formatDate($postNLOrder->getDeliveryDate(), \IntlDateFormatter::LONG, true));
                     $this->writeValue('delivery_date_timestamp', $this->dateHelper->convertDateToStoreTimestamp($postNLOrder->getDeliveryDate()));
 
-                    $this->writeArray = & $returnArray['pakjegemak_address'];
-                    $pakjeGemakAddress = $postNLOrder->getPakjegemakAddress();
-                    if ($pakjeGemakAddress && $pakjeGemakAddress->getId()) {
-                        $pakjeGemakAddress->explodeStreetAddress();
-                        foreach ($pakjeGemakAddress->getData() as $key => $value) {
-                            $this->writeValue($key, $value);
-                        }
-                        // Region Code
-                        if ($pakjeGemakAddress->getRegionId() !== NULL && $this->fieldLoadingRequired('region_code')) {
-                            $this->writeValue('region_code', $pakjeGemakAddress->getRegionCode());
-                        }
-                        // Country - ISO3, Full Name
-                        if ($pakjeGemakAddress->getCountryId() !== null) {
-                            if (!isset(self::$countryModels[$pakjeGemakAddress->getCountryId()])) {
-                                $country = $this->countryFactory->create();
-                                $country->load($pakjeGemakAddress->getCountryId());
-                                self::$countryModels[$pakjeGemakAddress->getCountryId()] = $country;
-                            }
-                            if ($this->fieldLoadingRequired('country_name')) {
-                                $this->writeValue('country_name', self::$countryModels[$pakjeGemakAddress->getCountryId()]->getName());
-                            }
-                            if ($this->fieldLoadingRequired('country_iso3')) {
-                                $this->writeValue('country_iso3', self::$countryModels[$pakjeGemakAddress->getCountryId()]->getData('iso3_code'));
-                            }
-                        }
-                    }
+                    // PakjeGemak address is stored in "shipping address"
                 }
             } catch (\Exception $e) {
 

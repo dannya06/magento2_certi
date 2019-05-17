@@ -207,6 +207,8 @@ $_colspan = $_colspan > 1 ? 'colspan="' . $_colspan . '"' : '';
                     '</div>');
 
                 if (typeof ace !== "undefined" && typeof ace.edit !== "undefined") {
+                    ace.config.set("basePath", "<?php echo $block->getJs('ace')?>");
+                    ace.config.set("suffix", ".min.js");
                     window.editor = ace.edit(rowId + "_editor_div");
                     window.editor.setTheme("ace/theme/eclipse");
                     window.editor.getSession().setMode("ace/mode/xml");
@@ -301,7 +303,7 @@ $_colspan = $_colspan > 1 ? 'colspan="' . $_colspan . '"' : '';
                     var s = document.createElement('script');
                     s.type = 'text/javascript';
                     s.async = true;
-                    s.src = '<?php echo $block->getJs('ace/ace.js');?>';
+                    s.src = '<?php echo $block->getJs('ace/ace.min.js');?>';
                     var x = document.getElementsByTagName('script')[0];
                     x.parentNode.insertBefore(s, x);
                     try {

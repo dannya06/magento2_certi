@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2017-11-27T14:07:39+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-05-13T14:03:05+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/ParentProduct.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Product;
@@ -61,8 +60,9 @@ class ParentProduct extends General
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
      * @param ProductRepositoryInterface $productRepository
      * @param \Magento\Tax\Model\Calculation $taxCalculation
-     * @param \Magento\Framework\App\ProductMetadata $productMetadata
+     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Catalog\Helper\Image $imageHelper
      * @param Categories $categoriesSingleton
      * @param \Magento\GroupedProduct\Model\Product\Type\Grouped $productTypeGrouped
      * @param \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $productTypeConfigurable
@@ -83,8 +83,9 @@ class ParentProduct extends General
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         ProductRepositoryInterface $productRepository,
         \Magento\Tax\Model\Calculation $taxCalculation,
-        \Magento\Framework\App\ProductMetadata $productMetadata,
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Magento\Catalog\Helper\Image $imageHelper,
         Categories $categoriesSingleton,
         \Magento\GroupedProduct\Model\Product\Type\Grouped $productTypeGrouped,
         \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $productTypeConfigurable,
@@ -107,6 +108,7 @@ class ParentProduct extends General
             $taxCalculation,
             $productMetadata,
             $objectManager,
+            $imageHelper,
             $resource,
             $resourceCollection,
             $data
@@ -135,10 +137,8 @@ class ParentProduct extends General
      *
      * @return array
      */
-    // @codingStandardsIgnoreStart
     public function getExportData($entityType, $collectionItem)
     {
-        // @codingStandardsIgnoreStart
         // Set return array
         $returnArray = [];
 
@@ -172,10 +172,12 @@ class ParentProduct extends General
      * Get the parent data as array
      * If the parent has also a parent, its data is exported as well
      * This function changes the $writeArray reference
-     * 
+     *
      * @param \Magento\Catalog\Model\Product $product
      * @param int $parentId [optional = -1]
+     *
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function getParentData($product, $parentId = -1, $depth = 0)
     {
@@ -211,7 +213,8 @@ class ParentProduct extends General
         if ($parent && $parent->getId()) {
             $this->writeArray = & $data; // Write on parent_item level
 
-            if ($this->fieldLoadingRequired('option_parameters_in_url') && $parent->getTypeId() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE ) {
+            if ($this->fieldLoadingRequired('option_parameters_in_url')
+                && $parent->getTypeId() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
                 $superAttributesWithValues = [];
                 $superAttributes = $parent->getTypeInstance()->getConfigurableAttributes($parent);
                 foreach ($superAttributes as $superAttribute) {
@@ -263,23 +266,31 @@ class ParentProduct extends General
      */
     protected function getFirstParentProductId($product)
     {
+        // Check is Magento EE >=2.1, if so use different catalog_product_entity link field name (row_id in EE 2.1)
+        // This turned out to be wrong, entity_id is always the correct product ID, row_id is just used for staging functionality
+        /*if ($this->utilsHelper->isMagentoEnterprise() && $this->utilsHelper->mageVersionCompare($this->productMetadata->getVersion(), '2.1.0', '>=')) {
+            $productIdLink = 'row_id';
+        } else {*/
+            $productIdLink = 'entity_id';
+        //}
+
         $parentId = null;
         #if ($product->getTypeId() == 'simple') {
-            $parentIds = $this->productTypeGrouped->getParentIdsByChild($product->getId());
-            if (!$parentIds) {
-                $parentIds = $this->productTypeConfigurable->getParentIdsByChild($product->getId());
+        $parentIds = $this->productTypeGrouped->getParentIdsByChild($product->getId());
+        if (!$parentIds) {
+            $parentIds = $this->productTypeConfigurable->getParentIdsByChild($product->getId());
+        }
+        foreach ($parentIds as $possibleParentId) {
+            // Check if parent product exists, if yes return first existing parent product
+            $readAdapter = $this->resourceConnection->getConnection();
+            $select = $readAdapter->select()
+                ->from($this->resourceConnection->getTableName('catalog_product_entity'), ['entity_id'])
+                ->where($productIdLink . " = ?", $possibleParentId);
+            $possibleParentId = $readAdapter->fetchOne($select);
+            if ($possibleParentId) {
+                $parentId = $possibleParentId;
             }
-            foreach ($parentIds as $possibleParentId) {
-                // Check if parent product exists, if yes return first existing parent product
-                $readAdapter = $this->resourceConnection->getConnection();
-                $select = $readAdapter->select()
-                    ->from($this->resourceConnection->getTableName('catalog_product_entity'), ['entity_id'])
-                    ->where("entity_id = ?", $possibleParentId);
-                $products = $readAdapter->fetchAll($select);
-                if (count($products) > 0) {
-                    $parentId = $possibleParentId;
-                }
-            }
+        }
         #}
 
         return (int)$parentId;

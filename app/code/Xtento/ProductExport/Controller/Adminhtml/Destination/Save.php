@@ -1,15 +1,16 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:38+00:00
- * Last Modified: 2016-05-30T12:33:01+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-12-03T20:07:29+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Destination/Save.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Controller\Adminhtml\Destination;
+
+use Xtento\ProductExport\Model\Destination;
 
 class Save extends \Xtento\ProductExport\Controller\Adminhtml\Destination
 {
@@ -72,8 +73,16 @@ class Save extends \Xtento\ProductExport\Controller\Adminhtml\Destination
 
             // Handle certain fields
             if ($model->getId()) {
-                $model->setPath(trim(rtrim($model->getPath(), '/')) . '/');
-                if ($model->getNewPassword() !== '' && $model->getNewPassword() !== '******') {
+                if ($model->getPath() !== null) {
+                    $path = trim(rtrim($model->getPath(), '/')) . '/';
+                    if ($model->getType() == Destination::TYPE_FTP || $model->getType() == Destination::TYPE_SFTP) {
+                        if ($path[0] !== '/' && $path[0] !== '\\' && $path[0] !== '.') {
+                            $path = '/' . $path;
+                        }
+                    }
+                    $model->setPath($path);
+                }
+                if ($model->getNewPassword() !== null && $model->getNewPassword() !== '' && $model->getNewPassword() !== '******') {
                     $model->setPassword($this->encryptor->encrypt($model->getNewPassword()));
                 }
             }

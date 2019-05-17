@@ -1,37 +1,50 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-05-07T12:22:56+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-02-05T17:01:20+00:00
  * File:          app/code/Xtento/TrackingImport/Helper/Entity.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Helper;
 
 use Magento\Framework\Exception\LocalizedException;
+use Xtento\XtCore\Helper\Utils;
 
 class Entity extends \Magento\Framework\App\Helper\AbstractHelper
 {
+    /**
+     * @var bool
+     */
+    protected static $magentoMsiSupport = null;
+
     /**
      * @var \Xtento\TrackingImport\Model\Import
      */
     protected $importModel;
 
     /**
+     * @var Utils
+     */
+    protected $utilsHelper;
+
+    /**
      * Entity constructor.
      *
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Xtento\TrackingImport\Model\Import $importModel
+     * @param Utils $utilsHelper
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Xtento\TrackingImport\Model\Import $importModel
+        \Xtento\TrackingImport\Model\Import $importModel,
+        Utils $utilsHelper
     ) {
         parent::__construct($context);
         $this->importModel = $importModel;
+        $this->utilsHelper = $utilsHelper;
     }
 
     public function getEntityName($entity)
@@ -57,5 +70,20 @@ class Entity extends \Magento\Framework\App\Helper\AbstractHelper
         }
         $processorName = $processors[$processor];
         return $processorName;
+    }
+
+    public function getMagentoMSISupport()
+    {
+        if (self::$magentoMsiSupport !== null) {
+            return self::$magentoMsiSupport;
+        }
+
+        if (!$this->utilsHelper->isExtensionInstalled('Magento_Inventory')) {
+            // Don't use MSI if MSI isn't installed
+            self::$magentoMsiSupport = false;
+            return self::$magentoMsiSupport;
+        }
+        self::$magentoMsiSupport = version_compare($this->utilsHelper->getMagentoVersion(), '2.3', '>=');
+        return self::$magentoMsiSupport;
     }
 }

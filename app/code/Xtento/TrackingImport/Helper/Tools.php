@@ -1,15 +1,17 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-04-27T20:05:10+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-09-10T18:18:35+00:00
  * File:          app/code/Xtento/TrackingImport/Helper/Tools.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Helper;
+
+use Magento\Framework\ObjectManagerInterface;
+use Xtento\XtCore\Helper\Utils;
 
 class Tools extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -24,20 +26,36 @@ class Tools extends \Magento\Framework\App\Helper\AbstractHelper
     protected $sourceFactory;
 
     /**
+     * @var Utils
+     */
+    protected $utilsHelper;
+
+    /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
      * Tools constructor.
      *
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Xtento\TrackingImport\Model\ProfileFactory $profileFactory
      * @param \Xtento\TrackingImport\Model\SourceFactory $sourceFactory
+     * @param Utils $utilsHelper
+     * @param ObjectManagerInterface $objectManager
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Xtento\TrackingImport\Model\ProfileFactory $profileFactory,
-        \Xtento\TrackingImport\Model\SourceFactory $sourceFactory
+        \Xtento\TrackingImport\Model\SourceFactory $sourceFactory,
+        Utils $utilsHelper,
+        ObjectManagerInterface $objectManager
     ) {
         parent::__construct($context);
         $this->profileFactory = $profileFactory;
         $this->sourceFactory = $sourceFactory;
+        $this->utilsHelper = $utilsHelper;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -71,7 +89,6 @@ class Tools extends \Magento\Framework\App\Helper\AbstractHelper
             $source = $this->sourceFactory->create()->load($sourceId);
             if ($source->getId()) {
                 $source->setData('new_source_id', substr($randIdPrefix . $sourceId, 0, 8));
-                #$source->unsetData('source_id');
                 $source->unsetData('password');
                 $exportData['sources'][] = $source->toArray();
             }
@@ -95,6 +112,11 @@ class Tools extends \Magento\Framework\App\Helper\AbstractHelper
         } catch (\Exception $e) {
             $errorMessage = __('Import failed. Decoding of JSON import format failed.');
             return false;
+        }
+        // In Magento 1.x and 2.0/2.1 some fields were stored serialized. Thus, we need to convert them to JSON if importing into Magento 2.2+
+        $serializedToJsonConverter = false;
+        if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
+            $serializedToJsonConverter = $this->objectManager->create('\Xtento\TrackingImport\Test\SerializedToJsonDataConverter');
         }
         // Remapped source IDs
         $remappedSourceIds = [];
@@ -141,6 +163,26 @@ class Tools extends \Magento\Framework\App\Helper\AbstractHelper
         // Process profiles
         if (isset($settingsArray['profiles'])) {
             foreach ($settingsArray['profiles'] as $profileData) {
+                if ($serializedToJsonConverter !== false) {
+                    if (isset($profileData['conditions_serialized']))
+                        $profileData['conditions_serialized'] = $serializedToJsonConverter->convert($profileData['conditions_serialized']);
+                    if (isset($profileData['configuration']))
+                        $profileData['configuration'] = $serializedToJsonConverter->convert($profileData['configuration']);
+                }
+                // If importing a settings file from Magento >=2.2 into <=2.1, we must make sure that the "_serialized" fields are indeed serialized and not JSON
+                if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '<')) {
+                    $fieldsToCheck = ['conditions_serialized', 'configuration'];
+                    foreach ($fieldsToCheck as $fieldToCheck) {
+                        if (isset($profileData[$fieldToCheck])) {
+                            $jsonData = @json_decode($profileData[$fieldToCheck], true);
+                            if (json_last_error() == JSON_ERROR_NONE) {
+                                // It's json, we need to serialize it for M2.0/2.1
+                                $profileData[$fieldToCheck] = serialize($jsonData);
+                            }
+                        }
+                    }
+                }
+                // Begin import
                 if ($updateByName) {
                     $profileCollection = $this->profileFactory->create()->getCollection()
                         ->addFieldToFilter('entity', $profileData['entity'])

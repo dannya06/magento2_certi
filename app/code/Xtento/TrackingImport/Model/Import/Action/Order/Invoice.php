@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-09-13T12:17:58+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-03-03T22:01:39+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Import/Action/Order/Invoice.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\Import\Action\Order;
@@ -18,6 +17,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\DB\TransactionFactory;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice as OrderInvoice;
@@ -42,6 +42,11 @@ class Invoice extends AbstractAction
     protected $dbTransactionFactory;
 
     /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
      * Invoice constructor.
      *
      * @param Context $context
@@ -50,6 +55,7 @@ class Invoice extends AbstractAction
      * @param ProductFactory $modelProductFactory
      * @param Order\Email\Sender\InvoiceSender $invoiceSender
      * @param TransactionFactory $dbTransactionFactory
+     * @param ObjectManagerInterface $objectManager
      * @param AbstractResource|null $resource
      * @param AbstractDb|null $resourceCollection
      * @param array $data
@@ -61,6 +67,7 @@ class Invoice extends AbstractAction
         ProductFactory $modelProductFactory,
         Order\Email\Sender\InvoiceSender $invoiceSender,
         TransactionFactory $dbTransactionFactory,
+        ObjectManagerInterface $objectManager,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
@@ -68,7 +75,7 @@ class Invoice extends AbstractAction
         $this->productFactory = $modelProductFactory;
         $this->invoiceSender = $invoiceSender;
         $this->dbTransactionFactory = $dbTransactionFactory;
-
+        $this->objectManager = $objectManager;
         parent::__construct($context, $registry, $actionConfiguration, $resource, $resourceCollection, $data);
     }
 
@@ -133,6 +140,8 @@ class Invoice extends AbstractAction
                         // How should the item be identified in the import file?
                         if ($this->getProfileConfiguration()->getProductIdentifier() == 'sku') {
                             $orderItemSku = strtolower(trim($orderItem->getSku()));
+                        } else if ($this->getProfileConfiguration()->getProductIdentifier() == 'order_item_id') {
+                            $orderItemSku = $orderItem->getId();
                         } else {
                             if ($this->getProfileConfiguration()->getProductIdentifier() == 'entity_id') {
                                 $orderItemSku = trim($orderItem->getProductId());
@@ -284,6 +293,25 @@ class Invoice extends AbstractAction
                         $order->getIncrementId()
                     )
                 );
+                // Code to attempt to capture existing invoices for an order
+                /*foreach ($order->getInvoiceCollection() as $invoice) {
+                    try {
+                        $invoiceManagement = $this->objectManager->get('\Magento\Sales\Api\InvoiceManagementInterface');
+                        $invoiceManagement->setCapture($invoice->getEntityId());
+                        $invoice->getOrder()->setIsInProcess(true);
+                        $this->objectManager->create(
+                            \Magento\Framework\DB\Transaction::class
+                        )->addObject(
+                            $invoice
+                        )->addObject(
+                            $invoice->getOrder()
+                        )->save();
+                    } catch (\Exception $e) {
+                        $this->addDebugMessage(__("Invoice '%1' of order '%2' could not be captured: %3", $invoice->getIncrementId(), $order->getIncrementId(), $e->getMessage()));
+                        continue;
+                    }
+                    $this->addDebugMessage(__("Invoice '%1' of order '%2' has been captured. ", $invoice->getIncrementId(), $order->getIncrementId()));
+                }*/
             }
         }
 

@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-02-26T22:35:00+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-01-22T16:29:19+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Entity/Collection/Item.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Export\Entity\Collection;
@@ -40,6 +39,13 @@ class Item extends \Magento\Framework\DataObject
         }
         if ($entityType == \Xtento\OrderExport\Model\Export::ENTITY_QUOTE) {
             $this->setOrder($collectionItem);
+        }
+        if ($entityType == \Xtento\OrderExport\Model\Export::ENTITY_EERMA) {
+            // Load order associated to RMA
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Due to existing structures, must be used here
+            $order = $objectManager->get('\Magento\Sales\Model\OrderFactory')->create()->load(strval($collectionItem->getOrderId()));
+            $this->setOrder($order);
+            $collectionItem->setAllItems($collectionItem->getItemsForDisplay());
         }
     }
 

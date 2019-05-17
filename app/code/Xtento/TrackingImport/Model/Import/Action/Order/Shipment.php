@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-12-14T18:42:30+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-14T12:32:49+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Import/Action/Order/Shipment.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\Import\Action\Order;
@@ -18,6 +17,7 @@ use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\DB\TransactionFactory;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Shipment\TrackFactory;
@@ -29,6 +29,7 @@ use Magento\Shipping\Model\ConfigFactory;
 use Magento\Store\Model\ScopeInterface;
 use Xtento\TrackingImport\Model\Import\Action\AbstractAction;
 use Xtento\TrackingImport\Model\Processor\Mapping\Action\Configuration;
+use Xtento\XtCore\Helper\Utils;
 
 class Shipment extends AbstractAction
 {
@@ -85,6 +86,16 @@ class Shipment extends AbstractAction
     protected $shipmentRepository;
 
     /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
+     * @var Utils
+     */
+    protected $utilsHelper;
+
+    /**
      * Shipment constructor.
      *
      * @param Context $context
@@ -100,6 +111,8 @@ class Shipment extends AbstractAction
      * @param ShipmentRepositoryInterface $shipmentRepositoryInterface
      * @param ScopeConfigInterface $configScopeConfigInterface
      * @param ConfigFactory $modelConfigFactory
+     * @param ObjectManagerInterface $objectManager
+     * @param Utils $utilsHelper
      * @param AbstractResource|null $resource
      * @param AbstractDb|null $resourceCollection
      * @param array $data
@@ -118,6 +131,8 @@ class Shipment extends AbstractAction
         ShipmentRepositoryInterface $shipmentRepositoryInterface,
         ScopeConfigInterface $configScopeConfigInterface,
         ConfigFactory $modelConfigFactory,
+        ObjectManagerInterface $objectManager,
+        Utils $utilsHelper,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
@@ -132,6 +147,8 @@ class Shipment extends AbstractAction
         $this->shipmentRepository = $shipmentRepositoryInterface;
         $this->scopeConfig = $configScopeConfigInterface;
         $this->shippingConfigFactory = $modelConfigFactory;
+        $this->objectManager = $objectManager;
+        $this->utilsHelper = $utilsHelper;
 
         parent::__construct($context, $registry, $actionConfiguration, $resource, $resourceCollection, $data);
     }
@@ -212,6 +229,8 @@ class Shipment extends AbstractAction
                         // How should the item be identified in the import file?
                         if ($this->getProfileConfiguration()->getProductIdentifier() == 'sku') {
                             $orderItemSku = strtolower(trim($orderItem->getSku()));
+                        } else if ($this->getProfileConfiguration()->getProductIdentifier() == 'order_item_id') {
+                            $orderItemSku = $orderItem->getId();
                         } else {
                             if ($this->getProfileConfiguration()->getProductIdentifier() == 'entity_id') {
                                 $orderItemSku = trim($orderItem->getProductId());
@@ -311,6 +330,7 @@ class Shipment extends AbstractAction
 
                 /* @var $shipment Order\Shipment */
                 if ($shipment && $doShipOrder) {
+                    $this->setMsiSource($shipment, isset($updateData['source_code']) ? $updateData['source_code'] : false);
                     if (!empty(@$updateData['order_status_history_comment'])) {
                         $shipment->addComment(
                             $updateData['order_status_history_comment'],
@@ -408,11 +428,11 @@ class Shipment extends AbstractAction
                     ->addAttributeToSelect('entity_id')
                     ->addAttributeToSort('entity_id', 'desc');
                 // Customization: Add tracking# to shipment# specified as order_identifier, i.e. when loading orders via shipment# in profile.
-                /*$profileConfig = $this->getProfile()->getConfiguration();
+                $profileConfig = $this->getProfile()->getConfiguration();
                 if (isset($profileConfig['order_identifier']) && $profileConfig['order_identifier'] == 'shipment_increment_id') {
                     // Only add to this shipment ID
                     $shipments->addAttributeToFilter('increment_id', $updateData['order_identifier']);
-                }*/
+                }
                 // End Customization
                 $shipments->setPage(1, 1);
                 $lastShipment = $shipments->getFirstItem();
@@ -582,5 +602,55 @@ class Shipment extends AbstractAction
             return ucwords($carrierCode);
         }
         return $carrierTitle;
+    }
+
+    /**
+     * Set Magento 2.3 MSI source. Must use ObjectManager as otherwise code would not be compatible with Magento <2.3
+     *
+     * @param $shipment
+     * @param bool $sourceCode
+     *
+     * @return $this
+     */
+    protected function setMsiSource($shipment, $sourceCode = false)
+    {
+        if (version_compare($this->utilsHelper->getMagentoVersion(), '2.3', '<') || !$this->utilsHelper->isExtensionInstalled('Magento_Inventory')) {
+            return $this;
+        }
+
+        $shipmentExtension = $shipment->getExtensionAttributes();
+        if (empty($shipmentExtension)) {
+            $shipmentExtension = $this->objectManager->create('Magento\Sales\Api\Data\ShipmentExtensionFactory')->create();
+        }
+        if ($sourceCode === false) {
+            if ($shipmentExtension && $shipmentExtension->getSourceCode()) {
+                // Already set by MSI
+                $sourceCode = $shipmentExtension->getSourceCode();
+            }
+            // Determine source code
+            $order = $shipment->getOrder();
+            foreach ($order->getAllItems() as $orderItem) {
+                if ($orderItem->getIsVirtual()
+                    || $orderItem->getLockedDoShip()
+                    || $orderItem->getHasChildren()) {
+                    continue;
+                }
+
+                $item = $orderItem->isDummy(true) ? $orderItem->getParentItem() : $orderItem;
+                $qty = $item->getSimpleQtyToShip();
+                $sku = $this->objectManager->create('Magento\InventorySalesApi\Model\GetSkuFromOrderItemInterface')->execute($item);
+                $sources = $this->objectManager->create('Magento\InventoryShippingAdminUi\Ui\DataProvider\GetSourcesByOrderIdSkuAndQty')->execute($order->getId(), $sku, $qty);
+                if (isset($sources[0]) && isset($sources[0]['sourceCode'])) {
+                    $sourceCode = $sources[0]['sourceCode'];
+                    break;
+                }
+            }
+            if ($sourceCode === false) {
+                // Get default source
+                $sourceCode = $this->objectManager->create('Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface')->getCode();
+            }
+        }
+        $shipmentExtension->setSourceCode($sourceCode);
+        $shipment->setExtensionAttributes($shipmentExtension);
     }
 }

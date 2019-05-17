@@ -1,15 +1,16 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-05-30T12:56:10+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-12-03T20:08:26+00:00
  * File:          app/code/Xtento/TrackingImport/Controller/Adminhtml/Source/Save.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Controller\Adminhtml\Source;
+
+use Xtento\TrackingImport\Model\Source;
 
 class Save extends \Xtento\TrackingImport\Controller\Adminhtml\Source
 {
@@ -80,11 +81,25 @@ class Save extends \Xtento\TrackingImport\Controller\Adminhtml\Source
 
             // Handle certain fields
             if ($model->getId()) {
-                $model->setPath(trim(rtrim($model->getPath(), '/')) . '/');
-                if ($model->getArchivePath() !== '') {
-                    $model->setArchivePath(trim(rtrim($model->getArchivePath(), '/')) . '/');
+                if ($model->getPath() !== null) {
+                    $path = trim(rtrim($model->getPath(), '/')) . '/';
+                    if ($model->getType() == Source::TYPE_FTP || $model->getType() == Source::TYPE_SFTP) {
+                        if ($path[0] !== '/' && $path[0] !== '\\' && $path[0] !== '.') {
+                            $path = '/' . $path;
+                        }
+                    }
+                    $model->setPath($path);
                 }
-                if ($model->getNewPassword() !== '' && $model->getNewPassword() !== '******') {
+                if ($model->getArchivePath() !== '' && $model->getArchivePath() !== null) {
+                    $archivePath = trim(rtrim($model->getArchivePath(), '/')) . '/';
+                    if ($model->getType() == Source::TYPE_FTP || $model->getType() == Source::TYPE_SFTP) {
+                        if ($archivePath[0] !== '/' && $archivePath[0] !== '\\' && $archivePath[0] !== '.') {
+                            $archivePath = '/' . $archivePath;
+                        }
+                    }
+                    $model->setArchivePath($archivePath);
+                }
+                if ($model->getNewPassword() !== null && $model->getNewPassword() !== '' && $model->getNewPassword() !== '******') {
                     $model->setPassword($this->encryptor->encrypt($model->getNewPassword()));
                 }
             }

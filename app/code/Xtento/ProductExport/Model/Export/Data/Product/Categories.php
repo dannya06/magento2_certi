@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-04-18T10:27:30+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-04-02T08:37:07+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/Categories.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Product;
@@ -118,10 +117,14 @@ class Categories extends \Xtento\ProductExport\Model\Export\Data\AbstractData
                 if (array_key_exists($categoryId, self::$categoryCache[$this->getStoreId()]) && !is_array(self::$categoryCache[$this->getStoreId()][$categoryId])) {
                     $category = self::$categoryCache[$this->getStoreId()][$categoryId];
                 } else {
-                    if ($this->getStoreId()) {
-                        $category = $this->categoryRepository->get($categoryId, $this->getStoreId());
-                    } else {
-                        $category = $this->categoryRepository->get($categoryId);
+                    try {
+                        if ($this->getStoreId()) {
+                            $category = $this->categoryRepository->get($categoryId, $this->getStoreId());
+                        } else {
+                            $category = $this->categoryRepository->get($categoryId);
+                        }
+                    } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                        continue;
                     }
                 }
 
@@ -136,7 +139,7 @@ class Categories extends \Xtento\ProductExport\Model\Export\Data\AbstractData
                 foreach ($category->getData() as $key => $value) {
                     $attribute = $category->getResource()->getAttribute($key);
                     $attrText = '';
-                    if ($attribute) {
+                    if ($attribute && $attribute->usesSource()) {
                         $attrText = $category->getAttributeText($key);
                     }
                     if (!empty($attrText)) {
@@ -155,10 +158,14 @@ class Categories extends \Xtento\ProductExport\Model\Export\Data\AbstractData
                     ) {
                         $catName = self::$categoryCache[$this->getStoreId()][$pathCatId]['name'];
                     } else {
-                        if ($this->getStoreId()) {
-                            $category = $this->categoryRepository->get($pathCatId, $this->getStoreId());
-                        } else {
-                            $category = $this->categoryRepository->get($pathCatId);
+                        try {
+                            if ($this->getStoreId()) {
+                                $category = $this->categoryRepository->get($pathCatId, $this->getStoreId());
+                            } else {
+                                $category = $this->categoryRepository->get($pathCatId);
+                            }
+                        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                            continue;
                         }
                         $catName = $category->getName();
                         self::$categoryCache[$this->getStoreId()][$pathCatId] = $category;
@@ -176,11 +183,8 @@ class Categories extends \Xtento\ProductExport\Model\Export\Data\AbstractData
                 // Get product incl. category path URL
                 $productUrl = $this->productUrlPathGenerator->getUrlPathWithSuffix($product, $this->getStoreId(), $category);
                 if ($this->getProfile()->getExportUrlRemoveStore()) {
-                    if (preg_match("/&/", $productUrl)) {
-                        $productUrl = preg_replace("/___store=(.*?)&/", "&", $productUrl);
-                    } else {
-                        $productUrl = preg_replace("/\?___store=(.*)/", "", $productUrl);
-                    }
+                    $productUrl = preg_replace('/(&|\?)___store=[^&]*$/', '', $productUrl);
+                    $productUrl = preg_replace('/(&|\?)___store=[^&]*&/', '$1', $productUrl);
                 }
                 #$productUrl = $this->productUrlPathGenerator->getUrl($productUrl, array('_store' => $this->getStoreId()));
                 $this->writeValue('product_url', $productUrl);

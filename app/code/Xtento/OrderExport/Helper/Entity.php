@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2015-09-05T14:04:51+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-03-26T21:16:46+00:00
  * File:          app/code/Xtento/OrderExport/Helper/Entity.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Helper;
@@ -42,12 +41,23 @@ class Entity extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getPluralEntityName($entity)
     {
-        return $entity;
+        $entities = $this->exportModel->getEntities();
+        if ($entity === \Xtento\OrderExport\Model\Export::ENTITY_EERMA) {
+            return __("EE RMAs");
+        }
+        if (isset($entities[$entity])) {
+            return $entities[$entity];
+        } else {
+            return __("Undefined Entity");
+        }
     }
 
     public function getEntityName($entity)
     {
         $entities = $this->exportModel->getEntities();
+        if ($entity === \Xtento\OrderExport\Model\Export::ENTITY_EERMA) {
+            return __("EE RMA");
+        }
         if (isset($entities[$entity])) {
             return rtrim($entities[$entity], 's');
         } else {
@@ -74,6 +84,9 @@ class Entity extends \Magento\Framework\App\Helper\AbstractHelper
         }
         if ($entity == \Xtento\OrderExport\Model\Export::ENTITY_CUSTOMER) {
             return '\Magento\Customer\Model\Customer';
+        }
+        if ($entity == \Xtento\OrderExport\Model\Export::ENTITY_EERMA) {
+            return '\Magento\Rma\Model\Rma';
         }
         throw new LocalizedException(__('Could not find export entity "%1"', $entity));
     }

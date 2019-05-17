@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2017-08-15T15:30:22+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-10-04T10:24:30+00:00
  * File:          app/code/Xtento/ProductExport/Model/AbstractAutomaticExport.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model;
@@ -132,6 +131,7 @@ abstract class AbstractAutomaticExport extends \Magento\Framework\Model\Abstract
         $tablePrefix = ''; // main_table.
         $entityIdFieldName = 'entity_id';
         if ($profile->getEntity() == \Xtento\ProductExport\Model\Export::ENTITY_REVIEW) {
+            $tablePrefix = 'main_table.';
             $entityIdFieldName = 'review_id';
         }
         // Add dummy filter by ID field to have results implicitly sorted by ID field (Bug report 4/3/17 by Klaas Ruehl/Thomas Hägi)

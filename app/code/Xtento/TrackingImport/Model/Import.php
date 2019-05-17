@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-11-28T09:58:03+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-14T12:52:36+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Import.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model;
@@ -71,6 +70,11 @@ class Import extends \Magento\Framework\Model\AbstractModel
     protected $xtentoLogger;
 
     /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
+    /**
      * Import constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -81,6 +85,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param ProfileFactory $profileFactory
      * @param LogFactory $logFactory
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Xtento\TrackingImport\Logger\Logger $xtentoLogger
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
@@ -95,6 +100,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\ObjectManagerInterface $objectManager,
         ProfileFactory $profileFactory,
         LogFactory $logFactory,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Xtento\TrackingImport\Logger\Logger $xtentoLogger,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -108,6 +114,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
         $this->profileFactory = $profileFactory;
         $this->logFactory = $logFactory;
         $this->xtentoLogger = $xtentoLogger;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -171,6 +178,10 @@ class Import extends \Magento\Framework\Model\AbstractModel
      */
     public function cronImport()
     {
+        if (!$this->moduleHelper->isModuleEnabled()) {
+            return true;
+        }
+
         $this->setImportType(self::IMPORT_TYPE_CRONJOB);
         $this->beforeImport();
         $importResult = $this->runImport();
@@ -288,6 +299,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
                 }
                 $this->getLogEntry()->setResult($result);
                 $this->getLogEntry()->addResultMessage($e->getMessage());
+                $this->getLogEntry()->addDebugMessage($e->getMessage());
                 $this->afterImport();
             }
             if ($this->getImportType() == self::IMPORT_TYPE_MANUAL || $this->getImportType() == self::IMPORT_TYPE_TEST
@@ -319,6 +331,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
             } catch (\Exception $e) {
                 $this->getLogEntry()->setResult(Log::RESULT_WARNING);
                 $this->getLogEntry()->addResultMessage($e->getMessage());
+                $this->getLogEntry()->addDebugMessage($e->getMessage());
             }
         }
         if ($sourcesChecked < 1) {
@@ -357,6 +370,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
                 } catch (\Exception $e) {
                     $this->getLogEntry()->setResult(Log::RESULT_WARNING);
                     $this->getLogEntry()->addResultMessage($e->getMessage());
+                    $this->getLogEntry()->addDebugMessage($e->getMessage());
                 }
             }
         }
@@ -390,6 +404,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
         $this->_registry->unregister('trackingimport_profile');
         $this->_registry->register('trackingimport_log', $logEntry);
         $this->_registry->register('trackingimport_profile', $this->getProfile());
+        \Xtento\TrackingImport\Helper\GracefulDie::enable();
     }
 
     /**
@@ -397,6 +412,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
      */
     protected function afterImport()
     {
+        \Xtento\TrackingImport\Helper\GracefulDie::disable();
         $this->saveLog();
         $this->_registry->unregister('trackingimport_profile');
         #echo "After import: " . memory_get_usage() . " (Difference: " . round((memory_get_usage() - $memBefore) / 1024 / 1024, 2) . " MB, " . (time() - $timeBefore) . " Secs<br>";
@@ -432,7 +448,11 @@ class Import extends \Magento\Framework\Model\AbstractModel
                 (time() - $this->getBeginTime())
             )
         );
-        $this->getLogEntry()->save();
+        if ($this->getLogEntry()->getResult() == Log::RESULT_SUCCESSFUL && $this->getLogEntry()->getRecordsImported() == 0) {
+            $this->getLogEntry()->delete();
+        } else {
+            $this->getLogEntry()->save();
+        }
         $this->errorEmailNotification();
     }
 
@@ -449,7 +469,7 @@ class Import extends \Magento\Framework\Model\AbstractModel
             try {
                 /** @var \Magento\Framework\Mail\Message $message */
                 $message = $this->objectManager->create('Magento\Framework\Mail\MessageInterface');
-                $message->setFrom('store@' . $this->request->getServer('SERVER_NAME'), $this->request->getServer('SERVER_NAME'));
+                $message->setFrom($this->scopeConfig->getValue('trans_email/ident_general/email'), $this->scopeConfig->getValue('trans_email/ident_general/name'));
                 foreach (explode(",", $this->moduleHelper->getDebugEmail()) as $emailAddress) {
                     $emailAddress = trim($emailAddress);
                     $message->addTo($emailAddress, $emailAddress);

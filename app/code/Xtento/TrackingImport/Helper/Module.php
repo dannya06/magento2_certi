@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-05-07T12:24:34+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-06-25T15:06:46+00:00
  * File:          app/code/Xtento/TrackingImport/Helper/Module.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Helper;
@@ -38,7 +37,7 @@ class Module extends \Xtento\XtCore\Helper\AbstractModule
         $this->resource = $resource;
     }
 
-    protected $edition = 'EE';
+    protected $edition = 'CE';
     protected $module = 'Xtento_TrackingImport';
     protected $extId = 'MTWOXtento_OrderStatusImport';
     protected $configPath = 'trackingimport/general/';
@@ -65,6 +64,7 @@ class Module extends \Xtento\XtCore\Helper\AbstractModule
 
     public function isModuleProperlyInstalled()
     {
+        return true; // Not required, Magento 2 does the job of handling upgrades better than Magento 1
         // Check if DB table(s) have been created.
         return ($this->resource->getConnection('core_read')->showTableStatus(
                 $this->resource->getTableName('xtento_trackingimport_profile')

@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2017-12-20T10:57:06+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-03-26T21:16:46+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Shared/Items.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Export\Data\Shared;
 
+use Magento\Framework\DataObject;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
@@ -69,6 +69,11 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
     protected $categoryRepository;
 
     /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
      * Items constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -85,6 +90,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
      * @param \Magento\Eav\Model\AttributeSetRepository $attributeSetRepository
      * @param \Magento\Catalog\Model\Product\Media\Config $mediaConfig
      * @param \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -104,6 +110,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
         \Magento\Eav\Model\AttributeSetRepository $attributeSetRepository,
         \Magento\Catalog\Model\Product\Media\Config $mediaConfig,
         \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
+        \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -119,6 +126,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
         $this->attributeSetRepository = $attributeSetRepository;
         $this->mediaConfig = $mediaConfig;
         $this->categoryRepository = $categoryRepository;
+        $this->objectManager = $objectManager;
     }
 
 
@@ -134,7 +142,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             'category' => 'Shared',
             'description' => 'Export ordered/invoiced/shipped/refunded items of entity.',
             'enabled' => true,
-            'apply_to' => [\Xtento\OrderExport\Model\Export::ENTITY_ORDER, \Xtento\OrderExport\Model\Export::ENTITY_INVOICE, \Xtento\OrderExport\Model\Export::ENTITY_SHIPMENT, \Xtento\OrderExport\Model\Export::ENTITY_CREDITMEMO, \Xtento\OrderExport\Model\Export::ENTITY_QUOTE, \Xtento\OrderExport\Model\Export::ENTITY_AWRMA, \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA],
+            'apply_to' => [\Xtento\OrderExport\Model\Export::ENTITY_ORDER, \Xtento\OrderExport\Model\Export::ENTITY_INVOICE, \Xtento\OrderExport\Model\Export::ENTITY_SHIPMENT, \Xtento\OrderExport\Model\Export::ENTITY_CREDITMEMO, \Xtento\OrderExport\Model\Export::ENTITY_QUOTE, \Xtento\OrderExport\Model\Export::ENTITY_AWRMA, \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA, \Xtento\OrderExport\Model\Export::ENTITY_EERMA],
         ];
     }
 
@@ -163,7 +171,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             if ($this->getProfile() && $item->getProductType() && in_array($item->getProductType(), explode(",", $this->getProfile()->getExportFilterProductType()))) {
                 continue; // Product type should be not exported
             }
-            if ($this->getProfile() && !$item->getProductType() && $this->getProfile()->getExportFilterProductType() !== '' && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_ORDER && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_QUOTE && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_AWRMA && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA) {
+            if ($this->getProfile() && !$item->getProductType() && $this->getProfile()->getExportFilterProductType() !== '' && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_ORDER && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_QUOTE && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_AWRMA && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_EERMA && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA) {
                 // We are not exporting orders, but need to check the product type - thus, need to load the order item.
                 $orderItem = $this->orderItemFactory->create()->load($item->getOrderItemId());
                 if ($orderItem->getProductType() && in_array($orderItem->getProductType(), explode(",", $this->getProfile()->getExportFilterProductType()))) {
@@ -178,7 +186,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             $this->writeArray = & $returnArray['items'][];
             $this->origWriteArray = & $this->writeArray;
             $itemCount++;
-            if ($entityType == \Xtento\OrderExport\Model\Export::ENTITY_ORDER || $entityType == \Xtento\OrderExport\Model\Export::ENTITY_AWRMA || $entityType == \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA) {
+            if ($entityType == \Xtento\OrderExport\Model\Export::ENTITY_ORDER || $entityType == \Xtento\OrderExport\Model\Export::ENTITY_AWRMA || $entityType == \Xtento\OrderExport\Model\Export::ENTITY_EERMA || $entityType == \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA) {
                 $itemQty = $item->getQtyOrdered();
             } else {
                 $itemQty = $item->getQty();
@@ -202,6 +210,36 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     $stockLevel = $stockItem->getQty();
                 }
                 $this->writeValue('qty_in_stock', $stockLevel);
+            }
+
+            // 2.3 MSI sources
+            if (version_compare($this->utilsHelper->getMagentoVersion(), '2.3', '>=')
+                && $this->utilsHelper->isExtensionInstalled('Magento_Inventory')
+            ) {
+                if ($this->fieldLoadingRequired('msi_stocks')) {
+                    $this->writeArray['msi_stocks'] = [];
+                    $stockInfo = $this->objectManager->get('Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku')->execute($item->getSku());
+                    foreach ($stockInfo as $stockSource) {
+                        $this->writeArray = & $this->origWriteArray['msi_stocks'][];
+                        foreach ($stockSource as $key => $value) {
+                            $this->writeValue($key, $value);
+                        }
+                    }
+                    $this->writeArray = & $this->origWriteArray;
+                }
+                if ($this->fieldLoadingRequired('msi_sources')) {
+                    $this->writeArray['msi_sources'] = [];
+                    try {
+                        $stockInfo = $this->objectManager->get('Magento\InventoryCatalogAdminUi\Model\GetSourceItemsDataBySku')->execute($item->getSku());
+                        foreach ($stockInfo as $stockSource) {
+                            $this->writeArray = &$this->origWriteArray['msi_sources'][];
+                            foreach ($stockSource as $key => $value) {
+                                $this->writeValue($key, $value);
+                            }
+                        }
+                    } catch (NoSuchEntityException $e) {}
+                    $this->writeArray = & $this->origWriteArray;
+                }
             }
 
             // Magestore_Giftvoucher, export giftcards purchased
@@ -257,7 +295,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
 
             // Add fields of order item for invoice exports
             $taxItem = false;
-            if ($entityType !== \Xtento\OrderExport\Model\Export::ENTITY_ORDER && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_QUOTE && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_AWRMA && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA && ($this->fieldLoadingRequired('order_item') || $this->fieldLoadingRequired('tax_rates') || $this->fieldLoadingRequired('custom_options'))) {
+            if ($entityType !== \Xtento\OrderExport\Model\Export::ENTITY_ORDER && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_QUOTE && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_AWRMA&& $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_EERMA && $entityType !== \Xtento\OrderExport\Model\Export::ENTITY_BOOSTRMA && ($this->fieldLoadingRequired('order_item') || $this->fieldLoadingRequired('tax_rates') || $this->fieldLoadingRequired('custom_options'))) {
                 $this->writeArray['order_item'] = [];
                 $this->writeArray =& $this->writeArray['order_item'];
                 if ($item->getOrderItemId()) {
@@ -688,6 +726,12 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                                     } else {
                                         $this->writeValue('qty', 1);
                                     }
+                                    // Customization: Load product for SKU specified in "sku" field of custom option
+                                    /*try {
+                                        $product = $this->productRepository->get($value->getSku());
+                                        $tempItem = new DataObject(['product_id' => $product->getId()]);
+                                        $this->writeProductAttributes($object, $tempItem);
+                                    } catch (NoSuchEntityException $e) {}*/
                                 }
                             }
                         }
@@ -716,6 +760,12 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     if (isset($customOption['option_id'])) {
                         $this->writeValue('option_id', $customOption['option_id']);
                     }
+                    // Customization: Load product for SKU specified in "sku" field of custom option
+                    /*try {
+                        $product = $this->productRepository->get($customOption['sku']);
+                        $tempItem = new DataObject(['product_id' => $product->getId()]);
+                        $this->writeProductAttributes($object, $tempItem);
+                    } catch (NoSuchEntityException $e) {}*/
                 }
                 if (isset($customOption['option_value'])) {
                     if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
@@ -744,7 +794,7 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             }
         } else {
             try {
-                $product = $this->productRepository->getById($item->getProductId(), false, $object->getStoreId());
+                $product = $this->productRepository->getById($item->getProductId(), false, null, true);
             } catch (NoSuchEntityException $e) {
                 return;
             }
@@ -791,25 +841,6 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     }
                     $this->writeValue($attributeCode, $value);
                     $this->cache['product_attributes'][$object->getStoreId()][$item->getProductId()][$attributeCode] = $value;
-                    // Get store value
-                    if ($this->fieldLoadingRequired($attributeCode . '_store')) {
-                        if ($productAttribute instanceof \Magento\Catalog\Model\ResourceModel\Eav\Attribute) {
-                            $productAttribute->setStoreId($product->getStoreId());
-                        }
-                        $value = $product->getData($productAttribute->getAttributeCode());
-                        if (!empty($value) && $productAttribute->usesSource() && ($options = $productAttribute->getSource()->getAllOptions()) && !empty($options)) {
-                            if (sizeof($options) > 0) {
-                                foreach ($options as $option) {
-                                    if (isset($option['value']) && $option['value'] == $value) {
-                                        $value = isset($option['label']) ? (string)$option['label'] : $option['value'];
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        $this->writeValue($attributeCode . '_store', $value);
-                        $this->cache['product_attributes'][$object->getStoreId()][$item->getProductId()][$attributeCode . '_store'] = $value;
-                    }
                 }
                 if ($this->fieldLoadingRequired('category_ids')) {
                     $categoryIds = "|" . implode("|", $product->getCategoryIds()) . "|";
@@ -841,6 +872,32 @@ class Items extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     }*/
                     $this->writeValue('product_url', $productUrl);
                     $this->cache['product_attributes'][$object->getStoreId()][$item->getProductId()]['product_url'] = $productUrl;
+                }
+                if ($this->fieldLoadingRequired('_store')) {
+                    // Load store attribute values
+                    $product = $this->productRepository->getById($item->getProductId(), false, $object->getStoreId(), true);
+                    foreach ($product->getAttributes(null, true) as $productAttribute) {
+                        // Get store value
+                        $attributeCode = $productAttribute->getAttributeCode();
+                        if ($this->fieldLoadingRequired($attributeCode . '_store')) {
+                            if ($productAttribute instanceof \Magento\Catalog\Model\ResourceModel\Eav\Attribute) {
+                                $productAttribute->setStoreId($product->getStoreId());
+                            }
+                            $value = $product->getData($productAttribute->getAttributeCode());
+                            if (!empty($value) && $productAttribute->usesSource() && ($options = $productAttribute->getSource()->getAllOptions()) && !empty($options)) {
+                                if (sizeof($options) > 0) {
+                                    foreach ($options as $option) {
+                                        if (isset($option['value']) && $option['value'] == $value) {
+                                            $value = isset($option['label']) ? (string)$option['label'] : $option['value'];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            $this->writeValue($attributeCode . '_store', $value);
+                            $this->cache['product_attributes'][$object->getStoreId()][$item->getProductId()][$attributeCode . '_store'] = $value;
+                        }
+                    }
                 }
             }
         }

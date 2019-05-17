@@ -9,7 +9,7 @@
     content: '';
 }
 
-body[class^="xtento-"] header h1.page-title:before {
+body[class^="xtento"] header h1.page-title:before {
     display: inline-block;
     background: url(../images/logo-medium.png) no-repeat;
     vertical-align: top;

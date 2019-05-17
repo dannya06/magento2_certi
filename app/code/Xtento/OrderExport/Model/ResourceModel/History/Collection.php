@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-03-08T17:02:54+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-01-22T16:29:19+00:00
  * File:          app/code/Xtento/OrderExport/Model/ResourceModel/History/Collection.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\ResourceModel\History;
@@ -19,11 +18,19 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     protected $request;
 
     /**
+     * @var \Magento\Framework\Registry
+     */
+    protected $registry;
+
+    /**
+     * Collection constructor.
+     *
      * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Framework\App\RequestInterface $request
+     * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\DB\Adapter\AdapterInterface|null $connection
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb|null $resource
      */
@@ -33,10 +40,12 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\App\RequestInterface $request,
+        \Magento\Framework\Registry $registry,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
         $this->request = $request;
+        $this->registry = $registry;
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
     }
 
@@ -81,6 +90,10 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             if ($this->request->getParam('id', false)) {
                 $this->addFieldToFilter('main_table.profile_id', intval($this->request->getParam('id')));
             }
+
+            /*if ($this->registry->registry('orderexport_profile')->getEntity() == \Xtento\OrderExport\Model\Export::ENTITY_EERMA) {
+                $this->getSelect()->joinLeft(['object' => $this->getTable('magento_rma')], 'main_table.entity_id = object.entity_id', array('object.entity_id'));
+            }*/
         }
 
         /* Old module:

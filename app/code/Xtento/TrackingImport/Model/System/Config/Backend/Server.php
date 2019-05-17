@@ -1,19 +1,18 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
  * Last Modified: 2016-04-03T15:19:18+00:00
  * File:          app/code/Xtento/TrackingImport/Model/System/Config/Backend/Server.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\System\Config\Backend;
 
 class Server extends \Xtento\XtCore\Model\System\Config\Backend\Server
 {
-    protected $version = 'udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=';
+    protected $version = 'MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=';
 
     /**
      * Server constructor.

@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-04-21T11:04:47+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-09-27T14:03:57+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Log.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Controller\Adminhtml;
@@ -106,7 +105,7 @@ abstract class Log extends \Xtento\ProductExport\Controller\Adminhtml\Action
         if (empty($savedFiles)) {
             if (!$massDownload) {
                 $this->messageManager->addWarningMessage(
-                    __('There is nothing to download. No files have been saved with this export. (Log ID: %1)', $logId)
+                    __('There is nothing to download. No files have been saved with this export, or you disabled "Save local copies of exports" in the profile. (Log ID: %1)', $logId)
                 );
             }
             return false;

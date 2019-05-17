@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2017-12-14T20:39:26+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-07T18:33:18+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Shared/Customer.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Export\Data\Shared;
@@ -127,6 +126,20 @@ class Customer extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     $this->writeValue('is_subscribed', '0');
                 }
             }
+            // Extended newsletter_subscriber information
+            if ($this->fieldLoadingRequired('newsletter_subscriber')) {
+                if (!isset($subscription)) {
+                    $subscription = $this->subscriberFactory->create()->loadByEmail($customer->getEmail());
+                }
+                if ($subscription->getId()) {
+                    $returnArray['newsletter_subscriber'] = [];
+                    $this->writeArray = & $returnArray['newsletter_subscriber'];
+                    foreach ($subscription->getData() as $key => $value) {
+                        $this->writeValue($key, $value);
+                    }
+                    $this->writeArray = & $returnArray;
+                }
+            }
         } else {
             $this->writeArray = & $returnArray['customer']; // Write on customer level
             $order = $collectionItem->getOrder();
@@ -137,6 +150,20 @@ class Customer extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     $this->writeValue('is_subscribed', $subscription->isSubscribed());
                 } else {
                     $this->writeValue('is_subscribed', '0');
+                }
+            }
+            // Extended newsletter_subscriber information
+            if ($this->fieldLoadingRequired('newsletter_subscriber')) {
+                if (!isset($subscription)) {
+                    $subscription = $this->subscriberFactory->create()->loadByEmail($order->getCustomerEmail());
+                }
+                if ($subscription->getId()) {
+                    $returnArray['customer']['newsletter_subscriber'] = [];
+                    $this->writeArray = & $returnArray['customer']['newsletter_subscriber'];
+                    foreach ($subscription->getData() as $key => $value) {
+                        $this->writeValue($key, $value);
+                    }
+                    $this->writeArray = & $returnArray['customer'];
                 }
             }
             // Load customer
@@ -224,8 +251,6 @@ class Customer extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             }
         }
 
-        $this->addEECustomAttributes($customer);
-
         // Customer addresses
         $addressCollection = $customer->getAddressesCollection();
         if (!empty($addressCollection) && $this->fieldLoadingRequired('addresses')) {
@@ -278,9 +303,5 @@ class Customer extends \Xtento\OrderExport\Model\Export\Data\AbstractData
 
         // Done
         return $returnArray;
-    }
-
-    protected function addEECustomAttributes($customer)
-    {
     }
 }

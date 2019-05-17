@@ -1,17 +1,18 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-09-20T19:16:19+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-14T19:49:26+00:00
  * File:          app/code/Xtento/TrackingImport/Console/Command/ImportCommand.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Console\Command;
 
 use Magento\Framework\App\State as AppState;
+use Magento\Framework\App\AreaList as AreaList;
+use Magento\Framework\App\Area as Area;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,6 +24,11 @@ class ImportCommand extends Command
      * @var AppState
      */
     protected $appState;
+
+    /**
+     * @var AreaList
+     */
+    protected $areaList;
 
     /**
      * @var \Xtento\TrackingImport\Model\ProfileFactory
@@ -37,11 +43,14 @@ class ImportCommand extends Command
     /**
      * ImportCommand constructor.
      *
+     * @param AppState $appState
+     * @param AreaList $areaList
      * @param \Xtento\TrackingImport\Model\ProfileFactory $profileFactory
      * @param \Xtento\TrackingImport\Model\ImportFactory $importFactory
      */
     public function __construct(
         AppState $appState,
+        AreaList $areaList,
         \Xtento\TrackingImport\Model\ProfileFactory $profileFactory,
         \Xtento\TrackingImport\Model\ImportFactory $importFactory
     ) {
@@ -52,6 +61,7 @@ class ImportCommand extends Command
             // intentionally left empty
         }*/
         $this->appState = $appState;
+        $this->areaList = $areaList;
         $this->profileFactory = $profileFactory;
         $this->importFactory = $importFactory;
         parent::__construct();
@@ -75,7 +85,9 @@ class ImportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->appState->setAreaCode('adminhtml');
+            // force loading frontend translations to support {{TRANS 'blah'}} in mail templates
+            $this->appState->setAreaCode(Area::AREA_FRONTEND);
+            $this->areaList->getArea(Area::AREA_FRONTEND)->load();
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             // intentionally left empty
         }

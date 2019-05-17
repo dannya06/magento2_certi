@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-07-11T18:15:39+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-11-09T13:31:19+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Import/Entity/Order.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\Import\Entity;
@@ -129,13 +128,13 @@ class Order extends AbstractEntity
         // Identify order and return $order
         $orderIdentifier = $this->getConfig('order_identifier');
         if ($orderIdentifier === 'order_increment_id') {
-            $order = $this->orderFactory->create()->loadByIncrementId($rowIdentifier);
+            $order = $this->orderFactory->create()->loadByIncrementId(strval($rowIdentifier));
         }
         if ($orderIdentifier === 'order_entity_id') {
             $order = $this->orderFactory->create()->load($rowIdentifier);
         }
         if ($orderIdentifier === 'invoice_increment_id') {
-            $invoice = $this->invoiceFactory->create()->loadByIncrementId($rowIdentifier);
+            $invoice = $this->invoiceFactory->create()->loadByIncrementId(strval($rowIdentifier));
             if ($invoice->getId()) {
                 $order = $invoice->getOrder();
             }
@@ -143,7 +142,7 @@ class Order extends AbstractEntity
         if ($orderIdentifier === 'shipment_increment_id') {
             $shipment = $this->shipmentCollectionFactory->create()->addAttributeToFilter(
                 'increment_id',
-                $rowIdentifier
+                strval($rowIdentifier)
             )->getFirstItem();
             if ($shipment->getId()) {
                 $order = $shipment->getOrder();
@@ -152,7 +151,7 @@ class Order extends AbstractEntity
         if ($orderIdentifier === 'creditmemo_increment_id') {
             $creditmemo = $this->creditmemoFactory->create()
                 ->getCollection()
-                ->addAttributeToFilter('increment_id', $rowIdentifier)
+                ->addAttributeToFilter('increment_id', strval($rowIdentifier))
                 ->getFirstItem();
             if ($creditmemo->getId()) {
                 $order = $creditmemo->getOrder();

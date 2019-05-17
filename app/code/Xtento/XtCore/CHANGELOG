@@ -42,3 +42,17 @@ Xtento_XtCore
 ===== 2.1.0 =====
  * Switched to 2.x.0 version schema so composer upgrades XtCore to "next-significant-release" version (applies for composer upgrades)
  * Next release: 2.2.0
+
+===== 2.2.0 =====
+ * Fixed issue during install script that happened in some installations
+
+===== 2.3.0 =====
+ * Established compatibility with Magento B2B
+
+===== 2.4.0 =====
+ * Established compatibility with Magento 2.3
+
+===== 2.5.0 =====
+ + Added additional debug information in XtCore configuration section
+ * Bugfix release
+ * Removed unnecessary admin URL retrieval

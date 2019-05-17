@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2018-01-18T21:56:08+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-05-16T14:24:02+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model;
@@ -263,6 +262,10 @@ class Export extends \Magento\Framework\Model\AbstractModel
      */
     public function cronExport($filters)
     {
+        if (!$this->moduleHelper->isModuleEnabled()) {
+            return true;
+        }
+
         $this->setExportType(self::EXPORT_TYPE_CRONJOB);
         $this->beforeExport();
         $generatedFiles = $this->runExport($filters);
@@ -372,12 +375,9 @@ class Export extends \Magento\Framework\Model\AbstractModel
                     // Create one file per exported object
                     $generatedFiles = [];
                     foreach ($this->getReturnArrayWithObjects() as $returnObject) {
-                        $generatedFiles = array_merge(
-                            $generatedFiles,
-                            $this->objectManager->create(
+                        $generatedFiles += $this->objectManager->create(
                                 '\Xtento\ProductExport\Model\Output\\' . ucfirst($type)
-                            )->setProfile($this->getProfile())->convertData([$returnObject])
-                        );
+                            )->setProfile($this->getProfile())->convertData([$returnObject]);
                     }
                 } else {
                     // Create just one file for all exported objects
@@ -532,6 +532,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->_registry->unregister('productexport_profile');
         $this->_registry->register('productexport_log', $logEntry);
         $this->_registry->register('productexport_profile', $this->getProfile());
+        \Xtento\ProductExport\Helper\GracefulDie::enable();
     }
 
     /**
@@ -544,6 +545,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
                 $this->createExportHistoryEntries();
             }
         }
+        \Xtento\ProductExport\Helper\GracefulDie::disable();
         $this->saveLog();
         $this->_registry->unregister('productexport_profile');
         #echo "After export: " . memory_get_usage() . " (Difference: " . round((memory_get_usage() - $memBefore) / 1024 / 1024, 2) . " MB, " . (time() - $timeBefore) . " Secs) - Count: " . (count($exportIds)) . " -  Per entry: " . round(((memory_get_usage() - $memBefore) / 1024 / 1024) / (count($exportIds)), 2) . "<br>";
@@ -600,7 +602,11 @@ class Export extends \Magento\Framework\Model\AbstractModel
                 (time() - $this->getBeginTime())
             )
         );
-        $this->getLogEntry()->save();
+        if ($this->getLogEntry()->getResult() == Log::RESULT_SUCCESSFUL && $this->getLogEntry()->getRecordsExported() == 0) {
+            $this->getLogEntry()->delete();
+        } else {
+            $this->getLogEntry()->save();
+        }
         $this->errorEmailNotification();
         #$this->_registry->unregister('productexport_log');
     }

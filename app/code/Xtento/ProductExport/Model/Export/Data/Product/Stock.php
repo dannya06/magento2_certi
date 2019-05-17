@@ -1,15 +1,17 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-04-18T18:18:21+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-04-02T08:37:07+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/Stock.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Product;
+
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\ObjectManagerInterface;
 
 class Stock extends \Xtento\ProductExport\Model\Export\Data\AbstractData
 {
@@ -26,6 +28,11 @@ class Stock extends \Xtento\ProductExport\Model\Export\Data\AbstractData
     protected $resourceConnection;
 
     /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
      * Stock constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -34,6 +41,7 @@ class Stock extends \Xtento\ProductExport\Model\Export\Data\AbstractData
      * @param \Xtento\XtCore\Helper\Utils $utilsHelper
      * @param \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
+     * @param ObjectManagerInterface $objectManager
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -45,6 +53,7 @@ class Stock extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         \Xtento\XtCore\Helper\Utils $utilsHelper,
         \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
+        ObjectManagerInterface $objectManager,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -52,6 +61,7 @@ class Stock extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         parent::__construct($context, $registry, $dateHelper, $utilsHelper, $resource, $resourceCollection, $data);
         $this->stockRegistry = $stockRegistry;
         $this->resourceConnection = $resourceConnection;
+        $this->objectManager = $objectManager;
     }
 
     public function getConfiguration()
@@ -98,6 +108,36 @@ class Stock extends \Xtento\ProductExport\Model\Export\Data\AbstractData
             }
 
             $this->writeArray = & $returnArray; // Write on product level
+        }
+
+        // 2.3 MSI sources
+        if (version_compare($this->utilsHelper->getMagentoVersion(), '2.3', '>=')
+            && $this->utilsHelper->isExtensionInstalled('Magento_Inventory')
+        ) {
+            if ($this->fieldLoadingRequired('msi_stocks')) {
+                $returnArray['msi_stocks'] = [];
+                $stockInfo = $this->objectManager->get('Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku')->execute($product->getSku());
+                foreach ($stockInfo as $stockSource) {
+                    $this->writeArray = &$returnArray['msi_stocks'][];
+                    foreach ($stockSource as $key => $value) {
+                        $this->writeValue($key, $value);
+                    }
+                }
+                $this->writeArray = &$returnArray; // Write on product level
+            }
+            if ($this->fieldLoadingRequired('msi_sources')) {
+                $returnArray['msi_sources'] = [];
+                try {
+                    $stockInfo = $this->objectManager->get('Magento\InventoryCatalogAdminUi\Model\GetSourceItemsDataBySku')->execute($product->getSku());
+                    foreach ($stockInfo as $stockSource) {
+                        $this->writeArray = &$returnArray['msi_sources'][];
+                        foreach ($stockSource as $key => $value) {
+                            $this->writeValue($key, $value);
+                        }
+                    }
+                } catch (NoSuchEntityException $e) {}
+                $this->writeArray = &$returnArray; // Write on product level
+            }
         }
 
         // Fetch stock for different stock_ids

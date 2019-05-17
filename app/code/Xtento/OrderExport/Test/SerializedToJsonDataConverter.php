@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2017-12-19T13:20:05+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-07T21:03:46+00:00
  * File:          app/code/Xtento/OrderExport/Test/SerializedToJsonDataConverter.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Test;
@@ -69,8 +68,11 @@ class SerializedToJsonDataConverter implements \Magento\Framework\DB\DataConvert
      *
      * @return boolean
      */
-    private function isSerialized($value)
+    public function isSerialized($value)
     {
+        if (is_array($value)) {
+            return false;
+        }
         return (boolean)preg_match('/^((s|i|d|b|a|O|C):|N;)/', $value);
     }
 }

@@ -8,11 +8,11 @@
                         <argument name="dataSource" xsi:type="object">Xtento\ProductExport\Model\ResourceModel\History\Collection</argument>
                         <argument name="default_sort" xsi:type="string">history_history_id</argument>
                         <argument name="default_dir" xsi:type="string">DESC</argument>
-                        <argument name="use_ajax" xsi:type="boolean">true</argument>
+                        <!--<argument name="use_ajax" xsi:type="boolean">false</argument>-->
                         <argument name="save_parameters_in_session" xsi:type="string">1</argument>
-                        <argument name="grid_url" xsi:type="url" path="*/history/grid">
+                        <!--<argument name="grid_url" xsi:type="url" path="*/log/grid">
                             <param name="_current">1</param>
-                        </argument>
+                        </argument>--> <!-- Only enabled when use_ajax is true, but ajax cannot be used as after filtering, mass actions don't work anymore -->
                     </arguments>
                     <block class="Magento\Backend\Block\Widget\Grid\Massaction" name="adminhtml.productexport.history.grid.massaction" as="grid.massaction">
                         <arguments>
@@ -67,6 +67,7 @@
                                 <argument name="type" xsi:type="string">options</argument>
                                 <argument name="id" xsi:type="string">entity</argument>
                                 <argument name="index" xsi:type="string">entity</argument>
+                                <argument name="filter_index" xsi:type="string">main_table.entity</argument>
                                 <argument name="options" xsi:type="options" model="Xtento\ProductExport\Model\System\Config\Source\Export\Entity"/>
                             </arguments>
                         </block>
@@ -134,11 +135,10 @@
 
 <!--
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-08-25T15:35:46+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2019-02-08T15:45:12+00:00
  * File:          app/code/Xtento/ProductExport/view/adminhtml/layout/xtento_productexport_history_grid_block.xml
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 -->

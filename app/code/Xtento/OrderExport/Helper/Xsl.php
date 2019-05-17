@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2018-01-29T16:57:30+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-03-26T21:16:46+00:00
  * File:          app/code/Xtento/OrderExport/Helper/Xsl.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Helper;
@@ -36,6 +35,21 @@ class Xsl extends \Magento\Framework\App\Helper\AbstractHelper
         /** @var \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig */
         $scopeConfig = ObjectManager::getInstance()->create('\Magento\Framework\App\Config\ScopeConfigInterface');
         return $scopeConfig->getValue($path, $scopeType, $scopeCode);
+    }
+
+    /**
+     * Helper to decrypt value stored in Magento system configuration/DB encrypted
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    public static function decrypt($value)
+    {
+        // Needs to use the object manager as this is a static function (which is required for XSL)
+        /** @var \Magento\Framework\Encryption\EncryptorInterface $encryptor */
+        $encryptor = ObjectManager::getInstance()->create('\Magento\Framework\Encryption\EncryptorInterface');
+        return $encryptor->decrypt($value);
     }
 
     /**

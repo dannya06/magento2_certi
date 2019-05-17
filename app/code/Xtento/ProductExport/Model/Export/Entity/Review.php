@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2017-02-14T14:50:23+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-06-25T12:45:07+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Entity/Review.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Entity;
@@ -21,6 +20,13 @@ class Review extends AbstractEntity
     protected $reviewCollectionFactory;
 
     /**
+     * Rating option model
+     *
+     * @var \Magento\Review\Model\Rating\Option\VoteFactory
+     */
+    protected $voteFactory;
+
+    /**
      * Review constructor.
      *
      * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
@@ -31,6 +37,7 @@ class Review extends AbstractEntity
      * @param \Xtento\ProductExport\Model\Export\Data $exportData
      * @param \Magento\Store\Model\StoreFactory $storeFactory
      * @param \Magento\Review\Model\ResourceModel\Review\CollectionFactory $reviewCollectionFactory
+     * @param \Magento\Review\Model\Rating\Option\VoteFactory $voteFactory
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -44,11 +51,13 @@ class Review extends AbstractEntity
         \Xtento\ProductExport\Model\Export\Data $exportData,
         \Magento\Store\Model\StoreFactory $storeFactory,
         \Magento\Review\Model\ResourceModel\Review\CollectionFactory $reviewCollectionFactory,
+        \Magento\Review\Model\Rating\Option\VoteFactory $voteFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->reviewCollectionFactory = $reviewCollectionFactory;
+        $this->voteFactory = $voteFactory;
         parent::__construct($context, $registry, $profileFactory, $historyCollectionFactory, $exportData, $storeFactory, $resource, $resourceCollection, $data);
     }
 
@@ -67,7 +76,7 @@ class Review extends AbstractEntity
                 $this->collection->addStoreFilter($this->getProfile()->getStoreId());
             }
         }
-        $this->collection->addRateVotes();
+        $this->addRateVotes();
         return parent::runExport($forcedCollectionItem);
     }
 
@@ -81,5 +90,21 @@ class Review extends AbstractEntity
             }
         }
         return $this->collection;
+    }
+
+    public function addRateVotes()
+    {
+        $storeId = $this->getProfile()->getStoreId();
+        foreach ($this->collection as $item) {
+            $votesCollection = $this->voteFactory->create()->getResourceCollection()->setReviewFilter(
+                $item->getId()
+            )->setStoreFilter(
+                $storeId
+            )->addRatingInfo(
+                $storeId
+            )->load();
+            $item->setRatingVotes($votesCollection);
+        }
+        return $this;
     }
 }

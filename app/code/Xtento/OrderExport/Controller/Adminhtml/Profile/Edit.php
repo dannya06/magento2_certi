@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-04-20T13:46:53+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-12-13T19:26:40+00:00
  * File:          app/code/Xtento/OrderExport/Controller/Adminhtml/Profile/Edit.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Controller\Adminhtml\Profile;
@@ -78,7 +77,7 @@ class Edit extends \Xtento\OrderExport\Controller\Adminhtml\Profile
         ) {
             $this->messageManager->addWarningMessage(
                 __(
-                    'Warning: You have enabled "Export each %1 separately". However, no unique variable was added to the "filename" of your output file in the "Output Format" tab. Because of this, when the export runs, multiple files with the same name will be created, and thus just one file gets saved, which is wrong. Please make sure to add a unique variable to the "filename" in the "Output Format" tab, so multiple files with unique filenames will be generated. A valid unique variable is %%lastincrementid%% for example which is the last increment id.',
+                    'Warning: You have enabled "Export each %1 separately". However, no unique variable was added to the "filename" of your output file in the "Output Format" tab. Because of this, when the export runs, multiple files with the same name will be created, and thus just one file gets saved, which is wrong. Please make sure to add a unique variable to the "filename" in the "Output Format" tab, so multiple files with unique filenames will be generated. A valid unique variable is %lastincrementid% for example which is the last increment id.',
                     $model->getEntity()
                 )
             );

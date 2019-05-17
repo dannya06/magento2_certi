@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-04-08T14:38:31+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-01-15T15:20:10+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Import/Iterator/Order.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\Import\Iterator;
@@ -131,11 +130,12 @@ class Order extends AbstractIterator
                 } catch (\Exception $e) {
                     // Don't break execution, but log the error.
                     $logEntry->addDebugMessage(
-                        __("Exception catched for row with ID '%1' specified in '%2' from source ID '%3':\n%4"),
-                        $rowIdentifier,
-                        $path . $filename,
-                        $sourceId,
-                        $e->getMessage()
+                        __("Exception catched for row with ID '%1' specified in '%2' from source ID '%3':\n%4",
+                           $rowIdentifier,
+                           $path . $filename,
+                           $sourceId,
+                           $e->getMessage()
+                        )
                     );
                     continue;
                 }

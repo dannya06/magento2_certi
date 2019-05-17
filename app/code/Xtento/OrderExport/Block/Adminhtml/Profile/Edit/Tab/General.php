@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2016-04-18T18:22:12+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-01-22T16:29:19+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Profile/Edit/Tab/General.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Block\Adminhtml\Profile\Edit\Tab;
@@ -24,12 +23,19 @@ class General extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
     protected $exportEntity;
 
     /**
+     * @var \Xtento\OrderExport\Helper\Entity
+     */
+    protected $entityHelper;
+
+    /**
      * General constructor.
+     *
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
      * @param \Magento\Config\Model\Config\Source\Yesno $yesNo
      * @param \Xtento\OrderExport\Model\System\Config\Source\Export\Entity $exportEntity
+     * @param \Xtento\OrderExport\Helper\Entity $entityHelper
      * @param array $data
      */
     public function __construct(
@@ -38,10 +44,12 @@ class General extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
         \Magento\Framework\Data\FormFactory $formFactory,
         \Magento\Config\Model\Config\Source\Yesno $yesNo,
         \Xtento\OrderExport\Model\System\Config\Source\Export\Entity $exportEntity,
+        \Xtento\OrderExport\Helper\Entity $entityHelper,
         array $data = []
     ) {
         $this->yesNo = $yesNo;
         $this->exportEntity = $exportEntity;
+        $this->entityHelper = $entityHelper;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -68,6 +76,8 @@ class General extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
         if (!$model->getId()) {
             $model->setEnabled(1);
         }
+
+        $entityName = $this->entityHelper->getEntityName($model->getEntity());
 
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create();
@@ -173,16 +183,13 @@ class General extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
                 [
                     'label' => __(
                         'Export each %1 separately',
-                        $this->_coreRegistry->registry('orderexport_profile')->getEntity()
+                        $entityName
                     ),
                     'name' => 'export_one_file_per_object',
                     'values' => $this->yesNo->toOptionArray(),
                     'note' => __(
                         'If set to yes, each %1 exported would be saved in a separate file. This means, for every %2 you export, one file will be created, with just the one %3 in there. If set to no, one file will be created with all the exported %4s in there.',
-                        $this->_coreRegistry->registry('orderexport_profile')->getEntity(),
-                        $this->_coreRegistry->registry('orderexport_profile')->getEntity(),
-                        $this->_coreRegistry->registry('orderexport_profile')->getEntity(),
-                        $this->_coreRegistry->registry('orderexport_profile')->getEntity()
+                        $entityName, $entityName, $entityName, $entityName
                     )
                 ]
             );
@@ -196,7 +203,7 @@ class General extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
                     'values' => $this->yesNo->toOptionArray(),
                     'note' => __(
                         'If set to yes, every export will create a file. Even if 0 %1s have been exported, an empty export file will be created.',
-                        $this->_coreRegistry->registry('orderexport_profile')->getEntity()
+                        $entityName
                     )
                 ]
             );

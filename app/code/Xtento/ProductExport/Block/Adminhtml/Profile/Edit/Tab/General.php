@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-09-09T12:28:38+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-11-15T10:21:16+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Profile/Edit/Tab/General.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Block\Adminhtml\Profile\Edit\Tab;
@@ -145,6 +144,7 @@ class General extends \Xtento\ProductExport\Block\Adminhtml\Widget\Tab implement
         if ($model->getId()) {
             $entity->setDisabled(true);
         } else {
+            $model->setName(__('New Profile'));
             $model->setEntity(Export::ENTITY_PRODUCT);
         }
 
@@ -258,11 +258,23 @@ class General extends \Xtento\ProductExport\Block\Adminhtml\Widget\Tab implement
                     'export_url_remove_store',
                     'select',
                     [
-                        'label' => __('Remove store parameter from URL'),
+                        'label' => __('Remove parameters from URL'),
                         'name' => 'export_url_remove_store',
                         'values' => $this->yesNo->toOptionArray(),
                         'note' => __(
-                            'If set to yes, the "___store" parameter will be removed from exported product URLs. Only use this if you don\'t want the ___store parameter to show up in your product URLs.'
+                            'If set to yes, parameters (everything after "?") will be removed from exported product URLs. Only use this if you don\'t want the ___store parameter (and other parameters) to show up in your product URLs.'
+                        )
+                    ]
+                );
+                $fieldset->addField(
+                    'remove_pub_folder_from_urls',
+                    'select',
+                    [
+                        'label' => __('Remove pub folder from URLs'),
+                        'name' => 'remove_pub_folder_from_urls',
+                        'values' => $this->yesNo->toOptionArray(),
+                        'note' => __(
+                            'If set to yes, any references to the "/pub/" folder of Magento used will be removed from URLs. Recommended to be enabled unless you have an use case where the pub folder should appear in the URL.'
                         )
                     ]
                 );

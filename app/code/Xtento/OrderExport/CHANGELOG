@@ -85,7 +85,7 @@ Xtento_OrderExport
 
 ===== 2.1.9 =====
  * Fixed issue for "Show fields available for export" where "this ID does not exist" was shown for existing IDs if invalid UTF8 data was used in object/order/...
- * Removed xtento/export_data.xml and replaced configuration loading with Magento 2 configuration data loader from xtento/productexport_data.xml and validation via XSD.
+ * Removed xtento/export_data.xml and replaced configuration loading with Magento 2 configuration data loader from xtento/orderexport_data.xml and validation via XSD.
 
 ===== 2.2.0 =====
  * Fixed date/time variables in filename (via XSL Template) to use Magento configured timezone
@@ -185,3 +185,155 @@ Xtento_OrderExport
  + Added ability to export "Pakje Gemak" address and order data of "TIG_PostNL" extension
  + Added sample helper in Helper\Xsl that can be called from XSL to retrieve extension attributes or other custom order data
  * Fixed error email notification: "From" email is now retrieved from system configuration ("ident_general/email")
+
+===== 2.5.0 =====
+ * Fixed bug when importing profiles from Magento 1 or Magento 2.0/2.1 via the "Tools" functionality of the module
+
+===== 2.5.1 =====
+ + Added support to export token data stored by Magedelight Authorize.net CIM module
+
+===== 2.5.2 =====
+ * Fixed issue for "Tools" import functionality that could lead to an error when importing profiles
+ * Updated Xtento_XtCore to version 2.2.0
+
+===== 2.5.3 =====
+ * Fixed issue for product attributes and "store" values. For example, "product_attributes/name" product attribute exports "admin" value now, whereas "product_attributes/name_store" exports name value for store the order was placed in.
+
+===== 2.5.4 =====
+ * Added "iconv" to list of whitelisted PHP functions
+
+===== 2.5.5 =====
+ + Added additional safe-guard against unwanted cronjob exports in case the module is disabled
+ + Removed "is module properly installed" check, not required for Magento 2
+
+===== 2.5.6 =====
+ + Added compatibility with Amasty Order Attributes 3.0.0+, these custom attributes can now be exported. Older versions of Amasty Order Attributes are supported as well.
+
+===== 2.5.7 =====
+ * Deleting a profile also deletes the profiles cronjobs now, to avoid "zombie" cronjobs that don't do anything.
+
+===== 2.5.8 =====
+ * [Improved Magento 2.2 Compatibility] Added a RecurringData setup script that checks if an upgrade to M2.2 was performed, if yes, data structure in the profile tables will be changed from serialized to JSON automatically
+
+===== 2.5.9 =====
+ * Updated Xtento_XtCore to version 2.3.0
+ * Confirmed compatibility with Magento CE 2.2.5 / EE 2.2.5
+
+===== 2.6.0 =====
+ + Added ability to export ShipperHQ order information from shipperhq_order_detail table
+
+===== 2.6.1 =====
+ * Fix for ShipperHQ integration. Ability to export delivery details.
+
+===== 2.6.2 =====
+ * Fixed issue in grids: After filtering/searching, mass actions didn't work anymore
+
+===== 2.6.3 =====
+ * Fixed a bug for "Tools > Settings Import": Importing settings exported from Magento >=2.2 into Magento <=2.1 failed
+
+===== 2.6.4 =====
+ * Fixed sorting/filtering/searching within log/history grids when editing a profile
+
+===== 2.6.5 =====
+ + Added support to export order/invoice/shipment/credit memo PDFs created by XTENTO PDF Customizer
+
+===== 2.6.6 =====
+ * Established compatibility with PHP 7.2
+ + Added new export event that should work better to get all data from database for new orders: A plugin in OrderService::place dispatches xtento_orderexport_sales_order_service_place_after which can be used for event exports
+ + Added ExportService helper: Use this helper to export specified objects (orders, invoices, ...) for a specified profile programmatically
+
+===== 2.6.7 =====
+ + Added event "xtento_orderexport_before_save_files" to add custom files that can be sent to destinations
+ * Updated event "xtento_orderexport_export_after" to include access to $this via "export" parameter
+
+===== 2.6.8 =====
+* Fixed issue "Invalid method Magento\Eav\Model\Entity\Attribute::isAllowedForRuleCondition". However, if you encounter this issue, you will most likely need to apply this fix as well: https://magento.stackexchange.com/a/231602/10
+
+===== 2.6.9 =====
+ + Added ability to export invoice_entity_id, shipment_entity_id and creditmemo_entity_id fields when exporting orders
+ + Added "hash" PHP function to list of allowed PHP functions
+
+===== 2.7.0 =====
+ + Added ability to export data stored by "Ime_Paymetrictokenize" extension
+
+===== 2.7.1 =====
+ + Added ability to export Amazon/eBay order information stored by M2ePro
+
+===== 2.7.2 =====
+ * Fixed a bug for M2ePro Amazon/eBay order information data export
+
+===== 2.7.3 =====
+ + Established compatibility with Magento 2.3
+ * [2.3] Fixed email destinations
+ * [2.3] Fixed destination not saveable due to encryption error
+ * [2.3] Fixed date being wrong in from/to fields for Manual Export
+
+===== 2.7.4 =====
+ * Updated built-in editor (Ace.js) to latest version to resolve tab issue in "Output Format" editor
+
+===== 2.7.5 =====
+ + Added "sample profile" wizard: Easily load sample profiles to get your development kick-started
+ * Final fix for built-in editor (Ace.js) having issues with tabs/spaces/theme. Be sure to deploy static content after updating.
+ * Restored theme and XML highlighting in code editor
+
+===== 2.7.6 =====
+ + Added ability to export RMAs created by Magento Commerce (EE) RMA functionality
+
+===== 2.7.7 =====
+ + Added search function to built-in code editor for XSL Templates
+ * Fixed error "Column 'entity' in where clause is ambiguous" in history grid
+
+===== 2.7.8 =====
+ * Fixed compilation error
+
+===== 2.7.9 =====
+ + Added "graceful die": If export crashes for some reason, error message should be logged in execution log
+
+===== 2.8.0 =====
+ + Added ability to export stock levels of sources stored by Magento MSI (multi-source inventory) for the item ordered in orders/invoices/...
+
+===== 2.8.1 =====
+ * Fixed translation issue in mass actions dropdown
+
+===== 2.8.2 =====
+ + Added XSL helper to decrypt values stored in the DB/system configuration encrypted
+
+===== 2.8.3 =====
+ * Updated graceful die and removed sigint/sigterm as these are not really that much required and could cause issues
+
+===== 2.8.4 =====
+ * Fixed issue for filename generation when "export each object separately" is enabled
+
+===== 2.8.5 =====
+ + Added ability to export Magento Multi-Source Inventory (MSI) source code assigned to shipment when exporting a shipment
+
+===== 2.8.6 =====
+ * Fixed issue with i18n/translation file generation
+
+===== 2.8.7 =====
+ * [Magento >=2.2.8]: Fixed email destinations not sending emails
+
+===== 2.8.8 =====
+ + Added ability to export custom attributes stored by "Amasty Checkout" extension
+
+===== 2.8.9 =====
+ + Added support for Amasty Extra Fee module. Export fee data stored for quote/order
+
+===== 2.9.0 =====
+ + Added ability to export information from newsletter_subscriber table when exporting sales/orders/customers
+ * Fixed export destinations; connection information such as port couldn't be saved under certain circumstances due to DB layout issues
+ * Email destination fix for "Invalid header value detected" issue
+ * Updated Xtento_XtCore to version 2.5.0
+
+===== 2.9.1 =====
+ + Added ability to export data about assigned warehouse stored by Wyomind Advanced Inventory extension
+
+===== 2.9.2 =====
+ * Improved graceful die: Previous log messages (from current execution) are retained
+ * Fixed: "0 records" entries in execution log are not saved anymore
+
+===== 2.9.3 =====
+ + Added ability to export checkout fields stored by "Swissup Checkout" extension
+
+===== 2.9.4 =====
+ * Fixed issue where execution log entries weren't saved.

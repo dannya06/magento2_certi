@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
  * Last Modified: 2016-04-14T15:37:35+00:00
  * File:          app/code/Xtento/ProductExport/Model/System/Config/Source/Cron/Frequency.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\System\Config\Source\Cron;
@@ -18,7 +17,7 @@ use Magento\Framework\Option\ArrayInterface;
  */
 class Frequency implements ArrayInterface
 {
-    const VERSION = 'cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=';
+    const VERSION = '1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=';
 
     const CRON_CUSTOM = 'custom';
     const CRON_1MINUTE = '* * * * *';

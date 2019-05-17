@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2016-03-13T20:02:38+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2018-07-18T17:48:11+00:00
  * File:          app/code/Xtento/TrackingImport/Block/Adminhtml/Profile/Edit/Tab/Actions.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Block\Adminhtml\Profile\Edit\Tab;
@@ -51,7 +50,7 @@ class Actions extends Tab implements \Magento\Backend\Block\Widget\Tab\TabInterf
         $formMessages[] = [
             'type' => 'notice',
             'message' => __(
-                'The actions set up below will be applied to all manual and automatic imports, in the sort order set up below.'
+                'The actions set up below will be applied to all manual and automatic imports, there is no sort order.'
             )
         ];
         return $formMessages;

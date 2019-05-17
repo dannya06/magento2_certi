@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_TrackingImport (2.3.6)
- * ID:            udfo4pHNxuS90BZUogqDpS6w1nZogQNAsyJKdEZfzKQ=
- * Packaged:      2018-02-26T09:10:55+00:00
- * Last Modified: 2017-12-17T17:45:33+00:00
+ * Product:       Xtento_TrackingImport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-10T18:42:24+00:00
  * File:          app/code/Xtento/TrackingImport/Model/Import/Action/Order/Creditmemo.php
- * Copyright:     Copyright (c) 2017 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\TrackingImport\Model\Import\Action\Order;
@@ -109,6 +108,15 @@ class Creditmemo extends AbstractAction
                 } else {
                     // Refund against correct invoice
                     foreach ($invoices as $invoice) {
+                        if ($invoice->getState() != \Magento\Sales\Model\Order\Invoice::STATE_PAID) {
+                            $this->addDebugMessage(
+                                __(
+                                    "Order '%1', Invoice '%2', invoice is not paid, cannot refund against it.",
+                                    $order->getIncrementId(), $invoice->getIncrementId()
+                                )
+                            );
+                            continue;
+                        }
                         $itemsToRefund = $this->getItemsToRefund($order, 'invoice', $invoice->getAllItems(), $itemsToProcess);
                         $refundsToProcess[] = ['invoice' => $invoice, 'items' => $itemsToRefund];
                     }
@@ -176,14 +184,14 @@ class Creditmemo extends AbstractAction
                         if (!$creditmemo->isValidGrandTotal()) {
                             // No items or amount to refund against this order/invoice, skip it
                             if ($invoiceId !== false) {
-                                $this->addDebugMessage(__("Order '%1', nothing to refund against invoice ID %d, skipping.", $order->getIncrementId(), $invoiceId));
+                                $this->addDebugMessage(__("Order '%1', nothing to refund against invoice ID %2, skipping.", $order->getIncrementId(), $invoiceId));
                             } else {
                                 $this->addDebugMessage(__("Order '%1', nothing to refund, skipping.", $order->getIncrementId()));
                             }
                             continue;
                         } else {
                             if ($invoiceId !== false) {
-                                $this->addDebugMessage(__("Order '%1', found something to refund against invoice ID %d, proceeding.", $order->getIncrementId(), $invoiceId));
+                                $this->addDebugMessage(__("Order '%1', found something to refund against invoice ID %2 , proceeding.", $order->getIncrementId(), $invoiceId));
                             } else {
                                 $this->addDebugMessage(__("Order '%1', found something to refund, proceeding.", $order->getIncrementId()));
                             }
@@ -248,6 +256,8 @@ class Creditmemo extends AbstractAction
             // How should the item be identified in the import file?
             if ($this->getProfileConfiguration()->getProductIdentifier() == 'sku') {
                 $orderItemSku = strtolower(trim($item->getSku()));
+            } else if ($this->getProfileConfiguration()->getProductIdentifier() == 'order_item_id') {
+                $orderItemSku = $item->getId();
             } else {
                 if ($this->getProfileConfiguration()->getProductIdentifier() == 'entity_id') {
                     $orderItemSku = trim($item->getProductId());

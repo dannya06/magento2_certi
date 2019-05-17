@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_OrderExport (2.4.9)
- * ID:            kjiHrRgP31/ss2QGU3BYPdA4r7so/jI2cVx8SAyQFKw=
- * Packaged:      2018-02-26T09:11:23+00:00
- * Last Modified: 2017-11-21T18:47:39+00:00
+ * Product:       Xtento_OrderExport
+ * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * Last Modified: 2019-05-07T18:33:18+00:00
  * File:          app/code/Xtento/OrderExport/Model/Destination/Email.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Destination;
@@ -51,10 +50,6 @@ class Email extends AbstractClass
 
         $bodyFiles = [];
         foreach ($fileArray as $filename => $data) {
-            if ($this->getDestination()->getEmailAttachFiles()) {
-                $attachment = $mail->createAttachment($data);
-                $attachment->filename = $filename;
-            }
             $savedFiles[] = $filename;
             if (stripos($filename, '.pdf') === false) {
                 $bodyFiles[] = $data;
@@ -63,10 +58,51 @@ class Email extends AbstractClass
 
         #$mail->setSubject($this->_replaceVariables($this->getDestination()->getEmailSubject(), $firstFileContent));
         $mail->setSubject('=?utf-8?B?' . base64_encode($this->replaceVariables($this->getDestination()->getEmailSubject(), implode("\n\n", $bodyFiles))) . '?=');
-        $mail->setMessageType(\Magento\Framework\Mail\Message::TYPE_TEXT)
-            ->setBody(strip_tags($this->replaceVariables($this->getDestination()->getEmailBody(), implode("\n\n", $bodyFiles))));
-        $mail->setMessageType(\Magento\Framework\Mail\Message::TYPE_HTML)
-            ->setBody(nl2br($this->replaceVariables($this->getDestination()->getEmailBody(), implode("\n\n", $bodyFiles))));
+
+        $utilsHelper = $this->objectManager->create('\Xtento\XtCore\Helper\Utils');
+        if (version_compare($utilsHelper->getMagentoVersion(), '2.2.8', '>=')) {
+            // >= M2.3: ZF1 removed in M2.3
+            $text = new \Zend\Mime\Part(strip_tags($this->replaceVariables($this->getDestination()->getEmailBody(), implode("\n\n", $bodyFiles))));
+            $text->type = \Zend\Mime\Mime::TYPE_TEXT;
+            $text->charset = 'utf-8';
+
+            $html = new \Zend\Mime\Part(nl2br($this->replaceVariables($this->getDestination()->getEmailBody(), implode("\n\n", $bodyFiles))));
+            $html->type = \Zend\Mime\Mime::TYPE_HTML;
+            $html->charset = 'utf-8';
+
+            $content  = new \Zend\Mime\Message();
+            $content->setParts([$text, $html]);
+            $contentPart = new \Zend\Mime\Part($content->generateMessage());
+            $contentPart->type = 'multipart/alternative;' . "\r\n" . ' boundary="' . $content->getMime()->boundary() . '"';
+
+            $messageParts = [$contentPart];
+            foreach ($fileArray as $filename => $data) {
+                if ($this->getDestination()->getEmailAttachFiles()) {
+                    $attachment = new \Zend\Mime\Part($data);
+                    $attachment->filename = $filename;
+                    $attachment->disposition = \Zend\Mime\Mime::DISPOSITION_ATTACHMENT;
+                    $attachment->encoding = \Zend\Mime\Mime::ENCODING_BASE64;
+                    array_push($messageParts, $attachment);
+                }
+            }
+
+            $mimeMessage = new \Zend\Mime\Message();
+            $mimeMessage->setParts($messageParts);
+            $mail->setBody($mimeMessage);
+        } else {
+            // <=M2.2.7
+            foreach ($fileArray as $filename => $data) {
+                if ($this->getDestination()->getEmailAttachFiles()) {
+                    $attachment = $mail->createAttachment($data);
+                    $attachment->filename = $filename;
+                }
+            }
+
+            $mail->setMessageType(\Magento\Framework\Mail\Message::TYPE_TEXT)
+                ->setBody(strip_tags($this->replaceVariables($this->getDestination()->getEmailBody(), implode("\n\n", $bodyFiles))));
+            $mail->setMessageType(\Magento\Framework\Mail\Message::TYPE_HTML)
+                ->setBody(nl2br($this->replaceVariables($this->getDestination()->getEmailBody(), implode("\n\n", $bodyFiles))));
+        }
 
         try {
             $this->objectManager->create('\Magento\Framework\Mail\TransportInterfaceFactory')->create(['message' => clone $mail])->sendMessage();

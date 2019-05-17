@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2017-08-17T13:19:51+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-04-03T11:30:41+00:00
  * File:          app/code/Xtento/ProductExport/Test/SerializedToJsonDataConverter.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Test;
@@ -69,8 +68,11 @@ class SerializedToJsonDataConverter implements \Magento\Framework\DB\DataConvert
      *
      * @return boolean
      */
-    private function isSerialized($value)
+    public function isSerialized($value)
     {
+        if (is_array($value)) {
+            return false;
+        }
         return (boolean)preg_match('/^((s|i|d|b|a|O|C):|N;)/', $value);
     }
 }

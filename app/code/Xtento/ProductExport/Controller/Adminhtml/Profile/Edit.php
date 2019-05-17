@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Product:       Xtento_ProductExport (2.5.0)
- * ID:            cb9PRAWlxmJOwg/jsj5X3dDv0+dPZORkauC/n26ZNAU=
- * Packaged:      2018-02-26T09:11:39+00:00
- * Last Modified: 2016-04-20T13:46:53+00:00
+ * Product:       Xtento_ProductExport
+ * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * Last Modified: 2018-12-13T19:26:53+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Profile/Edit.php
- * Copyright:     Copyright (c) 2018 XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
+ * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Controller\Adminhtml\Profile;
@@ -75,7 +74,7 @@ class Edit extends \Xtento\ProductExport\Controller\Adminhtml\Profile
         ) {
             $this->messageManager->addWarningMessage(
                 __(
-                    'Warning: You have enabled "Export each %1 separately". However, no unique variable was added to the "filename" of your output file in the "Output Format" tab. Because of this, when the export runs, multiple files with the same name will be created, and thus just one file gets saved, which is wrong. Please make sure to add a unique variable to the "filename" in the "Output Format" tab, so multiple files with unique filenames will be generated. A valid unique variable is %%lastentityid%% for example which is the last %2 id.',
+                    'Warning: You have enabled "Export each %1 separately". However, no unique variable was added to the "filename" of your output file in the "Output Format" tab. Because of this, when the export runs, multiple files with the same name will be created, and thus just one file gets saved, which is wrong. Please make sure to add a unique variable to the "filename" in the "Output Format" tab, so multiple files with unique filenames will be generated. A valid unique variable is %lastentityid% for example which is the last %2 id.',
                     $model->getEntity(), $model->getEntity()
                 )
             );
