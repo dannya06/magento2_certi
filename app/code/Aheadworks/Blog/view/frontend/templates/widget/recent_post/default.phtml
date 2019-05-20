@@ -31,6 +31,13 @@ if (!$block->isAjax()): ?>
                                class="block-recent-posts-link">
                                 <?php echo $block->escapeHtml($post->getTitle()) ?>
                             </a>
+							<?php if($post->getFeaturedImageFile()):?>
+							<img class="blog-post-featured-image"
+			                     src = "<?php /* @noEscape */ echo $block->escapeXssInUrl($block->getFeaturedImageUrl($post->getFeaturedImageFile())) ?>"
+			                     title = "<?php echo $block->escapeHtml($post->getTitle()) ?>"
+			                     alt = "<?php echo $block->escapeHtml($post->getTitle()) ?>"
+							                />
+							<?php endif;?>
                         </li>
                     <?php endforeach; ?>
                 </div>

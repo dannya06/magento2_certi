@@ -14,6 +14,7 @@ use Aheadworks\Blog\Model\Url;
 use Magento\Framework\View\Element\Template\Context;
 use Aheadworks\Blog\Model\Serialize\SerializeInterface;
 use Aheadworks\Blog\Model\Serialize\Factory as SerializeFactory;
+use Aheadworks\Blog\Model\Post\FeaturedImageInfo;
 
 /**
  * Tag Cloud Widget
@@ -36,6 +37,11 @@ class RecentPost extends \Aheadworks\Blog\Block\Sidebar\Recent implements BlockI
      * @var SerializeInterface
      */
     private $serializer;
+	
+	/**
+     * @var FeaturedImageInfo
+     */
+    protected $imageInfo;
 
     /**
      * @param Context $context
@@ -53,10 +59,12 @@ class RecentPost extends \Aheadworks\Blog\Block\Sidebar\Recent implements BlockI
         Config $config,
         Url $url,
         SerializeFactory $serializeFactory,
+		FeaturedImageInfo $imageInfo,
         array $data = []
     ) {
         parent::__construct($context, $postRepository, $postListingFactory, $config, $url, $data);
         $this->serializer = $serializeFactory->create();
+		$this->imageInfo = $imageInfo;
     }
 
     /**
@@ -105,6 +113,17 @@ class RecentPost extends \Aheadworks\Blog\Block\Sidebar\Recent implements BlockI
             )
         );
     }
+	
+	/**
+     * Get featured image url
+     *
+     * @return string
+     */
+    public function getFeaturedImageUrl($image)
+    {
+        return $this->imageInfo->getImageUrl($image);
+    }
+	
 
     /**
      * {@inheritdoc}
