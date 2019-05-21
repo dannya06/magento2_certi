@@ -6,6 +6,7 @@
     <?php $helper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data'); ?>
     <?php if (count($productCollection)) : ?>
         <?php $categoryProducts = array(); ?>
+        <?php $listValue = ($block->getListPrefix()) ? $block->getListPrefix() . ' ' . __('Search Result') : __('Search Result'); ?>
         <?php $i = 1; ?>
         <?php foreach($productCollection as $product) : ?>
             <?php $categoryProduct = array(); ?>
@@ -16,7 +17,7 @@
                 <?php $categoryProduct['brand'] = $helper->getGtmBrand($product); ?>
             <?php endif;?>
             <?php $categoryProduct['category'] = $helper->getGtmCategoryFromCategoryIds($product->getCategoryIds()); ?>
-            <?php $categoryProduct['list'] = $block->getListPrefix() . ' ' . __('Search Result'); ?>
+            <?php $categoryProduct['list'] = $listValue; ?>
             <?php $categoryProduct['position'] = $i; ?>
             <?php $categoryProducts[] = $categoryProduct; ?>
             <?php $i++ ; ?>

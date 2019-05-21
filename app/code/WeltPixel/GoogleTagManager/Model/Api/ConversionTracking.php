@@ -205,13 +205,13 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -231,13 +231,13 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -316,7 +316,7 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
                     (
                         'type' => 'boolean',
                         'key' => 'enableConversionLinker',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (

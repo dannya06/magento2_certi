@@ -158,13 +158,13 @@ class Remarketing extends \WeltPixel\GoogleTagManager\Model\Api
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (

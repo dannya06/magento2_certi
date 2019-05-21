@@ -86,7 +86,15 @@
                     </depends>
                     <comment>Shipping charges will deduced from Grand Total</comment>
                 </field>
-                <field id="product_click_tracking" translate="label" type="select" sortOrder="68" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="exclude_free_purchase" translate="label comment" type="select" sortOrder="68" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Exclude Orders with 0 value</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Orders with value 0.00 can be excluded from purchase transactions if you set this option to Yes</comment>
+                </field>
+                <field id="product_click_tracking" translate="label" type="select" sortOrder="69" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Measure Product Clicks</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[This option allows ‘Product Click’ tracking on Category Page , Search results page and Related/Cross-sell/Up-sell product grids. <br/>
@@ -583,6 +591,14 @@ If Product Click Tracking is enabled this option rewrites Magento_Catalog::produ
                     </depends>
                     <comment><![CDATA[<b>Ex:</b> usd ]]></comment>
                 </field>
+                <field id="exclude_free_purchase" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Exclude Orders with 0 value</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Orders with value 0.00 can be excluded from conversion tracking if you set this option to Yes</comment>
+                </field>
                 <field id="api_container" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>WeltPixel\GoogleTagManager\Block\System\Config\Api\ConversionTracking</frontend_model>
                     <depends>
@@ -609,6 +625,14 @@ If Product Click Tracking is enabled this option rewrites Magento_Catalog::produ
                     <depends>
                         <field id="enable">1</field>
                     </depends>
+                </field>
+                <field id="exclude_free_purchase" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Exclude Orders with 0 value</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Orders with value 0.00 can be excluded from adwords remarketing if you set this option to Yes</comment>
                 </field>
                 <field id="api_container" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>WeltPixel\GoogleTagManager\Block\System\Config\Api\Remarketing</frontend_model>

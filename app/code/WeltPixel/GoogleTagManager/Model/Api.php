@@ -505,13 +505,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -531,13 +531,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -557,13 +557,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -583,13 +583,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -609,13 +609,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -635,13 +635,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -663,12 +663,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ],
                     [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ],
                     [
                         'type' => 'template',
@@ -687,12 +687,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ],
                     [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ],
                     [
                         'type' => 'template',
@@ -711,12 +711,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ],
                     [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ],
                     [
                         'type' => 'template',
@@ -735,12 +735,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
-                        'value' => 2
+                        'value' => "2"
                     ],
                     [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
-                        'value' => false
+                        'value' => "false"
                     ],
                     [
                         'type' => 'template',
@@ -762,12 +762,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
                         [
                             'type' => 'integer',
                             'key' => 'dataLayerVersion',
-                            'value' => 2
+                            'value' => "2"
                         ],
                         [
                             'type' => 'boolean',
                             'key' => 'setDefaultValue',
-                            'value' => false
+                            'value' => "false"
                         ],
                         [
                             'type' => 'template',
@@ -1404,13 +1404,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1422,13 +1422,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1446,7 +1446,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1458,13 +1458,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1523,13 +1523,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1541,13 +1541,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1565,7 +1565,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1577,13 +1577,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1648,13 +1648,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1666,13 +1666,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1690,7 +1690,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1702,19 +1702,19 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1779,13 +1779,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1797,13 +1797,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1821,7 +1821,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1833,13 +1833,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1898,7 +1898,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -1910,19 +1910,19 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useHashAutoLink',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
@@ -1933,23 +1933,23 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     array(
                         'type' => 'boolean',
                         'key' => 'decorateFormsAutoLink',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array(
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array(
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2029,13 +2029,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2059,13 +2059,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2130,13 +2130,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2160,13 +2160,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2231,13 +2231,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2261,13 +2261,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2332,13 +2332,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2362,13 +2362,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2433,13 +2433,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2463,13 +2463,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2534,13 +2534,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => false
+                        'value' => "false"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2564,13 +2564,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2635,13 +2635,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2690,13 +2690,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2745,13 +2745,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2800,13 +2800,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2855,13 +2855,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2910,13 +2910,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -2965,13 +2965,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -3020,13 +3020,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -3075,13 +3075,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -3130,13 +3130,13 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     (
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
-                        'value' => true
+                        'value' => "true"
                     ),
                     array
                     (
@@ -3183,6 +3183,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _getExistingVariables($accountId, $containerId)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         try {
             $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/variables');
@@ -3213,6 +3214,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _getExistingTriggers($accountId, $containerId)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         try {
             $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/triggers');
@@ -3244,6 +3246,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _getExistingTags($accountId, $containerId)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         try {
             $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/tags');
@@ -3276,6 +3279,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _createVariable($accountId, $containerId, $options)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         $postFields = json_encode($options);
 
@@ -3304,7 +3308,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
 
 
     /**
-     * Api should return emppty response in case of success
+     * Api should return empty response in case of success
      * @param $accountId
      * @param $containerId
      * @param $variableId
@@ -3314,6 +3318,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _deleteVariable($accountId, $containerId, $variableId, $name)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
 
         try {
@@ -3346,6 +3351,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _createTrigger($accountId, $containerId, $options)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         $postFields = json_encode($options);
         try {
@@ -3381,6 +3387,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _createTag($accountId, $containerId, $options)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         $postFields = json_encode($options);
         try {
@@ -3417,6 +3424,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _updateVariable($accountId, $containerId, $options, $variableId)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         $postFields = json_encode($options);
 
@@ -3453,6 +3461,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _updateTrigger($accountId, $containerId, $options, $triggerId)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         $postFields = json_encode($options);
 
@@ -3489,6 +3498,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     protected function _updateTag($accountId, $containerId, $options, $tagId)
     {
+        $this->_apiCallLimitation();
         $tokenInfo = json_decode($this->getClient()->getAccessToken());
         $postFields = json_encode($options);
 
@@ -3574,7 +3584,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
         }
 
         if (!count($listResult)) {
-            return '';
+            return [];
         }
 
         return [
@@ -3633,4 +3643,11 @@ class Api extends \Magento\Framework\Model\AbstractModel
         ];
     }
 
+    /**
+     * Adding delay between GTM Api calls
+     */
+    protected function _apiCallLimitation()
+    {
+        sleep(4);
+    }
 }

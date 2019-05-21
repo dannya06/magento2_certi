@@ -50,7 +50,6 @@ class License extends \Magento\Framework\App\Helper\AbstractHelper
     public function getMdsL()
     {
         return $this->license->getMdsL();
-        #return true;
     }
 
     /**
@@ -75,8 +74,7 @@ class License extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function isLcVd($license, $module)
     {
-        #return $this->license->isLcVd($license, $module);
-        return true;
+        return $this->license->isLcVd($license, $module);
     }
 
 

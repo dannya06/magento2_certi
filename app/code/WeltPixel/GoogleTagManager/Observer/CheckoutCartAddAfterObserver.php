@@ -1,10 +1,9 @@
 <?php
-
 namespace WeltPixel\GoogleTagManager\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 
-class CompareAddProductObserver implements ObserverInterface
+class CheckoutCartAddAfterObserver implements ObserverInterface
 {
     /**
      * @var \WeltPixel\GoogleTagManager\Helper\Data
@@ -12,21 +11,22 @@ class CompareAddProductObserver implements ObserverInterface
     protected $helper;
 
     /**
-     * @var \Magento\Customer\Model\Session
+     * @var \Magento\Checkout\Model\Session
      */
-    protected $customerSession;
+    protected $_checkoutSession;
 
 
     /**
      * @param \WeltPixel\GoogleTagManager\Helper\Data $helper
+     * @param \Magento\Checkout\Model\Session $_checkoutSession
      */
     public function __construct(\WeltPixel\GoogleTagManager\Helper\Data $helper,
-                                \Magento\Customer\Model\Session $customerSession)
+                                \Magento\Checkout\Model\Session $_checkoutSession)
     {
         $this->helper = $helper;
-        $this->customerSession = $customerSession;
+        $this->_checkoutSession = $_checkoutSession;
     }
-
+    
     /**
      * @param \Magento\Framework\Event\Observer $observer
      * @return self
@@ -37,9 +37,8 @@ class CompareAddProductObserver implements ObserverInterface
             return $this;
         }
 
-        $product = $observer->getData('product');
-
-        $this->customerSession->setAddToCompareData($this->helper->addToComparePushData($product));
+        $quoteItem = $observer->getData('quote_item');
+        $this->_checkoutSession->setLastProductPrice($quoteItem->getPrice());
 
         return $this;
     }

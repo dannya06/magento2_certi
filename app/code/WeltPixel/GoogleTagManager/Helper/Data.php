@@ -267,6 +267,30 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @return boolean
+     */
+    public function excludeFreeOrderFromPurchaseForGoogleAnalytics()
+    {
+        return $this->_gtmOptions['general']['exclude_free_purchase'];
+    }
+
+    /**
+     * @return boolean
+     */
+    public function excludeFreeOrderFromAdwordsConversionTracking()
+    {
+        return $this->_gtmOptions['adwords_conversion_tracking']['exclude_free_purchase'];
+    }
+
+    /**
+     * @return boolean
+     */
+    public function excludeFreeOrderFromAdwordsRemarketing()
+    {
+        return $this->_gtmOptions['adwords_remarketing']['exclude_free_purchase'];
+    }
+
+    /**
      * return child or parent string
      * @return string
      */
@@ -647,11 +671,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             }
         }
 
-
         if ($wishlistItem && !$customOptionFound) {
             $options = $this->configurationHelper->getOptions($wishlistItem);
             foreach ($options as $customOption) {
-                $variant[] = $customOption['label'] . ": " . $customOption['print_value'];
+                if (isset($customOption['print_value'])) {
+                    $variant[] = $customOption['label'] . ": " . $customOption['print_value'];
+                }
+
             }
         }
 
@@ -713,8 +739,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $productData = [];
         $productData['name'] = html_entity_decode($product->getName());
         $productData['id'] = $this->getGtmProductId($product);
+        if ($this->checkoutSession->getLastProductPrice()) {
+            $productData['price'] = number_format($this->checkoutSession->getLastProductPrice(), 2, '.', '');
+            $this->checkoutSession->setLastProductPrice(null);
+        } else {
+            $productData['price'] = number_format($product->getPriceInfo()->getPrice('final_price')->getValue(), 2, '.', '');
+        }
 
-        $productData['price'] = number_format($product->getPriceInfo()->getPrice('final_price')->getValue(), 2, '.', '');
         if ($this->isBrandEnabled()) {
             $productData['brand'] = $this->getGtmBrand($product);
         }
@@ -908,6 +939,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param int $qty
      * @param \Magento\Catalog\Model\Product $product
+     * @param \Magento\Quote\Model\Quote\Item $quoteItem
      * @return array
      */
     public function removeFromCartPushData($qty, $product, $quoteItem)
@@ -924,7 +956,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $productData = [];
         $productData['name'] = html_entity_decode($product->getName());
         $productData['id'] = $this->getGtmProductId($product);
-        $productData['price'] = number_format($product->getPriceInfo()->getPrice('final_price')->getValue(), 2, '.', '');
+        $productData['price'] = number_format($quoteItem->getPrice(), 2, '.', '');
         if ($this->isBrandEnabled()) {
             $productData['brand'] = $this->getGtmBrand($product);
         }

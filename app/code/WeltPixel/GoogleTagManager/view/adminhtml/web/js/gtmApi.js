@@ -1,6 +1,7 @@
 define([
     'jquery',
     'Magento_Ui/js/modal/alert',
+    'jquery/ui',
     'mage/translate'
 ], function ($, alert) {
     "use strict";
@@ -52,8 +53,33 @@ define([
                         'form_data' : optionsForm.serialize()
                     },
                     type: "POST",
-                    dataType: 'json'
+                    dataType: 'json',
+                    beforeSend: function() {
+                        setTimeout(function(){
+                            var progressHtml = '<div id="gtm-progressbar"><div class="gtm-progress-label">Loading...</div></div>';
+                            $('.loading-mask').append(progressHtml);
+                            $('.loading-mask .popup-inner').append('<span class="long-operation-label">this operation may take up to 5 minutes</span>');
+                            var progressbar = $( "#gtm-progressbar" ),
+                                progressLabel = $( ".gtm-progress-label" );
+                            progressbar.progressbar({
+                                value: false,
+                                change: function() {
+                                    progressLabel.text( progressbar.progressbar( "value" ) + "%" );
+                                }
+                            });
+                            function progress() {
+                                var val = progressbar.progressbar( "value" ) || 0;
+                                progressbar.progressbar( "value", val + 1 );
+                                if ( val < 99 ) {
+                                    setTimeout( progress, 3800 );
+                                }
+                            }
+                            progress();
+                        }, 1500);
+                    }
                 }).done(function (data) {
+                    $('#gtm-progressbar').remove();
+                    $('.long-operation-label').remove();
                     alert({content: data.join('<br/>')});
                     $('.use-default .checkbox.forced-click').each(function() {
                         $(this).trigger('click').removeClass('forced-click');

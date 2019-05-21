@@ -17,6 +17,7 @@
                 <exclude_tax_from_transaction>0</exclude_tax_from_transaction>
                 <parent_vs_child>parent</parent_vs_child>
                 <exclude_shipping_from_transaction>0</exclude_shipping_from_transaction>
+                <exclude_free_purchase>0</exclude_free_purchase>
                 <custom_dimension_customerid>1</custom_dimension_customerid>
                 <custom_dimension_customerid_indexnumber>1</custom_dimension_customerid_indexnumber>
                 <custom_dimension_customergroup>1</custom_dimension_customergroup>
@@ -47,11 +48,13 @@
                 <google_conversion_id>0000000</google_conversion_id>
                 <google_conversion_label>00000</google_conversion_label>
                 <google_conversion_currency_code>usd</google_conversion_currency_code>
+                <exclude_free_purchase>0</exclude_free_purchase>
             </adwords_conversion_tracking>
             <adwords_remarketing>
                 <enable>0</enable>
                 <conversion_code></conversion_code>
                 <conversion_label></conversion_label>
+                <exclude_free_purchase>0</exclude_free_purchase>
             </adwords_remarketing>
         </weltpixel_googletagmanager>
     </default>

@@ -112,4 +112,45 @@ class Order extends \WeltPixel\GoogleTagManager\Block\Core
 
         return $orderTotal;
     }
+
+    /**
+     * @return bool
+     */
+    public function isFreeOrderTrackingAllowedForGoogleAnalytics() {
+        $excludeFreeOrder = $this->helper->excludeFreeOrderFromPurchaseForGoogleAnalytics();
+        return $this->isFreeOrderAllowed($excludeFreeOrder);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFreeOrderAllowedForAdwordsConversionTracking() {
+        $excludeFreeOrder = $this->helper->excludeFreeOrderFromAdwordsConversionTracking();
+        return $this->isFreeOrderAllowed($excludeFreeOrder);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFreeOrderAllowedForAdwordsRemarketing() {
+        $excludeFreeOrder = $this->helper->excludeFreeOrderFromAdwordsRemarketing();
+        return $this->isFreeOrderAllowed($excludeFreeOrder);
+    }
+
+    /**
+     * @param bool $excludeFreeOrder
+     * @return bool
+     */
+    protected function isFreeOrderAllowed($excludeFreeOrder) {
+        if (!$excludeFreeOrder) return true;
+
+        $order = $this->getOrder();
+        $orderTotal = $order->getGrandtotal();
+        if ($orderTotal > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
