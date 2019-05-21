@@ -1,0 +1,28 @@
+{
+  "name": "ns8/csp",
+  "description": "NS8 Protect",
+  "keywords": ["Magento 2", "fraud", "order fraud", "payment fraud", "credit card", "ad fraud", "performance", "bots", "visitors", "analytics", "campaign", "click fraud"],
+  "type": "magento2-module",
+  "homepage":"https://www.ns8.com",
+  "version": "2.3.71",
+  "license": [
+    "OSL-3.0"
+  ],
+  "authors": [
+    {
+      "name": "Phil Vizzaccaro",
+      "email": "support@ns8.com",
+      "homepage": "https://www.ns8.com",
+      "role": "Leader"
+    }
+  ],
+  "autoload": {
+    "files": [ "registration.php" ],
+    "psr-4": {
+      "NS8\\CSP\\": ""
+    }
+  },
+  "support": {
+    "email": "support@ns8.com"
+  }
+}

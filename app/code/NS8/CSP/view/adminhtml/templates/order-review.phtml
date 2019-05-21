@@ -1,0 +1,52 @@
+<?php
+    $order = $block->getOrder();
+    $NS8Status = $order['ns8_status'];
+?>
+<div id="ns8-modal" style="display: none"></div>
+<div id="ns8-order-tab-remote-content"></div>
+<script type="text/javascript">
+    var NS8CSPTab = {
+        containerUrl: '<?php echo $block->escapeUrl($block->
+            configHelper->getAdminUrl("ns8cspadmin/container/index")) ?>',
+        adminUrlTemplate: '<?php echo $block->
+            escapeUrl($block->configHelper->getAdminUrl("ns8cspadmin/{{controller}}/{{action}}")) ?>',
+        approveUrl: '<?php echo $block->escapeUrl($block->configHelper->getAdminUrl("ns8cspadmin/ajax/approve")) ?>',
+        validateUrl: '<?php echo $block->escapeUrl($block->configHelper->getAdminUrl("ns8cspadmin/ajax/validate")) ?>',
+        websiteBaseUrl: '<?php echo $block->escapeUrl($block->configHelper->getWebsiteBaseUrl()) ?>',
+        projectId: <?php echo (int)$block->configHelper->getProjectId() ?>,
+        magentoVersion: '<?php echo $block->escapeHtml($block->configHelper->getMagentoVersion()) ?>',
+        extensionVersion: '<?php echo $block->escapeHtml($block->configHelper->getExtensionVersion()) ?>',
+        token: '<?php echo $block->escapeHtml($block->configHelper->getAccessToken()) ?>',
+        orderId: '<?php echo $block->escapeHtml($order['entity_id']) ?>',
+        incrementId: '<?php echo $block->escapeHtml($order['increment_id']) ?>',
+        orderStatus: '<?php echo $block->escapeHtml($order['status']) ?>',
+        orderState: '<?php echo $block->escapeHtml($order['state']) ?>',
+        order: <?php /* @noEscape */ echo json_encode($order->getData()) ?>,
+        store: <?php /* @noEscape */ echo json_encode($block->configHelper->getStore()) ?>
+    };
+
+    require([
+        'jquery'
+    ], function($) {
+        $.ajax({
+            url: NS8CSPTab.websiteBaseUrl + '/order-review',
+            data: {
+                projectId: NS8CSPTab.projectId,
+                accessToken: NS8CSPTab.token,
+                increment_id: NS8CSPTab.incrementId,
+                magentoVersion: NS8CSPTab.magentoVersion,
+                extensionVersion: NS8CSPTab.extensionVersion,
+                store: NS8CSPTab.store
+            },
+            type: "GET"
+        }).done(function(data) {
+            if (data) {
+                $('#ns8-order-tab-remote-content').html(data);
+            } else {
+                $('#ns8-order-tab-remote-content').html('No status on this order.');
+            }
+        }).fail(function(data){
+            $('#ns8-order-tab-remote-content').html('No status on this order.');
+        });
+    });
+</script>

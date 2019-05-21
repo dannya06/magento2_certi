@@ -1,0 +1,8 @@
+<?php
+    $path = $this->getRequest()->getParam('path');
+    $url = $block->configHelper->getWebsiteBaseUrl().$path;
+?>
+
+<!--  The IFRAME that hosts the app  -->
+<iframe id="ns8-app-iframe" style="width:100%;min-height: 600px" frameborder="0" scrolling="no" src="<?= $url ?>"></iframe>
+
