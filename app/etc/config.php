@@ -188,7 +188,7 @@ return [
         'Magento_OfflineShipping' => 1,
         'Magento_PageCache' => 1,
         'Amasty_BannersLite' => 1,
-        'Hic_Integration' => 1,
+        'Hic_Integration' => 0,
         'Magento_Persistent' => 1,
         'Magento_Reports' => 1,
         'Magento_ProductVideo' => 1,
