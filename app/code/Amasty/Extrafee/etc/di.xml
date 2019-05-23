@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
@@ -10,7 +10,6 @@
     <preference for="Amasty\Extrafee\Api\FeeRepositoryInterface" type="Amasty\Extrafee\Model\FeeRepository" />
     <preference for="Amasty\Extrafee\Api\Data\FeeSearchResultsInterface"
                 type="Magento\Framework\Api\SearchResults" />
-
 
     <preference for="Amasty\Extrafee\Api\Data\FeeInterface"
                 type="Amasty\Extrafee\Model\Fee" />
@@ -68,6 +67,11 @@
             <argument name="eventPrefix" xsi:type="string">amasty_extrafee_grid_collection</argument>
             <argument name="eventObject" xsi:type="string">amasty_extrafee_grid_collection</argument>
             <argument name="resourceModel" xsi:type="string">Amasty\Extrafee\Model\ResourceModel\Fee</argument>
+        </arguments>
+    </type>
+    <type name="Amasty\Extrafee\Model\Quote\Fee">
+        <arguments>
+            <argument name="totalsInformationManagement" xsi:type="object">Amasty\Extrafee\Model\TotalsInformationManagement\Proxy</argument>
         </arguments>
     </type>
 

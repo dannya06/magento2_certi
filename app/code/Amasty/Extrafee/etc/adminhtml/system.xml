@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
@@ -13,7 +13,7 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="amasty_extrafee" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="amasty_extrafee" translate="label" type="text" sortOrder="052406" showInDefault="1" showInWebsite="1" showInStore="1">
             <resource>Amasty_Extrafee::config</resource>
             <class>separator-top</class>
             <label>Extra Fee</label>
@@ -23,18 +23,21 @@
                 <frontend_model>Amasty\Extrafee\Block\Adminhtml\System\Config\Information</frontend_model>
             </group>
             <group id="calculation" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Calculation</label>
+                <label>Percent Fee Calculation</label>
                 <field id="discount_in_subtotal" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Include discount in subtotal</label>
                     <source_model>Amasty\Extrafee\Model\Config\Source\Excludeinclude</source_model>
+                    <comment><![CDATA[Select 'Yes' if you want to calculate the extra fee based on the prices with discount amounts (only for percent fee type)]]></comment>
                 </field>
                 <field id="tax_in_subtotal" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Include tax in subtotal</label>
                     <source_model>Amasty\Extrafee\Model\Config\Source\Excludeinclude</source_model>
+                    <comment><![CDATA[Select 'Yes' if you want to calculate the extra fee based on the prices with taxes (only for percent fee type)]]></comment>
                 </field>
                 <field id="shipping_in_subtotal" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Include shipping in subtotal</label>
                     <source_model>Amasty\Extrafee\Model\Config\Source\Excludeinclude</source_model>
+                    <comment><![CDATA[Select 'Yes' if you want to calculate the extra fee based on the prices with shipping costs (only for percent fee type)]]></comment>
                 </field>
             </group>
             <group id="tax" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">

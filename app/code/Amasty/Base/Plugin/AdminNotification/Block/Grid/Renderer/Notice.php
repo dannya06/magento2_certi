@@ -19,8 +19,16 @@ class Notice
     ) {
         $result = $proceed($row);
 
-        $amastyLogo = $row->getData('is_amasty') ? ' amasty-grid-logo' : '';
-        $result = '<div class="ambase-grid-message' . $amastyLogo .'">' . $result . '</div>';
+        $amastyLogo = '';
+        $amastyImage = '';
+        if ($row->getData('is_amasty')) {
+            if ($row->getData('image_url')) {
+                $amastyImage = ' style="background: url(' . $row->getData("image_url") . ') no-repeat;"';
+            } else {
+                $amastyLogo = ' amasty-grid-logo';
+            }
+        }
+        $result = '<div class="ambase-grid-message' . $amastyLogo . '"' . $amastyImage . '>' . $result . '</div>';
 
         return  $result;
     }

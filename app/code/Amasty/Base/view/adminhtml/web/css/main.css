@@ -1,7 +1,7 @@
 .config-nav-block.amasty-tab strong:before {
     background: url(../images/logo.svg) no-repeat;
     width: 16px;
-    height: 19px;
+    height: 16px;
     content: '';
     display: inline-block;
     margin-right: 12px;

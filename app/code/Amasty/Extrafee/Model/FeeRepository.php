@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -372,6 +372,8 @@ class FeeRepository implements FeeRepositoryInterface
         $address->setCollectShippingRates(true);
         $address->collectShippingRates();
         $address->setData('total_qty', $quote->getData('items_qty'));
+        $address->setData('base_subtotal', $quote->getData('base_subtotal'));
+
         if ($salesRule->validate($address)) {
             $valid = true;
         }

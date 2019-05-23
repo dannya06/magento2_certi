@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -38,7 +38,7 @@ class InstallSchema implements InstallSchemaInterface
             $installer->getTable('amasty_extrafee')
         )->addColumn(
             'entity_id',
-            Table::TYPE_INTEGER,
+            Table::TYPE_SMALLINT,
             null,
             ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
             'Entity ID'
@@ -100,7 +100,7 @@ class InstallSchema implements InstallSchemaInterface
             'Entity ID'
         )->addColumn(
             'fee_id',
-            Table::TYPE_INTEGER,
+            Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'primary' => true],
             'Fee Id'
@@ -156,7 +156,7 @@ class InstallSchema implements InstallSchemaInterface
             $installer->getTable('amasty_extrafee_store')
         )->addColumn(
             'fee_id',
-            Table::TYPE_INTEGER,
+            Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'primary' => true],
             'Fee ID'
@@ -193,7 +193,7 @@ class InstallSchema implements InstallSchemaInterface
             $installer->getTable('amasty_extrafee_customer_group')
         )->addColumn(
             'fee_id',
-            Table::TYPE_INTEGER,
+            Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'primary' => true],
             'Fee Id'
@@ -243,7 +243,7 @@ class InstallSchema implements InstallSchemaInterface
             'Quote ID'
         )->addColumn(
             'fee_id',
-            Table::TYPE_INTEGER,
+            Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false],
             'Fee Id'

@@ -198,7 +198,8 @@ class Feed
                         'title' => $this->convertString($item->title),
                         'description' => $this->convertString($item->description),
                         'url' => $this->convertString($item->link),
-                        'is_amasty' => 1
+                        'is_amasty' => 1,
+                        'image_url' => $this->convertString($item->image)
                     ];
                 }
             }

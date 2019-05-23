@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Conditions
  */
 
@@ -14,11 +14,10 @@ interface AddressInterface
      * Constants defined for keys of array, makes typos less likely
      */
     const PAYMENT_METHOD = 'payment_method';
-    const ADDRESS_LINE = 'shipping_address_line';
-    const SAME_AS_BILLING = 'same_as_billing';
+    const SHIPPING_ADDRESS_LINE = 'shipping_address_line';
     const CUSTOM_ATTRIBUTES = 'custom_attributes';
+    const BILLING_ADDRESS_COUNTRY = 'billing_address_country';
     const CITY = 'city';
-
     /**#@-*/
 
     /**
@@ -40,28 +39,14 @@ interface AddressInterface
      *
      * @return string[]
      */
-    public function getAddressLine();
+    public function getShippingAddressLine();
 
     /**
      * @param $addressLine
      *
      * @return $this
      */
-    public function setAddressLine($addressLine);
-
-    /**
-     * Get same as billing checkbox
-     *
-     * @return string
-     */
-    public function getSameAsBilling();
-
-    /**
-     * @param $sameAsBilling
-     *
-     * @return $this
-     */
-    public function setSameAsBilling($sameAsBilling);
+    public function setShippingAddressLine($addressLine);
 
     /**
      * Get custom attributes
@@ -90,4 +75,18 @@ interface AddressInterface
      * @return $this
      */
     public function setCity($city);
+
+    /**
+     * Get billing address country
+     *
+     * @return string
+     */
+    public function getBillingAddressCountry();
+
+    /**
+     * @param $billingAddressCountry
+     *
+     * @return $this
+     */
+    public function setBillingAddressCountry($billingAddressCountry);
 }

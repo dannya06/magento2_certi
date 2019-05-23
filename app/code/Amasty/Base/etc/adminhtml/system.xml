@@ -41,6 +41,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <backend_model>Amasty\Base\Model\Config\Backend\Menu</backend_model>
                 </field>
+                <frontend_model>Amasty\Base\Block\MenuGroup</frontend_model>
             </group>
 
             <group id="extensions" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0"

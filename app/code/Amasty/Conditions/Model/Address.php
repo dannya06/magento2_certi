@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Conditions
  */
 
@@ -42,33 +42,33 @@ class Address extends DataObject implements AddressInterface
     /**
      * {@inheritdoc}
      */
-    public function getAddressLine()
+    public function getShippingAddressLine()
     {
-        return $this->_getData(self::ADDRESS_LINE);
+        return $this->_getData(self::SHIPPING_ADDRESS_LINE);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setAddressLine($addressLine)
+    public function setShippingAddressLine($addressLine)
     {
-        return $this->setData(self::ADDRESS_LINE, $addressLine);
+        return $this->setData(self::SHIPPING_ADDRESS_LINE, $addressLine);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSameAsBilling()
+    public function getBillingAddressCountry()
     {
-        return $this->_getData(self::SAME_AS_BILLING);
+        return $this->_getData(self::BILLING_ADDRESS_COUNTRY);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setSameAsBilling($sameAsBilling)
+    public function setBillingAddressCountry($billingAddressCountry)
     {
-        return $this->setData(self::SAME_AS_BILLING, $sameAsBilling);
+        return $this->setData(self::BILLING_ADDRESS_COUNTRY, $billingAddressCountry);
     }
 
     /**

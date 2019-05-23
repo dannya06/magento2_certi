@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -58,7 +58,23 @@ class Save extends Index
         }
 
         try {
-            $options = array_key_exists('option', $data) ? $data['option'] : [];
+            $options = [];
+            if (class_exists('Magento\Framework\Serialize\Serializer\FormData')) {
+                $formDataSerializer = $this->_objectManager
+                    ->get(\Magento\Framework\Serialize\Serializer\FormData::class);
+                $unserializedOptions =
+                    $formDataSerializer->unserialize($this->getRequest()->getParam('serialized_options', '[]'));
+                $data = array_merge($data, $unserializedOptions);
+            }
+
+            if (isset($data['option'])) {
+                $options = $data['option'];
+                foreach ($options['value'] as $labels) {
+                    if (empty($labels[0])) {
+                        throw new \Magento\Framework\Validator\Exception(__('The value of Admin scope can\'t be empty.'));
+                    }
+                }
+            }
             $this->_prepareData($data);
             $fee->addData($data);
             $this->_feeRepository->save($fee, $options);
@@ -75,10 +91,9 @@ class Save extends Index
             $this->_addSessionErrorMessages($exception->getMessage());
             $returnToEdit = true;
         } catch (\Exception $exception) {
-            $this->_addSessionErrorMessages( __('Something went wrong while saving the data.'));
+            $this->_addSessionErrorMessages(__('Something went wrong while saving the data.'));
             $returnToEdit = true;
         }
-
 
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($returnToEdit) {

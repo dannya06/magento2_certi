@@ -12,35 +12,27 @@ define(
         "use strict";
         return function () {
             if (!feesService.rejectFeesLoading()) {
-                var serviceUrl, payload,
+                var serviceUrl,
+                    payload,
                     address,
-                    requiredFields = ['countryId', 'region', 'regionId', 'postcode', 'street'],
                     paymentMethod,
-                    paymentForm,
-                    city,
-                    newAddress = quote.billingAddress() ? quote.billingAddress() : quote.shippingAddress(),
-                    sameAsBilling = false;
+                    requiredFields = ['countryId', 'region', 'regionId', 'postcode'],
+                    newAddress = quote.shippingAddress() ? quote.shippingAddress() : quote.billingAddress(),
+                    city;
 
                 feesService.isLoading(true);
                 serviceUrl = resourceUrlManager.getUrlForFetchFees(quote);
                 address = _.pick(newAddress, requiredFields);
                 paymentMethod = quote.paymentMethod() ? quote.paymentMethod().method : null;
-                paymentForm = registry.get('checkout.steps.billing-step.payment.payments-list.'
-                    + paymentMethod +'-form');
-                sameAsBilling = paymentForm ? paymentForm.isAddressSameAsShipping() : false;
                 city = quote.shippingAddress() ? quote.shippingAddress().city : null;
 
                 address.extension_attributes = {
                     advanced_conditions: {
                         custom_attributes: quote.shippingAddress() ? quote.shippingAddress().custom_attributes : [],
                         payment_method: paymentMethod,
-                        same_as_billing : sameAsBilling,
                         city: city,
-                        address_line: !sameAsBilling && quote.billingAddress()
-                            ? quote.billingAddress().street
-                            : quote.shippingAddress()
-                                ? quote.shippingAddress().street
-                                : null
+                        shipping_address_line: quote.shippingAddress() ? quote.shippingAddress().street : null,
+                        billing_address_country: quote.billingAddress() ? quote.billingAddress().countryId : null
                     }
                 };
 

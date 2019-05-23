@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -168,6 +168,7 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
      */
     public function updateQuoteFees(\Magento\Quote\Model\Quote $quote)
     {
+        /** @var \Amasty\Extrafee\Model\ResourceModel\Quote\Collection $feesQuoteCollection */
         $feesQuoteCollection = $this->feeQuoteCollectionFactory->create()
             ->addFieldToFilter('option_id', ['neq' => '0'])
             ->addFieldToFilter('quote_id', $quote->getId());
@@ -178,11 +179,13 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
             'fee_id'
         );
 
+        /** @var \Amasty\Extrafee\Model\Fee[] $feesItems */
         $feesItems = $this->feeCollectionFactory->create()
             ->addFieldToFilter('entity_id', ['in' => array_unique($feesIds)])
             ->getItems();
 
-        foreach($feesQuoteCollection as $feesQuoteItem){
+        /** @var \Amasty\Extrafee\Model\Quote $feesQuoteItem */
+        foreach ($feesQuoteCollection->getItems() as $feesQuoteItem) {
             if (array_key_exists($feesQuoteItem->getFeeId(), $feesItems)) {
                 $fee = $feesItems[$feesQuoteItem->getFeeId()];
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -96,7 +96,7 @@ class Calculation extends Generic implements TabInterface
 
         $fieldset = $form->addFieldset(
             'calculation_fieldset',
-            ['legend' => __('Calculation'), 'class' => 'fieldset-wide']
+            ['legend' => __('Percent Fee Calculation'), 'class' => 'fieldset-wide']
         );
 
         $fieldset->addField(
@@ -106,6 +106,7 @@ class Calculation extends Generic implements TabInterface
                 'name' => 'discount_in_subtotal',
                 'label' => __('Include discount in subtotal'),
                 'title' => __('Include discount in subtotal'),
+                'note' => __('Select \'Yes\' if you want to calculate the extra fee based on the prices with discount amounts (only for percent fee type)'),
                 'values' => $this->excludeincludeSource->toOptionArray()
             ]
         );
@@ -117,6 +118,7 @@ class Calculation extends Generic implements TabInterface
                 'name' => 'tax_in_subtotal',
                 'label' => __('Include tax in subtotal'),
                 'title' => __('Include tax in subtotal'),
+                'note' =>__('Select \'Yes\' if you want to calculate the extra fee based on the prices with taxes (only for percent fee type)'),
                 'values' => $this->excludeincludeSource->toOptionArray()
             ]
         );
@@ -128,6 +130,7 @@ class Calculation extends Generic implements TabInterface
                 'name' => 'shipping_in_subtotal',
                 'label' => __('Include shipping in subtotal'),
                 'title' => __('Include shipping in subtotal'),
+                'note' => __('Select \'Yes\' if you want to calculate the extra fee based on the prices with shipping costs (only for percent fee type)'),
                 'values' => $this->excludeincludeSource->toOptionArray()
             ]
         );

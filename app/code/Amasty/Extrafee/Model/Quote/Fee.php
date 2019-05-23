@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -18,7 +18,8 @@ use Magento\Quote\Model\Quote;
 use Magento\Quote\Api\Data\ShippingAssignmentInterface;
 use Magento\Quote\Model\Quote\Address\Total;
 use Amasty\Extrafee\Model\ResourceModel\Quote\CollectionFactory as FeeQuoteCollectionFactory;
-use Amasty\Extrafee\Model\TotalsInformationManagement\Proxy as TotalsInformationManagement;
+use Amasty\Extrafee\Model\TotalsInformationManagement;
+use Amasty\Extrafee\Model\Tax;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Fee extends AbstractTotal
@@ -39,18 +40,20 @@ class Fee extends AbstractTotal
     protected $totalsInformationManagement;
 
     /**
-     * @param FeeQuoteCollectionFactory $feeQuoteCollectionFactory
-     * @param StoreManagerInterface $storeManager
-     * @param TotalsInformationManagement $totalsInformationManagement
+     * @var \Amasty\Extrafee\Model\Tax
      */
+    private $tax;
+
     public function __construct(
         FeeQuoteCollectionFactory $feeQuoteCollectionFactory,
         StoreManagerInterface $storeManager,
-        TotalsInformationManagement $totalsInformationManagement
-    ){
+        TotalsInformationManagement $totalsInformationManagement,
+        Tax $tax
+    ) {
         $this->feeQuoteCollectionFactory = $feeQuoteCollectionFactory;
         $this->totalsInformationManagement = $totalsInformationManagement;
         $this->storeManager = $storeManager;
+        $this->tax = $tax;
     }
 
     /**
@@ -82,21 +85,13 @@ class Fee extends AbstractTotal
         ShippingAssignmentInterface $shippingAssignment,
         Total $total
     ) {
-
-        parent::collect($quote, $shippingAssignment, $total);
-
         $total->setTotalAmount($this->getCode(), 0);
         $total->setBaseTotalAmount($this->getCode(), 0);
 
         $this->totalsInformationManagement->updateQuoteFees($quote);
-        
-        if (!count($shippingAssignment->getItems())) {
-            return $this;
-        }
 
         $this->jsonLabels = [];
         $this->checkCurrencyCode($quote);
-
 
         $feesQuoteCollection = $this->feeQuoteCollectionFactory->create()
             ->addFieldToFilter('option_id', ['neq' => '0'])
@@ -104,24 +99,21 @@ class Fee extends AbstractTotal
 
         $feeAmount = 0;
         $baseFeeAmount = 0;
-        $taxAmount = 0;
-        $baseTaxAmount = 0;
 
         foreach($feesQuoteCollection as $feeOption) {
             $feeAmount += $feeOption->getFeeAmount();
             $baseFeeAmount += $feeOption->getBaseFeeAmount();
-            $taxAmount += $feeOption->getTaxAmount();
-            $baseTaxAmount += $feeOption->getBaseTaxAmount();
             $this->jsonLabels[] = $feeOption->getLabel();
         }
 
-
         $total->setTotalAmount($this->getCode(), $feeAmount);
         $total->setBaseTotalAmount($this->getCode(), $baseFeeAmount);
-        $total->setTotalAmount('tax', $total->getTotalAmount('tax') + $taxAmount);
-        $total->setBaseTotalAmount('tax', $total->getBaseTotalAmount('tax') + $baseTaxAmount);
 
         $this->feeAmount = $feeAmount;
+
+        $address = $shippingAssignment->getShipping()->getAddress();
+
+        $this->tax->addFeeTax($address, $feeAmount, $baseFeeAmount);
 
         return $this;
     }

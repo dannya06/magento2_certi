@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
@@ -47,7 +47,6 @@
                                 <item name="amasty_extrafee" xsi:type="array">
                                     <item name="component"  xsi:type="string">Amasty_Extrafee/js/view/checkout/cart/totals/fee</item>
                                     <item name="sortOrder" xsi:type="string">50</item>
-                                    <item name="label" xsi:type="string" translate="true">Extra Fee</item>
                                 </item>
                             </item>
                         </item>

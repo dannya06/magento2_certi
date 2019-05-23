@@ -25,13 +25,13 @@ class VarDump
      */
     private static $amastyIps = [
         '213.184.226.82',
-        '87.252.238.217'
+        '87.252.238.217',
     ];
 
     /**
      * @var int
      */
-    private static $objectDepthLevel = 2;
+    private static $objectDepthLevel = 1;
 
     /**
      * @var int

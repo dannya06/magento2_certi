@@ -5,9 +5,13 @@ Back,Back
 Reset,Reset
 "Save Page","Save Page"
 Calculation,Calculation
+"Percent Fee Calculation","Percent Fee Calculation"
 "Include discount in subtotal","Include discount in subtotal"
+"Select 'Yes' if you want to calculate the extra fee based on the prices with discount amounts (only for percent fee type)","Select 'Yes' if you want to calculate the extra fee based on the prices with discount amounts (only for percent fee type)"
 "Include tax in subtotal","Include tax in subtotal"
+"Select 'Yes' if you want to calculate the extra fee based on the prices with taxes (only for percent fee type)","Select 'Yes' if you want to calculate the extra fee based on the prices with taxes (only for percent fee type)"
 "Include shipping in subtotal","Include shipping in subtotal"
+"Select 'Yes' if you want to calculate the extra fee based on the prices with shipping costs (only for percent fee type)","Select 'Yes' if you want to calculate the extra fee based on the prices with shipping costs (only for percent fee type)"
 Conditions,Conditions
 "Conditions (don't add conditions if need all products)","Conditions (don't add conditions if need all products)"
 "Stores & Customer Groups","Stores & Customer Groups"
@@ -32,6 +36,7 @@ Fees,Fees
 "Manage Extra Fees","Manage Extra Fees"
 "A total of %1 record(s) have been deleted.","A total of %1 record(s) have been deleted."
 "A total of %1 record(s) have been changed.","A total of %1 record(s) have been changed."
+"The value of Admin scope can't be empty.","The value of Admin scope can't be empty."
 "Something went wrong while saving the data.","Something went wrong while saving the data."
 No,No
 Yes,Yes

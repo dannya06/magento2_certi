@@ -23,7 +23,6 @@ class Log
     public static function execute()
     {
         if (VarDump::isAllowed()) {
-            VarDump::setObjectDepthLevel(1);
             foreach (func_get_args() as $var) {
                 self::logToFile(
                     System\LogBeautifier::getInstance()->beautify(
@@ -32,6 +31,22 @@ class Log
                 );
             }
         }
+    }
+
+    /**
+     * @param int $level
+     */
+    public static function setObjectDepthLevel($level)
+    {
+        VarDump::setObjectDepthLevel((int)$level);
+    }
+
+    /**
+     * @param int $level
+     */
+    public static function setArrayDepthLevel($level)
+    {
+        VarDump::setArrayDepthLevel((int)$level);
     }
 
     /**

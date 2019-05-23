@@ -137,7 +137,7 @@ class LogBeautifier
         }
 
         $result .= str_repeat(' ', $depth * 4) . "Properties => "
-            . $this->prepareArrayVar($object->properties, $depth + 1);
+            . $this->prepareArrayVar($object->properties, $depth + 1) . "\n";
         $result .= str_repeat(' ', ($depth - 1) * 4) . '}';
 
         return $result;

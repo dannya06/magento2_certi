@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -37,10 +37,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->changeIdColumnType($setup);
         }
 
-        if (version_compare($context->getVersion(), '1.2.2', '<')) {
+        if (version_compare($context->getVersion(), '1.1.4', '<')) {
             $this->addTaxColumns($setup);
-            $this->addBankFeeColumns($setup);
-            
         }
 
         $setup->endSetup();
@@ -132,25 +130,5 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'comment' => 'Tax'
             ]
         );
-    }
-
-    protected function addBankFeeColumns(SchemaSetupInterface $setup)
-    {
-        /*$connection = $setup->getConnection();
-        $sql = "INSERT INTO `amasty_extrafee` (`entity_id`, `enabled`, `name`, `sort_order`, `frontend_type`, `description`, `options_serialized`, `conditions_serialized`, `discount_in_subtotal`, `tax_in_subtotal`, `shipping_in_subtotal`) VALUES (1, 1, 'Unique Code Bank Transfer', 0, 'radio', NULL, NULL, '', 2, 2, 2);";
-
-        $connection->query($sql);
-
-        $sql = "INSERT INTO `amasty_extrafee_customer_group` (`fee_id`, `customer_group_id`) VALUES (1, 0),(1, 1),(1, 2),(1, 3);";
-
-        $connection->query($sql);
-
-        $sql = "INSERT INTO `amasty_extrafee_option` (`entity_id`, `fee_id`, `price`, `order`, `price_type`, `default`, `admin`, `options_serialized`) VALUES (1, 1, 333.0000, 1, 'fixed', 1, 'Unique code', '[\"Unique code\",\"\"]');";
-
-        $connection->query($sql);
-
-        $sql = "INSERT INTO `amasty_extrafee_store` (`fee_id`, `store_id`) VALUES (1, 0);";
-
-        $connection->query($sql);*/
     }
 }

@@ -42,7 +42,7 @@ a[id*="amasty_information"] {
     display: inline-block;
     position: relative;
     max-height: 26px;
-    bottom: -5px;
+    bottom: -9px;
 }
 
 tr[id*="amasty_not_instaled"] .value{
@@ -70,11 +70,23 @@ tr[id*="amasty_is_instaled"] .value{
     vertical-align: top;
 }
 
+.accordion .config td.value.with-tooltip {
+    font-size: inherit;
+}
+
 .accordion .config .value.with-tooltip div.tooltip {
-    margin: -23px -28px 0 0;
+    margin-top: 10px;
 }
 
 .accordion .config .value.with-tooltip div.tooltip .tooltip-content {
     max-width: 400px;
     width: 400px;
+}
+
+.value.with-tooltip .select {
+    float: left;
+}
+
+.accordion .form-inline .config .value {
+    padding-right: 4rem;
 }

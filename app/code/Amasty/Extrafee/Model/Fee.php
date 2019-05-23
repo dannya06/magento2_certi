@@ -1,17 +1,22 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Model;
 
-use Magento\Framework\Model\AbstractModel;
 use Amasty\Extrafee\Api\Data\FeeInterface;
-use Magento\Framework\DataObject\IdentityInterface;
 use Amasty\Extrafee\Helper\Data as ExtrafeeHelper;
+use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Magento\Framework\Registry;
 
 class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 {
@@ -37,25 +42,30 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     protected $extrafeeHelper;
 
     /**
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param ExtrafeeHelper $extrafeeHelper
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
-     * @param array $data
+     * @var Tax
      */
+    private $tax;
+
+    /**
+     * @var PriceCurrencyInterface
+     */
+    private $priceCurrency;
+
     public function __construct(
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
+        Context $context,
+        Registry $registry,
         ExtrafeeHelper $extrafeeHelper,
-        \Magento\Tax\Model\Calculation $calculation,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        Tax $tax,
+        PriceCurrencyInterface $priceCurrency,
+        AbstractResource $resource = null,
+        AbstractDb $resourceCollection = null,
         array $data = []
     ) {
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+
         $this->extrafeeHelper = $extrafeeHelper;
-        $this->taxCalculation = $calculation;
-        return parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+        $this->tax = $tax;
+        $this->priceCurrency = $priceCurrency;
     }
 
     /**
@@ -65,7 +75,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
      */
     protected function _construct()
     {
-        $this->_init('Amasty\Extrafee\Model\ResourceModel\Fee');
+        $this->_init(\Amasty\Extrafee\Model\ResourceModel\Fee::class);
     }
 
     /**
@@ -376,50 +386,33 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param \Magento\Quote\Model\Quote $quote
-     * @return float|int
-     */
-    protected function getTaxRate(\Magento\Quote\Model\Quote $quote)
-    {
-        $taxClass = $this->extrafeeHelper->getScopeValue('tax/tax_class');
-        $taxRate = 0;
-
-        if ($taxClass) {
-            $rateRequest = $this->taxCalculation->getRateRequest(
-                $quote->getShippingAddress(),
-                $quote->getBillingAddress(),
-                $quote->getCustomerTaxClassId(),
-                $quote->getStore(),
-                $quote->getCustomerId()
-            )->setProductClassId($taxClass);
-
-            $taxRate = $this->taxCalculation->getRate($rateRequest);
-        }
-
-        return $taxRate;
-    }
-
-    /**
-     * @param \Magento\Quote\Model\Quote $quote
      * @return int|float
      */
     protected function getBaseQuoteTotal(\Magento\Quote\Model\Quote $quote)
     {
-        $baseQuoteTotals = $quote->getTotals()['subtotal']->getValue();
+        $baseQuoteTotals = 0;
+        /** @var \Magento\Quote\Model\Quote\Item[] $items */
+        $items = $quote->getAllItems();
 
-        if ($this->getTaxInSubtotal()) {
-            $baseQuoteTotals += $quote->getTotals()['tax']->getValue();
+        if (empty($items)) {
+            return $baseQuoteTotals;
         }
 
-        if ($this->getShippingInSubtotal()) {
-            $baseQuoteTotals += $quote->getTotals()['shipping']->getValue();
-        }
+        foreach ($items as $item) {
+            $baseQuoteTotals += $item->getBasePrice();
+            $baseQuoteTotals *= $item->getQty();
 
-        if ($this->getDiscountInSubtotal()) {
-            $discountTotal = 0;
-            foreach ($quote->getAllItems() as $item) {
-                $discountTotal -= $item->getDiscountAmount();
+            if ($this->getTaxInSubtotal()) {
+                $baseQuoteTotals += $item->getBaseTaxAmount() - $item->getBaseDiscountTaxCompensation();
             }
-            $baseQuoteTotals += $discountTotal;
+
+            if ($this->getDiscountInSubtotal()) {
+                $baseQuoteTotals -= $item->getBaseDiscountAmount();
+            }
+        }
+
+        if ($this->getShippingInSubtotal() && !$quote->isVirtual()) {
+            $baseQuoteTotals += $quote->getShippingAddress()->getBaseShippingAmount();
         }
 
         return $baseQuoteTotals;
@@ -432,56 +425,20 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     public function fetchBaseOptions(
         \Magento\Quote\Model\Quote $quote
     ) {
-        $storeId = $quote->getStoreId();
-        $rate = $quote->getBaseToQuoteRate();
-
         $options = [];
+        $storeId = $quote->getStoreId();
+        $baseQuoteTotals = null;
+        $taxRate = $this->tax->getTaxRate($quote);
 
-        $baseQuoteTotals = $this->getBaseQuoteTotal($quote);
-
-        $taxRate = $this->getTaxRate($quote);
-
-        foreach ($this->getOptions() as $idx => $item) {
-
-            /**
-             * calculate base price
-             */
-            $basePrice = $item['price_type'] === self::PRICE_TYPE_FIXED ?
-                $this->priceToFloat($item['price']) :
-                $this->priceToFloat($item['price']) * $baseQuoteTotals / 100;
-            if ($item['price_type'] === self::PRICE_TYPE_FIXED) {
-                $price = $basePrice * $rate;
-            } else {
-                $price = $basePrice;
-            }
-
-
-            /**
-             * icube custom
-             */
-
-            if($this->getName() == 'Unique Code Bank Transfer') {
-                $unicode = mt_rand(1,500);    
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                $resource = $objectManager->create('Magento\Framework\App\ResourceConnection');
-                $connection = $resource->getConnection();
-
-                $sql = "Select * FROM amasty_extrafee_quote where quote_id = ".$quote->getId()." and option_id = ".$item['entity_id'];
-                $result = $connection->fetchRow($sql);
-
-                if ($result['fee_id'] && $result['fee_amount']>0) {
-                    $basePrice = $result['fee_amount'];
-                }else{
-                    $basePrice = $unicode;  
+        foreach ($this->getOptions() as $item) {
+            $basePrice = $this->priceToFloat($item['price']);
+            if ($item['price_type'] === self::PRICE_TYPE_PERCENT) {
+                if ($baseQuoteTotals === null) {
+                    $baseQuoteTotals = $this->getBaseQuoteTotal($quote);
                 }
-
-                $price = $basePrice * $rate;
-
+                $basePrice *= $baseQuoteTotals / 100;
             }
-
-            /**
-             * end icube custom
-             */
+            $price = $this->priceCurrency->convertAndRound($basePrice);
 
             /**
              * apply tax class from module settings
@@ -530,7 +487,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     {
         $item = $this->getOption($optionId);
 
-        return array_key_exists('options', $item)  ?
+        return array_key_exists('options', $item) ?
             $this->getOptionLabel($storeId, $item['options']) :
             '';
     }

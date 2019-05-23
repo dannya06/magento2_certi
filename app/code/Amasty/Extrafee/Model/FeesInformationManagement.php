@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -95,8 +95,12 @@ class FeesInformationManagement implements FeesInformationManagementInterface
         $cartId,
         \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
     ) {
-        $this->checkoutTotalsInformationManagement->calculate($cartId, $addressInformation);
-        $quote = $this->cartRepository->get($cartId);
+        try {
+            $this->checkoutTotalsInformationManagement->calculate($cartId, $addressInformation);
+            $quote = $this->cartRepository->get($cartId);
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            return;
+        }
 
         //getting and validating fees according to current quote
         $fees = $this->collectQuote($quote);

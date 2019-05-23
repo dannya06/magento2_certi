@@ -24,9 +24,16 @@ class ToolbarEntry
 
         foreach ($collection as $item) {
             $search = 'data-notification-id="' . $item->getId() . '"';
-            $html = str_replace($search, $search . self::AMASTY_ATTRIBUTE, $html);
+            if ($item->getData('image_url')) {
+                $html = str_replace(
+                    $search,
+                    $search . ' style="background: url(' . $item->getData('image_url') . ') no-repeat;"',
+                    $html
+                );
+            } else {
+                $html = str_replace($search, $search . self::AMASTY_ATTRIBUTE, $html);
+            }
         }
-
 
         return $html;
     }
