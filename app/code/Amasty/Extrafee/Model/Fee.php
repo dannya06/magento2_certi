@@ -428,6 +428,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
         $options = [];
         $storeId = $quote->getStoreId();
         $baseQuoteTotals = null;
+        $rate = $quote->getBaseToQuoteRate();
         $taxRate = $this->tax->getTaxRate($quote);
 
         foreach ($this->getOptions() as $item) {
