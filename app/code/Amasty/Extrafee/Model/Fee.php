@@ -440,6 +440,28 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
             }
             $price = $this->priceCurrency->convertAndRound($basePrice);
 
+             /**
+             * icube custom
+             */
+            // $logger->info($this->getName());
+            if($this->getName() == 'Unique Code Bank Transfer') {
+                $unicode = mt_rand(1,500);    
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $resource = $objectManager->create('Magento\Framework\App\ResourceConnection');
+                $connection = $resource->getConnection();
+                $sql = "Select * FROM amasty_extrafee_quote where quote_id = ".$quote->getId()." and option_id = ".$item['entity_id'];
+                $result = $connection->fetchRow($sql);
+                if ($result['fee_id'] && $result['fee_amount']>0) {
+                    $basePrice = $result['fee_amount'];
+                }else{
+                    $basePrice = $unicode;  
+                }
+                $price = $basePrice * $rate;
+            }
+            /**
+             * end icube custom
+             */
+            
             /**
              * apply tax class from module settings
              */
