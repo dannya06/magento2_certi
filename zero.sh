@@ -26,7 +26,7 @@ printf "=====================================\n"
 
 php $site_dir$releases/pre_code/bin/magento setup:db:status
 status=$?
-if [ $status -eq 1 ]; then 
+if [ $status -ne 0 ]; then 
 	php $site_dir$releases/pre_code/bin/magento setup:upgrade
 else
 	printf "No need setup upgrade\n"
@@ -77,7 +77,7 @@ sudo service varnish restart
 
 php $site_dir$current/bin/magento setup:db:status
 status=$?
-if [ $status -eq 1 ]; then 
+if [ $status -ne 0 ]; then 
 	php $site_dir$current/bin/magento maintenance:enable
 	php $site_dir$current/bin/magento setup:upgrade --keep-generated
 	sudo service varnish restart
