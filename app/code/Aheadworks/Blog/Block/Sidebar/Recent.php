@@ -86,6 +86,24 @@ class Recent extends \Magento\Framework\View\Element\Template implements Identit
     }
 
     /**
+     * Retrieve short content
+     *
+     * @param PostInterface $post
+     * @return string
+     */
+    public function getShortContent(PostInterface $post)
+    {
+        $content = $post->getShortContent();
+		
+		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		$templateFilterProvider = $objectManager->create('Aheadworks\Blog\Model\Template\FilterProvider');
+		
+        return $templateFilterProvider->getFilter()
+            ->setStoreId($this->_storeManager->getStore()->getId())
+            ->filter($content);
+    }
+	
+    /**
      * Retrieve post url
      *
      * @param PostInterface $post
