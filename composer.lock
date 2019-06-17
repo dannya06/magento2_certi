@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e576d3fa75aca571a1b352acb89846c9",
+    "content-hash": "ce37daae18313ed5fca50cc6564a0fd6",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -1772,6 +1772,85 @@
                 "rapidflow"
             ],
             "time": "2019-04-05T07:44:53+00:00"
+        },
+        {
+            "name": "icubeus/magento2-shippingbase",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-shippingbase.git",
+                "reference": "64e9ab2ce7d7440576d16196ef87fff31c09764b"
+            },
+            "replace": {
+                "icubeus/module-shippingbase": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-shippingbase/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\ShippingBase\\": "src/module-shippingbase"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Shipping base",
+            "homepage": "https://github.com/icubeus/magento2-shippingbase",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2019-05-27T08:23:13+00:00"
+        },
+        {
+            "name": "icubeus/magento2-shippingshipper",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-shippingshipper.git",
+                "reference": "d86945c10ea160c7776b5e1a802bf3483c6e3c40"
+            },
+            "require": {
+                "icubeus/magento2-shippingbase": "dev-master"
+            },
+            "replace": {
+                "icubeus/module-shippingshipper": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-shippingshipper/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\ShipperId\\": "src/module-shippingshipper"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Shipping Shipper ID Live for Indonesia CLient",
+            "homepage": "https://github.com/icubeus/magento2-shippingshipper",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2019-06-14T09:06:06+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -17674,6 +17753,8 @@
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-indonesianlanguage": 20,
         "icubeus/magento2-osc": 20,
+        "icubeus/magento2-shippingbase": 20,
+        "icubeus/magento2-shippingshipper": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,
