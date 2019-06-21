@@ -1596,7 +1596,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-confirmpayment.git",
-                "reference": "19f5b65f9b52742bb8f865a7d13bdf90c2412984"
+                "reference": "479a98ebbbbd4a8a65a93314f6bc83f7da47949c"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1617,7 +1617,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2018-07-17T05:12:36+00:00"
+            "time": "2019-06-20T05:11:00+00:00"
         },
         {
             "name": "icubeus/magento2-gosend",
