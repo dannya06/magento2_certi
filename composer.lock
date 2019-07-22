@@ -1621,11 +1621,11 @@
         },
         {
             "name": "icubeus/magento2-gosend",
-            "version": "2.0.3",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "bd8b17df7647f8191e245b55fae435ab25080136"
+                "reference": "fcbfc907dac984d4a0c84f5a90f00dbe2589a0ca"
             },
             "replace": {
                 "icubeus/module-gosend": "self.version"
@@ -1657,7 +1657,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2019-04-30T07:26:37+00:00"
+            "time": "2019-07-22T06:50:26+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -1691,7 +1691,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-                "reference": "a79ab9e696a55bec0df9efce8d435cb732a3f5fc"
+                "reference": "0dcb49e9a0a7757beeb1dbea378ea354121a570b"
             },
             "replace": {
                 "icubeus/module-osc": "self.version",
@@ -1727,7 +1727,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-04-22T06:45:27+00:00"
+            "time": "2019-07-22T07:02:38+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
