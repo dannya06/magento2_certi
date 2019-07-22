@@ -37,6 +37,7 @@ return [
         'WeltPixel_Command' => 1,
         'Icube_DecimalUpdate' => 1,
         'Magento_Security' => 1,
+        'Icube_GuestCheckout' => 0,
         'Magento_Multishipping' => 1,
         'Icube_Paymentgrouping' => 1,
         'Icube_Paypal' => 1,
