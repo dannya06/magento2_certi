@@ -26,7 +26,10 @@
         "icubeus/magento2-rapidflow": "7.1.0",
         "icubeus/magento2-swiftomschannel": "^2.0",
         "icubeus/magento2-shippingbase": "dev-master",
-        "icubeus/magento2-shippingshipper": "dev-master"
+        "icubeus/magento2-shippingshipper": "dev-master",
+        "icubeus/magento2-smsgateaway": "dev-master",
+        "icubeus/magento2-notification": "dev-master",
+        "icubeus/magento2-smstada": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
@@ -121,6 +124,18 @@
         "icubeus-shippingshipper": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-shippingshipper.git"
+        },
+        "icubeus-smsgateaway": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-smsgateaway.git"
+        },
+        "icubeus-notification": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-notification.git"
+        },
+        "icubeus-smstada": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-smstada.git"
         }
     },
     "extra": {

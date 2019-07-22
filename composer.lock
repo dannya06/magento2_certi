@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce37daae18313ed5fca50cc6564a0fd6",
+    "content-hash": "c164f5d24b52fc65f08887f7db519fc4",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -1686,6 +1686,53 @@
             "time": "2017-09-26T02:09:30+00:00"
         },
         {
+            "name": "icubeus/magento2-notification",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-notification.git",
+                "reference": "0e5caf1c7357e4c77a9c1b4ade5e7463ee3e824a"
+            },
+            "require": {
+                "icubeus/magento2-smsgateaway": "dev-master"
+            },
+            "replace": {
+                "icubeus/module-event": "self.version",
+                "icubeus/module-notification": "self.version",
+                "icubeus/module-queue": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-event/registration.php",
+                    "src/module-notification/registration.php",
+                    "src/module-queue/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\EventNotification\\": "src/module-event",
+                    "Icube\\InboxNotification\\": "src/module-notification",
+                    "Icube\\QueueNotification\\": "src/module-queue"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Custom notification",
+            "homepage": "https://github.com/icubeus/magento2-notification",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2019-07-12T06:38:15+00:00"
+        },
+        {
             "name": "icubeus/magento2-osc",
             "version": "dev-master",
             "source": {
@@ -1851,6 +1898,88 @@
                 "magento2"
             ],
             "time": "2019-06-14T09:06:06+00:00"
+        },
+        {
+            "name": "icubeus/magento2-smsgateaway",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-smsgateaway.git",
+                "reference": "b64bd2278b172c0fdbdee472c972b112ba4535d8"
+            },
+            "replace": {
+                "icubeus/module-twilio": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-twilio/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\Twilio\\": "src/module-twilio"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "SMS Gateaway twilio",
+            "homepage": "https://github.com/icubeus/magento2-smsgateaway",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2019-07-11T07:28:31+00:00"
+        },
+        {
+            "name": "icubeus/magento2-smstada",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-smstada.git",
+                "reference": "c934fa1a5db72e8c1adb9f18a46a780f92b5bc6e"
+            },
+            "require": {
+                "icubeus/magento2-smsgateaway": "dev-master"
+            },
+            "replace": {
+                "icubeus/module-smsotp": "self.version",
+                "icubeus/module-tada": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-smsotp/registration.php",
+                    "src/module-tada/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\SmsOtp\\": "src/module-smsotp",
+                    "Icube\\Tada\\": "src/module-tada"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "SMS OTP and Tada memberships",
+            "homepage": "https://github.com/icubeus/magento2-smstada",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2019-07-17T04:31:33+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -17755,6 +17884,9 @@
         "icubeus/magento2-osc": 20,
         "icubeus/magento2-shippingbase": 20,
         "icubeus/magento2-shippingshipper": 20,
+        "icubeus/magento2-smsgateaway": 20,
+        "icubeus/magento2-notification": 20,
+        "icubeus/magento2-smstada": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,
