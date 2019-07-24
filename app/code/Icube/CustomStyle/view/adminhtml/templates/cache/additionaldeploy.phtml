@@ -1,0 +1,16 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+?>
+<br/>
+<form id="content-deploy" action="<?php /* @escapeNotVerified */ echo $block->getDeployUrl() ?>" method="POST" >
+    <input type="hidden" value="<?php echo $block->getFormKey(); ?>" name="form_key" id="form_key" />
+    
+    <button id="content-deploy-button" type="submit">
+        <?php /* @escapeNotVerified */ echo __('Regenerated static files') ?>
+    </button>
+</form>
