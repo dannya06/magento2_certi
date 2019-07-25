@@ -186,13 +186,8 @@ The steps to everytime we made a changes in Weltpixel
 
 
 
-Cronjob clear varnish and clear cloudfront
+Cronjob clear varnish and redeploy static file
 =============================================================
-
-    * * * * * sh /home/mage2user/site/current/clearvarnish.sh $1 $2 >> /home/mage2user/site/current/var/logclearvarnish.log
-
-    * * * * * sh /home/mage2user/site/current/clearcloudfront.sh $1 $2 >> /home/mage2user/site/current/var/clearcloudfront.log
-
 $1 = server increment current
 $2 = next srver increment that need to execute
 
@@ -200,7 +195,8 @@ example
 
     * * * * * sh /home/mage2user/site/current/clearvarnish.sh 1 2 >> /home/mage2user/site/current/var/logclearvarnish.log
 
-    * * * * * sh /home/mage2user/site/current/clearcloudfront.sh 1 2 >> /home/mage2user/site/current/var/clearcloudfront.log
+    * * * * * sh /home/mage2user/site/current/redeploy.sh $1 $2 >> /home/mage2user/site/current/var/redeploy.log
+
 
 
 
