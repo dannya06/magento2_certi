@@ -2050,10 +2050,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "3fb53c24e3b9ebd709198fd57e97110fd8c81e60"
-            },
-            "require": {
-                "php": "~5.6.0|7.0.2|~7.0.6|~7.1.11"
+                "reference": "1fc3ef273c171182af27b6bbc66dbf2153d03e4e"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2073,7 +2070,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2019-06-13T05:36:20+00:00"
+            "time": "2019-08-20T02:39:35+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
