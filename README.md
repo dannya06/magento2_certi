@@ -16,7 +16,7 @@ Instalation:
     php bin/magento setup:install --cleanup-database --base-url=http://local.testingnow.me/ --base-url-secure=https://local.testingnow.me/ \
     --db-host=127.0.0.1 --db-name=m2webapp_db --db-user=root --db-password=password123 \
     --admin-firstname=Swift --admin-lastname=Install --admin-email=sysadmin@icube.us \
-    --admin-user=mage2user --admin-password=password123--backend-frontname=backoffice \
+    --admin-user=mage2user --admin-password=password123 --backend-frontname=backoffice \
     --language=en_US --currency=USD --timezone=Asia/Jakarta --use-rewrites=1 --use-secure-admin=1
 
     git checkout master_2.3.1
