@@ -1691,7 +1691,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "37c6f50d980f683c3faab14d23b002517153fc80"
+                "reference": "153192eb25bfeac0356bb2d78dbad87f3b98afb8"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1730,7 +1730,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-07-25T11:07:54+00:00"
+            "time": "2019-08-28T08:49:09+00:00"
         },
         {
             "name": "icubeus/magento2-osc",
@@ -1943,7 +1943,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "c934fa1a5db72e8c1adb9f18a46a780f92b5bc6e"
+                "reference": "aedf89baec3e2bb382550b7c349e2f061b914aeb"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1979,7 +1979,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-07-17T04:31:33+00:00"
+            "time": "2019-08-19T04:40:44+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
