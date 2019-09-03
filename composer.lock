@@ -1691,7 +1691,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "153192eb25bfeac0356bb2d78dbad87f3b98afb8"
+                "reference": "c30f5556f917f1e6bae3f591ecac9a783106b0cd"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1730,7 +1730,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-08-28T08:49:09+00:00"
+            "time": "2019-09-03T05:32:35+00:00"
         },
         {
             "name": "icubeus/magento2-osc",
