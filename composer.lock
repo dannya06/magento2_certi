@@ -1691,7 +1691,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "c30f5556f917f1e6bae3f591ecac9a783106b0cd"
+                "reference": "ad8a1ec276ac8425f4e297c222ed734b66adcd95"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1730,7 +1730,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-09-03T05:32:35+00:00"
+            "time": "2019-09-24T14:20:40+00:00"
         },
         {
             "name": "icubeus/magento2-osc",
@@ -2050,7 +2050,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "1fc3ef273c171182af27b6bbc66dbf2153d03e4e"
+                "reference": "ba4c7ceefe16f92689722099a84132f6b5311d1e"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2070,7 +2070,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2019-08-20T02:39:35+00:00"
+            "time": "2019-09-25T10:03:23+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
