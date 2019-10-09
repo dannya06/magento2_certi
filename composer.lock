@@ -1738,7 +1738,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-osc.git",
-                "reference": "7ba0a44419b087df7c46e4d98064ad5436c06810"
+                "reference": "d43233c072f2fface9b9d051d3a39ccb902eacd8"
             },
             "replace": {
                 "icubeus/module-osc": "self.version",
@@ -1774,7 +1774,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-07-25T05:19:11+00:00"
+            "time": "2019-10-02T06:53:48+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
@@ -2074,19 +2074,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "2.0.3",
+            "version": "2.0.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "8fbdc861397b9d0b8b431c5ae4b646899672e6ec"
-            },
-            "require": {
-                "magento/framework": ">=100.1.0",
-                "magento/magento-composer-installer": "*",
-                "magento/module-backend": ">=100.1.0",
-                "magento/module-catalog": ">=100.1.0",
-                "magento/module-catalog-search": ">=100.1.0",
-                "magento/module-store": ">=100.1.0"
+                "reference": "48ee84fd37bcbe6054a883a28d5f971a8decdc03"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -2135,7 +2127,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2019-07-10T10:27:32+00:00"
+            "time": "2019-10-09T07:35:50+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
