@@ -13,7 +13,10 @@ printf "=====================================\n"
 printf "Deployment in pre code folder\n"
 printf "=====================================\n"
 
-rm -rf $site_dir$releases/pre_code/var/cache $site_dir$releases/pre_code/generated/* s$site_dir$releases/pre_code/var/view_preprocessed/* $site_dir$releases/pre_code/pub/static/*
+rm -rf $site_dir$releases/pre_code/var/cache $site_dir$releases/pre_code/generated s$site_dir$releases/pre_code/var/view_preprocessed/* $site_dir$releases/pre_code/pub/static
+mkdir $site_dir$releases/pre_code/generated && mkdir $site_dir$releases/pre_code/pub/static
+chmod -R 777 $site_dir$releases/pre_code/generated
+chmod -R 777 $site_dir$releases/pre_code/pub/static
 cd $site_dir$releases/pre_code && composer install
 php $site_dir$releases/pre_code/bin/magento setup:di:compile
 php $site_dir$releases/pre_code/bin/magento cache:flush
@@ -40,34 +43,22 @@ printf "=====================================\n"
 
 cd $site_dir$current && git fetch origin
 
-if [ "$1" = "development" ]
-then
-	printf "=====================================\n"
-	printf "get latest code from develop branch\n"
-	printf "=====================================\n"
-	cd $site_dir$current && git checkout -b $release_version origin/develop
-elif [ "$1" = "production" ]
-then
-	printf "=====================================\n"
-	printf "get latest code from master branch\n"
-	printf "=====================================\n"
-	cd $site_dir$current && git checkout -b $release_version origin/master
-else
-	printf "=====================================\n"
-	printf "no branch\n"
-	printf "=====================================\n"
-fi
+printf "=====================================\n"
+printf "get latest code from " $1 " branch\n"
+printf "=====================================\n"
+cd $site_dir$current && git checkout -b $release_version origin/$1
 
 printf "=====================================\n"
-printf "Copying file from pre code to production\n"
+printf "create symlink \n"
 printf "=====================================\n"
 
 php $site_dir$current/bin/magento maintenance:enable
-rm -rf $site_dir$current/var/generated/*
-rm -rf $site_dir$current/var/view_preprocessed/*
-rm -rf $site_dir$current/pub/static/*
-cp -r $site_dir$releases/pre_code/generated/* $site_dir$current/generated/
-cp -r $site_dir$releases/pre_code/pub/static/* $site_dir$current/pub/static/
+rm -rf $site_dir$releases/rel_code
+mv $site_dir$releases/cur_code $site_dir$releases/rel_code
+mv $site_dir$releases/pre_code $site_dir$releases/cur_code
+rm -rf $site_dir$current/var/view_preprocessed	
+rm -rf $site_dir$current/generated && ln -s $site_dir$releases/cur_code/generated $site_dir$current/generated
+rm -rf $site_dir$current/pub/static && ln -s $site_dir$releases/cur_code/pub/static $site_dir$current/pub/static
 cd $site_dir$current && composer install
 php $site_dir$current/bin/magento maintenance:disable
 
