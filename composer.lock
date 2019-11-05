@@ -1939,7 +1939,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "804e8fb153dd34cfe129b1e04b845592cc82f618"
+                "reference": "97b1f5811a1afe3205368241ae2d8c6a1e7c46c5"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1975,7 +1975,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-10-17T07:14:56+00:00"
+            "time": "2019-10-30T04:34:28+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
