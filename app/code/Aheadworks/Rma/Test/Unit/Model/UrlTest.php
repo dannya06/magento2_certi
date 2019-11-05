@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Test\Unit\Model;
@@ -72,7 +72,7 @@ class UrlTest extends TestCase
             ->willReturn($key);
         $this->urlBuilderMock->expects($this->any())
             ->method('getUrl')
-            ->with($route, ['key' => $key])
+            ->with($route, ['hash' => $key])
             ->willReturn($expected);
 
         $this->assertEquals($expected, $this->model->getEncryptUrl($route, $params));

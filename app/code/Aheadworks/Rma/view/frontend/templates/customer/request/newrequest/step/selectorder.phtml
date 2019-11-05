@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 // @codingStandardsIgnoreFile
@@ -63,7 +63,7 @@
                             </div>
                         </td>
                         <td data-th="<?php echo $block->escapeHtml(__('Order Total')) ?>" class="col order_total">
-                            <?php /* @noEscape */ echo $block->convertAndFormatPrice($order->getGrandTotal()) ?>
+                            <?php /* @noEscape */ echo $order->formatPrice($order->getGrandTotal()) ?>
                         </td>
                         <td data-th="<?php echo $block->escapeHtml(__('Action')) ?>" class="col action">
                             <?php if ($block->isAllowedForOrder($order)): ?>

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\CustomField\Renderer\Backend;
@@ -106,7 +106,7 @@ class Mapper
         }
         $result = array_merge($result, $this->getValidationRules($customField));
         $result['visibleOnStoreIds'] = $this->getStoreIdsByWebsiteIds($customField->getWebsiteIds());
-        $result['visible'] = false;
+        $result['visible'] = true;
         $result['requestFieldType'] = 'customField';
 
         return $result;

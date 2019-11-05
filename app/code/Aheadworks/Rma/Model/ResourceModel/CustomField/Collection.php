@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\ResourceModel\CustomField;
@@ -220,6 +220,7 @@ class Collection extends AbstractCollection
             $optionsData = $connection->fetchAll($select, ['id' => $itemId]);
             foreach ($optionsData as $optionData) {
                 $optionData = $this->attachOptionValues($optionData);
+                $optionData = $this->attachOptionActionStatuses($optionData);
                 $options[] = $optionData;
             }
         }
@@ -243,6 +244,29 @@ class Collection extends AbstractCollection
         $optionData[CustomFieldOptionInterface::STORE_LABELS] = $optionValuesData;
         $optionData[CustomFieldOptionInterface::STOREFRONT_LABEL] = $this->getStorefrontValue($optionValuesData, true);
 
+        return $optionData;
+    }
+
+    /**
+     * Attach action statuses to option
+     *
+     * @param array $optionData
+     * @return array
+     */
+    private function attachOptionActionStatuses($optionData)
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getTable('aw_rma_custom_field_option_action_status'))
+            ->where('option_id = :id');
+        $actionStatusesData = $connection->fetchAll($select, ['id' => $optionData[CustomFieldOptionInterface::ID]]);
+
+        $actionStatuses = [];
+        foreach ($actionStatusesData as $actionStatusesRow) {
+            $actionStatuses[] = $actionStatusesRow['status_id'];
+        }
+
+        $optionData[CustomFieldOptionInterface::ACTION_STATUSES] = $actionStatuses;
         return $optionData;
     }
 }

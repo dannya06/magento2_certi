@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Api\Data;
@@ -20,6 +20,7 @@ interface CustomFieldInterface extends ExtensibleDataInterface
      */
     const ID = 'id';
     const NAME = 'name';
+    const IS_ACTIVE = 'is_active';
     const TYPE = 'type';
     const REFERS = 'refers';
     const WEBSITE_IDS = 'website_ids';
@@ -28,6 +29,7 @@ interface CustomFieldInterface extends ExtensibleDataInterface
     const EDITABLE_ADMIN_FOR_STATUS_IDS = 'editable_admin_for_status_ids';
     const IS_REQUIRED = 'is_required';
     const IS_DISPLAY_IN_LABEL = 'is_display_in_label';
+    const IS_INCLUDED_IN_REPORT = 'is_included_in_report';
     const OPTIONS = 'options';
     const FRONTEND_LABELS = 'frontend_labels';
     const STOREFRONT_LABEL = 'storefront_label';
@@ -62,6 +64,21 @@ interface CustomFieldInterface extends ExtensibleDataInterface
      * @return $this
      */
     public function setName($name);
+
+    /**
+     * Is active
+     *
+     * @return bool
+     */
+    public function isActive();
+
+    /**
+     * Set is active
+     *
+     * @param bool $isActive
+     * @return $this
+     */
+    public function setIsActive($isActive);
 
     /**
      * Get type
@@ -182,6 +199,21 @@ interface CustomFieldInterface extends ExtensibleDataInterface
      * @return $this
      */
     public function setIsDisplayInLabel($isDisplayInLabel);
+
+    /**
+     * Is included in exported report
+     *
+     * @return bool
+     */
+    public function isIncludedInReport();
+
+    /**
+     * Set is included in exported report
+     *
+     * @param bool $isIncludedInReport
+     * @return $this
+     */
+    public function setIsIncludedInReport($isIncludedInReport);
 
     /**
      * Get options

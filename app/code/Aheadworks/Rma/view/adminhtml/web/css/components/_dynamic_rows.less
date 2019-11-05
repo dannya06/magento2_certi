@@ -3,27 +3,35 @@
 //  _____________________________________________
 
 .aw-rma.dynamic-rows {
-  .select_field {
-    width: 20%;
+    .select_field {
+        width: 20%;
 
-    &._disabled {
-      opacity: 1;
+        &._disabled {
+            opacity: 1;
+        }
+
+        .admin__field.select_field {
+            width: 100%;
+        }
     }
 
-    .admin__field.select_field {
-      width: 100%;
+    .action_delete_button._disabled {
+        opacity: 1;
+
+        button {
+            visibility: hidden;
+        }
     }
-  }
 
-  .action_delete_button._disabled {
-    opacity: 1;
-
-    button {
-      visibility: hidden;
+    td:nth-child(2), th:nth-child(2) {
+        padding-left: 1rem;
     }
-  }
+}
 
-  td:nth-child(2), th:nth-child(2) {
-    padding-left: 1rem;
-  }
+.admin__dynamic-rows {
+    .full-width {
+        .admin__control-select {
+            width: 100%;
+        }
+    }
 }

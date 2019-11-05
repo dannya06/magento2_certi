@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Ui\Component\Form\CustomField;
@@ -65,16 +65,20 @@ class RecordOptions extends Container
         ];
 
         $stores = $this->getStores();
-        foreach ($stores as $store) {
+        foreach ($stores as $index => $store) {
             $this->createComponent(
                 'store_labels_store_' . $store->getId(),
                 Field::NAME,
                 array_merge($baseInputConfig, $this->getInputStoreConfig($store))
             );
+            $inputValueConfig = $this->getInputValueConfig($store);
+            if (!isset($inputValueConfig['sortOrder'])) {
+                $inputValueConfig['sortOrder'] = 80 + $index * 10;
+            }
             $this->createComponent(
                 'store_labels_value_' . $store->getId(),
                 Field::NAME,
-                array_merge($baseInputConfig, $this->getInputValueConfig($store))
+                array_merge($baseInputConfig, $inputValueConfig)
             );
         }
         $this->createComponent(
@@ -157,6 +161,7 @@ class RecordOptions extends Container
         ];
         if ($store->getId() == Store::DEFAULT_STORE_ID) {
             $fieldValueConfig['required'] = true;
+            $fieldValueConfig['sortOrder'] = 50;
             $fieldValueConfig['validation']['required-entry'] = true;
         }
 

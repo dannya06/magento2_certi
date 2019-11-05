@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\CustomField\Resolver;
@@ -11,6 +11,7 @@ use Aheadworks\Rma\Api\Data\CustomFieldInterface;
 use Aheadworks\Rma\Api\Data\CustomFieldOptionInterface;
 use Aheadworks\Rma\Api\Data\RequestCustomFieldValueInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class CustomField
@@ -74,6 +75,22 @@ class CustomField
         }
 
         return $this->customFieldRepository->get($customFieldId, $storeId)->getStorefrontLabel();
+    }
+
+    /**
+     * Retrieve custom field name
+     *
+     * @param int|null $customFieldId
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getName($customFieldId, $storeId = null)
+    {
+        if (empty($customFieldId)) {
+            return '';
+        }
+
+        return $this->customFieldRepository->get($customFieldId, $storeId)->getName();
     }
 
     /**

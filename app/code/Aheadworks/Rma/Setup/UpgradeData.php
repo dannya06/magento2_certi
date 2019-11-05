@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Setup;
@@ -11,10 +11,12 @@ use Aheadworks\Rma\Api\Data\RequestInterface;
 use Aheadworks\Rma\Model\Serialize\SerializerInterface;
 use Aheadworks\Rma\Model\Source\CustomField\EditAt;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Aheadworks\Rma\Model\Serialize\Factory;
+use Aheadworks\Rma\Setup\Updater\Data\Updater as DataUpdater;
 
 /**
  * Class UpgradeData
@@ -39,18 +41,34 @@ class UpgradeData implements UpgradeDataInterface
     private $serializer;
 
     /**
+     * @var Serialize
+     */
+    private $phpSerializer;
+
+    /**
+     * @var DataUpdater
+     */
+    private $updater;
+
+    /**
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param CustomFieldRepositoryInterface $customFieldRepository
      * @param Factory $factory
+     * @param Serialize $phpSerializer
+     * @param DataUpdater $updater
      */
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         CustomFieldRepositoryInterface $customFieldRepository,
-        Factory $factory
+        Factory $factory,
+        Serialize $phpSerializer,
+        DataUpdater $updater
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->customFieldRepository = $customFieldRepository;
         $this->serializer = $factory->create();
+        $this->phpSerializer = $phpSerializer;
+        $this->updater = $updater;
     }
 
     /**
@@ -64,6 +82,9 @@ class UpgradeData implements UpgradeDataInterface
         }
         if ($context->getVersion() && version_compare($context->getVersion(), '1.3.1', '<')) {
             $this->updatePrintLabel($setup);
+        }
+        if ($context->getVersion() && version_compare($context->getVersion(), '1.4.0', '<')) {
+            $this->updater->update140($setup);
         }
 
         $setup->endSetup();
@@ -132,9 +153,9 @@ class UpgradeData implements UpgradeDataInterface
     {
         $result = '';
         if (!empty($string)) {
-            $result = @unserialize($string);
-            if ($result !== false || $string === 'b:0;') {
-            } else {
+            try {
+                $result = $this->phpSerializer->unserialize($string);
+            } catch (\Exception $e) {
                 $result = false;
             }
         }

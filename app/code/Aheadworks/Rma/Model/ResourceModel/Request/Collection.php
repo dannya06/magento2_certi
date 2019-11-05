@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\ResourceModel\Request;
@@ -103,6 +103,7 @@ class Collection extends AbstractCollection
         $this->addFilterToMap('increment_id', 'main_table.increment_id');
         $this->addFilterToMap('created_at', 'main_table.created_at');
         $this->addFilterToMap('updated_at', 'main_table.updated_at');
+        $this->addFilterToMap('order_id', 'main_table.order_id');
     }
 
     /**

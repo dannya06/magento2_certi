@@ -1,13 +1,12 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Ui\Component\MassAction\Request;
 
-use Aheadworks\Rma\Api\StatusRepositoryInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
+use Aheadworks\Rma\Model\Status\Request\StatusList;
 use Magento\Framework\UrlInterface;
 use Zend\Stdlib\JsonSerializable;
 
@@ -57,31 +56,23 @@ class Statuses implements JsonSerializable
     private $additionalData = [];
 
     /**
-     * @var StatusRepositoryInterface
+     * @var StatusList
      */
-    private $statusRepository;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    private $searchCriteriaBuilder;
+    private $statusList;
 
     /**
      * @param UrlInterface $urlBuilder
-     * @param StatusRepositoryInterface $statusRepository
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param StatusList $statusList
      * @param array $data
      */
     public function __construct(
         UrlInterface $urlBuilder,
-        StatusRepositoryInterface $statusRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
+        StatusList $statusList,
         array $data = []
     ) {
         $this->data = $data;
         $this->urlBuilder = $urlBuilder;
-        $this->statusRepository = $statusRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->statusList = $statusList;
     }
 
     /**
@@ -92,12 +83,12 @@ class Statuses implements JsonSerializable
     public function jsonSerialize()
     {
         if ($this->options === null) {
-            $statuses = $this->statusRepository->getList($this->searchCriteriaBuilder->create())->getItems();
+            $statuses = $this->statusList->retrieve();
             $this->prepareData();
             foreach ($statuses as $status) {
                 $this->options[$status->getId()] = [
                     'type' => 'status' . $status->getId(),
-                    'label' => $status->getStorefrontLabel(),
+                    'label' => $status->getName(),
                 ];
 
                 if ($this->urlPath && $this->paramName) {

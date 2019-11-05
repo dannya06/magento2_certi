@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Ui\DataProvider\Request\Form\DataProcessor;
@@ -81,12 +81,18 @@ class OrderItemInfoProcessor
             }
             $orderItem['price'] = $this->priceCurrency->format(
                 $this->orderItemResolver->getItemWithPrice($orderItemId)->getBasePrice(),
-                false
+                false,
+                null,
+                null,
+                $this->orderItemResolver->getItemBaseCurrencyCode($orderItemId)
             );
             $orderItem['sku'] = $this->orderItemResolver->getSku($orderItemId);
             $orderItem['total_paid'] = $this->priceCurrency->format(
                 $this->orderItemResolver->getItemPriceWithoutDiscount($orderItemId),
-                false
+                false,
+                null,
+                null,
+                $this->orderItemResolver->getItemBaseCurrencyCode($orderItemId)
             );
         }
 

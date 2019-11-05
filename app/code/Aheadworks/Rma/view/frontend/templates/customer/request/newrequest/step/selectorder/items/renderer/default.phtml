@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 // @codingStandardsIgnoreFile
@@ -35,7 +35,7 @@
                     <span class="title"><?php echo $block->escapeHtml(__('Invoiced')) ?></span>&nbsp;<span class="content"><?php /* @noEscape */ echo $item->getQtyInvoiced() * 1 ?></span>
                 </li>
                 <li>
-                    <span class="title"><?php echo $block->escapeHtml(__('Shipped')) ?></span>&nbsp;<span class="content"><?php /* @noEscape */ echo $item->getQtyShipped() * 1 ?></span>
+                    <span class="title"><?php echo $block->escapeHtml(__('Shipped')) ?></span>&nbsp;<span class="content"><?php /* @noEscape */ echo $block->getQtyShipped($item) ?></span>
                 </li>
                 <li>
                     <span class="title"><?php echo $block->escapeHtml(__('Refunded')) ?></span>&nbsp;<span class="content"><?php /* @noEscape */ echo $item->getQtyRefunded() * 1 ?></span>

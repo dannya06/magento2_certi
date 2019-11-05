@@ -1,6 +1,5 @@
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Copyright 2019 aheadWorks. All rights reserved.\nSee LICENSE.txt for license details.
  */
 
 define([
@@ -30,6 +29,7 @@ define([
 
                     this.labels.push(data);
                 }, this);
+                this.labels(_.sortBy(this.labels(), 'sortOrder'));
             }
         }
     });

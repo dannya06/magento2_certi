@@ -2,7 +2,7 @@
 <!--
 /**
 * Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
+See LICENSE.txt for license details.
 */
 -->
 
@@ -20,7 +20,7 @@
                 <field id="return_period" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Return Period</label>
                     <validate>validate-digits</validate>
-                    <comment>Allow to request RMA after order completion, days</comment>
+                    <comment>Allow to request RMA after order completion, days. Empty or 0 - no limitations</comment>
                 </field>
                 <field id="allow_guest_requests" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Allow guests to request RMA</label>
@@ -32,6 +32,11 @@
                 <field id="allow_auto_approve" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Approve New Requests Automatically</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="manufacturer_attribute" translate="label comment" type="select" sortOrder="50" showInDefault="1">
+                    <label>Manufacturer attribute</label>
+                    <comment>This attribute will be used for reporting</comment>
+                    <source_model>Aheadworks\Rma\Model\Source\Config\Product\Attribute</source_model>
                 </field>
             </group>
             <group id="blocks_and_policy" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">

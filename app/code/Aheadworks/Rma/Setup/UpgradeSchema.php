@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Setup;
@@ -11,6 +11,7 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Aheadworks\Rma\Setup\Updater\Schema\Updater as SchemaUpdater;
 
 /**
  * Class UpgradeSchema
@@ -19,16 +20,26 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
  */
 class UpgradeSchema implements UpgradeSchemaInterface
 {
-    /** @var UpgradeSchema120 */
+    /**
+     * @var UpgradeSchema120
+     */
     private $upgradeSchema120;
 
     /**
+     * @var SchemaUpdater
+     */
+    private $schemaUpdater;
+
+    /**
      * @param UpgradeSchema120 $upgradeSchema120
+     * @param SchemaUpdater $schemaUpdater
      */
     public function __construct(
-        UpgradeSchema120 $upgradeSchema120
+        UpgradeSchema120 $upgradeSchema120,
+        SchemaUpdater $schemaUpdater
     ) {
         $this->upgradeSchema120 = $upgradeSchema120;
+        $this->schemaUpdater = $schemaUpdater;
     }
 
     /**
@@ -46,6 +57,9 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ->createCannedResponseTables($setup)
                 ->addIsInternalFieldToThreadMessageTable($setup)
                 ->addCustomerIdForeignKeyToRequestTable($setup);
+        }
+        if ($context->getVersion() && version_compare($context->getVersion(), '1.4.0', '<')) {
+            $this->schemaUpdater->update140($setup);
         }
 
         $setup->endSetup();

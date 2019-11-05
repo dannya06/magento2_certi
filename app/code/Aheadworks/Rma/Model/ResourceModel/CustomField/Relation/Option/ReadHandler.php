@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\ResourceModel\CustomField\Relation\Option;
@@ -81,7 +81,8 @@ class ReadHandler implements ExtensionInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     * @throws \Exception
      */
     public function execute($entity, $arguments = [])
     {
@@ -105,6 +106,7 @@ class ReadHandler implements ExtensionInterface
                     CustomFieldOptionInterface::class
                 );
                 $this->attachOptionValues($optionEntity, $arguments);
+                $this->attachOptionActionStatuses($optionEntity, $arguments);
                 $options[] = $optionEntity;
             }
             $entity->setOptions($options);
@@ -117,7 +119,7 @@ class ReadHandler implements ExtensionInterface
      *
      * @param CustomFieldOptionInterface $optionEntity
      * @param array $arguments
-     * @return void
+     * @throws \Exception
      */
     private function attachOptionValues($optionEntity, $arguments = [])
     {
@@ -146,5 +148,30 @@ class ReadHandler implements ExtensionInterface
             ->setStorefrontLabel(
                 $this->storefrontValueResolver->getStorefrontValue($optionValues, $arguments['store_id'])
             );
+    }
+
+    /**
+     * Attach option action statuses
+     *
+     * @param CustomFieldOptionInterface $optionEntity
+     * @param array $arguments
+     * @throws \Exception
+     */
+    private function attachOptionActionStatuses($optionEntity, $arguments = [])
+    {
+        $connection = $this->resourceConnection->getConnectionByName(
+            $this->metadataPool->getMetadata(CustomFieldInterface::class)->getEntityConnectionName()
+        );
+        $select = $connection->select()
+            ->from($this->resourceConnection->getTableName('aw_rma_custom_field_option_action_status'))
+            ->where('option_id = :id');
+        $actionStatusesData = $connection->fetchAll($select, ['id' => $optionEntity->getId()]);
+
+        $actionStatuses = [];
+        foreach ($actionStatusesData as $actionStatusesRow) {
+            $actionStatuses[] = $actionStatusesRow['status_id'];
+        }
+
+        $optionEntity->setActionStatuses($actionStatuses);
     }
 }

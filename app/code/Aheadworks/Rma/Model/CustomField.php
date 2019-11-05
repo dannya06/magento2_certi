@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model;
@@ -58,6 +58,22 @@ class CustomField extends AbstractModel implements CustomFieldInterface
     public function setName($name)
     {
         return $this->setData(self::NAME, $name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isActive()
+    {
+        return $this->getData(self::IS_ACTIVE);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIsActive($isActive)
+    {
+        return $this->setData(self::IS_ACTIVE, $isActive);
     }
 
     /**
@@ -186,6 +202,22 @@ class CustomField extends AbstractModel implements CustomFieldInterface
     public function setIsDisplayInLabel($isDisplayInLabel)
     {
         return $this->setData(self::IS_DISPLAY_IN_LABEL, $isDisplayInLabel);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isIncludedInReport()
+    {
+        return $this->getData(self::IS_INCLUDED_IN_REPORT);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIsIncludedInReport($isIncludedInReport)
+    {
+        return $this->setData(self::IS_INCLUDED_IN_REPORT, $isIncludedInReport);
     }
 
     /**

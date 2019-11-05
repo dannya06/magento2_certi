@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Rma;
@@ -33,6 +33,11 @@ class Edit extends Action
      * @var PageFactory
      */
     private $resultPageFactory;
+
+    /**
+     * @var array
+     */
+    protected $_publicActions = ['edit'];
 
     /**
      * @param Context $context

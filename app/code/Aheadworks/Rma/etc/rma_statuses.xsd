@@ -14,6 +14,7 @@
             <xs:element name="is_email_customer" type="xs:integer" minOccurs="1" maxOccurs="1"/>
             <xs:element name="is_email_admin" type="xs:integer" minOccurs="1" maxOccurs="1"/>
             <xs:element name="is_thread" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="sort_order" type="xs:integer" minOccurs="1" maxOccurs="1"/>
             <xs:element name="attributes" type="attributes" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>

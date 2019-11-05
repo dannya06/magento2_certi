@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Setup;
@@ -22,8 +22,9 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Aheadworks\Rma\Model\Status\ConfigDefault as StatusConfigDefault;
 use Aheadworks\Rma\Model\CustomField\ConfigDefault as CustomFieldConfigDefault;
-use Aheadworks\Rma\Model\Source\Request\Status as StatusSource;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Aheadworks\Rma\Setup\Updater\Data\Updater as DataUpdater;
 
 /**
  * Class InstallData
@@ -74,14 +75,14 @@ class InstallData implements InstallDataInterface
     private $customFieldRepository;
 
     /**
-     * @var StatusSource
-     */
-    private $statusSource;
-
-    /**
      * @var StoreManagerInterface
      */
     private $storeManager;
+
+    /**
+     * @var DataUpdater
+     */
+    private $updater;
 
     /**
      * @var array|null
@@ -102,8 +103,8 @@ class InstallData implements InstallDataInterface
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param StatusRepositoryInterface $statusRepository
      * @param CustomFieldRepositoryInterface $customFieldRepository
-     * @param StatusSource $statusSource
      * @param StoreManagerInterface $storeManager
+     * @param DataUpdater $updater
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -115,8 +116,8 @@ class InstallData implements InstallDataInterface
         SearchCriteriaBuilder $searchCriteriaBuilder,
         StatusRepositoryInterface $statusRepository,
         CustomFieldRepositoryInterface $customFieldRepository,
-        StatusSource $statusSource,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        DataUpdater $updater
     ) {
         $this->dataObjectHelper = $dataObjectHelper;
         $this->statusConfigDefault = $statusConfigDefault;
@@ -126,23 +127,27 @@ class InstallData implements InstallDataInterface
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->statusRepository = $statusRepository;
         $this->customFieldRepository = $customFieldRepository;
-        $this->statusSource = $statusSource;
         $this->storeManager = $storeManager;
+        $this->updater = $updater;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     *
+     * @throws LocalizedException
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         $this->installStatuses();
         $this->installCustomFields();
+        $this->updater->update140($setup);
     }
 
     /**
      * Install statuses
      *
      * @return $this
+     * @throws LocalizedException
      */
     private function installStatuses()
     {
@@ -154,7 +159,6 @@ class InstallData implements InstallDataInterface
                 $statusData,
                 StatusInterface::class
             );
-            $statusObject->setName($this->statusSource->getOptionLabelByValue($statusObject->getId(), false));
 
             $this->statusRepository->save($statusObject);
         }
@@ -198,6 +202,7 @@ class InstallData implements InstallDataInterface
                 }
             }
         }
+        $statusData[StatusInterface::NAME] = $statusData['frontend_label']['value'];
         $statusData[StatusInterface::FRONTEND_LABELS] = $frontendLabels;
         $statusData[StatusInterface::ADMIN_TEMPLATES] = $adminTemplates;
         $statusData[StatusInterface::CUSTOMER_TEMPLATES] = $customerTemplates;

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Block\Customer\Request\Order\Item\Renderer;
@@ -15,6 +15,8 @@ use Magento\Sales\Model\Order\Item;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Aheadworks\Rma\Api\CustomFieldRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Config\Model\Config\Source\Enabledisable;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class Factory
@@ -152,6 +154,7 @@ class Factory
      *
      * @param int $requestStatus
      * @return CustomFieldInterface[]
+     * @throws LocalizedException
      */
     public function getItemCustomFields($requestStatus)
     {
@@ -160,6 +163,7 @@ class Factory
                 ->addFilter(CustomFieldInterface::REFERS, Refers::ITEM)
                 ->addFilter('editable_or_visible_for_status', $requestStatus)
                 ->addFilter(CustomFieldInterface::OPTIONS, 'enabled')
+                ->addFilter(CustomFieldInterface::IS_ACTIVE, Enabledisable::ENABLE_VALUE)
                 ->addFilter(CustomFieldInterface::WEBSITE_IDS, $this->storeManager->getWebsite()->getId());
 
             $this->itemCustomField = $this->customFieldRepository

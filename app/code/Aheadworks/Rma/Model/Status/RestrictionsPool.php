@@ -1,10 +1,16 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\Status;
+
+use Aheadworks\Rma\Model\Status\Request\StatusList;
+use Aheadworks\Rma\Api\Data\StatusInterface;
+use Aheadworks\Rma\Api\Data\RequestInterface;
+use Aheadworks\Rma\Model\Status\Restrictions\CustomField as CustomFieldRestrictions;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class RestrictionsPool
@@ -17,6 +23,16 @@ class RestrictionsPool
      * @var RestrictionsInterfaceFactory
      */
     private $restrictionsFactory;
+
+    /**
+     * @var StatusList
+     */
+    private $statusList;
+
+    /**
+     * @var CustomFieldRestrictions
+     */
+    private $customFieldRestrictions;
 
     /**
      * @var array
@@ -40,15 +56,21 @@ class RestrictionsPool
 
     /**
      * @param RestrictionsInterfaceFactory $restrictionsFactory
+     * @param StatusList $statusList
+     * @param CustomFieldRestrictions $customFieldRestrictions
      * @param array $customerRestrictions
      * @param array $adminRestrictions
      */
     public function __construct(
         RestrictionsInterfaceFactory $restrictionsFactory,
+        StatusList $statusList,
+        CustomFieldRestrictions $customFieldRestrictions,
         $customerRestrictions = [],
         $adminRestrictions = []
     ) {
         $this->restrictionsFactory = $restrictionsFactory;
+        $this->statusList = $statusList;
+        $this->customFieldRestrictions = $customFieldRestrictions;
         $this->customerRestrictions = $customerRestrictions;
         $this->adminRestrictions = $adminRestrictions;
     }
@@ -56,28 +78,37 @@ class RestrictionsPool
     /**
      * Retrieves restrictions instance
      *
-     * @param int $status
+     * @param int $newStatus
+     * @param RequestInterface $request
      * @param bool $isAdmin
      * @return RestrictionsInterface
      * @throws \Exception
      */
-    public function getRestrictions($status, $isAdmin)
+    public function getRestrictions($newStatus, $request, $isAdmin)
     {
         $restrictionsInstance = $this->getRestrictionsInstanceByType($isAdmin);
-        if (!isset($restrictionsInstance[$status])) {
+        if (!isset($restrictionsInstance[$newStatus])) {
             $restrictions = $this->getRestrictionsByType($isAdmin);
-            if (!isset($restrictions[$status])) {
-                throw new \Exception(sprintf('Unknown status: %s requested', $status));
+            if (!isset($restrictions[$newStatus])) {
+                $this->statusList
+                    ->getSearchCriteriaBuilder()
+                    ->addFilter(StatusInterface::ID, $newStatus);
+                if (empty($this->statusList->retrieve())) {
+                    throw new \Exception(sprintf('Unknown status: %s requested', $newStatus));
+                }
+                $instance = $this->restrictionsFactory->create(['data' => $restrictions['custom']]);
+            } else {
+                $instance = $this->restrictionsFactory->create(['data' => $restrictions[$newStatus]]);
             }
-            $instance = $this->restrictionsFactory->create(['data' => $restrictions[$status]]);
             if (!$instance instanceof RestrictionsInterface) {
                 throw new \Exception(
-                    sprintf('Restrictions instance %s does not implement required interface.', $status)
+                    sprintf('Restrictions instance %s does not implement required interface.', $newStatus)
                 );
             }
-            $restrictionsInstance = $this->cachedRestrictionsByType($status, $instance, $isAdmin);
+            $this->updateWithCustomFieldRestrictions($instance, $request, $isAdmin);
+            $restrictionsInstance = $this->cachedRestrictionsByType($newStatus, $instance, $isAdmin);
         }
-        return $restrictionsInstance[$status];
+        return $restrictionsInstance[$newStatus];
     }
 
     /**
@@ -89,6 +120,21 @@ class RestrictionsPool
     private function getRestrictionsByType($isAdmin)
     {
         return $isAdmin ? $this->adminRestrictions : $this->customerRestrictions;
+    }
+
+    /**
+     * Add additional restrictions depending on custom fields
+     *
+     * @param RestrictionsInterface $instance
+     * @param RequestInterface $request
+     * @param bool $isAdmin
+     * @throws LocalizedException
+     */
+    private function updateWithCustomFieldRestrictions($instance, $request, $isAdmin)
+    {
+        if ($isAdmin) {
+            $this->customFieldRestrictions->update($instance, $request);
+        }
     }
 
     /**

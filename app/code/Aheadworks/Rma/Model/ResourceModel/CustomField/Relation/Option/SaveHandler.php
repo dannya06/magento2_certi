@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\ResourceModel\CustomField\Relation\Option;
@@ -42,7 +42,8 @@ class SaveHandler implements ExtensionInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     * @throws \Exception
      */
     public function execute($entity, $arguments = [])
     {
@@ -57,13 +58,15 @@ class SaveHandler implements ExtensionInterface
         $optionTableName = $this->resourceConnection->getTableName('aw_rma_custom_field_option');
 
         $optionValuesToInsert = [];
+        $optionActionStatusesToInsert = [];
         $optionIdsToRemoveValues = [];
         /** @var CustomFieldOptionInterface $option */
         foreach ($entity->getOptions() as $option) {
             $bind = [
                 'sort_order' => $option->getSortOrder(),
                 'is_default' => $option->isDefault() ? 1 : 0,
-                'enabled' => $option->getEnabled()
+                'enabled' => $option->getEnabled(),
+                'action_id' => $option->getActionId() ? : null
             ];
             $optionId = $option->getId();
             if ($optionId) {
@@ -77,8 +80,13 @@ class SaveHandler implements ExtensionInterface
                 $optionValuesToInsert,
                 $this->prepareToUpdateOptionValue($option->getStoreLabels(), $optionId)
             );
+            $optionActionStatusesToInsert = array_merge(
+                $optionActionStatusesToInsert,
+                $this->prepareOptionActionStatuses($option->getActionStatuses(), $optionId)
+            );
         }
         $this->updateOptionValues($optionIdsToRemoveValues, $optionValuesToInsert);
+        $this->updateOptionActionStatuses($optionIdsToRemoveValues, $optionActionStatusesToInsert);
 
         return $entity;
     }
@@ -108,10 +116,51 @@ class SaveHandler implements ExtensionInterface
     }
 
     /**
+     * Prepare option action statuses
+     *
+     * @param int[] $actionStatuses
+     * @param int $optionId
+     * @return array
+     */
+    private function prepareOptionActionStatuses($actionStatuses, $optionId)
+    {
+        $dataToInsert = [];
+        if (is_array($actionStatuses)) {
+            foreach ($actionStatuses as $actionStatus) {
+                $dataToInsert[] = [
+                    'option_id' => $optionId,
+                    'status_id' => $actionStatus,
+                ];
+            }
+        }
+        return $dataToInsert;
+    }
+
+    /**
+     * Update option action statuses
+     *
+     * @param array $optionIds
+     * @param array $optionActionStatusesToInsert
+     * @throws \Exception
+     */
+    private function updateOptionActionStatuses($optionIds, $optionActionStatusesToInsert)
+    {
+        $connection = $this->getConnection();
+        $optionValueTableName = $this->resourceConnection->getTableName('aw_rma_custom_field_option_action_status');
+        foreach ($optionIds as $optionId) {
+            $connection->delete($optionValueTableName, ['option_id = ?' => $optionId]);
+        }
+        if ($optionActionStatusesToInsert) {
+            $connection->insertMultiple($optionValueTableName, $optionActionStatusesToInsert);
+        }
+    }
+
+    /**
      * Update option values
      *
      * @param array $optionIds
      * @param array $optionValuesToInsert
+     * @throws \Exception
      */
     private function updateOptionValues($optionIds, $optionValuesToInsert)
     {
@@ -129,6 +178,7 @@ class SaveHandler implements ExtensionInterface
      * Retrieve connection
      *
      * @return \Magento\Framework\DB\Adapter\AdapterInterface
+     * @throws \Exception
      */
     private function getConnection()
     {

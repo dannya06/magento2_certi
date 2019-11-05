@@ -2,7 +2,7 @@
 <!--
 /**
 * Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
+See LICENSE.txt for license details.
 */
 -->
 
@@ -21,6 +21,38 @@
                 <item name="orderItems" xsi:type="object">Aheadworks\Rma\Ui\DataProvider\Request\Form\DownloadOrderDataProcessor\OrderItems</item>
                 <item name="orderInfo" xsi:type="object">Aheadworks\Rma\Ui\DataProvider\Request\Form\DownloadOrderDataProcessor\OrderInfo</item>
                 <item name="customerInfo" xsi:type="object">Aheadworks\Rma\Ui\DataProvider\Request\Form\DownloadOrderDataProcessor\CustomerInfo</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Sales\Controller\Adminhtml\Order\Creditmemo\NewAction">
+        <plugin name="awRmaAdjustCreditMemo" type="Aheadworks\Rma\Plugin\Controller\Adminhtml\NewCreditmemoPlugin" />
+    </type>
+    <type name="Magento\Sales\Controller\Adminhtml\Order\Create\Save">
+        <plugin name="awRmaOrderCreateSave" type="Aheadworks\Rma\Plugin\Controller\Adminhtml\OrderCreateSavePlugin" />
+    </type>
+    <type name="Magento\Sales\Controller\Adminhtml\Order\Creditmemo\Save">
+        <plugin name="awRmaOrderCreditmemoSave" type="Aheadworks\Rma\Plugin\Controller\Adminhtml\OrderCreditmemoSavePlugin" />
+    </type>
+    <type name="Magento\Sales\Api\CreditmemoManagementInterface">
+        <plugin name="awRmaCreditmemoServicePlugin" type="Aheadworks\Rma\Plugin\Model\Adminhtml\CreditmemoServicePlugin" />
+    </type>
+    <type name="Magento\Sales\Block\Adminhtml\Order\Creditmemo\Create">
+        <plugin name="awRmaCreditmemoBackButtonPlugin" type="Aheadworks\Rma\Plugin\Block\Adminhtml\CreditMemoBackButtonPlugin" />
+    </type>
+
+    <type name="Aheadworks\Rma\Ui\Component\MassAction\Statuses">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="urlPath" xsi:type="string">aw_rma_admin/rma/massChangeStatus</item>
+                <item name="paramName" xsi:type="string">status</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\Rma\Ui\Component\MassAction\CannedResponse\Status\Optionss">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="urlPath" xsi:type="string">aw_rma_admin/cannedresponse/MassStatus</item>
+                <item name="paramName" xsi:type="string">status</item>
             </argument>
         </arguments>
     </type>

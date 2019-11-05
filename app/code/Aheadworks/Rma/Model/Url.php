@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model;
@@ -47,6 +47,6 @@ class Url
      */
     public function getEncryptUrl($route, $params = [])
     {
-        return $this->urlBuilder->getUrl($route, ['key' => $this->encryptor->encrypt($params)]);
+        return $this->urlBuilder->getUrl($route, ['hash' => $this->encryptor->encrypt($params)]);
     }
 }

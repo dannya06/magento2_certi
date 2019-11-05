@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Test\Unit\Block;
@@ -9,8 +9,9 @@ namespace Aheadworks\Rma\Test\Unit\Block;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use PHPUnit\Framework\TestCase;
 use Aheadworks\Rma\Block\FooterLink;
-use Magento\Customer\Model\Session as CustomerSession;
 use Aheadworks\Rma\Model\Config;
+use Magento\Framework\App\Http\Context as HttpContext;
+use Magento\Customer\Model\Context as CustomerContext;
 
 /**
  * Class FooterLinkTest
@@ -31,9 +32,9 @@ class FooterLinkTest extends TestCase
     private $configMock;
 
     /**
-     * @var CustomerSession|\PHPUnit_Framework_MockObject_MockObject
+     * @var HttpContext|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $customerSessionMock;
+    private $httpContextMock;
 
     /**
      * Init mocks for tests
@@ -42,14 +43,8 @@ class FooterLinkTest extends TestCase
      */
     public function setUp()
     {
-        $this->configMock = $this->getMockBuilder(Config::class)
-            ->setMethods(['isAllowGuestsCreateRequest'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->customerSessionMock = $this->getMockBuilder(CustomerSession::class)
-            ->setMethods(['isLoggedIn'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->configMock = $this->createMock(Config::class);
+        $this->httpContextMock = $this->createMock(HttpContext::class);
     }
 
     /**
@@ -57,8 +52,9 @@ class FooterLinkTest extends TestCase
      */
     public function testAddLinkCustomerLoggedIn()
     {
-        $this->customerSessionMock->expects($this->once())
-            ->method('isLoggedIn')
+        $this->httpContextMock->expects($this->once())
+            ->method('getValue')
+            ->with(CustomerContext::CONTEXT_AUTH)
             ->willReturn(true);
 
         $objectManager = new ObjectManager($this);
@@ -66,7 +62,7 @@ class FooterLinkTest extends TestCase
             FooterLink::class,
             [
                 'config' => $this->configMock,
-                'customerSession' => $this->customerSessionMock
+                'httpContext' => $this->httpContextMock
             ]
         );
     }
@@ -88,7 +84,7 @@ class FooterLinkTest extends TestCase
             FooterLink::class,
             [
                 'config' => $this->configMock,
-                'customerSession' => $this->customerSessionMock
+                'httpContext' => $this->httpContextMock
             ]
         );
     }

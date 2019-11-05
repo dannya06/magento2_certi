@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Ui\Component\Listing;
@@ -14,6 +14,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Ui\Component\Listing\Columns as UiColumns;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Framework\App\RequestInterface;
 
 /**
  * Class Columns
@@ -43,11 +44,17 @@ class Columns extends UiColumns
     private $mapper;
 
     /**
+     * @var RequestInterface
+     */
+    private $request;
+
+    /**
      * @param ContextInterface $context
      * @param UiComponentFactory $componentFactory
      * @param CustomFieldRepositoryInterface $customFieldRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param Mapper $mapper
+     * @param RequestInterface $request
      * @param array $components
      * @param array $data
      */
@@ -57,6 +64,7 @@ class Columns extends UiColumns
         CustomFieldRepositoryInterface $customFieldRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         Mapper $mapper,
+        RequestInterface $request,
         array $components = [],
         array $data = []
     ) {
@@ -65,6 +73,7 @@ class Columns extends UiColumns
         $this->customFieldRepository = $customFieldRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->mapper = $mapper;
+        $this->request = $request;
     }
 
     /**
@@ -82,6 +91,19 @@ class Columns extends UiColumns
             );
         }
         parent::prepare();
+
+        $config = $this->getData('config');
+        foreach ($config['fieldSwitcher'] as $rule) {
+            if ($this->request->getParam('page') == $rule['page']) {
+                foreach ($this->getChildComponents() as &$component) {
+                    if (in_array($component->getName(), $rule['action']['columns'])) {
+                        $componentConfig = $component->getData('config');
+                        $componentConfig[$rule['action']['name']] = $rule['action']['value'];
+                        $component->setData('config', $componentConfig);
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Api\Data;
@@ -23,6 +23,8 @@ interface CustomFieldOptionInterface
     const ENABLED = 'enabled';
     const STORE_LABELS = 'store_labels';
     const STOREFRONT_LABEL = 'storefront_label';
+    const ACTION_ID = 'action_id';
+    const ACTION_STATUSES = 'action_statuses';
     /**#@-*/
 
     /**
@@ -130,4 +132,34 @@ interface CustomFieldOptionInterface
      * @return $this
      */
     public function setStorefrontLabel($storefrontLabel);
+
+    /**
+     * Get action ID
+     *
+     * @return int
+     */
+    public function getActionId();
+
+    /**
+     * Set action ID
+     *
+     * @param int|null $actionId
+     * @return $this
+     */
+    public function setActionId($actionId);
+
+    /**
+     * Get action
+     *
+     * @return int[]|null
+     */
+    public function getActionStatuses();
+
+    /**
+     * Set option label for store scopes
+     *
+     * @param int[]|null $actionStatuses
+     * @return $this
+     */
+    public function setActionStatuses($actionStatuses);
 }

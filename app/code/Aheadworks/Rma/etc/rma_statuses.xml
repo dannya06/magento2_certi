@@ -2,7 +2,7 @@
 <!--
 /**
 * Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
+See LICENSE.txt for license details.
 */
 -->
 
@@ -12,6 +12,7 @@
         <is_email_customer>1</is_email_customer>
         <is_email_admin>0</is_email_admin>
         <is_thread>1</is_thread>
+        <sort_order>20</sort_order>
         <attributes>
             <frontend_label>
                 <value>Approved</value>
@@ -40,6 +41,7 @@ and press "Confirm Shipping" button after it was sent.]]></custom_text>
         <is_email_customer>1</is_email_customer>
         <is_email_admin>1</is_email_admin>
         <is_thread>1</is_thread>
+        <sort_order>70</sort_order>
         <attributes>
             <frontend_label>
                 <value>Canceled</value>
@@ -64,6 +66,7 @@ and press "Confirm Shipping" button after it was sent.]]></custom_text>
         <is_email_customer>1</is_email_customer>
         <is_email_admin>0</is_email_admin>
         <is_thread>1</is_thread>
+        <sort_order>60</sort_order>
         <attributes>
             <frontend_label>
                 <value>Closed</value>
@@ -88,6 +91,7 @@ and press "Confirm Shipping" button after it was sent.]]></custom_text>
         <is_email_customer>0</is_email_customer>
         <is_email_admin>1</is_email_admin>
         <is_thread>0</is_thread>
+        <sort_order>50</sort_order>
         <attributes>
             <frontend_label>
                 <value>Issue Refund</value>
@@ -112,6 +116,7 @@ and press "Confirm Shipping" button after it was sent.]]></custom_text>
         <is_email_customer>1</is_email_customer>
         <is_email_admin>0</is_email_admin>
         <is_thread>1</is_thread>
+        <sort_order>40</sort_order>
         <attributes>
             <frontend_label>
                 <value>Package Received</value>
@@ -136,6 +141,7 @@ and press "Confirm Shipping" button after it was sent.]]></custom_text>
         <is_email_customer>0</is_email_customer>
         <is_email_admin>1</is_email_admin>
         <is_thread>1</is_thread>
+        <sort_order>30</sort_order>
         <attributes>
             <frontend_label>
                 <value>Package Sent</value>
@@ -160,6 +166,7 @@ and press "Confirm Shipping" button after it was sent.]]></custom_text>
         <is_email_customer>1</is_email_customer>
         <is_email_admin>1</is_email_admin>
         <is_thread>1</is_thread>
+        <sort_order>10</sort_order>
         <attributes>
             <frontend_label>
                 <value>Pending Approval</value>

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Test\Unit\Model\Url;
@@ -90,6 +90,6 @@ class ParamEncryptorTest extends TestCase
      */
     public function decryptDataProvider()
     {
-        return [['store_id', 1], ['id', '184E6D5759EA0C0A521AC'], ['key', null]];
+        return [['store_id', 1], ['id', '184E6D5759EA0C0A521AC'], ['hash', null]];
     }
 }

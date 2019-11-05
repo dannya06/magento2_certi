@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Controller\Request;
@@ -95,7 +95,7 @@ class PrintLabel extends Action
     private function getRmaRequest()
     {
         try {
-            $id = $this->encryptor->decrypt('id', $this->getRequest()->getParam('key'));
+            $id = $this->encryptor->decrypt('id', $this->getRequest()->getParam('hash'));
             $requestEntity = $this->requestRepository->getByExternalLink($id);
         } catch (NoSuchEntityException $e) {
             throw new NotFoundException(__('Page not found.'));
@@ -111,7 +111,7 @@ class PrintLabel extends Action
     {
         $resultRedirect = $this->resultRedirectFactory->create();
         try {
-            $storeId = $this->encryptor->decrypt('store_id', $this->getRequest()->getParam('key'));
+            $storeId = $this->encryptor->decrypt('store_id', $this->getRequest()->getParam('hash'));
             $rmaRequest = $this->getRmaRequest();
             $this->fileFactory->create(
                 'RMA ' . $rmaRequest->getIncrementId() . '.pdf',

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Test\Unit\Model;
@@ -324,5 +324,20 @@ class ConfigTest extends TestCase
             ->willReturn($expected);
 
         $this->assertEquals($expected, $this->model->isAllowAutoApprove($storeId));
+    }
+
+    /**
+     * Test getManufacturerProductAttributeCode method
+     */
+    public function testGetManufacturerProductAttributeCode()
+    {
+        $expected = 'manufacturer';
+
+        $this->scopeConfigMock->expects($this->once())
+            ->method('getValue')
+            ->with(Config::XML_PATH_GENERAL_MANUFACTURER_ATTRIBUTE_CODE)
+            ->willReturn($expected);
+
+        $this->assertEquals($expected, $this->model->getManufacturerProductAttributeCode());
     }
 }

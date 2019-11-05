@@ -1,14 +1,15 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button;
 
-use Aheadworks\Rma\Model\Source\Request\Status;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 use Magento\Ui\Component\Control\Container;
+use Aheadworks\Rma\Api\Data\StatusInterface;
+use Magento\Config\Model\Config\Source\Enabledisable;
 
 /**
  * Class Save
@@ -18,7 +19,7 @@ use Magento\Ui\Component\Control\Container;
 class Save extends ButtonAbstract implements ButtonProviderInterface
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getButtonData()
     {
@@ -32,21 +33,18 @@ class Save extends ButtonAbstract implements ButtonProviderInterface
             }
             $buttons[] = $button;
         }
-        uasort($buttons, [$this, 'sortButtons']);
 
         $primaryButton = array_shift($buttons);
-        if (empty($buttons)) {
-            $buttonConfig = [
-                'class_name' => Container::DEFAULT_CONTROL
-            ];
-        } else {
-            $buttonConfig = [
-                'class_name' => Container::SPLIT_BUTTON,
-                'options'    => $buttons
-            ];
+        $buttonConfig = [
+            'class_name' => Container::SPLIT_BUTTON,
+            'options'    => $buttons
+        ];
+
+        if (!$primaryButton) {
+            return [];
         }
 
-        return array_merge($primaryButton, $buttonConfig);
+        return count($buttons) ? array_merge($primaryButton, $buttonConfig) : $primaryButton;
     }
 
     /**
@@ -57,78 +55,48 @@ class Save extends ButtonAbstract implements ButtonProviderInterface
      */
     private function getButton($action)
     {
-        if ($this->isAvailableAction($action['action'])) {
-            return [
-                'label'          => __($action['label']),
-                'class'          => 'save primary',
-                'data_attribute' => $action['data_attribute'],
-                'sort_order'     => $action['sort_order']
-            ];
-        }
-
-        return [];
-    }
-
-    /**
-     * Check is available action
-     *
-     * @param string $action
-     * @return bool
-     */
-    protected function isAvailableAction($action)
-    {
-        if (null === $this->getRmaRequest()) {
-            return $action == 'save';
-        }
-
-        return parent::isAvailableAction($action);
+        return [
+            'label'          => __($action['label']),
+            'class'          => 'save primary',
+            'data_attribute' => $action['data_attribute'],
+            'sort_order'     => $action['sort_order']
+        ];
     }
 
     /**
      * Retrieve actions config
      *
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function getActionsConfig()
     {
-        return [
-            [
-                'action' => 'approve',
-                'label' => 'Approve',
-                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::APPROVED]),
-                'sort_order' => 80
-            ],
-            [
-                'action' => 'package_received',
-                'label' => 'Confirm Package Receiving',
-                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::PACKAGE_RECEIVED]),
-                'sort_order' => 80
-            ],
-            [
-                'action' => 'issue_refund',
-                'label' => 'Issue Refund',
-                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::ISSUE_REFUND]),
-                'sort_order' => 80
-            ],
-            [
-                'action' => 'close',
-                'label' => 'Close',
-                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::CLOSED]),
-                'sort_order' => 85
-            ],
-            [
-                'action' => 'cancel',
-                'label' => 'Cancel',
-                'data_attribute' => $this->prepareDataAttribute(['status_id' => Status::CANCELED]),
-                'sort_order' => 90
-            ],
-            [
-                'action' => 'save',
-                'label' => 'Save',
-                'data_attribute' => ['mage-init' => [], 'form-role' => 'save'],
-                'sort_order' => 100
-            ],
-        ];
+        $this->statusList
+            ->getSearchCriteriaBuilder()
+            ->addFilter(StatusInterface::IS_ACTIVE, Enabledisable::ENABLE_VALUE);
+        $statusList = $this->statusList->retrieve();
+        $currentStatus = $this->resolveCurrentRequestStatus($statusList);
+        $statusConfigsBeforeCurrentStatus = [];
+        $statusConfigsAfterCurrentStatus = [];
+
+        $config = [];
+        if ($currentStatus) {
+            foreach ($statusList as $status) {
+                if ($status->getId() == $currentStatus->getId()) {
+                    continue;
+                }
+                $status->getSortOrder() > $currentStatus->getSortOrder()
+                    ? $statusConfigsBeforeCurrentStatus[] = $this->prepareActionConfig($status)
+                    : $statusConfigsAfterCurrentStatus[] = $this->prepareActionConfig($status);
+            }
+            $config = array_merge($statusConfigsBeforeCurrentStatus, $statusConfigsAfterCurrentStatus);
+        } else {
+            foreach ($statusList as $status) {
+                $config[] = $this->prepareActionConfig($status);
+            }
+        }
+
+        return $config;
     }
 
     /**
@@ -157,5 +125,43 @@ class Save extends ButtonAbstract implements ButtonProviderInterface
         ];
 
         return $dataAttribute;
+    }
+
+    /**
+     * Resolve current request status
+     *
+     * @param StatusInterface[] $statusList
+     * @return StatusInterface|false
+     */
+    private function resolveCurrentRequestStatus($statusList)
+    {
+        $request = $this->getRmaRequest();
+        if (!$request) {
+            return false;
+        }
+        $status = array_filter(
+            $statusList,
+            function (StatusInterface $status) use ($request) {
+                return $status->getId() == $request->getStatusId();
+            }
+        );
+
+        return reset($status);
+    }
+
+    /**
+     * Prepare action config
+     *
+     * @param StatusInterface $status
+     * @return array
+     */
+    private function prepareActionConfig($status)
+    {
+        return [
+            'action' => strtolower(str_replace(' ', '_', $status->getName())),
+            'label' => __('Set to %1', $status->getName()),
+            'data_attribute' => $this->prepareDataAttribute(['status_id' => $status->getId()]),
+            'sort_order' => $status->getSortOrder()
+        ];
     }
 }

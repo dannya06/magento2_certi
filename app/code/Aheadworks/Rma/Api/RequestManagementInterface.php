@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Api;
@@ -42,6 +42,14 @@ interface RequestManagementInterface
      * @return string
      */
     public function getPrintLabelUrl($requestId, $storeId = null);
+
+    /**
+     * Retrieve print label url for admin
+     *
+     * @param int $requestId
+     * @return string
+     */
+    public function getPrintLabelUrlForAdmin($requestId);
 
     /**
      * Change status

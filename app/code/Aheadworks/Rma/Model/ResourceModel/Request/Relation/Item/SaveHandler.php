@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\ResourceModel\Request\Relation\Item;
@@ -84,8 +84,9 @@ class SaveHandler implements ExtensionInterface
         $this->getConnection()->delete($tableName, ['entity_id = ?' => $entityId]);
 
         $customFieldsToInsert = [];
+        $customFields = $itemEntity->getCustomFields() ? : [];
         /** @var RequestCustomFieldValueInterface $customField */
-        foreach ($itemEntity->getCustomFields() as $customField) {
+        foreach ($customFields as $customField) {
             $customFieldsToInsert = array_merge(
                 $customFieldsToInsert,
                 $this->prepareCustomFieldData($entityId, $customField)

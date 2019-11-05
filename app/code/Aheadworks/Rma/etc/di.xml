@@ -2,7 +2,7 @@
 <!--
 /**
 * Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
+See LICENSE.txt for license details.
 */
 -->
 
@@ -13,6 +13,9 @@
     <preference for="Aheadworks\Rma\Api\Data\CustomFieldOptionInterface" type="Aheadworks\Rma\Model\CustomField\Option" />
     <preference for="Aheadworks\Rma\Api\Data\StoreValueInterface" type="Aheadworks\Rma\Model\StoreValue" />
     <preference for="Aheadworks\Rma\Api\Data\StatusEmailTemplateInterface" type="Aheadworks\Rma\Model\Status\EmailTemplate" />
+    <preference for="Aheadworks\Rma\Api\Data\CustomFieldOptionActionInterface" type="Aheadworks\Rma\Model\CustomField\Option\Action" />
+    <preference for="Aheadworks\Rma\Api\CustomFieldOptionActionRepositoryInterface" type="Aheadworks\Rma\Model\CustomField\Option\ActionRepository" />
+    <preference for="Aheadworks\Rma\Api\Data\CustomFieldOptionActionSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Aheadworks\Rma\Api\StatusRepositoryInterface" type="Aheadworks\Rma\Model\StatusRepository" />
     <preference for="Aheadworks\Rma\Api\Data\StatusInterface" type="Aheadworks\Rma\Model\Status" />
     <preference for="Aheadworks\Rma\Api\Data\StatusSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
@@ -55,6 +58,10 @@
                 </item>
                 <item name="Aheadworks\Rma\Api\Data\CannedResponseInterface" xsi:type="array">
                     <item name="entityTableName" xsi:type="string">aw_rma_canned_response</item>
+                    <item name="identifierField" xsi:type="string">id</item>
+                </item>
+                <item name="Aheadworks\Rma\Api\Data\CustomFieldOptionActionInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">aw_rma_custom_field_option_action</item>
                     <item name="identifierField" xsi:type="string">id</item>
                 </item>
             </argument>
@@ -290,6 +297,13 @@
                         <item name="1" xsi:type="string">cancel</item>
                     </item>
                 </item>
+                <!-- CUSTOM STATUS -->
+                <item name="custom" xsi:type="array">
+                    <item name="available_for_statuses" xsi:type="array"/>
+                    <item name="available_for_actions" xsi:type="array">
+                        <item name="0" xsi:type="string">update</item>
+                    </item>
+                </item>
             </argument>
             <argument name="adminRestrictions" xsi:type="array">
                 <!-- APPROVED -->
@@ -300,6 +314,7 @@
                     <item name="available_for_actions" xsi:type="array">
                         <item name="0" xsi:type="string">update</item>
                         <item name="1" xsi:type="string">package_received</item>
+                        <item name="2" xsi:type="string">print_label</item>
                     </item>
                 </item>
                 <!-- CANCELED -->
@@ -332,7 +347,6 @@
                     <item name="available_for_actions" xsi:type="array">
                         <item name="0" xsi:type="string">update</item>
                         <item name="1" xsi:type="string">close</item>
-                        <item name="2" xsi:type="string">create_credit_memo</item>
                     </item>
                 </item>
                 <!-- PACKAGE_RECEIVED -->
@@ -345,7 +359,6 @@
                         <item name="0" xsi:type="string">update</item>
                         <item name="1" xsi:type="string">close</item>
                         <item name="2" xsi:type="string">issue_refund</item>
-                        <item name="3" xsi:type="string">create_replacement_order</item>
                     </item>
                 </item>
                 <!-- PACKAGE_SENT -->
@@ -364,6 +377,13 @@
                         <item name="1" xsi:type="string">cancel</item>
                         <item name="2" xsi:type="string">approve</item>
                         <item name="3" xsi:type="string">close</item>
+                    </item>
+                </item>
+                <!-- CUSTOM STATUS -->
+                <item name="custom" xsi:type="array">
+                    <item name="available_for_statuses" xsi:type="array"/>
+                    <item name="available_for_actions" xsi:type="array">
+                        <item name="0" xsi:type="string">update</item>
                     </item>
                 </item>
             </argument>

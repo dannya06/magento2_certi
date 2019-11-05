@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Api\Data;
@@ -20,6 +20,8 @@ interface StatusInterface extends ExtensibleDataInterface
      */
     const ID = 'id';
     const NAME = 'name';
+    const IS_ACTIVE = 'is_active';
+    const SORT_ORDER = 'sort_order';
     const IS_EMAIL_CUSTOMER = 'is_email_customer';
     const IS_EMAIL_ADMIN = 'is_email_admin';
     const IS_THREAD = 'is_thread';
@@ -62,6 +64,36 @@ interface StatusInterface extends ExtensibleDataInterface
      * @return $this
      */
     public function setName($name);
+
+    /**
+     * Is active
+     *
+     * @return bool
+     */
+    public function isActive();
+
+    /**
+     * Set is active
+     *
+     * @param bool $isActive
+     * @return $this
+     */
+    public function setIsActive($isActive);
+
+    /**
+     * Get sort order
+     *
+     * @return int
+     */
+    public function getSortOrder();
+
+    /**
+     * Set sort order
+     *
+     * @param int|null $sortOrder
+     * @return $this
+     */
+    public function setSortOrder($sortOrder);
 
     /**
      * Is email customer

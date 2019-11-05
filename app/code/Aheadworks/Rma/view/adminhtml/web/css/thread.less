@@ -5,6 +5,8 @@
 @reply__color: #555555;
 
 .aw-rma__thread-message {
+    width: 50%;
+    float: left;
 
     .thread-header {
         margin-bottom: 15px;
@@ -22,7 +24,7 @@
     .thread-content {
 
         .message-area {
-            width: ~"calc( (100%) * 0.5 - 30px )";
+            width: ~"calc( (100%) * 1 - 30px )";
 
             .admin__field-control {
                 .message-is-internal {
@@ -84,6 +86,7 @@
 .aw-rma__thread-messages {
     list-style: none;
     padding: 0;
+    clear: both;
 
     .thread-message {
         display: block;

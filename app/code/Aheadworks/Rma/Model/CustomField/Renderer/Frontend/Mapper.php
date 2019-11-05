@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\CustomField\Renderer\Frontend;
@@ -53,7 +53,7 @@ class Mapper
     public function map($customField, $requestStatus, $name)
     {
         $result = [];
-        if (count($customField->getOptions())) {
+        if (count((array)$customField->getOptions())) {
             $result = array_merge($result, $this->prepareOptions($customField, $requestStatus));
         }
         $result['uid'] = $this->getUid();

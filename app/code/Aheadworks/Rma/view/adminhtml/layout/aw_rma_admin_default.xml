@@ -2,7 +2,7 @@
 <!--
 /**
 * Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
+See LICENSE.txt for license details.
 */
 -->
 
@@ -56,7 +56,7 @@
                     <arguments>
                         <argument name="label" xsi:type="string">Readme</argument>
                         <argument name="link_attributes" xsi:type="array">
-                            <item name="href" xsi:type="string">http://confluence.aheadworks.com/display/EUDOC/RMA+-+Magento+2</item>
+                            <item name="href" xsi:type="string">https://aheadworks.atlassian.net/wiki/spaces/EUDOC/pages/1229260088/RMA+-+Magento+2</item>
                             <item name="target" xsi:type="string">_blank</item>
                             <item name="class" xsi:type="string">separator</item>
                         </argument>

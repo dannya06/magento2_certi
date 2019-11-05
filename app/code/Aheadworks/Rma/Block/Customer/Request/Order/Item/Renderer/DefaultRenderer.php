@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Block\Customer\Request\Order\Item\Renderer;
@@ -216,7 +216,7 @@ class DefaultRenderer extends Template
     /**
      * Check if item available
      *
-     * @param \Magento\Sales\Model\Order\Item $item
+     * @param OrderItem $item
      * @return bool
      */
     public function isItemAvailable($item)
@@ -232,5 +232,16 @@ class DefaultRenderer extends Template
     public function getItemNumber()
     {
         return $this->getItem()->getId();
+    }
+
+    /**
+     * Retrieve shipped qty
+     *
+     * @param OrderItem $item
+     * @return int
+     */
+    public function getQtyShipped($item)
+    {
+        return $item->getParentItem() ? $item->getParentItem()->getQtyShipped() * 1 : $item->getQtyShipped() * 1;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Setup;
@@ -11,6 +11,7 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Aheadworks\Rma\Setup\Updater\Schema\Updater as SchemaUpdater;
 
 /**
  * Class InstallSchema
@@ -25,11 +26,20 @@ class InstallSchema implements InstallSchemaInterface
     private $upgradeSchema120;
 
     /**
-     * @param UpgradeSchema120 $upgradeSchema120
+     * @var SchemaUpdater
      */
-    public function __construct(UpgradeSchema120 $upgradeSchema120)
-    {
+    private $schemaUpdater;
+
+    /**
+     * @param UpgradeSchema120 $upgradeSchema120
+     * @param SchemaUpdater $schemaUpdater
+     */
+    public function __construct(
+        UpgradeSchema120 $upgradeSchema120,
+        SchemaUpdater $schemaUpdater
+    ) {
         $this->upgradeSchema120 = $upgradeSchema120;
+        $this->schemaUpdater = $schemaUpdater;
     }
 
     /**
@@ -47,6 +57,7 @@ class InstallSchema implements InstallSchemaInterface
             ->addMessageTables($installer)
             ->addCannedResponseTables($installer);
         $this->upgradeSchema120->install($installer);
+        $this->schemaUpdater->update140($installer);
 
         $installer->endSetup();
     }

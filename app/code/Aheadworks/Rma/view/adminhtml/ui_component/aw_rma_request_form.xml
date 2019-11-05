@@ -2,11 +2,13 @@
 <!--
 /**
 * Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
+See LICENSE.txt for license details.
 */
 -->
 
-<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd"
+      class="Aheadworks\Rma\Ui\Component\Request\Form">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">aw_rma_request_form.aw_rma_request_form_data_source</item>
@@ -21,8 +23,7 @@
         <item name="buttons" xsi:type="array">
             <item name="back" xsi:type="string">Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button\Back</item>
             <item name="reset" xsi:type="string">Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button\Reset</item>
-            <item name="createReplacementOrder" xsi:type="string">Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button\CreateReplacementOrder</item>
-            <item name="createCreditMemo" xsi:type="string">Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button\CreateCreditMemo</item>
+            <item name="printLabel" xsi:type="string">Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button\PrintLabel</item>
             <item name="saveAndContinue" xsi:type="string">Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button\SaveAndContinue</item>
             <item name="save" xsi:type="string">Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button\Save</item>
         </item>
@@ -654,6 +655,65 @@
                     </item>
                 </argument>
             </field>
+        </container>
+        <container name="coupon_code_generator" class="Aheadworks\Rma\Ui\Component\Form\Request\CouponCodeGenerator">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="formElement" xsi:type="string">container</item>
+                    <item name="template" xsi:type="string">Aheadworks_Rma/ui/form/collection</item>
+                    <item name="additionalClasses" xsi:type="string">admin__fieldset coupon-generator</item>
+                </item>
+            </argument>
+            <field name="ccg_rule_id" class="Aheadworks\Rma\Ui\Component\Form\Request\CouponCodeGenerator\Rule">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="label" xsi:type="string" translate="true">Rule</item>
+                        <item name="dataType" xsi:type="string">number</item>
+                        <item name="formElement" xsi:type="string">select</item>
+                        <item name="source" xsi:type="string">request</item>
+                    </item>
+                </argument>
+            </field>
+            <field name="ccg_send_email_to_recipient">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="label" xsi:type="string" translate="true">Send Email with Coupon to Recipient</item>
+                        <item name="dataType" xsi:type="string">boolean</item>
+                        <item name="formElement" xsi:type="string">checkbox</item>
+                        <item name="source" xsi:type="string">request</item>
+                        <item name="prefer" xsi:type="string">checkbox</item>
+                        <item name="valueMap" xsi:type="array">
+                            <item name="true" xsi:type="number">1</item>
+                            <item name="false" xsi:type="number">0</item>
+                        </item>
+                        <item name="default" xsi:type="number">1</item>
+                    </item>
+                </argument>
+            </field>
+            <container name="generate_coupon">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="title" xsi:type="string" translate="true">Generate Coupon</item>
+                        <item name="formElement" xsi:type="string">container</item>
+                        <item name="additionalClasses" xsi:type="string">admin__field-small coupon_generate_container</item>
+                        <item name="componentType" xsi:type="string">container</item>
+                        <item name="component" xsi:type="string">Aheadworks_Rma/js/ui/form/components/coupon-generate-container</item>
+                        <item name="generateUrl" xsi:type="url" path="aw_rma_admin/rma/generateCoupon"/>
+                        <item name="template" xsi:type="string">Aheadworks_Rma/ui/form/components/coupon-generate-container</item>
+                        <item name="source" xsi:type="string">request</item>
+                        <item name="copyCodeLink" xsi:type="string" translate="true">Copy code to clipboard</item>
+                        <item name="additionalForGroup" xsi:type="boolean">true</item>
+                        <item name="provider" xsi:type="boolean">false</item>
+                        <item name="displayArea" xsi:type="string">insideGroup</item>
+                        <item name="actions" xsi:type="array">
+                            <item name="0" xsi:type="array">
+                                <item name="targetName" xsi:type="string">aw_rma_request_form.aw_rma_request_form.history.coupon_code_generator.generate_coupon</item>
+                                <item name="actionName" xsi:type="string">generate</item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </container>
         </container>
         <container name="thread_list" class="Aheadworks\Rma\Ui\Component\Form\Request\ThreadList">
             <argument name="data" xsi:type="array">

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model;
@@ -138,22 +138,22 @@ class CustomFieldRepository implements CustomFieldRepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function get($customFieldId, $storeId = null)
     {
-        if (!isset($this->registry[$customFieldId])) {
+        $storeId = isset($storeId) ? $storeId: $this->storeManager->getStore()->getId();
+        if (!isset($this->registry[$customFieldId][$storeId])) {
             /** @var CustomFieldInterface $code */
             $customField = $this->customFieldDataFactory->create();
-            $storeId = $storeId ? : $this->storeManager->getStore()->getId();
             $arguments = ['store_id' => $storeId];
             $this->entityManager->load($customField, $customFieldId, $arguments);
             if (!$customField->getId()) {
                 throw NoSuchEntityException::singleField('customFieldId', $customFieldId);
             }
-            $this->registry[$customFieldId] = $customField;
+            $this->registry[$customFieldId][$storeId] = $customField;
         }
-        return $this->registry[$customFieldId];
+        return $this->registry[$customFieldId][$storeId];
     }
 
     /**

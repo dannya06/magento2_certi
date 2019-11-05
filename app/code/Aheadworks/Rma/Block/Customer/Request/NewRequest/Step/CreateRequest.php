@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Block\Customer\Request\NewRequest\Step;
@@ -16,6 +16,8 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Aheadworks\Rma\Block\CustomField\Input\Renderer\Factory as CustomFieldRendererFactory;
+use Magento\Config\Model\Config\Source\Enabledisable;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class CreateRequest
@@ -104,6 +106,7 @@ class CreateRequest extends Template
      * Retrieve request custom fields
      *
      * @return CustomFieldInterface[]
+     * @throws LocalizedException
      */
     public function getRequestCustomFields()
     {
@@ -111,6 +114,7 @@ class CreateRequest extends Template
             ->addFilter(CustomFieldInterface::REFERS, Refers::REQUEST)
             ->addFilter('editable_or_visible_for_status', EditAt::NEW_REQUEST_PAGE)
             ->addFilter(CustomFieldInterface::OPTIONS, 'enabled')
+            ->addFilter(CustomFieldInterface::IS_ACTIVE, Enabledisable::ENABLE_VALUE)
             ->addFilter(CustomFieldInterface::WEBSITE_IDS, $this->_storeManager->getWebsite()->getId());
 
         return $this->customFieldRepository

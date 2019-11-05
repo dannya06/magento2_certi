@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Block\Customer\Request\NewRequest\Step;
@@ -16,7 +16,6 @@ use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Model\Order;
 use \Magento\Sales\Model\Order\Item as OrderItem;
 use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Aheadworks\Rma\Block\Customer\Request\Order\Item\Renderer\Factory as ItemRendererFactory;
 
 /**
@@ -57,11 +56,6 @@ class SelectOrder extends Template
     private $customerSession;
 
     /**
-     * @var PriceCurrencyInterface
-     */
-    private $priceCurrency;
-
-    /**
      * @var ItemRendererFactory
      */
     private $itemRendererFactory;
@@ -73,7 +67,6 @@ class SelectOrder extends Template
      * @param RequestOrder $requestOrder
      * @param RequestOrderItem $requestOrderItem
      * @param CustomerSession $customerSession
-     * @param PriceCurrencyInterface $priceCurrency
      * @param ItemRendererFactory $itemRendererFactory
      * @param array $data
      */
@@ -84,7 +77,6 @@ class SelectOrder extends Template
         RequestOrder $requestOrder,
         RequestOrderItem $requestOrderItem,
         CustomerSession $customerSession,
-        PriceCurrencyInterface $priceCurrency,
         ItemRendererFactory $itemRendererFactory,
         array $data = []
     ) {
@@ -94,7 +86,6 @@ class SelectOrder extends Template
         $this->requestOrder = $requestOrder;
         $this->requestOrderItem = $requestOrderItem;
         $this->customerSession = $customerSession;
-        $this->priceCurrency = $priceCurrency;
         $this->itemRendererFactory = $itemRendererFactory;
     }
 
@@ -194,17 +185,6 @@ class SelectOrder extends Template
             $message = __('You have no completed orders to request RMA');
         }
         return $message;
-    }
-
-    /**
-     * Convert and format price
-     *
-     * @param float $amount
-     * @return string
-     */
-    public function convertAndFormatPrice($amount)
-    {
-        return $this->priceCurrency->convertAndFormat($amount);
     }
 
     /**

@@ -2,7 +2,7 @@
     <text args="$parent.address().prefix"/> <text args="$parent.address().firstname"/>
     <text args="$parent.address().lastname"/> <text args="$parent.address().suffix"/>
     <br>
-    <text args="$parent.address().street"/>,
+    <text args="$parent.formatStreet($parent.address().street)"/>,
     <br>
     <text args="$parent.address().city"/>, <text args="$parent.address().region"/>, <text args="$parent.address().postcode"/>,
     <text args="$parent.getCountryName($parent.address().country_id)"/>

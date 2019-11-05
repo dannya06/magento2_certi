@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\Request\Update;
@@ -155,14 +155,17 @@ class Validator extends AbstractValidator
      *
      * @param int $newStatus
      * @return bool
+     * @throws \Exception
      */
     private function canUpdateStatus($newStatus)
     {
-        if ($this->statusResolver->isAvailableForStatus($newStatus, $this->getRequest(), $this->isCausedByAdmin())) {
-            return true;
-        }
-
-        return false;
+        return $this->isCausedByAdmin()
+            ? true
+            : $this->statusResolver->isAvailableForStatus(
+                $newStatus,
+                $this->getRequest(),
+                $this->isCausedByAdmin()
+            );
     }
 
     /**

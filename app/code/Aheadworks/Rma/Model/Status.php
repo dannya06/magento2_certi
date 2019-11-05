@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model;
@@ -55,6 +55,38 @@ class Status extends AbstractModel implements StatusInterface
     public function setName($name)
     {
         return $this->setData(self::NAME, $name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isActive()
+    {
+        return $this->getData(self::IS_ACTIVE);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIsActive($isActive)
+    {
+        return $this->setData(self::IS_ACTIVE, $isActive);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSortOrder()
+    {
+        return $this->getData(self::SORT_ORDER);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSortOrder($sortOrder)
+    {
+        return $this->setData(self::SORT_ORDER, $sortOrder);
     }
 
     /**

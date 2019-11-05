@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\Request\Resolver;
@@ -36,12 +36,15 @@ class Status
      * @param RequestInterface $request
      * @param bool $causedByAdmin
      * @return bool
+     * @throws \Exception
      */
     public function isAvailableForStatus($status, $request, $causedByAdmin)
     {
         return in_array(
             $request->getStatusId(),
-            $this->restrictionsPool->getRestrictions($status, $causedByAdmin)->getAvailableForStatuses()
+            $this->restrictionsPool
+                ->getRestrictions($status, $request, $causedByAdmin)
+                ->getAvailableForStatuses()
         );
     }
 
@@ -52,12 +55,15 @@ class Status
      * @param RequestInterface $request
      * @param bool $causedByAdmin
      * @return bool
+     * @throws \Exception
      */
     public function isAvailableActionForStatus($action, $request, $causedByAdmin)
     {
         return in_array(
             $action,
-            $this->restrictionsPool->getRestrictions($request->getStatusId(), $causedByAdmin)->getAvailableForActions()
+            $this->restrictionsPool
+                ->getRestrictions($request->getStatusId(), $request, $causedByAdmin)
+                ->getAvailableForActions()
         );
     }
 }

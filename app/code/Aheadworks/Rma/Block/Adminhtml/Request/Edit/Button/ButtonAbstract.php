@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Block\Adminhtml\Request\Edit\Button;
@@ -10,6 +10,7 @@ use Aheadworks\Rma\Api\RequestRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Aheadworks\Rma\Model\Request\Resolver\Status as StatusResolver;
 use Magento\Backend\Block\Widget\Context;
+use Aheadworks\Rma\Model\Status\Request\StatusList;
 
 /**
  * Class ButtonAbstract
@@ -34,18 +35,26 @@ abstract class ButtonAbstract
     protected $statusResolver;
 
     /**
+     * @var StatusList
+     */
+    protected $statusList;
+
+    /**
      * @param Context $context
      * @param RequestRepositoryInterface $requestRepository
      * @param StatusResolver $statusResolver
+     * @param StatusList $statusList
      */
     public function __construct(
         Context $context,
         RequestRepositoryInterface $requestRepository,
-        StatusResolver $statusResolver
+        StatusResolver $statusResolver,
+        StatusList $statusList
     ) {
         $this->context = $context;
         $this->requestRepository = $requestRepository;
         $this->statusResolver = $statusResolver;
+        $this->statusList = $statusList;
     }
 
     /**
@@ -76,21 +85,6 @@ abstract class ButtonAbstract
         }
 
         return null;
-    }
-
-    /**
-     * Sort buttons by sort order
-     *
-     * @param array $itemA
-     * @param array $itemB
-     * @return int
-     */
-    protected function sortButtons(array $itemA, array $itemB)
-    {
-        $sortOrderA = isset($itemA['sort_order']) ? intval($itemA['sort_order']) : 0;
-        $sortOrderB = isset($itemB['sort_order']) ? intval($itemB['sort_order']) : 0;
-
-        return $sortOrderA - $sortOrderB;
     }
 
     /**

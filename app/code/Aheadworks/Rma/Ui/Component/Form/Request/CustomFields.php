@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Ui\Component\Form\Request;
@@ -15,17 +15,16 @@ use Aheadworks\Rma\Model\Source\CustomField\EditAt;
 use Aheadworks\Rma\Model\Source\CustomField\Refers;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\Store;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\Component\Container;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Form\Field;
-use Magento\Ui\Component\Form\Element\Input;
-use Magento\Ui\Component\Form\Element\DataType\Text;
 use Magento\Ui\Component\Form\Element\ActionDelete;
+use Magento\Config\Model\Config\Source\Enabledisable;
+use Aheadworks\Rma\Model\CustomField\Resolver\Request as CustomFieldRequestResolver;
 
 /**
  * Class CustomFields
@@ -65,12 +64,18 @@ class CustomFields extends Container
     private $mapper;
 
     /**
+     * @var CustomFieldRequestResolver
+     */
+    private $requestResolver;
+
+    /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param CustomFieldRepositoryInterface $customFieldRepository
      * @param RequestRepositoryInterface $requestRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param StoreManagerInterface $storeManager
+     * @param CustomFieldRequestResolver $requestResolver
      * @param Mapper $mapper
      * @param UiComponentInterface[] $components
      * @param array $data
@@ -82,6 +87,7 @@ class CustomFields extends Container
         RequestRepositoryInterface $requestRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         StoreManagerInterface $storeManager,
+        CustomFieldRequestResolver $requestResolver,
         Mapper $mapper,
         array $components = [],
         array $data = []
@@ -93,6 +99,7 @@ class CustomFields extends Container
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->storeManager = $storeManager;
         $this->mapper = $mapper;
+        $this->requestResolver = $requestResolver;
     }
 
     /**
@@ -140,17 +147,24 @@ class CustomFields extends Container
      * @param int $status
      * @return CustomFieldInterface[]
      * @throws NoSuchEntityException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     private function getCustomFields($refersTo, $status)
     {
         $this->searchCriteriaBuilder
             ->addFilter(CustomFieldInterface::REFERS, $refersTo)
             ->addFilter(CustomFieldInterface::OPTIONS, 'enabled');
-        if ($status != EditAt::NEW_REQUEST_PAGE) {
+        if ($status == EditAt::NEW_REQUEST_PAGE) {
+            $this->searchCriteriaBuilder->addFilter(CustomFieldInterface::IS_ACTIVE, Enabledisable::ENABLE_VALUE);
+        } else {
             $requestStoreId = $this->getRequest()->getStoreId();
             $websiteId = $this->storeManager->getStore($requestStoreId)->getWebsiteId();
             $this->searchCriteriaBuilder->addFilter(CustomFieldInterface::WEBSITE_IDS, $websiteId);
+            $this->searchCriteriaBuilder->addFilter(
+                'main_table.id',
+                $this->requestResolver->getCustomFieldIdsByRequest($this->getRequest(), $refersTo),
+                'in'
+            );
         }
 
         return $this->customFieldRepository
@@ -165,7 +179,7 @@ class CustomFields extends Container
      * @param string $type
      * @param array $config
      * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     private function createComponent($fieldName, $type, $config)
     {

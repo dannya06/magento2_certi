@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\Request\Order;
@@ -153,8 +153,10 @@ class Item
             if ($this->isBundleDynamicPrice($item) && $item->getChildrenItems()) {
                 /** @var \Magento\Sales\Model\Order\Item $childrenItem */
                 foreach ($item->getChildrenItems() as $childrenItem) {
-                    $childrenMax = $childrenItem->getQtyInvoiced() - $childrenItem->getQtyRefunded();
                     $requestItems = $this->getAllRequestItems($item->getOrderId(), $excludeRequestId);
+                    $childrenMax = empty($requestItems)
+                        ? $childrenItem->getQtyInvoiced() - $childrenItem->getQtyRefunded()
+                        : $childrenItem->getQtyInvoiced();
                     foreach ($requestItems as $requestItem) {
                         if ($requestItem->getItemId() == $childrenItem->getId()) {
                             $childrenMax -= $requestItem->getQty();
@@ -163,10 +165,10 @@ class Item
                     $max += $childrenMax;
                 }
             } else {
-                $max = $excludeRequestId
-                    ? $item->getQtyInvoiced()
-                    : $item->getQtyInvoiced() - $item->getQtyRefunded();
                 $requestItems = $this->getAllRequestItems($item->getOrderId(), $excludeRequestId);
+                $max = empty($requestItems)
+                    ? $item->getQtyInvoiced() - $item->getQtyRefunded()
+                    : $item->getQtyInvoiced();
                 foreach ($requestItems as $requestItem) {
                     if ($requestItem->getItemId() == $item->getId()) {
                         $max -= $requestItem->getQty();

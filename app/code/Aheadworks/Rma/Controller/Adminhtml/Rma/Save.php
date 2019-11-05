@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Controller\Adminhtml\Rma;
@@ -93,6 +93,13 @@ class Save extends Action
                 $requestEntity = $this->performSave($data);
                 $this->dataPersistor->clear('aw_rma_request');
                 $this->messageManager->addSuccessMessage(__('Return has been successfully saved.'));
+                $redirectPath = isset($data['redirect_path']) ? $data['redirect_path'] : false;
+                if ($redirectPath) {
+                    return $resultRedirect->setPath(
+                        '*/*/action_' . $redirectPath,
+                        ['request_id' => $requestEntity->getId()]
+                    );
+                }
                 if ($this->getRequest()->getParam('back') == 'edit') {
                     return $resultRedirect->setPath('*/*/edit', ['id' => $requestEntity->getId()]);
                 }
@@ -123,6 +130,7 @@ class Save extends Action
      */
     private function performSave($data)
     {
+        /** @var RmaRequestInterface $requestObject */
         $requestObject = $this->requestFactory->create();
         $this->dataObjectHelper->populateWithArray(
             $requestObject,
@@ -131,9 +139,17 @@ class Save extends Action
         );
 
         if ($this->isUpdateRequest($data)) {
-            $request = $this->requestManagement->updateRequest($requestObject, true);
+            $request = $this->requestManagement->updateRequest(
+                $requestObject,
+                true,
+                $requestObject->getStoreId()
+            );
         } else {
-            $request = $this->requestManagement->createRequest($requestObject, true);
+            $request = $this->requestManagement->createRequest(
+                $requestObject,
+                true,
+                $requestObject->getStoreId()
+            );
         }
 
         return $request;

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\CustomField;
@@ -135,5 +135,37 @@ class Option extends AbstractModel implements CustomFieldOptionInterface
     public function setStorefrontLabel($storefrontLabels)
     {
         return $this->setData(self::STOREFRONT_LABEL, $storefrontLabels);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getActionId()
+    {
+        return $this->getData(self::ACTION_ID);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setActionId($actionId)
+    {
+        return $this->setData(self::ACTION_ID, $actionId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getActionStatuses()
+    {
+        return $this->getData(self::ACTION_STATUSES);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setActionStatuses($actionStatuses)
+    {
+        return $this->setData(self::ACTION_STATUSES, $actionStatuses);
     }
 }

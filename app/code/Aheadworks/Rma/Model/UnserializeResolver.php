@@ -1,12 +1,13 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model;
 
 use Aheadworks\Rma\Model\Serialize\Factory;
+use Magento\Framework\Serialize\Serializer\Serialize;
 
 /**
  * Class UnserializeResolver
@@ -21,11 +22,20 @@ class UnserializeResolver
     private $factory;
 
     /**
-     * @param Factory $factory
+     * @var Serialize
      */
-    public function __construct(Factory $factory)
-    {
+    private $phpSerializer;
+
+    /**
+     * @param Factory $factory
+     * @param Serialize $phpSerializer
+     */
+    public function __construct(
+        Factory $factory,
+        Serialize $phpSerializer
+    ) {
         $this->factory = $factory;
+        $this->phpSerializer = $phpSerializer;
     }
 
     /**
@@ -49,13 +59,12 @@ class UnserializeResolver
      */
     private function unserializeString($string)
     {
-        $result = @unserialize($string);
-
-        if ($result !== false || $string === 'b:0;') {
-            return $result;
-        } else {
-            return false;
+        try {
+            $result = $this->phpSerializer->unserialize($string);
+        } catch (\Exception $e) {
+            $result = false;
         }
+        return $result;
     }
 
     /**

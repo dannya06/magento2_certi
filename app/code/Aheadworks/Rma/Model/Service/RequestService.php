@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\Service;
@@ -144,6 +144,17 @@ class RequestService implements RequestManagementInterface
         }
 
         return $this->url->getEncryptUrl('aw_rma/request/printLabel', $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPrintLabelUrlForAdmin($requestId)
+    {
+        $request = $this->requestRepository->get($requestId);
+        $params = ['id' => $request->getExternalLink()];
+
+        return $this->url->getEncryptUrl('aw_rma_admin/rma_action/printLabel', $params);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model;
@@ -23,6 +23,7 @@ class Config
     const XML_PATH_GENERAL_ALLOW_GUEST_REQUESTS = 'aw_rma/general/allow_guest_requests';
     const XML_PATH_GENERAL_CONFIRM_SHIPPING_POPUP_TEXT = 'aw_rma/general/confirm_shipping_popup_text';
     const XML_PATH_GENERAL_ALLOW_AUTO_APPROVE = 'aw_rma/general/allow_auto_approve';
+    const XML_PATH_GENERAL_MANUFACTURER_ATTRIBUTE_CODE = 'aw_rma/general/manufacturer_attribute';
     const XML_PATH_BLOCKS_AND_POLICY_GUEST_PAGE_BLOCK = 'aw_rma/blocks_and_policy/guest_rma_block';
     const XML_PATH_BLOCKS_AND_POLICY_PRODUCT_SELECTION_BLOCK = 'aw_rma/blocks_and_policy/product_selection_block';
     const XML_PATH_BLOCKS_AND_POLICY_REASONS_AND_DETAILS_BLOCK = 'aw_rma/blocks_and_policy/reasons_and_details_block';
@@ -303,5 +304,15 @@ class Config
             ScopeInterface::SCOPE_STORE,
             $storeId
         );
+    }
+
+    /**
+     * Get manufacturer product attribute code
+     *
+     * @return int|null
+     */
+    public function getManufacturerProductAttributeCode()
+    {
+        return $this->scopeConfig->getValue(self::XML_PATH_GENERAL_MANUFACTURER_ATTRIBUTE_CODE);
     }
 }

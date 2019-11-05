@@ -1,6 +1,5 @@
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Copyright 2019 aheadWorks. All rights reserved.\nSee LICENSE.txt for license details.
  */
 
 define([
@@ -164,6 +163,16 @@ define([
          */
         getCountryName: function(countryId) {
             return (countryData()[countryId] !== undefined) ? countryData()[countryId].name : '';
+        },
+
+        /**
+         * Format street
+         *
+         * @param {Array} street
+         * @return {String}
+         */
+        formatStreet: function (street) {
+            return _.values(street).filter(Boolean).join(', ');
         },
 
         /**

@@ -2,7 +2,7 @@
 <!--
 /**
 * Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
+See LICENSE.txt for license details.
 */
 -->
 
@@ -101,13 +101,7 @@
                         <item name="label" xsi:type="string" translate="true">Change Status</item>
                     </item>
                 </argument>
-                <argument name="actions" xsi:type="configurableObject">
-                    <argument name="class" xsi:type="string">Aheadworks\Rma\Ui\Component\MassAction\CannedResponse\Status\Options</argument>
-                    <argument name="data" xsi:type="array">
-                        <item name="urlPath" xsi:type="string">aw_rma_admin/cannedresponse/MassStatus</item>
-                        <item name="paramName" xsi:type="string">status</item>
-                    </argument>
-                </argument>
+                <argument name="actions" xsi:type="object">Aheadworks\Rma\Ui\Component\MassAction\CannedResponse\Status\Options</argument>
             </action>
             <action name="delete">
                 <argument name="data" xsi:type="array">

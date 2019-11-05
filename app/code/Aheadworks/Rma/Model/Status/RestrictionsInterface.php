@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\Status;
@@ -34,4 +34,12 @@ interface RestrictionsInterface
      * @return array
      */
     public function getAvailableForActions();
+
+    /**
+     * Set available for actions
+     *
+     * @param array $actions
+     * @return array
+     */
+    public function setAvailableForActions($actions);
 }

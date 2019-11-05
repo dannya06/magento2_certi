@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\Request\Resolver;
@@ -137,6 +137,19 @@ class OrderItem
         $item = $this->getItemWithPrice($orderItemId);
 
         return $item->getBaseRowTotal() + $item->getBaseTaxAmount() - $item->getBaseDiscountAmount();
+    }
+
+    /**
+     * Retrieve item base currency code
+     *
+     * @param int $orderItemId
+     * @return string
+     */
+    public function getItemBaseCurrencyCode($orderItemId)
+    {
+        $item = $this->getOrderItemById($orderItemId);
+
+        return $item->getStore()->getBaseCurrencyCode();
     }
 
     /**

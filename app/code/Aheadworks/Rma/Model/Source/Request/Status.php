@@ -1,12 +1,14 @@
 <?php
 /**
  * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+See LICENSE.txt for license details.
  */
 
 namespace Aheadworks\Rma\Model\Source\Request;
 
 use Magento\Framework\Option\ArrayInterface;
+use Aheadworks\Rma\Model\Status\Request\StatusList;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class Status
@@ -16,7 +18,7 @@ use Magento\Framework\Option\ArrayInterface;
 class Status implements ArrayInterface
 {
     /**#@+
-     * Constants defined for RMA status
+     * Constants defined for default RMA status
      */
     const APPROVED = 1;
     const CANCELED = 2;
@@ -33,25 +35,40 @@ class Status implements ArrayInterface
     private $options;
 
     /**
-     * Retrieve options without translation
-     *
-     * @return array
+     * @var StatusList
      */
-    public function getOptionsWithoutTranslation()
-    {
-        return [
-            ['value' => self::PENDING_APPROVAL, 'label' => 'Pending Approval'],
-            ['value' => self::APPROVED, 'label' => 'Approved'],
-            ['value' => self::PACKAGE_SENT, 'label' => 'Package Sent'],
-            ['value' => self::PACKAGE_RECEIVED, 'label' => 'Package Received'],
-            ['value' => self::ISSUE_REFUND, 'label' => 'Issue Refund'],
-            ['value' => self::CLOSED, 'label' => 'Closed'],
-            ['value' => self::CANCELED, 'label' => 'Canceled']
-        ];
+    private $statusList;
+
+    /**
+     * @param StatusList $statusList
+     */
+    public function __construct(
+        StatusList $statusList
+    ) {
+        $this->statusList = $statusList;
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve options without translation
+     *
+     * @return array
+     * @throws LocalizedException
+     */
+    public function getOptionsWithoutTranslation()
+    {
+        $statusList = $this->statusList->retrieve();
+        $options = [];
+        foreach ($statusList as $status) {
+            $options[] = ['value' => $status->getId(), 'label' => $status->getName()];
+        }
+
+        return $options;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @throws LocalizedException
      */
     public function toOptionArray()
     {
@@ -70,6 +87,7 @@ class Status implements ArrayInterface
      * @param int $value
      * @param bool $translate
      * @return string|null
+     * @throws LocalizedException
      */
     public function getOptionLabelByValue($value, $translate = true)
     {
