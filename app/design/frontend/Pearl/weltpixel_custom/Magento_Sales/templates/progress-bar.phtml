@@ -1,0 +1,17 @@
+<ul class="opc-progress-bar">
+        <li class="opc-progress-bar-item pending" data-bind="css: item.isVisible() ? '_active' : ($parent.isProcessed(item) ? '_complete' : '')">
+            <span data-bind="i18n: item.title, click: $parent.navigateTo">Waiting for Confirmation</span>
+        </li>
+    
+        <li class="opc-progress-bar-item processing" data-bind="css: item.isVisible() ? '_active' : ($parent.isProcessed(item) ? '_complete' : '')">
+            <span data-bind="i18n: item.title, click: $parent.navigateTo">Processing</span>
+        </li>
+	
+	<li class="opc-progress-bar-item ship" data-bind="css: item.isVisible() ? '_active' : ($parent.isProcessed(item) ? '_complete' : '')">
+            <span data-bind="i18n: item.title, click: $parent.navigateTo">Shipped</span>
+        </li>
+
+	<li class="opc-progress-bar-item completed" data-bind="css: item.isVisible() ? '_active' : ($parent.isProcessed(item) ? '_complete' : '')">
+            <span data-bind="i18n: item.title, click: $parent.navigateTo">Order Complete</span>
+        </li>
+</ul>
