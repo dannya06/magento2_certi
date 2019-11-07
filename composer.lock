@@ -1731,7 +1731,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "ad8a1ec276ac8425f4e297c222ed734b66adcd95"
+                "reference": "52d235a372dd3820933368f6b94438a034d91913"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1770,7 +1770,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-09-24T14:20:40+00:00"
+            "time": "2019-11-07T04:23:56+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
