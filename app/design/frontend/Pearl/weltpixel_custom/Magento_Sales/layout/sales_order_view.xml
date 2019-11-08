@@ -10,6 +10,7 @@
         <referenceContainer name="content">
             <block class="Magento\Sales\Block\Order\Info" name="progress.bar" template="Magento_Sales::progress-bar.phtml" before="-"/>
             <block class="Magento\Framework\View\Element\Template" name="back-order" template="Magento_Sales::back-order.phtml" after="sales.order.info"/>
+            <block class="Magento\Framework\View\Element\Template" name="gosend.view" template="Magento_Sales::gosend-view.phtml" before="order.comments"/>
         </referenceContainer>
         <move element="sales.order.info" destination="content" after="progress.bar"/>
     </body>
