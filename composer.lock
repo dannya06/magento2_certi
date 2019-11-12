@@ -1562,7 +1562,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "bda4eedd27b66fd60239a454cc2780866b394e80"
+                "reference": "1762cf4adce0e5bdd96e60429d6b58f7eadbff1f"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1594,15 +1594,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-10-09T07:49:27+00:00"
+            "time": "2019-11-12T02:33:46+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "2.0.5",
+            "version": "2.0.7",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "e0867c977f7c106a1f02916159a66a13a2f7948a"
+                "reference": "56f4eeeea199502a3c68381a116a75c95fc77cd5"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1623,7 +1623,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2019-07-25T05:28:33+00:00"
+            "time": "2019-11-12T07:45:22+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -1660,7 +1660,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "da3aa725529d4eeb1b816cc016859dde61b8d66b"
+                "reference": "e31632ae1d1da9cfd1e62de3c2654d89892dbcfa"
             },
             "replace": {
                 "icubeus/module-gosend": "self.version"
@@ -1692,7 +1692,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2019-09-27T04:06:57+00:00"
+            "time": "2019-11-12T02:36:07+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
