@@ -1562,7 +1562,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "1762cf4adce0e5bdd96e60429d6b58f7eadbff1f"
+                "reference": "8f2e8b54b379bf87d67736627dc3f9ffd11fa5f6"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1594,7 +1594,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-12T02:33:46+00:00"
+            "time": "2019-11-13T12:01:20+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
