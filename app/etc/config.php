@@ -310,7 +310,7 @@ return [
         'WeltPixel_SampleData' => 1,
         'WeltPixel_Sitemap' => 1,
         'WeltPixel_SmartProductTabs' => 1,
-        'WeltPixel_SocialLogin' => 1,
+        'WeltPixel_SocialLogin' => 0,
         'WeltPixel_ThankYouPage' => 1,
         'WeltPixel_TitleRewrite' => 1,
         'Xtento_OrderExport' => 1,
