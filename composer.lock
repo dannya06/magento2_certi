@@ -1562,7 +1562,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "8f2e8b54b379bf87d67736627dc3f9ffd11fa5f6"
+                "reference": "cc58cab0d568767e8de4db765350d9b56b874f7e"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1594,7 +1594,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-13T12:01:20+00:00"
+            "time": "2019-11-14T09:05:00+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -1660,7 +1660,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "e31632ae1d1da9cfd1e62de3c2654d89892dbcfa"
+                "reference": "35e54b6098639faab7316f36f1c495ce4bbaf15c"
             },
             "replace": {
                 "icubeus/module-gosend": "self.version"
@@ -1692,7 +1692,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2019-11-12T02:36:07+00:00"
+            "time": "2019-11-14T08:03:48+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
