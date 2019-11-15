@@ -7,8 +7,12 @@
             <span>Waiting for Confirmation</span>
         </li>
     
-        <li class="opc-progress-bar-item processing <?php if($status=='Processing') {?> _active<?php } else if ($status=='Shipped' || $status=='Complete') {?> _complete<?php }?>">
-            <span>Processing</span>
+        <li class="opc-progress-bar-item processing <?php if($status=='Processing') {?> _active<?php } else if ($status=='Shipped' || $status=='Complete' || $status=='Canceled') {?> _complete<?php }?>">
+        <?php if($status=='Processing') {?>
+        <span>Processing</span>
+        <?php } else if($status=='Canceled'){?>
+        <span>Order Canceled</span>
+        <?php } ?>
         </li>
     
     <li class="opc-progress-bar-item ship <?php if($status=='Shipped') {?> _active<?php }  else if ($status=='Complete') {?> _complete<?php }?>">
