@@ -331,7 +331,7 @@
                     padding-top: 17px!important;
                 }
             }
-            .block.block-order-details-view, .block.block-gosend-details-view {
+            .block.block-order-details-view, .block.block-gosend-details-view, .block.block-order-details-comments {
                 width: 48%;
                 float: left;
                 .block-title{
@@ -366,6 +366,9 @@
                         }
                     }
                 }
+            }
+            .block.block-order-details-comments{
+                margin-left: 4%;
             }
             .block.block-gosend-details-view {
                 margin-left: 4%;
@@ -417,7 +420,7 @@
 .media-width(@extremum, @break) when (@extremum = 'max') and (@break = (@screen__m)) {
     .sales-order-view{
         .column.main{
-            .block.block-order-details-view, .block.block-gosend-details-view {
+            .block.block-order-details-view, .block.block-gosend-details-view, .block.block-order-details-comments {
                 width: 100%!important;
                 margin-left: 0!important;
             }
