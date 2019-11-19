@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "486967538a9fe1925b1496ea519f18b4",
+    "content-hash": "f1861dbd94af75fcb64856b7ce65744d",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -1977,11 +1977,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "2.0.7",
+            "version": "dev-masterdefault",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "a581699db6a0e85781aa9f7cc4f7d7ca2f0e2597"
+                "reference": "7585adf460b231fc08edecbd412b6d04a5ccc659"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -2036,7 +2036,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2019-08-29T06:21:16+00:00"
+            "time": "2019-11-19T11:59:16+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -17643,6 +17643,7 @@
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-indonesianlanguage": 20,
         "icubeus/magento2-gosend": 20,
+        "icubeus/magento2-swiftomschannel": 20,
         "icubeus/magento2-shippingbase": 20,
         "icubeus/magento2-shippingshipper": 20,
         "icubeus/magento2-smsgateaway": 20,
