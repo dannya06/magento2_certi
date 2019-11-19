@@ -6,10 +6,6 @@
 /** @var $helper \Magento\Search\Helper\Data */
 $helper = $this->helper('Magento\Search\Helper\Data');
 $customHeaderHelper = $this->helper('WeltPixel\CustomHeader\Helper\Data');
-$searchAutoCompleteHelper = $this->helper('WeltPixel\SearchAutoComplete\Helper\Data');
-$templateResultsContainer = $searchAutoCompleteHelper->getTemplateResultsContainer();
-$templateResultsContainerControl = !$templateResultsContainer ? 'vertically-control' : 'horizontally-control';
-$templateResultsContainer = !$templateResultsContainer ? 'vertically-black' : 'horizontally-white';
 $magnifierIconIsEnabled = $customHeaderHelper->magnifierIconIsEnabled();
 $placeholderText = $customHeaderHelper->getPlaceholderText();
 $customHtml = $customHeaderHelper->getCustomHtml();
@@ -30,7 +26,7 @@ $serachOptionsVersionClass = !$serachOptionsVersion ? 'version-1' : 'version-2';
                             <label class="label active" for="search" data-role="minisearch-label">
                                 <span><?= /* @escapeNotVerified */ __('Search') ?></span>
                             </label>
-                            <div class="control <?php echo $templateResultsContainerControl; ?>">
+                            <div class="control">
                                 <input id="search"
                                        data-mage-init='{"quickSearch":{
                                         "formSelector":"#search_mini_form",
@@ -41,7 +37,7 @@ $serachOptionsVersionClass = !$serachOptionsVersion ? 'version-1' : 'version-2';
                                        name="<?= /* @escapeNotVerified */ $helper->getQueryParamName() ?>"
                                        value="<?= /* @escapeNotVerified */ $helper->getEscapedQueryText() ?>"
                                        placeholder="<?php echo $placeholderText; ?>"
-                                       class="input-text <?php echo $templateResultsContainer; ?>"
+                                       class="input-text"
                                        maxlength="<?= /* @escapeNotVerified */ $helper->getMaxQueryLength() ?>"
                                        role="combobox"
                                        aria-haspopup="false"
