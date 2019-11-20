@@ -1,25 +1,27 @@
 <?php
-    $status = $block->getOrder()->getStatusLabel();
+$status = $block->getOrder()->getStatusLabel();
 ?>
 
 <ul class="opc-progress-bar">
-<li class="opc-progress-bar-item pending <?php if($status=='Pending') {?> _active<?php } else {?> _complete<?php }?>">
-            <span>Waiting for Confirmation</span>
+    <li class="opc-progress-bar-item pending <?php if ($status == 'Pending') { ?> _active<?php } else { ?> _complete<?php } ?>">
+        <span>Waiting for Confirmation</span>
+    </li>
+    <?php if ($status == 'Canceled') { ?>
+        <li class="opc-progress-bar-item completed _complete _canceled">
+            <span>Order Canceled</span>
         </li>
-    
-        <li class="opc-progress-bar-item processing <?php if($status=='Processing') {?> _active<?php } else if ($status=='Shipped' || $status=='Complete' || $status=='Canceled') {?> _complete<?php }?>">
-        <?php if($status=='Processing') {?>
-        <span>Processing</span>
-        <?php } else if($status=='Canceled'){?>
-        <span>Order Canceled</span>
-        <?php } ?>
+
+    <?php } else { ?>
+        <li class="opc-progress-bar-item processing <?php if ($status == 'Processing') { ?> _active<?php } else if ($status == 'Shipped' || $status == 'Complete') { ?> _complete<?php } ?>">
+            <span>Processing</span>
         </li>
-    
-    <li class="opc-progress-bar-item ship <?php if($status=='Shipped') {?> _active<?php }  else if ($status=='Complete') {?> _complete<?php }?>">
+
+        <li class="opc-progress-bar-item ship <?php if ($status == 'Shipped') { ?> _active<?php } else if ($status == 'Complete') { ?> _complete<?php } ?>">
             <span>Shipped</span>
         </li>
 
-    <li class="opc-progress-bar-item completed <?php if($status=='Complete') {?> _active<?php } ?>">
+        <li class="opc-progress-bar-item completed <?php if ($status == 'Complete') { ?> _active<?php } ?>">
             <span>Order Complete</span>
         </li>
+    <?php } ?>
 </ul>
