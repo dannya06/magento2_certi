@@ -870,6 +870,7 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "homepage": "https://github.com/container-interop/container-interop",
+            "abandoned": "psr/container",
             "time": "2017-02-14T19:40:03+00:00"
         },
         {
@@ -1562,7 +1563,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "cc58cab0d568767e8de4db765350d9b56b874f7e"
+                "reference": "c55325e2e40a2bf511915a0e2afecf75b1fce689"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1594,7 +1595,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-14T09:05:00+00:00"
+            "time": "2019-11-18T04:38:06+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
