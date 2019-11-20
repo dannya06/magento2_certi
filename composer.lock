@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "486967538a9fe1925b1496ea519f18b4",
+    "content-hash": "f1861dbd94af75fcb64856b7ce65744d",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -1562,7 +1562,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "8f2e8b54b379bf87d67736627dc3f9ffd11fa5f6"
+                "reference": "cc58cab0d568767e8de4db765350d9b56b874f7e"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1594,7 +1594,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-13T12:01:20+00:00"
+            "time": "2019-11-14T09:05:00+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -1660,7 +1660,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "e31632ae1d1da9cfd1e62de3c2654d89892dbcfa"
+                "reference": "78b7ada714bc0fc51dd0ec757bc46d6386b70075"
             },
             "replace": {
                 "icubeus/module-gosend": "self.version"
@@ -1692,7 +1692,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2019-11-12T02:36:07+00:00"
+            "time": "2019-11-15T10:44:24+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -1855,7 +1855,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "d86945c10ea160c7776b5e1a802bf3483c6e3c40"
+                "reference": "c591d3fe7c31cae695fd15ad79a030f2c5235cdf"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -1888,7 +1888,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-06-14T09:06:06+00:00"
+            "time": "2019-11-18T05:24:18+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -1977,11 +1977,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "2.0.7",
+            "version": "dev-masterdefault",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "a581699db6a0e85781aa9f7cc4f7d7ca2f0e2597"
+                "reference": "7585adf460b231fc08edecbd412b6d04a5ccc659"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -2036,7 +2036,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2019-08-29T06:21:16+00:00"
+            "time": "2019-11-19T11:59:16+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -17643,6 +17643,7 @@
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-indonesianlanguage": 20,
         "icubeus/magento2-gosend": 20,
+        "icubeus/magento2-swiftomschannel": 20,
         "icubeus/magento2-shippingbase": 20,
         "icubeus/magento2-shippingshipper": 20,
         "icubeus/magento2-smsgateaway": 20,
