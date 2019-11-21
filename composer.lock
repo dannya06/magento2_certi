@@ -1856,7 +1856,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "c591d3fe7c31cae695fd15ad79a030f2c5235cdf"
+                "reference": "082628a302e0f4f2f0af95c511a8e44e19eeb3fb"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -1889,7 +1889,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-18T05:24:18+00:00"
+            "time": "2019-11-21T04:39:11+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -1938,7 +1938,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "97b1f5811a1afe3205368241ae2d8c6a1e7c46c5"
+                "reference": "e4e655ff20f715a4d5973df47222f94627a50fdd"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1974,7 +1974,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-10-30T04:34:28+00:00"
+            "time": "2019-11-21T02:59:37+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
