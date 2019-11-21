@@ -12,7 +12,7 @@ $status = $block->getOrder()->getStatusLabel();
         </li>
 
     <?php } else { ?>
-        <li class="opc-progress-bar-item processing <?php if ($status == 'Processing') { ?> _active<?php } else if ($status == 'Shipped' || $status == 'Complete') { ?> _complete<?php } ?>">
+        <li class="opc-progress-bar-item processing <?php if ($status != 'Pending' && $status != 'Shipped' && $status != 'Complete' && $status != 'Canceled') { ?> _active<?php } else if ($status == 'Shipped' || $status == 'Complete') { ?> _complete<?php } ?>">
             <span>Processing</span>
         </li>
 
