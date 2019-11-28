@@ -1563,7 +1563,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "c55325e2e40a2bf511915a0e2afecf75b1fce689"
+                "reference": "4d09afbe21796fe5daf3e35827c079ab5694c536"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1595,7 +1595,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-18T04:38:06+00:00"
+            "time": "2019-11-28T10:16:15+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -2069,11 +2069,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "2.0.4",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "48ee84fd37bcbe6054a883a28d5f971a8decdc03"
+                "reference": "a3e71279d43229f8d86f61569527d7b348a3379d"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -2122,7 +2122,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2019-10-09T07:35:50+00:00"
+            "time": "2019-11-28T11:31:51+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
