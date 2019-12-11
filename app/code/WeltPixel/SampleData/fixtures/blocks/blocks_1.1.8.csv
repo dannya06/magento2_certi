@@ -37,6 +37,7 @@ title,identifier,content,is_active
                 <li><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
                 <li><a href=""{{store url=""customer-service/""}}"">Customer Service</a></li>
                 <li><a href=""{{store url=""privacy-policy-cookie-restriction-mode/""}}"">Privacy Policy</a></li>
+                <li class=""nav item""><a href=""{{store url=""return-exchange""}}"">Return & Exchange</a></li>
             </ul>
         </div>
         <!-- FOOTER COLUMN #2 END -->
@@ -129,7 +130,8 @@ title,identifier,content,is_active
 <a href="""">FAQ</a>
 <a href="""" >Privacy</a>
 <a href="""" >Terms of Use</a>
-<a href="""" >Contact</a></div>
+<a href="""" >Contact</a>
+<a href=""{{store url=""return-exchange/""}}"">Return & Exchange</a></div>
 </div>
 
 <div class=""clearfix""></div>
