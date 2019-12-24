@@ -4,7 +4,7 @@
     <body>
         <referenceBlock name="head.additional">
             <!--><block ifconfig="weltpixel_google_cards/general/enable" class="WeltPixel\GoogleCards\Block\Breadcrumbs"
-                   name="weltpixel.googlecards.breadcrumb" template="WeltPixel_GoogleCards::breadcrumb.phtml"/>
-        </referenceBlock>-->
+                   name="weltpixel.googlecards.breadcrumb" template="WeltPixel_GoogleCards::breadcrumb.phtml"/>-->
+        </referenceBlock>
     </body>
 </page>
