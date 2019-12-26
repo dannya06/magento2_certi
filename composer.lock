@@ -1536,11 +1536,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "2.0.0",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "9f46e023a347fcc7c19db8ab4e5ed5fc806eaf1b"
+                "reference": "72f6ddaac2671adad95978a8ad2929f641cf90ea"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1560,7 +1560,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2019-03-06T09:59:57+00:00"
+            "time": "2019-12-26T05:16:26+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
@@ -1861,7 +1861,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "082628a302e0f4f2f0af95c511a8e44e19eeb3fb"
+                "reference": "819715aeebe56e417a02aba829a241972e2f16ce"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -1894,7 +1894,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-21T04:39:11+00:00"
+            "time": "2019-12-26T05:26:17+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
