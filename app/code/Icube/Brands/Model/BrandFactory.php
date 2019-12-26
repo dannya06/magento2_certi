@@ -4,6 +4,7 @@
  */
  
 namespace Icube\Brands\Model;
+
 class BrandFactory
 {
     /**

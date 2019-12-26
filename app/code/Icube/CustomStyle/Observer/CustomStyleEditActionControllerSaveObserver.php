@@ -7,7 +7,8 @@ use Magento\Framework\Event\ObserverInterface;
 /**
  * CustomStyleEditActionControllerSaveObserver observer
  */
-class CustomStyleEditActionControllerSaveObserver implements ObserverInterface {
+class CustomStyleEditActionControllerSaveObserver implements ObserverInterface
+{
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -82,11 +83,12 @@ class CustomStyleEditActionControllerSaveObserver implements ObserverInterface {
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function execute(\Magento\Framework\Event\Observer $observer) {
+    public function execute(\Magento\Framework\Event\Observer $observer)
+    {
         $frontendOptions = $this->_scopeConfig->getValue('icube_customstyle');
         $directoryCode = $this->_dirReader->getModuleDir('view', 'Icube_CustomStyle');
         
-        $generatedCssDirectoryPath = 
+        $generatedCssDirectoryPath =
             DIRECTORY_SEPARATOR . 'frontend'.
             DIRECTORY_SEPARATOR . 'web' .
             DIRECTORY_SEPARATOR . 'css' .
@@ -116,23 +118,24 @@ class CustomStyleEditActionControllerSaveObserver implements ObserverInterface {
     
     /**
      * Generate the less css content for global frontend options
-     * ____ in field attribute id must be replaced with -  
+     * ____ in field attribute id must be replaced with -
      * Magento is not allowing - character in id field, only this pattern'[a-zA-Z0-9_]{1,}'
-     * 
+     *
      * @param aray $frontendOptions
      * @param array $fontFamilyOptions
      *
      * @return string
      */
-    private function _generateContent($frontendOptions, $fontFamilyOptions) {
+    private function _generateContent($frontendOptions, $fontFamilyOptions)
+    {
         if ($frontendOptions) {
             $content = '// Generated Less from Icube_CustomStyle' . PHP_EOL;
 
             foreach ($frontendOptions as $groupId => $frontendGroup) {
-                if (in_array($groupId, array('section_width'))) {
+                if (in_array($groupId, ['section_width'])) {
                     continue;
                 }
-                foreach ($frontendGroup as $id => $frontendValue) {                
+                foreach ($frontendGroup as $id => $frontendValue) {
                     $content .= '' . PHP_EOL;
                     $content .= '/*----------------------------------------*/ '. PHP_EOL;
                     $content .= '/* '. $id  . PHP_EOL;
@@ -140,7 +143,7 @@ class CustomStyleEditActionControllerSaveObserver implements ObserverInterface {
                     $content .= $frontendValue;
                 }
             }
-        }else{
+        } else {
             $content = '';
         }
         
@@ -150,8 +153,9 @@ class CustomStyleEditActionControllerSaveObserver implements ObserverInterface {
     /**
      * @return array
      */
-    private function _getLessVariables() {
-        return array(
+    private function _getLessVariables()
+    {
+        return [
             '@storeViewClass',
             '@pageMainWidth',
             '@pageMainPadding',
@@ -161,7 +165,6 @@ class CustomStyleEditActionControllerSaveObserver implements ObserverInterface {
             '@cmsPageWidth',
             '@productPageWidth',
             '@categoryPageWidth'
-        );
+        ];
     }
-
 }

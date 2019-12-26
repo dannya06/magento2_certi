@@ -4,12 +4,13 @@
  */
 
 namespace Icube\Brands\Block;
+
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 
 class View extends \Magento\Framework\View\Element\Template
 {
-	
-	/**
+    
+    /**
      * @var \Magento\Framework\App\Http\Context
      */
     protected $httpContext;
@@ -20,7 +21,7 @@ class View extends \Magento\Framework\View\Element\Template
      */
     protected $_catalogProductVisibility;
     
-	/**
+    /**
      * Product collection factory
      *
      * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
@@ -34,22 +35,21 @@ class View extends \Magento\Framework\View\Element\Template
      */
     protected $_imageHelper;
      /**
-     * @var \Magento\Checkout\Helper\Cart
-     */
+      * @var \Magento\Checkout\Helper\Cart
+      */
     protected $_cartHelper;
 
     protected $_brandFactory;
 
 
-	public function __construct(
+    public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Catalog\Model\Product\Visibility $catalogProductVisibility,
         \Magento\Framework\App\Http\Context $httpContext,
         \Icube\Brands\Model\BrandFactory $brandFactory,
         array $data = []
-    )
-    {
+    ) {
         $this->_productCollectionFactory = $productCollectionFactory;
         $this->_catalogProductVisibility = $catalogProductVisibility;
         $this->httpContext = $httpContext;
@@ -62,9 +62,9 @@ class View extends \Magento\Framework\View\Element\Template
         );
         $this->setCollection($this->getProductCollection());
     }
-	public function getAddToCartUrl($product, $additional = [])
+    public function getAddToCartUrl($product, $additional = [])
     {
-		return $this->_cartHelper->getAddUrl($product, $additional);
+        return $this->_cartHelper->getAddUrl($product, $additional);
     }
     
     
@@ -73,8 +73,8 @@ class View extends \Magento\Framework\View\Element\Template
         parent::_prepareLayout();
         /** @var \Magento\Theme\Block\Html\Pager */
         $pager = $this->getLayout()->createBlock(
-           'Magento\Theme\Block\Html\Pager',
-           'brand.view.pager'
+            'Magento\Theme\Block\Html\Pager',
+            'brand.view.pager'
         );
         $pager->setLimit(12)
             ->setShowAmounts(false)
@@ -84,7 +84,7 @@ class View extends \Magento\Framework\View\Element\Template
  
         return $this;
     }
-	/**
+    /**
      * @return string
      */
     public function getPagerHtml()
@@ -92,7 +92,8 @@ class View extends \Magento\Framework\View\Element\Template
         return $this->getChildHtml('pager');
     }
     
-    public function getBrand(){
+    public function getBrand()
+    {
         // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         // $model = $objectManager->create(
         //     'Magento\Catalog\Model\ResourceModel\Eav\Attribute'
@@ -102,48 +103,49 @@ class View extends \Magento\Framework\View\Element\Template
 
         // $model->loadByCode(\Magento\Catalog\Model\Product::ENTITY,'manufacturer');
         // return $model->getOptions();
-		$id = $this->getRequest()->getParam('id');
+        $id = $this->getRequest()->getParam('id');
         if ($id) {
-        	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-			$model = $objectManager->create('Icube\Brands\Model\Items');
-			$model->load($id);
-			return $model;
-		}
-		return false;
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $model = $objectManager->create('Icube\Brands\Model\Items');
+            $model->load($id);
+            return $model;
+        }
+        return false;
     }
     
     public function getProductCollection()
     {
-    	$brand = $this->getBrand();
-    	$collection = $this->_productCollectionFactory->create();
-    	$collection->addAttributeToSelect('*');
-//     	var_dump(get_class_methods($collection));
-//     	die;
-		$collection->addAttributeToSelect('name');
+        $brand = $this->getBrand();
+        $collection = $this->_productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+//         var_dump(get_class_methods($collection));
+//         die;
+        $collection->addAttributeToSelect('name');
         $scopeConfig = $this->_objectManager->create('Magento\Framework\App\Config\ScopeConfigInterface');
         $value = $scopeConfig->getValue(
             'icube_brands/config/attribute_name',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
-    	$collection->addStoreFilter()->addAttributeToFilter($value, $brand->getAttributeId());
-    	
-    	$collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
-    	$collection->addAttributeToFilter('visibility', array('neq' => \Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE));
+        $collection->addStoreFilter()->addAttributeToFilter($value, $brand->getAttributeId());
+        
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('visibility', ['neq' => \Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE]);
 
-    	
-    	
-//     	var_dump(count($collection));
-    	return $collection;
+        
+        
+//         var_dump(count($collection));
+        return $collection;
     }
     
-    public function imageHelperObj(){
+    public function imageHelperObj()
+    {
         return $this->_imageHelper;
     }
     
     public function getProductPricetoHtml(
         \Magento\Catalog\Model\Product $product,
         $priceType = null
-	) {
+    ) {
         $priceRender = $this->getLayout()->getBlock('product.price.render.default');
         $price = '';
         if ($priceRender) {

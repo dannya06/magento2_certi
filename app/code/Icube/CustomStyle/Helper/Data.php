@@ -15,7 +15,8 @@ class Data extends AbstractHelper
 
     const XML_PATH_HELLOWORLD = 'icube_customstyle/';
 
-    public function __construct(Context $context,
+    public function __construct(
+        Context $context,
         ObjectManagerInterface $objectManager,
         StoreManagerInterface $storeManager
     ) {
@@ -34,6 +35,4 @@ class Data extends AbstractHelper
     {
         return $this->getConfigValue(self::XML_PATH_HELLOWORLD . $code, $storeId);
     }
-
-
 }

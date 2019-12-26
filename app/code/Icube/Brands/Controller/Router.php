@@ -78,32 +78,28 @@ class Router implements \Magento\Framework\App\RouterInterface
 
         $identifier = trim($request->getPathInfo(), '/');
 
-        if(strpos($identifier, 'brand/view/index/id') !== false) {
-            // called via id 
+        if (strpos($identifier, 'brand/view/index/id') !== false) {
+            // called via id
             return null ;
-        }
-        else if(strpos($identifier, 'brand/') !== false) {
-			$patharr = explode("/",$identifier);
+        } elseif (strpos($identifier, 'brand/') !== false) {
+            $patharr = explode("/", $identifier);
             $urlpath = end($patharr);
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-			$modelcollection = $objectManager->get('\Icube\Brands\Model\BrandFactory')->create()->getCollection();
-			$modelcollection->addFieldToFilter('category_url' , $urlpath);
-			if($modelcollection->count() >=1 && $brand = $modelcollection->getFirstItem()){
+            $modelcollection = $objectManager->get('\Icube\Brands\Model\BrandFactory')->create()->getCollection();
+            $modelcollection->addFieldToFilter('category_url', $urlpath);
+            if ($modelcollection->count() >=1 && $brand = $modelcollection->getFirstItem()) {
                 // var_dump($brand->debug());
-				$request->setModuleName('brand')->setControllerName('view')->setActionName('index')->setParam('id',$brand->getId());
-				$request->setAlias(\Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS, $identifier);
+                $request->setModuleName('brand')->setControllerName('view')->setActionName('index')->setParam('id', $brand->getId());
+                $request->setAlias(\Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS, $identifier);
                 $request->setAlias(\Magento\Framework\UrlInterface::REWRITE_REQUEST_PATH_ALIAS, '/'.$identifier);
                 $request->setPathInfo('/' . $identifier);
                 return ;
-			}
-			else
-			{
+            } else {
                 // not found any Category URL
                 return null;
-			}
+            }
 
-		}
-		else {
+        } else {
             //There is no match
             return null;
         }

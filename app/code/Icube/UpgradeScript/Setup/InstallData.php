@@ -4,12 +4,14 @@
  * See COPYING.txt for license details.
  */
 namespace Icube\UpgradeScript\Setup;
+
 use Magento\Cms\Model\Page;
 use Magento\Cms\Model\PageFactory;
 use Magento\Cms\Model\BlockFactory;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
+
 /**
  * @codeCoverageIgnore
  */
@@ -32,8 +34,8 @@ class InstallData implements InstallDataInterface
      */
     public function __construct(
         BlockFactory $modelBlockFactory,
-        PageFactory $pageFactory)
-    {
+        PageFactory $pageFactory
+    ) {
         $this->pageFactory = $pageFactory;
         $this->blockFactory = $modelBlockFactory;
     }

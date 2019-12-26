@@ -37,8 +37,8 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function __construct(
         BlockFactory $modelBlockFactory,
-        PageFactory $pageFactory)
-    {
+        PageFactory $pageFactory
+    ) {
         $this->pageFactory = $pageFactory;
         $this->blockFactory = $modelBlockFactory;
     }
@@ -72,12 +72,12 @@ class UpgradeData implements UpgradeDataInterface
         if (version_compare($context->getVersion(), '1.0.1', '<')) {
             $this->returnexchange();
         }
-        
-	}
+    }
 
     /* CMS for Return Exchange */
 
-    function returnexchange() {
+    function returnexchange()
+    {
         $pageContent = <<<EOD
         <p>Returns without the original receipt must reference the order number, which you may reprint from your order confirmation email. For customer convenience all orders are shipped with a prepaid JNE shipping label.</p>
         <h2>RETURNS BY JNE:</h2>

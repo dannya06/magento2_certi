@@ -100,8 +100,7 @@ class GenerateVarnish extends \Magento\Backend\Controller\Adminhtml\Cache
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\View\Asset\MergeService $mergeService,
         \Magento\Framework\App\Cache\Manager $cacheManager
-    )
-    {
+    ) {
         parent::__construct($context, $cacheTypeList, $cacheState, $cacheFrontendPool, $resultPageFactory);
         $this->_cacheTypeList = $cacheTypeList;
         $this->_cacheState = $cacheState;
@@ -136,5 +135,4 @@ class GenerateVarnish extends \Magento\Backend\Controller\Adminhtml\Cache
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         return $resultRedirect->setPath('adminhtml/*');
     }
-
 }

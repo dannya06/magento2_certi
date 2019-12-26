@@ -7,34 +7,36 @@ namespace Icube\Brands\Block;
 
 class ProductBrand extends \Magento\Framework\View\Element\Template
 {
-	/**
-	 * @var _brandFactory
-	 */
+    /**
+     * @var _brandFactory
+     */
     protected $_brandFactory;
-	/**
-	 * @var Registry
-	 */
-	private $registry;
-	
+    /**
+     * @var Registry
+     */
+    private $registry;
+    
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Icube\Brands\Model\BrandFactory $brandFactory,
         \Magento\Framework\Registry $registry
-    ) 
-    {
-    	$this->_brandFactory = $brandFactory;
-    	$this->registry = $registry;
+    ) {
+        $this->_brandFactory = $brandFactory;
+        $this->registry = $registry;
         parent::__construct($context);
     }
     
-    public function getImageMediaPath(){
-    	return $this->getUrl('pub/media',['_secure' => $this->getRequest()->isSecure()]);
+    public function getImageMediaPath()
+    {
+        return $this->getUrl('pub/media', ['_secure' => $this->getRequest()->isSecure()]);
     }
     
-    public function getBrand(){
-	    $product = $this->registry->registry('current_product');
-	    $collection = $this->_brandFactory->create()->getCollection();
-		$collection->addFieldToFilter('attribute_id' , $product->getBrand());
-	    return $collection->getFirstItem();;
+    public function getBrand()
+    {
+        $product = $this->registry->registry('current_product');
+        $collection = $this->_brandFactory->create()->getCollection();
+        $collection->addFieldToFilter('attribute_id', $product->getBrand());
+        return $collection->getFirstItem();
+        ;
     }
 }

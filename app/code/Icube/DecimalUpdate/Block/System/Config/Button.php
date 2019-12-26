@@ -6,8 +6,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 class Button extends \Magento\Config\Block\System\Config\Form\Field
 {
      /**
-     * @var string
-     */
+      * @var string
+      */
     protected $_template = 'Icube_DecimalUpdate::system/config/button/button.phtml';
 
     /**

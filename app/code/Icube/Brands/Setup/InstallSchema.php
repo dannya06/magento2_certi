@@ -11,7 +11,6 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 
-
 class InstallSchema implements InstallSchemaInterface
 {
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
@@ -43,14 +42,14 @@ class InstallSchema implements InstallSchemaInterface
                 'attribute_id'
             )
             ->addIndex(
-            $installer->getIdxName(
-					'attribute_id',
-					['attribute_id'],
-					\Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
-				),
-				['attribute_id'],
-				['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
-			)
+                $installer->getIdxName(
+                    'attribute_id',
+                    ['attribute_id'],
+                    \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+                ),
+                ['attribute_id'],
+                ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
+            )
             ->addColumn(
                 'sort_order',
                 Table::TYPE_INTEGER,
@@ -73,22 +72,22 @@ class InstallSchema implements InstallSchemaInterface
                 'logo'
             )
             ->addColumn(
-                    'is_active',
-                    Table::TYPE_SMALLINT,
-                    null,
-                    [],
-                    'Active Status'
+                'is_active',
+                Table::TYPE_SMALLINT,
+                null,
+                [],
+                'Active Status'
             )
             ->addColumn(
-                    'featured',
-                    Table::TYPE_SMALLINT,
-                    null,
-                    ['default' => 0],
-                    'Featured'
-			)
-			->setComment(
-				'Brand Table'
-			)
+                'featured',
+                Table::TYPE_SMALLINT,
+                null,
+                ['default' => 0],
+                'Featured'
+            )
+            ->setComment(
+                'Brand Table'
+            )
             ;
         $installer->getConnection()->createTable($table);
         $installer->endSetup();

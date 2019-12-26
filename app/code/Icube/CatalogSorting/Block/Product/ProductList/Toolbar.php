@@ -14,10 +14,10 @@ class Toolbar extends \Magento\Catalog\Block\Product\ProductList\Toolbar
     protected $_subQueryApplied = false;
 
     /**
-    * Constructor
-    *
-    * @param \Magento\Framework\App\ResourceConnection $resource
-    */
+     * Constructor
+     *
+     * @param \Magento\Framework\App\ResourceConnection $resource
+     */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Catalog\Model\Session $catalogSession,
@@ -47,7 +47,7 @@ class Toolbar extends \Magento\Catalog\Block\Product\ProductList\Toolbar
         $this->formKey = $formKey ?: ObjectManager::getInstance()->get(
             \Magento\Framework\Data\Form\FormKey::class
         );
-        parent::__construct($context,$catalogSession,$catalogConfig,$toolbarModel,$urlEncoder,$productListHelper,$postDataHelper,$data, $toolbarMemorizer, $httpContext, $formKey);
+        parent::__construct($context, $catalogSession, $catalogConfig, $toolbarModel, $urlEncoder, $productListHelper, $postDataHelper, $data, $toolbarMemorizer, $httpContext, $formKey);
         $this->_conn = $resource->getConnection('catalog');
     }
 
@@ -75,16 +75,16 @@ class Toolbar extends \Magento\Catalog\Block\Product\ProductList\Toolbar
                     'report_event_table.object_id = e.entity_id'
                 );
                 $this->_collection->getSelect()->reset(Select::ORDER)->columns(['views' => $subSelect])->order('views desc');
-            } else if ($this->getCurrentOrder() == 'bestseller') {
+            } elseif ($this->getCurrentOrder() == 'bestseller') {
                 $this->_collection->addAttributeToSort(
                     'icube_sold',
                     'desc'
                 );
-            } else if ($this->getCurrentOrder() == "newest") {
+            } elseif ($this->getCurrentOrder() == "newest") {
                 $this->_collection->setOrder('created_at', 'desc');
-            } else if ($this->getCurrentOrder() == 'position') {
+            } elseif ($this->getCurrentOrder() == 'position') {
                 $this->_collection->addAttributeToSort(
-                    $this->getCurrentOrder(), 
+                    $this->getCurrentOrder(),
                     $this->getCurrentDirection()
                 );
             } else {
@@ -94,14 +94,14 @@ class Toolbar extends \Magento\Catalog\Block\Product\ProductList\Toolbar
         return $this;
     }
 
-    public function getCurrentDirectionReverse() {
-            if ($this->getCurrentDirection() == 'asc') {
-                return 'desc';
-            } elseif ($this->getCurrentDirection() == 'desc') {
-                return 'asc';
-            } else {
-                return $this->getCurrentDirection();
-            }
+    public function getCurrentDirectionReverse()
+    {
+        if ($this->getCurrentDirection() == 'asc') {
+            return 'desc';
+        } elseif ($this->getCurrentDirection() == 'desc') {
+            return 'asc';
+        } else {
+            return $this->getCurrentDirection();
         }
-
+    }
 }

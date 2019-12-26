@@ -34,10 +34,9 @@ class Nvp extends \Magento\Paypal\Model\Api\Nvp
         $request = $this->_exportToRequest($eachCallRequest, $request);
         $debugData = ['url' => $this->getApiEndpoint(), $methodName => $request];
         // $logger->info("METHOD : ".$request["METHOD"].", CURRENCYCODE : ".$request['CURRENCYCODE']);
-        if ($request["METHOD"] == "SetExpressCheckout" || $request["METHOD"] == "DoExpressCheckoutPayment")
-        {
+        if ($request["METHOD"] == "SetExpressCheckout" || $request["METHOD"] == "DoExpressCheckoutPayment") {
             
-            if($request['CURRENCYCODE'] == "IDR") {
+            if ($request['CURRENCYCODE'] == "IDR") {
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $currencyHelper = $objectManager->get('Magento\Directory\Helper\Data');
                 
