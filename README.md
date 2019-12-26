@@ -203,3 +203,14 @@ example
 MSI stock issue, please create cron below
 =============================================================
 	*/5 * * * * mysql -u[username] -p[password] m2webapp_delami < msi.sql 
+	
+	
+How to check magento 2 coding standar
+=============================================================
+	
+	vendor/bin/phpcs --standard=Magento2 app/code/Icube/(replace with them design folder)
+	
+to fix the indentation issue
+
+	vendor/bin/phpcbf --standard=Magento2 app/code/Icube/(replace with them design folder)
+	
