@@ -22,6 +22,8 @@ Instalation:
     git checkout master_2.3.1
 
     composer install
+    
+    php bin/magento setup:upgrade
 
     sh step3.sh (for LOCAL ONLY to disable elastic)
 
