@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<!-- /**
+ * @since 1.0.3
+ * @link ./registration.php
+ */ -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="admin">
+        <route id="icube_shipmentrate" frontName="icube_shipmentrate">
+            <module name="Icube_ShipmentRate" />
+        </route>
+    </router>
+</config>
