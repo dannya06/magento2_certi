@@ -159,17 +159,8 @@ class Attributes extends \Magento\Rule\Model\Condition\Product\AbstractProduct
         if ($attribute->getAttributeCode() == 'category_ids') {
             if (!$productCollection->getFlag('aw_blog_collection_category_joined')) {
                 $catProductIndexTable = $this->_productResource->getTable('catalog_category_product_index');
-                $productCollection
-                    ->getSelect()
-                    ->joinLeft(
-                        ['cat_index' => $catProductIndexTable],
-                        'e.entity_id = cat_index.product_id AND cat_index.store_id=' . $storeId,
-                        []
-                    )
-                    ->group('e.entity_id');
                 $productCollection->setFlag('aw_blog_collection_category_joined', true);
             }
-            $condition = $this->prepareSqlCondition('GROUP_CONCAT(cat_index.category_id)', $this->getValue());
             $productCollection->getSelect()->having($condition);
         } else {
             if ($attribute->isStatic()) {
@@ -210,13 +201,6 @@ class Attributes extends \Magento\Rule\Model\Condition\Product\AbstractProduct
                 $productCollection = $this->addWhereConditionToCollection($productCollection, $condition);
             }
             if (!$productCollection->getFlag('aw_blog_collection_category_joined')) {
-                $productCollection->getSelect()
-                    ->join(
-                        ['cat_index' => $this->_productResource->getTable('catalog_category_product_index')],
-                        'e.entity_id = cat_index.product_id AND cat_index.store_id=' . $storeId,
-                        []
-                    )
-                    ->group('e.entity_id');
                 $productCollection->setFlag('aw_blog_collection_category_joined', true);
             }
         }
