@@ -1477,6 +1477,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+            "abandoned": true,
             "time": "2018-07-31T13:22:33+00:00"
         },
         {
@@ -1632,7 +1633,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-confirmpayment.git",
-                "reference": "479a98ebbbbd4a8a65a93314f6bc83f7da47949c"
+                "reference": "1e6b8de25b56b7b723d0357470e308d168204e6f"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1653,7 +1654,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2019-06-20T05:11:00+00:00"
+            "time": "2020-01-24T04:24:48+00:00"
         },
         {
             "name": "icubeus/magento2-gosend",
@@ -1661,7 +1662,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "55b3dc26fccd6ef7380e3ed8d4ee08a11699240b"
+                "reference": "7ed6f5d434b04fb329244c02092aa78a3c1c3375"
             },
             "replace": {
                 "icubeus/module-gosend": "self.version"
@@ -1693,7 +1694,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2019-11-19T08:21:59+00:00"
+            "time": "2020-01-21T09:21:16+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
