@@ -3,7 +3,7 @@
     <default>
         <webp>
             <setting>
-                <enable>1</enable>
+                <enable>0</enable>
             </setting>
             <advance_mode>
                 <quality>75</quality>
