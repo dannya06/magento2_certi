@@ -33,6 +33,7 @@ return [
         'Magento_Vault' => 1,
         'Icube_Brands' => 1,
         'Icube_Checkoutpg' => 1,
+        'Icube_Citcall' => 1,
         'Icube_City' => 1,
         'Icube_Confirmpayment' => 1,
         'Magento_Backend' => 1,

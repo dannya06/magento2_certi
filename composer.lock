@@ -1528,6 +1528,7 @@
                 "Guzzle",
                 "stream"
             ],
+            "abandoned": true,
             "time": "2014-10-12T19:18:40+00:00"
         },
         {
@@ -1898,9 +1899,10 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smsgateaway.git",
-                "reference": "b1024929c668bc486b1c721756b67d90c4255c30"
+                "reference": "760e1f2243f0e99d11181aa49030bcc0ce9fd128"
             },
             "replace": {
+                "icubeus/module-citcal": "self.version",
                 "icubeus/module-lenna": "self.version",
                 "icubeus/module-twilio": "self.version"
             },
@@ -1908,11 +1910,13 @@
             "autoload": {
                 "files": [
                     "src/module-twilio/registration.php",
-                    "src/module-lenna/registration.php"
+                    "src/module-lenna/registration.php",
+                    "src/module-citcal/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\Twilio\\": "src/module-twilio",
-                    "Icube\\Lenna\\": "src/module-lenna"
+                    "Icube\\Lenna\\": "src/module-lenna",
+                    "Icube\\Citcall\\": "src/module-citcal"
                 }
             },
             "license": [
@@ -1931,7 +1935,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-07T07:43:48+00:00"
+            "time": "2019-12-16T04:21:49+00:00"
         },
         {
             "name": "icubeus/magento2-smstada",
