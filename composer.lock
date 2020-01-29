@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d20bcd720778d0bede384877e475bfe4",
+    "content-hash": "50d164c72ac7af2a894272b04682ae50",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -1899,7 +1899,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smsgateaway.git",
-                "reference": "760e1f2243f0e99d11181aa49030bcc0ce9fd128"
+                "reference": "d145783481b7736692e4c03467906b6f7b707693"
             },
             "replace": {
                 "icubeus/module-citcal": "self.version",
@@ -1935,15 +1935,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-12-16T04:21:49+00:00"
+            "time": "2020-01-28T08:26:48+00:00"
         },
         {
             "name": "icubeus/magento2-smstada",
-            "version": "dev-master",
+            "version": "dev-improvement",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "e4e655ff20f715a4d5973df47222f94627a50fdd"
+                "reference": "21a8d4621133e0829e52e1947dede333d34dae9e"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1979,7 +1979,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-11-21T02:59:37+00:00"
+            "time": "2020-01-29T04:37:58+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
