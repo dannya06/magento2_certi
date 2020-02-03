@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "50d164c72ac7af2a894272b04682ae50",
+    "content-hash": "d20bcd720778d0bede384877e475bfe4",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -1939,11 +1939,11 @@
         },
         {
             "name": "icubeus/magento2-smstada",
-            "version": "dev-improvement",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "21a8d4621133e0829e52e1947dede333d34dae9e"
+                "reference": "3aafa87535f2ce45a929cfd50b78694eaf96645b"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1979,7 +1979,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-01-29T04:37:58+00:00"
+            "time": "2020-01-29T05:30:31+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",

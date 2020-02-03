@@ -28,7 +28,7 @@
         "icubeus/magento2-shippingshipper": "dev-master",
         "icubeus/magento2-smsgateaway": "dev-master",
         "icubeus/magento2-notification": "dev-master",
-        "icubeus/magento2-smstada": "dev-improvement",
+        "icubeus/magento2-smstada": "dev-master",
         "icubeus/magento2-checkout": "dev-masterdefault"
     },
     "require-dev": {
