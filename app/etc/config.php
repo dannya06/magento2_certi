@@ -282,6 +282,7 @@ return [
         'Swiftoms_Pickup' => 0,
         'Swiftoms_Product' => 0,
         'Icube_ShipmentRate' => 1,
+        'Icube_CheckCity' => 1,
         'Unirgy_RapidFlow' => 1,
         'Unirgy_RapidFlowPro' => 1,
         'Vertex_Tax' => 1,
