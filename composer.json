@@ -8,7 +8,7 @@
         "AFL-3.0"
     ],
     "require": {
-        "magento/product-community-edition": "2.3.1",
+        "magento/product-community-edition": "2.3.4",
         "composer/composer": "@alpha",
         "icubeus/magento2-citykecamatan": "^2.0",
         "icubeus/magento2-advancerate": "^2.0",
@@ -20,7 +20,7 @@
         "magepal/magento2-reindex": "^1.0",
         "ebizmarts/mailchimp-lib": "^3.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "msp/recaptcha": "2.0.2",
+        "msp/recaptcha": "2.2.2",
         "icubeus/magento2-gosend": "dev-masterootb",
         "icubeus/magento2-rapidflow": "7.1.0",
         "icubeus/magento2-swiftomschannel": "dev-masterdefault",
