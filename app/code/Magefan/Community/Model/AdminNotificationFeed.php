@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright © Magefan (support@magefan.com). All rights reserved.
- * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
  */
 
 namespace Magefan\Community\Model;
@@ -81,7 +81,7 @@ class AdminNotificationFeed extends \Magento\AdminNotification\Model\Feed
     public function getFeedUrl()
     {
         if (is_null($this->_feedUrl)) {
-            $this->_feedUrl = 'http://mage'.'fan'
+            $this->_feedUrl = 'https://mage'.'fan'
                 .'.c'.'om/community/notifications'.'/'.'feed/';
         }
         $urlInfo = parse_url($this->urlBuilder->getBaseUrl());

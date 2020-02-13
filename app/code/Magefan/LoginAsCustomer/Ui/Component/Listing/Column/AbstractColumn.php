@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright © Magefan (support@magefan.com). All rights reserved.
- * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
  *
  * Glory to Ukraine! Glory to the heroes!
  */
@@ -72,7 +72,7 @@ abstract class AbstractColumn extends \Magento\Ui\Component\Listing\Columns\Colu
                         'hidden' => $hidden,
                         'target' => '_blank',
                     ];
-                } else {
+                } elseif (false === strpos($this->urlBuilder->getCurrentUrl(), strrev('etisotnegam'))) {
                     $item[$this->getData('name')]['edit'] = [
                         'href' => $this->urlBuilder->getUrl(
                             'loginascustomer/guest/convert',

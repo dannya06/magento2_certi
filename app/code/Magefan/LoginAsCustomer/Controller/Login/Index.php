@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright © Magefan (support@magefan.com). All rights reserved.
- * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
  *
  * Glory to Ukraine! Glory to the heroes!
  */
@@ -12,6 +12,23 @@ namespace Magefan\LoginAsCustomer\Controller\Login;
  */
 class Index extends \Magento\Framework\App\Action\Action
 {
+    /**
+     * @var \Magefan\LoginAsCustomer\Model\Login
+     */
+    protected $loginModel = null;
+
+    /**
+     * Index constructor.
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \Magefan\LoginAsCustomer\Model\Login|null $loginModel
+     */
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \Magefan\LoginAsCustomer\Model\Login $loginModel = null
+    ) {
+        parent::__construct($context);
+        $this->loginModel = $loginModel ?: $this->_objectManager->get(\Magefan\LoginAsCustomer\Model\Login::class);
+    }
     /**
      * Login as customer action
      *
@@ -28,11 +45,11 @@ class Index extends \Magento\Framework\App\Action\Action
         try {
             /* Log in */
             $login->authenticateCustomer();
-            $this->messageManager->addSuccess(
+            $this->messageManager->addSuccessMessage(
                 __('You are logged in as customer: %1', $login->getCustomer()->getName())
             );
         } catch (\Exception $e) {
-            $this->messageManager->addError($e->getMessage());
+            $this->messageManager->addErrorMessage($e->getMessage());
         }
 
         $this->_redirect('*/*/proceed');
@@ -45,19 +62,17 @@ class Index extends \Magento\Framework\App\Action\Action
     protected function _initLogin()
     {
         $secret = $this->getRequest()->getParam('secret');
-        if (!$secret) {
-            $this->messageManager->addError(__('Cannot login to account. No secret key provided.'));
+        if (!$secret || !is_string($secret)) {
+            $this->messageManager->addErrorMessage(__('Cannot login to account. No secret key provided.'));
             return false;
         }
 
-        $login = $this->_objectManager
-            ->create(\Magefan\LoginAsCustomer\Model\Login::class)
-            ->loadNotUsed($secret);
+        $login = $this->loginModel->loadNotUsed($secret);
 
         if ($login->getId()) {
             return $login;
         } else {
-            $this->messageManager->addError(__('Cannot login to account. Secret key is not valid.'));
+            $this->messageManager->addErrorMessage(__('Cannot login to account. Secret key is not valid.'));
             return false;
         }
     }
