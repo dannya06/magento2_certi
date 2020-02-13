@@ -6,7 +6,7 @@ $config = $helper->getConfig();
 ?>
 <span class="product-brand" style="float: left; clear: both; width: 100%;">
     <?php if ($_fbrand->getCategoryUrl()):?>
-        <a href="<?php echo $this->getUrl('brand').$_fbrand->getCategoryUrl()?>">
+        <a href="<?php echo $this->getUrl().$_fbrand->getCategoryUrl()?>">
     <?php else:?>
         <a href="<?php echo $this->getUrl('catalogsearch/advanced/result/').'?'.$config.'[]='.$_fbrand->getAttributeId();?>">
     <?php endif;?>
