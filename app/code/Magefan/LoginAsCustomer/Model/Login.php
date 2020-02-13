@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright © Magefan (support@magefan.com). All rights reserved.
- * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
  *
  * Glory to Ukraine! Glory to the heroes!
  */
@@ -131,7 +131,7 @@ class Login extends \Magento\Framework\Model\AbstractModel
      */
     protected function _construct()
     {
-        $this->_init('Magefan\LoginAsCustomer\Model\ResourceModel\Login');
+        $this->_init(\Magefan\LoginAsCustomer\Model\ResourceModel\Login::class);
     }
 
     /**
@@ -198,6 +198,8 @@ class Login extends \Magento\Framework\Model\AbstractModel
             $this->_customerSession->logout();
         } else {
 
+            $quote = $this->cart->getQuote();
+
             $keepItems = $this->scopeConfig->getValue(
                 self::XML_PATH_KEEP_GUEST_CART,
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE
@@ -205,11 +207,11 @@ class Login extends \Magento\Framework\Model\AbstractModel
 
             if (!$keepItems) {
                 /* Remove items from guest cart */
-                foreach ($this->cart->getQuote()->getAllVisibleItems() as $item) {
+                foreach ($quote->getAllVisibleItems() as $item) {
                     $this->cart->removeItem($item->getId());
                 }
-                $this->cart->save();
             }
+            $this->cart->save();
         }
 
         $customer = $this->getCustomer();
@@ -229,6 +231,10 @@ class Login extends \Magento\Framework\Model\AbstractModel
 
         /* Load Customer Quote */
         $this->_checkoutSession->loadCustomerQuote();
+
+        $quote = $this->_checkoutSession->getQuote();
+        $quote->setCustomerIsGuest(0);
+        $quote->save();
 
         $this->setUsed(1)->save();
 
