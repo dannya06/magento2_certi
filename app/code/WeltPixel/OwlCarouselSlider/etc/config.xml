@@ -15,6 +15,7 @@
                 <show_addto>0</show_addto>
                 <show_wishlist>0</show_wishlist>
                 <show_compare>0</show_compare>
+                <show_reviews_ratings>0</show_reviews_ratings>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
                 <slide_by>1</slide_by>
@@ -53,6 +54,7 @@
                 <show_addto>0</show_addto>
                 <show_wishlist>0</show_wishlist>
                 <show_compare>0</show_compare>
+                <show_reviews_ratings>0</show_reviews_ratings>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
                 <slide_by>1</slide_by>
@@ -90,6 +92,7 @@
                 <show_addto>0</show_addto>
                 <show_wishlist>0</show_wishlist>
                 <show_compare>0</show_compare>
+                <show_reviews_ratings>0</show_reviews_ratings>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
                 <slide_by>1</slide_by>
@@ -127,6 +130,7 @@
                 <show_addto>1</show_addto>
                 <show_wishlist>0</show_wishlist>
                 <show_compare>0</show_compare>
+                <show_reviews_ratings>0</show_reviews_ratings>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
                 <slide_by>1</slide_by>
@@ -263,6 +267,7 @@
                 <show_addto>0</show_addto>
                 <show_wishlist>0</show_wishlist>
                 <show_compare>0</show_compare>
+                <show_reviews_ratings>0</show_reviews_ratings>
                 <random_sort>0</random_sort>
                 <max_items>15</max_items>
                 <slide_by>1</slide_by>

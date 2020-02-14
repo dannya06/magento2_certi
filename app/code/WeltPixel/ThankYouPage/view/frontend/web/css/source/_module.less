@@ -1,5 +1,5 @@
 & when (@media-common = true) {
-	.checkout-onepage-success {
+	.checkout-onepage-success, .multishipping-checkout-success {
 		.thankyou-wrapper {
 			margin: 0 auto 67px auto;
 			text-align: center;
@@ -157,7 +157,8 @@
 						}
 						.payment-method {
 							text-align: left;
-							h4 {
+							h4,
+							p {
 								padding-right: 0;
 								padding-left: 10px;
 							}
@@ -215,19 +216,41 @@
 							tr > td {
 								border-color: #eeeeee;
 							}
+							.grand_total {
+								border-top: 1px solid #eeeeee;
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-	.theme-pearl.checkout-onepage-success .thankyou-wrapper .block.newsletter .field .control:before {
+	.theme-pearl.checkout-onepage-success .thankyou-wrapper .block.newsletter .field .control:before,
+	.theme-pearl.multishipping-checkout-success .thankyou-wrapper .block.newsletter .field .control:before {
 		line-height: 50px;
+	}
+	.page-wrapper {
+		.multicheckout.results .orders-succeed .orders-list .shipping-list {
+			.order-id {
+				float: none;
+			}
+			.shipping-item {
+				margin-left: 0;
+			}
+		}
+		.multicheckout.success .orders-succeed .orders-list .shipping-list {
+			.order-id {
+				float: none;
+			}
+			.shipping-item {
+				margin-left: 0;
+			}
+		}
 	}
 }
 
 .media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
-	.checkout-onepage-success {
+	.checkout-onepage-success, .multishipping-checkout-success {
 		.thankyou-wrapper {
 			.block.newsletter {
 				width: 35%;
@@ -246,7 +269,7 @@
 }
 
 .media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
-	.checkout-onepage-success {
+	.checkout-onepage-success, .multishipping-checkout-success {
 		.thankyou-wrapper {
 			.action.primary {
 				width: 100%;
@@ -269,7 +292,7 @@
 }
 
 .media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__s) {
-	.checkout-onepage-success {
+	.checkout-onepage-success, .multishipping-checkout-success {
 		.thankyou-wrapper {
 			.table-wrapper {
 				border-top: 0 none;
@@ -330,7 +353,8 @@
 			}
 		}
 	}
-	.checkout-onepage-success:not(.theme-pearl){
+	.checkout-onepage-success:not(.theme-pearl),
+	.multishipping-checkout-success:not(.theme-pearl){
 		.block.newsletter {
 			.field .control {
 				&:before {

@@ -8,7 +8,7 @@
 <?php
 $productId = $block->getProductId();
 $addNoFollow = $block->getData('no_follow');
-$quickviewUrl = $block->getUrl('weltpixel_quickview/catalog_product/view', array('id' => $productId));
+$quickviewUrl = $block->getUrl('weltpixel_quickview/catalog_product/view', array('id' => $productId, '_secure' => true));
 $noFollowAttr = '';
 if ($addNoFollow) :
     $noFollowAttr = ' rel="nofollow"';

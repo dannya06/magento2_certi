@@ -230,4 +230,22 @@ class Remarketing extends \WeltPixel\GoogleTagManager\Model\Api
 
         return $tags;
     }
+
+    /**
+     * @return array
+     */
+    public function getRemarketingVariablesList()
+    {
+        return $this->_getRemarketingVariables();
+    }
+
+    /**
+     * @param array $triggers
+     * @param array $params
+     * @return array
+     */
+    public function getRemarketingTagsList($triggers, $params)
+    {
+        return $this->_getRemarketingTags($triggers, $params);
+    }
 }

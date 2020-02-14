@@ -19,6 +19,8 @@ class Collection extends \Magento\Reports\Model\ResourceModel\Product\Index\View
      */
     protected $_httpContext;
 
+    protected $_session;
+
     /**
      * Collection constructor.
      * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
@@ -66,6 +68,7 @@ class Collection extends \Magento\Reports\Model\ResourceModel\Product\Index\View
         \Magento\Customer\Api\GroupManagementInterface $groupManagement,
         \Magento\Customer\Model\Visitor $customerVisitor,
         \Magento\Framework\App\Http\Context $httpContext,
+        \Magento\Framework\Session\SessionManagerInterface $session,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null
     )
     {
@@ -98,6 +101,7 @@ class Collection extends \Magento\Reports\Model\ResourceModel\Product\Index\View
         $this->_customerSession = $customerSession;
         $this->_customerVisitor = $customerVisitor;
         $this->_httpContext = $httpContext;
+        $this->_session = $session;
     }
 
     /**
@@ -106,23 +110,21 @@ class Collection extends \Magento\Reports\Model\ResourceModel\Product\Index\View
     protected function _getWhereCondition()
     {
         $condition = [];
-        $myCustomerId = $this->_httpContext->getValue('wp_customer_id');
-        $myVisitorId = $this->_httpContext->getValue('wp_visitor_id');
+
+        $visitorData = $this->_session->getVisitorData();
+        $myCustomerId = (isset($visitorData['customer_id'])) ? $visitorData['customer_id'] : null;
+        $myVisitorId = (isset($visitorData['visitor_id'])) ? $visitorData['visitor_id'] : null;
 
         if ($myCustomerId) {
             $condition['customer_id'] = $myCustomerId;
         } elseif ($this->_customerSession->isLoggedIn()) {
             $condition['customer_id'] = $this->_customerSession->getCustomerId();
-            $this->_httpContext->setValue('wp_customer_id', $condition['customer_id'], false);
         } elseif ($this->_customerId) {
             $condition['customer_id'] = $this->_customerId;
-            $this->_httpContext->setValue('wp_customer_id', $condition['customer_id'], false);
         } elseif ($myVisitorId) {
             $condition['visitor_id'] = $myVisitorId;
         } else {
-            $condition['visitor_id'] = $this->_customerVisitor->getId();
-            if ($condition['visitor_id'])
-                $this->_httpContext->setValue('wp_visitor_id', $condition['visitor_id'], false);
+            $condition['visitor_id'] = $myVisitorId;
         }
 
         return $condition;

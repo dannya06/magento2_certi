@@ -10,11 +10,12 @@ $accordionVersion = $helperProductPage->getAccordionVersion($helperProductPage->
 $accordionCollapsible = $helperProductPage->isAccordionCollapsible($helperProductPage->getStoreId());
 $noBorder = '';
 $noBorderAccordion = '';
-
+$tabsLayout = $helperProductPage->getTabsLayout();
+$reviewUrl = $block->getBaseUrl() . 'review/product/listAjax/id/' . $helperProductPage->getProductId();
 
 ?>
 <?php if ($detailedInfoGroup = $block->getGroupChildNames('detailed_info', 'getChildHtml')) : ?>
-    <?php if($helperProductPage->getTabsLayout() == 'accordion')  :  ?>
+    <?php if($tabsLayout == 'accordion')  :  ?>
         <?php
             // Check if accordion version is Version 2
             if($accordionVersion == '1'): ?>
@@ -85,7 +86,7 @@ $noBorderAccordion = '';
         <?php endif; ?>
 
     <?php else: ?>
-        <?php $noBorder = $helperProductPage->getTabsLayout() == 'tab' && $helperProductPage->getTabsVersion() == '1' ? 'no-border' : '' ?>
+        <?php $noBorder = $tabsLayout == 'tab' && $helperProductPage->getTabsVersion() == '1' ? 'no-border' : '' ?>
         <div class="tabs-1 product info detailed <?php echo  $noBorder; ?>">
             <?php $layout = $block->getLayout(); ?>
             <div class="product data items" data-mage-init='{"tabs":{"openedState":"active"}}'>
@@ -117,3 +118,27 @@ $noBorderAccordion = '';
         </div>
     <?php endif; ?>
 <?php endif; ?>
+<script>
+    require(['jquery', 'productPage'],
+        function ($, productPage) {
+            $(function() {
+                /** pre-load product reviews */
+                window.reviewUrl = '<?= /* @escapeNotVerified */ $reviewUrl ?>';
+                var tabsLayout = '<?= /* @escapeNotVerified */ $tabsLayout; ?>';
+                if (tabsLayout === 'list') {
+                    productPage.preLoadProductReviews(function() {});
+                }
+
+                /** have to wait until all the images are loaded */
+                $('[data-gallery-role=gallery-placeholder]').on('gallery:loaded', function () {
+                    $(this).on('fotorama:ready', function(){
+                        productPage.scrollToUrlHash(window.location.href);
+                    });
+                });
+
+                $('.reviews-actions a.action').on('click', function() {
+                    productPage.scrollToUrlHash($(this).attr('href'));
+                });
+            });
+        });
+</script>

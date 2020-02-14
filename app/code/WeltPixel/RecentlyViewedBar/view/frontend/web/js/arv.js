@@ -1,13 +1,9 @@
 define([
-    "jquery",
-    "domReady!"
+    "jquery"
 ], function ($) {
     "use strict";
     window.arv = {
         init: function() {
-          if(window.isCustomer || !window.isSlEnabled){
-              $('.arv-cms-img').show();
-          }
           $('.proceed').on('click', function(event){
               event.preventDefault();
             $('.arv-content .field.email, .proceed').hide();
@@ -30,15 +26,16 @@ define([
                if(window.localStorage.recently_viewed_product) {
                    window.localStorage.removeItem('recently_viewed_product');
                }
-               window.location.reload();
+               $('.arv-item-list ol').empty();
+               $('.arv-wrapper').hide();
             })
         },
         elementLoaded: function(isready, success, error, count, interval){
             if (count === undefined) {
-                count = 300;
+                count = 5;
             }
             if (interval === undefined) {
-                interval = 20;
+                interval = 1000;
             }
             if (isready()) {
                 success();
@@ -66,6 +63,9 @@ define([
                     $('.arv-item-list .action.towishlist').addClass("icon-line-heart-arv");
                     $('.arv-item-list .action.tocompare').addClass("icon-line-compare-arv");
                 }
+                if (window.isSlCustomPopupUsed && parseInt(window.isSlCustomPopupUsed)) {
+                    $('.arv-item-list .action.towishlist').removeAttr('data-post');
+                }
 
                 if(!$('.arv-wrapper button.tocart').length){
                     $('.actions-secondary').addClass('no-addtocart-btn');
@@ -80,23 +80,20 @@ define([
                 $('#arv_btn').show();
             });
 
-
-            $('#arv_btn').on('click', () => {
+            $('#arv_btn').on('click',function() {
                 $('.arv-content').slideToggle();
-            })
+            });
         },
         closeSlide: function(){
-           let self = this;
-          
             window.onclick = function(event) {
                 var container = document.getElementById('arv-content');
                 var recentBtn = document.getElementById('arv_btn');
-               
-                if (!container.contains(event.target) 
+
+                if (!container.contains(event.target)
                         && !recentBtn.contains(event.target)
-                    ){    
+                    ){
                     if($('.arv-content').css('display') == 'block'){
-                        $('.arv-content').slideUp();          
+                        $('.arv-content').slideUp();
                     }
                 }
             }

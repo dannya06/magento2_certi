@@ -81,11 +81,13 @@ class ViewPreprocessorAbstract {
                     if ($isPearlResourceNeeded === false) {
                         $isPearlResource = false;
                     } elseif (isset($pathOptions[5]) && in_array($pathOptions[5], ['styles-m.less', 'styles-l.less'])) {
-                        $storeThemesLocales = $this->utilityHelper->getStoreThemesLocales();
-                        $themePath = $pathOptions['1'] . '/' . $pathOptions[2] . '/' . $pathOptions[3];
-                        if (isset($storeThemesLocales[$themePath])) {
-                            $storeCode = $storeThemesLocales[$themePath];
-                        }
+                        try {
+                            $storeThemesLocales = $this->utilityHelper->getStoreThemesLocales();
+                            $themePath = $pathOptions['1'] . '/' . $pathOptions[2] . '/' . $pathOptions[3];
+                            if (isset($storeThemesLocales[$themePath])) {
+                                $storeCode = $storeThemesLocales[$themePath];
+                            }
+                        } catch (\Exception $ex) {}
                     }
                 }
             }

@@ -19,7 +19,7 @@ $_countBlocks = count( $_blocks );
 		</div>
 	</div>
 	<script type="text/javascript">
-		require(['jquery', 'fullpagescroll', 'jquery/ui','full_page','scrolloverflow'],
+		require(['jquery', 'fullpagescroll'],
 			function ($, FullPageScroll) {
 				FullPageScroll.action(<?php echo /* @escapeNotVerified */ $_countBlocks; ?>);
 				jQuery(window).trigger('resize');

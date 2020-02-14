@@ -11,7 +11,7 @@ $prodImg = $block->getImage($block->getProductForThumbnail(), 'cart_page_product
     <?php if($prodImg) :?>
         <td>
             <img class="photo image"
-                 src="<?= /* @escapeNotVerified */ $prodImg ?>"
+                 src="<?= /* @escapeNotVerified */ is_object($prodImg) ? $prodImg->getImageUrl() : $prodImg?>"
                  width="100"
                  alt="<?= $block->escapeHtml($_item->getName()) ?>" />
         </td>

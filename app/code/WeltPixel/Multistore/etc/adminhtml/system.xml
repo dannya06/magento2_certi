@@ -30,10 +30,12 @@
                     <backend_model>WeltPixel\Multistore\Model\Config\Backend\Svg</backend_model>
                     <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/multistore/logo</upload_dir>
                     <base_url type="media" scope_info="1">weltpixel/multistore/logo</base_url>
-                    <comment><![CDATA[ Select image displayed when store is active. <br/> Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.]]></comment>
-                    <tooltip>Set Active Store Image in order to know which store / language option is active; should
+                    <comment><![CDATA[ Select image displayed when store is active. <br/> Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.<br/>
+                        Set Active Store Image in order to know which store / language option is active; should
                         be a different image than the inactive image, in order to highlight that this shop is not
-                        Selected and Active.</tooltip>
+                        Selected and Active.
+                        ]]>
+                    </comment>
                     <depends>
                         <field id="enable">1</field>
                     </depends>
@@ -43,10 +45,12 @@
                     <backend_model>WeltPixel\Multistore\Model\Config\Backend\Svg</backend_model>
                     <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/multistore/logo_inactive</upload_dir>
                     <base_url type="media" scope_info="1">weltpixel/multistore/logo_inactive</base_url>
-                    <comment><![CDATA[Select image displayed when store is inactive. <br/>  Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.]]></comment>
-                    <tooltip>Set Inactive Store Image this image will be displayed as logo when another store /language
+                    <comment><![CDATA[Select image displayed when store is inactive. <br/>  Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.<br/>
+                        Set Inactive Store Image this image will be displayed as logo when another store /language
                         is selected; should be a different image than the active image, in order to highlight that this
-                        shop is not active, you can use inverted colors or transparency to achieve this.</tooltip>
+                        shop is not active, you can use inverted colors or transparency to achieve this.
+                        ]]>
+                    </comment>
                     <depends>
                         <field id="enable">1</field>
                     </depends>

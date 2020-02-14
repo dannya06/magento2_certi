@@ -314,14 +314,62 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                 height: $height;
                 min-width: $width;
                 &.image{
+                    &:before {
+		                visibility: hidden;
+		                position: absolute;
+		                top: -3px;
+		                left: -3px;
+		                z-index: 0;
+		                width: $hWidth;
+		                height: $hHeight;
+		                border: 1px solid transparent;
+		                border-radius: $radius !important;
+		                -moz-border-radius: $radius !important;
+		                -webkit-border-radius: $radius !important;
+		                content: '';
+		                -webkit-box-sizing: border-box;
+					    -moz-box-sizing: border-box;
+					    box-sizing: border-box;
+		            }
+		            &:after {
+		                visibility: hidden;
+		                position: absolute;
+		                top: -3px;
+		                left: -3px;
+		                z-index: 1;
+		                width: $hWidth;
+		                height: $hHeight;
+		                line-height: $hHeight;
+		                font-family: lined-icons;
+		                speak: none;
+		                font-style: normal;
+		                font-weight: 900;
+		                font-variant: normal;
+		                font-size: 0.6vw;
+		                text-transform: none;
+		                text-align: center;
+		                -webkit-font-smoothing: antialiased;
+		                -moz-osx-font-smoothing: grayscale;
+		                content: '$icon_content';
+		                color: #ffffff;
+		            }
                    &.selected{
-                    border: 1px solid #999999 !important;
+                    position: relative;
+                    overflow: visible;
+                    &:before {
+                        visibility: visible;
+                        border: 1px solid #999999;
+                    }
+		          
                    }
-                   &:hover{
-                        position: relative;
+                   &:hover {
+		                position: relative;
 		                overflow: visible;
-		                border: 1px solid #999999 !important;
-                     }
+		                &:before {
+		                    visibility: visible;
+		                    border: 1px solid #999999;
+		                }
+		            }
                 }
 	            &.color {
 	                &:before {
@@ -447,6 +495,15 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 		                }
 		            }
 	            }
+            }
+            .swatch-option:not(.image):not(.color):not(.text) {
+                border: 1px solid #ddd !important;
+                &:hover{
+                    border: 1px solid #999 !important;
+                }
+                &.selected{
+                    border: 1px solid #999 !important;
+                }
             }
         }
         ";
@@ -800,7 +857,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
     private function _getLessValues(\Magento\Store\Model\Store $store)
     {
         $storeCode = $store->getData('code');
-        $storeClassName = '.theme-pearl.store-view-' . preg_replace('#[^a-z0-9]+#', '-', strtolower($storeCode));
+        $storeClassName = '.theme-pearl.store-view-' . preg_replace('#[^a-z0-9-_]+#', '-', strtolower($storeCode));
 
         return array(
             $storeClassName

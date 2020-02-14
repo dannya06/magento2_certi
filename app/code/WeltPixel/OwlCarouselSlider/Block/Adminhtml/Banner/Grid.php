@@ -147,6 +147,17 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         );
 
         $this->addColumn(
+            'thumb_image',
+            [
+                'header'   => __('Thumb Image'),
+                'width'    => '50px',
+                'filter'   => false,
+                'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Banner\Helper\Renderer\ThumbImage',
+                'align'  => 'center',
+            ]
+        );
+
+        $this->addColumn(
             'valid_from',
             [
                 'header'   => __('Valid From'),
@@ -188,9 +199,6 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'column_css_class' => 'col-action',
             ]
         );
-        $this->addExportType('*/*/exportCsv', __('CSV'));
-        $this->addExportType('*/*/exportXml', __('XML'));
-        $this->addExportType('*/*/exportExcel', __('Excel'));
 
         return parent::_prepareColumns();
     }

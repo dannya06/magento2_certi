@@ -245,6 +245,10 @@ class UpgradeData implements UpgradeDataInterface
             ]);
         }
 
+        if (version_compare($context->getVersion(), '1.2.4') < 0) {
+            $catalogSetup->updateAttribute(Category::ENTITY, 'weltpixel_category_url', 'note','', null);
+        }
+
         $setup->endSetup();
     }
 }

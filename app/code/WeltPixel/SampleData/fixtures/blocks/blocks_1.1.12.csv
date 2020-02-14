@@ -3,8 +3,8 @@ title,identifier,content,is_active
 <div id=""carousel"">
     <div class=""btn-bar"">
         <div id=""buttons"">
-            <a id=""prev"" class=""icon-angle-left"" href=""#""></a>
-            <a id=""next"" class=""icon-angle-right"" href=""#""></a>
+            <a id=""prev"" class=""icon-angle-left"" href=""#"">&nbsp;</a>
+            <a id=""next"" class=""icon-angle-right"" href=""#"">&nbsp;</a>
         </div>
     </div>
     <div id=""slides"">

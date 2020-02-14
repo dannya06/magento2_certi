@@ -71,11 +71,11 @@ class TemplateVariablesPlugin
     }
 
     /**
-     * @param $subject
+     * @param \Magento\Email\Model\Template $subject
      * @param string $result
-     * @return string
+     * @return array|string
      */
-    public function afterGetVariablesOptionArray(\Magento\Email\Model\BackendTemplate\Interceptor $subject, $result = '')
+    public function afterGetVariablesOptionArray(\Magento\Email\Model\Template $subject, $result = '')
     {
         $templateCode = $subject->getOrigTemplateCode();
         $templateTypes = $this->_helper->getTemplatesTypes();
@@ -142,14 +142,29 @@ class TemplateVariablesPlugin
         }
 
         foreach ($optionArray as $newOption) {
-            if (isset($result['value'])) {
-                array_unshift($result['value'], $newOption);
-            } else {
-                if (!isset($result['label'])) {
-                    $result['label'] = __('Template Variables');
+            if(isset($result[0])) {
+                if (isset($result[0]['value'])) {
+                    array_unshift($result[0]['value'], $newOption);
+                } else {
+                    if (!isset($result[0]['label'])) {
+                        $result[0]['label'] = __('Template Variables');
+                    }
+                    $result[0]['value'][0] = $newOption;
                 }
-                $result['value'][0] = $newOption;
+            } else {
+                if (isset($result['value'])) {
+                    array_unshift($result['value'], $newOption);
+                } else {
+                    if (!isset($result['label'])) {
+                        $result['label'] = __('Template Variables');
+                    }
+                    $result['value'][0] = $newOption;
+                }
+                $newVars = [];
+                $newVars[] = $result;
+                $result = $newVars;
             }
+
         }
 
         return $result;

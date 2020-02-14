@@ -8,7 +8,6 @@ namespace WeltPixel\GoogleTagManager\Helper;
  */
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
-
     const CACHE_ID_CATEGORIES = 'weltpixel_gtm_cached_categories';
     /**
      * @var array
@@ -145,8 +144,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \WeltPixel\GoogleTagManager\Model\Dimension $dimensionModel,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\App\Cache\StateInterface $cacheState
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->_gtmOptions = $this->scopeConfig->getValue('weltpixel_googletagmanager', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $this->blockFactory = $blockFactory;
@@ -169,13 +167,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->cacheState = $cacheState;
     }
 
-
     /**
      * Get all categories id, name for the current store view
      */
     private function _populateStoreCategories()
     {
-        if (!$this->isEnabled() || !empty($this->storeCategories)) return;
+        if (!$this->isEnabled() || !empty($this->storeCategories)) {
+            return;
+        }
 
         $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
         $storeId = $this->storeManager->getStore()->getStoreId();
@@ -194,7 +193,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $categories = $this->categoryCollectionFactory->create()
             ->setStoreId($storeId)
-            ->addAttributeToFilter('path', array('like' => "1/{$rootCategoryId}/%"))
+            ->addAttributeToFilter('path', ['like' => "1/{$rootCategoryId}/%"])
             ->addAttributeToSelect('name');
 
         foreach ($categories as $categ) {
@@ -242,9 +241,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->_gtmOptions['general']['promotion_tracking'];
     }
 
-     /**
-     * @return int
-     */
+    /**
+    * @return int
+    */
     public function getPersistentStorageExpiryTime()
     {
         return $this->_gtmOptions['general']['persistentlayer_expiry'];
@@ -300,6 +299,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @return bool
+     */
+    public function getSecureCookiesFlag()
+    {
+        return $this->_gtmOptions['general']['secure_cookies'];
+    }
+
+    /**
      * @return int
      */
     public function getImpressionChunkSize()
@@ -332,6 +339,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return trim($this->_gtmOptions['general']['gtm_nonjs_code']);
     }
 
+    /**
+     * @return string
+     */
+    public function getCustomSuccessPagePaths()
+    {
+        return trim($this->_gtmOptions['general']['success_page_paths']);
+    }
 
     /**
      * @return string
@@ -343,6 +357,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if (!($block = $this->createBlock('Core', 'datalayer.phtml'))) {
             return $script;
         }
+
+        $block->setNameInLayout('wp.gtm.datalayer.scripts');
 
         $this->addDefaultInformation();
         $this->addCategoryPageInformation();
@@ -390,11 +406,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if ($this->isCustomDimensionPageTypeEnabled()) {
             $pageType = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_OTHER;
             switch ($actionName) {
-                case 'cms_index_index' :
+                case 'cms_index_index':
                     $pageType = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_HOME;
                     break;
-                case 'checkout_index_index' :
-                case 'firecheckout_index_index' :
+                case 'checkout_index_index':
+                case 'firecheckout_index_index':
                     $pageType = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_CART;
                     break;
             }
@@ -404,11 +420,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if ($this->isAdWordsRemarketingEnabled()) {
             $remarketingData = [];
             switch ($actionName) {
-                case 'cms_index_index' :
+                case 'cms_index_index':
                     $remarketingData['ecomm_pagetype'] = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_HOME;
                     break;
-                case 'checkout_index_index' :
-                case 'firecheckout_index_index' :
+                case 'checkout_index_index':
+                case 'firecheckout_index_index':
                     $remarketingData['ecomm_pagetype'] = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_CART;
                     break;
                 default:
@@ -462,7 +478,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         if ($moduleName == 'catalogsearch') {
-
             if ($this->isCustomDimensionPageTypeEnabled()) {
                 $pageType = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_SEARCHRESULTS;
                 $this->storage->setData('pageType', $pageType);
@@ -517,7 +532,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             DIRECTORY_SEPARATOR . $this->_request->getActionName();
 
         if ($requestPath == 'checkout/cart/index') {
-
             $cartBlock = $this->createBlock('Cart', 'cart.phtml');
 
             if ($cartBlock) {
@@ -531,8 +545,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 $this->storage->setData('pageType', $pageType);
             }
         }
-
-
     }
 
     public function addCheckoutInformation()
@@ -567,7 +579,17 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             DIRECTORY_SEPARATOR . $this->_request->getControllerName() .
             DIRECTORY_SEPARATOR . $this->_request->getActionName();
 
-        if ($requestPath != 'checkout/onepage/success' || !$lastOrderId) {
+        $successPagePaths = [
+            'checkout/onepage/success'
+        ];
+
+        $customSuccessPagePaths = trim($this->getCustomSuccessPagePaths());
+
+        if (strlen($customSuccessPagePaths)) {
+            $successPagePaths = array_merge($successPagePaths, explode(",", $customSuccessPagePaths));
+        }
+
+        if (!in_array($requestPath, $successPagePaths) || !$lastOrderId) {
             return;
         }
 
@@ -582,7 +604,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $pageType = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_PURCHASE;
             $this->storage->setData('pageType', $pageType);
         }
-
     }
 
     /**
@@ -643,12 +664,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 $variant[] = $option['label'] . ": " . $option['value'];
             }
 
-
             if (!$variant && isset($buyRequest['super_attribute'])) {
                 $superAttributeLabels = [];
                 $superAttributeOptions = [];
                 $_attributes = $product->getTypeInstance(true)->getConfigurableAttributes($product);
-                foreach($_attributes as $_attribute){
+                foreach ($_attributes as $_attribute) {
                     $superAttributeLabels[$_attribute['attribute_id']] = $_attribute['label'];
                     foreach ($_attribute->getOptions() as $option) {
                         $superAttributeOptions[$_attribute['attribute_id']][$option['value_index']] = $option['store_label'];
@@ -664,8 +684,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $customOptionFound = false;
         /** This is for the custom options for products */
         $_customOptions = $product->getTypeInstance(true)->getOrderOptions($product);
-        if(array_key_exists('options', $_customOptions)){
-            foreach($_customOptions['options'] as $option){
+        if (array_key_exists('options', $_customOptions)) {
+            foreach ($_customOptions['options'] as $option) {
                 $customOptionFound = true;
                 $variant[] = $option['label'] . ": " . $option['print_value'];
             }
@@ -677,7 +697,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 if (isset($customOption['print_value'])) {
                     $variant[] = $customOption['label'] . ": " . $customOption['print_value'];
                 }
-
             }
         }
 
@@ -750,7 +769,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $productData['brand'] = $this->getGtmBrand($product);
         }
 
-        $productData['category'] = $this->getGtmCategoryFromCategoryIds($product->getCategoryIds());
+        $categoryName = $this->getGtmCategoryFromCategoryIds($product->getCategoryIds());
+        $productData['category'] = $categoryName;
+        $productData['list'] = $categoryName;
         $productData['quantity'] = $qty;
 
         /**  Set the custom dimensions */
@@ -758,7 +779,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($customDimensions as $name => $value) :
             $productData[$name] = $value;
         endforeach;
-
 
         if ($this->isVariantEnabled()) {
             $variant = $this->checkVariantForProduct($product, $buyRequest, null, $checkForCustomOptions);
@@ -771,7 +791,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         return $result;
     }
-
 
     /**
      * @param array $currentAddToCartData
@@ -788,7 +807,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         return $currentAddToCartData;
-
     }
 
     /**
@@ -810,10 +828,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $gtmProductId = '';
 
         switch ($idOption) {
-            case 'sku' :
+            case 'sku':
                 $gtmProductId = $product->getData('sku');
                 break;
-            case 'id' :
+            case 'id':
             default:
                 $gtmProductId = $product->getId();
                 break;
@@ -833,10 +851,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $gtmProductId = '';
 
         switch ($idOption) {
-            case 'sku' :
+            case 'sku':
                 $gtmProductId = $item->getProduct()->getData('sku');//$item->getSku();
                 break;
-            case 'id' :
+            case 'id':
             default:
                 $gtmProductId = $item->getProductId();
                 break;
@@ -925,7 +943,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         /* first 2 categories can be ignored */
         $categoriIds = array_slice(explode('/', $categoryPath), 2);
-        $categoriesWithNames = array();
+        $categoriesWithNames = [];
 
         foreach ($categoriIds as $categoriId) {
             if (isset($this->storeCategories[$categoriId])) {
@@ -1052,7 +1070,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return $result;
     }
 
-
     /**
      * @param int $step
      * @param string $checkoutOption
@@ -1070,7 +1087,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             'option' => $checkoutOption
         ];
 
-
         $products = [];
         $checkoutBlock = $this->createBlock('Checkout', 'checkout.phtml');
 
@@ -1082,7 +1098,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $checkoutStepResult['ecommerce']['checkout']['products'] = $products;
 
-
         $checkoutOptionResult['event'] = 'checkoutOption';
         $checkoutOptionResult['ecommerce'] = [];
         $checkoutOptionResult['ecommerce']['currencyCode'] = $this->getCurrencyCode();
@@ -1091,7 +1106,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $optionData['step'] = $step;
         $optionData['option'] = $checkoutOption;
         $checkoutOptionResult['ecommerce']['checkout_option']['actionField'] = $optionData;
-
 
         $result = [];
         $result[] = $checkoutStepResult;
@@ -1123,7 +1137,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         return $this->_gtmOptions['general']['track_stockstatus'];
     }
-
 
     /**
      * @return integer
@@ -1165,7 +1178,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->_gtmOptions['general']['track_reviewsscore_indexnumber'];
     }
 
-        /**
+    /**
      * @return boolean
      */
     public function trackSaleProductEnabled()
@@ -1196,7 +1209,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         return $this->_gtmOptions['general']['custom_dimension_pagetype'];
     }
-
 
     /**
      * @return boolean
@@ -1291,7 +1303,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function trackCustomAttribute($index)
     {
-        return $this->_gtmOptions['general']['track_custom_attribute_'. $index];
+        return $this->_gtmOptions['general']['track_custom_attribute_' . $index];
     }
 
     /**
@@ -1300,7 +1312,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCustomAttributeCode($index)
     {
-        return $this->_gtmOptions['general']['track_custom_attribute_'. $index . '_code'];
+        return $this->_gtmOptions['general']['track_custom_attribute_' . $index . '_code'];
     }
 
     /**
@@ -1309,7 +1321,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCustomAttributeName($index)
     {
-        return $this->_gtmOptions['general']['track_custom_attribute_'. $index . '_name'];
+        return $this->_gtmOptions['general']['track_custom_attribute_' . $index . '_name'];
     }
 
     /**
@@ -1318,7 +1330,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCustomAttributeType($index)
     {
-        return $this->_gtmOptions['general']['track_custom_attribute_'. $index . '_type'];
+        return $this->_gtmOptions['general']['track_custom_attribute_' . $index . '_type'];
     }
 
     /**
@@ -1327,7 +1339,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCustomAttributeIndexNumber($index)
     {
-        return $this->_gtmOptions['general']['track_custom_attribute_'. $index . '_indexnumber'];
+        return $this->_gtmOptions['general']['track_custom_attribute_' . $index . '_indexnumber'];
     }
 
     /**

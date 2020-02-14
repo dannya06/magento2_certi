@@ -5,11 +5,13 @@
     font-family: 'font-icons-newsletter';
     src: url("../WeltPixel_Newsletter/css/fonts/font-icons.eot");
     src:url('../WeltPixel_Newsletter/css/fonts/font-icons.eot') format('embedded-opentype'),
+    url('../WeltPixel_Newsletter/css/fonts/font-icons.woff2') format('woff2'),
     url('../WeltPixel_Newsletter/css/fonts/font-icons.woff') format('woff'),
     url('../WeltPixel_Newsletter/css/fonts/font-icons.ttf') format('truetype'),
     url('../WeltPixel_Newsletter/css/fonts/font-icons.svg') format('svg');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
   }
 
   .sl-widget{
@@ -143,9 +145,6 @@
     transition: all .3s ease;
   }
 
-  .social-icons:hover i:first-child {
-    margin-top: -38px;
-  }
   /** Social Icons css */
 
 
@@ -355,7 +354,7 @@
         text-align: center;
       }
       input[type=text],input[type=email],#popup_newsletter_email, #exitintent_newsletter_email {
-        width: 78%;
+        width: 77%;
         height: 35px;
         border: 0;
         background: #f4f4f4;
@@ -415,9 +414,6 @@
           margin: 5px;
         }
       }
-      button.subscribe {
-        max-width: 23%;
-      }
     }
     &.wp_newsletter_v2 {
       float: left;
@@ -458,12 +454,11 @@
               float: right;
               border: 1px solid #000;
               height: 34px;
-              width: 32%
 
             }
             #popup_newsletter_email,
             #exitintent_newsletter_email{
-              width: 68%;
+              width: 74%;
             }
           }
 
@@ -574,15 +569,11 @@
       .weltpixel_newsletter_signup_section {
         #weltpixel_newsletter, #weltpixel_exitintent {
           input[type=text], input[type=email], #popup_newsletter_email, #exitintent_newsletter_email {
-            width: 86%;
+            width: 81%;
           }
         }
       }
-      &.wp_newsletter_v1 {
-        button.subscribe {
-          max-width: 32%;
-        }
-      }
+
     }
   }
   @media (min-width: 992px) {
@@ -632,7 +623,7 @@
             float: right;
           }
           input[type=text],input[type=email],#popup_newsletter_email, #exitintent_newsletter_email {
-            width: 75%;
+            width: 74%;
             float: left;
           }
         }
@@ -646,9 +637,7 @@
             width: 100%;
           }
         }
-        button.subscribe {
-          max-width: 23%;
-        }
+
       }
       &.wp_newsletter_v2 {
         float: left;
@@ -680,7 +669,7 @@
             margin: 0 auto;
             #weltpixel_newsletter, #weltpixel_exitintent {
               input[type=text],input[type=email],#popup_newsletter_email, #exitintent_newsletter_email {
-                width: 68%;
+                width: 74%;
               }
             }
           }
@@ -725,20 +714,16 @@
       .weltpixel_newsletter_signup_section {
         #weltpixel_newsletter, #weltpixel_exitintent {
           input[type=text],input[type=email],#popup_newsletter_email, #exitintent_newsletter_email {
-            width: 72%;
+            width: 66%;
           }
         }
       }
-      &.wp_newsletter_v1 {
-        button.subscribe {
-          max-width: 28%;
-        }
-      }
+
       &.wp_newsletter_v2 {
         .weltpixel_newsletter_signup_section {
           .right-section #weltpixel_newsletter, .right-section #weltpixel_exitintent {
             input[type=text],input[type=email],#popup_newsletter_email, #exitintent_newsletter_email {
-              width: 72%;
+              width: 74%;
             }
           }
         }
@@ -756,6 +741,27 @@
             margin-top: 0;
             #weltpixel_newsletter, #weltpixel_exitintent {
               padding: 7px 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  @media only screen and (max-width: 360px) {
+    .weltpixel_newsletter {
+      .weltpixel_newsletter_signup_section {
+        #weltpixel_newsletter, #weltpixel_exitintent {
+          input[type=text],input[type=email],#popup_newsletter_email, #exitintent_newsletter_email {
+            width: 61%;
+          }
+        }
+      }
+
+      &.wp_newsletter_v2 {
+        .weltpixel_newsletter_signup_section {
+          .right-section #weltpixel_newsletter, .right-section #weltpixel_exitintent {
+            input[type=text],input[type=email],#popup_newsletter_email, #exitintent_newsletter_email {
+              width: 69%;
             }
           }
         }

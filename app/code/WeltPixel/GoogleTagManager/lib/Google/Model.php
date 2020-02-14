@@ -39,7 +39,7 @@ class Model implements \ArrayAccess
    * Polymorphic - accepts a variable number of arguments dependent
    * on the type of the model subclass.
    */
-  final public function __construct()
+  public function __construct()
   {
     if (func_num_args() == 1 && is_array(func_get_arg(0))) {
       // Initialize the model with the array's contents.

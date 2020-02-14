@@ -48,6 +48,9 @@
                 <navigation__background></navigation__background>
                 <navigation____level0____item__active__color></navigation____level0____item__active__color>
             </navigation>
+            <google_font_options>
+                <asyn_webfont_load>0</asyn_webfont_load>
+            </google_font_options>
             <main_options>
                 <active__color>#333333</active__color>
                 <error__color>#FF0A0A</error__color>

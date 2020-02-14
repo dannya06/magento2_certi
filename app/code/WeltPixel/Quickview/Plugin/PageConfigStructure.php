@@ -19,7 +19,6 @@ class PageConfigStructure {
     }
 
     /**
-     * Modify the hardcoded breakpoint for styles-menu.css
      * @param \Magento\Framework\View\Page\Config\Structure $subject
      * @param string $name
      * @param array $attributes
@@ -35,7 +34,7 @@ class PageConfigStructure {
         if (!$isQuickviewEnabled) {
             switch ($name) {
                 case 'WeltPixel_Quickview::css/magnific-popup.css':
-                    $name = '';
+                    $subject->removeAssets($name);
                     break;
             }
         }

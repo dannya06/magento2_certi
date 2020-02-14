@@ -58,10 +58,36 @@ class DefaultItems extends \Magento\Sales\Block\Order\Email\Items\DefaultItems
      */
     public function getProduct()
     {
-        if($this->getItem()->getOrderItem()->getProductOptionByCode('simple_sku')) {
-            return  $this->_productRepository->get($this->getItem()->getOrderItem()->getProductOptionByCode('simple_sku'));
+        if ($this->getItem()->getOrderItem()->getProductOptionByCode('simple_sku')) {
+            $product = $this->_productRepository->get($this->getItem()->getOrderItem()->getProductOptionByCode('simple_sku'));
+            if($this->_productHasImage($product)) {
+                return $product;
+            } else {
+                $configProduct = $this->_productRepository->get($this->getItem()->getOrderItem()->getProduct()->getSku());
+                return $configProduct;
+            }
+        } elseif($this->getItem()->getOrderItem()->getProductType() == 'grouped') {
+            $groupedProduct = $this->_productRepository->get($this->getItem()->getOrderItem()->getSku());
+            return $groupedProduct;
+
         } else {
-            return $this->getItem()->getOrderItem()->getProduct();
+            $configProduct = $this->_productRepository->get($this->getItem()->getOrderItem()->getProduct()->getSku());
+            return $configProduct;
+        }
+    }
+
+    /**
+     * @param $product
+     * @return bool
+     */
+    protected function _productHasImage($product)
+    {
+        if ($product->getThumbnail() && $product->getThumbnail() != 'no_selection') {
+            return true;
+        } elseif ($product->getSmallImage() && $product->getSmallImage() != 'no_selection') {
+            return true;
+        } else {
+            return false;
         }
     }
 

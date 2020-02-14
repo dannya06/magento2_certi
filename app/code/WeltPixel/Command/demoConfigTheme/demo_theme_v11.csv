@@ -222,7 +222,7 @@ weltpixel_category_page/general/display_addtocart,5,stores
 weltpixel_category_page/general/addtocart_align,center,stores
 weltpixel_category_page/general/products_per_line,3,stores
 weltpixel_category_page/general/remove_breadcrumbs,0,stores
-weltpixel_category_page/item/box_shadow,"0px 4px 21px rgba(130,130,130,1)",stores
+weltpixel_category_page/item/box_shadow,"0px 4px 15px rgba(130,130,130,1)",stores
 weltpixel_category_page/item/border_width,0px,stores
 weltpixel_category_page/item/border_color,#FFFFFF,stores
 weltpixel_category_page/image/enable_hover_image,1,stores

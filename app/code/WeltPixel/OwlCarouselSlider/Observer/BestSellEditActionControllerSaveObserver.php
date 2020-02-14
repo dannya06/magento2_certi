@@ -93,11 +93,13 @@ class BestSellEditActionControllerSaveObserver implements ObserverInterface
 
                 }
 
-                ksort($cronSettingsArr);
-                $highestPriority = reset($cronSettingsArr);
-                $cronExprString = array_shift($highestPriority);
+                if ($cronSettingsArr) {
+                    ksort($cronSettingsArr);
+                    $highestPriority = reset($cronSettingsArr);
+                    $cronExprString = array_shift($highestPriority);
 
-                $this->_saveCronExpression($cronExprString);
+                    $this->_saveCronExpression($cronExprString);
+                }
             }
         }
 

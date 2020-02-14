@@ -89,7 +89,7 @@ $ratingSummary = ($summaryModel->getRatingSummary()) ? $summaryModel->getRatingS
             ,"priceValidUntil": "<?php echo $this->formatedDate($_product->getSpecialToDate()); ?>"
 <?php endif; ?>
 <?php if($_itemCondition) :?>
-            ,"itemCondition": "http://schema.org/<?php echo $_itemCondition;?>"
+            ,"itemCondition": "https://schema.org/<?php echo $_itemCondition;?>"
 <?php endif; ?>
         }
     }

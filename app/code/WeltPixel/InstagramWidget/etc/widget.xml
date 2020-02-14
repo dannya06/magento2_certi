@@ -5,11 +5,21 @@
         <label translate="true">WeltPixel InstagramWidget</label>
         <description>Adds Instagram Feed</description>
         <parameters>
+            <parameter name="instagram_api_type" xsi:type="select" visible="true" sort_order="1"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\ApiType">
+                <label translate="true">Instagram Api Type</label>
+            </parameter>
             <parameter name="instagram_client_id" xsi:type="text" visible="true" required="true" sort_order="10" >
                 <label translate="true">Instagram Client Id</label>
+                <depends>
+                    <parameter name="instagram_api_type" value="old" />
+                </depends>
             </parameter>
             <parameter name="instagram_access_token" xsi:type="text" visible="true" required="true" sort_order="20" >
                 <label translate="true">Instagram Access Token</label>
+                <depends>
+                    <parameter name="instagram_api_type" value="old" />
+                </depends>
             </parameter>
             <parameter name="title" xsi:type="text" visible="true" sort_order="30" >
                 <label translate="true">Title</label>
@@ -39,43 +49,71 @@
                 <label translate="true">Optimize Image Layout</label>
             </parameter>
             <parameter name="limit" xsi:type="text" visible="true" sort_order="60" >
-                <label translate="true">Limit</label>
-                <description translate="true">Maximum number of Images to add</description>
+                <label translate="true">Number of images</label>
+                <description translate="true">Number of images to be pulled from Instagram and displayed. Insert number between 1-12. Default: 6</description>
             </parameter>
             <parameter name="sort_by" xsi:type="select"  visible="true" sort_order="70"
                        source_model="WeltPixel\InstagramWidget\Model\Config\Source\SortBy">
                 <label translate="true">SortBy</label>
                 <description translate="true">Sort the images in a set order.</description>
+                <depends>
+                    <parameter name="instagram_api_type" value="old" />
+                </depends>
             </parameter>
             <parameter name="resolution" xsi:type="select"  visible="true" sort_order="80"
                        source_model="WeltPixel\InstagramWidget\Model\Config\Source\Resolution">
                 <label translate="true">Resolution</label>
                 <description translate="true">Size of the images to get.</description>
+                <depends>
+                    <parameter name="instagram_api_type" value="old" />
+                </depends>
+            </parameter>
+            <parameter name="resolution_jsparser" xsi:type="select"  visible="true" sort_order="80"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\ResolutionJsParser">
+                <label translate="true">Resolution</label>
+                <description translate="true">Size of the images to get.</description>
+                <depends>
+                    <parameter name="instagram_api_type" value="javascript_parser" />
+                </depends>
             </parameter>
             <parameter name="feed_type" xsi:type="select" visible="true" sort_order="90"
                        source_model="WeltPixel\InstagramWidget\Model\Config\Source\FeedType">
                 <label translate="true">Feed Type</label>
                 <description translate="true">Customize what Instafeed fetches. (Tag and Location was removed by Instagram)</description>
+                <depends>
+                    <parameter name="instagram_api_type" value="old" />
+                </depends>
             </parameter>
             <parameter name="user_id" xsi:type="text"  visible="true" sort_order="100" required="true">
                 <label translate="true">User Id</label>
                 <description translate="true">Unique id of a user to get</description>
                 <depends>
                     <parameter name="feed_type" value="user" />
+                    <parameter name="instagram_api_type" value="old" />
+                </depends>
+            </parameter>
+            <parameter name="feed_type_jsparser" xsi:type="select" visible="true" sort_order="90"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\FeedTypeJsParser">
+                <label translate="true">Feed Type</label>
+                <description translate="true">Customize what Instafeed fetches.</description>
+                <depends>
+                    <parameter name="instagram_api_type" value="javascript_parser" />
+                </depends>
+            </parameter>
+            <parameter name="user_name" xsi:type="text"  visible="true" sort_order="97" required="true">
+                <label translate="true">User Name</label>
+                <description translate="true">Username of a user to get</description>
+                <depends>
+                    <parameter name="feed_type_jsparser" value="user" />
+                    <parameter name="instagram_api_type" value="javascript_parser" />
                 </depends>
             </parameter>
             <parameter name="tag_name" xsi:type="text"  visible="true" sort_order="110" required="true">
                 <label translate="true">Tag Name</label>
                 <description translate="true">Images with a specific tag</description>
                 <depends>
-                    <parameter name="feed_type" value="tagged" />
-                </depends>
-            </parameter>
-            <parameter name="location_id" xsi:type="text"  visible="true" sort_order="120" required="true">
-                <label translate="true">Location Id</label>
-                <description translate="true">Images from a location</description>
-                <depends>
-                    <parameter name="feed_type" value="location" />
+                    <parameter name="feed_type_jsparser" value="tagged" />
+                    <parameter name="instagram_api_type" value="javascript_parser" />
                 </depends>
             </parameter>
         </parameters>

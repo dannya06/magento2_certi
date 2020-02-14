@@ -95,6 +95,14 @@
                     <comment>Set width of the Product Page [in px or %] - Example: 1400px or 90%, for full width use 100%.</comment>
                 </field>
             </group>
+            <group id="google_font_options" translate="label comment" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Google Font Options</label>
+                <field id="asyn_webfont_load" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Load Google Fonts Asynchronously</label>
+                    <source_model>WeltPixel\Backend\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[ If set to yes, the Google fonts will be loaded Asynchronously which eliminates render blocking CSS and should speed up the loading of the page.]]></comment>
+                </field>
+            </group>
             <group id="main_options" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Main Options</label>
                 <field id="primary__color" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">

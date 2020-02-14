@@ -75,7 +75,10 @@ class UpgradeData implements UpgradeDataInterface
                 'sort_order' => 0
             ];
 
-            $this->blockFactory->create()->setData($cmsBlockData)->save();
+            try {
+                $this->blockFactory->create()->setData($cmsBlockData)->save();
+            } catch (\Exception $ex) {
+            }
         }
 
         $setup->endSetup();

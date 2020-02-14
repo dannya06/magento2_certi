@@ -94,6 +94,17 @@
                     </depends>
                     <comment>Orders with value 0.00 can be excluded from purchase transactions if you set this option to Yes</comment>
                 </field>
+                <field id="success_page_paths" translate="label comment" type="textarea" sortOrder="68" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Success Page Paths</label>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>
+                        <![CDATA[If you are using custom checkout, and the success page path is different from the default magento path: 'checkout/onepage/success', you can list it here to make sure the Transaction data is sent to GTM.
+                        <br/> If you have different success pages you can separate them with ",". <br/> Ex: checkout/onestepcheckout/success, checkout/mycustomcheckout/success
+                        ]]>
+                    </comment>
+                </field>
                 <field id="product_click_tracking" translate="label" type="select" sortOrder="69" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Measure Product Clicks</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -111,7 +122,7 @@ If Product Click Tracking is enabled this option rewrites Magento_Catalog::produ
                         <field id="enable">1</field>
                     </depends>
                 </field>
-                <field id="persistentlayer_expiry" translate="label" type="text" sortOrder="72" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="persistentlayer_expiry" translate="label comment" type="text" sortOrder="72" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Persistent datalayer expiry time</label>
                     <depends>
                         <field id="enable">1</field>
@@ -119,13 +130,21 @@ If Product Click Tracking is enabled this option rewrites Magento_Catalog::produ
                     <validate>required number</validate>
                     <comment>The specified value represents minutes.</comment>
                 </field>
-                <field id="parent_vs_child" translate="label" type="select" sortOrder="105" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="parent_vs_child" translate="label comment" type="select" sortOrder="105" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Child vs Parent</label>
                     <source_model>WeltPixel\GoogleTagManager\Model\Config\Source\ParentVsChild</source_model>
                     <depends>
                         <field id="enable">1</field>
                     </depends>
                     <comment>Send Parent Id or Child id cart, checkout and thank you page</comment>
+                </field>
+                <field id="secure_cookies" translate="label comment" type="select" sortOrder="107" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use Secure Cookies</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Send the cookies as secure ones. Should only be used if your whole site is on HTTPS.</comment>
                 </field>
                 <field id="separator_user_dimensions" translate="button_label" type="text" sortOrder="109" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>WeltPixel\GoogleTagManager\Block\Adminhtml\System\Config\SeparatorElement</frontend_model>
@@ -636,6 +655,19 @@ If Product Click Tracking is enabled this option rewrites Magento_Catalog::produ
                 </field>
                 <field id="api_container" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>WeltPixel\GoogleTagManager\Block\System\Config\Api\Remarketing</frontend_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="json_export" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Json Export Options</label>
+                <field id="public_id" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Public ID</label>
+                    <comment>Ex: GTM-12XYZ21</comment>
+                </field>
+                <field id="api_container" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>WeltPixel\GoogleTagManager\Block\System\Config\Json\Export</frontend_model>
                     <depends>
                         <field id="enable">1</field>
                     </depends>

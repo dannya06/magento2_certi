@@ -4,7 +4,11 @@
         <referenceBlock name="store.settings.language" remove="true" />
         <referenceContainer name="header.container">
             <container before="header.panel.wrapper" name="header-multistore" label="Page Header Multistore" as="header-wrapper-multistore" htmlTag="div" htmlClass="header-multistore">
-                <block class="Magento\Store\Block\Switcher" name="store_language_multistore" as="store_language_multistore" template="WeltPixel_Multistore::switch/languages_mobile.phtml"/>
+                <block class="Magento\Store\Block\Switcher" name="store_language_multistore" as="store_language_multistore" template="WeltPixel_Multistore::switch/languages_mobile.phtml">
+                    <arguments>
+                        <argument name="view_model" xsi:type="object">Magento\Store\ViewModel\SwitcherUrlProvider</argument>
+                    </arguments>
+                </block>
             </container>
         </referenceContainer>
     </body>

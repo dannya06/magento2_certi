@@ -22,7 +22,7 @@ use Magento\Framework\App\TemplateTypesInterface;
                value="<?= $block->escapeHtmlAttr($block->getOrigTemplateCode()) ?>"/>
         <input type="hidden" id="send_orig_template_variables" name="send_orig_template_variables"
                value="<?= $block->escapeHtmlAttr($block->getOrigTemplateCode()) ?>"/>
-        <input type="hidden" id="is_edit" name="is_edit" value="<?= $block->isEditPage() ?>"/>
+        <input type="hidden" id="is_edit" name="is_edit" value="<?= $block->escapeHtmlAttr($block->isEditPage()) ?>"/>
         <input type="hidden" id="send_template_preheader" name="template_preheader"
                value="<?= $block->getTemplatePreheader() ?>"/>
     </div>
@@ -86,15 +86,12 @@ use Magento\Framework\App\TemplateTypesInterface;
     $block->getFormHtml() ?>
 </form>
 
-<form action="<?= $block->escapeUrl($block->getPreviewUrl()) ?>" method="post" id="email_template_preview_form"
-      target="_blank">
-    <?= /* @noEscape */
-    $block->getBlockHtml('formkey') ?>
+<form action="<?= $block->escapeUrl($block->getPreviewUrl()) ?>" method="get" id="email_template_preview_form" target="_blank">
+    <?= /* @noEscape */ $block->getBlockHtml('formkey') ?>
     <div class="no-display">
-        <input type="hidden" id="preview_type" name="type" value="<?= /* @noEscape */
-        $block->isTextType() ? 1 : 2 ?>"/>
-        <input type="hidden" id="preview_text" name="text" value=""/>
-        <input type="hidden" id="preview_styles" name="styles" value=""/>
+        <input type="hidden" id="preview_type" name="type" value="<?= /* @noEscape */ $block->isTextType() ? 1 : 2 ?>" />
+        <input type="hidden" id="preview_text" name="text" value="" />
+        <input type="hidden" id="preview_styles" name="styles" value="" />
     </div>
 </form>
 
@@ -104,14 +101,13 @@ use Magento\Framework\App\TemplateTypesInterface;
         "wysiwygAdapter",
         "Magento_Ui/js/modal/alert",
         "mage/mage",
-        "Magento_Variable/variables",
+        "Magento_Email/js/variables",
         "prototype"
     ], function (jQuery, tinyMCE, alert) {
 //<![CDATA[
         jQuery('#email_template_edit_form').mage('form').mage('validation');
         jQuery('#email_template_preview_form').mage('form').mage('validation');
         jQuery('#email_template_load_form').mage('validation');
-
         templateControl = {
             unconvertedText: '',
             typeChange: false,
@@ -187,11 +183,11 @@ use Magento\Framework\App\TemplateTypesInterface;
                 jQuery('#email_template_edit_form').triggerHandler('save');
                 return false;
             },
-            preview: function () {
+            preview: function() {
                 if (this.typeChange) {
                     $('preview_type').value = <?= /* @noEscape */ TemplateTypesInterface::TYPE_TEXT ?>;
                 } else {
-                    $('preview_type').value = <?= (int)$block->getTemplateType() ?>;
+                    $('preview_type').value = <?= (int) $block->getTemplateType() ?>;
                 }
                 if (typeof tinyMCE == 'undefined' || !tinyMCE.get('template_text')) {
                     $('preview_text').value = $('template_text').value;
@@ -402,17 +398,19 @@ use Magento\Framework\App\TemplateTypesInterface;
             updateTemplateContent: function (element) {
                 var elem = element.value;
                 var toInject = '{{layout handle="preheader_section" area="frontend"}}';
+                var headerHandle = '{{template config_path="design/email/header_template"}}';
                 var toInjectlength = toInject.length;
                 var templateContent = jQuery('#template_text');
                 var search = templateContent.val().search(toInject);
 
                 if(search === -1) {
-                    var content = toInject + templateContent.val();
+                    var template = templateContent.val()
+                    var content = template.slice(0, headerHandle.length) + toInject + template.slice(headerHandle.length);
                     templateContent.val(content);
                 }
 
                 if(search != -1 && elem.length === 0) {
-                    var newContent = templateContent.val().substring(toInjectlength);
+                    var newContent = templateContent.val().substring(0, search) + templateContent.val().substring(search+toInjectlength);
                     templateContent.val(newContent);
                 }
             }

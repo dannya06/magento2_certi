@@ -33,39 +33,6 @@ if (is_object($_invoice)) {
                   }
                 }
             </script>';
-} else {
-    $markup = '
-        <pre>
-            &lt;<span>script type="application/ld+json"</span><span>></span>
-                {
-                  "@context": "http://schema.org",
-                  "@type": "Invoice",
-                  "accountId": "123-456-789",
-                  "url": "https://www.example.com/orderID=123-4567890-1234567",
-                    "potentialAction": {
-                    "@type": "ViewAction",
-                        "url": "https://www.example.com/orderID=123-4567890-1234567"
-                    }
-                    }
-                  "minimumPaymentDue": {
-                    "@type": "PriceSpecification",
-                    "price": "$199.99"
-                  },
-                  "paymentDue": "2015-11-22T08:00:00+00:00",
-                  "paymentStatus": "PaymentAutomaticallyApplied",
-                  "provider": {
-                    "@type": "Organization",
-                    "name": "Organization Name"
-                  },
-                  "totalPaymentDue": {
-                    "@type": "PriceSpecification",
-                    "price": "$199.99"
-                  }
-                }
-            &lt;<span>/script</span>>
-        </pre>
-    ';
 }
 ?>
-
 <?= $markup ?>

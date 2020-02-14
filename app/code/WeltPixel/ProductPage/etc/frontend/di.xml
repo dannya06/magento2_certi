@@ -12,6 +12,10 @@
         <plugin name="weltpixel-productpage-block-product-view-gallery"
                 type="WeltPixel\ProductPage\Plugin\BlockProductViewGallery" sortOrder="20"/>
     </type>
+    <type name="Magento\Catalog\Block\Product\View\GalleryOptions">
+        <plugin name="weltpixel-productpage-block-product-view-gallery-options"
+                type="WeltPixel\ProductPage\Plugin\BlockProductViewGalleryOptions" sortOrder="20"/>
+    </type>
     <type name="Magento\Swatches\Helper\Media">
         <plugin name="weltpixel-productpage-swatches-media"
                 type="WeltPixel\ProductPage\Plugin\SwatchesMedia" sortOrder="20"/>

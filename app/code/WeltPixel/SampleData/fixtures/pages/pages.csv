@@ -95,20 +95,12 @@ Tops</h2>
 .page-wrapper .breadcrumbs {display: none;}
 .theme-pearl .page-wrapper .page-main {padding: 0px;}",
 "Home Page V2",1column,,,home-page-v2,"","
-<section id=""slider"" class=""container-v2 slider-parallax full-screen hide-mob"">
-    <div class=""full-screen"" style=""background: url( {{media url=""wysiwyg/pearl_theme/b10-mob.png""}} );; background-size: cover;background-position:center center;"">
-        <div class=""clearfix"">
-            &nbsp;
-        </div>
-    </div>
-</section>
-
-<section id=""slider"" class=""container-v2 slider-parallax full-screen hide-desk"">
-    <div class=""full-screen"" style=""background: url( {{media url=""wysiwyg/pearl_theme/b10.jpg""}} );; background-size: cover;background-position:center center;"">
-        <div class=""clearfix"">
-            &nbsp;
-        </div>
-    </div>
+<section id=""slider"" class=""container-v2 slider-parallax full-screen"">
+  <div class=""full-screen"" style=""background: url( {{media url=""wysiwyg/pearl_theme/b10.jpg""}} ); background-size: cover;background-position:center center;"">
+      <div class=""clearfix"">
+          &nbsp;
+      </div>
+  </div>
 </section>
 
 <div id=""content"" class=""container-v2 pos-bg"">
@@ -356,7 +348,7 @@ Staff picks</h2>
 }
 "
 "Home Page V3",1column,,,home-page-v3,"","
-<link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?display=swap&family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
 <div class=""module-split col-xs-12 container-v3"">
    <div class=""col-xs-12 col-md-4 col-md-push-3 topmargindesk"" data-aos=""fade-up"" data-aos-duration=""3000"">
       <a href=""#"" class=""full-width""><img src=""{{media url=""wysiwyg/pearl_theme/c1.jpeg""}}""></a>

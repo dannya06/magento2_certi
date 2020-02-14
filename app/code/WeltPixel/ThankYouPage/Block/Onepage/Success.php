@@ -22,6 +22,10 @@ class Success extends \Magento\Checkout\Block\Onepage\Success
 
     private $productRepository;
 
+    private $scopeConfig;
+
+    private $displayLabels;
+
     /**
      * Success constructor.
      * @param \Magento\Framework\View\Element\Template\Context $context
@@ -31,6 +35,8 @@ class Success extends \Magento\Checkout\Block\Onepage\Success
      * @param \Magento\Sales\Model\Order\Address\Renderer $renderer
      * @param \Magento\Framework\Stdlib\StringUtils $string
      * @param \Magento\Catalog\Block\Product\ImageBuilder $imageBuilder
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param array $data
      */
     public function __construct(
@@ -42,12 +48,19 @@ class Success extends \Magento\Checkout\Block\Onepage\Success
         \Magento\Framework\Stdlib\StringUtils $string,
         \Magento\Catalog\Block\Product\ImageBuilder $imageBuilder,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
         $this->renderer = $renderer;
         $this->string = $string;
         $this->imageBuilder = $imageBuilder;
         $this->productRepository = $productRepository;
+        $this->scopeConfig = $scopeConfig;
+        $this->displayLabels = [
+            1 => 'Excluding Tax',
+            2 => 'Including Tax',
+            3 => 'Including and Excluding Tax'
+        ];
 
         parent::__construct(
             $context, $checkoutSession, $orderConfig, $httpContext, $data
@@ -117,6 +130,7 @@ class Success extends \Magento\Checkout\Block\Onepage\Success
      * Return item unit price html
      * @param null $item
      * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getItemPriceHtml($item = null)
     {
@@ -132,6 +146,7 @@ class Success extends \Magento\Checkout\Block\Onepage\Success
      * Return item row total html
      * @param null $item
      * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getItemRowTotalHtml($item = null)
     {
@@ -144,12 +159,47 @@ class Success extends \Magento\Checkout\Block\Onepage\Success
     }
 
     /**
+     * Retrieve product image
+     * @param $item
+     * @param $imageId
+     * @param array $attributes
+     * @return \Magento\Catalog\Block\Product\Image
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getImage($item, $imageId, $attributes = [])
+    {
+        $product = $this->getProductFromItem($item);
+        if ($product->getSmallImage() && $product->getSmallImage() !== 'no_selection') {
+            return $this->imageBuilder
+                ->setProduct($product)
+                ->setImageId($imageId)
+                ->setAttributes($attributes)
+                ->create();
+        }
+
+        return $this->imageBuilder
+            ->setProduct($item->getProduct())
+            ->setImageId($imageId)
+            ->setAttributes($attributes)
+            ->create();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisplaySettings()
+    {
+        return $this->scopeConfig->getValue('tax/sales_display', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
      * Return selected simple product if $_item has options
      *
      * @param $_item
      * @return \Magento\Catalog\Api\Data\ProductInterface
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function getProductFromItem($_item)
+    private function getProductFromItem($_item)
     {
         $options = $_item->getProductOptions();
         if (isset($options['simple_sku'])) {
@@ -157,21 +207,5 @@ class Success extends \Magento\Checkout\Block\Onepage\Success
         }
 
         return $_item->getProduct();
-    }
-
-    /**
-     * Retrieve product image
-     *
-     * @param \Magento\Catalog\Model\Product $product
-     * @param string $imageId
-     * @param array $attributes
-     * @return \Magento\Catalog\Block\Product\Image
-     */
-    public function getImage($product, $imageId, $attributes = [])
-    {
-        return $this->imageBuilder->setProduct($product)
-            ->setImageId($imageId)
-            ->setAttributes($attributes)
-            ->create();
     }
 }

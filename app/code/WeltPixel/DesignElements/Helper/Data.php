@@ -57,4 +57,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	public function isResponsiveHelpersEnabled() {
         return $this->_elementsOptions['general']['responsive_helpers'];
     }
+
+    /**
+     * @return bool
+     */
+    public function getCollapsibleWidgetTopJump() {
+        return $this->_elementsOptions['general']['collapsible_top_jump'];
+    }
 }

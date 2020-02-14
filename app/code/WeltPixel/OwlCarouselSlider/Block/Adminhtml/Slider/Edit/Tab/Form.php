@@ -147,6 +147,22 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             ]
         );
 
+        $elements['scheduled_ajax'] = $fieldset->addField(
+            'scheduled_ajax',
+            'select',
+            [
+                'name'     => 'scheduled_ajax',
+                'label'    => __('Ajax Scheduled Banners'),
+                'title'    => __('Ajax Scheduled Banners'),
+                'required' => false,
+                'values'   => [
+                    ['value' => 1, 'label' => __('True')],
+                    ['value' => 0, 'label' => __('False')]
+                ],
+                'note'    => 'if True, Ajax Frontend call will be used for Scheduled Banners.',
+            ]
+        );
+
         ########### Slider General Configuration ###########
 
         $elements['separator_one'] = $fieldset->addField(
@@ -187,6 +203,22 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                     ['value' => 0, 'label' => __('False')]
                 ],
                 'note'    => 'if True, dots navigation are displayed.',
+            ]
+        );
+
+        $elements['thumbs'] = $fieldset->addField(
+            'thumbs',
+            'select',
+            [
+                'name'     => 'thumbs',
+                'label'    => __('Thumbs'),
+                'title'    => __('Thumbs'),
+                'required' => false,
+                'values'   => [
+                    ['value' => 1, 'label' => __('True')],
+                    ['value' => 0, 'label' => __('False')]
+                ],
+                'note'    => 'if True, thumbs navigation are displayed.',
             ]
         );
 
