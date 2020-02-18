@@ -7,9 +7,13 @@ Instalation:
 
     git clone https://github.com/icubeus/swift.git
 
-    git checkout base (change to base branch)
-
-    composer install --prefer-dist
+    git checkout master_2.3.4
+	
+	rm -rf composer.* app/code/*
+	
+	cp -R composer_base/composer.* .
+	
+	composer install --prefer-dist
 
     install site using wizard from browser or using terminal, below is the script using terminal
 
@@ -19,13 +23,13 @@ Instalation:
     --admin-user=mage2user --admin-password=password123 --backend-frontname=backoffice \
     --language=en_US --currency=USD --timezone=Asia/Jakarta --use-rewrites=1 --use-secure-admin=1
 
-    git checkout master_2.3.1
+    git checkout app/code composer/*
 
     composer install
     
-    php bin/magento setup:upgrade
-
     sh step3.sh (for LOCAL ONLY to disable elastic)
+		
+    php bin/magento setup:upgrade
 
     php bin/magento weltpixel:import:configurations --store=GLOBAL --file="weltpixel_configurations_admin.csv"
     
@@ -40,6 +44,8 @@ Instalation:
     php bin/magento weltpixel:less:generate
 
     php bin/magento setup:static-content:deploy -f
+	
+	php bin/magento weltpixel:css:generate --store=default
 
     php bin/magento cache:flush
     
@@ -55,7 +61,7 @@ How to update project that base from SWIFT
     
     git checkout -b master_swift
 
-    git pull swift master_2.3.1
+    git pull swift master_2.3.4
     
     composer install
     
@@ -73,7 +79,7 @@ How to update project that clone from SWIFT
 
     git fetch origin
 
-    git checkout master_swift -b swift/master_2.3.1
+    git checkout master_swift -b swift/master_2.3.3
     
     composer install
 
