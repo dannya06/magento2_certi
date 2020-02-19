@@ -23,7 +23,7 @@ Instalation:
     --admin-user=mage2user --admin-password=password123 --backend-frontname=backoffice \
     --language=en_US --currency=USD --timezone=Asia/Jakarta --use-rewrites=1 --use-secure-admin=1
 
-    git checkout app/code composer/*
+    git checkout app/code composer.*
 
     composer install
     
