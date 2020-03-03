@@ -70,7 +70,6 @@ class Create extends \Magento\Backend\App\Action {
         $accountId                  = $params['account_id'];
         $containerId                = $params['container_id'];
         $conversionCode             = $params['conversion_code'];
-        $conversionLabel            = $params['conversion_label'];
 
         $msg = [];
 
@@ -85,11 +84,6 @@ class Create extends \Magento\Backend\App\Action {
         if (!strlen(trim($conversionCode))) {
             $msg[] = __('Conversion Code must be specified');
         }
-        /**
-        if (!strlen(trim($conversionLabel))) {
-            $msg[] = __('Conversion Label must be specified');
-        }
-        */
         return $msg;
     }
 

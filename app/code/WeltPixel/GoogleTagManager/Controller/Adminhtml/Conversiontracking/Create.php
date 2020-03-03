@@ -76,15 +76,15 @@ class Create extends \Magento\Backend\App\Action {
         $msg = [];
 
         if (!strlen(trim($accountId))) {
-            $msg[] = __('Account Id must be specified');
+            $msg[] = __('Account ID must be specified');
         }
 
         if (!strlen(trim($containerId))) {
-            $msg[] = __('Container Id must be specified');
+            $msg[] = __('Container ID must be specified');
         }
 
         if (!strlen(trim($conversionId))) {
-            $msg[] = __('Conversion Id must be specified');
+            $msg[] = __('Conversion ID must be specified');
         }
 
         if (!strlen(trim($conversionLabel))) {

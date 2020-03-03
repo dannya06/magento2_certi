@@ -115,12 +115,11 @@ class Api extends \Magento\Framework\Model\AbstractModel
     /**
      * @var array
      */
-    private $scopes = array
-    (
+    private $scopes = [
         'https://www.googleapis.com/auth/userinfo.profile',
         'https://www.googleapis.com/auth/tagmanager.readonly',
         'https://www.googleapis.com/auth/tagmanager.edit.containers',
-    );
+    ];
 
     /**
      * @var string
@@ -157,8 +156,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Backend\Model\Session $backendSession,
         \Magento\Framework\App\Request\Http $request
-    )
-    {
+    ) {
         parent::__construct($context, $registry);
         $this->_urlBuilder = $urlBuilder;
         $this->_backendSession = $backendSession;
@@ -183,7 +181,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
 
             $storeId = $this->request->getParam('store');
             $websiteId = $this->request->getParam('website');
-            $redirectUrl = $this->_urlBuilder->getUrl("adminhtml/system_config/edit", array('section' => 'weltpixel_googletagmanager', 'website' => $websiteId, 'store' => $storeId));
+            $redirectUrl = $this->_urlBuilder->getUrl("adminhtml/system_config/edit", ['section' => 'weltpixel_googletagmanager', 'website' => $websiteId, 'store' => $storeId]);
             $this->client->setState($redirectUrl);
             $this->client->setRedirectUri($this->oauthUrl);
 
@@ -193,7 +191,7 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     $this->getClient()->authenticate($code);
                     $this->_backendSession->setAccessToken($this->client->getAccessToken());
                 } catch (\Exception $ex) {
-                };
+                }
 
                 header('Location: ' . $redirectUrl);
                 return;
@@ -299,7 +297,6 @@ class Api extends \Magento\Framework\Model\AbstractModel
             }
         }
 
-
         return $result;
     }
 
@@ -336,7 +333,6 @@ class Api extends \Magento\Framework\Model\AbstractModel
                     } else {
                         $result[] = __('Error updating variable: ') . $response['name'];
                     }
-
                 } else {
                     $response = $this->_createVariable($accountId, $containerId, $options);
                     if ($response['variableId']) {
@@ -450,7 +446,6 @@ class Api extends \Magento\Framework\Model\AbstractModel
         }
 
         return $result;
-
     }
 
     /**
@@ -479,179 +474,145 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     private function _getVariables($uaTrackingId, $apiParams)
     {
-        $variables = array
-        (
-            self::VARIABLE_UA_TRACKING => array
-            (
+        $variables = [
+            self::VARIABLE_UA_TRACKING => [
                 'name' => self::VARIABLE_UA_TRACKING,
                 'type' => self::TYPE_VARIABLE_CONSTANT,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'template',
                         'key' => 'value',
                         'value' => $uaTrackingId
-                    )
-                )
-            ),
-            self::VARIABLE_EVENTLABEL => array
-            (
+                    ]
+                ]
+            ],
+            self::VARIABLE_EVENTLABEL => [
                 'name' => self::VARIABLE_EVENTLABEL,
                 'type' => self::TYPE_VARIABLE_DATALAYER,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
                         'value' => "2"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'name',
                         'value' => 'eventLabel'
-                    )
-                )
-            ),
-            self::VARIABLE_EVENTVALUE => array
-            (
+                    ]
+                ]
+            ],
+            self::VARIABLE_EVENTVALUE => [
                 'name' => self::VARIABLE_EVENTVALUE,
                 'type' => self::TYPE_VARIABLE_DATALAYER,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
                         'value' => "2"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'name',
                         'value' => 'eventValue'
-                    )
-                )
-            ),
-            self::VARIABLE_CUSTOMER_ID => array
-            (
+                    ]
+                ]
+            ],
+            self::VARIABLE_CUSTOMER_ID => [
                 'name' => self::VARIABLE_CUSTOMER_ID,
                 'type' => self::TYPE_VARIABLE_DATALAYER,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
                         'value' => "2"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'name',
                         'value' => 'customerId'
-                    )
-                )
-            ),
-            self::VARIABLE_CUSTOMER_GROUP => array
-            (
+                    ]
+                ]
+            ],
+            self::VARIABLE_CUSTOMER_GROUP => [
                 'name' => self::VARIABLE_CUSTOMER_GROUP,
                 'type' => self::TYPE_VARIABLE_DATALAYER,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
                         'value' => "2"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'name',
                         'value' => 'customerGroup'
-                    )
-                )
-            ),
-            self::VARIABLE_PAGE_NAME => array
-            (
+                    ]
+                ]
+            ],
+            self::VARIABLE_PAGE_NAME => [
                 'name' => self::VARIABLE_PAGE_NAME,
                 'type' => self::TYPE_VARIABLE_DATALAYER,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
                         'value' => "2"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'name',
                         'value' => 'pageName'
-                    )
-                )
-            ),
-            self::VARIABLE_PAGE_TYPE => array
-            (
+                    ]
+                ]
+            ],
+            self::VARIABLE_PAGE_TYPE => [
                 'name' => self::VARIABLE_PAGE_TYPE,
                 'type' => self::TYPE_VARIABLE_DATALAYER,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
                         'value' => "2"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'name',
                         'value' => 'pageType'
-                    )
-                )
-            )
-        );
+                    ]
+                ]
+            ]
+        ];
 
         $productDimensions = $apiParams['product_dimensions'];
 
@@ -782,7 +743,6 @@ class Api extends \Magento\Framework\Model\AbstractModel
         return $variables;
     }
 
-
     /**
      * @param $apiParams
      * @return array
@@ -817,559 +777,436 @@ class Api extends \Magento\Framework\Model\AbstractModel
      */
     private function _getTriggers()
     {
-        $triggers = array
-        (
-            self::TRIGGER_PRODUCT_CLICK => array
-            (
+        $triggers = [
+            self::TRIGGER_PRODUCT_CLICK => [
                 'name' => self::TRIGGER_PRODUCT_CLICK,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'productClick'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_GTM_DOM => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_GTM_DOM => [
                 'name' => self::TRIGGER_GTM_DOM,
                 'type' => self::TYPE_TRIGGER_DOMREADY
-            ),
-            self::TRIGGER_ADD_TO_CART => array
-            (
+            ],
+            self::TRIGGER_ADD_TO_CART => [
                 'name' => self::TRIGGER_ADD_TO_CART,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'addToCart'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_REMOVE_FROM_CART => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_REMOVE_FROM_CART => [
                 'name' => self::TRIGGER_REMOVE_FROM_CART,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'removeFromCart'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_ALL_PAGES => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_ALL_PAGES => [
                 'name' => self::TRIGGER_ALL_PAGES,
                 'type' => self::TYPE_TRIGGER_PAGEVIEW
-            ),
-            self::TRIGGER_EVENT_IMPRESSION => array
-            (
+            ],
+            self::TRIGGER_EVENT_IMPRESSION => [
                 'name' => self::TRIGGER_EVENT_IMPRESSION,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'impression'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_PROMOTION_CLICK => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_PROMOTION_CLICK => [
                 'name' => self::TRIGGER_PROMOTION_CLICK,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'promotionClick'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_CHECKOUT_OPTION => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_CHECKOUT_OPTION => [
                 'name' => self::TRIGGER_CHECKOUT_OPTION,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'checkoutOption'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_CHECKOUT_STEPS => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_CHECKOUT_STEPS => [
                 'name' => self::TRIGGER_CHECKOUT_STEPS,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'checkout'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_PROMOTION_VIEW => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_PROMOTION_VIEW => [
                 'name' => self::TRIGGER_PROMOTION_VIEW,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'promotionView'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_ADD_TO_WISHLIST => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_ADD_TO_WISHLIST => [
                 'name' => self::TRIGGER_ADD_TO_WISHLIST,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'addToWishlist'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_ADD_TO_COMPARE => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_ADD_TO_COMPARE => [
                 'name' => self::TRIGGER_ADD_TO_COMPARE,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'addToCompare'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_POPUP_IMPRESSION => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_POPUP_IMPRESSION => [
                 'name' => self::TRIGGER_NEWSLETTER_POPUP_IMPRESSION,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'newsletterPopupImpression'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_POPUP_IMPRESSION_STEP_1 => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_POPUP_IMPRESSION_STEP_1 => [
                 'name' => self::TRIGGER_NEWSLETTER_POPUP_IMPRESSION_STEP_1,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'newsletterPopupImpressionStep1'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_POPUP_SUCCESS => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_POPUP_SUCCESS => [
                 'name' => self::TRIGGER_NEWSLETTER_POPUP_SUCCESS,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'newsletterPopupSuccess'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_POPUP_FAILED => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_POPUP_FAILED => [
                 'name' => self::TRIGGER_NEWSLETTER_POPUP_FAILED,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'newsletterPopupFailed'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_POPUP_CLOSED => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_POPUP_CLOSED => [
                 'name' => self::TRIGGER_NEWSLETTER_POPUP_CLOSED,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'newsletterPopupClosed'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_EXITINTENT_IMPRESSION => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_EXITINTENT_IMPRESSION => [
                 'name' => self::TRIGGER_NEWSLETTER_EXITINTENT_IMPRESSION,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'exitIntentImpression'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_EXITINTENT_IMPRESSION_STEP_1 => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_EXITINTENT_IMPRESSION_STEP_1 => [
                 'name' => self::TRIGGER_NEWSLETTER_EXITINTENT_IMPRESSION_STEP_1,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'exitIntentImpressionStep1'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_EXITINTENT_CLOSED => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_EXITINTENT_CLOSED => [
                 'name' => self::TRIGGER_NEWSLETTER_EXITINTENT_CLOSED,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'exitIntentClosed'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_EXITINTENT_FAILED => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_EXITINTENT_FAILED => [
                 'name' => self::TRIGGER_NEWSLETTER_EXITINTENT_FAILED,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'exitIntentFailed'
-                            )
-                        )
-                    )
-                )
-            ),
-            self::TRIGGER_NEWSLETTER_EXITINTENT_SUCCESS => array
-            (
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            self::TRIGGER_NEWSLETTER_EXITINTENT_SUCCESS => [
                 'name' => self::TRIGGER_NEWSLETTER_EXITINTENT_SUCCESS,
                 'type' => self::TYPE_TRIGGER_CUSTOM_EVENT,
-                'customEventFilter' => array
-                (
-                    array
-                    (
+                'customEventFilter' => [
+                    [
                         'type' => 'equals',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{_event}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => 'exitIntentSuccess'
-                            )
-                        )
-                    )
-                )
-            ),
-        );
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+        ];
         return $triggers;
     }
 
@@ -1387,1790 +1224,1461 @@ class Api extends \Magento\Framework\Model\AbstractModel
         $dimensionCustomerOptions = $this->_getProductTrackOptions($apiParams, 'dimension', ['custom_dimension_customerid', 'custom_dimension_customergroup']);
         $dimensionCustomerPageOptions = $this->_getProductTrackOptions($apiParams, 'dimension', ['custom_dimension_customerid', 'custom_dimension_customergroup', 'custom_dimension_pagetype']);
 
-        $tags = array
-        (
-            self::TAG_PRODUCT_EVENT_CLICK => array
-            (
+        $tags = [
+            self::TAG_PRODUCT_EVENT_CLICK => [
                 'name' => self::TAG_PRODUCT_EVENT_CLICK,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_PRODUCT_CLICK]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Product Click'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionCustomerPageOptions
-                )
-            ),
-            self::TAG_PRODUCT_EVENT_ADD_TO_CART => array
-            (
+                ]
+            ],
+            self::TAG_PRODUCT_EVENT_ADD_TO_CART => [
                 'name' => self::TAG_PRODUCT_EVENT_ADD_TO_CART,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_ADD_TO_CART]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Add to Cart'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'evenValue',
                         'value' => '{{' . self::VARIABLE_EVENTVALUE . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionAllOptions
-                )
-            ),
-            self::TAG_PRODUCT_EVENT_REMOVE_FROM_CART => array
-            (
+                ]
+            ],
+            self::TAG_PRODUCT_EVENT_REMOVE_FROM_CART => [
                 'name' => self::TAG_PRODUCT_EVENT_REMOVE_FROM_CART,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_REMOVE_FROM_CART]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Remove from Cart'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'evenValue',
                         'value' => '{{' . self::VARIABLE_EVENTVALUE . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionAllOptions
-                )
-            ),
-            self::TAG_PRODUCT_EVENT_PRODUCT_IMPRESSIONS => array
-            (
+                ]
+            ],
+            self::TAG_PRODUCT_EVENT_PRODUCT_IMPRESSIONS => [
                 'name' => self::TAG_PRODUCT_EVENT_PRODUCT_IMPRESSIONS,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_EVENT_IMPRESSION]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Impression'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionCustomerPageOptions
-                )
-            ),
-            self::TAG_GOOGLE_ANALYTICS => array
-            (
+                ]
+            ],
+            self::TAG_GOOGLE_ANALYTICS => [
                 'name' => self::TAG_GOOGLE_ANALYTICS,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_ALL_PAGES]
-                ),
+                ],
                 'tagFiringOption' => 'oncePerLoad',
                 'type' => self::TYPE_TAG_UA,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setTrackerName',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useDebugVersion',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useHashAutoLink',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_PAGEVIEW'
-                    ),
-                    array(
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'decorateFormsAutoLink',
                         'value' => "false"
-                    ),
-                    array(
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableLinkId',
                         'value' => "false"
-                    ),
-                    array(
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'anonymizeIp'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => $ipAnonymization
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    array
-                    (
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionAllOptions
-                )
-            ),
-            self::TAG_CHECKOUT_STEP_OPTION => array
-            (
+                ]
+            ],
+            self::TAG_CHECKOUT_STEP_OPTION => [
                 'name' => self::TAG_CHECKOUT_STEP_OPTION,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_CHECKOUT_OPTION]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Checkout Option'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionCustomerOptions
-                )
-            ),
-            self::TAG_CHECKOUT_STEP => array
-            (
+                ]
+            ],
+            self::TAG_CHECKOUT_STEP => [
                 'name' => self::TAG_CHECKOUT_STEP,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_CHECKOUT_STEPS]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Checkout'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionCustomerOptions
-                )
-            ),
-            self::TAG_PROMOTION_IMPRESSION => array
-            (
+                ]
+            ],
+            self::TAG_PROMOTION_IMPRESSION => [
                 'name' => self::TAG_PROMOTION_IMPRESSION,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_PROMOTION_VIEW]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Promotion'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Promotion View'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionCustomerPageOptions
-                )
-            ),
-            self::TAG_PROMOTION_CLICK => array
-            (
+                ]
+            ],
+            self::TAG_PROMOTION_CLICK => [
                 'name' => self::TAG_PROMOTION_CLICK,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_PROMOTION_CLICK]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Promotion Click'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionCustomerPageOptions
-                )
-            ),
-            self::TAG_PRODUCT_EVENT_ADD_TO_WISHLIST => array
-            (
+                ]
+            ],
+            self::TAG_PRODUCT_EVENT_ADD_TO_WISHLIST => [
                 'name' => self::TAG_PRODUCT_EVENT_ADD_TO_WISHLIST,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_ADD_TO_WISHLIST]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Wishlist'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionAllOptions
-                )
-            ),
-            self::TAG_PRODUCT_EVENT_ADD_TO_COMPARE => array
-            (
+                ]
+            ],
+            self::TAG_PRODUCT_EVENT_ADD_TO_COMPARE => [
                 'name' => self::TAG_PRODUCT_EVENT_ADD_TO_COMPARE,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_ADD_TO_COMPARE]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'useEcommerceDataLayer',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Ecommerce'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Compare'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'enableEcommerce',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'doubleClick',
                         'value' => $displayAdvertising
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'list',
                         'key' => 'fieldsToSet',
-                        'list' => array
-                        (
-                            array
-                            (
+                        'list' => [
+                            [
                                 'type' => 'map',
-                                'map' => array
-                                (
-                                    array
-                                    (
+                                'map' => [
+                                    [
                                         'type' => 'template',
                                         'key' => 'fieldName',
                                         'value' => 'userId'
-                                    ),
-                                    array
-                                    (
+                                    ],
+                                    [
                                         'type' => 'template',
                                         'key' => 'value',
                                         'value' => '{{' . self::VARIABLE_CUSTOMER_ID . '}}'
-                                    )
-                                )
-                            )
-                        )
-                    ),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     $dimensionAllOptions
-                )
-            ),
-            self::TAG_NEWSLETTER_POPUP_IMPRESSION => array
-            (
+                ]
+            ],
+            self::TAG_NEWSLETTER_POPUP_IMPRESSION => [
                 'name' => self::TAG_NEWSLETTER_POPUP_IMPRESSION,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_POPUP_IMPRESSION]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Newsletter Popup'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Impression'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_POPUP_IMPRESSION_STEP_1 => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_POPUP_IMPRESSION_STEP_1 => [
                 'name' => self::TAG_NEWSLETTER_POPUP_IMPRESSION_STEP_1,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_POPUP_IMPRESSION_STEP_1]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Newsletter Popup'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Impression Step 1'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_POPUP_SUCCESS => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_POPUP_SUCCESS => [
                 'name' => self::TAG_NEWSLETTER_POPUP_SUCCESS,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_POPUP_SUCCESS]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Newsletter Popup'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Success'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_POPUP_FAILED => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_POPUP_FAILED => [
                 'name' => self::TAG_NEWSLETTER_POPUP_FAILED,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_POPUP_FAILED]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Newsletter Popup'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Failed'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_POPUP_CLOSED => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_POPUP_CLOSED => [
                 'name' => self::TAG_NEWSLETTER_POPUP_CLOSED,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_POPUP_CLOSED]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Newsletter Popup'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Closed'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_EXITINTENT_IMPRESSION => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_EXITINTENT_IMPRESSION => [
                 'name' => self::TAG_NEWSLETTER_EXITINTENT_IMPRESSION,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_EXITINTENT_IMPRESSION]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Exit Intent'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Impression'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_EXITINTENT_IMPRESSION_STEP_1 => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_EXITINTENT_IMPRESSION_STEP_1 => [
                 'name' => self::TAG_NEWSLETTER_EXITINTENT_IMPRESSION_STEP_1,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_EXITINTENT_IMPRESSION_STEP_1]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Exit Intent'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Impression Step 1'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_EXITINTENT_SUCCESS => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_EXITINTENT_SUCCESS => [
                 'name' => self::TAG_NEWSLETTER_EXITINTENT_SUCCESS,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_EXITINTENT_SUCCESS]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Exit Intent'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Success'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_EXITINTENT_FAILED => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_EXITINTENT_FAILED => [
                 'name' => self::TAG_NEWSLETTER_EXITINTENT_FAILED,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_EXITINTENT_FAILED]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Exit Intent'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Failed'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-            self::TAG_NEWSLETTER_EXITINTENT_CLOSED => array
-            (
+                    ]
+                ]
+            ],
+            self::TAG_NEWSLETTER_EXITINTENT_CLOSED => [
                 'name' => self::TAG_NEWSLETTER_EXITINTENT_CLOSED,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_NEWSLETTER_EXITINTENT_CLOSED]
-                ),
+                ],
                 'type' => self::TYPE_TAG_UA,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'nonInteraction',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'overrideGaSettings',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventCategory',
                         'value' => 'Exit Intent'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackType',
                         'value' => 'TRACK_EVENT'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventAction',
                         'value' => 'Closed'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'eventLabel',
                         'value' => '{{' . self::VARIABLE_EVENTLABEL . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'trackingId',
                         'value' => '{{' . self::VARIABLE_UA_TRACKING . '}}'
-                    )
-                )
-            ),
-        );
+                    ]
+                ]
+            ],
+        ];
 
         return $tags;
     }
@@ -3189,10 +2697,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
             $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/variables');
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
@@ -3220,10 +2730,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
             $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/triggers');
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
@@ -3252,10 +2764,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
             $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/tags');
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
@@ -3288,24 +2802,25 @@ class Api extends \Magento\Framework\Model\AbstractModel
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token,
                     'Content-Type: application/json',
                     'Content-Length: ' . strlen($postFields)
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
         } catch (\Exception $e) {
-            throw new \Exception(__('Api error on variable creation: ') . $options['name'] . ' '  . $e->getMessage());
+            throw new \Exception(__('Api error on variable creation: ') . $options['name'] . ' ' . $e->getMessage());
         }
         if (isset($responseBody['error'])) {
-            throw new \Exception(__('Api error on variable creation: ') . $options['name'] . ' '  . $responseBody['error']['message']);
+            throw new \Exception(__('Api error on variable creation: ') . $options['name'] . ' ' . $responseBody['error']['message']);
         }
         return $responseBody;
     }
-
 
     /**
      * Api should return empty response in case of success
@@ -3326,10 +2841,12 @@ class Api extends \Magento\Framework\Model\AbstractModel
             curl_setopt($ch, CURLOPT_URL, $this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/variables/' . $variableId);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: Bearer ' . $tokenInfo->access_token
-                )
+                ]
             );
 
             $result = curl_exec($ch);
@@ -3340,7 +2857,6 @@ class Api extends \Magento\Framework\Model\AbstractModel
 
         return $result;
     }
-
 
     /**
      * @param string $accountId
@@ -3359,20 +2875,22 @@ class Api extends \Magento\Framework\Model\AbstractModel
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token,
                     'Content-Type: application/json',
                     'Content-Length: ' . strlen($postFields)
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
         } catch (\Exception $e) {
-            throw new \Exception(__('Api error on trigger creation:') . $options['name'] . ' '  . $e->getMessage());
+            throw new \Exception(__('Api error on trigger creation:') . $options['name'] . ' ' . $e->getMessage());
         }
         if (isset($responseBody['error'])) {
-            throw new \Exception(__('Api error on trigger creation: ') . $options['name'] . ' '  . $responseBody['error']['message']);
+            throw new \Exception(__('Api error on trigger creation: ') . $options['name'] . ' ' . $responseBody['error']['message']);
         }
 
         return $responseBody;
@@ -3395,20 +2913,22 @@ class Api extends \Magento\Framework\Model\AbstractModel
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token,
                     'Content-Type: application/json',
                     'Content-Length: ' . strlen($postFields)
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
         } catch (\Exception $e) {
-            throw new \Exception(__('Api error on tag creation:') . $options['name'] . ' '  . $e->getMessage());
+            throw new \Exception(__('Api error on tag creation:') . $options['name'] . ' ' . $e->getMessage());
         }
         if (isset($responseBody['error'])) {
-            throw new \Exception(__('Api error on tag creation: ') . $options['name'] . ' '  . $responseBody['error']['message']);
+            throw new \Exception(__('Api error on tag creation: ') . $options['name'] . ' ' . $responseBody['error']['message']);
         }
 
         return $responseBody;
@@ -3429,24 +2949,26 @@ class Api extends \Magento\Framework\Model\AbstractModel
         $postFields = json_encode($options);
 
         try {
-            $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/variables/' . $variableId );
+            $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/variables/' . $variableId);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token,
                     'Content-Type: application/json',
                     'Content-Length: ' . strlen($postFields)
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
         } catch (\Exception $e) {
-            throw new \Exception(__('Api error on variable update: ') . $options['name'] . ' '  . $e->getMessage());
+            throw new \Exception(__('Api error on variable update: ') . $options['name'] . ' ' . $e->getMessage());
         }
         if (isset($responseBody['error'])) {
-            throw new \Exception(__('Api error on variable update: ') . $options['name'] . ' '  . $responseBody['error']['message']);
+            throw new \Exception(__('Api error on variable update: ') . $options['name'] . ' ' . $responseBody['error']['message']);
         }
         return $responseBody;
     }
@@ -3466,24 +2988,26 @@ class Api extends \Magento\Framework\Model\AbstractModel
         $postFields = json_encode($options);
 
         try {
-            $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/triggers/' . $triggerId );
+            $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/triggers/' . $triggerId);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token,
                     'Content-Type: application/json',
                     'Content-Length: ' . strlen($postFields)
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
         } catch (\Exception $e) {
-            throw new \Exception(__('Api error on trigger update: ') . $options['name'] . ' '  . $e->getMessage());
+            throw new \Exception(__('Api error on trigger update: ') . $options['name'] . ' ' . $e->getMessage());
         }
         if (isset($responseBody['error'])) {
-            throw new \Exception(__('Api error on trigger update: ') . $options['name'] . ' '  . $responseBody['error']['message']);
+            throw new \Exception(__('Api error on trigger update: ') . $options['name'] . ' ' . $responseBody['error']['message']);
         }
         return $responseBody;
     }
@@ -3503,24 +3027,26 @@ class Api extends \Magento\Framework\Model\AbstractModel
         $postFields = json_encode($options);
 
         try {
-            $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/tags/' . $tagId );
+            $ch = curl_init($this->getApiUrl() . 'accounts/' . $accountId . '/containers/' . $containerId . '/tags/' . $tagId);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array(
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                [
                     'Authorization: ' . 'Bearer ' . $tokenInfo->access_token,
                     'Content-Type: application/json',
                     'Content-Length: ' . strlen($postFields)
-                )
+                ]
             );
             $response = curl_exec($ch);
             $responseBody = json_decode($response, true);
         } catch (\Exception $e) {
-            throw new \Exception(__('Api error on tag update: ') . $options['name'] . ' '  . $e->getMessage());
+            throw new \Exception(__('Api error on tag update: ') . $options['name'] . ' ' . $e->getMessage());
         }
         if (isset($responseBody['error'])) {
-            throw new \Exception(__('Api error on tag update: ') . $options['name'] . ' '  . $responseBody['error']['message']);
+            throw new \Exception(__('Api error on tag update: ') . $options['name'] . ' ' . $responseBody['error']['message']);
         }
         return $responseBody;
     }
@@ -3579,8 +3105,6 @@ class Api extends \Magento\Framework\Model\AbstractModel
                 ];
                 $listResult[] = $tagListOption;
             }
-
-
         }
 
         if (!count($listResult)) {
@@ -3649,5 +3173,35 @@ class Api extends \Magento\Framework\Model\AbstractModel
     protected function _apiCallLimitation()
     {
         sleep(4);
+    }
+
+    /**
+     * @param string $uaTrackingId
+     * @param array $apiParams
+     * @return array
+     */
+    public function getVariablesList($uaTrackingId, $apiParams)
+    {
+        return $this->_getVariables($uaTrackingId, $apiParams);
+    }
+
+    /**
+     * @return array
+     */
+    public function getTriggersList()
+    {
+        return $this->_getTriggers();
+    }
+
+    /**
+     * @param boolean $ipAnonymization
+     * @param boolean $displayAdvertising
+     * @param array $apiParams
+     * @param array $triggersMapping
+     * @return array
+     */
+    public function getTagsList($ipAnonymization, $displayAdvertising, $apiParams, $triggersMapping)
+    {
+        return $this->_getTags($triggersMapping, $ipAnonymization, $displayAdvertising, $apiParams);
     }
 }

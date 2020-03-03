@@ -20,13 +20,18 @@ class Cart extends \WeltPixel\GoogleTagManager\Block\Core
         $crosselProductListBlock->toHtml();
 
         $collection = $crosselProductListBlock->getItems();
+        if (is_null($collection)) {
+            return [];
+        }
+
         return $collection;
     }
 
     /**
      * @return array
      */
-    public function getProductIds() {
+    public function getProductIds()
+    {
         $quote = $this->getQuote();
         $products = [];
 
@@ -53,7 +58,8 @@ class Cart extends \WeltPixel\GoogleTagManager\Block\Core
     /**
      * @return float
      */
-    public function getCartTotal() {
+    public function getCartTotal()
+    {
         $quote = $this->getQuote();
         return $quote->getGrandTotal();
     }

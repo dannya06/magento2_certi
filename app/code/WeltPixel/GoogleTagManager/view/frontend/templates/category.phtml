@@ -4,6 +4,7 @@
 <?php if($this->isEnabled()) : ?>
     <?php $helper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data'); ?>
     <?php $category = $this->getCurrentCategory(); ?>
+    <?php $gtmCategoryLabel = $helper->getGtmCategory($category); ?>
     <?php $productCollection = $this->getProductCollection(); ?>
     <?php if (count($productCollection)) : ?>
         <?php $categoryProducts = array(); ?>
@@ -16,8 +17,8 @@
             <?php if ($helper->isBrandEnabled()) : ?>
             <?php $categoryProduct['brand'] = $helper->getGtmBrand($product); ?>
             <?php endif;?>
-            <?php $categoryProduct['category'] = $helper->getGtmCategory($category); ?>
-            <?php $categoryProduct['list'] = $helper->getGtmCategory($category); ?>
+            <?php $categoryProduct['category'] = $gtmCategoryLabel; ?>
+            <?php $categoryProduct['list'] = $gtmCategoryLabel; ?>
             <?php $categoryProduct['position'] = $i; ?>
             <?php $categoryProducts[] = $categoryProduct; ?>
             <?php $i++ ; ?>
@@ -27,14 +28,14 @@
         <?php $this->setDataLayerOption('event', 'impression'); ?>
         <?php $this->setDataLayerOption('eventCategory', 'Ecommerce'); ?>
         <?php $this->setDataLayerOption('eventAction', 'Impression'); ?>
-        <?php $this->setDataLayerOption('eventLabel',  \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_CATEGORY . ' ' . $helper->getGtmCategory($category)); ?>
+        <?php $this->setDataLayerOption('eventLabel',  \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_CATEGORY . ' ' . $gtmCategoryLabel); ?>
     <?php endif; ?>
 
     <?php if ($helper->isAdWordsRemarketingEnabled()): ?>
         <?php
             $remarketingData = [];
             $remarketingData['ecomm_pagetype'] = \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_CATEGORY;
-            $remarketingData['ecomm_category'] = $helper->getGtmCategory($category);
+            $remarketingData['ecomm_category'] = $gtmCategoryLabel;
         ?>
         <?php $this->setDataLayerOption('google_tag_params', $remarketingData); ?>
     <?php endif; ?>
