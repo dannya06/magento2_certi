@@ -393,7 +393,7 @@ class Request
       $key .= $this->requestHeaders['authorization'];
     }
 
-    return md5($key);
+    return hash('SHA512', $key);
   }
 
   public function getParsedCacheControl()

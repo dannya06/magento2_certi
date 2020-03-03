@@ -28,6 +28,10 @@ class Product extends \WeltPixel\GoogleTagManager\Block\Core
             $collection = $relatedProductListBlock->getItems();
         }
 
+        if (is_null($collection)) {
+            return [];
+        }
+
         return $collection;
     }
 
@@ -51,6 +55,10 @@ class Product extends \WeltPixel\GoogleTagManager\Block\Core
             $collection = $upsellProductListBlock->getAllItems();
         } else {
             $collection = $upsellProductListBlock->getItemCollection()->getItems();
+        }
+
+        if (is_null($collection)) {
+            return [];
         }
 
         return $collection;

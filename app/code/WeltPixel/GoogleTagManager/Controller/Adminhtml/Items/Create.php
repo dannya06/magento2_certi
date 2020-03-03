@@ -17,20 +17,28 @@ class Create extends \Magento\Backend\App\Action {
     protected $apiModel = null;
 
     /**
+     * @var \WeltPixel\GoogleTagManager\Model\JsonGenerator
+     */
+    protected $jsonGenerator;
+
+    /**
      * Version constructor.
      *
      * @param \WeltPixel\GoogleTagManager\Model\Api $apiModel
+     * @param \WeltPixel\GoogleTagManager\Model\JsonGenerator $jsonGenerator
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
      */
     public function __construct(
         \WeltPixel\GoogleTagManager\Model\Api $apiModel,
+        \WeltPixel\GoogleTagManager\Model\JsonGenerator $jsonGenerator,
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
     )
     {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->apiModel = $apiModel;
+        $this->jsonGenerator = $jsonGenerator;
         parent::__construct($context);
     }
 
@@ -90,7 +98,7 @@ class Create extends \Magento\Backend\App\Action {
      * @param $formData
      * @return array
      */
-    private function _parseParams($formData) {
+    protected function _parseParams($formData) {
         $productDimensions = [
             'track_stockstatus' => [
                 'enabled' => false
@@ -179,7 +187,7 @@ class Create extends \Magento\Backend\App\Action {
      * @param $params
      * @return array
      */
-    private function _validateParams($params) {
+    protected function _validateParams($params) {
         $accountId      = $params['account_id'];
         $containerId    = $params['container_id'];
         $uaTrackingId   = $params['ua_tracking_id'];

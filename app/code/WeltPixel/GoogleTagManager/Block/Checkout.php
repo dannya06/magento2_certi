@@ -41,7 +41,9 @@ class Checkout extends \WeltPixel\GoogleTagManager\Block\Core
                     $productDetail['variant'] = $variant;
                 }
             }
-            $productDetail['category'] = $this->helper->getGtmCategoryFromCategoryIds($product->getCategoryIds());
+            $categoryName =  $this->helper->getGtmCategoryFromCategoryIds($product->getCategoryIds());
+            $productDetail['category'] = $categoryName;
+            $productDetail['list'] = $categoryName;
             $productDetail['quantity'] = $item->getQty();
 
             /**  Set the custom dimensions */

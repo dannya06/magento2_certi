@@ -14,6 +14,9 @@ use Magento\Framework\App\Action\Action;
 <?php
 $_productCollection = $block->getLoadedProductCollection();
 $_helper = $this->helper('Magento\Catalog\Helper\Output');
+
+/** WeltPixel_GoogleTagManager  */
+$gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
 ?>
 <?php if (!$_productCollection->count()): ?>
     <div class="message info empty"><div><?php /* @escapeNotVerified */ echo __('We can\'t find products matching the selection.') ?></div></div>
@@ -51,8 +54,11 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
                             . 'top:' . $productImage->getHeight() . 'px;"';
                     }
                     ?>
-                    <?php // Product Image ?>
-                    <a <?php echo $this->helper('WeltPixel\GoogleTagManager\Helper\Data')->addProductClick($_product, $iterator-1); ?> href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">
+                    <?php // Product Image?>
+                    <a <?php if ($gtmHelper->isProductClickTrackingEnabled()) :
+                            echo $this->helper('WeltPixel\GoogleTagManager\Helper\Data')->addProductClick($_product, $iterator-1);
+                        endif; ?>
+                            href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">
                         <?php echo $productImage->toHtml(); ?>
                     </a>
                     <div class="product details product-item-details">

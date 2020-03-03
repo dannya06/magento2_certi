@@ -11,7 +11,6 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
  */
 class Api extends Field
 {
-
     protected $_template = 'WeltPixel_GoogleTagManager::system/config/api_container.phtml';
 
     /**
@@ -39,7 +38,6 @@ class Api extends Field
         $this->apiModel = $apiModel;
     }
 
-
     /**
      * @param AbstractElement $element
      * @return string
@@ -48,7 +46,6 @@ class Api extends Field
     {
         return $this->_toHtml();
     }
-
 
     /**
      * @return \WeltPixel\GoogleTagManager\Model\Api
@@ -61,7 +58,8 @@ class Api extends Field
     /**
      * @return string
      */
-    public function getUrlForItemsCreation() {
+    public function getUrlForItemsCreation()
+    {
         $this->itemPostUrl = $this->_urlBuilder->getUrl('googletagmanager/items/create');
         return $this->itemPostUrl;
     }

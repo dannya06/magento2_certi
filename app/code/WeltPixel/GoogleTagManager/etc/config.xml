@@ -11,11 +11,13 @@
                 <brand_attribute></brand_attribute>
                 <order_total_calculation>grandtotal</order_total_calculation>
                 <impression_chunk_size>15</impression_chunk_size>
+                <success_page_paths></success_page_paths>
                 <product_click_tracking>0</product_click_tracking>
                 <promotion_tracking>0</promotion_tracking>
                 <persistentlayer_expiry>30</persistentlayer_expiry>
                 <exclude_tax_from_transaction>0</exclude_tax_from_transaction>
                 <parent_vs_child>parent</parent_vs_child>
+                <secure_cookies>0</secure_cookies>
                 <exclude_shipping_from_transaction>0</exclude_shipping_from_transaction>
                 <exclude_free_purchase>0</exclude_free_purchase>
                 <custom_dimension_customerid>1</custom_dimension_customerid>

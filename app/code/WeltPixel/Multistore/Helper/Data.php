@@ -51,7 +51,19 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		$this->_multistoreOptions = $this->scopeConfig->getValue('weltpixel_multistore', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 		$this->_assetRepo = $assetRepo;
 	}
-	
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getIsEnabled($storeId = 0) {
+        if ($storeId) {
+            return  $this->scopeConfig->getValue('weltpixel_multistore/general/enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_multistoreOptions['general']['enable'];
+        }
+    }
+
 	/**
 	 * @param int $storeId
 	 * @return mixed
@@ -156,6 +168,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      */
     public function redirectToHomePage($storeId = 0) {
+        if(!$this->getIsEnabled($storeId)) {
+           return false;
+        }
         if ($storeId) {
             return $this->scopeConfig->getValue('weltpixel_multistore/general/redirect_to_home_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
         } else {
@@ -180,14 +195,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed|string
      */
     public function getImageHeight($storeId = 0) {
-        $imgHeight = '';
+        $imgHeight = null;
         if ($storeId) {
-            $imgHeight = $this->scopeConfig->getValue('weltpixel_multistore/general/img_height', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+            $imgHeight = (int) $this->scopeConfig->getValue('weltpixel_multistore/general/img_height', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
         } else {
-            $imgHeight = $this->_multistoreOptions['general']['img_height'];
+            $imgHeight = (int) $this->_multistoreOptions['general']['img_height'];
         }
-
-        $imgHeight = ($imgHeight) ? $imgHeight : '39px';
+    
+        $imgHeight = $imgHeight && is_integer($imgHeight) ? $imgHeight . 'px' : '39px';
 
         return $imgHeight;
     }
@@ -197,11 +212,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed|string
      */
     public function getImageWidth($storeId = 0) {
+        $imgWidth = null;
         if ($storeId) {
-            return $this->scopeConfig->getValue('weltpixel_multistore/general/img_width', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+            $imgWidth = (int) $this->scopeConfig->getValue('weltpixel_multistore/general/img_width', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
         } else {
-            return $this->_multistoreOptions['general']['img_width'];
+            $imgWidth = (int) $this->_multistoreOptions['general']['img_width'];
         }
+    
+        return $imgWidth && is_integer($imgWidth) ? $imgWidth . 'px' : 'auto';
     }
 
     /**

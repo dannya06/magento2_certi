@@ -29,7 +29,6 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
     const FIELD_CONVERSION_TRACKING_CONVERSION_VALUE = 'wp_conversion_value';
     const FIELD_CONVERSION_TRACKING_ORDER_ID = 'wp_order_id';
 
-
     /**
      * @param array $params
      * @return array
@@ -43,7 +42,6 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
 
         return $result;
     }
-
 
     /**
      * @param array $params
@@ -156,7 +154,6 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
             $tagIds[$tag['name']] = $tag['tagId'];
         }
 
-
         $triggersMapping = $this->_getTriggersMapping($accountId, $containerId);
         $tagsToCreate = $this->_getConversionTags($triggersMapping, $params);
 
@@ -170,7 +167,6 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
                     } else {
                         $result[] = __('Error updating Conversion Tracking tag: ') . $response['name'];
                     }
-
                 } else {
                     $response = $this->_createTag($accountId, $containerId, $options);
                     if ($response['tagId']) {
@@ -193,61 +189,50 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
      */
     private function _getConversionVariables()
     {
-        $variables = array
-        (
-            self::VARIABLE_CONVERSION_TRACKING_CONVERSION_VALUE => array
-            (
+        $variables = [
+            self::VARIABLE_CONVERSION_TRACKING_CONVERSION_VALUE => [
                 'name' => self::VARIABLE_CONVERSION_TRACKING_CONVERSION_VALUE,
                 'type' => self::TYPE_VARIABLE_DATALAYER,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
                         'value' => "2"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'name',
                         'value' => self::FIELD_CONVERSION_TRACKING_CONVERSION_VALUE
-                    )
-                )
-            ),
-            self::VARIABLE_CONVERSION_TRACKING_ORDER_ID => array
-            (
+                    ]
+                ]
+            ],
+            self::VARIABLE_CONVERSION_TRACKING_ORDER_ID => [
                 'name' => self::VARIABLE_CONVERSION_TRACKING_ORDER_ID,
                 'type' => self::TYPE_VARIABLE_DATALAYER,
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'integer',
                         'key' => 'dataLayerVersion',
                         'value' => "2"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'boolean',
                         'key' => 'setDefaultValue',
                         'value' => "false"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'name',
                         'value' => self::FIELD_CONVERSION_TRACKING_ORDER_ID
-                    )
-                )
-            )
-        );
+                    ]
+                ]
+            ]
+        ];
 
         return $variables;
     }
@@ -258,36 +243,29 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
      */
     private function _getConversionTriggers()
     {
-        $triggers = array
-        (
-            self::TRIGGER_CONVERSION_TRACKING_MAGENTO_CHECKOUT_SUCCESS_PAGE => array
-            (
+        $triggers = [
+            self::TRIGGER_CONVERSION_TRACKING_MAGENTO_CHECKOUT_SUCCESS_PAGE => [
                 'name' => self::TRIGGER_CONVERSION_TRACKING_MAGENTO_CHECKOUT_SUCCESS_PAGE,
                 'type' => self::TYPE_TRIGGER_PAGEVIEW,
-                'filter' => array
-                (
-                    array
-                    (
+                'filter' => [
+                    [
                         'type' => 'contains',
-                        'parameter' => array
-                        (
-                            array
-                            (
+                        'parameter' => [
+                            [
                                 'type' => 'template',
                                 'key' => 'arg0',
                                 'value' => '{{Page URL}}'
-                            ),
-                            array
-                            (
+                            ],
+                            [
                                 'type' => 'template',
                                 'key' => 'arg1',
                                 'value' => '/checkout/onepage/success'
-                            )
-                        )
-                    )
-                )
-            )
-        );
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
         return $triggers;
     }
 
@@ -299,65 +277,80 @@ class ConversionTracking extends \WeltPixel\GoogleTagManager\Model\Api
      */
     private function _getConversionTags($triggers, $params)
     {
-        $tags = array
-        (
-            self::TAG_CONVERSION_TRACKING_ADWORDS_CONVERSION_TRACKING => array
-            (
+        $tags = [
+            self::TAG_CONVERSION_TRACKING_ADWORDS_CONVERSION_TRACKING => [
                 'name' => self::TAG_CONVERSION_TRACKING_ADWORDS_CONVERSION_TRACKING,
-                'firingTriggerId' => array
-                (
+                'firingTriggerId' => [
                     $triggers[self::TRIGGER_CONVERSION_TRACKING_MAGENTO_CHECKOUT_SUCCESS_PAGE]
-                ),
+                ],
                 'type' => self::TYPE_TAG_AWCT,
                 'tagFiringOption' => 'oncePerEvent',
-                'parameter' => array
-                (
-                    array
-                    (
+                'parameter' => [
+                    [
                         'type' => 'boolean',
                         'key' => 'enableConversionLinker',
                         'value' => "true"
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'conversionValue',
                         'value' => '{{' . self::VARIABLE_CONVERSION_TRACKING_CONVERSION_VALUE . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'orderId',
                         'value' => '{{' . self::VARIABLE_CONVERSION_TRACKING_ORDER_ID . '}}'
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'conversionId',
                         'value' => $params['conversion_id']
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'currencyCode',
                         'value' => $params['conversion_currency_code']
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'conversionLabel',
                         'value' => $params['conversion_label']
-                    ),
-                    array
-                    (
+                    ],
+                    [
                         'type' => 'template',
                         'key' => 'conversionCookiePrefix',
                         'value' => '_gcl'
-                    )
-                )
-            )
-        );
+                    ]
+                ]
+            ]
+        ];
 
         return $tags;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConversionVariablesList()
+    {
+        return $this->_getConversionVariables();
+    }
+
+    /**
+     * @return array
+     */
+    public function getConversionTriggersList()
+    {
+        return $this->_getConversionTriggers();
+    }
+
+    /**
+     * @param array $triggers
+     * @param array $params
+     * @return array
+     */
+    public function getConversionTagsList($triggers, $params)
+    {
+        return $this->_getConversionTags($triggers, $params);
     }
 }

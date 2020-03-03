@@ -6,9 +6,5 @@
                 <argument name='template' xsi:type='string'>WeltPixel_Multistore::switch/languages.phtml</argument>
             </action>
         </referenceBlock>
-        <referenceContainer name="before.body.end" >
-            <block class="Magento\Framework\View\Element\Template" name="welpixel.multistore.redirecthome" template="WeltPixel_Multistore::redirecthome.phtml" />
-        </referenceContainer>
-
     </body>
 </page>

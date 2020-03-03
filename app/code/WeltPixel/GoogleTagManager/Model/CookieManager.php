@@ -79,10 +79,12 @@ class CookieManager
      */
     public function setGtmCookies()
     {
+        $secureCookieFlag = $this->gtmHelper->getSecureCookiesFlag();
         $cookieMetadata = $this->cookieMetadataFactory->createPublicCookieMetadata()
             ->setDurationOneYear()
             ->setPath('/')
             ->setDomain($this->sessionManager->getCookieDomain())
+            ->setSecure($secureCookieFlag)
             ->setHttpOnly(false);
 
         if ($this->gtmHelper->isCustomDimensionCustomerIdEnabled() && $this->customerSession->isLoggedIn()) {
