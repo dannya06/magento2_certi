@@ -1,4 +1,8 @@
+"Javascript Fetching","Javascript Fetching"
+"Old Api (Deprecated)","Old Api (Deprecated)"
 User,User
+Tag,Tag
+"Original Size","Original Size"
 "As they come from Instagram","As they come from Instagram"
 "Newest to oldest","Newest to oldest"
 "Oldest to newest","Oldest to newest"
@@ -9,6 +13,7 @@ User,User
 "Random order","Random order"
 Random,Random
 "WeltPixel InstagramWidget","WeltPixel InstagramWidget"
+"Instagram Api Type","Instagram Api Type"
 "Instagram Client Id","Instagram Client Id"
 "Instagram Access Token","Instagram Access Token"
 Title,Title
@@ -18,8 +23,8 @@ Description,Description
 "Images Per Row","Images Per Row"
 "Images Should Have Padding","Images Should Have Padding"
 "Optimize Image Layout","Optimize Image Layout"
-Limit,Limit
-"Maximum number of Images to add","Maximum number of Images to add"
+"Number of images","Number of images"
+"Number of images to be pulled from Instagram and displayed. Insert number between 1-12. Default: 6","Number of images to be pulled from Instagram and displayed. Insert number between 1-12. Default: 6"
 SortBy,SortBy
 "Sort the images in a set order.","Sort the images in a set order."
 Resolution,Resolution
@@ -28,7 +33,8 @@ Resolution,Resolution
 "Customize what Instafeed fetches. (Tag and Location was removed by Instagram)","Customize what Instafeed fetches. (Tag and Location was removed by Instagram)"
 "User Id","User Id"
 "Unique id of a user to get","Unique id of a user to get"
+"Customize what Instafeed fetches.","Customize what Instafeed fetches."
+"User Name","User Name"
+"Username of a user to get","Username of a user to get"
 "Tag Name","Tag Name"
 "Images with a specific tag","Images with a specific tag"
-"Location Id","Location Id"
-"Images from a location","Images from a location"
