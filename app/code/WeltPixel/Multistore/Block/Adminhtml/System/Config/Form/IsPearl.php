@@ -14,24 +14,17 @@ namespace WeltPixel\Multistore\Block\Adminhtml\System\Config\Form;
 class IsPearl extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
-     * @var Data
-     */
-    protected $slHelper;
-
-    /**
      * @var \WeltPixel\Backend\Helper\Utility;
      */
     protected $utilityHelper;
 
     public function __construct(
-        \WeltPixel\SocialLogin\Helper\Data $slHelper,
         \Magento\Backend\Block\Template\Context $context,
         \WeltPixel\Backend\Helper\Utility $utilityHelper,
         array $data = []
     )
     {
         parent::__construct($context, $data);
-        $this->slHelper = $slHelper;
         $this->utilityHelper = $utilityHelper;
     }
 
