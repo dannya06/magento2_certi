@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6cd3634d96f960fe6c7e482b32af8760",
+    "content-hash": "0ca067bccab94b86fb17d009be75d62a",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -1867,6 +1867,50 @@
                 "magento2"
             ],
             "time": "2019-12-31T08:10:33+00:00"
+        },
+        {
+            "name": "icubeus/magento2-rapidflow",
+            "version": "7.2.1",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-rapidflow.git",
+                "reference": "5fa4148a015fac7033815bf4905ce47ee96a3bf3"
+            },
+            "require": {
+                "php": ">=7.0.2"
+            },
+            "replace": {
+                "icubeus/module-rapidflow": "self.version",
+                "icubeus/module-rapidflowpro": "self.version"
+            },
+            "type": "magento2-component",
+            "autoload": {
+                "files": [
+                    "src/module-rapidflow/registration.php",
+                    "src/module-rapidflowpro/registration.php"
+                ],
+                "psr-4": {
+                    "Unirgy\\RapidFlow\\": "src/module-rapidflow",
+                    "Unirgy\\RapidFlowPro\\": "src/module-rapidflowpro"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "repidflow for import product",
+            "homepage": "https://github.com/icubeus/magento2-rapidflow",
+            "keywords": [
+                "magento",
+                "magento2",
+                "rapidflow"
+            ],
+            "time": "2020-03-11T09:15:45+00:00"
         },
         {
             "name": "icubeus/magento2-shippingbase",
