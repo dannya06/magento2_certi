@@ -1,17 +1,17 @@
-define([], function () {
+define(['jquery', 'jquery/ui','full_page','scrolloverflow'], function ($) {
     "use strict";
 
     var FullPageScroll = {
         action: function (countBlocks) {
-            var pageHeader = jQuery('.page-header'),
-                header = jQuery('header'),
-                headerCnt = jQuery('header .header.content'),
-                headerPanel = jQuery('header .panel.header'),
+            var pageHeader = $('.page-header'),
+                header = $('header'),
+                headerCnt = $('header .header.content'),
+                headerPanel = $('header .panel.header'),
                 headerH = '',
-                search = jQuery('header .block-search'),
-                footer = jQuery('footer'),
-                nav = jQuery('.nav-sections'),
-                breadcrumbs = jQuery('.breadcrumbs'),
+                search = $('header .block-search'),
+                footer = $('footer'),
+                nav = $('.nav-sections'),
+                breadcrumbs = $('.breadcrumbs'),
                 headerOH = header.outerHeight(), // this var is uses in default module js
                 headerCntOH = headerCnt.outerHeight(),
                 headerPanelOH = headerPanel.outerHeight(),
@@ -19,11 +19,11 @@ define([], function () {
                 footerOH = footer.outerHeight(),
                 navOH = nav.outerHeight(),
                 breadcrumbsOH = breadcrumbs.outerHeight(),
-                body = jQuery('body'),
-                ww = jQuery(window).width(),
-                multiStore = jQuery('.header-multistore .multistore-desktop'),
-                multiStoreMobile = jQuery('.header-multistore #multistore-mobile-switcher-language'),
-                globalPromo = jQuery('.header-global-promo'),
+                body = $('body'),
+                ww = $(window).width(),
+                multiStore = $('.header-multistore .multistore-desktop'),
+                multiStoreMobile = $('.header-multistore #multistore-mobile-switcher-language'),
+                globalPromo = $('.header-global-promo'),
                 round = 0,
                 multiStoreOH = multiStore.outerHeight(),
                 globalPromoOH = globalPromo.outerHeight(),
@@ -32,8 +32,8 @@ define([], function () {
             header.addClass('fps active');
             body.addClass('fullpagescroll');
 
-            jQuery(window).resize(function () {
-                ww = jQuery(window).width();
+            $(window).resize(function () {
+                ww = $(window).width();
                 headerOH = header.outerHeight();
                 headerCntOH = headerCnt.outerHeight() + 4;
                 headerPanelOH = headerPanel.outerHeight();
@@ -92,13 +92,13 @@ define([], function () {
                 }
             });
 
-            jQuery(document).ready(function () {
+            $(document).ready(function () {
                 setTimeout(function () {
-                    jQuery(window).trigger('resize');
+                    $(window).trigger('resize');
                 }, 1000);
             });
 
-            jQuery('#fullpage').fullpage({
+            $('#fullpage').fullpage({
                 verticalCentered: true,
                 onLeave: function (index, nextIndex, direction) {
                     window.onLeaveIndex = index;
@@ -110,7 +110,7 @@ define([], function () {
                     ) {
                         if (window.stickyEnabled == 0) {
                             if (ww > 767) {
-                                jQuery('.fps').removeClass('active');
+                                $('.fps').removeClass('active');
                                 nav.css('top', 0);
                                 if (headerH != '') {
                                     header.css('margin-top', -headerH);
@@ -121,21 +121,21 @@ define([], function () {
                                     search.css('margin-top', -searchH);
                                 }
                             } else {
-                                jQuery('.fps').removeClass('active');
+                                $('.fps').removeClass('active');
                                 header.css('margin-top', -headerH);
                             }
                         }
                     }
                     if (index == 2 && nextIndex == 1 && direction == 'up') {
-                        jQuery('.fps').addClass('active');
+                        $('.fps').addClass('active');
                     }
                     if (index == countBlocks && nextIndex == (countBlocks + 1) && direction == 'down') {
-                        jQuery('footer').addClass('active');
+                        $('footer').addClass('active');
                     }
                     if (index == (countBlocks + 1) && nextIndex == countBlocks && direction == 'up') {
-                        jQuery('footer').removeClass('active');
+                        $('footer').removeClass('active');
                     }
-                    jQuery(window).trigger('resize');
+                    $(window).trigger('resize');
                 }
             });
         }
