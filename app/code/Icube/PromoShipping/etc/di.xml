@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Quote\Model\Quote\Address\RateRequest" type="Icube\PromoShipping\Model\Quote\RateRequest" />
+    <preference for="Magento\SalesRule\Model\Rule\Action\Discount\CalculatorFactory" type="Icube\PromoShipping\Model\Rule\CalculatorFactory" />
+    <preference for="Amasty\Rgrid\Model\RuleActions" type="Icube\PromoShipping\Model\RuleActions" />
+    <type name="Magento\SalesRule\Model\Rule\Metadata\ValueProvider">
+        <plugin name="IcubeSalesRuleMetadataValueProvider" type="Icube\PromoShipping\Plugin\Sales\Rule\ValueProviderPlugin" sortOrder="1" />
+    </type>
+</config>
