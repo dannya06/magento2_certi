@@ -1918,7 +1918,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "4976c9c5acef31abd0aca0c5f96a73d4d7a5b521"
+                "reference": "b5b3c4f77cf03ccbe745a4458c8ceafae9379e41"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -1951,7 +1951,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-01-22T10:42:42+00:00"
+            "time": "2020-03-13T09:12:07+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
