@@ -14,7 +14,7 @@ use Magento\Directory\Helper\Data;
 use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
 use Magento\Framework\Exception\LocalizedException;
 
-class GenerateVarnish extends \Magento\Backend\Controller\Adminhtml\Cache
+class ClearPage extends \Magento\Backend\Controller\Adminhtml\Cache
 {
 
     /**
@@ -124,10 +124,9 @@ class GenerateVarnish extends \Magento\Backend\Controller\Adminhtml\Cache
     {
         $params = $this->getRequest()->getPost();
 
-        $command = "echo varnish > /home/mage2user/site/current/pub/media/varnish1.flag";
-        $data = "<pre>".shell_exec($command)."</pre>";
+        $this->_cacheTypeList->cleanType("full_page");
 
-        $message = "Clear varnish has been executed, please wait in few minutes.";
+        $message = "Clear page cache has been executed, please wait in few minutes.";
 
         $this->messageManager->addSuccess(__($message));
 
