@@ -1776,7 +1776,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-payment.git",
-                "reference": "7aa269be9f34569af9d78aec6bd8e9693a8fd05e"
+                "reference": "5aa0a4f08757e7bdb25afdbccf9c536f7646f6cc"
             },
             "replace": {
                 "icubeus/module-faspaycredit": "self.version",
@@ -1786,6 +1786,14 @@
                 "icubeus/module-sprint": "self.version"
             },
             "type": "magento2-component",
+            "extra": {
+                "map": [
+                    [
+                        "src/lib/internal/ipay88-php",
+                        "lib/internal/ipay88-php"
+                    ]
+                ]
+            },
             "autoload": {
                 "files": [
                     "src/module-faspaycredit/registration.php",
@@ -1820,7 +1828,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2019-10-09T08:02:46+00:00"
+            "time": "2020-03-18T06:15:43+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
