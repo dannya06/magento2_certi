@@ -4,7 +4,6 @@
 /** @var \Icube\CustomStyle\Block\Cache\Permissions|null $permissions */
 $permissions = $block->getData('custompermissions');
 ?>
-<br/>
 <?php if ($permissions && $permissions->hasAccessToClearPageCache()): ?>
 <form id="clear-page" action="<?php /* @escapeNotVerified */ echo $block->getClearPageUrl() ?>" method="POST" >
     <input type="hidden" value="<?php echo $block->getFormKey(); ?>" name="form_key" id="form_key" />
@@ -13,4 +12,5 @@ $permissions = $block->getData('custompermissions');
         <?php /* @escapeNotVerified */ echo __('Clear Page Cache') ?>
     </button>
 </form>
+<br/>
 <?php endif; ?>
