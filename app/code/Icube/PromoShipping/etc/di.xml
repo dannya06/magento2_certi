@@ -6,4 +6,7 @@
     <type name="Magento\SalesRule\Model\Rule\Metadata\ValueProvider">
         <plugin name="IcubeSalesRuleMetadataValueProvider" type="Icube\PromoShipping\Plugin\Sales\Rule\ValueProviderPlugin" sortOrder="1" />
     </type>
+    <type name="Magento\Quote\Model\Cart\ShippingMethodConverter">
+        <plugin name="RatePromoIcube" type="Icube\PromoShipping\Plugin\Converter" sortOrder="1" />
+   </type>
 </config>

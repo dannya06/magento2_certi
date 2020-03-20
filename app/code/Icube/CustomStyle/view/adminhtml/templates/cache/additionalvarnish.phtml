@@ -1,14 +1,10 @@
 <?php
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
 
 // @codingStandardsIgnoreFile
+/** @var \Icube\CustomStyle\Block\Cache\Permissions|null $permissions */
+$permissions = $block->getData('custompermissions');
 ?>
-<h2>
-    <span><?php /* @escapeNotVerified */ echo __('Swift Cache Management') ?></span>
-</h2>
+<?php if ($permissions && $permissions->hasAccessToClearVarnish()): ?>
 <form id="clear-varnish" action="<?php /* @escapeNotVerified */ echo $block->getVarnishGenerationUrl() ?>" method="POST" >
     <input type="hidden" value="<?php echo $block->getFormKey(); ?>" name="form_key" id="form_key" />
     
@@ -16,3 +12,5 @@
         <?php /* @escapeNotVerified */ echo __('Clear Varnish Cache') ?>
     </button>
 </form>
+<br/>
+<?php endif; ?>
