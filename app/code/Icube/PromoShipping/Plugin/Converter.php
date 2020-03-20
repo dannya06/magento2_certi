@@ -14,7 +14,7 @@ class Converter
         $this->extensionFactory = $extensionFactory;
     }
 
-       public function aroundModelToDataObject(\Magento\Quote\Model\Cart\ShippingMethodConverter $subject, \Closure $proceed, $rateModel, $quoteCurrencyCode ) 
+       public function aroundModelToDataObject(\Magento\Quote\Model\Cart\ShippingMethodConverter $subject, \Closure $proceed, $rateModel, $quoteCurrencyCode) 
        {    
    			$result = $proceed($rateModel, $quoteCurrencyCode);
             $extensibleAttribute =  ($result->getExtensionAttributes())
@@ -33,9 +33,9 @@ class Converter
                     }
                     $extensibleAttribute->setShippingPromoName($promoName);
                     
-                    $oriPrice = 0;
+                    $oriPrice = "";
                     if(isset($arrRateDescription[2])){
-                        $oriPrice = $arrRateDescription[2];
+                        $oriPrice = $quoteCurrencyCode.$arrRateDescription[2];
                     }
                     $extensibleAttribute->setShippingOriginalPrice($oriPrice);
                 }
