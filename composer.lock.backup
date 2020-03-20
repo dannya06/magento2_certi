@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a74985f61c6e67218129df6b7abcffb6",
+    "content-hash": "d2ee58d4e9a143ab78a2179d86ab85a4",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -290,74 +290,6 @@
                 "validation"
             ],
             "time": "2018-06-11T17:15:25+00:00"
-        },
-        {
-            "name": "box/spout",
-            "version": "v2.7.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/box/spout.git",
-                "reference": "3681a3421a868ab9a65da156c554f756541f452b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/box/spout/zipball/3681a3421a868ab9a65da156c554f756541f452b",
-                "reference": "3681a3421a868ab9a65da156c554f756541f452b",
-                "shasum": ""
-            },
-            "require": {
-                "ext-xmlreader": "*",
-                "ext-zip": "*",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8.0"
-            },
-            "suggest": {
-                "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",
-                "ext-intl": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.8.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Box\\Spout\\": "src/Spout"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Adrien Loison",
-                    "email": "adrien@box.com"
-                }
-            ],
-            "description": "PHP Library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way",
-            "homepage": "https://www.github.com/box/spout",
-            "keywords": [
-                "OOXML",
-                "csv",
-                "excel",
-                "memory",
-                "odf",
-                "ods",
-                "office",
-                "open",
-                "php",
-                "read",
-                "scale",
-                "spreadsheet",
-                "stream",
-                "write",
-                "xlsx"
-            ],
-            "time": "2017-09-25T19:44:35+00:00"
         },
         {
             "name": "braintree/braintree_php",
@@ -1267,122 +1199,6 @@
             "time": "2016-09-09T11:38:26+00:00"
         },
         {
-            "name": "firebear/importexport",
-            "version": "3.3.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/importexport/type/ce/v/3.3.1/"
-            },
-            "require": {
-                "box/spout": "~2.7",
-                "salsify/json-streaming-parser": "~6.0",
-                "tcdent/php-restclient": "^0.1.7"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Firebear\\ImportExport\\": ""
-                }
-            }
-        },
-        {
-            "name": "firebear/importexport-msi",
-            "version": "1.0.3",
-            "dist": {
-                "type": "zip",
-                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/importexport-msi/type/ce/v/1.0.3/"
-            },
-            "require": {
-                "firebear/importexport": ">=3.0.0",
-                "magento/module-inventory-import-export": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Firebear\\ImportExportMsi\\": ""
-                }
-            }
-        },
-        {
-            "name": "firebear/netsuite-php",
-            "version": "v2018.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/firebearstudio/netsuite-php.git",
-                "reference": "e45017ab0f417c99916e841236cffcb41d1b9bc9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/firebearstudio/netsuite-php/zipball/e45017ab0f417c99916e841236cffcb41d1b9bc9",
-                "reference": "e45017ab0f417c99916e841236cffcb41d1b9bc9",
-                "shasum": ""
-            },
-            "require": {
-                "ext-openssl": "*",
-                "ext-simplexml": "*",
-                "ext-soap": "*",
-                "paragonie/random_compat": "*",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpspec/phpspec": "^2.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "NetSuite\\": "src/"
-                },
-                "files": [
-                    "src/includes/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Ryan Winchester (fungku)",
-                    "email": "fungku@gmail.com"
-                }
-            ],
-            "description": "NetSuite PHP API wrapper",
-            "keywords": [
-                "api",
-                "netsuite",
-                "php"
-            ],
-            "time": "2019-06-25T14:22:55+00:00"
-        },
-        {
-            "name": "firebear/platformnetsuite",
-            "version": "1.3.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/platformnetsuite/type/ce/v/1.3.0/"
-            },
-            "require": {
-                "firebear/importexport": ">=3.1.7",
-                "firebear/netsuite-php": "2018.2.*",
-                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Firebear\\PlatformNetsuite\\": ""
-                }
-            }
-        },
-        {
             "name": "google/recaptcha",
             "version": "1.2.1",
             "source": {
@@ -1749,7 +1565,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "06ddcbc6cde42cd20abfb9afa10db722864c5c02"
+                "reference": "37ee0d2c68c3d932d998c05bc16ff24d7050e9b6"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1781,7 +1597,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-02-20T00:48:50+00:00"
+            "time": "2019-12-04T02:25:46+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -1847,7 +1663,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icube-mage/magento2-gosend.git",
-                "reference": "129b635700a6c2af29165b581e6a5ebc84883d29"
+                "reference": "87ca614976c37c2e8a4527fd285852dec4dafd21"
             },
             "replace": {
                 "icubeus/module-gosend": "self.version"
@@ -1879,7 +1695,7 @@
                 "magento2",
                 "shipping"
             ],
-            "time": "2020-02-11T04:39:31+00:00"
+            "time": "2020-01-24T08:23:20+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -1913,7 +1729,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "fc8a2204ce24de669752a6552335774b9a974887"
+                "reference": "b3808da08eec7813ef5d701a1889efba4afeb02f"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -1952,15 +1768,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-12-31T08:10:33+00:00"
+            "time": "2019-11-15T04:15:22+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
-            "version": "7.1.0",
+            "version": "7.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-rapidflow.git",
-                "reference": "fc9eef01e061f622243cc5c2dcda5c3e25468d7a"
+                "reference": "70325757b7014d05441417707009828bdae7f0b2"
             },
             "require": {
                 "php": ">=7.0.2"
@@ -1996,7 +1812,7 @@
                 "magento2",
                 "rapidflow"
             ],
-            "time": "2019-04-05T07:44:53+00:00"
+            "time": "2019-04-05T07:42:53+00:00"
         },
         {
             "name": "icubeus/magento2-shippingbase",
@@ -2042,7 +1858,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "4976c9c5acef31abd0aca0c5f96a73d4d7a5b521"
+                "reference": "526d5b4ab8ab36b5bf394e41c50532ff7c17e501"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -2075,7 +1891,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-01-22T10:42:42+00:00"
+            "time": "2020-03-13T03:18:55+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -2258,11 +2074,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "2.0.9",
+            "version": "2.0.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "659ab5af4ac823fa69c602fadc6edbcc7a2fe8a1"
+                "reference": "dc0dee3067a4f6a67a7182aadeadae6acf517a4b"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -2311,7 +2127,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-02-17T09:57:00+00:00"
+            "time": "2020-01-22T07:17:38+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -11814,63 +11630,6 @@
             "time": "2019-01-07T21:25:54+00:00"
         },
         {
-            "name": "salsify/json-streaming-parser",
-            "version": "v6.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/salsify/jsonstreamingparser.git",
-                "reference": "0b6403c8a2b1fc4c5af77b5c0174c11bd958a9d2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/salsify/jsonstreamingparser/zipball/0b6403c8a2b1fc4c5af77b5c0174c11bd958a9d2",
-                "reference": "0b6403c8a2b1fc4c5af77b5c0174c11bd958a9d2",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mbstring": "*",
-                "php": "^5.4 | ^7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "JsonStreamingParser\\": "src",
-                    "JsonStreamingParser\\Test\\": "tests"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Maxim Gnatenko",
-                    "email": "mgnatenko@gmail.com"
-                },
-                {
-                    "name": "Rob Gonzalez",
-                    "email": "rob@salsify.com",
-                    "homepage": "http://salsify.com/"
-                },
-                {
-                    "name": "Max Grigorian",
-                    "email": "maxakawizard@gmail.com",
-                    "homepage": "http://wizardcat.com/"
-                }
-            ],
-            "description": "A streaming parser for JSON in PHP.",
-            "homepage": "https://github.com/salsify/jsonstreamingparser",
-            "keywords": [
-                "json",
-                "parser",
-                "streaming"
-            ],
-            "time": "2017-09-02T14:02:01+00:00"
-        },
-        {
             "name": "seld/jsonlint",
             "version": "1.7.1",
             "source": {
@@ -12864,58 +12623,6 @@
                 "reflection"
             ],
             "time": "2019-02-23T15:17:42+00:00"
-        },
-        {
-            "name": "tcdent/php-restclient",
-            "version": "0.1.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tcdent/php-restclient.git",
-                "reference": "4522e8518eaef770d715977fcb45f187f8ad7499"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tcdent/php-restclient/zipball/4522e8518eaef770d715977fcb45f187f8ad7499",
-                "reference": "4522e8518eaef770d715977fcb45f187f8ad7499",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "php": ">=5.5.7",
-                "phpunit/phpunit": ">=4.5"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "restclient.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Travis Dent",
-                    "email": "tcdent@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A generic REST API client for PHP",
-            "homepage": "http://github.com/tcdent/php-restclient",
-            "keywords": [
-                "api",
-                "client",
-                "curl",
-                "json",
-                "rest",
-                "xml"
-            ],
-            "time": "2017-09-07T20:44:36+00:00"
         },
         {
             "name": "tedivm/jshrink",
