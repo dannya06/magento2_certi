@@ -30,7 +30,8 @@
         "icubeus/magento2-notification": "dev-master",
         "icubeus/magento2-smstada": "dev-master",
         "icubeus/magento2-checkout": "dev-masterdefault",
-        "icubeus/magento2-payment": "dev-master"
+        "icubeus/magento2-payment": "dev-master",
+        "creativestyle/magesuite": "^2.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
