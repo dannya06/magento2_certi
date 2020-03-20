@@ -129,7 +129,7 @@ class GenerateVarnish extends \Magento\Backend\Controller\Adminhtml\Cache
 
         $message = "Clear varnish has been executed, please wait in few minutes.";
 
-        $this->messageManager->addSuccess(__($data));
+        $this->messageManager->addSuccess(__($message));
 
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);

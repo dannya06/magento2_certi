@@ -1,0 +1,11 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="">
+    <body>
+        <referenceBlock name="product.tile.additional.wrapper.list" display="false" />
+        <referenceBlock name="product.tile.container.addon.addtowishlist.list" display="false" />
+        <referenceBlock name="product.tile.container.addons.right" display="false" />       
+        <referenceBlock name="product.tile.review_summary.grid" display="false" />       
+        <referenceBlock name="product.tile.container.addons.sides" display="false" />       
+        <move element="product.tile.swatches.container" destination="product.tile.container.addons" before="product.tile.container.addons.bottom" />
+        <move element="product.tile.review_summary.list" destination="product.tile.container.main.details" after="product.tile.container.name" />
+    </body>
+</page>
