@@ -16,11 +16,6 @@ class Converter
 
        public function aroundModelToDataObject(\Magento\Quote\Model\Cart\ShippingMethodConverter $subject, \Closure $proceed, $rateModel, $quoteCurrencyCode) 
        {    
-            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/reza-test.log');
-            $logger = new \Zend\Log\Logger();
-            $logger->addWriter($writer);
-            $logger->info($quoteCurrencyCode);
-
    			$result = $proceed($rateModel, $quoteCurrencyCode);
             $extensibleAttribute =  ($result->getExtensionAttributes())
             ? $result->getExtensionAttributes()
