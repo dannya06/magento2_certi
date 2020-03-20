@@ -21,6 +21,9 @@ class Converter
             ? $result->getExtensionAttributes()
             : $this->extensionFactory->create();
 
+            $om = \Magento\Framework\App\ObjectManager::getInstance();
+            $priceHelper = $om->get("\Magento\Framework\Pricing\Helper\Data");
+
             $rateDescription = $rateModel->getMethodDescription()!=null ?$rateModel->getMethodDescription():"";
             if($rateDescription!=null){
                  //Estimation||Promoname||OriginalPrice
@@ -35,7 +38,8 @@ class Converter
                     
                     $oriPrice = "";
                     if(isset($arrRateDescription[2])){
-                        $oriPrice = $quoteCurrencyCode.$arrRateDescription[2];
+                        $formattedCurrencyValue = $priceHelper->currency($arrRateDescription[2],true,false);
+                        $oriPrice = $formattedCurrencyValue;
                     }
                     $extensibleAttribute->setShippingOriginalPrice($oriPrice);
                 }
