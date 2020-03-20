@@ -31,7 +31,10 @@
         "icubeus/magento2-smstada": "dev-master",
         "icubeus/magento2-checkout": "dev-masterdefault",
         "icubeus/magento2-payment": "dev-master",
-        "creativestyle/magesuite": "^2.0.0"
+        "creativestyle/magesuite": "^2.0.0",
+        "firebear/importexport": "^3.3",
+        "firebear/importexport-msi": "^1.0",
+        "firebear/platformnetsuite": "^1.3"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
@@ -143,6 +146,10 @@
         "icubeus-payment": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-payment.git"
+		},
+        "firebear": {
+            "type": "composer",
+            "url": "https://firebearstudio.com/composer/download/package/type/ce/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/"
         }
     },
     "extra": {
