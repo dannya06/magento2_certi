@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d20bcd720778d0bede384877e475bfe4",
+    "content-hash": "f38731a994b61be7517028dcb49ad0d3",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -878,6 +878,1792 @@
             "time": "2017-02-14T19:40:03+00:00"
         },
         {
+            "name": "creativestyle/creative-patterns",
+            "version": "v2.31.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/creative-patterns.git",
+                "reference": "95c57e6f2fcd0e0a1a3a408fbd34028c79222d9b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/creative-patterns/zipball/95c57e6f2fcd0e0a1a3a408fbd34028c79222d9b",
+                "reference": "95c57e6f2fcd0e0a1a3a408fbd34028c79222d9b",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Creativestyle\\CreativePatterns\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Pattern library",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-07-31T12:43:29+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite",
+            "version": "v2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/magesuite.git",
+                "reference": "187878a52d0a997afbbc6e2dcee3fe6735367d6c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/magesuite/zipball/187878a52d0a997afbbc6e2dcee3fe6735367d6c",
+                "reference": "187878a52d0a997afbbc6e2dcee3fe6735367d6c",
+                "shasum": ""
+            },
+            "require": {
+                "creativestyle/magesuite-brand-management": "^1.0.0",
+                "creativestyle/magesuite-cache": "^1.0.0",
+                "creativestyle/magesuite-category-hero": "^1.0.0",
+                "creativestyle/magesuite-clear-attributes": "^1.0.0",
+                "creativestyle/magesuite-cms-duplicate": "^2.0.0",
+                "creativestyle/magesuite-cms-product-backlink": "^1.0.0",
+                "creativestyle/magesuite-cms-tag-manager": "^1.0.0",
+                "creativestyle/magesuite-content-constructor": "^2.0.0",
+                "creativestyle/magesuite-content-constructor-admin": "^2.0.0",
+                "creativestyle/magesuite-content-constructor-asset": "^1.0.0",
+                "creativestyle/magesuite-content-constructor-category-page": "^1.0.0",
+                "creativestyle/magesuite-content-constructor-frontend": "^2.0.0",
+                "creativestyle/magesuite-css-minifier": "^1.0.0",
+                "creativestyle/magesuite-daily-deal": "^1.0.0",
+                "creativestyle/magesuite-defer-js": "^1.0.0",
+                "creativestyle/magesuite-elasticsuite-addons": "^1.0.0",
+                "creativestyle/magesuite-email-attachments": "^2.0.0",
+                "creativestyle/magesuite-extended-exception": "^1.0.0",
+                "creativestyle/magesuite-file-upload": "^1.0.0",
+                "creativestyle/magesuite-frontend": "^2.0.0",
+                "creativestyle/magesuite-gdpr": "^1.0.1",
+                "creativestyle/magesuite-google-api": "^1.0.0",
+                "creativestyle/magesuite-js-translation-fix": "^1.0.0",
+                "creativestyle/magesuite-maintenance-page": "^1.0.0",
+                "creativestyle/magesuite-opengraph": "^1.0.0",
+                "creativestyle/magesuite-pagination": "^1.0.0",
+                "creativestyle/magesuite-persistent-sitemap": "^1.0.0",
+                "creativestyle/magesuite-product-bestsellers-ranking": "^1.0.0",
+                "creativestyle/magesuite-product-positive-indicators": "^2.0.0",
+                "creativestyle/magesuite-sentry-io": "^1.0.0",
+                "creativestyle/magesuite-seo-canonical": "^1.0.0",
+                "creativestyle/magesuite-seo-hreflang": "^1.0.0",
+                "creativestyle/magesuite-soft-db-status-validation": "^1.0.0",
+                "creativestyle/magesuite-sorting": "^1.0.0",
+                "creativestyle/magesuite-thumbnail-remove": "^1.0.0",
+                "creativestyle/magesuite-translation-center": "^1.0.0",
+                "creativestyle/magesuite-url-regeneration": "^1.0.0",
+                "creativestyle/magesuite-url-rewrite": "^1.0.0",
+                "creativestyle/magesuite-url-rewrite-mass-actions": "^1.0.0",
+                "creativestyle/theme-creativeshop": "^8.0.0",
+                "smile/elasticsuite": "2.7.*"
+            },
+            "type": "metapackage",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "MageSuite main package",
+            "time": "2019-12-30T16:48:27+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-brand-management",
+            "version": "v1.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/brand-management.git",
+                "reference": "f8910026aef4231c9e14b7e0d2258b2d5e23f079"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/brand-management/zipball/f8910026aef4231c9e14b7e0d2258b2d5e23f079",
+                "reference": "f8910026aef4231c9e14b7e0d2258b2d5e23f079",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\BrandManagement\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Brand Management extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-09-08T09:27:30+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-cache",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/cache.git",
+                "reference": "cb6a925b5ff74b79559ebdf53e8d9c00166f3248"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/cache/zipball/cb6a925b5ff74b79559ebdf53e8d9c00166f3248",
+                "reference": "cb6a925b5ff74b79559ebdf53e8d9c00166f3248",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Cache\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Improvements to built-in Magento 2 cache functionality",
+            "time": "2019-10-03T17:00:58+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-category",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/category.git",
+                "reference": "28205b119d1a2670ff1ab0dc45957e530eb8b84d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/category/zipball/28205b119d1a2670ff1ab0dc45957e530eb8b84d",
+                "reference": "28205b119d1a2670ff1ab0dc45957e530eb8b84d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Category\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Enhancments to category functionality",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:22:23+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-category-hero",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/category-hero.git",
+                "reference": "8faf951cbee021cf6a7e45addfb6b844d5e4c044"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/category-hero/zipball/8faf951cbee021cf6a7e45addfb6b844d5e4c044",
+                "reference": "8faf951cbee021cf6a7e45addfb6b844d5e4c044",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\CategoryHero\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Hero product for the category pages",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:36:55+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-category-icon",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/category-icon.git",
+                "reference": "085a9d2aa51dc2425296e2a155dcccbb43581004"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/category-icon/zipball/085a9d2aa51dc2425296e2a155dcccbb43581004",
+                "reference": "085a9d2aa51dc2425296e2a155dcccbb43581004",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\CategoryIcon\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Category icon attribute along with helpers",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:48:58+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-clear-attributes",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/clear-attributes.git",
+                "reference": "6da20e3926e5ed3a7835d6c12295c10d5b418ff1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/clear-attributes/zipball/6da20e3926e5ed3a7835d6c12295c10d5b418ff1",
+                "reference": "6da20e3926e5ed3a7835d6c12295c10d5b418ff1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ClearAttributes\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Extension with recurring script that will remove all leftover attributes data.",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:37:54+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-cms-duplicate",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/cms-duplicate.git",
+                "reference": "fb058d234d9340691e33e47ea73b26e67dd8f362"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/cms-duplicate/zipball/fb058d234d9340691e33e47ea73b26e67dd8f362",
+                "reference": "fb058d234d9340691e33e47ea73b26e67dd8f362",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\CmsDuplicate\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Extension for duplicating CMS pages",
+            "time": "2020-01-09T08:09:16+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-cms-product-backlink",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/cms-product-backlink.git",
+                "reference": "3639fe756b44b9a8629268e390ef53ce6cec35e0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/cms-product-backlink/zipball/3639fe756b44b9a8629268e390ef53ce6cec35e0",
+                "reference": "3639fe756b44b9a8629268e390ef53ce6cec35e0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\CmsProductBacklink\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Cms Product Backlink Extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-12-16T07:38:55+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-cms-tag-manager",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/cms-tag-manager.git",
+                "reference": "f6161b091a608d82a9a264f895415d7fc49d87d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/cms-tag-manager/zipball/f6161b091a608d82a9a264f895415d7fc49d87d8",
+                "reference": "f6161b091a608d82a9a264f895415d7fc49d87d8",
+                "shasum": ""
+            },
+            "require": {
+                "creativestyle/magesuite-image-resize": "^1.0.0",
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\CmsTagManager\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "CMS Tag Manager",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-12-09T13:08:41+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-common-blocks",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/common-blocks.git",
+                "reference": "08e1e848fe6a3802a3add2390059a5e822a757ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/common-blocks/zipball/08e1e848fe6a3802a3add2390059a5e822a757ff",
+                "reference": "08e1e848fe6a3802a3add2390059a5e822a757ff",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "^101.0.0|^102.0.0",
+                "php": ">=5.5.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\CommonBlocks\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Extension with automatic script that will install common blocks used by each template e.g.: Columns in footer. USPs in topbar..",
+            "time": "2019-08-12T05:46:22+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-content-constructor",
+            "version": "v2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/content-constructor.git",
+                "reference": "8df9223ecc6cef8dec839277d1d244d666b7b0d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/content-constructor/zipball/8df9223ecc6cef8dec839277d1d244d666b7b0d2",
+                "reference": "8df9223ecc6cef8dec839277d1d244d666b7b0d2",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MageSuite\\ContentConstructor\\": "src/",
+                    "MageSuite\\ContentConstructor\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Content Constructor",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-12-30T15:55:38+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-content-constructor-admin",
+            "version": "v2.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/content-constructor-admin.git",
+                "reference": "82a22868df4ca90ccbb742c39b8fb480ed90fcd8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/content-constructor-admin/zipball/82a22868df4ca90ccbb742c39b8fb480ed90fcd8",
+                "reference": "82a22868df4ca90ccbb742c39b8fb480ed90fcd8",
+                "shasum": ""
+            },
+            "require": {
+                "creativestyle/creative-patterns": "^2.29.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ContentConstructorAdmin\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Magento2 Content Constructor package",
+            "homepage": "https://creativestyle.de",
+            "time": "2020-02-14T09:54:05+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-content-constructor-asset",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/content-constructor-asset.git",
+                "reference": "7d03869009b7a664764a021ca4181ebd639f73b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/content-constructor-asset/zipball/7d03869009b7a664764a021ca4181ebd639f73b0",
+                "reference": "7d03869009b7a664764a021ca4181ebd639f73b0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ContentConstructorAsset\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Content Constructor Asset Provider",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:23:34+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-content-constructor-category-page",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/content-constructor-category-page.git",
+                "reference": "8e4d20d39e6b28830e9b47aa465e4c7393e8869d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/content-constructor-category-page/zipball/8e4d20d39e6b28830e9b47aa465e4c7393e8869d",
+                "reference": "8e4d20d39e6b28830e9b47aa465e4c7393e8869d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ContentConstructorCategory\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Content Constructor cateogry page extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:38:38+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-content-constructor-frontend",
+            "version": "v2.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/content-constructor-frontend.git",
+                "reference": "6b5905dec0ad10315e527ac88811e1933eeba3ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/content-constructor-frontend/zipball/6b5905dec0ad10315e527ac88811e1933eeba3ee",
+                "reference": "6b5905dec0ad10315e527ac88811e1933eeba3ee",
+                "shasum": ""
+            },
+            "require": {
+                "creativestyle/magesuite-dynamic-directives": "^1.0.0",
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ContentConstructorFrontend\\": "",
+                    "Creativestyle\\ContentConstructorFrontendExtension\\": "Legacy"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Content Constructor Frontend Magento 2 Extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2020-02-10T09:31:56+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-css-minifier",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/css-minifier.git",
+                "reference": "3c703031125cdeedce7c9c73c7e76af6a3d48c7a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/css-minifier/zipball/3c703031125cdeedce7c9c73c7e76af6a3d48c7a",
+                "reference": "3c703031125cdeedce7c9c73c7e76af6a3d48c7a",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "^101.0.0|^102.0.0",
+                "matthiasmullie/minify": "^1.3",
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\CssMinifier\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Update default magento css minifier",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:25:27+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-daily-deal",
+            "version": "v1.12.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/daily-deal.git",
+                "reference": "4e17914379757796abafe6010f2f5505058d2fe5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/daily-deal/zipball/4e17914379757796abafe6010f2f5505058d2fe5",
+                "reference": "4e17914379757796abafe6010f2f5505058d2fe5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\DailyDeal\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Daily deal extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2020-01-30T11:02:56+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-defer-js",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/defer-js.git",
+                "reference": "ad55352fe25aab9f4d3d02e0e936a59c72ff6698"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/defer-js/zipball/ad55352fe25aab9f4d3d02e0e936a59c72ff6698",
+                "reference": "ad55352fe25aab9f4d3d02e0e936a59c72ff6698",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\DeferJs\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Defering JS",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:26:12+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-dynamic-directives",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/dynamic-directives.git",
+                "reference": "865ab4bc5cfd4da889d5fa55953d86ed6c58b3d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/dynamic-directives/zipball/865ab4bc5cfd4da889d5fa55953d86ed6c58b3d2",
+                "reference": "865ab4bc5cfd4da889d5fa55953d86ed6c58b3d2",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\DynamicDirectives\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Extension for dynamic directives",
+            "time": "2019-09-26T10:36:30+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-elasticsuite-addons",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/elasticsuite-addons.git",
+                "reference": "f83fe4088d2c91854415da7f1c889b3afb68ef25"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/elasticsuite-addons/zipball/f83fe4088d2c91854415da7f1c889b3afb68ef25",
+                "reference": "f83fe4088d2c91854415da7f1c889b3afb68ef25",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ElasticSuiteAddons\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Addons for elasticsuite extension",
+            "time": "2019-10-04T09:32:00+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-email-attachments",
+            "version": "v2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/email-attachments.git",
+                "reference": "7107ed330d88111a85b77435792fefefec557c2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/email-attachments/zipball/7107ed330d88111a85b77435792fefefec557c2b",
+                "reference": "7107ed330d88111a85b77435792fefefec557c2b",
+                "shasum": ""
+            },
+            "require": {
+                "magento/product-community-edition": "^2.3.0",
+                "php": ">=5.5.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\EmailAttachments\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "This extension adds PDF attachments to emails.",
+            "time": "2020-01-10T14:09:45+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-extended-exception",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/extended-exception.git",
+                "reference": "8e546f201b836f0042208aaa8ee0fe59d7f7dbc6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/extended-exception/zipball/8e546f201b836f0042208aaa8ee0fe59d7f7dbc6",
+                "reference": "8e546f201b836f0042208aaa8ee0fe59d7f7dbc6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ExtendedException\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Overload defualt logging to pas an extra information like path, ip, cookies, session etc.",
+            "time": "2019-04-16T07:00:45+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-file-upload",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/file-upload.git",
+                "reference": "ea7d96899f92969becd17523dc3a373145a5d57f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/file-upload/zipball/ea7d96899f92969becd17523dc3a373145a5d57f",
+                "reference": "ea7d96899f92969becd17523dc3a373145a5d57f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\FileUpload\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Adds possibility to upload additional types of files into media gallery.",
+            "time": "2019-03-19T09:05:12+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-frontend",
+            "version": "v2.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/frontend.git",
+                "reference": "f83462a31efeaa4cd547832a47adab91fe3e2b1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/frontend/zipball/f83462a31efeaa4cd547832a47adab91fe3e2b1f",
+                "reference": "f83462a31efeaa4cd547832a47adab91fe3e2b1f",
+                "shasum": ""
+            },
+            "require": {
+                "creativestyle/magesuite-image-optimization": "^1.0.0",
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Frontend\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Creativestyle Frontend Magento 2 Extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2020-01-21T09:20:13+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-gdpr",
+            "version": "v1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/gdpr.git",
+                "reference": "14f11d0786b3ce27c022dd008fd5f6beed9dd5e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/gdpr/zipball/14f11d0786b3ce27c022dd008fd5f6beed9dd5e8",
+                "reference": "14f11d0786b3ce27c022dd008fd5f6beed9dd5e8",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Gdpr\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Extension for GDPR compliance",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-08-01T14:00:01+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-google-api",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/google-api.git",
+                "reference": "e82f02eb5b99f766abfebe987edf2df33c876e2d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/google-api/zipball/e82f02eb5b99f766abfebe987edf2df33c876e2d",
+                "reference": "e82f02eb5b99f766abfebe987edf2df33c876e2d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\GoogleApi\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Google API Extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-12-13T08:54:05+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-image-optimization",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/image-optimization.git",
+                "reference": "b25ea660aa34b525139707ac8af35b05c309e541"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/image-optimization/zipball/b25ea660aa34b525139707ac8af35b05c309e541",
+                "reference": "b25ea660aa34b525139707ac8af35b05c309e541",
+                "shasum": ""
+            },
+            "require": {
+                "ps/image-optimizer": "~1.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ImageOptimization\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Helpers for images optimization",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-10-01T12:33:52+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-image-resize",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/image-resize.git",
+                "reference": "f6db1af55fcb420e974331439ecb7e3c22887722"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/image-resize/zipball/f6db1af55fcb420e974331439ecb7e3c22887722",
+                "reference": "f6db1af55fcb420e974331439ecb7e3c22887722",
+                "shasum": ""
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ImageResize\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Helpers for images resize",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-12-05T06:28:00+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-js-translation-fix",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/js-translation-fix.git",
+                "reference": "0102f5cea27c7d087a42c5dc5ef23b495094d67e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/js-translation-fix/zipball/0102f5cea27c7d087a42c5dc5ef23b495094d67e",
+                "reference": "0102f5cea27c7d087a42c5dc5ef23b495094d67e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\JsFixTranslation\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Fixes JS translation gathering for minified assets",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:38:24+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-maintenance-page",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/maintenance-page.git",
+                "reference": "4e45494362636e683a91489c87a19ee76e5cd172"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/maintenance-page/zipball/4e45494362636e683a91489c87a19ee76e5cd172",
+                "reference": "4e45494362636e683a91489c87a19ee76e5cd172",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\MaintenancePage\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Maintenance page",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:36:44+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-media",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/media.git",
+                "reference": "a4d9eddaac93945f2792dade4df7f4f232af90f2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/media/zipball/a4d9eddaac93945f2792dade4df7f4f232af90f2",
+                "reference": "a4d9eddaac93945f2792dade4df7f4f232af90f2",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Media\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Set of tools for media files manipulation",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:22:10+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-navigation",
+            "version": "v1.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/navigation.git",
+                "reference": "5eb4077a6822d185f2951e5a6c2b16967c99f7bf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/navigation/zipball/5eb4077a6822d185f2951e5a6c2b16967c99f7bf",
+                "reference": "5eb4077a6822d185f2951e5a6c2b16967c99f7bf",
+                "shasum": ""
+            },
+            "require": {
+                "creativestyle/magesuite-category": "^1.0.0",
+                "creativestyle/magesuite-media": "^1.0.0",
+                "creativestyle/magesuite-product-tile": "^1.0.0",
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Navigation\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Backend logic for magesuite navigation",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-09-23T08:43:29+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-opengraph",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/opengraph.git",
+                "reference": "933bf8e1ea423e452da57461daee9a692f4e036c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/opengraph/zipball/933bf8e1ea423e452da57461daee9a692f4e036c",
+                "reference": "933bf8e1ea423e452da57461daee9a692f4e036c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Opengraph\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Opengraph Extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-12-17T07:13:32+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-pagination",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/pagination.git",
+                "reference": "1bed470e12939c265b552ea9de2bc9cf51301a34"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/pagination/zipball/1bed470e12939c265b552ea9de2bc9cf51301a34",
+                "reference": "1bed470e12939c265b552ea9de2bc9cf51301a34",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Pagination\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "MageSuite Pagination",
+            "homepage": "https://creativestyle.de",
+            "time": "2020-02-04T12:26:29+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-persistent-sitemap",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/persistent-sitemap.git",
+                "reference": "e8afe2eb95a8e5ddd62ad9a97c518cdccfbec109"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/persistent-sitemap/zipball/e8afe2eb95a8e5ddd62ad9a97c518cdccfbec109",
+                "reference": "e8afe2eb95a8e5ddd62ad9a97c518cdccfbec109",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\PersistentSitemap\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Change default sitemap directory",
+            "time": "2019-06-01T09:43:12+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-product-bestsellers-ranking",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/product-bestsellers-ranking.git",
+                "reference": "798ae884ec5045fba22ab0fd4a5d6137a3a426ca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/product-bestsellers-ranking/zipball/798ae884ec5045fba22ab0fd4a5d6137a3a426ca",
+                "reference": "798ae884ec5045fba22ab0fd4a5d6137a3a426ca",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ProductBestsellersRanking\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Product Bestsellers Ranking Extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-10-04T09:33:44+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-product-details-reorder",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/product-details-reorder.git",
+                "reference": "bcd67627b68e349518f5f20292bc552c53d8502d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/product-details-reorder/zipball/bcd67627b68e349518f5f20292bc552c53d8502d",
+                "reference": "bcd67627b68e349518f5f20292bc552c53d8502d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ProductDetailsReorder\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "MageSuite Product Details Reorder",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:44:57+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-product-positive-indicators",
+            "version": "v2.4.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/product-positive-indicators.git",
+                "reference": "b3a470f43fdf1e6204aa433f49a71191fcd363be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/product-positive-indicators/zipball/b3a470f43fdf1e6204aa433f49a71191fcd363be",
+                "reference": "b3a470f43fdf1e6204aa433f49a71191fcd363be",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ProductPositiveIndicators\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Product positive indicators extension",
+            "homepage": "https://creativestyle.de",
+            "time": "2020-01-10T12:08:15+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-product-tile",
+            "version": "v1.13.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/product-tile.git",
+                "reference": "6eb66d0fd4d0c54b8d160c513ef464afcd7f745a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/product-tile/zipball/6eb66d0fd4d0c54b8d160c513ef464afcd7f745a",
+                "reference": "6eb66d0fd4d0c54b8d160c513ef464afcd7f745a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ProductTile\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Extensible product tile",
+            "homepage": "https://creativestyle.de",
+            "time": "2020-02-12T10:49:45+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-sentry-io",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/sentry-io.git",
+                "reference": "117837d3c01a8410947130a6ac0136fb6466925e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/sentry-io/zipball/117837d3c01a8410947130a6ac0136fb6466925e",
+                "reference": "117837d3c01a8410947130a6ac0136fb6466925e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\SentryIo\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "MageSuite Sentry Io",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-06-01T09:37:06+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-seo-canonical",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/seo-canonical.git",
+                "reference": "06942d42246b253c9f9326af5692b1d5cc2e6547"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/seo-canonical/zipball/06942d42246b253c9f9326af5692b1d5cc2e6547",
+                "reference": "06942d42246b253c9f9326af5692b1d5cc2e6547",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\SeoCanonical\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "time": "2020-02-04T12:37:42+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-seo-hreflang",
+            "version": "v1.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/seo-hreflang.git",
+                "reference": "3d96256f003b1c7930f474d9c15c37d10298c46c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/seo-hreflang/zipball/3d96256f003b1c7930f474d9c15c37d10298c46c",
+                "reference": "3d96256f003b1c7930f474d9c15c37d10298c46c",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "^101.0.0|^102.0.0",
+                "php": "~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\SeoHreflang\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "time": "2019-10-30T08:46:25+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-soft-db-status-validation",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/soft-db-status-validation.git",
+                "reference": "02c095350ad4b59e5e7ddf74062f2507b22e8535"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/soft-db-status-validation/zipball/02c095350ad4b59e5e7ddf74062f2507b22e8535",
+                "reference": "02c095350ad4b59e5e7ddf74062f2507b22e8535",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\SoftDbStatusValidation\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Makes the db (schema) validation silently log error instead of throwing critical exception",
+            "homepage": "https://creativestyle.de",
+            "time": "2018-09-20T12:05:19+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-sorting",
+            "version": "v1.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/sorting.git",
+                "reference": "e7db8d3f41e65f5a50e4dc08e82c9af79ff09eb5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/sorting/zipball/e7db8d3f41e65f5a50e4dc08e82c9af79ff09eb5",
+                "reference": "e7db8d3f41e65f5a50e4dc08e82c9af79ff09eb5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\Sorting\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Extension merges sorting field select and direction links into one select field.",
+            "time": "2020-01-21T07:15:17+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-theme-helpers",
+            "version": "v1.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/theme-helpers.git",
+                "reference": "653280b517f4e851fb10ece419ef826b8bf6debe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/theme-helpers/zipball/653280b517f4e851fb10ece419ef826b8bf6debe",
+                "reference": "653280b517f4e851fb10ece419ef826b8bf6debe",
+                "shasum": ""
+            },
+            "require": {
+                "creativestyle/magesuite-category-icon": "^1.0.0",
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ThemeHelpers\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Blocks and helpers required by base theme",
+            "homepage": "https://creativestyle.de",
+            "time": "2019-10-16T11:55:10+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-thumbnail-remove",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/thumbnail-remove.git",
+                "reference": "4963602669f41bfa274fe93c67b13ef8615ce21c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/thumbnail-remove/zipball/4963602669f41bfa274fe93c67b13ef8615ce21c",
+                "reference": "4963602669f41bfa274fe93c67b13ef8615ce21c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\ThumbnailRemove\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Extension that allows to remove thumbnails generated by lazy resize extension trough REST API",
+            "time": "2019-06-01T09:44:01+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-translation-center",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/translation-center.git",
+                "reference": "b23a959595cb16f1b3113d28d51d5cb0ed4e9635"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/translation-center/zipball/b23a959595cb16f1b3113d28d51d5cb0ed4e9635",
+                "reference": "b23a959595cb16f1b3113d28d51d5cb0ed4e9635",
+                "shasum": ""
+            },
+            "require": {
+                "google/apiclient": "^2.0",
+                "mikey179/vfsstream": "^1.3",
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\TranslationCenter\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Translation Center extension for Magento 2",
+            "time": "2019-06-01T09:39:08+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-url-regeneration",
+            "version": "v1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/url-regeneration.git",
+                "reference": "66258fb43c85d6ec9e3bc9606d171aec3b83a930"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/url-regeneration/zipball/66258fb43c85d6ec9e3bc9606d171aec3b83a930",
+                "reference": "66258fb43c85d6ec9e3bc9606d171aec3b83a930",
+                "shasum": ""
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\UrlRegeneration\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2019-02-22T08:14:44+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-url-rewrite",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/url-rewrite.git",
+                "reference": "9854978ca50893aa923bac46eab391b9b376b9bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/url-rewrite/zipball/9854978ca50893aa923bac46eab391b9b376b9bc",
+                "reference": "9854978ca50893aa923bac46eab391b9b376b9bc",
+                "shasum": ""
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\UrlRewrite\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2019-07-15T09:00:54+00:00"
+        },
+        {
+            "name": "creativestyle/magesuite-url-rewrite-mass-actions",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/url-rewrite-mass-actions.git",
+                "reference": "960f02b01c73117b9c46975bcd6f7f62bbba7d02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/url-rewrite-mass-actions/zipball/960f02b01c73117b9c46975bcd6f7f62bbba7d02",
+                "reference": "960f02b01c73117b9c46975bcd6f7f62bbba7d02",
+                "shasum": ""
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageSuite\\UrlRewriteMassActions\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Adds mass actions to url rewrite grid",
+            "time": "2018-09-19T14:44:57+00:00"
+        },
+        {
+            "name": "creativestyle/theme-creativeshop",
+            "version": "v8.10.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magesuite/theme-creativeshop.git",
+                "reference": "0e13aae0ab9f1f2e326a859e66874c0efcf2deb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magesuite/theme-creativeshop/zipball/0e13aae0ab9f1f2e326a859e66874c0efcf2deb0",
+                "reference": "0e13aae0ab9f1f2e326a859e66874c0efcf2deb0",
+                "shasum": ""
+            },
+            "require": {
+                "creativestyle/magesuite-common-blocks": "^1.0.0",
+                "creativestyle/magesuite-navigation": "^1.0.0",
+                "creativestyle/magesuite-product-details-reorder": "^1.0.0",
+                "creativestyle/magesuite-product-tile": "^1.0.0",
+                "creativestyle/magesuite-theme-helpers": "^1.0.0",
+                "magento/theme-frontend-blank": "^100.2.0",
+                "php": "~5.6.0|7.0.2|~7.0.6|~7.1.0|~7.2.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Creativeshop Magento Theme",
+            "homepage": "https://creativestyle.de",
+            "time": "2020-01-22T13:03:17+00:00"
+        },
+        {
             "name": "donatj/phpuseragentparser",
             "version": "v0.13.0",
             "source": {
@@ -1202,6 +2988,202 @@
             ],
             "description": "Moves all your javascripts to the very end of your HTML (only on frontend) making search engines and speed metering tools happy.",
             "time": "2016-09-09T11:38:26+00:00"
+        },
+        {
+            "name": "firebase/php-jwt",
+            "version": "v5.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "4566062c68f76f43d44f1643f4970fe89757d4c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/4566062c68f76f43d44f1643f4970fe89757d4c6",
+                "reference": "4566062c68f76f43d44f1643f4970fe89757d4c6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8|^5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "time": "2020-02-24T23:15:03+00:00"
+        },
+        {
+            "name": "google/apiclient",
+            "version": "v2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
+                "reference": "cd3c37998020d91ae4eafca4f26a92da4dabba83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/cd3c37998020d91ae4eafca4f26a92da4dabba83",
+                "reference": "cd3c37998020d91ae4eafca4f26a92da4dabba83",
+                "shasum": ""
+            },
+            "require": {
+                "firebase/php-jwt": "~2.0||~3.0||~4.0||~5.0",
+                "google/apiclient-services": "~0.13",
+                "google/auth": "^1.0",
+                "guzzlehttp/guzzle": "~5.3.1||~6.0",
+                "guzzlehttp/psr7": "^1.2",
+                "monolog/monolog": "^1.17|^2.0",
+                "php": ">=5.4",
+                "phpseclib/phpseclib": "~0.3.10||~2.0"
+            },
+            "require-dev": {
+                "cache/filesystem-adapter": "^0.3.2",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+                "phpcompatibility/php-compatibility": "^9.2",
+                "phpunit/phpunit": "~4.8.36",
+                "squizlabs/php_codesniffer": "~2.3",
+                "symfony/css-selector": "~2.1",
+                "symfony/dom-crawler": "~2.1"
+            },
+            "suggest": {
+                "cache/filesystem-adapter": "For caching certs and tokens (using Google_Client::setCache)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Google_": "src/"
+                },
+                "classmap": [
+                    "src/Google/Service/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Client library for Google APIs",
+            "homepage": "http://developers.google.com/api-client-library/php",
+            "keywords": [
+                "google"
+            ],
+            "time": "2019-09-11T17:38:10+00:00"
+        },
+        {
+            "name": "google/apiclient-services",
+            "version": "v0.127",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-api-php-client-services.git",
+                "reference": "19eacad739807e522891bf3f911ffab4a4c29869"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/19eacad739807e522891bf3f911ffab4a4c29869",
+                "reference": "19eacad739807e522891bf3f911ffab4a4c29869",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8|^5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Google_Service_": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Client library for Google APIs",
+            "homepage": "http://developers.google.com/api-client-library/php",
+            "keywords": [
+                "google"
+            ],
+            "time": "2020-02-17T00:24:19+00:00"
+        },
+        {
+            "name": "google/auth",
+            "version": "v1.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
+                "reference": "39e243a7d8320b1889ab8bb4cd6f98f7af83c582"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/39e243a7d8320b1889ab8bb4cd6f98f7af83c582",
+                "reference": "39e243a7d8320b1889ab8bb4cd6f98f7af83c582",
+                "shasum": ""
+            },
+            "require": {
+                "firebase/php-jwt": "~2.0|~3.0|~4.0|~5.0",
+                "guzzlehttp/guzzle": "~5.3.1|~6.0",
+                "guzzlehttp/psr7": "^1.2",
+                "php": ">=5.4",
+                "psr/cache": "^1.0",
+                "psr/http-message": "^1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^1.11",
+                "guzzlehttp/promises": "0.1.1|^1.3",
+                "kelvinmo/simplejwt": "^0.2.5",
+                "phpseclib/phpseclib": "^2",
+                "phpunit/phpunit": "^4.8.36|^5.7",
+                "sebastian/comparator": ">=1.2.3"
+            },
+            "suggest": {
+                "phpseclib/phpseclib": "May be used in place of OpenSSL for signing strings or for token management. Please require version ^2."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Auth\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Google Auth Library for PHP",
+            "homepage": "http://github.com/google/google-auth-library-php",
+            "keywords": [
+                "Authentication",
+                "google",
+                "oauth2"
+            ],
+            "time": "2020-02-12T20:54:50+00:00"
         },
         {
             "name": "google/recaptcha",
@@ -1776,6 +3758,66 @@
             "time": "2019-12-31T08:10:33+00:00"
         },
         {
+            "name": "icubeus/magento2-payment",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-payment.git",
+                "reference": "5aa0a4f08757e7bdb25afdbccf9c536f7646f6cc"
+            },
+            "replace": {
+                "icubeus/module-faspaycredit": "self.version",
+                "icubeus/module-faspaydebit": "self.version",
+                "icubeus/module-hcid": "self.version",
+                "icubeus/module-ipay88": "self.version",
+                "icubeus/module-sprint": "self.version"
+            },
+            "type": "magento2-component",
+            "extra": {
+                "map": [
+                    [
+                        "src/lib/internal/ipay88-php",
+                        "lib/internal/ipay88-php"
+                    ]
+                ]
+            },
+            "autoload": {
+                "files": [
+                    "src/module-faspaycredit/registration.php",
+                    "src/module-faspaydebit/registration.php",
+                    "src/module-hcid/registration.php",
+                    "src/module-sprint/registration.php",
+                    "src/module-ipay88/registration.php"
+                ],
+                "psr-4": {
+                    "Faspay\\Credit\\": "src/module-faspaycredit",
+                    "Faspay\\Debit\\": "src/module-faspaydebit",
+                    "Icube\\Hcid\\": "src/module-hcid",
+                    "Icube\\Sprint\\": "src/module-sprint",
+                    "Ipay88\\Ipay88\\": "src/module-ipay88"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "fastpay,sprint,hcid payment,Ipay88",
+            "homepage": "https://github.com/icubeus/magento2-payment",
+            "keywords": [
+                "magento",
+                "magento2",
+                "payment",
+                "veritrans",
+                "vt-direct"
+            ],
+            "time": "2020-03-18T06:15:43+00:00"
+        },
+        {
             "name": "icubeus/magento2-rapidflow",
             "version": "7.1.0",
             "source": {
@@ -1863,7 +3905,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "4976c9c5acef31abd0aca0c5f96a73d4d7a5b521"
+                "reference": "b5b3c4f77cf03ccbe745a4458c8ceafae9379e41"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -1896,7 +3938,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-01-22T10:42:42+00:00"
+            "time": "2020-03-13T09:12:07+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -10800,6 +12842,161 @@
             "time": "2019-04-01T16:11:24+00:00"
         },
         {
+            "name": "matthiasmullie/minify",
+            "version": "1.3.63",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matthiasmullie/minify.git",
+                "reference": "9ba1b459828adc13430f4dd6c49dae4950dc4117"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/9ba1b459828adc13430f4dd6c49dae4950dc4117",
+                "reference": "9ba1b459828adc13430f4dd6c49dae4950dc4117",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcre": "*",
+                "matthiasmullie/path-converter": "~1.1",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.0",
+                "matthiasmullie/scrapbook": "~1.0",
+                "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "psr/cache-implementation": "Cache implementation to use with Minify::cache"
+            },
+            "bin": [
+                "bin/minifycss",
+                "bin/minifyjs"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MatthiasMullie\\Minify\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Mullie",
+                    "email": "minify@mullie.eu",
+                    "homepage": "http://www.mullie.eu",
+                    "role": "Developer"
+                }
+            ],
+            "description": "CSS & JavaScript minifier, in PHP. Removes whitespace, strips comments, combines files (incl. @import statements and small assets in CSS files), and optimizes/shortens a few common programming patterns.",
+            "homepage": "http://www.minifier.org",
+            "keywords": [
+                "JS",
+                "css",
+                "javascript",
+                "minifier",
+                "minify"
+            ],
+            "time": "2020-01-21T20:21:08+00:00"
+        },
+        {
+            "name": "matthiasmullie/path-converter",
+            "version": "1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matthiasmullie/path-converter.git",
+                "reference": "e7d13b2c7e2f2268e1424aaed02085518afa02d9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/matthiasmullie/path-converter/zipball/e7d13b2c7e2f2268e1424aaed02085518afa02d9",
+                "reference": "e7d13b2c7e2f2268e1424aaed02085518afa02d9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcre": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MatthiasMullie\\PathConverter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Mullie",
+                    "email": "pathconverter@mullie.eu",
+                    "homepage": "http://www.mullie.eu",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Relative path converter",
+            "homepage": "http://github.com/matthiasmullie/path-converter",
+            "keywords": [
+                "converter",
+                "path",
+                "paths",
+                "relative"
+            ],
+            "time": "2019-02-05T23:41:09+00:00"
+        },
+        {
+            "name": "mikey179/vfsstream",
+            "version": "v1.6.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bovigo/vfsStream.git",
+                "reference": "231c73783ebb7dd9ec77916c10037eff5a2b6efe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/231c73783ebb7dd9ec77916c10037eff5a2b6efe",
+                "reference": "231c73783ebb7dd9ec77916c10037eff5a2b6efe",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.5|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "org\\bovigo\\vfs\\": "src/main/php"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Frank Kleine",
+                    "homepage": "http://frankkleine.de/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Virtual file system to mock the real file system in unit tests.",
+            "homepage": "http://vfs.bovigo.org/",
+            "time": "2019-10-30T15:31:00+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.24.0",
             "source": {
@@ -10906,6 +13103,12 @@
             "license": [
                 "OSL-3.0"
             ],
+            "authors": [
+                {
+                    "name": "Riccardo Tempesta",
+                    "email": "riccardo.tempesta@magespecialist.it"
+                }
+            ],
             "description": "Google reCaptcha integration for Magento2 - Member of MageSpecialist SecuritySuite"
         },
         {
@@ -10940,6 +13143,12 @@
             },
             "license": [
                 "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Riccardo Tempesta",
+                    "email": "riccardo.tempesta@magespecialist.it"
+                }
             ],
             "description": "Two Factor Authentication module for Magento2 - Member of MageSpecialist SecuritySuite"
         },
@@ -11525,6 +13734,101 @@
                 "x509"
             ],
             "time": "2019-03-10T16:53:45+00:00"
+        },
+        {
+            "name": "ps/image-optimizer",
+            "version": "1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psliwa/image-optimizer.git",
+                "reference": "0c973fc96fb45c1a4f45b010be20c98b6ec00d1e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psliwa/image-optimizer/zipball/0c973fc96fb45c1a4f45b010be20c98b6ec00d1e",
+                "reference": "0c973fc96fb45c1a4f45b010be20c98b6ec00d1e",
+                "shasum": ""
+            },
+            "require": {
+                "psr/log": "^1.0",
+                "symfony/options-resolver": "~2.1 | ~3.0 | ~4.0",
+                "symfony/process": "~2.0 | ~3.0 | ~4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ImageOptimizer": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Piotr Sliwa",
+                    "email": "peter.pl7@gmail.com"
+                }
+            ],
+            "description": "Image optimization / compression library. This library is able to optimize png, jpg and gif files in very easy and handy way. It uses optipng, pngquant, pngcrush, pngout, gifsicle, jpegoptim and jpegtran tools.",
+            "keywords": [
+                "compression",
+                "image",
+                "image optimizer",
+                "jpegoptim",
+                "optimization",
+                "optipng"
+            ],
+            "time": "2019-11-14T20:21:13+00:00"
+        },
+        {
+            "name": "psr/cache",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/cache.git",
+                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/cache/zipball/d11b50ad223250cf17b86e38383413f5a6764bf8",
+                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Cache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for caching libraries",
+            "keywords": [
+                "cache",
+                "psr",
+                "psr-6"
+            ],
+            "time": "2016-08-06T20:24:11+00:00"
         },
         {
             "name": "psr/container",
@@ -12936,6 +15240,14 @@
             "license": [
                 "OSL-3.0"
             ],
+            "authors": [
+                {
+                    "name": "Christoph Aßmann",
+                    "email": "christoph.assmann@netresearch.de",
+                    "homepage": "https://www.netresearch.de/",
+                    "role": "Developer"
+                }
+            ],
             "description": "Temando multi-carrier shipping extension for Magento 2"
         },
         {
@@ -13117,6 +15429,14 @@
             "type": "metapackage",
             "license": [
                 "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Mediotype",
+                    "email": "diveinto@mediotype.com",
+                    "homepage": "http://www.mediotype.com/",
+                    "role": "Development Company"
+                }
             ],
             "description": "Vertex Tax Links for Magento 2",
             "homepage": "http://go.vertexsmb.com/magento_cbe",
@@ -17932,6 +20252,7 @@
         "icubeus/magento2-notification": 20,
         "icubeus/magento2-smstada": 20,
         "icubeus/magento2-checkout": 20,
+        "icubeus/magento2-payment": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,
