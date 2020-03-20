@@ -23,7 +23,7 @@
         "msp/recaptcha": "2.0.2",
         "icubeus/magento2-gosend": "dev-masterootb",
         "icubeus/magento2-rapidflow": "7.1.0",
-        "icubeus/magento2-swiftomschannel": "dev-masterdefault",
+        "icubeus/magento2-swiftomschannel": "^2.1",
         "icubeus/magento2-shippingbase": "dev-master",
         "icubeus/magento2-shippingshipper": "dev-master",
         "icubeus/magento2-smsgateaway": "dev-master",

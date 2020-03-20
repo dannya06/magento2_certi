@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9667a9a2b8e82b2d624a3f98ad0ed88c",
+    "content-hash": "4efddc4f74f42f5b08a8f6d950b03c47",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -2043,11 +2043,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "dev-masterdefault",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "1645b44a08269a3c4b623ba576c6d9122ec7f953"
+                "reference": "ce896a19a7a8bcac534a019d268f93894b0c6be9"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -2058,6 +2058,7 @@
                 "magento/module-store": ">=100.1.0"
             },
             "replace": {
+                "icubeus/module-giftcard": "self.version",
                 "icubeus/module-inventoryupdate": "self.version",
                 "icubeus/module-omsconnect": "self.version",
                 "icubeus/module-orderexport": "self.version",
@@ -2073,7 +2074,8 @@
                     "src/module-pickup/registration.php",
                     "src/module-inventoryupdate/registration.php",
                     "src/module-product/registration.php",
-                    "src/module-orderstatus/registration.php"
+                    "src/module-orderstatus/registration.php",
+                    "src/module-giftcard/registration.php"
                 ],
                 "psr-4": {
                     "Swiftoms\\OmsConnect\\": "src/module-omsconnect",
@@ -2081,7 +2083,8 @@
                     "Swiftoms\\Pickup\\": "src/module-pickup",
                     "Swiftoms\\InventoryUpdate\\": "src/module-inventoryupdate",
                     "Swiftoms\\Product\\": "src/module-product",
-                    "Swiftoms\\OrderStatus\\": "src/module-orderstatus"
+                    "Swiftoms\\OrderStatus\\": "src/module-orderstatus",
+                    "Swiftoms\\Giftcard\\": "src/module-giftcard"
                 }
             },
             "license": [
@@ -2102,7 +2105,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2020-01-22T02:52:58+00:00"
+            "time": "2020-02-26T09:49:40+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -17786,7 +17789,6 @@
         "icubeus/magento2-trackorder": 20,
         "icubeus/magento2-indonesianlanguage": 20,
         "icubeus/magento2-gosend": 20,
-        "icubeus/magento2-swiftomschannel": 20,
         "icubeus/magento2-shippingbase": 20,
         "icubeus/magento2-shippingshipper": 20,
         "icubeus/magento2-smsgateaway": 20,
