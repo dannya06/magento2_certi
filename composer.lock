@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a74985f61c6e67218129df6b7abcffb6",
+    "content-hash": "8a0493cb2d6759661e58bbcdace928af",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -3099,6 +3099,122 @@
             "time": "2020-02-24T23:15:03+00:00"
         },
         {
+            "name": "firebear/importexport",
+            "version": "3.3.1",
+            "dist": {
+                "type": "zip",
+                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/importexport/type/ce/v/3.3.1/"
+            },
+            "require": {
+                "box/spout": "~2.7",
+                "salsify/json-streaming-parser": "~6.0",
+                "tcdent/php-restclient": "^0.1.7"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Firebear\\ImportExport\\": ""
+                }
+            }
+        },
+        {
+            "name": "firebear/importexport-msi",
+            "version": "1.0.3",
+            "dist": {
+                "type": "zip",
+                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/importexport-msi/type/ce/v/1.0.3/"
+            },
+            "require": {
+                "firebear/importexport": ">=3.0.0",
+                "magento/module-inventory-import-export": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Firebear\\ImportExportMsi\\": ""
+                }
+            }
+        },
+        {
+            "name": "firebear/netsuite-php",
+            "version": "v2018.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebearstudio/netsuite-php.git",
+                "reference": "e45017ab0f417c99916e841236cffcb41d1b9bc9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebearstudio/netsuite-php/zipball/e45017ab0f417c99916e841236cffcb41d1b9bc9",
+                "reference": "e45017ab0f417c99916e841236cffcb41d1b9bc9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "ext-simplexml": "*",
+                "ext-soap": "*",
+                "paragonie/random_compat": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "^2.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NetSuite\\": "src/"
+                },
+                "files": [
+                    "src/includes/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Winchester (fungku)",
+                    "email": "fungku@gmail.com"
+                }
+            ],
+            "description": "NetSuite PHP API wrapper",
+            "keywords": [
+                "api",
+                "netsuite",
+                "php"
+            ],
+            "time": "2019-06-25T14:22:55+00:00"
+        },
+        {
+            "name": "firebear/platformnetsuite",
+            "version": "1.3.0",
+            "dist": {
+                "type": "zip",
+                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/platformnetsuite/type/ce/v/1.3.0/"
+            },
+            "require": {
+                "firebear/importexport": ">=3.1.7",
+                "firebear/netsuite-php": "2018.2.*",
+                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Firebear\\PlatformNetsuite\\": ""
+                }
+            }
+        },
+        {
             "name": "google/apiclient",
             "version": "v2.4.0",
             "source": {
@@ -3247,122 +3363,6 @@
                 "oauth2"
             ],
             "time": "2020-02-12T20:54:50+00:00"
-        },
-        {
-            "name": "firebear/importexport",
-            "version": "3.3.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/importexport/type/ce/v/3.3.1/"
-            },
-            "require": {
-                "box/spout": "~2.7",
-                "salsify/json-streaming-parser": "~6.0",
-                "tcdent/php-restclient": "^0.1.7"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Firebear\\ImportExport\\": ""
-                }
-            }
-        },
-        {
-            "name": "firebear/importexport-msi",
-            "version": "1.0.3",
-            "dist": {
-                "type": "zip",
-                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/importexport-msi/type/ce/v/1.0.3/"
-            },
-            "require": {
-                "firebear/importexport": ">=3.0.0",
-                "magento/module-inventory-import-export": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Firebear\\ImportExportMsi\\": ""
-                }
-            }
-        },
-        {
-            "name": "firebear/netsuite-php",
-            "version": "v2018.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/firebearstudio/netsuite-php.git",
-                "reference": "e45017ab0f417c99916e841236cffcb41d1b9bc9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/firebearstudio/netsuite-php/zipball/e45017ab0f417c99916e841236cffcb41d1b9bc9",
-                "reference": "e45017ab0f417c99916e841236cffcb41d1b9bc9",
-                "shasum": ""
-            },
-            "require": {
-                "ext-openssl": "*",
-                "ext-simplexml": "*",
-                "ext-soap": "*",
-                "paragonie/random_compat": "*",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpspec/phpspec": "^2.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "NetSuite\\": "src/"
-                },
-                "files": [
-                    "src/includes/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Ryan Winchester (fungku)",
-                    "email": "fungku@gmail.com"
-                }
-            ],
-            "description": "NetSuite PHP API wrapper",
-            "keywords": [
-                "api",
-                "netsuite",
-                "php"
-            ],
-            "time": "2019-06-25T14:22:55+00:00"
-        },
-        {
-            "name": "firebear/platformnetsuite",
-            "version": "1.3.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://firebearstudio.com/composer/download/package/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/module/platformnetsuite/type/ce/v/1.3.0/"
-            },
-            "require": {
-                "firebear/importexport": ">=3.1.7",
-                "firebear/netsuite-php": "2018.2.*",
-                "php": "~5.5.0|~5.6.0|~7.0.0|~7.1"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Firebear\\PlatformNetsuite\\": ""
-                }
-            }
         },
         {
             "name": "google/recaptcha",
@@ -3731,7 +3731,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "06ddcbc6cde42cd20abfb9afa10db722864c5c02"
+                "reference": "65c211e590f623d65f70f2e55934ca0cbb408e05"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -3763,7 +3763,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-02-20T00:48:50+00:00"
+            "time": "2020-03-20T10:32:20+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -4084,7 +4084,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "b5b3c4f77cf03ccbe745a4458c8ceafae9379e41"
+                "reference": "df86cf118a93455e016c22dba474bf06d4cf986f"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -4117,7 +4117,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-03-13T09:12:07+00:00"
+            "time": "2020-03-20T10:34:37+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -14340,7 +14340,7 @@
             ],
             "authors": [
                 {
-                    "name": "Aurélien FOUCRET",
+                    "name": "Aurélien Foucret",
                     "email": "aurelien.foucret@smile.fr"
                 }
             ],
@@ -14864,7 +14864,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
