@@ -5,13 +5,17 @@ use Magento\Quote\Model\Cart\ShippingMethodConverter;
 use Magento\Quote\Api\Data\ShippingMethodInterface;
 use Magento\Quote\Api\Data\ShippingMethodExtensionFactory;
 
-
-
 class Converter
 {
-	public function __construct(ShippingMethodExtensionFactory $extensionFactory)
+    protected $_priceHelper;
+
+	public function __construct(
+        ShippingMethodExtensionFactory $extensionFactory,
+        \Magento\Framework\Pricing\Helper\Data $priceHelper
+    )
     {
         $this->extensionFactory = $extensionFactory;
+        $this->_priceHelper = $priceHelper;
     }
 
        public function aroundModelToDataObject(\Magento\Quote\Model\Cart\ShippingMethodConverter $subject, \Closure $proceed, $rateModel, $quoteCurrencyCode) 
@@ -20,26 +24,21 @@ class Converter
             $extensibleAttribute =  ($result->getExtensionAttributes())
             ? $result->getExtensionAttributes()
             : $this->extensionFactory->create();
-
+            
             $rateDescription = $rateModel->getMethodDescription()!=null ?$rateModel->getMethodDescription():"";
             if($rateDescription!=null){
                  //Estimation||Promoname||OriginalPrice
                 $arrRateDescription = explode("||",$rateDescription);
                 if(count($arrRateDescription)>1){
                     $extensibleAttribute->setEstimation($arrRateDescription[0]);
-                    $promoName ="";
                     if(isset($arrRateDescription[1])){
-                        $promoName = $arrRateDescription[1];
+                        $extensibleAttribute->setShippingPromoName($arrRateDescription[1]);
                     }
-                    $extensibleAttribute->setShippingPromoName($promoName);
-                    
-                    $oriPrice = "";
                     if(isset($arrRateDescription[2])){
-                        $oriPrice = $quoteCurrencyCode.$arrRateDescription[2];
+                        $formattedCurrencyValue = $this->_priceHelper->currency($arrRateDescription[2],true,false);
+                        $extensibleAttribute->setShippingOriginalPrice($formattedCurrencyValue);
                     }
-                    $extensibleAttribute->setShippingOriginalPrice($oriPrice);
                 }
-                
             }
             $result->setExtensionAttributes($extensibleAttribute);
 
