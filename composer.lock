@@ -3699,11 +3699,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "72f6ddaac2671adad95978a8ad2929f641cf90ea"
+                "reference": "5d41ac78b677d0adfd5420dd138a0e65bf97d3f1"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3723,7 +3723,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2019-12-26T05:16:26+00:00"
+            "time": "2020-03-24T01:50:29+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
