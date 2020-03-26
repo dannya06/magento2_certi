@@ -69,7 +69,7 @@ class StoreUrlPathGenerator implements StoreUrlPathGeneratorInterface
      */
     public function getCanonicalUrlPath(\Magestore\Storepickup\Model\Store $store)
     {
-        return 'storepickup/index/view/storepickup_id/' . $store->getId();
+        return 'storelocator/index/view/storepickup_id/' . $store->getId();
     }
 
     /**
