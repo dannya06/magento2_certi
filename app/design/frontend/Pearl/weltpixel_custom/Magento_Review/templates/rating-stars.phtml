@@ -1,44 +1,16 @@
 <?php
-    $maxStars = is_numeric($block->getMaxStars()) ? $block->getMaxStars() : 5;
-    $activeStars = $block->getActiveStars();
-    $reviewsCount = $block->getReviewsCount();
+$activeStars = round($block->getActiveStars() * 2) * 10;
 ?>
 
-<?php if ($activeStars): ?>
-    <div class="cs-star-rating <?= $block->getAdditionalClasses(); ?>">
-        <div class="cs-star-rating__stars">
-            <?php
-                $iconClass = 'cs-star-rating__star';
-
-                for ($starIndex = 0; $starIndex < $maxStars; $starIndex++) {
-
-                    $iconStatus = '';
-                    if ($activeStars > $starIndex) {
-                        $iconStatus = ' ' . $iconClass . '--half-active';
-                    }
-                    if (floor($activeStars) > $starIndex) {
-                        $iconStatus = ' ' . $iconClass . '--active';
-                    }
-
-                    echo( 
-                        $this->getLayout()
-                            ->createBlock('MageSuite\ThemeHelpers\Block\Icon')
-                            ->setIconUrl('images/icons/reviews/star.svg')
-                            ->setCssClass($iconClass . $iconStatus)
-                            ->setInlined(true)
-                            ->toHtml()
-                    ); 
-                }
-            ?>
+<?php if ($activeStars) { ?>
+    <div class="product-reviews-summary short">
+        <div class="rating-summary">
+            <div title="<?php echo (int) $activeStars; ?>%" class="rating-result">
+                <span style="width:<?php echo (int) $activeStars; ?>%"><span><?php echo (int) $activeStars; ?>%</span></span>
+            </div>
         </div>
-        <?php if ($block->getShowNumericalScore()): ?>
-            <span class="cs-star-rating__text"><?= $activeStars ?> / <?= $maxStars ?></span>
-        <?php endif; ?>
-        <?php if ($reviewsCount > 0 && !$block->getHideReviewsCount()): ?>
-            <?php
-                $reviewsCountMessage = $reviewsCount . '<span class="cs-star-rating__text-annotation"> ' . ($reviewsCount == 1 ? __('review') : __('reviews')) . '</span>';
-            ?>
-            <span class="cs-star-rating__text">(<?= $reviewsCountMessage ?>)</span>
-        <?php endif; ?>
+        <div class="reviews-actions">
+            <span class="action view"><?= $block->escapeHtml($block->getReviewsCount()) ?>&nbsp;<span><?= ($block->getReviewsCount() == 1) ? $block->escapeHtml(__('Review')) : $block->escapeHtml(__('Reviews')) ?></span></span>
+        </div>
     </div>
-<?php endif; ?>
+<?php } ?>

@@ -5037,122 +5037,12 @@
     max-width: none
 }
 
-.price-box {
-    display: inline-block
-}
-
-.price-box .price {
-    font-weight: 700;
-    white-space: nowrap;
-    color: #324dcf;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0
-}
-
-.price-box .price-label {
-    display: none;
-    color: #324dcf;
-    display: none;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin: 0 .3rem .3rem 0
-}
-
-.price-box .old-price .price {
-    font-size: .65rem;
-    text-decoration: line-through;
-    text-decoration: line-through;
-    color: #696969;
-    font-size: 1.5rem;
-    font-weight: 700
-}
-
-.price-box .old-price.no-display {
-    display: none
-}
-
-.price-box .special-price .price {
-    padding-left: .4em;
-    padding-left: 0;
-    color: #e41f12;
-    font-size: 1.5rem;
-    font-weight: 700
-}
-
-.price-box .price-label:after {
-    content: ':'
-}
-
-body p .price-box .price-label {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-    white-space: nowrap
-}
-
-.price-box .price-wrapper {
-    display: -webkit-box;
-    display: flex
-}
-
-.price-box .price-from,
-.price-box .price-to {
-    display: inline-block;
-    margin: 0;
-    padding: 0
-}
-
-.price-box .price-from .price-label,
-.price-box .price-to .price-label {
-    display: inline-block;
-    padding: 0
-}
-
-.price-box .special-price.active .price {
-    color: #e41f12
-}
-
-.price-box .price-from {
-    margin-right: 1rem
-}
-
-.price-box .price-from>.price-container,
-.price-box .price-to>.price-container {
-    font-size: 1.1rem
-}
-
 .cs-price--pdp_dailydeal-countdown .price-box:not(.price-final_price_without_daily_deal) {
     display: none
 }
 
-.price-box .price-container.price-final_price:not(:only-child) .price {
-    color: #e41f12
-}
-
 .cs-bundle-box__add .price-as-configured {
     margin: 1rem 0 0
-}
-
-.minimal-price-link {
-    margin-top: 0!important;
-    margin-right: 1.5rem;
-    position: relative
-}
-
-.minimal-price-link:after {
-    color: #324dcf;
-    display: block;
-    content: '-';
-    right: -1rem;
-    top: 0;
-    position: absolute
 }
 
 .cs-product-tile {
@@ -8138,10 +8028,6 @@ button.swiper-pagination-bullet {
 
 .cs-image-teaser--cms-teaser .cs-image-teaser__slide:not(.cs-image-teaser__slide--image-uploaded)>.cs-image-teaser__slide-wrapper {
     background-color: #f0f0f0
-}
-
-.cs-image-teaser__slide:not(.ready) {
-    opacity: 0
 }
 
 .cs-image-teaser__slide-wrapper {
