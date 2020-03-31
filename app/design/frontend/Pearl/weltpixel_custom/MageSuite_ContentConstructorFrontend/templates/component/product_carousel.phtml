@@ -24,7 +24,7 @@ $isSliderMobile = $block->getData('carousel_on_mobile');
                     <div class="cs-products-carousel__wrapper products-grid">
                         <ul class=" <?php if ($isList): ?>cs-products-list <?php endif; ?><?php if ($isSliderMobile == 'true'): ?>cs-products-list--carousel <?php endif; ?>cs-products-carousel__slides">
                             <?php foreach ($viewModel->getProducts() as $product): ?>
-                                <li class="item product product-item <?php if ($isList): ?>cs-products-list__item <?php endif; ?>cs-products-carousel__slide" style="margin-left: 0 !important;">
+                                <li class="item product product-item <?php if ($isList): ?>cs-products-list__item <?php endif; ?>cs-products-carousel__slide" style="margin-left: 0; text-align:center;">
                                         <?= $viewModel->renderProductTile($product, null) ?>
                                 </li>
                             <?php endforeach; ?>
