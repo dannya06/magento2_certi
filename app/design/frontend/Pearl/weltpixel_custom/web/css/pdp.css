@@ -7387,3 +7387,6 @@ button.swiper-pagination-bullet {
   box-sizing: border-box;
   padding: 0!important
 }
+.cs-container .product-reviews-summary .reviews-actions .action.add {
+  display: none;
+}
