@@ -10839,3 +10839,6 @@ body:after {
   height: 2.7rem;
   fill: #324dcf
 }
+.cs-container .weltpixel-quickview {
+	display: none
+}

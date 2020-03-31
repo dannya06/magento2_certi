@@ -104,7 +104,7 @@ return [
         'MageSuite_ExtendedException' => 1,
         'MageSuite_FileUpload' => 1,
         'Magento_InventoryCatalog' => 1,
-        'MageSuite_Gdpr' => 1,
+        'MageSuite_Gdpr' => 0,
         'MageSuite_GoogleApi' => 1,
         'MageSuite_ImageOptimization' => 1,
         'Magento_InventorySales' => 1,
