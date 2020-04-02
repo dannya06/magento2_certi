@@ -4303,11 +4303,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "2.0.9",
+            "version": "2.0.12",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "659ab5af4ac823fa69c602fadc6edbcc7a2fe8a1"
+                "reference": "119bbefe21583db3f237b82e2349565722025cc0"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -4356,7 +4356,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-02-17T09:57:00+00:00"
+            "time": "2020-04-02T01:41:17+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
