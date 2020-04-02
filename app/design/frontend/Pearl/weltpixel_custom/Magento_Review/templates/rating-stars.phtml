@@ -1,0 +1,16 @@
+<?php
+$activeStars = round($block->getActiveStars() * 2) * 10;
+?>
+
+<?php if ($activeStars) { ?>
+    <div class="product-reviews-summary short">
+        <div class="rating-summary">
+            <div title="<?php echo (int) $activeStars; ?>%" class="rating-result">
+                <span style="width:<?php echo (int) $activeStars; ?>%"><span><?php echo (int) $activeStars; ?>%</span></span>
+            </div>
+        </div>
+        <div class="reviews-actions">
+            <span class="action view"><?= $block->escapeHtml($block->getReviewsCount()) ?>&nbsp;<span><?= ($block->getReviewsCount() == 1) ? $block->escapeHtml(__('Review')) : $block->escapeHtml(__('Reviews')) ?></span></span>
+        </div>
+    </div>
+<?php } ?>

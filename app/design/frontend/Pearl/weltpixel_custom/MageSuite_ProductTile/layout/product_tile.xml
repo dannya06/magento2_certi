@@ -1,0 +1,133 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="">
+    <body>
+        <referenceBlock name="content">
+            <block class="MageSuite\ProductTile\Block\Tile" name="product.tile">
+                <arguments>
+                    <argument xsi:type="string" name="html_tag">div</argument>
+                    <argument xsi:type="string" name="css_class">product-item-info</argument>
+                </arguments>
+
+                <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.container.thumbnail">
+                    <arguments>
+                        <argument xsi:type="string" name="html_tag">div</argument>
+                        <argument xsi:type="string" name="css_class">product_image</argument>
+                    </arguments>
+
+                    <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.container.thumbnail.link" template="MageSuite_ProductTile::container_linked.phtml">
+                        <arguments>
+                            <argument xsi:type="string" name="css_class">product photo product-item-photo</argument>
+                        </arguments>
+
+                        <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.container.figure">
+                            <arguments>
+                                <argument xsi:type="string" name="html_tag">span</argument>
+                                <argument xsi:type="string" name="css_class">product-image-container</argument>
+                            </arguments>
+
+                            <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.figure.image" template="MageSuite_ProductTile::fragments/image.phtml">
+                                <arguments>
+                                    <argument xsi:type="object" name="cache_key_model">MageSuite\ProductTile\Cache\Image</argument>
+                                    <argument xsi:type="string" name="css_class">lazy</argument>
+                                </arguments>
+                            </block>
+                        </block>
+                    </block>
+                </block>
+
+                <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.container.main.details">
+                    <arguments>
+                        <argument xsi:type="string" name="html_tag">div</argument>
+                        <argument xsi:type="string" name="css_class">product details product-item-details</argument>
+                    </arguments>
+
+                    <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.container.name">
+                        <arguments>
+                            <argument xsi:type="string" name="html_tag">h2</argument>
+                            <argument xsi:type="string" name="css_class">product name product-item-name</argument>
+                        </arguments>
+
+                        <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.container.name.link" template="MageSuite_ProductTile::container_linked.phtml">
+                            <arguments>
+                                <argument xsi:type="string" name="css_class">product-item-link</argument>
+                            </arguments>
+                            <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.name" template="MageSuite_ProductTile::fragments/name.phtml" />
+                        </block>
+                    </block>
+
+                    <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.review_summary.list" after="product.tile.container.name" template="MageSuite_ProductTile::fragments/review_summary.phtml">
+                        <arguments>
+                            <argument xsi:type="object" name="view_model">MageSuite\ProductTile\Model\Tile\Fragment\Review</argument>
+                            <argument xsi:type="string" name="html_tag">div</argument>
+                            <argument xsi:type="string" name="css_class">product-reviews-summary short</argument>
+                        </arguments>
+                    </block>
+
+                    <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.price.grid" after="product.tile.review_summary.list" template="MageSuite_ProductTile::fragments/price.phtml">
+                        <arguments>
+                            <argument xsi:type="object" name="cache_key_model">MageSuite\ProductTile\Cache\Price</argument>
+                        </arguments>
+                    </block>
+
+                    <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.swatches" after="product.tile.price.grid" template="MageSuite_ProductTile::fragments/swatches.phtml">
+                        <block class="Magento\Framework\View\Element\RendererList" name="product.tile.details.renderers" as="details.renderers">
+                            <block class="Magento\Swatches\Block\Product\Renderer\Listing\Configurable" name="product.tile.details.renderers.configurable" as="configurable" template="Magento_Swatches::product/listing/renderer.phtml" ifconfig="catalog/frontend/show_swatches_in_product_list" />
+                            <block class="Magento\Framework\View\Element\Template" name="product.tile.details.renderers.default" as="default" />
+                        </block>
+                    </block>
+
+                    <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.addtocart.inner">
+                        <arguments>
+                            <argument xsi:type="string" name="html_tag">div</argument>
+                            <argument xsi:type="string" name="css_class">product-item-inner hoverShow</argument>
+                        </arguments>
+                        <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.addtocart.innerhide">
+                            <arguments>
+                                <argument xsi:type="string" name="html_tag">div</argument>
+                                <argument xsi:type="string" name="css_class">product-item-inner-hide</argument>
+                            </arguments>
+                        </block>
+                        <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.addtocart.actions">
+                            <arguments>
+                                <argument xsi:type="string" name="html_tag">div</argument>
+                                <argument xsi:type="string" name="css_class">product actions product-item-actions center</argument>
+                            </arguments>
+                            <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.addtocart.actions.primary">
+                                <arguments>
+                                    <argument xsi:type="string" name="html_tag">div</argument>
+                                    <argument xsi:type="string" name="css_class">actions-primary</argument>
+                                </arguments>
+                                <block class="MageSuite\ProductTile\Block\Tile\Container" name="product.tile.addtocart.actions.primary.position">
+                                    <arguments>
+                                        <argument xsi:type="string" name="html_tag">div</argument>
+                                        <argument xsi:type="string" name="css_class">addtocart_position_5 center</argument>
+                                    </arguments>
+                                    <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.addtocart" template="MageSuite_ProductTile::fragments/add-to/cart.phtml">
+                                        <arguments>
+                                            <argument xsi:type="boolean" name="show_only_for_simple_products">false</argument>
+                                            <argument xsi:type="string" name="atc_add_label" translate="true">Add to Cart</argument>
+                                            <argument xsi:type="string" name="atc_configure_label" translate="true">Add to Cart</argument>
+                                            <argument name="unsupported_areas" xsi:type="array">
+                                                <item name="0" xsi:type="string">wishlist</item>
+                                            </argument>
+                                        </arguments>
+
+                                        <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.addtocart.button" template="Magento_Catalog::addtocart/button.phtml" as="atc.button">
+                                            <arguments>
+                                                <argument xsi:type="string" name="button_class">action</argument>
+                                            </arguments>
+                                        </block>
+                                    </block>
+                                </block>
+                            </block>
+                        </block>
+                    </block>
+
+
+                </block>
+
+
+            </block>
+        </referenceBlock>
+
+    </body>
+</page>
