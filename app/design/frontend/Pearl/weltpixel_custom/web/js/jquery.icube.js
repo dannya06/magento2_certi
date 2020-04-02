@@ -26,6 +26,7 @@ define([
             this.initStoreLocator();
             this.initCustomerAccountLogin();
             this.initCustomerAccountPage();
+            this.initAccountOrder();
         },
 
 		initAllPages: function() {
@@ -160,6 +161,13 @@ define([
                 $('body.account.review-customer-index').length ||
                 $('body.account.pdc-customerdesign-index').length ) {
                     
+            }
+        },
+        initAccountOrder: function(){
+            if( $('body.account.sales-order-view').length ) {
+                    if ( $('.block').hasClass('block-gosend-details-view') ) {
+                      $('.block.block-order-details-view').addClass('gosend');
+                    };
             }
         }
     });
