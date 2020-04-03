@@ -24,9 +24,8 @@
         "icubeus/magento2-notification": "dev-master",
         "icubeus/magento2-smstada": "dev-master",
         "creativestyle/magesuite": "^2.0.0",
-        "firebear/importexport": "^3.3",
         "firebear/importexport-msi": "^1.0",
-        "firebear/platformnetsuite": "^1.3"
+        "firebear/importexport": "^3.3"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
@@ -141,7 +140,7 @@
 		},
         "firebear": {
             "type": "composer",
-            "url": "https://firebearstudio.com/composer/download/package/type/ce/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/"
+            "url": "https://firebearstudio.com/composer/download/package/type/ee/user/a5547063c637a28c72d21d5316276261/password/8254f1a144676ba9cac21cefba64abb4/"
         }
     },
     "extra": {
