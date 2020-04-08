@@ -191,8 +191,8 @@ class SampleDataProvider
         $shipmentData = '';
         $storeId = $this->_storeManager->getStore()->getId();
         $this->_searchCriteriaBuilder->addFilter(
-            ShipmentInterface::ENTITY_ID,
-            9,
+            ShipmentInterface::STORE_ID,
+            $storeId,
             'eq'
         );
         $searchCriteria = $this->_searchCriteriaBuilder->create();

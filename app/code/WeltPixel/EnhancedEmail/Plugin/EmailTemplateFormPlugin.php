@@ -54,8 +54,8 @@ class EmailTemplateFormPlugin
         \Magento\Email\Block\Adminhtml\Template\Edit\Form $subject,
         \Closure $proceed
     ) {
-        $emailTemplate = $this->_wpHelper->getCurrentEmailTemplate();
         $form = $subject->getForm();
+        $emailTemplate = $form->getParent()->getEmailTemplate();
         if (is_object($form)) {
             $fieldset = $form->getElement('base_fieldset');
             $fieldset->addField(
@@ -63,7 +63,7 @@ class EmailTemplateFormPlugin
                 'textarea',
                 [
                     'name' => 'template_preheader',
-                    'label' => __('Email First Line'),
+                    'label' => __('Email First Lineee'),
                     'id' => 'template_preheader',
                     'required' => false,
                     'onkeyup' => 'templateControl.updateTemplateContent(this);',

@@ -8,17 +8,17 @@
 
 namespace WeltPixel\EnhancedEmail\Setup;
 
-use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Cms\Model\BlockFactory;
-use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Email\Model\TemplateFactory;
-use Magento\Framework\App\TemplateTypesInterface;
-use Magento\Email\Model\Template\Config;
 use Magento\Email\Model\ResourceModel\Template\CollectionFactory;
 use Magento\Email\Model\Template;
+use Magento\Email\Model\Template\Config;
+use Magento\Email\Model\TemplateFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\App\TemplateTypesInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Framework\Setup\UpgradeDataInterface;
 
 /**
  * Class UpgradeData
@@ -73,8 +73,7 @@ class UpgradeData implements UpgradeDataInterface
         Config $emailConfig,
         CollectionFactory $collectionFactory,
         Template $template
-    )
-    {
+    ) {
         $this->blockFactory = $blockFactory;
         $this->configWriter = $configWriter;
         $this->templateFactory = $templateFactory;
@@ -93,12 +92,10 @@ class UpgradeData implements UpgradeDataInterface
     public function upgrade(
         ModuleDataSetupInterface $setup,
         ModuleContextInterface $context
-    )
-    {
+    ) {
         $setup->startSetup();
 
         if (version_compare($context->getVersion(), "1.0.1", "<")) {
-
             $content = <<<EOT
                 <a style="padding-left: 30px" href="http://facebook.com/#"><img src="{{view url='WeltPixel_EnhancedEmail/images/fb.png'}}" alt="fb" width="15" height="15" /></a> 
                 <a style="padding-left: 30px" href="http://twitter.com/#"><img src="{{view url='WeltPixel_EnhancedEmail/images/twitter.png'}}" alt="twitter" width="15" height="15" /></a> 
@@ -116,7 +113,10 @@ EOT;
                 'sort_order' => 0
             ];
 
-            $this->blockFactory->create()->setData($cmsBlockData)->save();
+            try {
+                $this->blockFactory->create()->setData($cmsBlockData)->save();
+            } catch (\Exception $ex) {
+            }
 
             // custom block
             $cmsCustomBlockData = [
@@ -128,7 +128,10 @@ EOT;
                 'sort_order' => 0
             ];
 
-            $this->blockFactory->create()->setData($cmsCustomBlockData)->save();
+            try {
+                $this->blockFactory->create()->setData($cmsCustomBlockData)->save();
+            } catch (\Exception $ex) {
+            }
 
             $socialMediaBlock = <<<EOT
 block class="Magento\\\Cms\\\Block\\\Block" area="frontend" block_id="weltpixel_social_media_email_block" 
@@ -143,7 +146,6 @@ EOT;
         if (version_compare($context->getVersion(), "1.0.2", "<")) {
             $shipmentMarkup = 'layout handle="shipment_markup" order=$order shipment=$shipment area="frontend"';
             $this->configWriter->save('weltpixel/enhancedemail/shipment_markup', $shipmentMarkup, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0);
-
         }
 
         if (version_compare($context->getVersion(), "1.0.3", "<")) {
@@ -160,17 +162,18 @@ EOT;
                 'sort_order' => 0
             ];
 
-            $this->blockFactory->create()->setData($cmsCustomBlockData)->save();
-
+            try {
+                $this->blockFactory->create()->setData($cmsCustomBlockData)->save();
+            } catch (\Exception $ex) {
+            }
         }
 
         if (version_compare($context->getVersion(), "1.0.4", "<")) {
-
             $templateType = TemplateTypesInterface::TYPE_HTML;
 
             // Enhanced Email Hader
             $tplCode = 'Email Header - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplVars = '{"var logo_height":"Email Logo Image Height","var logo_width":"Email Logo Image Width","var template_styles|raw":"Template CSS"}';
                 $tplText = <<<EOT
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -222,10 +225,9 @@ EOT;
                 $template->save();
             }
 
-
-// Enhanced Email Footer
+            // Enhanced Email Footer
             $tplCode = 'Email Footer - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplVars = '{"var store.getFrontendName()":"Store Name"}';
                 $tplText = <<<'EOT'
 <!--@subject {{trans "Footer"}} @-->
@@ -287,10 +289,9 @@ EOT;
                 $template->save();
             }
 
-
-//New Order
+            //New Order
             $tplCode = 'New Order - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just received your order! Stay close! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by checking your account.';
                 $tplVars = <<<'EOT'
 {"var formattedBillingAddress|raw":"Billing Address","var order.getEmailCustomerNote()":"Email Order Note","var order.getBillingAddress().getName()":"Guest Customer Name","var order.getCreatedAtFormatted(1)":"Order Created At (datetime)","var order.increment_id":"Order Id","layout handle=\"sales_email_order_items\" order=$order":"Order Items Grid","var payment_html|raw":"Payment Details","var formattedShippingAddress|raw":"Shipping Address","var order.getShippingDescription()":"Shipping Description","var shipping_msg":"Shipping message"}
@@ -439,9 +440,9 @@ EOT;
                 $template->save();
             }
 
-//New Order Guest
+            //New Order Guest
             $tplCode = 'New Order for Guest - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just received your order! Stay close! We will send you updates along the way once we dispatch your product(s).You can view the entire status of your orders by creating an account.';
                 $tplVars = <<<'EOT'
 {"var formattedBillingAddress|raw":"Billing Address","var order.getEmailCustomerNote()":"Email Order Note","var order.getBillingAddress().getName()":"Guest Customer Name","var order.getCreatedAtFormatted(1)":"Order Created At (datetime)","var order.increment_id":"Order Id","layout handle=\"sales_email_order_items\" order=$order":"Order Items Grid","var payment_html|raw":"Payment Details","var formattedShippingAddress|raw":"Shipping Address","var order.getShippingDescription()":"Shipping Description","var shipping_msg":"Shipping message"}
@@ -565,11 +566,9 @@ EOT;
                 $template->save();
             }
 
-
-
-//Order Update
+            //Order Update
             $tplCode = 'Order Update - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just updated your order information! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by checking your account.';
                 $tplVars = <<<'EOT'
 {"var this.getUrl($store, 'customer/account/')":"Customer Account URL","var order.getCustomerName()":"Customer Name","var comment":"Order Comment","var order.increment_id":"Order Id","var order.getStatusLabel()":"Order Status"}
@@ -678,12 +677,9 @@ EOT;
                 $template->save();
             }
 
-
-
-
-//Order Update Guest
+            //Order Update Guest
             $tplCode = 'Order Update for Guest - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just updated your order information! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by creating an account.';
                 $tplVars = <<<'EOT'
 {"var billing.getName()":"Guest Customer Name","var comment":"Order Comment","var order.increment_id":"Order Id","var order.getStatusLabel()":"Order Status"}
@@ -770,12 +766,9 @@ EOT;
                 $template->save();
             }
 
-
-
-
-//New Invoice
+            //New Invoice
             $tplCode = 'New Invoice - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just issued the invoice for your order! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by checking your account.';
                 $tplVars = <<<'EOT'
 {"var formattedBillingAddress|raw":"Billing Address","var this.getUrl($store, 'customer/account/')":"Customer Account URL","var order.getCustomerName()":"Customer Name","var comment":"Invoice Comment","var invoice.increment_id":"Invoice Id","layout area=\"frontend\" handle=\"sales_email_order_invoice_items\" invoice=$invoice order=$order":"Invoice Items Grid","var order.increment_id":"Order Id","var payment_html|raw":"Payment Details","var formattedShippingAddress|raw":"Shipping Address","var order.shipping_description":"Shipping Description","var order.getShippingDescription()":"Shipping Description"}
@@ -919,13 +912,9 @@ EOT;
                 $template->save();
             }
 
-
-
-
-
-//New Invoice Guest
+            //New Invoice Guest
             $tplCode = 'New Invoice for Guest - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just issued the invoice for your order! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by creating an account.';
                 $tplVars = <<<'EOT'
 {"var formattedBillingAddress|raw":"Billing Address","var billing.getName()":"Guest Customer Name","var comment":"Invoice Comment","var invoice.increment_id":"Invoice Id","layout handle=\"sales_email_order_invoice_items\" invoice=$invoice order=$order":"Invoice Items Grid","var order.increment_id":"Order Id","var payment_html|raw":"Payment Details","var formattedShippingAddress|raw":"Shipping Address","var order.getShippingDescription()":"Shipping Description","var order.shipping_description":"Shipping Description"}
@@ -1043,13 +1032,9 @@ EOT;
                 $template->save();
             }
 
-
-
-
-
-//Invoice Update
+            //Invoice Update
             $tplCode = 'Invoice Update - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just updated your order invoice! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by checking your account.';
                 $tplVars = <<<'EOT'
 {"var this.getUrl($store, 'customer/account/')":"Customer Account URL","var order.getCustomerName()":"Customer Name","var comment":"Invoice Comment","var invoice.increment_id":"Invoice Id","var order.increment_id":"Order Id","var order.getStatusLabel()":"Order Status"}
@@ -1157,10 +1142,9 @@ EOT;
                 $template->save();
             }
 
-
-//Invoice Update Guest
+            //Invoice Update Guest
             $tplCode = 'Invoice Update for Guest - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just updated your order invoice! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by creating an account.';
                 $tplVars = <<<'EOT'
 {"var billing.getName()":"Guest Customer Name","var comment":"Invoice Comment","var invoice.increment_id":"Invoice Id","var order.increment_id":"Order Id","var order.getStatusLabel()":"Order Status"}
@@ -1246,10 +1230,9 @@ EOT;
                 $template->save();
             }
 
-
-//New Creditmemo
+            //New Creditmemo
             $tplCode = 'New Credit Memo - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just issued the credit memo for your order! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by checking your account.';
                 $tplVars = <<<'EOT'
 {"var formattedBillingAddress|raw":"Billing Address","var comment":"Credit Memo Comment","var creditmemo.increment_id":"Credit Memo Id","layout handle=\"sales_email_order_creditmemo_items\" creditmemo=$creditmemo order=$order":"Credit Memo Items Grid","var this.getUrl($store, 'customer/account/')":"Customer Account URL","var order.getCustomerName()":"Customer Name","var order.increment_id":"Order Id","var payment_html|raw":"Payment Details","var formattedShippingAddress|raw":"Shipping Address","var order.getShippingDescription()":"Shipping Description","var order.shipping_description":"Shipping Description"}
@@ -1388,10 +1371,9 @@ EOT;
                 $template->save();
             }
 
-
-//New Creditmemo Guest
+            //New Creditmemo Guest
             $tplCode = 'New Credit Memo for Guest - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just issued the credit memo for your order! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by creating an account.';
                 $tplVars = <<<'EOT'
 {"var formattedBillingAddress|raw":"Billing Address","var comment":"Credit Memo Comment","var creditmemo.increment_id":"Credit Memo Id","layout handle=\"sales_email_order_creditmemo_items\" creditmemo=$creditmemo order=$order":"Credit Memo Items Grid","var billing.getName()":"Guest Customer Name (Billing)","var order.increment_id":"Order Id","var payment_html|raw":"Payment Details","var formattedShippingAddress|raw":"Shipping Address","var order.getShippingDescription()":"Shipping Description","var order.shipping_description":"Shipping Description"}
@@ -1506,10 +1488,9 @@ EOT;
                 $template->save();
             }
 
-
-//Creditmemo Update
+            //Creditmemo Update
             $tplCode = 'Credit Memo Update - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just updated the credit memo for your order! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by checking your account.';
                 $tplVars = <<<'EOT'
 {"var comment":"Credit Memo Comment","var creditmemo.increment_id":"Credit Memo Id","var this.getUrl($store, 'customer/account/')":"Customer Account URL","var order.getCustomerName()":"Customer Name","var order.increment_id":"Order Id","var order.getStatusLabel()":"Order Status"}
@@ -1617,10 +1598,9 @@ EOT;
                 $template->save();
             }
 
-
-//Creditmemo Update Guest
+            //Creditmemo Update Guest
             $tplCode = 'Credit Memo Update for Guest - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just updated the credit memo for your order! We will send you updates along the way once we dispatch your product(s). You can view the entire status of your order by creating an account.';
                 $tplVars = <<<'EOT'
 {"var comment":"Credit Memo Comment","var creditmemo.increment_id":"Credit Memo Id","var billing.getName()":"Guest Customer Name","var order.increment_id":"Order Id","var order.getStatusLabel()":"Order Status"}
@@ -1706,9 +1686,9 @@ EOT;
                 $template->save();
             }
 
-//New Shipment
+            //New Shipment
             $tplCode = 'New Shipment - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Your products are on the way, stay tuned! You can view the entire status of your order by checking your account. Thank you for your for your purchase and hope to shop with us again soon!';
                 $tplVars = <<<'EOT'
 {"var formattedBillingAddress|raw":"Billing Address","var this.getUrl($store, 'customer/account/')":"Customer Account URL","var order.getCustomerName()":"Customer Name","var order.increment_id":"Order Id","var payment_html|raw":"Payment Details","var comment":"Shipment Comment","var shipment.increment_id":"Shipment Id","layout handle=\"sales_email_order_shipment_items\" shipment=$shipment order=$order":"Shipment Items Grid","block class='Magento\\\\Framework\\\\View\\\\Element\\\\Template' area='frontend' template='Magento_Sales::email\/shipment\/track.phtml' shipment=$shipment order=$order":"Shipment Track Details","var formattedShippingAddress|raw":"Shipping Address","var order.shipping_description":"Shipping Description","var order.getShippingDescription()":"Shipping Description"}
@@ -1849,11 +1829,9 @@ EOT;
                 $template->save();
             }
 
-
-
-//New Shipment Guest
+            //New Shipment Guest
             $tplCode = 'New Shipment for Guest - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Your products are on the way, stay tuned! You can view the entire status of your order by creating an account. Thank you for your for your purchase and hope to shop with us again soon!';
                 $tplVars = <<<'EOT'
 {"var formattedBillingAddress|raw":"Billing Address","var billing.getName()":"Guest Customer Name","var order.increment_id":"Order Id","var payment_html|raw":"Payment Details","var comment":"Shipment Comment","var shipment.increment_id":"Shipment Id","layout handle=\"sales_email_order_shipment_items\" shipment=$shipment order=$order":"Shipment Items Grid","block class='Magento\\\\Framework\\\\View\\\\Element\\\\Template' area='frontend' template='Magento_Sales::email\/shipment\/track.phtml' shipment=$shipment order=$order":"Shipment Track Details","var formattedShippingAddress|raw":"Shipping Address","var order.shipping_description":"Shipping Description","var order.getShippingDescription()":"Shipping Description"}
@@ -1977,10 +1955,9 @@ EOT;
                 $template->save();
             }
 
-
-//Shipment Update
+            //Shipment Update
             $tplCode = 'Shipment Update - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just updated the shipping information for your recent order!  You can view the entire status of your order by checking your account. Thank you for your for your purchase!';
                 $tplVars = <<<'EOT'
 {"var this.getUrl($store, 'customer/account/')":"Customer Account URL","var order.getCustomerName()":"Customer Name","var comment":"Order Comment","var order.increment_id":"Order Id","var order.getStatusLabel()":"Order Status","var shipment.increment_id":"Shipment Id"}
@@ -2086,10 +2063,9 @@ EOT;
                 $template->save();
             }
 
-
-//Shipment Update Guest
+            //Shipment Update Guest
             $tplCode = 'Shipment Update for Guest - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'We just updated the shipping information for your recent order!  You can view the entire status of your order by creating an account. Thank you for your for your purchase!';
                 $tplVars = <<<'EOT'
 {"var billing.getName()":"Guest Customer Name","var comment":"Order Comment","var order.increment_id":"Order Id","var order.getStatusLabel()":"Order Status","var shipment.increment_id":"Shipment Id"}
@@ -2174,11 +2150,9 @@ EOT;
                 $template->save();
             }
 
-
-
- //New Account
+            //New Account
             $tplCode = 'New Account - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Welcome, your new account is ready ! To sign in to our site, use the credentials during checkout or on the My Account page. You will be able to checkout faster, check orders status, view past orders and more.';
                 $tplVars = <<<'EOT'
 {"var this.getUrl($store, 'customer/account/')":"Customer Account URL","var customer.email":"Customer Email","var customer.name":"Customer Name"}
@@ -2262,10 +2236,9 @@ EOT;
                 $template->save();
             }
 
-
-//New Account Confirmed
+            //New Account Confirmed
             $tplCode = 'New Account Confirmed - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Welcome, your new account is ready ! To sign in to our site, use the credentials during checkout or on the My Account page. You will be able to checkout faster, check orders status, view past orders and more.';
                 $tplVars = <<<'EOT'
 {"var this.getUrl($store, 'customer/account/')":"Customer Account URL","var customer.email":"Customer Email","var customer.name":"Customer Name"}
@@ -2349,10 +2322,9 @@ EOT;
                 $template->save();
             }
 
-
-//New Account No Password
+            //New Account No Password
             $tplCode = 'New Account Without Password - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'To sign in to our site, use the credentials during checkout or on the My Account page. You will be able to checkout faster, check orders status, view past orders and more.';
                 $tplVars = <<<'EOT'
 { "var this.getUrl($store, 'customer/account/')":"Customer Account URL", "var customer.email":"Customer Email", "var customer.name":"Customer Name" }
@@ -2416,9 +2388,9 @@ EOT;
                 $template->save();
             }
 
-//New Account Confirmation
+            //New Account Confirmation
             $tplCode = 'New Account Confirmation Key - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'To sign in to our site, use the credentials during checkout or on the My Account page. You will be able to checkout faster, check orders status, view past orders and more.';
                 $tplVars = <<<'EOT'
 {"var this.getUrl($store, 'customer/account/')":"Customer Account URL","var customer.email":"Customer Email","var customer.name":"Customer Name"}
@@ -2488,10 +2460,9 @@ EOT;
                 $template->save();
             }
 
-
-//Password Reminder
+            //Password Reminder
             $tplCode = 'Remind Password - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Do you want to change your password? Ok, we’re cool with that! If you did not make this request, you can ignore this email and your password will remain the same.';
                 $tplVars = <<<'EOT'
 {"var this.getUrl(store, 'customer/account/')":"Customer Account URL","var customer.name":"Customer Name"}
@@ -2562,9 +2533,9 @@ EOT;
                 $template->save();
             }
 
-//Reset Password - Forgot Email template - Forgot Password
+            //Reset Password - Forgot Email template - Forgot Password
             $tplCode = 'Reset Password - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Do you want to change your password? Ok, we’re cool with that! If you did not make this request, you can ignore this email and your password will remain the same.';
                 $tplVars = '{"var customer.name":"Customer Name"}';
                 $tplText = <<<'EOT'
@@ -2626,10 +2597,9 @@ EOT;
                 $template->save();
             }
 
-
-//Change Email
+            //Change Email
             $tplCode = 'Change Email - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Do you want to change your email address associated with your account? Ok, we’re cool with that! If you have not authorized this action, please contact us immediately.';
                 $tplVars = '{}';
                 $tplText = <<<'EOT'
@@ -2686,10 +2656,9 @@ EOT;
                 $template->save();
             }
 
-
-//Change Email and Password
+            //Change Email and Password
             $tplCode = 'Change Email And Password - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Do you want to change your email address or password associated with your account? Ok, we’re cool with that! If you have not authorized this action, please contact us immediately.';
                 $tplVars = '{}';
                 $tplText = <<<'EOT'
@@ -2744,10 +2713,9 @@ EOT;
                 $template->save();
             }
 
-
-//Newsletter Confirmation
+            //Newsletter Confirmation
             $tplCode = 'Newsletter Confirmation - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Hello, nice to meet you! Thank you for subscribing to our newsletter! To begin receiving the newsletter, you must first confirm your subscription by clinking the link in the email.';
                 $tplVars = '{"var customer.name":"Customer Name","var subscriber.getConfirmationLink()":"Subscriber Confirmation URL"}';
                 $tplText = <<<'EOT'
@@ -2815,9 +2783,9 @@ EOT;
                 $template->save();
             }
 
-//Wishlist Share
+            //Wishlist Share
             $tplCode = 'Wishlist Share - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'The sender wants to share this Wish List with somebody special like you! To begin see what found and wants to share with you click on the button below.';
                 $tplVars = '{"var customerName":"Customer Name","var viewOnSiteLink":"View Wish List URL","var items|raw":"Wish List Items","var message|raw":"Wish List Message"}';
                 $tplText = <<<'EOT'
@@ -2900,10 +2868,9 @@ EOT;
         }
 
         if (version_compare($context->getVersion(), "1.0.5", "<")) {
-
             $templateType = TemplateTypesInterface::TYPE_HTML;
             $tplCode = 'Forgot Password - WeltPixel';
-            if(!$this->_templateExist($tplCode)) {
+            if (!$this->_templateExist($tplCode)) {
                 $tplPreheader = 'Forgot your account password?';
                 $tplVars = <<<'EOT'
 {"var this.getUrl(store, 'customer/account/')":"Customer Account URL","var customer.name":"Customer Name"}
@@ -2979,19 +2946,19 @@ EOT;
 
         if (version_compare($context->getVersion(), "1.0.6", "<")) {
             $collection = $this->_collectionFactory->create();
-            foreach($collection as $tpl) {
+            foreach ($collection as $tpl) {
                 $templateCode = $tpl->getOrigTemplateCode();
                 $newText = $templateText = $tpl->getTemplateText();
                 $text = '{{layout handle="preheader_section" area="frontend"}}';
                 $template = $this->_template->load($tpl->getTemplateId());
-                if($templateCode == 'design_email_header_template' || $templateCode == 'design_email_footer_template') {
+                if ($templateCode == 'design_email_header_template' || $templateCode == 'design_email_footer_template') {
                     $searchStr = '{{inlinecss file="css/email-inline.css"}}';
                     $pos = strpos($templateText, $searchStr);
                     if ($pos !== false) {
                         $newText = substr_replace($templateText, $text, $pos, 0);
                     }
                 } else {
-                    $newText = str_replace($text,'', $templateText);
+                    $newText = str_replace($text, '', $templateText);
                 }
 
                 $template->setTemplateText($newText);
@@ -2999,15 +2966,80 @@ EOT;
             }
         }
 
+        if (version_compare($context->getVersion(), "1.0.7", "<")) {
+            $collection = $this->_collectionFactory->create();
+            foreach ($collection as $tpl) {
+                $templateCode = $tpl->getOrigTemplateCode();
+                $newText = $templateText = $tpl->getTemplateText();
+                $text = '{{layout handle="preheader_section" area="frontend"}}';
+                $template = $this->_template->load($tpl->getTemplateId());
+                $newText = str_replace($text, '', $templateText);
+                if ($templateCode != 'design_email_header_template' || $templateCode != 'design_email_footer_template') {
+                    $searchStr = '{{template config_path="design/email/header_template"}}';
+                    $pos = strpos($newText, $searchStr);
+                    if ($pos !== false) {
+                        $newText = substr_replace($newText, $text, $pos + strlen($searchStr), 0);
+                    }
+                }
+
+                $template->setTemplateText($newText);
+                $template->save();
+            }
+        }
+
+        if (version_compare($context->getVersion(), "1.0.8", "<")) {
+            $collection = $this->_collectionFactory->create();
+            foreach ($collection as $tpl) {
+                $templateCode = $tpl->getOrigTemplateCode();
+                if ($templateCode == 'new_shipment_weltpixel' || $templateCode == 'new_shipment_guest_weltpixel') {
+                    $newText = $templateText = $tpl->getTemplateText();
+                    $template = $this->_template->load($tpl->getTemplateId());
+
+                    $text = 'Magento_Sales::email/shipment/track.phtml';
+                    $modifText = 'WeltPixel_EnhancedEmail::email/shipment/track.phtml';
+                    $newText = str_replace($text, $modifText, $templateText);
+                    $template->setTemplateText($newText);
+                    $template->save();
+                }
+            }
+        }
+
+        if (version_compare($context->getVersion(), "1.0.9", "<")) {
+            $collection = $this->_collectionFactory->create();
+            foreach ($collection as $tpl) {
+                $templateCode = $tpl->getOrigTemplateCode();
+                $newText = $templateText = $tpl->getTemplateText();
+                if ($templateCode == 'design_email_header_template') {
+                    $text = '{{layout handle="menu_line" area="frontend"}}';
+                    $template = $this->_template->load($tpl->getTemplateId());
+                    $newText = str_replace($text, '', $templateText);
+                } elseif ($templateCode != 'design_email_footer_template' || $templateCode != 'design_email_header_template') {
+                    $searchStr = '{{layout handle="preheader_section" area="frontend"}}';
+                    $text = '{{layout handle="menu_line" area="frontend"}}';
+                    $pos = strpos($newText, $searchStr);
+                    $posMenu = strpos($newText, $text);
+
+                    if ($pos !== false && $posMenu === false) {
+                        $newText = substr_replace($newText, $text, $pos + strlen($searchStr), 0);
+                    }
+
+                    $template = $this->_template->load($tpl->getTemplateId());
+                }
+
+                $template->setTemplateText($newText);
+                $template->save();
+            }
+        }
     }
 
     /**
      * @return array
      */
-    protected function _getTemplatesArr() {
+    protected function _getTemplatesArr()
+    {
         $collection = $this->_collectionFactory->create();
         $templates = [];
-        foreach($collection as $template) {
+        foreach ($collection as $template) {
             $templates[] = [
                 'template_code' => $template->getTemplateCode(),
                 'orig_template_code' => $template->getOrigTemplateCode()
@@ -3021,9 +3053,8 @@ EOT;
      * @param $templateCode
      * @return false|int|string
      */
-    protected function _templateExist($templateCode) {
+    protected function _templateExist($templateCode)
+    {
         return array_search($templateCode, array_column($this->_templates, 'template_code'));
-
     }
-
 }

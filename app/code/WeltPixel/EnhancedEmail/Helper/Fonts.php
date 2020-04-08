@@ -16,7 +16,7 @@ class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @var string
      */
-    protected $_googlefontUrl = 'https://fonts.googleapis.com/css?family=';
+    protected $_googlefontUrl = 'https://fonts.googleapis.com/css?display=swap&family=';
 
     /**
      * @var array

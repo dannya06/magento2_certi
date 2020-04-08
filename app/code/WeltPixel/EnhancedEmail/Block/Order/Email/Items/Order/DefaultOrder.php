@@ -77,6 +77,10 @@ class DefaultOrder extends \Magento\Sales\Block\Order\Email\Items\Order\DefaultO
                 $configProduct = $this->_productRepository->get($this->getItem()->getProduct()->getSku());
                 return $configProduct;
             }
+        } elseif($this->getItem()->getProductType() == 'grouped') {
+            $groupedProduct = $this->_productRepository->get($this->getItem()->getSku());
+            return $groupedProduct;
+
         } else {
             $configProduct = $this->_productRepository->get($this->getItem()->getProduct()->getSku());
             return $configProduct;

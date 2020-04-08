@@ -19,6 +19,16 @@
                     as="downloadable"
                     template="WeltPixel_EnhancedEmail::email/items/invoice/downloadable.phtml"/>
 
+            <block class="WeltPixel\EnhancedEmail\Block\Order\Email\Items\DefaultItems"
+                   name="sales.email.order.invoice.renderers.grouped"
+                   as="grouped"
+                   template="WeltPixel_EnhancedEmail::email/items/invoice/default.phtml"/>
+
+            <block class="WeltPixel\EnhancedEmail\Block\Order\Email\Items\DefaultItems"
+                   name="sales.email.order.invoice.renderers.bundle"
+                   as="bundle"
+                   template="WeltPixel_EnhancedEmail::email/items/invoice/default.phtml"/>
+
         </referenceBlock>
     </body>
 </page>

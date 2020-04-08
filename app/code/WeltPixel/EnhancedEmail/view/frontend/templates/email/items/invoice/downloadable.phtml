@@ -35,7 +35,7 @@
             <?= $block->escapeHtml($_item->getDescription()) ?>
         </div>
         <div class="item-price" style="position: absolute !important; bottom: 15px; text-align: left !important; margin-bottom: 25px !important">
-            <p><?= is_object($_order) ? $_order->formatPrice($_item->getOrderItem()->getBasePrice()) : $_item->getOrderItem()->getBasePrice(); ?> x <?= /* @escapeNotVerified */  $_item->getQty() * 1 ?></p>
+            <p><?= is_object($_order) ? $_order->formatPrice($_item->getOrderItem()->getPrice()) : $_item->getOrderItem()->getPrice(); ?> x <?= /* @escapeNotVerified */  $_item->getQty() * 1 ?></p>
         </div>
     </td>
     <td class="item-subtotal" style="vertical-align: bottom; text-align: right; border-top: 0 none !important; padding: 40px 10px; border-bottom: 1px dotted #000000;">
