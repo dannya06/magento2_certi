@@ -1,45 +1,57 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
+use Magento\Quote\Model\Quote\Item\AbstractItem;
+use Magento\SalesRule\Model\Rule;
+use Magento\SalesRule\Model\Rule\Action\Discount\Data;
+
+/**
+ * Amasty Rules calculation by action.
+ *
+ * @see \Amasty\Rules\Helper\Data::TYPE_XN_FIXDISC
+ */
 class BuyxgetnFixdisc extends Buyxgety
 {
     const RULE_VERSION = '1.0.0';
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param Rule $rule
+     * @param AbstractItem $item
      * @param float $qty
      *
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
+     * @return Data
+     *
+     * @throws \Exception
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function calculate($rule, $item, $qty)
     {
-        $this->beforeCalculate($rule, $item, $qty);
-        $rulePercent = min(100, $rule->getDiscountAmount());
-        $discountData = $this->_calculate($rule, $item, $rulePercent);
+        $this->beforeCalculate($rule);
+        $discountData = $this->_calculate($rule, $item);
         $this->afterCalculate($discountData, $rule, $item);
 
         return $discountData;
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
-     * @param float $rulePercent
+     * @param Rule $rule
+     * @param AbstractItem $item
      *
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
+     * @return Data
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function _calculate($rule, $item, $rulePercent)
+    protected function _calculate($rule, $item)
     {
-
-        /** @var \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData */
+        /** @var Data $discountData */
         $discountData = $this->discountFactory->create();
 
         // no conditions for Y elements
@@ -47,11 +59,10 @@ class BuyxgetnFixdisc extends Buyxgety
             return $discountData;
         }
 
-        $rulePercent /= 100;
         $address = $item->getAddress();
 
-        $arrX = $this->getTriggerElements($address, $rule);
-        $realQty = $this->getTriggerElementQty($arrX);
+        $triggerItems = $this->getTriggerElements($address, $rule);
+        $realQty = $this->getTriggerElementQty($triggerItems);
         $maxQty = $this->getNQty($rule, $realQty);
         // find all allowed Y (discounted) elements and calculate total discount
 
@@ -61,14 +72,13 @@ class BuyxgetnFixdisc extends Buyxgety
         $allItems = $this->getSortedItems($address, $rule, self::DEFAULT_SORT_ORDER);
         $itemsId = $this->getItemsId($allItems);
 
-        foreach ($allItems as $i => $allItem) {
-
+        foreach ($allItems as $allItem) {
             if ($currQty >= $maxQty) {
                 break;
             }
 
             // we always skip child items and calculate discounts inside parents
-            if (!$this->canProcessItem($allItem, $arrX, $passedItems)) {
+            if (!$this->canProcessItem($allItem, $triggerItems, $passedItems)) {
                 continue;
             }
 
@@ -90,7 +100,7 @@ class BuyxgetnFixdisc extends Buyxgety
             $currQty += $qty;
 
             if (in_array($item->getAmrulesId(), $itemsId) && $allItem->getAmrulesId() === $item->getAmrulesId()) {
-                $itemQty = $qty;//$this->getArrayValueCount($itemsId, $item->getId());
+                $itemQty = $qty;
                 $price = $this->validator->getItemPrice($allItem);
                 $priceWithDiscount = $price - $allItem->getDiscountAmount() / $allItem->getQty();
                 $discountAmount = $priceWithDiscount < $rule->getDiscountAmount()

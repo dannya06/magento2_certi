@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 
@@ -14,14 +14,17 @@ use Amasty\BannersLite\Api\Data\BannerInterface;
 use Amasty\BannersLite\Api\Data\BannerRuleInterface;
 use Amasty\BannersLite\Model\BannerFactory;
 use Amasty\BannersLite\Model\BannerRuleFactory;
+use Amasty\BannersLite\Model\Cache;
 use Amasty\BannersLite\Model\ImageProcessor;
 use Amasty\Base\Model\Serializer;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
+use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\SalesRule\Api\Data\RuleInterface as SalesRuleInterface;
 
 /**
- * Class SaveHandler
+ * Sales Rule additional save handler
+ * save image banner and banner rule data
  */
 class SaveHandler implements ExtensionInterface
 {
@@ -60,6 +63,23 @@ class SaveHandler implements ExtensionInterface
      */
     private $serializerBase;
 
+    /**
+     * @var Cache
+     */
+    private $cache;
+
+    /**
+     * @var Snapshot
+     */
+    private $snapshot;
+
+    /**
+     * Flag for flush product cache on banner rule save.
+     *
+     * @var bool
+     */
+    private $isBannerModified = false;
+
     public function __construct(
         BannerRepositoryInterface $bannerRepository,
         MetadataPool $metadataPool,
@@ -67,7 +87,9 @@ class SaveHandler implements ExtensionInterface
         BannerRuleRepositoryInterface $bannerRuleRepository,
         BannerRuleFactory $bannerRuleFactory,
         ImageProcessor $imageProcessor,
-        Serializer $serializerBase
+        Serializer $serializerBase,
+        Cache $cache,
+        Snapshot $snapshot
     ) {
         $this->bannerRepository = $bannerRepository;
         $this->metadataPool = $metadataPool;
@@ -76,6 +98,8 @@ class SaveHandler implements ExtensionInterface
         $this->bannerRuleFactory = $bannerRuleFactory;
         $this->imageProcessor = $imageProcessor;
         $this->serializerBase = $serializerBase;
+        $this->cache = $cache;
+        $this->snapshot = $snapshot;
     }
 
     /**
@@ -92,10 +116,9 @@ class SaveHandler implements ExtensionInterface
         /** @var array $attributes */
         $attributes = $entity->getExtensionAttributes() ?: [];
 
-        if (isset($attributes[BannerInterface::EXTENSION_CODE])) {
-            $this->saveBannerData($entity, $attributes);
-        }
+        $this->isBannerModified = false;
 
+        $this->saveBannerData($entity, $attributes);
         $this->saveBannerRule($entity, $attributes);
 
         return $entity;
@@ -118,6 +141,10 @@ class SaveHandler implements ExtensionInterface
             $bannerRule = $this->bannerRuleFactory->create();
         }
 
+        if ($bannerRule->getId()) {
+            $this->snapshot->registerSnapshot($bannerRule);
+        }
+
         $this->convertCategoryIds($attributes);
 
         $bannerRule->addData($attributes);
@@ -131,7 +158,13 @@ class SaveHandler implements ExtensionInterface
             $bannerRule->setSalesruleId($ruleLinkId);
         }
 
-        $this->bannerRuleRepository->save($bannerRule);
+        if ($isRuleModified = $this->snapshot->isModified($bannerRule)) {
+            $this->bannerRuleRepository->save($bannerRule);
+        }
+
+        if ($this->isBannerModified || $isRuleModified) {
+            $this->cache->cleanProductCache($bannerRule->getData());
+        }
     }
 
     /**
@@ -160,6 +193,9 @@ class SaveHandler implements ExtensionInterface
      */
     private function saveBannerData(\Magento\SalesRule\Model\Rule $entity, &$attributes)
     {
+        if (!isset($attributes[BannerInterface::EXTENSION_CODE])) {
+            return;
+        }
         $linkField = $this->metadataPool->getMetadata(SalesRuleInterface::class)->getLinkField();
         $ruleLinkId = (int)$entity->getDataByKey($linkField);
         $inputData = $attributes[BannerInterface::EXTENSION_CODE];
@@ -174,16 +210,19 @@ class SaveHandler implements ExtensionInterface
                 /** @var \Amasty\BannersLite\Model\Banner $promoBanner */
                 $promoBanner = $this->bannerFactory->create();
             }
+            $snapshotData = $promoBanner->getData();
 
             if ($data instanceof BannerInterface) {
                 $data = $data->getData();
             }
+            if (!$promoBanner->getBannerImage()) {
+                $this->isBannerModified = true;
+            }
 
-            if (!array_key_exists(BannerInterface::BANNER_IMAGE, $data)) {
+            if (!$this->isEqualImage($promoBanner, $data) && $promoBanner->getBannerImage()) {
                 $this->imageProcessor->deleteImage($promoBanner->getBannerImage());
                 $promoBanner->setBannerImage(null);
-            } else {
-                $this->isEqualImage($promoBanner, $data);
+                $this->isBannerModified = true;
             }
 
             $promoBanner->addData($data);
@@ -194,24 +233,61 @@ class SaveHandler implements ExtensionInterface
                 $promoBanner->setSalesruleId($ruleLinkId);
             }
 
-            $this->bannerRepository->save($promoBanner);
+            if (!$this->isBannerModified) {
+                $this->isBannerModified = $this->isBannerModified($snapshotData, $promoBanner->getData());
+            }
+
+            if ($this->isBannerModified) {
+                $this->bannerRepository->save($promoBanner);
+            }
         }
     }
 
     /**
+     * Compare images and delete old image
+     *
      * @param \Amasty\BannersLite\Model\Banner $promoBanner
      * @param array $newData
+     *
+     * @return bool
      */
     private function isEqualImage(\Amasty\BannersLite\Model\Banner $promoBanner, $newData)
     {
+        if (!$promoBanner->getBannerImage() xor !isset($newData[BannerInterface::BANNER_IMAGE])) {
+            return false;
+        }
+
+        if (!$promoBanner->getBannerImage() && !isset($newData[BannerInterface::BANNER_IMAGE])) {
+            return true;
+        }
+
         $bannerImage = $this->serializerBase->unserialize($promoBanner->getBannerImage());
         if ($bannerImage) {
             $bannerImageName = $bannerImage[0]['name'];
-            $newDataImage = $this->serializerBase->unserialize($newData[BannerInterface::BANNER_IMAGE]);
+            $newDataImage = $newData[BannerInterface::BANNER_IMAGE];
+            if (is_string($newDataImage)) {
+                //is json
+                $newDataImage = $this->serializerBase->unserialize($newDataImage);
+            }
 
             if ($newDataImage[0]['name'] !== $bannerImageName) {
-                $this->imageProcessor->deleteImage($promoBanner->getBannerImage());
+                return false;
             }
         }
+
+        return true;
+    }
+
+    /**
+     * @param array $snapshotData
+     * @param array $promoBanner
+     *
+     * @return bool
+     */
+    private function isBannerModified(array $snapshotData, array $promoBanner): bool
+    {
+        unset($snapshotData[BannerInterface::BANNER_IMAGE], $promoBanner[BannerInterface::BANNER_IMAGE]);
+
+        return $snapshotData != $promoBanner;
     }
 }

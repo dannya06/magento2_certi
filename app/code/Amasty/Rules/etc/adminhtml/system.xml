@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 -->
@@ -27,6 +27,10 @@
             </group>
             <group id="skip_price" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Skip Settings</label>
+                <field id="notice" translate="label"
+                       type="Amasty\Rules\Block\Adminhtml\System\Config\Notice" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Skip options are available for Amasty actions only.</label>
+                </field>
                 <field id="skip_special_price" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Skip Items with Special Price</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -10,6 +10,9 @@ namespace Amasty\Rules\Model;
 
 use Amasty\Rules\Api\Data\RuleInterface;
 
+/**
+ * Object of Amasty Rules.
+ */
 class Rule extends \Magento\Framework\Model\AbstractModel implements RuleInterface
 {
     /**
@@ -20,7 +23,8 @@ class Rule extends \Magento\Framework\Model\AbstractModel implements RuleInterfa
     protected function _construct()
     {
         parent::_construct();
-        $this->_init('Amasty\Rules\Model\ResourceModel\Rule');
+
+        $this->_init(ResourceModel\Rule::class);
         $this->setIdFieldName('entity_id');
     }
 

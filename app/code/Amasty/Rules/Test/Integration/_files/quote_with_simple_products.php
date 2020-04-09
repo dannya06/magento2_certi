@@ -1,10 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
+/**
+ * phpcs:ignoreFile
+ * @codeCoverageIgnore
+ */
 
 require 'products.php';
 

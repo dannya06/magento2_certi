@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -12,6 +12,9 @@ use Amasty\Rules\Api\RuleProviderInterface;
 use Amasty\Rules\Model\ResourceModel\Rule as RuleResource;
 use Amasty\Rules\Api\Data\RuleInterface;
 
+/**
+ * Rule Provider.
+ */
 class RuleProvider implements RuleProviderInterface
 {
     /**

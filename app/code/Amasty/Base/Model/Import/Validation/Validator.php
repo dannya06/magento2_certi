@@ -1,12 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
 
 namespace Amasty\Base\Model\Import\Validation;
+
+use Amasty\Base\Model\Import\AbstractImport;
 
 class Validator implements ValidatorInterface
 {
@@ -57,5 +59,19 @@ class Validator implements ValidatorInterface
     public function getErrorMessages()
     {
         return $this->messageTemplates;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addRuntimeError($message, $level)
+    {
+        if (!isset($this->errors[AbstractImport::RUNTIME_ERRORS])) {
+            $this->errors[AbstractImport::RUNTIME_ERRORS] = [];
+        }
+
+        $this->errors[AbstractImport::RUNTIME_ERRORS][(string)(__('<b>Error!</b> ')) . $message] = $level;
+
+        return $this;
     }
 }

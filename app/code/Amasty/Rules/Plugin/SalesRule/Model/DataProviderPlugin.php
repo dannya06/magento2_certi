@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -10,11 +10,12 @@ namespace Amasty\Rules\Plugin\SalesRule\Model;
 
 use Amasty\Rules\Api\Data\RuleInterface;
 
+/**
+ * Convert Special Promotions Rule data to Array
+ */
 class DataProviderPlugin
 {
     /**
-     * Convert Special Promotions Rule data to Array
-     *
      * @param \Magento\SalesRule\Model\Rule\DataProvider $subject
      * @param array $result
      *

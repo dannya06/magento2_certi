@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 
@@ -55,23 +55,16 @@ class BannerRuleRepository implements BannerRuleRepositoryInterface
      */
     private $bannerRuleCollectionFactory;
 
-    /**
-     * @var \Amasty\BannersLite\Model\Cache
-     */
-    private $cache;
-
     public function __construct(
         BookmarkSearchResultsInterfaceFactory $searchResultsFactory,
         BannerRuleFactory $bannerRuleFactory,
         BannerRuleResource $bannerRuleResource,
-        CollectionFactory $bannerRuleCollectionFactory,
-        Cache $cache
+        CollectionFactory $bannerRuleCollectionFactory
     ) {
         $this->searchResultsFactory = $searchResultsFactory;
         $this->bannerRuleFactory = $bannerRuleFactory;
         $this->bannerRuleResource = $bannerRuleResource;
         $this->bannerRuleCollectionFactory = $bannerRuleCollectionFactory;
-        $this->cache = $cache;
     }
 
     /**
@@ -84,7 +77,6 @@ class BannerRuleRepository implements BannerRuleRepositoryInterface
                 $bannerRule = $this->getById($bannerRule->getEntityId())->addData($bannerRule->getData());
             }
             $this->bannerRuleResource->save($bannerRule);
-            $this->cache->cleanProductCache($bannerRule->getData());
             unset($this->bannerRules[$bannerRule->getEntityId()]);
         } catch (\Exception $e) {
             if ($bannerRule->getEntityId()) {
@@ -225,13 +217,13 @@ class BannerRuleRepository implements BannerRuleRepositoryInterface
     }
 
     /**
-    * Helper function that adds a SortOrder to the collection.
-    *
-    * @param SortOrder[] $sortOrders
-    * @param Collection  $bannerRuleCollection
-    *
-    * @return void
-    */
+     * Helper function that adds a SortOrder to the collection.
+     *
+     * @param SortOrder[] $sortOrders
+     * @param Collection $bannerRuleCollection
+     *
+     * @return void
+     */
     private function addOrderToCollection($sortOrders, Collection $bannerRuleCollection)
     {
         /** @var SortOrder $sortOrder */
@@ -242,5 +234,13 @@ class BannerRuleRepository implements BannerRuleRepositoryInterface
                 ($sortOrder->getDirection() == SortOrder::SORT_DESC) ? SortOrder::SORT_DESC : SortOrder::SORT_ASC
             );
         }
+    }
+
+    /**
+     * @return BannerRule
+     */
+    public function getEmptyModel()
+    {
+        return $this->bannerRuleFactory->create();
     }
 }

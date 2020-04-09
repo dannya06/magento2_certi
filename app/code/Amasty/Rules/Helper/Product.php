@@ -1,22 +1,22 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
+
+
 namespace Amasty\Rules\Helper;
 
+/**
+ * Product helper.
+ */
 class Product extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
      * @var \Magento\SalesRule\Model\Validator
      */
     protected $_validator;
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $_objectManager;
 
     /**
      * @var \Magento\SalesRule\Model\Rule
@@ -34,10 +34,13 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
     private $ruleResolver;
 
     public function __construct(
+        \Magento\Framework\App\Helper\Context $context,
         \Magento\SalesRule\Model\Validator $_validator,
         \Magento\Directory\Model\PriceCurrency $priceCurrency,
         \Amasty\Rules\Model\RuleResolver $ruleResolver
     ) {
+        parent::__construct($context);
+
         $this->_validator = $_validator;
         $this->_priceCurrency = $priceCurrency;
         $this->ruleResolver = $ruleResolver;

@@ -1,17 +1,22 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
-use Magento\SalesRule\Model\Rule as RuleModel;
 use Magento\Quote\Model\Quote\Item\AbstractItem as AbstractQuoteItem;
 use Magento\SalesRule\Model\Rule\Action\Discount\Data as DiscountData;
+use Magento\SalesRule\Model\Rule as RuleModel;
 
+/**
+ * Class AbstractSetof
+ *
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
 abstract class AbstractSetof extends AbstractRule
 {
     const DEFAULT_SORT_ORDER = 'asc';
@@ -32,10 +37,15 @@ abstract class AbstractSetof extends AbstractRule
      * @param float $qty
      *
      * @return DiscountData Data
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Exception
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function calculate($rule, $item, $qty)
     {
-        $this->beforeCalculate($rule, $item, $qty);
+        $this->beforeCalculate($rule);
 
         if (!isset(self::$allItems)) {
             self::$allItems = $this->getSortedItems($item->getAddress(), $rule, self::DEFAULT_SORT_ORDER);
@@ -54,6 +64,8 @@ abstract class AbstractSetof extends AbstractRule
      * @param AbstractQuoteItem $item
      *
      * @return DiscountData
+     *
+     * @throws \Exception
      */
     protected function calculateDiscount($rule, $item)
     {
@@ -142,7 +154,7 @@ abstract class AbstractSetof extends AbstractRule
     protected function getItemsForSet($rule)
     {
         $qtySkus = [];
-        $itemsForSet = self::$allItems;
+        $itemsForSet = self::$allItems ?: [];
         $skus = $this->rulesDataHelper->getRuleSkus($rule);
 
         foreach ($skus as $sku) {
@@ -165,8 +177,7 @@ abstract class AbstractSetof extends AbstractRule
             ];
         }
 
-        $arrayForCategoriesSet = array_diff_key(self::$allItems, $itemsForSet);
-        if (count($arrayForCategoriesSet) > 0) {
+        if ($arrayForCategoriesSet = array_diff_key(self::$allItems ?: [], $itemsForSet)) {
             $qtyCategories = $this->formCategorySet($categories, $arrayForCategoriesSet);
 
             if ($qtyCategories) {
@@ -185,21 +196,18 @@ abstract class AbstractSetof extends AbstractRule
             $qtySkus = [];
         }
 
-        return [
-            $qtySkus,
-            $itemsForSet
-        ];
+        return [$qtySkus, $itemsForSet];
     }
 
     /**
      * @param array $categories
-     * @param array $arrayForCategoriesSet
+     * @param array $itemsForSet
      *
-     * @return mixed
+     * @return array
      */
-    protected function formCategorySet($categories, $arrayForCategoriesSet)
+    protected function formCategorySet($categories, $itemsForSet)
     {
-        $categoriesMatrix = $this->getCategoriesMatrix($categories, $arrayForCategoriesSet);
+        $categoriesMatrix = $this->getCategoriesMatrix($categories, $itemsForSet);
 
         return $this->checkRows($categoriesMatrix);
     }
@@ -214,6 +222,7 @@ abstract class AbstractSetof extends AbstractRule
      */
     private function getCategoriesMatrix($categories, $itemsForSet)
     {
+        /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $catsCollection */
         $catsCollection = $this->categoriesCollection->create();
         $catsCollection->addIdFilter($categories);
         $catsCollection->setOrder('level', $catsCollection::SORT_ORDER_DESC);
@@ -229,13 +238,15 @@ abstract class AbstractSetof extends AbstractRule
             $productCategories = $item->getProduct()->getCategoryIds();
 
             foreach ($productCategories as $category) {
-                $category = (int)$category;
+                $category = (int) $category;
+
+                if (isset($catsMatrix[$category][$item->getSku()])) {
+                    $catsMatrix[$category][$item->getSku()]++;
+                    continue;
+                }
+
                 if (isset($catsMatrix[$category])) {
-                    if (!isset($catsMatrix[$category][$item->getSku()])) {
-                        $catsMatrix[$category][$item->getSku()] = 1;
-                    } else {
-                        $catsMatrix[$category][$item->getSku()]++;
-                    };
+                    $catsMatrix[$category][$item->getSku()] = 1;
                 }
             }
         }
@@ -247,23 +258,25 @@ abstract class AbstractSetof extends AbstractRule
      * @param array $categoriesMatrix
      * @param array $itemsForSet
      *
-     * @return array|mixed
+     * @return array
      */
     private function checkRows($categoriesMatrix, $itemsForSet = [])
     {
         /** Check if exist category with one item */
         foreach ($categoriesMatrix as $categoryId => $items) {
-            if (is_array($items) && count($items) > 0) {
+            if (is_array($items) && $items) {
+                //@codingStandardsIgnoreStart
                 if (count($items) == 1) {
                     return $this->moveItemFromMatrixToSet($items, $categoriesMatrix, $categoryId, $itemsForSet);
                 }
+                //@codingStandardsIgnoreEnd
             } else {
                 return [];
             }
         }
 
         foreach ($categoriesMatrix as $categoryId => $items) {
-            if (is_array($items) && count($items) > 0) {
+            if (is_array($items) && $items) {
                 return $this->moveItemFromMatrixToSet($items, $categoriesMatrix, $categoryId, $itemsForSet);
             } else {
                 return [];

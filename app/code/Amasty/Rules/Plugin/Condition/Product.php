@@ -1,54 +1,42 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Plugin\Condition;
 
+use Magento\Framework\Exception\NoSuchEntityException;
+
+/**
+ * Additional attr for validator.
+ */
 class Product
 {
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
-    protected $_objectManager;
+    private $productRepository;
 
     /**
      * @var \Amasty\Rules\Helper\Data
      */
-    protected $rulesDataHelper;
+    private $rulesDataHelper;
 
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    /**
-     * @var \Magento\Catalog\Model\Product
-     */
-    private $productModel;
     /**
      * @var \Amasty\Rules\Model\ConfigModel
      */
     private $configModel;
 
-    /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Catalog\Model\Product $productModel
-     * @param \Amasty\Rules\Helper\Data $rulesDataHelper
-     * @param \Amasty\Rules\Model\ConfigModel $configModel
-     */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Catalog\Model\Product $productModel,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Amasty\Rules\Helper\Data $rulesDataHelper,
         \Amasty\Rules\Model\ConfigModel $configModel
     ) {
-        $this->_objectManager = $objectManager;
+        $this->productRepository = $productRepository;
         $this->rulesDataHelper = $rulesDataHelper;
-        $this->productModel = $productModel;
         $this->configModel = $configModel;
     }
 
@@ -59,14 +47,16 @@ class Product
     public function afterLoadAttributeOptions(
         \Magento\Rule\Model\Condition\Product\AbstractProduct $subject
     ) {
-        $attributes = [];
-        $attributes['quote_item_sku'] = __('Custom Options SKU');
-
+        $attributes = [
+            'quote_item_sku' => __('Custom Options SKU'),
+            'quote_item_row_total_incl_tax' => __('Row total in cart with tax')
+        ];
         if ($this->configModel->getOptionsValue()) {
             $attributes['quote_item_value'] = __('Custom Options Values');
         }
 
         $subject->setAttributeOption(array_merge($subject->getAttributeOption(), $attributes));
+
         return $subject;
     }
 
@@ -79,15 +69,21 @@ class Product
         \Magento\Framework\Model\AbstractModel $object
     ) {
         if ($object->getProduct() instanceof \Magento\Catalog\Model\Product) {
+            /** @var \Magento\Catalog\Model\Product $product */
             $product = $object->getProduct();
         } else {
-            $product = $this->productModel->load($object->getProductId());
+            try {
+                $product = $this->productRepository->getById($object->getProductId());
+            } catch (NoSuchEntityException $e) {
+                $product = null;
+            }
         }
 
         if ($product && $product->getTypeId() !== 'skip') {
             if ($this->configModel->getOptionsValue()) {
-                $options = $product->getTypeInstance(true)->getOrderOptions($product);
+                $options = $product->getTypeInstance()->getOrderOptions($product);
                 $values = '';
+
                 if (isset($options['options'])) {
                     foreach ($options['options'] as $option) {
                         $values .= '|' . $option['value'];
@@ -97,6 +93,7 @@ class Product
                 $product->setQuoteItemValue($values);
             }
 
+            $product->setQuoteItemRowTotalInclTax($object->getBaseRowTotalInclTax());
             $product->setQuoteItemSku($object->getSku());
             $object->setProduct($product);
         }

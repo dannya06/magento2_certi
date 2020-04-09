@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -10,9 +10,13 @@ namespace Amasty\Rules\Plugin\Framework\Api;
 
 use Amasty\Rules\Plugin\Cart\CartTotalRepository as CartTotalRepositoryPlugin;
 use Magento\Framework\Api\ExtensibleDataInterface;
-use Magento\Framework\Registry;
+use Amasty\Rules\Model\Registry;
 use Magento\Quote\Api\Data\TotalsInterface;
 
+/**
+ * resolve fatal
+ * @see \Amasty\Rules\Plugin\Cart\CartTotalRepository::beforeGet
+ */
 class DataObjectHelperPlugin
 {
     /**
@@ -26,13 +30,10 @@ class DataObjectHelperPlugin
     }
 
     /**
-     * resolve fatal
-     * @see \Amasty\Rules\Plugin\Cart\CartTotalRepository::beforeGet
-     *
      * @param \Magento\Framework\Api\DataObjectHelper $subject
-     * @param object                                  $dataObject
-     * @param array                                   $data
-     * @param string                                  $interfaceName
+     * @param object $dataObject
+     * @param array $data
+     * @param string $interfaceName
      *
      * @return array
      */

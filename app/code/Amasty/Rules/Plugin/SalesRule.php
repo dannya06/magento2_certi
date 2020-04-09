@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -10,6 +10,9 @@ namespace Amasty\Rules\Plugin;
 
 use Amasty\Rules\Api\Data\RuleInterface;
 
+/**
+ * Replace Amasty Rule with data instead of string array.
+ */
 class SalesRule
 {
     /**
@@ -33,6 +36,7 @@ class SalesRule
     {
         /** @var array $attributes */
         $attributes = $salesRule->getExtensionAttributes() ?: [];
+
         if (!isset($attributes[RuleInterface::EXTENSION_CODE])
             || !is_array($attributes[RuleInterface::EXTENSION_CODE])
         ) {

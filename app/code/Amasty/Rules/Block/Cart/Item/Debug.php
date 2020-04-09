@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -13,6 +13,9 @@ use Magento\Framework\View\Element\Template\Context as Context;
 use Amasty\Rules\Model\DiscountRegistry as DiscountRegistry;
 use Amasty\Rules\Model\Debug as DebugModel;
 
+/**
+ * Add debug data to cart item information.
+ */
 class Debug extends Generic
 {
     /**

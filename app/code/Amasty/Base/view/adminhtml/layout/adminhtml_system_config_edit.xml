@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 -->
@@ -14,6 +14,9 @@
     <body>
         <referenceContainer name="messages.wrapper">
             <block class="Amasty\Base\Block\Adminhtml\Messages" name="ambase.messages" template="Amasty_Base::messages.phtml" after="page.messages"/>
+        </referenceContainer>
+        <referenceContainer name="left">
+            <block class="Amasty\Base\Block\Adminhtml\Notification" name="ambase.notification" template="Amasty_Base::notification.phtml"/>
         </referenceContainer>
     </body>
 </page>

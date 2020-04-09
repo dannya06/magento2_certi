@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -11,6 +11,9 @@ namespace Amasty\Rules\Observer\Salesrule;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
+/**
+ * Entry point for @see \Amasty\Rules\Model\DiscountRegistry::setDiscount
+ */
 class Discount implements ObserverInterface
 {
     /**

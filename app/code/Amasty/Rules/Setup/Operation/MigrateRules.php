@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -15,6 +15,10 @@ use Magento\SalesRule\Api\RuleRepositoryInterface;
 use Amasty\Rules\Model\RuleFactory as AmastyRule;
 use Amasty\Rules\Model\ResourceModel\RuleFactory as RuleResourceFactory;
 
+/**
+ * @since 2.0.0
+ * phpcs:ignoreFile
+ */
 class MigrateRules
 {
     /**
@@ -49,6 +53,11 @@ class MigrateRules
         $this->ruleResourceFactory = $ruleResourceFactory;
     }
 
+    /**
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function execute()
     {
         $rulesArray = [
@@ -106,6 +115,8 @@ class MigrateRules
     /**
      * @param \Magento\SalesRule\Model\Data\Rule $rule
      * @param int $discountStep
+     *
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
     private function setNqtyToXYrules($rule, $discountStep)
     {

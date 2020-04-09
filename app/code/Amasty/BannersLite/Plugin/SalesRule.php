@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 
@@ -28,6 +28,7 @@ class SalesRule
      * @param \Magento\SalesRule\Model\Rule $salesRule
      *
      * @return \Magento\SalesRule\Model\Rule
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterLoadPost(\Magento\SalesRule\Model\Rule $subject, \Magento\SalesRule\Model\Rule $salesRule)
     {

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -13,6 +13,10 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\EntityManager\MetadataPool;
 
+/**
+ * Class InstallSchema
+ * phpcs:ignoreFile
+ */
 class InstallSchema implements InstallSchemaInterface
 {
     /**

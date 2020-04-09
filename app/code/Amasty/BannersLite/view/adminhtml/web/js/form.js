@@ -8,6 +8,7 @@ define([
     return Component.extend({
         defaults: {
             rulesActions: [
+                //SP Rules
                 'thecheapest',
                 'themostexpencive',
                 'moneyamount',
@@ -29,14 +30,20 @@ define([
                 'aftern_disc',
                 'aftern_fixdisc',
                 'setof_percent',
-                'setof_fixed'
+                'setof_fixed',
+                //Free Gift Rules
+                'ampromo_product',
+                'ampromo_items',
+                'ampromo_cart',
+                'ampromo_spent',
+                'ampromo_eachn'
             ],
             listens: {
                 '${ $.parentName }.actions.simple_action:value': 'onChange'
             }
         },
 
-        initialize: function() {
+        initialize: function () {
             this._super();
             registry.get(this.parentName + '.actions.simple_action', function (component) {
                 this.checkVisibility(component.value());

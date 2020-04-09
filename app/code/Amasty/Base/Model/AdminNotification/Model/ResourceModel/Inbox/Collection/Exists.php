@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -19,15 +19,5 @@ class Exists extends \Magento\AdminNotification\Model\ResourceModel\Inbox\Collec
         $this->addFieldToFilter('url', (string)$item->link);
 
         return $this->getSize() > 0;
-    }
-
-    /**
-     * @param \SimpleXMLElement $data
-     * @return string
-     */
-    private function convertString(\SimpleXMLElement $data)
-    {
-        $data = htmlspecialchars((string)$data);
-        return $data;
     }
 }

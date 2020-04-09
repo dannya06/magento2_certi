@@ -1,10 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
+/**
+ * phpcs:ignoreFile
+ * @codeCoverageIgnore
+ */
 
 /** @var $product \Magento\Catalog\Model\Product */
 $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
@@ -62,4 +66,3 @@ $product4
     ->setMetaKeyword('meta keyword4')
     ->setMetaDescription('meta description4')
     ->save();
-

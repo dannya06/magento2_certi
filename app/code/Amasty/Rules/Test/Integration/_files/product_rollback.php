@@ -1,13 +1,13 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 /**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
+ * phpcs:ignoreFile
+ * @codeCoverageIgnore
  */
 
 /** @var \Magento\Framework\Registry $registry */
