@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 
@@ -259,13 +259,13 @@ class BannerRepository implements BannerRepositoryInterface
     }
 
     /**
-    * Helper function that adds a SortOrder to the collection.
-    *
-    * @param SortOrder[] $sortOrders
-    * @param Collection  $bannerCollection
-    *
-    * @return void
-    */
+     * Helper function that adds a SortOrder to the collection.
+     *
+     * @param SortOrder[] $sortOrders
+     * @param Collection $bannerCollection
+     *
+     * @return void
+     */
     private function addOrderToCollection($sortOrders, Collection $bannerCollection)
     {
         /** @var SortOrder $sortOrder */
@@ -276,5 +276,13 @@ class BannerRepository implements BannerRepositoryInterface
                 ($sortOrder->getDirection() == SortOrder::SORT_DESC) ? SortOrder::SORT_DESC : SortOrder::SORT_ASC
             );
         }
+    }
+
+    /**
+     * @return Banner
+     */
+    public function getEmptyModel()
+    {
+        return $this->bannerFactory->create();
     }
 }

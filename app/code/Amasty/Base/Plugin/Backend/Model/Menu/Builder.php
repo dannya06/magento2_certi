@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -15,8 +15,6 @@ use Magento\Store\Model\ScopeInterface;
 class Builder
 {
     const BASE_MENU = 'MenuAmasty_Base::menu';
-
-    const SEO_PARAMS = '?utm_source=extension&utm_medium=backend&utm_campaign=common_menu_to_guide';
 
     const SETTING_ENABLE = 'amasty_base/menu/enable';
 
@@ -70,6 +68,11 @@ class Builder
      */
     private $scopeConfig;
 
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         \Magento\Backend\Model\Menu\Config $menuConfig,
         \Magento\Backend\Model\Menu\Filter\IteratorFactory $iteratorFactory,
@@ -79,7 +82,8 @@ class Builder
         \Magento\Config\Model\Config\Structure $configStructure,
         \Magento\Framework\App\ProductMetadataInterface $metadata,
         ObjectFactory $objectFactory,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Psr\Log\LoggerInterface $logger
     ) {
         $this->menuConfig = $menuConfig;
         $this->iteratorFactory = $iteratorFactory;
@@ -90,10 +94,11 @@ class Builder
         $this->objectFactory = $objectFactory;
         $this->metadata = $metadata;
         $this->scopeConfig = $scopeConfig;
+        $this->logger = $logger;
     }
 
     /**
-     * @param $subject
+     * @param \Magento\Backend\Model\Menu\Builder $subject
      * @param Menu $menu
      *
      * @return Menu
@@ -102,6 +107,7 @@ class Builder
     {
         try {
             $menu = $this->observeMenu($menu);
+            //phpcs:ignore Magento2.CodeAnalysis.EmptyBlock.DetectedCatch
         } catch (\Exception $ex) {
             //do nothing - do not show our menu
         }
@@ -113,6 +119,8 @@ class Builder
      * @param Menu $menu
      *
      * @return Menu
+     *
+     * @throws \Exception
      */
     private function observeMenu(Menu $menu)
     {
@@ -134,11 +142,13 @@ class Builder
         $configItems = $this->getConfigItems();
 
         foreach ($this->getInstalledModules($configItems) as $title => $installedModule) {
-            $itemsToAdd = [];
+
             $moduleInfo = $this->moduleHelper->getFeedModuleData($installedModule);
 
             if (isset($menuItems[$installedModule])) {
-                $this->cloneMenuItems($menuItems[$installedModule], $itemsToAdd, $menu);
+                $itemsToAdd = $this->cloneMenuItems($menuItems[$installedModule], $menu);
+            } else {
+                $itemsToAdd = [];
             }
 
             if (isset($configItems[$installedModule]['id'])) {
@@ -149,7 +159,10 @@ class Builder
                     'adminhtml/system_config/edit/section/' . $configItems[$installedModule]['id'],
                     __('Configuration')->render()
                 );
-                $itemsToAdd[] = $amastyItem;
+
+                if ($amastyItem) {
+                    $itemsToAdd[] = $amastyItem;
+                }
             }
 
             if (isset($moduleInfo['guide']) && $moduleInfo['guide']) {
@@ -160,7 +173,19 @@ class Builder
                     'adminhtml/system_config/edit/section/ambase',
                     __('User Guide')->render()
                 );
-                $itemsToAdd[] = $amastyItem;
+
+                if ($amastyItem) {
+                    $itemsToAdd[] = $amastyItem;
+                }
+            }
+
+            $parentNodeResource = '';
+            foreach ($itemsToAdd as $key => $itemToAdd) {
+                $itemToAdd = $itemToAdd->toArray();
+                if (empty($itemToAdd['action'])) {
+                    $parentNodeResource = $itemToAdd['resource'];
+                    unset($itemsToAdd[$key]);
+                }
             }
 
             if ($itemsToAdd) {
@@ -172,7 +197,7 @@ class Builder
                             'id'       => $itemId,
                             'title'    => $title,
                             'module'   => $installedModule,
-                            'resource' => self::BASE_MENU
+                            'resource' => $this->getValidResource($installedModule, $parentNodeResource)
                         ]
                     ]
                 );
@@ -189,31 +214,60 @@ class Builder
     }
 
     /**
-     * @param array $menuItems
-     * @param array $itemsToAdd
-     * @param Menu $menu
+     * @param $installedModule
+     * @param $parentNode
+     *
+     * @return string
      */
-    private function cloneMenuItems($menuItems, &$itemsToAdd, Menu $menu)
+    private function getValidResource($installedModule, $parentNodeResource)
     {
+        if (!empty($parentNodeResource)) {
+            return $parentNodeResource;
+        }
+        return $installedModule . "::config";
+    }
+
+    /**
+     * @param $menuItems
+     * @param Menu $menu
+     * @return array
+     */
+    private function cloneMenuItems($menuItems, Menu $menu)
+    {
+        $itemsToAdd = [];
         foreach ($menuItems as $link) {
             $amastyItem = $menu->get($link);
             if ($amastyItem) {
                 $itemData = $amastyItem->toArray();
-                if (isset($itemData['id'])
-                    && isset($itemData['resource'])
-                    && isset($itemData['action'])
-                    && isset($itemData['title'])
-                ) {
-                    $module = isset($itemData['module']) ? $itemData['module'] : explode('::', $itemData['resource'])[0];
-                    $itemsToAdd[] = $this->generateMenuItem(
+                if (isset($itemData['id'], $itemData['resource'], $itemData['title'])) {
+                    $itemToAdd = $this->generateMenuItem(
                         $itemData['id'] . 'menu',
-                        $module,
+                        $this->getModuleFullName($itemData),
                         $itemData['resource'],
                         $itemData['action'],
                         $itemData['title']
                     );
+
+                    if ($itemToAdd) {
+                        $itemsToAdd[] = $itemToAdd;
+                    }
                 }
             }
+        }
+        return $itemsToAdd;
+    }
+
+    /**
+     * @param $itemData
+     *
+     * @return string
+     */
+    private function getModuleFullName($itemData)
+    {
+        if (isset($itemData['module'])) {
+            return $itemData['module'];
+        } else {
+            return current(explode('::', $itemData['resource']));
         }
     }
 
@@ -241,6 +295,7 @@ class Builder
                 ]
             );
         } catch (\Exception $ex) {
+            $this->logger->warning($ex);
             $item = false;
         }
 
@@ -260,9 +315,9 @@ class Builder
         $modules = $dispatchResult->toArray();
 
         foreach ($modules as $moduleName) {
-            if (strstr($moduleName, 'Amasty_') === false
-                || $moduleName === 'Amasty_Base'
-                || in_array($moduleName, $this->moduleHelper->getRestrictedModules())
+            if ($moduleName === 'Amasty_Base'
+                || strpos($moduleName, 'Amasty_') === false
+                || in_array($moduleName, $this->moduleHelper->getRestrictedModules(), true)
             ) {
                 continue;
             }
@@ -311,9 +366,6 @@ class Builder
         foreach ($config as $item => $section) {
             $name = explode('::', $item);
             $name = $name[0];
-            if (!isset($configItems[$name])) {
-                $configItems[$name] = [];
-            }
             $configItems[$name] = $section;
         }
 
@@ -327,19 +379,36 @@ class Builder
     {
         $amasty = [];
         foreach ($this->getMenuIterator($menu) as $menuItem) {
-            $menuId = $menuItem->getId();
-            if (strpos($menuId, 'Amasty') !== false
-                && strpos($menuId, 'Amasty_Base') === false
-                && ($menuItem->getAction() && strpos($menuItem->getAction(), 'system_config') === false)
-            ) {
-                $amasty[] = $menuId;
+            if ($this->isCollectedNode($menuItem)) {
+                $amasty[] = $menuItem->getId();
             }
             if ($menuItem->hasChildren()) {
-                $amasty = array_merge($amasty, $this->generateAmastyItems($menuItem->getChildren()));
+                foreach ($this->generateAmastyItems($menuItem->getChildren()) as $menuChild) {
+                    $amasty[] = $menuChild;
+                }
             }
         }
 
         return $amasty;
+    }
+
+    /**
+     * @param $menuItem
+     *
+     * @return bool
+     */
+    private function isCollectedNode($menuItem)
+    {
+        if (strpos($menuItem->getId(), 'Amasty') === false
+            || strpos($menuItem->getId(), 'Amasty_Base') !== false) {
+            return false;
+        }
+
+        if (empty($menuItem->getAction()) || (strpos($menuItem->getAction(), 'system_config') === false)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -386,10 +455,7 @@ class Builder
         if ($config) {
             foreach ($config as $item) {
                 $data = $item->getData('resource');
-                if (isset($data['resource'])
-                    && isset($data['id'])
-                    && $data['id']
-                ) {
+                if (isset($data['resource'], $data['id']) && $data['id']) {
                     $result[$data['resource']] = $data;
                 }
             }
@@ -399,26 +465,26 @@ class Builder
     }
 
     /**
-     * @param $config
-     * @param $name
+     * @param \Magento\Config\Model\Config\Structure\Element\Iterator $config
+     * @param string                                                  $name
      *
-     * @return array
+     * @return \Magento\Config\Model\Config\Structure\Element\Iterator|null
      */
     private function findResourceChildren($config, $name)
     {
-        $result = [];
+        /** @var \Magento\Config\Model\Config\Structure\Element\Tab|null $currentNode */
         $currentNode = null;
-        foreach ($config as $key => $node) {
-            if ($node->getId() == $name) {
+        foreach ($config as $node) {
+            if ($node->getId() === $name) {
                 $currentNode = $node;
                 break;
             }
         }
 
         if ($currentNode) {
-            $result = $currentNode->getChildren();
+            return $currentNode->getChildren();
         }
 
-        return $result;
+        return null;
     }
 }

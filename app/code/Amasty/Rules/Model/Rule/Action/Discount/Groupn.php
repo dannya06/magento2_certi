@@ -1,15 +1,22 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
-/**
- * Copyright © 2015 Amasty. All rights reserved.
- */
+
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
+use Magento\Quote\Model\Quote\Item\AbstractItem;
+use Magento\SalesRule\Model\Rule;
+use Magento\SalesRule\Model\Rule\Action\Discount\Data;
+
+/**
+ * Amasty Rules calculation by action.
+ *
+ * @see \Amasty\Rules\Helper\Data::TYPE_GROUP_N
+ */
 class Groupn extends AbstractRule
 {
     const RULE_VERSION = '1.0.0';
@@ -19,23 +26,30 @@ class Groupn extends AbstractRule
     public static $cachedDiscount = [];
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param Rule $rule
+     * @param AbstractItem $item
      * @param float $qty
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data|mixed
+     *
+     * @return Data
+     *
+     * @throws \Exception
      */
     public function calculate($rule, $item, $qty)
     {
-        $this->beforeCalculate($rule, $item, $qty);
+        $this->beforeCalculate($rule);
         $discountData = $this->calculateDiscount($rule, $item);
         $this->afterCalculate($discountData, $rule, $item);
+
         return $discountData;
     }
 
     /**
-     * @param $rule
-     * @param $item
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data
+     * @param Rule $rule
+     * @param AbstractItem $item
+     *
+     * @return Data
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function calculateDiscount($rule, $item)
     {
@@ -53,25 +67,35 @@ class Groupn extends AbstractRule
     }
 
     /**
-     * @param $item
-     * @param $rule
+     * @param AbstractItem $item
+     * @param Rule $rule
+     *
      * @return $this
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function calculateDiscountForRule($item, $rule)
     {
-        $allItems = $this->getSortedItems($item->getAddress(), $rule, $this->getSortOrder($rule, self::DEFAULT_SORT_ORDER));
+        $allItems = $this->getSortedItems(
+            $item->getAddress(),
+            $rule,
+            $this->getSortOrder($rule, self::DEFAULT_SORT_ORDER)
+        );
 
         $totalPrice = $this->getItemsPrice($allItems);
 
         if ($totalPrice < $rule->getDiscountAmount()) {
             return $this;
         }
+
         $this->calculateDiscountForEachGroup($rule, $allItems);
+
+        return $this;
     }
 
     /**
-     * @param $rule
-     * @param $allItems
+     * @param Rule $rule
+     * @param array $allItems
      */
     protected function calculateDiscountForEachGroup($rule, $allItems)
     {
@@ -101,14 +125,18 @@ class Groupn extends AbstractRule
     }
 
     /**
-     * @param $totalPrice
-     * @param $rule
-     * @param $itemsForSet
-     * @param $quoteAmount
+     * @param float $totalPrice
+     * @param Rule $rule
+     * @param AbstractItem[] $itemsForSet
+     *
+     * @param float $quoteAmount
+     *
+     * @throws \Exception
      */
     protected function calculateDiscountForItems($totalPrice, $rule, $itemsForSet, $quoteAmount)
     {
         $ruleId = $this->getRuleId($rule);
+
         foreach ($itemsForSet as $item) {
             $discountData = $this->discountFactory->create();
 
@@ -137,11 +165,11 @@ class Groupn extends AbstractRule
 
             self::$cachedDiscount[$ruleId][$item->getId()] = $discountData;
         }
-
     }
 
     /**
      * @param $items
+     *
      * @return float|int
      */
     protected function getItemsPrice($items)
@@ -153,5 +181,4 @@ class Groupn extends AbstractRule
 
         return $totalPrice;
     }
-
 }

@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 -->
@@ -27,6 +27,7 @@
                     <item name="formElement" xsi:type="string">select</item>
                     <item name="source" xsi:type="string">sales_rule</item>
                     <item name="dataScope" xsi:type="string">extension_attributes.show_banner_for</item>
+                    <item name="sortOrder" xsi:type="number">2</item>
                     <item name="switcherConfig" xsi:type="array">
                         <item name="enabled" xsi:type="boolean">true</item>
                         <item name="rules" xsi:type="array">

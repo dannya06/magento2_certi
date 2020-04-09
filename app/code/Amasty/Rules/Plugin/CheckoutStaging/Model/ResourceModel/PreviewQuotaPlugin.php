@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -10,11 +10,12 @@ namespace Amasty\Rules\Plugin\CheckoutStaging\Model\ResourceModel;
 
 use Magento\CheckoutStaging\Setup\InstallSchema;
 
+/**
+ * Fix Magento issue with table prefix on preview
+ */
 class PreviewQuotaPlugin
 {
     /**
-     * Fix Magento issue with table prefix on preview
-     *
      * @param \Magento\CheckoutStaging\Model\ResourceModel\PreviewQuota $subject
      * @param callable $proceed
      * @param int $id
@@ -34,8 +35,8 @@ class PreviewQuotaPlugin
             return true;
         }
         return 1 === $connection->insert(
-                $subject->getTable(InstallSchema::PREVIEW_QUOTA_TABLE),
-                ['quote_id' => (int) $id]
-            );
+            $subject->getTable(InstallSchema::PREVIEW_QUOTA_TABLE),
+            ['quote_id' => (int) $id]
+        );
     }
 }

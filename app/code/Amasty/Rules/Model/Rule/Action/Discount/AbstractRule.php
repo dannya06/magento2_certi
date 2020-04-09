@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -9,20 +9,22 @@
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
 use Amasty\Rules\Api\Data\RuleInterface;
-use Amasty\Rules\Helper as amHelper;
-use Magento\SalesRule\Model\Rule\Action\Discount as Discount;
+use Amasty\Rules\Helper\Data;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Model\Quote\Address;
+use Magento\Quote\Model\Quote\Item;
+use Magento\Quote\Model\Quote\Item\AbstractItem;
+use Magento\SalesRule\Model\Rule;
+use Magento\SalesRule\Model\Rule\Action\Discount;
 use Magento\Store\Model\StoreManagerInterface;
 
+/**
+ * Base class for all Amasty Rule actions.
+ */
 abstract class AbstractRule extends Discount\AbstractDiscount
 {
     const ASC_SORT = 'asc';
-
     const DESC_SORT = 'desc';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $_objectManager;
 
     /**
      * @var StoreManagerInterface
@@ -35,7 +37,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     protected $rulesProductHelper;
 
     /**
-     * @var \Amasty\Rules\Helper\Data
+     * @var Data
      */
     protected $rulesDataHelper;
 
@@ -45,16 +47,14 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     protected $rulesDiscountHelper;
 
     /**
-     * @var \Magento\Customer\Model\Session
+     * @var \Magento\Customer\Model\Session|\Magento\Framework\Session\SessionManager
      */
     protected $customerSession;
 
-    protected $itemsWithDiscount = null;
-
     /**
-     * @var \Amasty\Rules\Model\ConfigModel
+     * @var array|null
      */
-    private $configModel;
+    protected $itemsWithDiscount = null;
 
     /**
      * @var \Amasty\Rules\Model\RuleResolver
@@ -66,22 +66,32 @@ abstract class AbstractRule extends Discount\AbstractDiscount
      */
     protected $categoriesCollection;
 
+    /**
+     * @var \Amasty\Rules\Model\ConfigModel
+     */
+    private $configModel;
+
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
+     */
+    private $productCollections;
+
     public function __construct(
         \Magento\SalesRule\Model\Validator $validator,
         Discount\DataFactory $discountDataFactory,
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
-        \Magento\Framework\ObjectManagerInterface $objectManager,
         StoreManagerInterface $storeManager,
         \Amasty\Rules\Helper\Product $rulesProductHelper,
-        \Amasty\Rules\Helper\Data $rulesDataHelper,
+        Data $rulesDataHelper,
         \Amasty\Rules\Helper\Discount $rulesDiscountHelper,
-        \Magento\Customer\Model\Session $customerSession,
+        \Magento\Framework\Session\SessionManager $customerSession,
         \Amasty\Rules\Model\ConfigModel $configModel,
         \Amasty\Rules\Model\RuleResolver $ruleResolver,
-        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoriesCollection
+        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoriesCollection,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollections
     ) {
         parent::__construct($validator, $discountDataFactory, $priceCurrency);
-        $this->_objectManager = $objectManager;
+
         $this->storeManager = $storeManager;
         $this->rulesProductHelper = $rulesProductHelper;
         $this->rulesDataHelper = $rulesDataHelper;
@@ -90,12 +100,14 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         $this->configModel = $configModel;
         $this->ruleResolver = $ruleResolver;
         $this->categoriesCollection = $categoriesCollection;
+        $this->productCollections = $productCollections;
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Data\Rule | \Magento\SalesRule\Model\Rule $rule
+     * @param \Magento\SalesRule\Model\Data\Rule|Rule $rule
      *
      * @return int|null
+     * @throws \Exception
      */
     protected function getRuleId($rule)
     {
@@ -103,11 +115,15 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Address $address
-     * @param \Magento\SalesRule\Model\Rule $rule
+     * Covered by unit-test.
+     *
+     * @param Address $address
+     * @param Rule $rule
      * @param string $order
      *
      * @return array
+     *
+     * @throws LocalizedException
      */
     protected function getSortedItems($address, $rule, $order)
     {
@@ -115,118 +131,144 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         $items = $this->validateItems($items, $rule);
         $items = $this->splitItemsWithQty($items);
         $items = $this->sortItemsByPrice($items, $order);
+
         return $items;
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Address $address
+     * Covered by unit-test @param Address $address
      *
-     * @return mixed
+     * @return Address\Item[]
+     * @see AbstractRule::getSortedItems
+     *
      */
     protected function getAllItems($address)
     {
         $items = $address->getAllItems();
+
         return $items;
     }
 
     /**
      * @param array $items
-     * @param /Magento/SalesRule/Model/Rule $rule
+     * @param Rule $rule
      *
      * @return array
+     * @throws LocalizedException
      */
     protected function validateItems($items, $rule)
     {
-        $resItems = [];
+        $validItems = [];
         $amrulesId = 1;
 
-        /** @var \Magento\Quote\Model\Quote\Item $item */
+        /** @var Item $item */
         foreach ($items as $item) {
-            if ($this->skip($rule, $item)) {
+            if ($this->skip($rule, $item) || $item->getParentItem()) {
                 continue;
             }
 
-            if ($item->getParentItem()) {
-                continue;
-            }
-
-            if ($this->validator->getItemBasePrice($item) != 0) {
-                if (!$rule->getActions()->validate($item)) {
-                    $childItems = $item->getChildren();
-                    $isContinue = true;
-
-                    if (!empty($childItems)) {
-                        foreach ($childItems as $childItem) {
-                            if ($rule->getActions()->validate($childItem)) {
-                                $isContinue = false;
-
-                                break;
-                            }
-                        }
-                    }
-                    if ($isContinue) {
-                        continue;
-                    }
-                }
-
+            if ($this->validator->getItemBasePrice($item) != 0 && $this->validateItem($item, $rule)) {
                 $item->setAmrulesId($amrulesId);
-                $resItems[] = $item;
+                $validItems[] = $item;
                 $amrulesId++;
             }
         }
 
-        return $resItems;
+        return $validItems;
     }
 
     /**
-     * @param array $items
+     * @param Item $item
+     * @param Rule $rule
+     *
+     * @return bool
+     */
+    private function validateItem($item, $rule)
+    {
+        if (!$rule->getActions()->validate($item)) {
+            $childItems = $item->getChildren();
+
+            if (!empty($childItems)) {
+                foreach ($childItems as $childItem) {
+                    if ($rule->getActions()->validate($childItem)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Covered by unit-test @param array $items
      *
      * @return array
+     * @see AbstractRule::getSortedItems
+     *
      */
     protected function splitItemsWithQty($items)
     {
         $resItems = [];
+
         foreach ($items as $item) {
             $qty = $item->getQty();
-            for ($i=0;$i<$qty;$i++) {
+
+            for ($i = 0; $i < $qty; $i++) {
                 $resItems[] = $item;
             }
         }
+
         return $resItems;
     }
 
     /**
-     * @param array $items
+     * Covered by unit-test @see AbstractRule::getSortedItems
+     *
+     * @param \Magento\Quote\Model\Quote\Address\Item[] $items
      * @param string $order
      *
-     * @return mixed
+     * @return \Magento\Quote\Model\Quote\Address\Item[]
      */
     protected function sortItemsByPrice($items, $order)
     {
-        usort($items, [$this, $order . "Sort"]);
+        if ($order == self::ASC_SORT) {
+            usort($items, [$this, "ascSort"]);
+        }
+
+        if ($order == self::DESC_SORT) {
+            usort($items, [$this, "descSort"]);
+        }
+
         return $items;
     }
 
     /**
-     * @param $item1
-     * @param $item2
+     * Covered by unit-test @see AbstractRule::sortItemsByPrice
      *
-     * @return int
+     * @param Address\Item $item1
+     * @param Address\Item $item2
+     *
+     * @return bool
      */
     protected function ascSort($item1, $item2)
     {
-        return $this->validator->getItemBasePrice($item1)>$this->validator->getItemBasePrice($item2);
+        return $this->validator->getItemBasePrice($item1) > $this->validator->getItemBasePrice($item2);
     }
 
     /**
-     * @param $item1
-     * @param $item2
+     * Covered by unit-test @see AbstractRule::sortItemsByPrice
      *
-     * @return int
+     * @param Address\Item $item1
+     * @param Address\Item $item2
+     *
+     * @return bool
      */
     protected function descSort($item1, $item2)
     {
-        return $this->validator->getItemBasePrice($item1)<$this->validator->getItemBasePrice($item2);
+        return $this->validator->getItemBasePrice($item1) < $this->validator->getItemBasePrice($item2);
     }
 
     /**
@@ -237,55 +279,53 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     protected function getItemsId($items)
     {
         $itemsId = [];
+
         foreach ($items as $item) {
             $itemsId[] = $item->getAmrulesId();
         }
+
         return $itemsId;
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param float $step
-     * @param float $i
+     * Covered by unit-test @see AbstractRule::skipEachN
+     *
+     * @param Rule $rule
+     * @param int $step
+     * @param int $i
      * @param float $currQty
      * @param float $qty
+     * @param null|int $eachNCounter
      *
-     * @param null $eachNCounter
      * @return bool
      */
     protected function skipBySteps($rule, $step, $i, $currQty, $qty, $eachNCounter = null)
     {
-        $eachN = [
-            amHelper\Data::TYPE_EACH_N,
-            amHelper\Data::TYPE_EACH_N_FIXED,
-            amHelper\Data::TYPE_EACH_N_FIXDISC,
-        ];
-        $eachProdAfterN = [
-            amHelper\Data::TYPE_EACH_M_AFT_N_PERC,
-            amHelper\Data::TYPE_EACH_M_AFT_N_DISC,
-            amHelper\Data::TYPE_EACH_M_AFT_N_FIX
-        ];
         $simpleAction = $rule->getSimpleAction();
 
-        if ($i === 0 && in_array($simpleAction, $eachProdAfterN)) {
+        if ($i === 0 && in_array($simpleAction, Data::TYPE_EACH_M_AFT_N)) {
             return false;
         }
-        if ($step > 1 && $eachNCounter % $step && in_array($simpleAction, $eachN)) {
+        if ($step > 1 && $eachNCounter % $step && in_array($simpleAction, Data::GROUP_EACH_N)) {
             return true;
         }
-        if ($step > 1 && ($i % $step) && in_array($simpleAction, $eachProdAfterN)) {
+        if ($step > 1 && ($i % $step) && in_array($simpleAction, Data::TYPE_EACH_M_AFT_N)) {
             return true;
         }
 
-        $typeGroupN = amHelper\Data::TYPE_GROUP_N;
-        $typeGroupNDisc = amHelper\Data::TYPE_GROUP_N_DISC;
+        $typeGroupN = Data::TYPE_GROUP_N;
+        $typeGroupNDisc = Data::TYPE_GROUP_N_DISC;
 
         // introduce limit for each N with discount or each N with fixed.
         if ((($currQty >= $qty) && ($simpleAction !== $typeGroupN) && ($simpleAction !== $typeGroupNDisc))
-            || (($rule->getDiscountQty() <= $currQty) && ($rule->getDiscountQty()) && (($simpleAction === $typeGroupN)
-                    || ($simpleAction === $typeGroupNDisc)))) {
+            || (($rule->getDiscountQty() <= $currQty) && ($rule->getDiscountQty())
+                && (($simpleAction === $typeGroupN)
+                    || ($simpleAction === $typeGroupNDisc)))
+        ) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -297,47 +337,54 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     public function getArrayValueCount($array, $value)
     {
         $values = array_count_values($array);
+
         return $values[$value];
     }
 
     /**
+     * Covered by unit-test @see AbstractRule::skipEachN
+     *
      * @param float $qty
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @return float
+     * @param Rule $rule
+     *
+     * @return int
      */
     public function ruleQuantity($qty, $rule)
     {
         $discountQty = 1;
         $discountStep = (int)$rule->getDiscountStep();
 
-        $arrayWithEachRules = ['eachmaftn_fixdisc', 'eachmaftn_perc', 'eachmaftn_fixprice'];
-
         if ($discountStep) {
-            if (in_array($rule->getSimpleAction(), $arrayWithEachRules)) {
+            if (in_array($rule->getSimpleAction(), Data::TYPE_EACH_M_AFT_N)) {
                 $discountQty = round($qty / $discountStep);
             } else {
                 $discountQty = floor($qty / $discountStep);
             }
 
             $maxDiscountQty = (int)$rule->getDiscountQty();
+
             if (!$maxDiscountQty) {
                 $maxDiscountQty = $qty;
             }
 
             $discountQty = min($discountQty, $maxDiscountQty);
         }
+
         return $discountQty;
     }
 
     /**
+     * Covered by unit-test.
+     *
      * @param array $allItems
-     * @param \Magento\SalesRule\Model\Rule $rule
+     * @param Rule $rule
+     *
      * @return array
      */
     public function skipEachN($allItems, $rule)
     {
-        $discountStep = (int)$rule->getDiscountStep();
-        $step = $discountStep !== '' ? $discountStep : (int)$rule->getAmrulesRule()->getEachm();
+        $step = (int)$rule->getDiscountStep();
+
         if ($step <= 0) {
             $step = 1;
         }
@@ -346,13 +393,15 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         $resItems = [];
         $itemsId = $this->getItemsId($allItems);
         $ruleQty = $this->ruleQuantity(count($itemsId), $rule);
-        $eachN =  1;
+        $eachN = 1;
 
         foreach ($allItems as $i => $allItem) {
             if ($this->skipBySteps($rule, $step, $i, $currQty, $ruleQty, $eachN)) {
                 $eachN++;
+
                 continue;
             }
+
             $eachN++;
             $currQty++;
             $resItems[] = $allItem;
@@ -362,7 +411,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param AbstractItem $item
      *
      * @return int
      */
@@ -371,12 +420,12 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         if (!$item) {
             return 1;
         }
-        //comatibility with CE 1.3 version
-        return $item->getTotalQty() ? $item->getTotalQty() : $item->getQty();
+
+        return $item->getTotalQty() ?: $item->getQty();
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param AbstractItem $item
      *
      * @return int
      */
@@ -385,13 +434,13 @@ abstract class AbstractRule extends Discount\AbstractDiscount
         if (!$item) {
             return 1;
         }
-        //comatibility with CE 1.3 version
-        return $item->getQty() ? $item->getQty() : $item->getTotalQty();
+
+        return $item->getQty() ?: $item->getTotalQty();
     }
 
     /**
-     * @param $prices
-     * @param $qty
+     * @param array $prices
+     * @param int $qty
      *
      * @return bool
      */
@@ -405,14 +454,16 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
-     * @param float $qty
+     * @param Rule $rule
+     *
      * @return bool
+     *
+     * @throws \Exception
      */
-    public function beforeCalculate($rule, $item, $qty)
+    public function beforeCalculate($rule)
     {
         $this->rulesProductHelper->setRule($rule);
+
         if (!$rule->hasData(RuleInterface::RULE_NAME)) {
             $this->ruleResolver->getSpecialPromotions($rule);
         }
@@ -421,25 +472,32 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData
+     * @param Rule $rule
+     * @param AbstractItem $item
+     *
      * @return bool
      */
     public function afterCalculate($discountData, $rule, $item)
     {
-        if (!$item->getOriginalDiscountAmount()) {
-            $this->rulesDiscountHelper->setDiscount($rule, $discountData, $item->getQuote()->getStore());
-        }
+        $this->rulesDiscountHelper->setDiscount(
+            $rule,
+            $discountData,
+            $item->getQuote()->getStore(),
+            $item->getId()
+        );
 
         return true;
     }
 
     /**
      * determines if we should skip the items with special price or other (in futeure) conditions
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     *
+     * @param Rule $rule
+     * @param AbstractItem $item
+     *
      * @return bool
+     * @throws LocalizedException
      */
     public function skip($rule, $item)
     {
@@ -447,18 +505,21 @@ abstract class AbstractRule extends Discount\AbstractDiscount
             return false;
         }
 
-        $website_id = $this->storeManager->getWebsite()->getId();
+        $websiteId = $this->storeManager->getWebsite()->getId();
         $groupId = $this->customerSession->getCustomerGroupId();
 
         $skipTierPrice = $this->configModel->getSkipTierPrice();
 
         $origProduct = $item->getProduct();
         $tierPrices = $origProduct->getTierPrice();
-        if ($skipTierPrice) {
+
+        if (is_array($skipTierPrice)) {
             foreach ($tierPrices as $tierPrice) {
-                if (($tierPrice['cust_group'] == $groupId ||
-                        \Magento\Customer\Model\GroupManagement::CUST_GROUP_ALL == $tierPrice['cust_group'])
-                    && $item->getQty() >= $tierPrice['price_qty'] && $website_id == $tierPrice['website_id']) {
+                if (($tierPrice['cust_group'] == $groupId
+                        || \Magento\Customer\Model\GroupManagement::CUST_GROUP_ALL == $tierPrice['cust_group'])
+                    && $item->getQty() >= $tierPrice['price_qty']
+                    && $websiteId == $tierPrice['website_id']
+                ) {
                     return true;
                 }
             }
@@ -481,8 +542,10 @@ abstract class AbstractRule extends Discount\AbstractDiscount
 
     /**
      * determines if we should skip item by skip rule setting
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     *
+     * @param Rule $rule
+     * @param AbstractItem $item
+     *
      * @return bool
      */
     protected function checkSkipRule($rule, $item)
@@ -491,31 +554,33 @@ abstract class AbstractRule extends Discount\AbstractDiscount
 
         switch ($rule->getAmrulesRule()->getData('skip_rule')) {
             case 0:
-                if ($skipSpecialPrice) {
-                    if (in_array($item->getProductId(), $this->getItemsWithDiscount($item))) {
-                        return true;
-                    }
+                if ($skipSpecialPrice && in_array($item->getProductId(), $this->getItemsWithDiscount($item))) {
+                    return true;
                 }
+
                 break;
             case 1:
                 if (in_array($item->getProductId(), $this->getItemsWithDiscount($item))) {
                     return true;
                 }
+
                 break;
             case 3:
-                $price = $item->getDiscountCalculationPrice();
-                ($price !== null) ? $price = $item->getBaseDiscountCalculationPrice() : $price = $item->getBaseCalculationPrice();
-                $price -= $item->getBaseDiscountAmount();
-                if ($item->getProduct()->getPrice() > $price) {
+                $price = ($item->getDiscountCalculationPrice() !== null)
+                    ? $item->getBaseDiscountCalculationPrice() : $item->getBaseCalculationPrice();
+
+                if ($item->getProduct()->getPrice() > ($price - $item->getBaseDiscountAmount())) {
                     return true;
                 }
+
                 break;
         }
+
         return false;
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param AbstractItem $item
      *
      * @return bool
      */
@@ -523,7 +588,10 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     {
         $skipSpecialConfigurable = $this->configModel->getSkipSpecialPriceConfigurable();
 
-        if ($skipSpecialConfigurable && $item->getProductType() == "configurable" && !empty($this->getItemsWithDiscount($item))) {
+        if ($skipSpecialConfigurable
+            && $item->getProductType() == "configurable"
+            && !empty($this->getItemsWithDiscount($item))
+        ) {
             foreach ($item->getChildren() as $child) {
                 if (in_array($child->getProductId(), $this->getItemsWithDiscount($item))) {
                     return true;
@@ -535,7 +603,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param AbstractItem $item
      *
      * @return int[]
      */
@@ -554,7 +622,7 @@ abstract class AbstractRule extends Discount\AbstractDiscount
             }
 
             /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
-            $productCollection = $this->_objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
+            $productCollection = $this->productCollections->create();
 
             $productsCollection = $productCollection
                 ->addPriceData()
@@ -574,21 +642,24 @@ abstract class AbstractRule extends Discount\AbstractDiscount
     }
 
     /**
-     * @param $item
-     * @param $itemsId
-     * @param $allItem
-     * @param $qty
+     * @param AbstractItem $item
+     * @param array $itemsId
+     * @param AbstractItem $allItem
+     * @param int|float $qty
+     *
      * @return bool
      */
     protected function isContinueEachmaftnCalculation($item, $itemsId, $allItem, $qty)
     {
-        return in_array($item->getAmrulesId(), $itemsId) && $allItem->getAmrulesId()===$item->getAmrulesId() && $qty > 0;
+        return in_array($item->getAmrulesId(), $itemsId) && $allItem->getAmrulesId() === $item->getAmrulesId()
+            && $qty > 0;
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
+     * @param Rule $rule
      * @param string $defaultSortOrder
-     * @return mixed
+     *
+     * @return string
      */
     public function getSortOrder($rule, $defaultSortOrder)
     {

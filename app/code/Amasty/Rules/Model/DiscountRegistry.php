@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -78,13 +78,17 @@ class DiscountRegistry
      */
     private $dataPersistor;
 
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    private $storeManager;
+
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\SalesRule\Api\RuleRepositoryInterface $ruleRepository,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor,
         DiscountBreakdownLineFactory $breakdownLineFactory
-
     ) {
         $this->storeManager = $storeManager;
         $this->ruleRepository = $ruleRepository;
@@ -136,7 +140,8 @@ class DiscountRegistry
         }
 
         if (!$this->shippingDiscountDataForBreakdown) {
-            $this->shippingDiscountDataForBreakdown = $this->dataPersistor->get(self::DISCOUNT_REGISTRY_SHIPPING_DATA) ?: [];
+            $this->shippingDiscountDataForBreakdown
+                = $this->dataPersistor->get(self::DISCOUNT_REGISTRY_SHIPPING_DATA) ?: [];
         }
 
         return !empty($this->discountDataForBreakdown);
@@ -197,7 +202,10 @@ class DiscountRegistry
 
     /**
      * @param \Magento\SalesRule\Api\Data\RuleInterface $rule
+     *
      * @return null|string
+     *
+     * @throws NoSuchEntityException
      */
     private function getRuleStoreLabel($rule)
     {
@@ -278,6 +286,7 @@ class DiscountRegistry
     public function convertRulesWithDiscountToArray($rulesWithDiscount)
     {
         $rulesWithDiscountArray = [];
+
         foreach ($rulesWithDiscount as $ruleWithDiscount) {
             $rulesWithDiscountArray[] = $ruleWithDiscount->__toArray();
         }
@@ -303,7 +312,7 @@ class DiscountRegistry
     {
         $discountDebuggerAmount = 0;
         $itemId = $item->getId();
-        $ruleId = $this->currentRule->getRuleId();
+        $ruleId = $this->currentRule ? $this->currentRule->getRuleId() : null;
 
         if (isset($this->discountDataForDebugger[$itemId][$ruleId])) {
             foreach ($this->discountDataForDebugger[$itemId] as $discountItem) {
@@ -327,7 +336,7 @@ class DiscountRegistry
      * Calculate shipping discount amount for each sales rule
      *
      * @param string|int $ruleId
-     * @param string|int $shippingDiscountAmount
+     * @param int|float $shippingDiscountAmount
      */
     public function setShippingDiscount($ruleId, $shippingDiscountAmount)
     {

@@ -1,36 +1,51 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
-/**
- * Copyright © 2015 Amasty. All rights reserved.
- */
+
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
+use Magento\Quote\Model\Quote\Item\AbstractItem;
+use Magento\SalesRule\Model\Rule;
+use Magento\SalesRule\Model\Rule\Action\Discount\Data;
+
+/**
+ * Amasty Rules calculation by action.
+ *
+ * @see \Amasty\Rules\Helper\Data::TYPE_EACH_N_FIXDISC
+ */
 class EachnFixdisc extends Eachn
 {
-
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
+     * @param Rule $rule
+     * @param AbstractItem $item
+     *
+     * @return Data
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _calculate($rule, $item)
     {
-        /** @var \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData */
+        /** @var Data $discountData */
         $discountData = $this->discountFactory->create();
-        $allItems = $this->getSortedItems($item->getAddress(), $rule, $this->getSortOrder($rule,self::DEFAULT_SORT_ORDER));
+        $allItems = $this->getSortedItems(
+            $item->getAddress(),
+            $rule,
+            $this->getSortOrder($rule, self::DEFAULT_SORT_ORDER)
+        );
+
         if ($rule->getAmrulesRule()->getUseFor() == self::USE_FOR_SAME_PRODUCT) {
             $allItems = $this->reduceItems($allItems, $rule);
         }
+
         $allItems = $this->skipEachN($allItems, $rule);
         $itemsId = $this->getItemsId($allItems);
 
-        /** @var \Magento\Quote\Model\Quote\Item\AbstractItem $allItem */
-        foreach ($allItems as $i => $allItem) {
+        /** @var AbstractItem $allItem */
+        foreach ($allItems as $allItem) {
             if (in_array($item->getAmrulesId(), $itemsId) && $allItem->getAmrulesId() === $item->getAmrulesId()) {
                 $itemQty = $this->getArrayValueCount($itemsId, $item->getAmrulesId());
                 $quoteAmount = $this->priceCurrency->convert($rule->getDiscountAmount(), $item->getQuote()->getStore());

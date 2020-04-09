@@ -1,13 +1,16 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Plugin\SalesRule\Model;
 
+/**
+ * ee21 compatibility (fix magento fatal)
+ */
 class ToDataModelPlugin
 {
     /**
@@ -32,6 +35,7 @@ class ToDataModelPlugin
     public function afterToDataModel(\Magento\SalesRule\Model\Converter\ToDataModel $ruleModel, $dataModel)
     {
         $attributes = $dataModel->getExtensionAttributes();
+
         if (is_array($attributes)) {
             /** @var \Magento\SalesRule\Api\Data\RuleExtensionInterface $attributes */
             $attributes = $this->extensionFactory->create(['data' => $attributes]);

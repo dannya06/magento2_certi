@@ -1,25 +1,29 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
 
 namespace Amasty\Base\Helper;
 
-use Magento\Framework\App\Helper\AbstractHelper;
 use SimpleXMLElement;
 use Zend\Http\Client\Adapter\Curl as CurlClient;
 use Zend\Http\Response as HttpResponse;
 use Zend\Uri\Http as HttpUri;
 use Magento\Framework\Json\DecoderInterface;
 
-class Module extends AbstractHelper
+class Module
 {
     const EXTENSIONS_PATH = 'ambase_extensions';
 
     const URL_EXTENSIONS = 'http://amasty.com/feed-extensions-m2.xml';
+
+    const ALLOWED_DOMAINS = [
+        'amasty.com',
+        'marketplace.magento.com'
+    ];
 
     /**
      * @var \Amasty\Base\Model\Serializer
@@ -37,17 +41,24 @@ class Module extends AbstractHelper
     protected $cache;
 
     /**
-     * @var array|null
-     */
-    private $modulesData = null;
-
-    /**
      * @var array
      */
     protected $restrictedModules = [
         'Amasty_CommonRules',
         'Amasty_Router'
     ];
+
+    /**
+     * @see getModuleInfo
+     *
+     * @var array
+     */
+    protected $moduleDataStorage = [];
+
+    /**
+     * @var array|null
+     */
+    private $modulesData = null;
 
     /**
      * @var \Magento\Framework\Module\Dir\Reader
@@ -64,23 +75,27 @@ class Module extends AbstractHelper
      */
     private $jsonDecoder;
 
+    /**
+     * @var \Magento\Framework\Escaper
+     */
+    private $escaper;
+
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
         \Amasty\Base\Model\Serializer $serializer,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Module\Dir\Reader $moduleReader,
         \Magento\Framework\Filesystem\Driver\File $filesystem,
         DecoderInterface $jsonDecoder,
-        CurlClient $curl
+        CurlClient $curl,
+        \Magento\Framework\Escaper $escaper
     ) {
-        parent::__construct($context);
-
         $this->cache = $cache;
         $this->serializer = $serializer;
         $this->curlClient = $curl;
         $this->moduleReader = $moduleReader;
         $this->filesystem = $filesystem;
         $this->jsonDecoder = $jsonDecoder;
+        $this->escaper = $escaper;
     }
 
     /**
@@ -108,19 +123,29 @@ class Module extends AbstractHelper
         $feedData = [];
         $feedXml = $this->getFeedData();
         if ($feedXml && $feedXml->channel && $feedXml->channel->item) {
+            $marketplaceOrigin = $this->isOriginMarketplace();
+
             foreach ($feedXml->channel->item as $item) {
-                $code = (string)$item->code;
+                $code = $this->escaper->escapeHtml((string)$item->code);
 
                 if (!isset($feedData[$code])) {
                     $feedData[$code] = [];
                 }
 
-                $feedData[$code][(string)$item->title] = [
-                    'name'               => (string)$item->title,
-                    'url'                => (string)$item->link,
-                    'version'            => (string)$item->version,
-                    'conflictExtensions' => (string)$item->conflictExtensions,
-                    'guide'              => (string)$item->guide,
+                $title = $this->escaper->escapeHtml((string)$item->title);
+
+                $productPageLink = $marketplaceOrigin ? $item->market_link : $item->link;
+
+                if (!$this->validateLink($productPageLink) || !$this->validateLink($item->guide)) {
+                    continue;
+                }
+
+                $feedData[$code][$title] = [
+                    'name'               => $title,
+                    'url'                => $this->escaper->escapeUrl((string)($productPageLink)),
+                    'version'            => $this->escaper->escapeHtml((string)$item->version),
+                    'conflictExtensions' => $this->escaper->escapeHtml((string)$item->conflictExtensions),
+                    'guide'              => $this->escaper->escapeUrl((string)$item->guide),
                 ];
             }
 
@@ -193,28 +218,31 @@ class Module extends AbstractHelper
     /**
      * Read info about extension from composer json file
      *
-     * @param $moduleCode
+     * @param string $moduleCode
      *
      * @return mixed
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function getModuleInfo($moduleCode)
     {
-        try {
-            $dir = $this->moduleReader->getModuleDir('', $moduleCode);
-            $file = $dir . '/composer.json';
+        if (!isset($this->moduleDataStorage[$moduleCode])) {
+            $this->moduleDataStorage[$moduleCode] = [];
 
-            $string = $this->filesystem->fileGetContents($file);
-            $json = $this->jsonDecoder->decode($string);
-        } catch (\Magento\Framework\Exception\FileSystemException $e) {
-            $json = [];
+            try {
+                $dir = $this->moduleReader->getModuleDir('', $moduleCode);
+                $file = $dir . '/composer.json';
+
+                $string = $this->filesystem->fileGetContents($file);
+                $this->moduleDataStorage[$moduleCode] = $this->jsonDecoder->decode($string);
+            } catch (\Magento\Framework\Exception\FileSystemException $e) {
+                $this->moduleDataStorage[$moduleCode] = [];
+            }
         }
 
-        return $json;
+        return $this->moduleDataStorage[$moduleCode];
     }
 
     /**
-     * @param $moduleCode
+     * @param string $moduleCode
      *
      * @return array
      */
@@ -235,5 +263,40 @@ class Module extends AbstractHelper
         }
 
         return $moduleData;
+    }
+
+    /**
+     * Check whether module was installed via Magento Marketplace
+     *
+     * @param string $moduleCode
+     *
+     * @return bool
+     */
+    public function isOriginMarketplace($moduleCode = 'Amasty_Base')
+    {
+        $moduleInfo = $this->getModuleInfo($moduleCode);
+        $origin = isset($moduleInfo['extra']['origin']) ? $moduleInfo['extra']['origin'] : null;
+
+        return 'marketplace' === $origin;
+    }
+
+    /**
+     * @param string $link
+     *
+     * @return bool
+     */
+    public function validateLink($link)
+    {
+        if (! (string) $link) { // fix for xml object
+            return true;
+        }
+
+        foreach (static::ALLOWED_DOMAINS as $allowedDomain) {
+            if (preg_match('/^http[s]?:\/\/' . $allowedDomain . '\/.*$/', $link) === 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -1,5 +1,5 @@
 <!-- ko if: rules -->
-<!-- ko foreach: {data: rules, as: 'rule'} -->
+<!-- ko foreach: {data: rules, as: 'rule', afterRender: showDiscountArrow} -->
 <tr class="total-rules">
     <th class="mark" scope="row">
         <span class="rule-name" data-bind="text:rule.rule_name"></span>
@@ -9,5 +9,4 @@
     </td>
 </tr>
 <!-- /ko -->
-<!-- ko template: {afterRender: showDiscountArrow} --><!-- /ko -->
 <!-- /ko -->

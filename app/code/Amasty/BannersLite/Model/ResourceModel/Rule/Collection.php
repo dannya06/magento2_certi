@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 
@@ -30,9 +30,39 @@ class Collection extends \Magento\SalesRule\Model\ResourceModel\Rule\Collection
      */
     private function prepareSqlConditions($linkField, $ruleIds)
     {
-        $allowedActions = array_keys(\Amasty\Rules\Helper\Data::staticGetDiscountTypes());
+        $allowedActions = [
+            //SP Rules
+            'thecheapest',
+            'themostexpencive',
+            'moneyamount',
+            'eachn_perc',
+            'eachn_fixdisc',
+            'eachn_fixprice',
+            'eachmaftn_perc',
+            'eachmaftn_fixdisc',
+            'eachmaftn_fixprice',
+            'groupn',
+            'groupn_disc',
+            'buyxgety_perc',
+            'buyxgety_fixprice',
+            'buyxgety_fixdisc',
+            'buyxgetn_perc',
+            'buyxgetn_fixprice',
+            'buyxgetn_fixdisc',
+            'aftern_fixprice',
+            'aftern_disc',
+            'aftern_fixdisc',
+            'setof_percent',
+            'setof_fixed',
+            //Free Gift Rules
+            'ampromo_product',
+            'ampromo_items',
+            'ampromo_cart',
+            'ampromo_spent',
+            'ampromo_eachn'
+        ];
 
-        $this->addFieldToFilter($linkField, ['in' => $ruleIds]);
+        $this->addFieldToFilter('main_table.' . $linkField, ['in' => $ruleIds]);
         $this->addFieldToFilter(\Magento\SalesRule\Model\Data\Rule::KEY_SIMPLE_ACTION, ['in' => $allowedActions]);
         $this->addIsActiveFilter();
     }

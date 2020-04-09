@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -11,6 +11,9 @@ namespace Amasty\Rules\Model;
 use Amasty\Rules\Api\Data\DiscountBreakdownLineInterface;
 use Magento\Framework\Api\AbstractSimpleObject;
 
+/**
+ * Object DiscountBreakdownLine.
+ */
 class DiscountBreakdownLine extends AbstractSimpleObject implements DiscountBreakdownLineInterface
 {
     /**

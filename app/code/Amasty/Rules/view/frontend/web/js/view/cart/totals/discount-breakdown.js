@@ -69,7 +69,7 @@ define([
          * @param {Array} totals
          */
         getDiscountDataFromTotals: function (totals) {
-            if(totals.extension_attributes && totals.extension_attributes.amrule_discount_breakdown) {
+            if (totals.extension_attributes && totals.extension_attributes.amrule_discount_breakdown) {
                 this.rules(totals.extension_attributes.amrule_discount_breakdown);
             } else {
                 this.rules(null);

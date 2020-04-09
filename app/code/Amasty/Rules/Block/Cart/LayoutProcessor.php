@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -12,6 +12,9 @@ use Magento\Checkout\Block\Checkout\LayoutProcessorInterface;
 use Amasty\Rules\Model\DiscountRegistry as DiscountRegistry;
 use Amasty\Rules\Model\ConfigModel as ConfigModel;
 
+/**
+ * LayoutProcessor for discount breakdown.
+ */
 class LayoutProcessor implements LayoutProcessorInterface
 {
     /**

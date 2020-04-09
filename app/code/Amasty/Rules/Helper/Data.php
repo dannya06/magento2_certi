@@ -1,12 +1,15 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 namespace Amasty\Rules\Helper;
 
+/**
+ * Keeper of action types.
+ */
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     const TYPE_CHEAPEST = 'thecheapest';//+
@@ -51,10 +54,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         self::TYPE_EACH_M_AFT_N_FIX
     ];
 
+    const GROUP_EACH_N = [
+        self::TYPE_EACH_N,
+        self::TYPE_EACH_N_FIXED,
+        self::TYPE_EACH_N_FIXDISC,
+    ];
+
     protected $passedItems = [];
 
     /**
-     * @param $itemId
+     * @param int $itemId
      */
     public function addPassedItem($itemId)
     {
@@ -162,7 +171,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param $rule
+     * @param string $rule
+     *
      * @return mixed|string
      */
     public function getFilePath($rule)
@@ -175,7 +185,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param $created
+     * @param string $created
+     *
      * @return float
      */
     public function getMembership($created)
@@ -186,8 +197,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param $a
-     * @param $b
+     * @codingStandardsIgnoreStart
+     *
+     * @param array $a
+     * @param array $b
+     *
      * @return int
      */
     public static function comparePrices($a, $b)
@@ -202,9 +216,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         return $res;
     }
+    //@codingStandardsIgnoreEnd
 
     /**
-     * @param $rule
+     * @param \Magento\SalesRule\Model\Rule $rule
+     *
      * @return array
      */
     public function getRuleCats($rule)
@@ -217,7 +233,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param $rule
+     * @param \Magento\SalesRule\Model\Rule $rule
+     *
      * @return array
      */
     public function getRuleSkus($rule)
@@ -230,6 +247,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @codingStandardsIgnoreStart
+     *
      * @return array
      */
     public static function staticGetDiscountTypes()
@@ -272,4 +291,5 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         return $types;
     }
+    //@codingStandardsIgnoreEnd
 }

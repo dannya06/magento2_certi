@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -10,6 +10,9 @@ namespace Amasty\Rules\Plugin;
 
 use Magento\SalesRule\Model\Rule\Metadata\ValueProvider as SalesRuleValueProvider;
 
+/**
+ * Add Amasty Rule actions to select.
+ */
 class ValueProvider
 {
     /**

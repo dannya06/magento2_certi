@@ -1,13 +1,19 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
 
 namespace Amasty\Base\Debug;
 
+/**
+ * For Remote Debug
+ * Output is going to file amasty_debug.log
+ * @codeCoverageIgnore
+ * @codingStandardsIgnoreFile
+ */
 class Log
 {
     /**

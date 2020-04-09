@@ -1,15 +1,20 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Model\ResourceModel;
 
+/**
+ * Resource model for Rule object.
+ */
 class Rule extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
+    const TABLE_NAME = 'amasty_amrules_rule';
+
     /**
      * Initialize main table and table id field
      *
@@ -17,6 +22,6 @@ class Rule extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected function _construct()
     {
-        $this->_init('amasty_amrules_rule', 'entity_id');
+        $this->_init(self::TABLE_NAME, 'entity_id');
     }
 }

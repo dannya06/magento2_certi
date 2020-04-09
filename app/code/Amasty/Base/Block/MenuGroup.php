@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -34,8 +34,8 @@ class MenuGroup extends Fieldset
     {
         if (version_compare($this->metadata->getVersion(), '2.2.0', '>=')) {
             return parent::render($element);
-        } else {
-            return;
         }
+
+        return '';
     }
 }

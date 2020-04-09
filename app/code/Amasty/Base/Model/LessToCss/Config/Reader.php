@@ -1,13 +1,16 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
 
 namespace Amasty\Base\Model\LessToCss\Config;
 
+/**
+ * @codingStandardsIgnoreFile
+ */
 class Reader extends \Magento\Framework\Config\Reader\Filesystem
 {
     /**
@@ -19,16 +22,6 @@ class Reader extends \Magento\Framework\Config\Reader\Filesystem
         '/config/module' => 'name'
     ];
 
-    /**
-     * @param \Magento\Framework\Config\FileResolverInterface $fileResolver
-     * @param Converter $converter
-     * @param SchemaLocator $schemaLocator
-     * @param \Magento\Framework\Config\ValidationStateInterface $validationState
-     * @param string $fileName
-     * @param array $idAttributes
-     * @param string $domDocumentClass
-     * @param string $defaultScope
-     */
     public function __construct(
         \Magento\Framework\Config\FileResolverInterface $fileResolver,
         Converter $converter,
@@ -36,7 +29,7 @@ class Reader extends \Magento\Framework\Config\Reader\Filesystem
         \Magento\Framework\Config\ValidationStateInterface $validationState,
         $fileName = 'less_to_css.xml',
         $idAttributes = [],
-        $domDocumentClass = 'Magento\Framework\Config\Dom',
+        $domDocumentClass = \Magento\Framework\Config\Dom::class,
         $defaultScope = 'global'
     ) {
         parent::__construct(

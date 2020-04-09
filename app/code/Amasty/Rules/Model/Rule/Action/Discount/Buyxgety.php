@@ -1,26 +1,43 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
+
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
+use Magento\Quote\Model\Quote\Address;
+use Magento\Quote\Model\Quote\Item\AbstractItem;
+use Magento\SalesRule\Model\Rule;
+
+/**
+ * Base class for buyXgetY action group.
+ *
+ * @see \Amasty\Rules\Helper\Data::BUY_X_GET_Y
+ */
 abstract class Buyxgety extends AbstractRule
 {
-    protected $_passedItems = [];
     const DEFAULT_SORT_ORDER = 'asc';
 
     /**
-     * @param $address
-     * @param $rule
+     * @var array
+     */
+    protected $passedItems = [];
+
+    /**
+     * @param Address $address
+     * @param Rule $rule
+     *
      * @return array
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getTriggerElements($address, $rule)
     {
         // find all X (trigger) elements
-        $arrX = [];
+        $triggerItems = [];
         foreach ($this->getSortedItems($address, $rule, self::DEFAULT_SORT_ORDER) as $item) {
             if ($item->getParentItemId()) {
                 continue;
@@ -29,45 +46,52 @@ abstract class Buyxgety extends AbstractRule
             if (!$item->getAmrulesId()) {
                 continue;
             }
-            $promoCats = $this->rulesDataHelper->getRuleCats($rule);
+
             $promoSku  = $this->rulesDataHelper->getRuleSkus($rule);
-            //if ( Mage::helper('amrules')->isConfigurablePromoItem($item,$promoSku)  ) continue;
 
             if (in_array($item->getSku(), $promoSku)) {
                 continue;
             }
+
             if (!$promoSku) {
                 $itemCats = $item->getCategoryIds();
+
                 if (!$itemCats) {
                     $itemCats = $item->getProduct()->getCategoryIds();
                 }
-                if (!is_null($itemCats) && array_intersect($promoCats, $itemCats)) {
+                $promoCats = $this->rulesDataHelper->getRuleCats($rule);
+
+                if ($itemCats !== null && array_intersect($promoCats, $itemCats)) {
                     continue;
                 }
             }
-            $arrX[$item->getAmrulesId()] = $item;
+            $triggerItems[$item->getAmrulesId()] = $item;
         }
 
-        return $arrX;
+        return $triggerItems;
     }
 
     /**
-     * @param $arrX
+     * @param array $triggerItems
+     *
      * @return int
      */
-    public function getTriggerElementQty($arrX)
+    public function getTriggerElementQty($triggerItems)
     {
         $realQty = 0;
-        foreach ($arrX as $el) {
-            $realQty += $this->getItemQty($el);
+
+        /** @var AbstractItem $item */
+        foreach ($triggerItems as $item) {
+            $realQty += $this->getItemQty($item);
         }
 
         return $realQty;
     }
 
     /**
-     * @param $rule
-     * @param $item
+     * @param Rule $rule
+     * @param AbstractItem $item
+     *
      * @return bool
      */
     public function isDiscountedItem($rule, $item)
@@ -78,9 +102,6 @@ abstract class Buyxgety extends AbstractRule
             foreach ($item->getChildren() as $child) {
                 // one iteration only
                 $product = $child->getProduct();
-                // can work for credit cards, but does not work with PayPal, so it is commented out
-                //$categoryIds = array_merge($product->getCategoryIds(), $item->getProduct()->getCategoryIds());
-                //$product->setCategoryIds($categoryIds);
             }
         }
 
@@ -91,8 +112,6 @@ abstract class Buyxgety extends AbstractRule
         $currentCats = $product->getCategoryIds();
 
         $parent = $item->getParentItem();
-
-        //if ( Mage::helper('amrules')->isConfigurablePromoItem($item,$sku)  ) return true;
 
         if (isset($parent)) {
             $parentType = $parent->getProductType();
@@ -110,18 +129,19 @@ abstract class Buyxgety extends AbstractRule
     }
 
     /**
-     * @param $item
-     * @param $arrX
-     * @param $passed
+     * @param AbstractItem $item
+     * @param array $triggerItems
+     * @param array $passed
+     *
      * @return bool
      */
-    public function canProcessItem($item, $arrX, $passed)
+    public function canProcessItem($item, $triggerItems, $passed)
     {
         if (!$item->getAmrulesId()) {
             return false;
         }
         //do not apply discont on triggers
-        if (isset($arrX[$item->getAmrulesId()])) {
+        if (isset($triggerItems[$item->getAmrulesId()])) {
             return false;
         }
 
@@ -133,8 +153,9 @@ abstract class Buyxgety extends AbstractRule
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param $realQty
+     * @param Rule $rule
+     * @param int|float $realQty
+     *
      * @return float|int|mixed
      */
     protected function getNQty($rule, $realQty)
@@ -144,8 +165,15 @@ abstract class Buyxgety extends AbstractRule
         } else {
             $step = $rule->getDiscountStep();
             $step = max(1, $step);
-            $count = floor($realQty / $step) * $rule->getAmrulesRule()->getData('nqty');
+            $dataNqty = $rule->getAmrulesRule()->getData('nqty');
+            $count = floor($realQty / $step);
+
+            if ($dataNqty) {
+                $count *= $dataNqty;
+            }
+
             $discountQty = $rule->getDiscountQty();
+
             if ($discountQty) {
                 $nqty = min($count, $discountQty);
             } else {

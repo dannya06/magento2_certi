@@ -1,17 +1,20 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Plugin;
 
-use Magento\Checkout\Model\Session as CheckoutSession;
+use Magento\Framework\Session\SessionManager as CheckoutSession;
 use Amasty\Rules\Model\DiscountRegistry as DiscountRegistry;
 use Amasty\Rules\Model\ConfigModel as ConfigModel;
 
+/**
+ * LayoutProcessor for discount breakdown on checkout.
+ */
 class LayoutProcessor
 {
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -13,6 +13,9 @@ use Magento\SalesRule\Model\Rule as Rule;
 use Magento\SalesRule\Model\RulesApplier as SalesRulesApplier;
 use Amasty\Rules\Model\DiscountRegistry as DiscountRegistry;
 
+/**
+ * Entry point for @see \Amasty\Rules\Model\DiscountRegistry::setShippingDiscount.
+ */
 class RulesApplier
 {
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 
@@ -40,18 +40,32 @@ class ProductBannerProvider
      */
     private $bannerFactory;
 
+    /**
+     * @var \Magento\SalesRule\Api\RuleRepositoryInterface
+     */
+    private $ruleCartPrice;
+
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    private $storeManager;
+
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Amasty\BannersLite\Model\ResourceModel\BannerRule\CollectionFactory $bannerRuleFactory,
         \Amasty\BannersLite\Model\ResourceModel\Rule\CollectionFactory $ruleFactory,
         \Magento\Framework\EntityManager\MetadataPool $metadataPool,
-        \Amasty\BannersLite\Model\ResourceModel\Banner\CollectionFactory $bannerFactory
+        \Amasty\BannersLite\Model\ResourceModel\Banner\CollectionFactory $bannerFactory,
+        \Magento\SalesRule\Api\RuleRepositoryInterface $ruleCartPrice,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->productRepository = $productRepository;
         $this->bannerRuleFactory = $bannerRuleFactory;
         $this->ruleFactory = $ruleFactory;
         $this->metadataPool = $metadataPool;
         $this->bannerFactory = $bannerFactory;
+        $this->ruleCartPrice = $ruleCartPrice;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -64,13 +78,26 @@ class ProductBannerProvider
     public function getBanners($productId)
     {
         if (!isset($this->productBanners[$productId])) {
-            $bannerRuleIds = $this->getBannerRuleIds($productId);
-            $ruleIds = $this->getActiveRuleIds($bannerRuleIds);
-
-            $this->productBanners[$productId] = $this->bannerFactory->create()->getBySalesruleIds($ruleIds);
+            $this->productBanners[$productId] = [];
+            if (!empty($ruleIds = $this->getValidRulesIds($productId))) {
+                $this->productBanners[$productId] = $this->bannerFactory->create()->getBySalesruleIds($ruleIds);
+            }
         }
 
         return $this->productBanners[$productId];
+    }
+
+    /**
+     * @param int $productId
+     *
+     * @return array
+     */
+    public function getValidRulesIds($productId)
+    {
+        $bannerRuleIds = $this->getBannerRuleIds($productId);
+        $ruleIds = $this->getActiveRuleIds($bannerRuleIds);
+
+        return $ruleIds;
     }
 
     /**
@@ -95,9 +122,15 @@ class ProductBannerProvider
      */
     private function getActiveRuleIds($bannerRuleIds)
     {
+        if (empty($bannerRuleIds)) {
+            return [];
+        }
         $linkField = $this->metadataPool->getMetadata(\Magento\SalesRule\Api\Data\RuleInterface::class)->getLinkField();
         /** @var \Amasty\BannersLite\Model\ResourceModel\Rule\Collection $ruleCollection */
         $ruleCollection = $this->ruleFactory->create();
+        $groupId = $this->storeManager->getGroup()->getId();
+        $websiteId = $this->storeManager->getWebsite()->getId();
+        $ruleCollection->addWebsiteGroupDateFilter($websiteId, $groupId);
 
         return $ruleCollection->getActiveRuleIds($linkField, $bannerRuleIds);
     }

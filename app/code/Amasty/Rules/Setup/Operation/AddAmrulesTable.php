@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -11,10 +11,15 @@ namespace Amasty\Rules\Setup\Operation;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\SchemaSetupInterface;
 
+/**
+ * @since 1.1.0
+ */
 class AddAmrulesTable
 {
     /**
      * @param SchemaSetupInterface $setup
+     *
+     * @throws \Zend_Db_Exception
      */
     public function execute(SchemaSetupInterface $setup)
     {

@@ -1,31 +1,29 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Plugin\Condition;
 
+use Amasty\Rules\Api\ExtendedValidatorInterface;
+
+/**
+ * Additional validation for rules with buyxget actions,
+ */
 class Combine
 {
     /**
-     * @var \Amasty\Rules\Helper\Data
+     * @var ExtendedValidatorInterface
      */
-    private $rulesDataHelper;
-
-    /**
-     * @var \Amasty\Rules\Model\RuleResolver
-     */
-    private $ruleResolver;
+    private $validator;
 
     public function __construct(
-        \Amasty\Rules\Helper\Data $rulesDataHelper,
-        \Amasty\Rules\Model\RuleResolver $ruleResolver
+        ExtendedValidatorInterface $validator
     ) {
-        $this->rulesDataHelper = $rulesDataHelper;
-        $this->ruleResolver = $ruleResolver;
+        $this->validator = $validator;
     }
 
     public function aroundValidate(
@@ -33,54 +31,11 @@ class Combine
         \Closure $proceed,
         $type
     ) {
-
-        if ($type instanceof \Magento\Quote\Model\Quote\Item) {
-            $discountItem = $this->checkActionItem($subject->getRule(), $type);
-            if ($discountItem) {
-                return true;
-            }
+        $validationResult = $this->validator->validate($subject, $type);
+        if ($validationResult !== null) {
+            return $validationResult;
         }
 
         return $proceed($type);
-    }
-
-    protected function checkActionItem($rule, $item)
-    {
-        $action = $rule->getSimpleAction();
-
-        if (strpos($action, "buyxget") !== false || strpos($action, "groupn") !== false) {
-            $this->ruleResolver->getSpecialPromotions($rule);
-
-            $promoCats = $this->rulesDataHelper->getRuleCats($rule);
-            $promoSku  = $this->rulesDataHelper->getRuleSkus($rule);
-            $itemSku   = $item->getSku();
-            $itemCats  = $item->getCategoryIds();
-
-            if (!$itemCats) {
-                $itemCats = $item->getProduct()->getCategoryIds();
-            }
-
-            $parent = $item->getParentItem();
-
-            //if (Mage::helper('amrules')->isConfigurablePromoItem($object,$promoSku)) return true;
-
-            if ($parent) {
-                $parentType = $parent->getProductType();
-                if ($parentType == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
-                    $itemSku  = $item->getParentItem()->getProduct()->getSku();
-                    $itemCats = $item->getParentItem()->getProduct()->getCategoryIds();
-                }
-            }
-
-            if (in_array($itemSku, $promoSku)) {
-                return true;
-            }
-
-            if (!is_null($itemCats) && array_intersect($promoCats, $itemCats)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
