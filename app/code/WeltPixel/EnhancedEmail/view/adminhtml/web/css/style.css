@@ -24,5 +24,6 @@
     overflow: hidden;
 }
 .small-image-preview {
-    width: 100px
+    width: 100px;
+    height: auto
 }

@@ -64,7 +64,7 @@ class Edit extends \Magento\Email\Block\Adminhtml\Template\Edit
 
     public function isEditPage()
     {
-        $id = $this->getRequest()->getParam('id');
+        $id = (int)$this->getRequest()->getParam('id');
         if (!$id) {
             return false;
         }

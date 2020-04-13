@@ -38,7 +38,7 @@
         </div>
 
         <div class="item-price" style="position: absolute !important; bottom: 15px; text-align: left !important; margin-bottom: 25px !important">
-            <p style="font-size: 14px; font-family: arial, helvetica, sans-serif, serif;"><?= /* @escapeNotVerified */ $_order->formatPrice($_item->getBasePrice()) ?> x <?= /* @escapeNotVerified */  $_item->getQtyOrdered() * 1 ?></p>
+            <p style="font-size: 14px; font-family: arial, helvetica, sans-serif, serif;"><?= /* @escapeNotVerified */ $_order->formatPrice($_item->getPrice()) ?> x <?= /* @escapeNotVerified */  $_item->getQtyOrdered() * 1 ?></p>
         </div>
     </td>
     <td class="item-subtotal" style="vertical-align: bottom; text-align: right; border-top: 0 none !important; padding: 40px 10px; border-bottom: 1px dotted #000000;">

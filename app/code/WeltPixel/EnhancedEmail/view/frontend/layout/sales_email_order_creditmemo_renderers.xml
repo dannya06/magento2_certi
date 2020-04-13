@@ -18,6 +18,16 @@
                    name="sales.email.order.creditmemo.renderers.downloadable"
                    as="downloadable"
                    template="WeltPixel_EnhancedEmail::email/items/creditmemo/downloadable.phtml"/>
+
+            <block class="Magento\GroupedProduct\Block\Order\Email\Items\Order\Grouped"
+                   name="sales.email.order.creditmemo.renderers.grouped"
+                   as="grouped"
+                   template="WeltPixel_EnhancedEmail::email/items/creditmemo/default.phtml"/>
+
+            <block class="Magento\Bundle\Block\Sales\Order\Items\Renderer"
+                   name="sales.email.order.creditmemo.renderers.bundle"
+                   as="bundle"
+                   template="WeltPixel_EnhancedEmail::email/items/creditmemo/default.phtml"/>
         </referenceBlock>
     </body>
 </page>

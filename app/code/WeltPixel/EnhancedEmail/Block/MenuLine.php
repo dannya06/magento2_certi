@@ -47,7 +47,7 @@ class MenuLine extends \Magento\Theme\Block\Html\Topmenu
         array $data = []
     )
     {
-        $this->_storeId = $this->_storeManager->getStore()->getId();
+        $this->_storeId = ($this->_storeManager) ? $this->_storeManager->getStore()->getId() : null;
         $this->_helper = $_helper;
         parent::__construct($context, $nodeFactory, $treeFactory, $data);
     }

@@ -37,11 +37,20 @@
     <preference for="Magento\Sales\Block\Order\Email\Items\DefaultItems"
                 type="WeltPixel\EnhancedEmail\Block\Order\Email\Items\DefaultItems"/>
 
+    <preference for="Magento\GroupedProduct\Block\Order\Email\Items\Order\Grouped"
+                type="WeltPixel\EnhancedEmail\Block\Order\Email\Items\GroupedItems"/>
+
+    <preference for="Magento\GroupedProduct\Block\Order\Item\Renderer\Grouped"
+                type="WeltPixel\EnhancedEmail\Block\Order\Email\Items\Order\GroupedItems"/>
+
     <preference for="Magento\Downloadable\Block\Sales\Order\Email\Items\Order\Downloadable"
                 type="WeltPixel\EnhancedEmail\Block\Sales\Order\Email\Items\Order\Downloadable"/>
 
     <preference for="Magento\Downloadable\Block\Sales\Order\Email\Items\Downloadable"
                 type="WeltPixel\EnhancedEmail\Block\Sales\Order\Email\Items\Downloadable"/>
+
+    <preference for="Magento\Bundle\Block\Sales\Order\Items\Renderer"
+                type="WeltPixel\EnhancedEmail\Block\Order\Email\Items\BundleItems"/>
 
     <preference for="Magento\Sales\Block\Order\Totals"
                 type="WeltPixel\EnhancedEmail\Block\Order\Totals" />

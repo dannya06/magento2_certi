@@ -49,7 +49,7 @@
                        showInWebsite="1" showInStore="1">
                     <label>Upload Logo Light</label>
                     <validate>required-entry</validate>
-                    <comment>The image must be in .jpg, .png, or. gif format</comment>
+                    <comment><![CDATA[ The image must be in .jpg, .png, or. gif format. 1 <br> <b>Note</b>: This logo will only display when using the WeltPixel Header Template.]]></comment>
                     <backend_model>WeltPixel\EnhancedEmail\Model\Config\Backend\Image</backend_model>
                     <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/enhanced_email</upload_dir>
                     <base_url type="media" scope_info="1">weltpixel/enhanced_email</base_url>
@@ -95,7 +95,7 @@
                        showInWebsite="1" showInStore="1">
                     <label>Upload Logo Dark</label>
                     <validate>required-entry</validate>
-                    <comment>The image must be in .jpg, .png, or. gif format</comment>
+                    <comment><![CDATA[ The image must be in .jpg, .png, or. gif format. 1 <br> <b>Note</b>: This logo will only display when using the WeltPixel Header Template.]]></comment>
                     <backend_model>WeltPixel\EnhancedEmail\Model\Config\Backend\Image</backend_model>
                     <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/enhanced_email</upload_dir>
                     <base_url type="media" scope_info="1">weltpixel/enhanced_email</base_url>

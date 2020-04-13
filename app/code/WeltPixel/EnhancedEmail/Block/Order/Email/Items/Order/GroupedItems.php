@@ -6,13 +6,13 @@
  * @author      Nagy Attila @ Weltpixel TEAM
  */
 
-namespace WeltPixel\EnhancedEmail\Block\Order\Email\Items;
+namespace WeltPixel\EnhancedEmail\Block\Order\Email\Items\Order;
 
 /**
- * Class DefaultItems
+ * Class GroupedItems
  * @package WeltPixel\EnhancedEmail\Block\Order\Item\Renderer
  */
-class DefaultItems extends \Magento\Sales\Block\Order\Email\Items\DefaultItems
+class GroupedItems extends \Magento\Sales\Block\Order\Item\Renderer\DefaultRenderer
 {
     /**
      * @var \Magento\Catalog\Block\Product\ImageBuilder
@@ -30,8 +30,10 @@ class DefaultItems extends \Magento\Sales\Block\Order\Email\Items\DefaultItems
     protected $_productRepository;
 
     /**
-     * DefaultItems constructor.
+     * GroupedItems constructor.
      * @param \Magento\Framework\View\Element\Template\Context $context
+     * @param \Magento\Framework\Stdlib\StringUtils $string
+     * @param \Magento\Catalog\Model\Product\OptionFactory $productOptionFactory
      * @param \Magento\Catalog\Block\Product\ImageBuilder $imageBuilder
      * @param \WeltPixel\EnhancedEmail\Helper\Data $wpHelper
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
@@ -39,13 +41,15 @@ class DefaultItems extends \Magento\Sales\Block\Order\Email\Items\DefaultItems
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
+        \Magento\Framework\Stdlib\StringUtils $string,
+        \Magento\Catalog\Model\Product\OptionFactory $productOptionFactory,
         \Magento\Catalog\Block\Product\ImageBuilder $imageBuilder,
         \WeltPixel\EnhancedEmail\Helper\Data $wpHelper,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         array $data = []
     )
     {
-        parent::__construct($context, $data);
+        parent::__construct($context, $string, $productOptionFactory, $data);
         $this->_imageBuilder = $imageBuilder;
         $this->_wpHelper = $wpHelper;
         $this->_productRepository = $productRepository;
@@ -58,36 +62,10 @@ class DefaultItems extends \Magento\Sales\Block\Order\Email\Items\DefaultItems
      */
     public function getProduct()
     {
-        if ($this->getItem()->getOrderItem()->getProductOptionByCode('simple_sku')) {
-            $product = $this->_productRepository->get($this->getItem()->getOrderItem()->getProductOptionByCode('simple_sku'));
-            if($this->_productHasImage($product)) {
-                return $product;
-            } else {
-                $configProduct = $this->_productRepository->get($this->getItem()->getOrderItem()->getProduct()->getSku());
-                return $configProduct;
-            }
-        } elseif($this->getItem()->getOrderItem()->getProductType() == 'grouped') {
-            $groupedProduct = $this->_productRepository->get($this->getItem()->getOrderItem()->getSku());
-            return $groupedProduct;
-
+        if($this->getItem()->getSku()) {
+            return  $this->_productRepository->get($this->getItem()->getSku());
         } else {
-            $configProduct = $this->_productRepository->get($this->getItem()->getOrderItem()->getProduct()->getSku());
-            return $configProduct;
-        }
-    }
-
-    /**
-     * @param $product
-     * @return bool
-     */
-    protected function _productHasImage($product)
-    {
-        if ($product->getThumbnail() && $product->getThumbnail() != 'no_selection') {
-            return true;
-        } elseif ($product->getSmallImage() && $product->getSmallImage() != 'no_selection') {
-            return true;
-        } else {
-            return false;
+            return $this->getItem()->getProduct();
         }
     }
 
@@ -116,4 +94,17 @@ class DefaultItems extends \Magento\Sales\Block\Order\Email\Items\DefaultItems
             ->setAttributes($attributes)
             ->create();
     }
+    /**
+     * Get the html for item price
+     *
+     * @param OrderItem|InvoiceItem|CreditmemoItem $item
+     * @return string
+     */
+    public function getItemPrice($item)
+    {
+        $block = $this->getLayout()->getBlock('item_price');
+        $block->setItem($item);
+        return $block->toHtml();
+    }
+
 }

@@ -15,7 +15,7 @@ namespace WeltPixel\EnhancedEmail\Helper;
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
 
-    const XML_PATH_CUSTOM_LOGO_PATH = '/weltpixel/enhanced_email/';
+    const XML_PATH_CUSTOM_LOGO_PATH = 'weltpixel/enhanced_email/';
     const XML_PATH_ENHANCED_EMAIL_SHOW_IMAGE = 'weltpixel_enhancedemail/general/show_image';
 
     const XML_PATH_ENHANCED_EMAIL_LOGO_LIGHT = 'weltpixel_enhancedemail/light_logo/logo_light';

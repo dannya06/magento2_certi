@@ -12,7 +12,7 @@
 <?php if ($_invoice && $_order): ?>
     <table class="email-items">
         <thead>
-            <th colspan="2"><h3><?= __('WHAT\'S INSIDE')?></h3></th>
+            <th colspan="2"><h3><?= __('WHAT’S INSIDE')?></h3></th>
             <th colspan="2" style="text-align: right"><h3><?= __('ITEMS')?> (<?= /* @escapeNotVerified */ $_order->getTotalItemCount() ?>) </h3></th>
         </thead>
         <?php foreach ($_invoice->getAllItems() as $_item): ?>

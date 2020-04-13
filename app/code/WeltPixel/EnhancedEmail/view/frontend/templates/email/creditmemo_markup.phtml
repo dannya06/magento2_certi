@@ -16,24 +16,6 @@ if (is_object($_cm)) {
                   "description": "View Your Credit Memo"
                 }
             </script>';
-} else {
-    $markup = '
-        <pre>
-            &lt;<span>script type="application/ld+json"</span><span>></span>
-                {
-                  "@context": "http://schema.org",
-                  "@type": "EmailMessage",
-                  "potentialAction": {
-                    "@type": "ViewAction",
-                    "target": "http://example.com/id/123",
-                    "name": "View Creditmemo"
-                  },
-                  "description": "View Your Credit Memo"
-                }
-            &lt;<span>/script</span>>
-        </pre>
-    ';
 }
 ?>
-
 <?= $markup ?>
