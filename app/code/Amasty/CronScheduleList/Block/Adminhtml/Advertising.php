@@ -1,13 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_CronScheduleList
  */
 
 
 namespace Amasty\CronScheduleList\Block\Adminhtml;
 
+use Amasty\Base\Helper\Module;
 use Magento\Backend\Block\Template;
 use Magento\Framework\Module\Manager;
 
@@ -23,12 +24,19 @@ class Advertising extends Template
      */
     private $moduleManager;
 
+    /**
+     * @var Module
+     */
+    private $moduleHelper;
+
     public function __construct(
         Manager $moduleManager,
         Template\Context $context,
+        Module $moduleHelper,
         array $data = []
     ) {
         $this->moduleManager = $moduleManager;
+        $this->moduleHelper = $moduleHelper;
         parent::__construct($context, $data);
     }
 
@@ -37,7 +45,7 @@ class Advertising extends Template
      */
     public function toHtml()
     {
-        if ($this->moduleManager->isEnabled('Amasty_CronScheduler')) {
+        if ($this->moduleManager->isEnabled('Amasty_CronScheduler') || $this->moduleHelper->isOriginMarketplace()) {
             return '';
         }
 
