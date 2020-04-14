@@ -23,9 +23,9 @@
         "icubeus/magento2-smsgateaway": "dev-master",
         "icubeus/magento2-notification": "dev-master",
         "icubeus/magento2-smstada": "dev-master",
-        "creativestyle/magesuite": "^2.0.0",
         "firebear/importexport-msi": "^1.0",
-        "firebear/importexport": "^3.3"
+        "firebear/importexport": "^3.3",
+        "creativestyle/magesuite": "^2.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
