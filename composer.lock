@@ -3574,7 +3574,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "940f709f64bdb795a7d14f01e2f41dd84a3a8278"
+                "reference": "644c0513b5680ed71f88bc2ccbadc1b64648dbab"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -3613,7 +3613,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-04-17T01:48:57+00:00"
+            "time": "2020-04-17T09:04:29+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
@@ -3747,7 +3747,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "61a4dda9a7257cfe032dfb5be93eb38971cf615d"
+                "reference": "67b42961dd34eaf5cc913e83a36334fbe3136f9d"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -3783,7 +3783,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-03-18T06:29:40+00:00"
+            "time": "2020-04-17T08:56:16+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -3857,7 +3857,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "3e8bfd9da4eda894f19d94e627c7000e41476f9d"
+                "reference": "5f2588ce7b1d8e949e213bdc62b15389fe3b5870"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3877,7 +3877,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2019-09-26T01:36:57+00:00"
+            "time": "2020-04-17T07:29:18+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
