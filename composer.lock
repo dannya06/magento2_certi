@@ -3787,11 +3787,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "ce896a19a7a8bcac534a019d268f93894b0c6be9"
+                "reference": "aae9a665de5558539697c9fbdf13607d22cd73d9"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -3849,7 +3849,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2020-02-26T09:49:40+00:00"
+            "time": "2020-04-23T08:09:54+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
