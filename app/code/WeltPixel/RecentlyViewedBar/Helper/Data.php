@@ -94,6 +94,19 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @param null $storeId
+     * @return bool|mixed
+     */
+    public function getEnableSlIntegration($storeId = null)
+    {
+        if ($this->isSlEnabled()) { // first check if Social Login extension is enabled
+            return $this->scopeConfig->getValue('weltpixel_RecentlyViewedBar/general/enable_sl', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        }
+
+        return false;
+    }
+
+    /**
      * @param int $storeId
      * @return mixed
      */

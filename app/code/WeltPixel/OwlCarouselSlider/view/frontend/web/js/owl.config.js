@@ -31,12 +31,12 @@ var OWL = {
 
         if (carouselContainer >= windowWidth) {
             carouselControls.addClass('fullscreen').find('.owl-prev').css({
-                'left': leftPosition,
-                'top': 0
+                'left': leftPosition
+                // 'top': 0
             });
             carouselControls.addClass('fullscreen').find('.owl-next').css({
-                'right': rightPosition,
-                'top': 0
+                'right': rightPosition
+                // 'top': 0
             });
         } else {
             carouselControls.find('.owl-prev').removeClass('fullscreen').removeAttr('style');

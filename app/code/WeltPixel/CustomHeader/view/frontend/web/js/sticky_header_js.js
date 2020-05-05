@@ -72,7 +72,6 @@ define(['jquery', 'domReady!'], function ($) {
                 }
 
                 if (config.design == 'desktop') {
-                    config.headerMultiStore.hide();
                     config.headerSection.removeClass('sticky-header-mobile');
                     switch (that.getHeaderVersion(config.headerSection))
                     {
@@ -84,7 +83,8 @@ define(['jquery', 'domReady!'], function ($) {
                                     that.showHideElements('hide', [
                                         config.globalPromo,
                                         config.switcherMultiStore,
-                                        config.panelWrapper
+                                        config.panelWrapper,
+                                        config.headerMultiStore
                                     ]);
                                 }
                             } else {
@@ -93,7 +93,8 @@ define(['jquery', 'domReady!'], function ($) {
                                 that.showHideElements('show', [
                                     config.globalPromo,
                                     config.switcherMultiStore,
-                                    config.panelWrapper
+                                    config.panelWrapper,
+                                    config.headerMultiStore
                                 ]);
                             }
                             break;
@@ -108,7 +109,8 @@ define(['jquery', 'domReady!'], function ($) {
                                     }
                                     that.showHideElements('hide', [
                                         config.globalPromo,
-                                        config.switcherMultiStore
+                                        config.switcherMultiStore,
+                                        config.headerMultiStore
                                     ]);
                                 }
                             } else {
@@ -116,7 +118,8 @@ define(['jquery', 'domReady!'], function ($) {
                                 config.headerSection.after(config.navSection);
                                 that.showHideElements('show', [
                                     config.globalPromo,
-                                    config.switcherMultiStore
+                                    config.switcherMultiStore,
+                                    config.headerMultiStore
                                 ]);
                             }
                             break;
@@ -127,7 +130,8 @@ define(['jquery', 'domReady!'], function ($) {
                                     that.showHideElements('hide', [
                                         config.globalPromo,
                                         config.switcherMultiStore,
-                                        config.panelWrapper
+                                        config.panelWrapper,
+                                        config.headerMultiStore
                                     ]);
                                 }
                             } else {
@@ -135,7 +139,8 @@ define(['jquery', 'domReady!'], function ($) {
                                 that.showHideElements('show', [
                                     config.globalPromo,
                                     config.switcherMultiStore,
-                                    config.panelWrapper
+                                    config.panelWrapper,
+                                    config.headerMultiStore
                                 ]);
                             }
                             break;
@@ -147,7 +152,8 @@ define(['jquery', 'domReady!'], function ($) {
                                     that.showHideElements('hide', [
                                         config.globalPromo,
                                         config.greetWelcome,
-                                        config.switcherMultiStore
+                                        config.switcherMultiStore,
+                                        config.headerMultiStore
                                     ]);
                                 }
                             } else {
@@ -156,7 +162,8 @@ define(['jquery', 'domReady!'], function ($) {
                                 that.showHideElements('show', [
                                     config.globalPromo,
                                     config.greetWelcome,
-                                    config.switcherMultiStore
+                                    config.switcherMultiStore,
+                                    config.headerMultiStore
                                 ]);
                             }
                             break;

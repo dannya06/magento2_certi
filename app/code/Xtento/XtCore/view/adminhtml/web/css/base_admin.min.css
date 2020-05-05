@@ -1,3 +1,13 @@
+.config-nav-block.xtento-tab strong:before {
+    background: url(../images/logo-medium.png) no-repeat;
+    width: 16px;
+    height: 16px;
+    content: '';
+    display: inline-block;
+    margin-right: 12px;
+    vertical-align: bottom;
+    background-size: contain;
+}
 .admin__menu .parent[data-ui-id^="menu-xtento-"] > a span:before,
 .admin__menu .parent[data-ui-id^="menu-xtento-"] > strong span:before {
     display: inline-block;

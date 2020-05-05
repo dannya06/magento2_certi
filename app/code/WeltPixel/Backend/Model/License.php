@@ -14,7 +14,8 @@ class License extends \Magento\Framework\Model\AbstractModel
     const MODULE_INFO_PREFIX = "\x77\x70\x2f\x69\x6e\x66\x6f\x2f";
     const LICENSE_INFO_PREFIX = "\x77\x70\x2f\x66\x6c\x61\x67\x2f\x69\x6e\x66\x6f";
     const LICENSE_VERSION = "\x31\x2e\x37\x2e\x30";
-    const LICENSE_ENDPOINT = "\x68\x74\x74\x70\x3a\x2f\x2f\x6c\x69\x63\x65\x6e\x73\x65\x2e\x77\x65\x6c\x74\x70\x69\x78\x65\x6c\x2e\x63\x6f\x6d";
+    const LICENSE_ENDPOINT = "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x6c\x69\x63\x65\x6e\x73\x65\x2e\x77\x65\x6c\x74\x70\x69\x78\x65\x6c\x2e\x63\x6f\x6d";
+
 
 
     /**
@@ -239,6 +240,13 @@ class License extends \Magento\Framework\Model\AbstractModel
                     }
                     $wpModules[$mdN] = $this->getWpMdsInf($mdN, $path, $lcK, $isLRqd, \Magento\Framework\Component\ComponentRegistrar::MODULE);
                 }
+                if ($isEnabled && (strpos($mdN, 'WeSupply_') !== false)
+                ) {
+                    $path = $this->componentRegistrar->getPath(\Magento\Framework\Component\ComponentRegistrar::MODULE, $mdN);
+                    $lcK = '-';
+                    $isLRqd = false;
+                    $wpModules[$mdN] = $this->getWpMdsInf($mdN, $path, $lcK, $isLRqd, \Magento\Framework\Component\ComponentRegistrar::MODULE);
+                }
             }
 
             $this->_currentModulesList = $licenseModules;
@@ -281,7 +289,6 @@ class License extends \Magento\Framework\Model\AbstractModel
         if (($magentoVersion != $licenseOptions[3]) && ($magentoVersion != "\x63\x6f\x6d\x6d\x75\x6e\x69\x74\x79")) return false;
 
         return $this->checkDomainValidity($domain, $licenseOptions[2]);
-        return true;
     }
 
     /**
@@ -464,76 +471,76 @@ class License extends \Magento\Framework\Model\AbstractModel
      */
     protected function _isLRqd($path, &$mdN, $forced = false)
     {
-    	 
-        #$availableModules = $this->getAvlbMds();
-        #if (!empty($availableModules) && !in_array($mdN, $availableModules)) {
-        #    return false;
-        #}
-        #$magentoVersion = strtolower($this->productMetadata->getEdition());
-        #$directoryRead = $this->readFactory->create($path);
-        #try {
-        #    $licNs = $directoryRead->readFile(self::LICENCE_KEY_PATH);
-        #} catch (\Exception $ex) {
-        #    return true;
-        #}
+		return true;
+		
+        $availableModules = $this->getAvlbMds();
+        if (!empty($availableModules) && !in_array($mdN, $availableModules)) {
+            return false;
+        }
+        $magentoVersion = strtolower($this->productMetadata->getEdition());
+        $directoryRead = $this->readFactory->create($path);
+        try {
+            $licNs = $directoryRead->readFile(self::LICENCE_KEY_PATH);
+        } catch (\Exception $ex) {
+            return true;
+        }
 
-        #$moduleLicenseDetails = $this->getMdLcnDtls($mdN, $licNs);
-        #if (!$moduleLicenseDetails) return true;
-        
+        $moduleLicenseDetails = $this->getMdLcnDtls($mdN, $licNs);
+        if (!$moduleLicenseDetails) return true;
 
         /** verificare pt modul la functionalitate de modul */
-        #if ($forced) {
-        #   if ($moduleLicenseDetails['module'] != $mdN) {
-        #        return true;
-        #    }
+        if ($forced) {
+           if ($moduleLicenseDetails['module'] != $mdN) {
+                return true;
+            }
 
             /** ha tema modulja, tema license kell mukodjon */
-        #    if ($moduleLicenseDetails['is_theme_module']) {
-        #        $mdN = $this->pearlTheme;
-        #        return true;
-        #    }
+            if ($moduleLicenseDetails['is_theme_module']) {
+                $mdN = $this->pearlTheme;
+                return true;
+            }
 
             /** tartalmazza a temat */
-        #    if ($this->pearlTheme) {
-        #        if (in_array($this->pearlTheme, $moduleLicenseDetails['theme_packages'])) {
-        #            $mdN = $this->pearlTheme;
-        #            return true;
-        #        }
-        #    } else {
-        #        if (!($moduleLicenseDetails['is_license_needed']) && ($magentoVersion == "\x63\x6f\x6d\x6d\x75\x6e\x69\x74\x79")) {
-        #            return false;
-        #        } else {
-        #            // logika a bundle csomagra
-        #            if (count($this->_wpBundleList)) {
-        #                $mdN = $this->_getBundleNameForModule($mdN, $this->_wpBundleList);
-        #            }
+            if ($this->pearlTheme) {
+                if (in_array($this->pearlTheme, $moduleLicenseDetails['theme_packages'])) {
+                    $mdN = $this->pearlTheme;
+                    return true;
+                }
+            } else {
+                if (!($moduleLicenseDetails['is_license_needed']) && ($magentoVersion == "\x63\x6f\x6d\x6d\x75\x6e\x69\x74\x79")) {
+                    return false;
+                } else {
+                    // logika a bundle csomagra
+                    if (count($this->_wpBundleList)) {
+                        $mdN = $this->_getBundleNameForModule($mdN, $this->_wpBundleList);
+                    }
 
-        #            return true;
-        #        }
-        #    }
-        #} else {
-        #    $mdN = $moduleLicenseDetails['module'];
+                    return true;
+                }
+            }
+        } else {
+            $mdN = $moduleLicenseDetails['module'];
             /** tema sajat modulja */
-        #    if ($moduleLicenseDetails['is_theme_module']) {
-        #        return false;
-        #    }
+            if ($moduleLicenseDetails['is_theme_module']) {
+                return false;
+            }
 
-        #    if (!($moduleLicenseDetails['is_license_needed']) && ($magentoVersion == "\x63\x6f\x6d\x6d\x75\x6e\x69\x74\x79")) {
-        #        return false;
-        #    }
+            if (!($moduleLicenseDetails['is_license_needed']) && ($magentoVersion == "\x63\x6f\x6d\x6d\x75\x6e\x69\x74\x79")) {
+                return false;
+            }
 
             /** tartalmazza a temat */
-        #    if ($this->pearlTheme) {
-        #        if (in_array($this->pearlTheme, $moduleLicenseDetails['theme_packages'])) {
-        #            return false;
-        #        }
-        #    }
+            if ($this->pearlTheme) {
+                if (in_array($this->pearlTheme, $moduleLicenseDetails['theme_packages'])) {
+                    return false;
+                }
+            }
 
             /** bundle csomag */
-        #    if ($this->_verifyModuleInBundleList($mdN, $this->_wpBundleList)) {
-        #        return false;
-        #    }
-        #}
+            if ($this->_verifyModuleInBundleList($mdN, $this->_wpBundleList)) {
+                return false;
+            }
+        }
 
         return true;
     }
@@ -544,13 +551,13 @@ class License extends \Magento\Framework\Model\AbstractModel
      * @return bool
      */
     private function _verifyModuleInBundleList($mdN, $wpBundleList) {
-        #foreach ($wpBundleList as $bundleName => $modules) {
-        #    if (in_array($mdN, $modules)) {
-        #        return true;
-        #    }
-        #}
-        #return false;
-        return true;
+        // foreach ($wpBundleList as $bundleName => $modules) {
+//             if (in_array($mdN, $modules)) {
+//                 return true;
+//             }
+//         }
+//         return false;
+		return true;
     }
 
     /**
@@ -625,17 +632,18 @@ class License extends \Magento\Framework\Model\AbstractModel
      */
     public function isLcNd($mdN)
     {
-				/*
+       /*
         $this->getMdsL();
+       
+               $path = $this->componentRegistrar->getPath(\Magento\Framework\Component\ComponentRegistrar::MODULE, str_replace("\x5f\x46\x72\x65\x65", '', $mdN));
+               $isLRqd = $this->_isLRqd($path, $mdN, true);
+       
+               if ($isLRqd) {
+                   $licNs = $this->getLfM($mdN);
+                   return $this->isLcVd($licNs, $mdN);
+               }*/
+       
 
-        $path = $this->componentRegistrar->getPath(\Magento\Framework\Component\ComponentRegistrar::MODULE, str_replace("\x5f\x46\x72\x65\x65", '', $mdN));
-        $isLRqd = $this->_isLRqd($path, $mdN, true);
-
-        if ($isLRqd) {
-            $licNs = $this->getLfM($mdN);
-            return $this->isLcVd($licNs, $mdN);
-        }
-				*/
         return true;
     }
 
@@ -645,32 +653,33 @@ class License extends \Magento\Framework\Model\AbstractModel
      */
     protected function getMdInfVl($mdN)
     {
-				/*
+       /*
         $connection = $this->getResource()->getConnection();
-        $tableName = $this->getResource()->getTable('core_config_data');
-
-        $row = $connection->fetchRow("SELECT `value` FROM " . $tableName . " WHERE path = '"
-            . self::LICENSE_INFO_PREFIX . "' AND scope = '"
-            . \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT
-            . "' AND scope_id = 0");
-
-        if (!isset($row['value']) || $row['value'] == 0) {
-            return true;
-        }
-
-        $row = $connection->fetchRow("SELECT `value` FROM " . $tableName . " WHERE path = '"
-            . self::MODULE_INFO_PREFIX . $mdN . "' AND scope = '"
-            . \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT
-            . "' AND scope_id = 0");
-
-
-        if (!isset($row['value'])) {
-            return true;
-        }
-
-        return $row['value'];
-        */
-        return true;
+               $tableName = $this->getResource()->getTable('core_config_data');
+       
+               $row = $connection->fetchRow("SELECT `value` FROM " . $tableName . " WHERE path = '"
+                   . self::LICENSE_INFO_PREFIX . "' AND scope = '"
+                   . \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+                   . "' AND scope_id = 0");
+       
+               if (!isset($row['value']) || $row['value'] == 0) {
+                   return true;
+               }
+       
+               $row = $connection->fetchRow("SELECT `value` FROM " . $tableName . " WHERE path = '"
+                   . self::MODULE_INFO_PREFIX . $mdN . "' AND scope = '"
+                   . \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+                   . "' AND scope_id = 0");
+       
+       
+               if (!isset($row['value'])) {
+                   return true;
+               }
+       
+               return $row['value'];*/
+       
+		
+		return true;
     }
 
     /**
@@ -712,12 +721,13 @@ class License extends \Magento\Framework\Model\AbstractModel
         if ($moduleType == \Magento\Framework\Component\ComponentRegistrar::THEME) {
             $moduleVersionName = 'frontend/Pearl/weltpixel';
         }
+		$vLid = true;
+        /*
+        $vLid = false;
+                if ($isLNd) {
+                    $vLid = $this->isLcVd($licNs, $mdN);
+                }*/
         
-        $vLid = true;
-        #$vLid = false;
-        #if ($isLNd) {
-        #    $vLid = $this->isLcVd($licNs, $mdN);
-        #}
 
         return [
             "\x6e\x61\x6d\x65" => $mdN,
@@ -764,10 +774,14 @@ class License extends \Magento\Framework\Model\AbstractModel
         $domainInfo = parse_url($baseUrl);
         $domain = $domainInfo['host'];
         $magentoVersion = strtolower($this->productMetadata->getEdition());
+        $magentoVersionNumber = $this->productMetadata->getVersion();
+        $phpVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION . '.' . PHP_RELEASE_VERSION; //phpversion();
 
         $data = array(
             "\x76\x65\x72\x73\x69\x6f\x6e" => $magentoVersion,
+            "\x76\x65\x72\x73\x69\x6f\x6e\x5f\x6e\x75\x6d\x62\x65\x72" => $magentoVersionNumber,
             "\x64\x6f\x6d\x61\x69\x6e" => $domain,
+            "\x70\x68\x70\x5f\x76\x65\x72\x73\x69\x6f\x6e" => $phpVersion,
             "\x6d\x6f\x64\x75\x6c\x65\x73" => $modules
         );
 
@@ -776,8 +790,12 @@ class License extends \Magento\Framework\Model\AbstractModel
         try {
             $ch = curl_init(self::LICENSE_ENDPOINT);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                     'Content-Type: application/json',
                     'Content-Length: ' . strlen($data_string))

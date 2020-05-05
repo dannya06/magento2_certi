@@ -20,7 +20,7 @@ $_helperCustomHeader = $this->helper('WeltPixel\CustomHeader\Helper\Data');
 		</div>
 	</div>
 	<script type="text/javascript">
-		require(['jquery', 'fullpagescroll', 'jquery/ui','full_page','scrolloverflow'],
+        require(['jquery', 'fullpagescroll'],
 			function ($, FullPageScroll) {
 		        window.stickyEnabled = <?php echo $_helperCustomHeader->stickyHeaderIsEnabled() ?>;
 				FullPageScroll.action(<?php echo /* @escapeNotVerified */ $_countBlocks; ?>);

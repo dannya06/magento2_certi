@@ -6,6 +6,10 @@
 /** @var $helper \Magento\Search\Helper\Data */
 $helper = $this->helper('Magento\Search\Helper\Data');
 $customHeaderHelper = $this->helper('WeltPixel\CustomHeader\Helper\Data');
+$searchAutoCompleteHelper = $this->helper('WeltPixel\SearchAutoComplete\Helper\Data');
+$templateResultsContainer = $searchAutoCompleteHelper->getTemplateResultsContainer();
+$templateResultsContainerControl = !$templateResultsContainer ? 'vertically-control' : 'horizontally-control';
+$templateResultsContainer = !$templateResultsContainer ? 'vertically-black' : 'horizontally-white';
 $magnifierIconIsEnabled = $customHeaderHelper->magnifierIconIsEnabled();
 $placeholderText = $customHeaderHelper->getPlaceholderText();
 $customHtml = $customHeaderHelper->getCustomHtml();
@@ -26,7 +30,7 @@ $serachOptionsVersionClass = !$serachOptionsVersion ? 'version-1' : 'version-2';
                             <label class="label active" for="search" data-role="minisearch-label">
                                 <span><?= /* @escapeNotVerified */ __('Search') ?></span>
                             </label>
-                            <div class="control">
+                            <div class="control <?php echo $templateResultsContainerControl; ?>">
                                 <input id="search"
                                        data-mage-init='{"quickSearch":{
                                         "formSelector":"#search_mini_form",
@@ -37,7 +41,7 @@ $serachOptionsVersionClass = !$serachOptionsVersion ? 'version-1' : 'version-2';
                                        name="<?= /* @escapeNotVerified */ $helper->getQueryParamName() ?>"
                                        value="<?= /* @escapeNotVerified */ $helper->getEscapedQueryText() ?>"
                                        placeholder="<?php echo $placeholderText; ?>"
-                                       class="input-text"
+                                       class="input-text <?php echo $templateResultsContainer; ?>"
                                        maxlength="<?= /* @escapeNotVerified */ $helper->getMaxQueryLength() ?>"
                                        role="combobox"
                                        aria-haspopup="false"
@@ -97,7 +101,7 @@ $serachOptionsVersionClass = !$serachOptionsVersion ? 'version-1' : 'version-2';
                 window.location.hash = 'search-mod';
                 if($('.page-header').hasClass('page-header-v4')){
                     $(".nav-sections-4.sticky-header").attr('style', 'z-index: 0 !important');
-                    $(".nav-toggle").attr('style', 'z-index: 0');
+                    $(".nav-toggle, .logo").attr('style', 'z-index: 0');
                 }
                 window.history.pushState("", document.title, window.location.pathname);
             });
@@ -120,7 +124,7 @@ $serachOptionsVersionClass = !$serachOptionsVersion ? 'version-1' : 'version-2';
                 if($('.page-header').hasClass('page-header-v4')) {
                     $(".nav-sections-4.sticky-header").attr('style', 'z-index: 10 !important');
                     setTimeout(function(){
-                        $(".nav-toggle").attr('style', 'z-index: 14');
+                        $(".nav-toggle, .logo").attr('style', 'z-index: 14');
                     }, 500);
                 }
             });

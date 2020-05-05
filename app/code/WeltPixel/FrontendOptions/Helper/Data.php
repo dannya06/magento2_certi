@@ -210,4 +210,22 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         return $this->scopeConfig->getValue('weltpixel_frontend_options/contact_options/block_id', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function getDefaultFontSettings($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/default', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function getLoadGoogleFontAsyncrounously($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_frontend_options/google_font_options/asyn_webfont_load', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
 }

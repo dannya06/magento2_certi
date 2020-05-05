@@ -321,10 +321,8 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         $magnifierBackgroundColor = strlen(trim($magnifierBackgroundColor)) ? 'background-color:' . $magnifierBackgroundColor . ';'  : '';
         $searchInputFontSize = strlen(trim($searchInputFontSize)) ? 'font-size:' . $searchInputFontSize . 'px !important;'  : '';
 
-
-
-
-
+        $defaultFontSettings = $this->_frontendHelper->getDefaultFontSettings($storeId);
+        $navFontSize = strlen(trim($defaultFontSettings['font____size__base'])) ? 'font-size: ' . (int) $defaultFontSettings['font____size__base'] . 'px !important;' : '';
 
         if (!$serachOptionsBorderWidth) {
             $serachOptionsBorderWidth = [];
@@ -644,7 +642,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
 	    }
 	}
 }
-
+body:not(.mobile-nav){
 .nav-sections {
     background-color: transparent !important;
     .nav-sections-items {
@@ -664,6 +662,17 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                 @media (max-width: $bkColorMobile) {
 			        color: #575757 !important;
 			    }
+            }
+            li.parent > a span:nth-child(2),
+            li:not(.parent) > a span:first-child {
+                $navFontSize
+            }
+            li.level0 {
+                .parent > a {
+                    @media (min-width: $this->_mobileBreakPoint) {
+                        padding: 8px 20px;
+                    }
+                }
             }
         }
         ul li.level0 {
@@ -699,11 +708,8 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
     .megamenu a:hover,
     .megamenu.level1:not(.parent):hover,
     .megamenu.level2:hover {
-        $bottomHeaderLinkColorShadow
         $bottomHeaderLinkColorHover
         & > a {
-            $bottomHeaderLinkColorShadow
-            $bottomHeaderLinkColorHover
             &:hover {
                 $bottomHeaderLinkColorShadow
                 $bottomHeaderLinkColorHover
@@ -723,6 +729,7 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             $bottomNavigationShadow
         }
     }
+}
 }
 // Sticky Header
 .page-header.sticky-header,
@@ -986,19 +993,21 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
         }
     }
 }
-.nav-sections.sticky-header {
-    $stickyHeaderBackgroundColor
-    padding-bottom: 0 !important;
-    .nav-sections-item-content {
+body:not(.mobile-nav){
+    .nav-sections.sticky-header {
         $stickyHeaderBackgroundColor
-    }
-    .navigation {
-        $stickyHeaderBackgroundColor
-        ul li.level0 > a,
-        ul li.level0 > a:visited {
-            $stickyHeaderElementsColor
-            &:hover {
-                $stickyHeaderElementsHoverColor
+        padding-bottom: 0 !important;
+        .nav-sections-item-content {
+            $stickyHeaderBackgroundColor
+        }
+        .navigation {
+            $stickyHeaderBackgroundColor
+            ul li.level0 > a,
+            ul li.level0 > a:visited {
+                $stickyHeaderElementsColor
+                &:hover {
+                    $stickyHeaderElementsHoverColor
+                }
             }
         }
     }
@@ -1044,8 +1053,10 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
             $imgType = end($imgPathArr);
 
             if ($imgType != 'svg') {
-                list($width, $height) = getimagesize($logoSrc);
-                $logoRatio = $width / $height;
+                list($width, $height) = @getimagesize($logoSrc);
+                if ($height) {
+                    $logoRatio = $width / $height;
+                }
             } else {
                 $xml = simplexml_load_file($logoSrc);
                 $attr = $xml->attributes();
@@ -1124,6 +1135,8 @@ class CustomHeaderEditActionControllerSaveObserver implements ObserverInterface
                     .page-wrapper {
                         .page-header {
                             .logo {
+                                z-index: 14;
+                                position: relative;
                                 img {
                                     $stickyLogoImgSizeCss
                                 }

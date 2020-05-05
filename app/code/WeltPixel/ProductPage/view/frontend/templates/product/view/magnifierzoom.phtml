@@ -18,8 +18,9 @@ $zoomType = $_helper->getMagnifierEventType();
     require(['jquery', 'mage/gallery/gallery'], function($, gallery){
         $('[data-gallery-role=gallery-placeholder]').on('gallery:loaded', function () {
             $(this).on('fotorama:ready', function() {
-                if ($('.fotorama__nav-wrap--vertical')) {
-                    $('.fotorama__stage').width( $('.fotorama__stage').width() - $('.fotorama__nav-wrap--vertical').width() - 5);
+                var fotoramaStageLeft = parseInt($('.fotorama__stage').css('left'));
+                if (fotoramaStageLeft) {
+                    $('.fotorama__stage').width($('.fotorama__stage').width() - fotoramaStageLeft);
                 }
             });
         });

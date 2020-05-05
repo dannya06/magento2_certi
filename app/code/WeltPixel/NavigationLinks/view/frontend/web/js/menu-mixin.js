@@ -4,13 +4,14 @@ define(['jquery'], function($) {
     return function(navigationMenu) {
         $.widget('mage.menu', navigationMenu.menu, {
             options: {
+                delay: 300,
                 mediaBreakpoint: '(max-width: ' + window.widthThreshold + 'px)'
             },
             /**
              * Toggle.
              */
             toggle: function () {
-                if ($(window).width() <= window.widthThreshold) {
+                if ($(window).width() <= window.widthThreshold || window.widthThreshold === undefined) {
                     var html = $('html');
                     if (html.hasClass('nav-open')) {
                         html.removeClass('nav-open');

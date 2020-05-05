@@ -137,6 +137,58 @@ class Save extends \WeltPixel\OwlCarouselSlider\Controller\Adminhtml\Banner
                 }
             }
 
+            /** Thumb Image verifications */
+            $bannerThumbImage = $this->getRequest()->getFiles('thumb_image');
+
+            $fileThumbName = ($bannerThumbImage && array_key_exists('name', $bannerThumbImage)) ? $bannerThumbImage['name'] : null;
+
+            if ($bannerThumbImage && $fileThumbName) {
+                try {
+
+                    /** @var \Magento\Framework\ObjectManagerInterface $uploader */
+                    $uploader = $this->_objectManager->create(
+                        'Magento\MediaStorage\Model\File\Uploader',
+                        ['fileId' => 'thumb_image']
+                    );
+
+                    $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
+
+                    /** @var \Magento\Framework\Image\Adapter\AdapterInterface $imageAdapterFactory */
+                    $imageAdapterFactory = $this->_objectManager->get('Magento\Framework\Image\AdapterFactory')
+                        ->create();
+
+                    $uploader->addValidateCallback('banner_thumb_image', $imageAdapterFactory, 'validateUploadFile');
+                    $uploader->setAllowRenameFiles(true);
+                    $uploader->setFilesDispersion(true);
+
+                    /** @var \Magento\Framework\Filesystem\Directory\Read $mediaDirectory */
+                    $mediaDirectory = $this->_objectManager->get('Magento\Framework\Filesystem')
+                        ->getDirectoryRead(DirectoryList::MEDIA);
+
+                    $result = $uploader->save(
+                        $mediaDirectory
+                            ->getAbsolutePath(\WeltPixel\OwlCarouselSlider\Model\Banner::OWLCAROUSELSLIDER_MEDIA_PATH)
+                    );
+
+                    $data['thumb_image'] = \WeltPixel\OwlCarouselSlider\Model\Banner::OWLCAROUSELSLIDER_MEDIA_PATH
+                        . $result['file'];
+
+                } catch (\Exception $e) {
+                    if ($e->getCode() == 0) {
+                        $this->messageManager->addError($e->getMessage());
+                    }
+                }
+            } else {
+                if (isset($data['thumb_image']) && isset($data['thumb_image']['value'])) {
+                    if (isset($data['thumb_image']['delete'])) {
+                        $data['thumb_image'] = null;
+                        $data['delete_thumb_image'] = true;
+                    } elseif (isset($data['thumb_image']['value'])) {
+                        $data['thumb_image'] = $data['thumb_image']['value'];
+                    }
+                }
+            }
+
             /** @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate */
             $localeDate = $this->_objectManager->get('Magento\Framework\Stdlib\DateTime\TimezoneInterface');
 

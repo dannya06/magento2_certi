@@ -54,5 +54,12 @@ var config = {
         jquery_transition: {
             deps: ['jquery']
         }
+    },
+    config: {
+        mixins: {
+            'mage/collapsible': {
+                'WeltPixel_DesignElements/js/collapsible-mixin': true
+            }
+        }
     }
 };

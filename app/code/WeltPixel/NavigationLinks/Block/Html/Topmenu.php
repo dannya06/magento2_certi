@@ -71,7 +71,6 @@ class Topmenu extends \Magento\Theme\Block\Html\Topmenu
             return parent::_getHtml($menuTree, $childrenWrapClass, $limit, $colBrakes);
         }
 
-
         $html = '';
 
         $children = $menuTree->getChildren();
@@ -178,7 +177,8 @@ class Topmenu extends \Magento\Theme\Block\Html\Topmenu
                 $child->setClass($outermostClass);
             }
 
-            if ($colBrakes && count($colBrakes) && $colBrakes[$counter]['colbrake']) {
+//            if ($colBrakes && count($colBrakes) && $colBrakes[$counter]['colbrake']) {
+            if (is_array($colBrakes) && count($colBrakes) && $colBrakes[$counter]['colbrake']) {
                 $html .= '</ul></li><li class="column"><ul>';
             }
 
@@ -226,7 +226,8 @@ class Topmenu extends \Magento\Theme\Block\Html\Topmenu
             $counter++;
         }
 
-        if ($colBrakes && count($colBrakes) && $limit) {
+//        if ($colBrakes && count($colBrakes) && $limit) {
+        if (is_array($colBrakes) && count($colBrakes) && $limit) {
             $html = '<li class="column"><ul>' . $html . '</ul>';
         }
 

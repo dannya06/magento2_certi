@@ -1,4 +1,5 @@
 <?php
+
 namespace WeltPixel\OwlCarouselSlider\Block\Slider;
 
 class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements \Magento\Widget\Block\BlockInterface
@@ -35,6 +36,10 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
      */
     protected $_localeDate;
+    /**
+     * @var \WeltPixel\MobileDetect\Helper\Data
+     */
+    private $_mobileHelperData;
 
     /**
      * Products constructor.
@@ -46,6 +51,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      * @param \Magento\Reports\Model\ResourceModel\Product\CollectionFactory $reportsCollectionFactory
      * @param \Magento\Reports\Block\Product\Widget\Viewed\Proxy $viewedProductsBlock
      * @param \Magento\Catalog\Model\CategoryFactory $categoryFactory
+     * @param \WeltPixel\MobileDetect\Helper\Data $mobileHelperData
      * @param array $data
      */
     public function __construct(
@@ -57,17 +63,19 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
         \Magento\Reports\Model\ResourceModel\Product\CollectionFactory $reportsCollectionFactory,
         \Magento\Reports\Block\Product\Widget\Viewed\Proxy $viewedProductsBlock,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
+        \WeltPixel\MobileDetect\Helper\Data $mobileHelperData,
         array $data = []
     )
     {
-        $this->_coreRegistry              = $context->getRegistry();
-        $this->_helperCustom              = $helperCustom;
-        $this->_helperProducts            = $helperProducts;
-        $this->_catalogProductVisibility  = $catalogProductVisibility;
-        $this->_productCollectionFactory  = $productsCollectionFactory;
-        $this->_reportsCollectionFactory  = $reportsCollectionFactory;
-        $this->_viewProductsBlock         = $viewedProductsBlock;
-        $this->_categoryFactory           = $categoryFactory;
+        $this->_coreRegistry = $context->getRegistry();
+        $this->_helperCustom = $helperCustom;
+        $this->_helperProducts = $helperProducts;
+        $this->_catalogProductVisibility = $catalogProductVisibility;
+        $this->_productCollectionFactory = $productsCollectionFactory;
+        $this->_reportsCollectionFactory = $reportsCollectionFactory;
+        $this->_viewProductsBlock = $viewedProductsBlock;
+        $this->_categoryFactory = $categoryFactory;
+        $this->_mobileHelperData = $mobileHelperData;
 
         $this->setTemplate('sliders/products.phtml');
 
@@ -79,10 +87,9 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
         $this->_scopeConfig = $context->getScopeConfig();
 
         parent::__construct($context, $data);
-        $this->_isScopePrivate = true;
     }
 
-     /**
+    /**
      * {@inheritdoc}
      */
     protected function _construct()
@@ -92,7 +99,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
         $this->addData([
             'cache_lifetime' => 86400,
             'cache_tags' => [\Magento\Catalog\Model\Product::CACHE_TAG,
-            ], ]);
+            ],]);
     }
 
     /**
@@ -107,11 +114,10 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
             $this->_storeManager->getStore()->getId(),
             $this->_storeManager->getStore()->getCurrentCurrency()->getCode(),
             $this->_design->getDesignTheme()->getId(),
-            $this->getData('products_type')
+            $this->getData('products_type'),
+            json_encode($this->getRequest()->getParams())
         ];
     }
-
-
 
 
     /**
@@ -125,16 +131,16 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 
         switch ($productsType) {
             case 'new_products':
-                $productCollection =  $this->_getNewProductCollection($this->_productCollectionFactory->create());
+                $productCollection = $this->_getNewProductCollection($this->_productCollectionFactory->create());
                 break;
             case 'bestsell_products':
                 $productCollection = $this->_getBestsellProductCollection($this->_productCollectionFactory->create());
                 break;
             case 'sell_products':
-                $productCollection =  $this->_getSellProductCollection($this->_productCollectionFactory->create());
+                $productCollection = $this->_getSellProductCollection($this->_productCollectionFactory->create());
                 break;
             case 'recently_viewed':
-                $productCollection =  $this->_getRecentlyViewedCollection($this->_productCollectionFactory->create());
+                $productCollection = $this->_getRecentlyViewedCollection($this->_productCollectionFactory->create());
                 break;
             case 'category_products':
                 $categoryId = $this->_getCategoryIdFrom($this->getData('category'));
@@ -191,7 +197,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      */
     protected function _getNewProductCollection($_collection)
     {
-        $limit  = $this->_getProductLimit('new_products');
+        $limit = $this->_getProductLimit('new_products');
         $random = $this->_getRandomSort('new_products');
 
         if (!$limit || $limit == 0) {
@@ -233,7 +239,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
                 'desc')
             ->addStoreFilter($this->getStoreId())->setCurPage(1);
 
-        if ($limit && $limit > 0 ) {
+        if ($limit && $limit > 0) {
             $_collection->setPageSize($limit);
         };
 
@@ -243,19 +249,19 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
     /**
      * Get best-sell slider products.
      *
-     * @param \Magento\Catalog\Model\ResourceModel\Product\Collection $_collection
-     * @return \Magento\Catalog\Model\ResourceModel\Product\Collection
+     * @param $_collection
+     * @return array|\Magento\Catalog\Model\ResourceModel\Product\Collection
      */
     protected function _getBestsellProductCollection($_collection)
     {
-        $limit  = $this->_getProductLimit('bestsell_products');
+        $limit = $this->_getProductLimit('bestsell_products');
         $random = $this->_getRandomSort('bestsell_products');
 
         if (!$limit || $limit == 0) {
             return [];
         };
 
-         $_collection->setVisibility($this->_catalogProductVisibility->getVisibleInCatalogIds());
+        $_collection->setVisibility($this->_catalogProductVisibility->getVisibleInCatalogIds());
 
         if ($random) {
             $allIds = $_collection->getAllIds();
@@ -281,7 +287,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
                 $periodFilter['to'] = $yesterday;
                 break;
             case 'last_week':
-                $daysArr = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', ];
+                $daysArr = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',];
                 $firstDay = $this->_scopeConfig->getValue(
                     'general/locale/firstday',
                     \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
@@ -318,10 +324,10 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 
         $_collection->getSelect()
             ->join(['bestsellers' => $_collection->getTable('sales_bestsellers_aggregated_yearly')],
-                'e.entity_id = bestsellers.product_id AND bestsellers.store_id = '.$this->getStoreId(),
-                ['qty_ordered','rating_pos','period'])
-            ->order('rating_pos')
-        ;
+                'e.entity_id = bestsellers.product_id AND bestsellers.store_id = ' . $this->getStoreId(),
+                ['qty_ordered', 'rating_pos', 'period'])
+            ->group('bestsellers.product_id')
+            ->order('rating_pos');
 
         /** Filter products collection by period */
         if ($periodFilter) {
@@ -330,8 +336,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 
             $_collection->getSelect()
                 ->where("bestsellers.period >= '$from'")
-                ->where("bestsellers.period <= '$to'")
-            ;
+                ->where("bestsellers.period <= '$to'");
         }
         /** End filter products collection by period */
 
@@ -345,20 +350,15 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
                 ['parent_id']
             )
             ->where('sbay.store_id = ' . $this->getStoreId())
-            ->where(
-                'cpsl.parent_id IS NOT NULL'
-            )
-        ;
+            ->where('cpsl.parent_id IS NOT NULL');
 
         /** Filter products collection by period */
         if ($periodFilter) {
             $from = $periodFilter['from'];
             $to = $periodFilter['to'];
 
-            $select
-                ->where("sbay.period >= '$from'")
-                ->where("sbay.period <= '$to'")
-            ;
+            $select->where("sbay.period >= '$from'")
+                   ->where("sbay.period <= '$to'");
         }
         /** End filter products collection by period */
 
@@ -370,7 +370,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
         }
 
         $configurableProductsCollection = $this->_productCollectionFactory->create();
-        $configurableProductsCollection->addAttributeToFilter('entity_id',  ['in' => array_keys($configurableParents)]);
+        $configurableProductsCollection->addAttributeToFilter('entity_id', ['in' => array_keys($configurableParents)]);
         $configurableProductsCollection->setVisibility($this->_catalogProductVisibility->getVisibleInCatalogIds());
         $configurableProductsCollection = $this->_addProductAttributesAndPrices($configurableProductsCollection);
 
@@ -385,6 +385,9 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
             $item = $items->getItemById($key);
             if (!$item) {
                 $item = $configurableProductsCollection->getItemById($key);
+                if (!$item) {
+                    continue;
+                }
                 $item->setData('rating_pos', $ratingPos);
             }
 
@@ -396,7 +399,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 
         $_collection->addStoreFilter($this->getStoreId())->setCurPage(1);
 
-        if ($limit && $limit > 0 ) {
+        if ($limit && $limit > 0) {
             $_collection->setPageSize($limit);
         };
 
@@ -411,10 +414,10 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      */
     protected function _getSellProductCollection($_collection)
     {
-        $limit  = $this->_getProductLimit('sell_products');
+        $limit = $this->_getProductLimit('sell_products');
         $random = $this->_getRandomSort('sell_products');
 
-        if(!$limit || $limit == 0) {
+        if (!$limit || $limit == 0) {
             return [];
         };
 
@@ -453,7 +456,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
             ->addStoreFilter($this->getStoreId())
             ->setCurPage(1);
 
-        if($limit && $limit > 0 ) {
+        if ($limit && $limit > 0) {
             $_collection->setPageSize($limit);
         };
 
@@ -468,10 +471,10 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      */
     protected function _getRecentlyViewedCollection($_collection)
     {
-        $limit  = $this->_getProductLimit('recently_viewed');
+        $limit = $this->_getProductLimit('recently_viewed');
         $random = $this->_getRandomSort('recently_viewed');
 
-        if($limit == 0) {
+        if ($limit == 0) {
             return [];
         };
 
@@ -490,7 +493,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
             $_collection->addIdFilter($randomIds);
         };
 
-        if ($limit && $limit > 0 ) {
+        if ($limit && $limit > 0) {
             $_collection->setPageSize($limit);
         };
 
@@ -503,10 +506,10 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      */
     protected function _getCustomCategoryCollection($categoryId)
     {
-        $limit  = $this->_getProductLimit('category_products');
+        $limit = $this->_getProductLimit('category_products');
         $random = $this->_getRandomSort('category_products');
 
-        if($limit == 0) {
+        if ($limit == 0) {
             return [];
         };
 
@@ -520,7 +523,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
             $_collection->getSelect()->order('RAND()');
         };
 
-        if ($limit && $limit > 0 ) {
+        if ($limit && $limit > 0) {
             $_collection->setPageSize($limit);
         };
 
@@ -568,7 +571,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      */
     public function getProductCollectionUpSell()
     {
-        if(!$this->_currentProduct) {
+        if (!$this->_currentProduct) {
             return [];
         }
         return $this->getUpSellProducts($this->_currentProduct);
@@ -601,7 +604,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      */
     public function getProductCollectionCrossSell()
     {
-        if(!$this->_currentProduct) {
+        if (!$this->_currentProduct) {
             return [];
         }
 
@@ -690,7 +693,8 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      * @param $category
      * @return bool
      */
-    protected function _getCategoryIdFrom($category) {
+    protected function _getCategoryIdFrom($category)
+    {
         $value = explode('/', $category);
         $categoryId = false;
 

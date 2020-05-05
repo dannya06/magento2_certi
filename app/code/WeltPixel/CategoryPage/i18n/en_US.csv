@@ -3,20 +3,15 @@ Top,Top
 Right,Right
 Bottom,Bottom
 Left,Left
-"We can't find products matching the selection.","We can't find products matching the selection."
-"Add to Cart","Add to Cart"
-"In stock","In stock"
-"Out of stock","Out of stock"
-"Add to Wish List","Add to Wish List"
-"Add to Compare","Add to Compare"
-"Learn More","Learn More"
 "Category Page","Category Page"
 "Important / Recommended:","Important / Recommended:"
-General,General
+"Category Page - General Settings","Category Page - General Settings"
 "Display Add To Wishlist","Display Add To Wishlist"
 "Display Add To Compare","Display Add To Compare"
 "Display Swatches","Display Swatches"
+"Select Swatches behavior.","Select Swatches behavior."
 "Display Swatch Tooltip","Display Swatch Tooltip"
+"Select Swatches behavior when hover over them. <br/> Display tooltip on hover over the swatches from Layered Navigation and from the products on category page.","Select Swatches behavior when hover over them. <br/> Display tooltip on hover over the swatches from Layered Navigation and from the products on category page."
 "Display Add to Cart","Display Add to Cart"
 "Align Add to Cart Button","Align Add to Cart Button"
 "Products per line (Desktop view)","Products per line (Desktop view)"
@@ -27,7 +22,12 @@ General,General
 "Item Border Color","Item Border Color"
 "Item Image Options","Item Image Options"
 "Enable Hover Image","Enable Hover Image"
-"Select the hover image Product -> Edit -> Images -> Listing Hover Image","Select the hover image Product -> Edit -> Images -> Listing Hover Image"
+"You need to add or set an existing hover image for your products. For this, on the Admin menu select Catalog -> Products ->
+                        Edit a product -> Go to Images and Videos section -> add new images or set an
+                        existing image to be the hover image, by clicking the image and settings the Role of the image to be Listing Hover Image","You need to add or set an existing hover image for your products. For this, on the Admin menu select Catalog -> Products ->
+                        Edit a product -> Go to Images and Videos section -> add new images or set an
+                        existing image to be the hover image, by clicking the image and settings the Role of the image to be Listing Hover Image"
+"Enable/Disable hover image over items on category page. See tooltip for more details.","Enable/Disable hover image over items on category page. See tooltip for more details."
 "Grid View Image Width (In Px)","Grid View Image Width (In Px)"
 "Grid View Image Height (In Px)","Grid View Image Height (In Px)"
 "List View Image Width (In Px)","List View Image Width (In Px)"
@@ -48,7 +48,7 @@ Radius,Radius
 Width,Width
 Height,Height
 "Swatch Align","Swatch Align"
-Toolbar,Toolbar
+"Toolbar and Pagination Options","Toolbar and Pagination Options"
 "Toolbar Background Color","Toolbar Background Color"
 "Toolbar Border Color","Toolbar Border Color"
 "Toolbar Padding","Toolbar Padding"

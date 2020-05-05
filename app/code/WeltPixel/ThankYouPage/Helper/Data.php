@@ -19,8 +19,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->_thankYouPageOptions = $this->scopeConfig->getValue('weltpixel_thankyoupage', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
@@ -176,7 +175,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getOrderDetailTemplate()
     {
         if ($this->isOrderDetailsEnabled()) {
-            return 'WeltPixel_ThankYouPage::success.phtml';
+            $fullActionName = $this->_request->getFullActionName();
+            $template = 'WeltPixel_ThankYouPage::success.phtml';
+            switch ($fullActionName) {
+                case 'multishipping_checkout_success':
+                    $template = 'WeltPixel_ThankYouPage::multishipping/success.phtml';
+                    break;
+            }
+
+
+            return $template;
         }
 
         return '';
@@ -185,7 +193,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return string
      */
-    public function getCreateAccountTemplate() {
+    public function getCreateAccountTemplate()
+    {
         if ($this->isCreateAccountEnabled()) {
             return 'WeltPixel_ThankYouPage::registration.phtml';
         }
@@ -257,7 +266,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return isset($this->_thankYouPageOptions['newsletter_subscribe']['sort_order']) ? $this->_thankYouPageOptions['newsletter_subscribe']['sort_order'] : 0;
     }
 
-
     /**
      * @return boolean
      */
@@ -287,11 +295,19 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getAvailableBlockElements()
     {
+        $fullActionName = $this->_request->getFullActionName();
+        $checkoutSuccessBlock = 'checkout.success';
+        switch ($fullActionName) {
+            case 'multishipping_checkout_success':
+                $checkoutSuccessBlock = 'checkout_success';
+                break;
+        }
+
         $blocks = [];
         $blocksForOutput = [];
 
         if ($this->isOrderDetailsEnabled()) {
-            $blocksForOutput['checkout.success'] = $this->getOrderDetailsSortOrder();
+            $blocksForOutput[$checkoutSuccessBlock] = $this->getOrderDetailsSortOrder();
         }
 
         if ($this->isGoogleMapEnabled()) {
@@ -318,7 +334,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         // Insert WeSupply Notification Signup Box
         if ($this->isWesupplyIntegrationEnabled()) {
-            $blocks = $this->insertAfter($blocksForOutput, 'checkout.success', ['wesupply.notification' => 0]);
+            $blocks = $this->insertAfter($blocksForOutput, $checkoutSuccessBlock, ['wesupply.notification' => 0]);
         } else {
             $blocks = $blocksForOutput;
         }
@@ -390,7 +406,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $this->isModuleEnabled('WeSupply_Toolbox') &&
             $this->isOutputEnabled('WeSupply_Toolbox')
         ) {
-
             return true;
         }
 

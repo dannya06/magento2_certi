@@ -1,6 +1,8 @@
 var config = {
-    paths: {
-        navigationJs: 'WeltPixel_NavigationLinks/js/navigation_js'
+    map: {
+        '*': {
+            navigationJs: 'WeltPixel_NavigationLinks/js/navigation_js'
+        }
     },
     config: {
         mixins: {

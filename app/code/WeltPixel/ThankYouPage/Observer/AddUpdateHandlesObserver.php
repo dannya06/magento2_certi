@@ -68,14 +68,22 @@ class AddUpdateHandlesObserver implements ObserverInterface
         $layout = $observer->getData('layout');
         $fullActionName = $observer->getData('full_action_name');
 
-        if ($fullActionName != 'checkout_onepage_success') {
+        if (!in_array($fullActionName, ['checkout_onepage_success', 'multishipping_checkout_success'])) {
             return $this;
         }
 
         $isThankYouPageModuleEnabled = $this->scopeConfig->getValue(self::XML_PATH_THANKYOUPAGE_ENABLED,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
         if ($isThankYouPageModuleEnabled) {
-            $layout->getUpdate()->addHandle('weltpixel_checkout_onepage_success');
+            switch ($fullActionName) {
+                case 'checkout_onepage_success' :
+                    $layout->getUpdate()->addHandle('weltpixel_checkout_onepage_success');
+                break;
+                case 'multishipping_checkout_success' :
+                    $layout->getUpdate()->addHandle('weltpixel_multishipping_checkout_success');
+                break;
+            }
+
         }
 
         if ($this->_helper->isWesupplyModuleEnabled()) {

@@ -10,10 +10,15 @@ define([
                 return false;
             }
 
+            var windowWidth = $(window).width();
             var url = window.weltpixel_quickview.baseUrl + 'weltpixel_quickview/index/updatecart';
             var showMiniCart = parseInt(window.weltpixel_quickview.showMiniCart);
-            var wpQv_mainClass = window.weltpixel_quickview.popupMainClass;
             var wpQv_closeOnBgClick = window.weltpixel_quickview.closeOnBgClick;
+            var wpQv_mainClass = window.weltpixel_quickview.popupMainClass;
+
+            if (windowWidth < 768) {
+                wpQv_mainClass = '';
+            }
 
             window.weltpixel_quickview.showMiniCartFlag = false;
 

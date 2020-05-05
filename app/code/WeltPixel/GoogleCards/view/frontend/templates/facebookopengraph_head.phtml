@@ -25,4 +25,5 @@ echo $block->stripTags($block->getCurrentUrl($_product)); ?>"/>
 <meta property="product:price:amount" content="<?php echo $this->getPrice(); ?>"/>
 <meta property="product:price:currency" content="<?php echo $block->getCurrencyCode() ?>"/>
 <meta property="product:availability" content="<?php echo $stock; ?>"/>
+<meta property="product:retailer_item_id" content="<?php echo $block->getRetailerId($_product); ?>"/>
 <!--  facebook open graph -->

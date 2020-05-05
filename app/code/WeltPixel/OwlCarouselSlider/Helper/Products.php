@@ -47,6 +47,8 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             'show_addto',
             'show_wishlist',
             'show_compare',
+            'show_reviews_ratings',
+            'random_sort',
             'loop',
             'margin',
             'slide_by',

@@ -1,5 +1,12 @@
 "Use predefined","Use predefined"
 "Please regenerate Pearl Theme LESS/CSS files from <a href=""%1"">Cache Management Section</a>","Please regenerate Pearl Theme LESS/CSS files from <a href=""%1"">Cache Management Section</a>"
+"Contact Us","Contact Us"
+"* Required Fields","* Required Fields"
+Name,Name
+Email,Email
+"Phone Number","Phone Number"
+"What’s on your mind?","What’s on your mind?"
+Submit,Submit
 "Frontend Options","Frontend Options"
 "Important / Recommended:","Important / Recommended:"
 Breakpoints,Breakpoints
@@ -18,6 +25,8 @@ Row,Row
 "Cms Page","Cms Page"
 "Category Page","Category Page"
 "Product Page","Product Page"
+"Google Font Options","Google Font Options"
+"Load Google Fonts Asynchronously","Load Google Fonts Asynchronously"
 "Main Options","Main Options"
 "Primary color","Primary color"
 "Secondary color","Secondary color"
@@ -31,8 +40,10 @@ H1,H1
 "Font Weight","Font Weight"
 "Font Size","Font Size"
 "Font Style","Font Style"
-"Line Height(px)","Line Height(px)"
+"Letter Spacing","Letter Spacing"
+"Line Height","Line Height"
 H2,H2
+"Line Height(px)","Line Height(px)"
 H3,H3
 H4,H4
 H5,H5
@@ -50,7 +61,7 @@ Links,Links
 "Border Color","Border Color"
 "Hover Border Color","Hover Border Color"
 "Border Radius","Border Radius"
-"Primary Buttons","Primary Buttons"
+"Primary Buttons (Call To Action)","Primary Buttons (Call To Action)"
 Ratings,Ratings
 "Rating Active Color","Rating Active Color"
 "Rating Inactive Color","Rating Inactive Color"
@@ -69,9 +80,9 @@ Ratings,Ratings
 "Input Line Height","Input Line Height"
 "Input Font Style","Input Font Style"
 "Input Placeholder Color","Input Placeholder Color"
-Dropdown,Dropdown
+"Dropdown widgets","Dropdown widgets"
 "Dropdown Background","Dropdown Background"
-"Dropdown Border Colors","Dropdown Border Colors"
+"Dropdown Border style, width and color","Dropdown Border style, width and color"
 "Dropdown Shadow","Dropdown Shadow"
 "Dropdown Pointer Border Color","Dropdown Pointer Border Color"
 "Dropdown List Item Hover","Dropdown List Item Hover"
@@ -81,10 +92,16 @@ Breadcrumbs,Breadcrumbs
 "Breadcrumbs Separator Color","Breadcrumbs Separator Color"
 "Breadcrumbs Current Page Color","Breadcrumbs Current Page Color"
 "Breadcrumbs Color","Breadcrumbs Color"
-"Breadcrumbs Link Hover Text Decoration","Breadcrumbs Link Hover Text Decoration"
+"Breadcrumbs Color on Hover","Breadcrumbs Color on Hover"
 "Breadcrumbs Background","Breadcrumbs Background"
-Icons,Icons
+"Product page Add to Icons","Product page Add to Icons"
 "Icon Font Size","Icon Font Size"
-"Icon Label Font Size","Icon Label Font Size"
+"Add to, Label Font Size","Add to, Label Font Size"
 "Price Options","Price Options"
 "Old Price Line Trough","Old Price Line Trough"
+"Contact Options","Contact Options"
+"Contact Page Version","Contact Page Version"
+"Select Contact Page Version. Version 1 is default Magento, Version 2 is WeltPixel Contact Page","Select Contact Page Version. Version 1 is default Magento, Version 2 is WeltPixel Contact Page"
+"Upload Top Image","Upload Top Image"
+"Enable Contact Block","Enable Contact Block"
+"Select Block","Select Block"

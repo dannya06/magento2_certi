@@ -362,6 +362,18 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
             ]
         );
 
+        $elements['thumb_image'] = $fieldset->addField(
+            'thumb_image',
+            'image',
+            [
+                'title'    => __('Thumb Image'),
+                'label'    => __('Thumb Image'),
+                'name'     => 'thumb_image',
+                'note'     => 'Accepted images: jpg, jpeg, gif, png',
+                'required' => false,
+            ]
+        );
+
         $elements['custom'] = $fieldset->addField(
             'custom',
             'textarea',
@@ -468,7 +480,8 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
                 'class'       => 'required-entry',
                 'date_format' => $dateFormat,
                 'time_format' => $timeFormat,
-                'note'        => implode(' ', [$dateFormat, $timeFormat]) . '<br/>The banner is displayed from selected date and time.',
+                'note'        => implode(' ', [$dateFormat, $timeFormat]) . '<br/>The banner is displayed from selected date and time.' .
+                            '<br/><b>For schedules to work make sure to enable Ajax Scheduled Banners from Slider Details.</b>',
             ]
         );
 
@@ -485,7 +498,8 @@ class Banner extends \Magento\Backend\Block\Widget\Form\Generic
                 'class'       => 'required-entry',
                 'date_format' => $dateFormat,
                 'time_format' => $timeFormat,
-                'note'        => implode(' ', [$dateFormat, $timeFormat]) . '<br/>The Banner is displayed until selected date and time.',
+                'note'        => implode(' ', [$dateFormat, $timeFormat]) . '<br/>The Banner is displayed until selected date and time.' .
+                    '<br/><b>For schedules to work make sure to enable Ajax Scheduled Banners from Slider Details.</b>',
             ]
         );
 

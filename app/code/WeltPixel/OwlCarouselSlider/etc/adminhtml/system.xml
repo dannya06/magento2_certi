@@ -26,14 +26,14 @@
                     <label>Breakpoint 4</label>
                     <comment>Add breakpoint. Ex.: 1280. Applied to resolutions higher than set value.</comment>
                 </field>
-                <field id="display_wishlist" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="display_wishlist" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display wishlist</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Display/Hide wishlist.</comment>
+                    <comment><![CDATA[Display/Hide wishlist. <br/> This setting applies only to Related, Cross-Sell and Up-Sell carousels. For the rest, there are specific settings at the individual Product Carousel level.]]></comment>
                 </field>
-                <field id="display_compare" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="display_compare" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display compare</label>
-                    <comment>Display/Hide compare.</comment>
+                    <comment><![CDATA[Display/Hide compare. <br/> This setting applies only to Related, Cross-Sell and Up-Sell carousels. For the rest, there are specific settings at the individual Product Carousel level.]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
@@ -59,22 +59,27 @@
                     <comment>Show/Hide the product price for products in the carousel</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_addto" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="show_addto" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show Add To Cart</label>
                     <comment>Show/Hide ‘Add to cart’ button for products in the carousel.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_wishlist" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="show_wishlist" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show Wishlist</label>
                     <comment>Show/Hide wishlist icon for products in the carousel.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_compare" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="show_compare" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show Compare</label>
                     <comment>Show/Hide Compare icon for products in the carousel</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="random_sort" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="show_reviews_ratings" translate="label comment" type="select" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Reviews and Ratings</label>
+                    <comment>Show/Hide Reviews and Ratings for products in the carousel</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="random_sort" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Random Sort</label>
                     <comment>If enabled, the products in the carousel are displayed in random order on each refresh.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -308,6 +313,11 @@
                     <comment>Show/Hide Compare icon for products in the carousel</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="show_reviews_ratings" translate="label comment" type="select" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Reviews and Ratings</label>
+                    <comment>Show/Hide Reviews and Ratings for products in the carousel</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="random_sort" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Random Sort</label>
                     <comment>If enabled, the products in the carousel are displayed in random order on each refresh.</comment>
@@ -538,6 +548,11 @@
                     <comment>Show/Hide Compare icon for products in the carousel</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="show_reviews_ratings" translate="label comment" type="select" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Reviews and Ratings</label>
+                    <comment>Show/Hide Reviews and Ratings for products in the carousel</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="random_sort" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Random Sort</label>
                     <comment>If enabled, the products in the carousel are displayed in random order on each refresh.</comment>
@@ -765,6 +780,11 @@
                 <field id="show_compare" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show Compare</label>
                     <comment>Show/Hide Compare icon for products in the carousel</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_reviews_ratings" translate="label comment" type="select" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Reviews and Ratings</label>
+                    <comment>Show/Hide Reviews and Ratings for products in the carousel</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="random_sort" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -1577,6 +1597,11 @@
                 <field id="show_compare" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show Compare</label>
                     <comment>Show/Hide Compare icon for products in the carousel</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_reviews_ratings" translate="label comment" type="select" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Reviews and Ratings</label>
+                    <comment>Show/Hide Reviews and Ratings for products in the carousel</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="random_sort" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">

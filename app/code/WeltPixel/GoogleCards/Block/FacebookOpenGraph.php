@@ -44,4 +44,26 @@ class FacebookOpenGraph extends GoogleCards
         $priceOption = $this->_helper->getFacebookOpenGraphPrice();
         return $this->_calculatePrice($priceOption);
     }
+
+    /**
+     * @param \Magento\Catalog\Model\Product $product
+     * @return string
+     */
+    public function getRetailerId($product)
+    {
+        $idOption = $this->_helper->getFacebookRetailerId();
+        $retailerItemId = '';
+
+        switch ($idOption) {
+            case 'sku' :
+                $retailerItemId = $product->getData('sku');
+                break;
+            case 'id' :
+            default:
+            $retailerItemId = $product->getId();
+                break;
+        }
+
+        return $retailerItemId;
+    }
 }

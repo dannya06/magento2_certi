@@ -18,20 +18,25 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $mobileDetectHelper;
 
+    protected $request;
+
     /**
      * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \WeltPixel\MobileDetect\Helper\Data $mobileDetectHelper
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\App\RequestInterface $request
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \WeltPixel\MobileDetect\Helper\Data $mobileDetectHelper,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\App\RequestInterface $request
     ) {
         parent::__construct($context);
         $this->_storeManager = $storeManager;
         $this->mobileDetectHelper = $mobileDetectHelper;
+        $this->request = $request;
     }
 
     /**
@@ -198,5 +203,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
 	public function getMagnifierEventType($storeId = null) {
         return $this->scopeConfig->getValue('weltpixel_product_page/magnifier/eventtype', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProductId()
+    {
+        return $this->request->getParam('id');
     }
 }

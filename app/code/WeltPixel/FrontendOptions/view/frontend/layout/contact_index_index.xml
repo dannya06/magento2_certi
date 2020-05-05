@@ -10,11 +10,6 @@
         <title>Contact Us</title>
     </head>
     <body>
-        <referenceContainer name="content">
-            <block class="WeltPixel\FrontendOptions\Block\ContactForm" name="contactForm">
-                <container name="form.additional.info" label="Form Additional Info"/>
-            </block>
-        </referenceContainer>
         <referenceContainer name="form.additional.info">
             <block class="Magento\Captcha\Block\Captcha" name="captcha" after="-" cacheable="false">
                 <action method="setFormId">

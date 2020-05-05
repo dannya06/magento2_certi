@@ -308,6 +308,7 @@ class Topmenu
         $collection->addFieldToFilter('path', ['like' => '1/' . $rootId . '/%']); //load only from store root
         $collection->addAttributeToFilter('include_in_menu', 1);
         $collection->addIsActiveFilter();
+        $collection->addNavigationMaxDepthFilter();
         $collection->addUrlRewriteToResult();
         $collection->addOrder('level', Collection::SORT_ORDER_ASC);
         $collection->addOrder('position', Collection::SORT_ORDER_ASC);
@@ -315,5 +316,23 @@ class Topmenu
         $collection->addOrder('entity_id', Collection::SORT_ORDER_ASC);
 
         return $collection;
+    }
+
+    /**
+     * Add active
+     *
+     * @param \Magento\Theme\Block\Html\Topmenu $subject
+     * @param string[] $result
+     * @return string[]
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function afterGetCacheKeyInfo(\Magento\Theme\Block\Html\Topmenu $subject, array $result)
+    {
+        $activeCategory = $this->getCurrentCategory();
+        if ($activeCategory) {
+            $result[] = Category::CACHE_TAG . '_' . $activeCategory->getId();
+        }
+
+        return $result;
     }
 }
