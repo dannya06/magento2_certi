@@ -52,14 +52,16 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getSliderConfigOptions($sliderId)
     {
-        if($this->_sliderId != $sliderId && is_null($this->_configFieldsSlider)) {
+        if ($this->_sliderId != $sliderId && is_null($this->_configFieldsSlider)) {
             $this->_sliderId = $sliderId;
             $this->_configFieldsSlider = [
                 'title',
                 'show_title',
                 'status',
+                'scheduled_ajax',
                 'nav',
                 'dots',
+                'thumbs',
                 'center',
                 'items',
                 'loop',
@@ -84,7 +86,7 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
                 'items_brk4',
             ];
         }
-        if(is_null($this->_configFieldsBanner)) {
+        if (is_null($this->_configFieldsBanner)) {
             $this->_configFieldsBanner = [
                 'id',
                 'title',
@@ -97,6 +99,7 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
                 'banner_type',
                 'image',
                 'mobile_image',
+                'thumb_image',
                 'video',
                 'custom',
                 'alt_text',
@@ -128,10 +131,15 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
         $sliderBannersCollection = $slider->getSliderBanerCollection();
         // $sliderBannersCollection->setOrder('sort_order', 'ASC');
 
+        $enableAjaxSchedule = $sliderConfig['scheduled_ajax'];
+
         $banners = [];
         foreach ($sliderBannersCollection as $banner) {
+            if (!$banner->getStatus()) {
+                continue;
+            }
 
-            if (!$this->validateBannerDisplayDate($banner) || !$banner->getStatus()) {
+            if (!$enableAjaxSchedule && !$this->validateBannerDisplayDate($banner)) {
                 continue;
             }
 
@@ -186,7 +194,7 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * Retrieve the breakpoint configuration.
-     * 
+     *
      * @return array
      */
     public function getBreakpointConfiguration()
@@ -224,7 +232,7 @@ class Custom extends \Magento\Framework\App\Helper\AbstractHelper
 
         foreach ($configPaths as $configPath) {
             $value = $this->_getConfigValue($configPath);
-	        $displaySocial[$configPath] = $value ? $value : 0;
+            $displaySocial[$configPath] = $value ? $value : 0;
         }
 
         return $displaySocial;

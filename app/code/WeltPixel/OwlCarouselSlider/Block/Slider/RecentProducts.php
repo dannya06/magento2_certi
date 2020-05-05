@@ -61,7 +61,6 @@ class RecentProducts extends \Magento\Catalog\Block\Product\AbstractProduct impl
         $this->setTemplate('recent/products.phtml');
 
         parent::__construct($context, $data);
-        $this->_isScopePrivate = true;
     }
 
 

@@ -1,7 +1,8 @@
 <?php
 namespace WeltPixel\FrontendOptions\Plugin;
 
-class PageConfigStructure {
+class PageConfigStructure
+{
 
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
@@ -34,7 +35,6 @@ class PageConfigStructure {
         $this->utilityHelper = $utilityHelper;
     }
 
-
     /**
      * Modify the hardcoded breakpoint for styles-l.css
      * @param \Magento\Framework\View\Page\Config\Structure $subject
@@ -42,9 +42,11 @@ class PageConfigStructure {
      * @param array $attributes
      * @return $this
      */
-    public function beforeAddAssets(\Magento\Framework\View\Page\Config\Structure $subject,
-        $name, $attributes)
-    {
+    public function beforeAddAssets(
+        \Magento\Framework\View\Page\Config\Structure $subject,
+        $name,
+        $attributes
+    ) {
         /** Add the store specific css just for stores where theme is used */
         if ($this->utilityHelper->isPearlThemeUsed()) {
             if ($name == 'css/styles-l.css') {
@@ -53,5 +55,16 @@ class PageConfigStructure {
         }
 
         return [$name, $attributes];
+    }
+
+    /**
+     * @param \Magento\Framework\View\Page\Config\Structure $subject
+     * @param string[] $result
+     * @return  string[]
+     */
+    public function afterGetMetadata(\Magento\Framework\View\Page\Config\Structure $subject, $result)
+    {
+        $result['viewport'] = 'width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no';
+        return $result;
     }
 }

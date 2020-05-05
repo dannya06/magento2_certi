@@ -74,6 +74,16 @@ For sample block use: <strong>Recently Viewed Bar - Sample block</strong>
                     </depends>
                 </field>
 
+                <field id="enable_sl" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Social Login Integration</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[If enabled, Social Login block will replace the CMS Block for not logged in users. The content of CMS Block will be visible after the user has logged in.<br />Requires the <a href="https://www.weltpixel.com/magento2-free-social-login-extension.html" title="Social Login">Social Login Extension</a> installed and enabled.]]>
+                    </comment>
+                    <depends>
+                        <field id="enable_cms">1</field>
+                    </depends>
+                </field>
+
                 <field id="button_color" translate="label" type="text" sortOrder="40" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Button Color</label>

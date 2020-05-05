@@ -1,7 +1,9 @@
 var config = {
-    paths: {
-        arv: 'WeltPixel_RecentlyViewedBar/js/arv',
-        arvAjax: 'WeltPixel_RecentlyViewedBar/js/arvAjax'
+    map: {
+        '*': {
+            arv: 'WeltPixel_RecentlyViewedBar/js/arv',
+            arvAjax: 'WeltPixel_RecentlyViewedBar/js/arvAjax'
+        }
     },
     shim: {
         jqueryTouch: ['jquery', 'jquery/ui']

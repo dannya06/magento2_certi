@@ -494,6 +494,10 @@
           }
         }
         .product-info-main.product_v4{
+			top: 5px;
+			-webkit-transition: all 0.5s ease;
+			-moz-transition: all 0.5s ease;
+			transition: all 0.5s ease;
           &.pp-floating-v4{
             background: none transparent !important;
             margin-bottom: 0 !important;
@@ -502,8 +506,8 @@
           }
           &.pp-fixed {
             position: fixed;
+			padding-top: 0;
             top: 100px;
-            padding-top: 0
           }
         }
 		.product.media {
@@ -752,9 +756,6 @@
 .media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
 	.theme-pearl {
 		.toggle.toggle-bg{
-			.togglet{
-				padding-left: 0px;
-			}
 			.togglec{
 				padding: 12px 0 0 5px !important;
 			}

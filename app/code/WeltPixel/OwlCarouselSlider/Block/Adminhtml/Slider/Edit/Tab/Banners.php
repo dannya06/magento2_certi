@@ -159,6 +159,15 @@ class Banners extends \Magento\Backend\Block\Widget\Grid\Extended
             ]
         );
         $this->addColumn(
+            'thumb_image',
+            [
+                'header' => __('Thumb Image'),
+                'filter' => false,
+                'width'  => '50px',
+                'renderer' => 'WeltPixel\OwlCarouselSlider\Block\Adminhtml\Banner\Helper\Renderer\ThumbImage',
+            ]
+        );
+        $this->addColumn(
             'title',
             [
                 'header' => __('Banner Title'),

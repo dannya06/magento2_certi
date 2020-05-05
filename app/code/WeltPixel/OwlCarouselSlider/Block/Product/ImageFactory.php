@@ -179,6 +179,9 @@ class ImageFactory extends \Magento\Catalog\Block\Product\ImageFactory
             );
         }
 
+        $ratioWidth = $imageMiscParams['image_width'] ? intval($imageMiscParams['image_width']) : 0;
+        $ratioHeight = $imageMiscParams['image_height'] ? intval($imageMiscParams['image_height']) : 0;
+
         $data = [
             'data' => [
                 'template' => 'Magento_Catalog::product/image_with_borders.phtml',
@@ -186,7 +189,7 @@ class ImageFactory extends \Magento\Catalog\Block\Product\ImageFactory
                 'width' => $imageMiscParams['image_width'],
                 'height' => $imageMiscParams['image_height'],
                 'label' => $this->getLabel($product, $imageMiscParams['image_type']),
-                'ratio' => $this->getRatio($imageMiscParams['image_width'], $imageMiscParams['image_height']),
+                'ratio' => $this->getRatio($ratioWidth, $ratioHeight),
                 'custom_attributes' => $this->getStringCustomAttributes($attributes),
                 'class' => $this->getClass($attributes),
                 'product_id' => $product->getId()

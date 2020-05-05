@@ -78,7 +78,7 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
                             href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">
                             <?php  echo $productImage->toHtml() ?>
                         </a>
-                        <?php if (($displayWishlist != 0 && $displayWishlist != 5) || ($displayCompare != 0 && $displayCompare != 5)): ?>
+                        <?php if ($viewMode == 'grid' && (($displayWishlist != 0 && $displayWishlist != 5) || ($displayCompare != 0 && $displayCompare != 5))): ?>
                             <div class="product actions product-item-actions">
                                 <div class="actions-secondary"></div>
                             </div>

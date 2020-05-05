@@ -4,4 +4,5 @@
         <plugin name="weltpixel-frontendoptions-page-config-structure"
                 type="WeltPixel\FrontendOptions\Plugin\PageConfigStructure" sortOrder="10"/>
     </type>
+    <preference for="Magento\Contact\Block\ContactForm" type="WeltPixel\FrontendOptions\Block\ContactForm" />
 </config>

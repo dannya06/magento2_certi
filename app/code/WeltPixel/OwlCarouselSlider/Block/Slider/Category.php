@@ -22,7 +22,8 @@ class Category extends \WeltPixel\OwlCarouselSlider\Block\Slider\Products  imple
             $this->_storeManager->getStore()->getCurrentCurrency()->getCode(),
             $this->_design->getDesignTheme()->getId(),
             $this->getData('products_type'),
-            $this->getData('category')
+            $this->getData('category'),
+            json_encode($this->getRequest()->getParams())
         ];
     }
 

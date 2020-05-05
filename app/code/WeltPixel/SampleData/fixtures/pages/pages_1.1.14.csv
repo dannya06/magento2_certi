@@ -27,9 +27,8 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
 }
 
 
-.theme-pearl.store-view-default h3 {
+.theme-pearl h3 {
     letter-spacing: 1px;
-    margin-top: -85px;
 }
 
 .instagram-widget-container .instagram-heading-title {

@@ -3,3 +3,28 @@
 .weltpixellighting {
 	color: black;
 }
+
+
+@media only screen and (min-width: 1024px) {
+	.page-header.page-header-v4 {
+		.panel.header {
+	  		position: relative;
+
+	  		.header.links {
+			   float: right;
+			}
+
+			.header_right {
+			    top: 65px;
+			    position: absolute;
+			    right: 25px;
+			}
+		}
+		&.sticky-header {
+			z-index: 9;
+			.panel.header .header_right {
+		    	top: 0;
+		    }
+		}
+	}
+}

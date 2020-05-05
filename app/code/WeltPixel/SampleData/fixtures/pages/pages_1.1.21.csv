@@ -1,5 +1,5 @@
 title,page_layout,meta_keywords,meta_description,identifier,content_heading,content,is_active,sort_order,layout_update_xml,custom_theme,custom_root_template,custom_layout_update_xml,custom_theme_from,custom_theme_to,css_global,css_phone_small,css_phone,css_tablet_small,css_tablet,css_desktop,css_desktop_large,custom_js
-"Abous Us V1",1column,,,weltpixel-about-us-v1,"","
+"About Us V1",1column,,,weltpixel-about-us-v1,"","
 <div class=""about-us-v1""><img class=""top-image"" src=""{{media url=""wysiwyg/pearl_theme/About-1-blur.jpg""}}""
     alt="""" />
     <div class=""gf-container""
@@ -123,7 +123,7 @@ title,page_layout,meta_keywords,meta_description,identifier,content_heading,cont
 .breadcrumbs{
    display:none;
 }",,,,,,,
-"Abous Us V2",1column,,,weltpixel-about-us-v2,"","
+"About Us V2",1column,,,weltpixel-about-us-v2,"","
 <div class=""about-us-v2""><img class=""top-image"" src=""{{media url=""wysiwyg/pearl_theme/About-2-blur.jpg""}}"" alt="""" />
     <div class=""cont-about-v2"">
         <div class=""cont-title"">

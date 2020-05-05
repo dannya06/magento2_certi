@@ -39,7 +39,7 @@ class ReviewRendererPlugin
         $enableGoogleCards = $this->scopeConfig->getValue(self::XML_PATH_GOOGLECARDS_ENABLE_GOOGLE_CARDS, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if($enableGoogleCards && $moduleName == 'cms') {
             if ($result != '' && !is_null($subject->getRequest()) && $product = $subject->getProduct()) {
-                $result = '<div itemscope itemtype="http://schema.org/Product"><div itemprop="name" content="' . htmlspecialchars($product->getName()) . '"></div>' . $result . '</div>';
+                $result = '<div itemscope itemtype="https://schema.org/Product"><div itemprop="name" content="' . htmlspecialchars($product->getName()) . '"></div>' . $result . '</div>';
             }
         }
 

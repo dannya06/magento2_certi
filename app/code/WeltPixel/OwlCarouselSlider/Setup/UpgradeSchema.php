@@ -131,5 +131,48 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ]
             );
         }
+
+        if (version_compare($context->getVersion(), '1.1.4') < 0) {
+            $setup->getConnection()->addColumn(
+                $setup->getTable('weltpixel_owlcarouselslider_banners'),
+                'thumb_image',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 255,
+                    'after' => 'mobile_image',
+                    'comment' => 'Thumb Image'
+                ]
+            );
+
+            $setup->getConnection()->addColumn(
+                $setup->getTable('weltpixel_owlcarouselslider_sliders'),
+                'thumbs',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                    'nullable' => true,
+                    'unsigned' => true,
+                    'default' => 0,
+                    'comment' => 'thumbs',
+                    'after' => 'dots'
+                ]
+            );
+
+        }
+
+        if (version_compare($context->getVersion(), '1.1.5') < 0) {
+            $setup->getConnection()->addColumn(
+                $setup->getTable('weltpixel_owlcarouselslider_sliders'),
+                'scheduled_ajax',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                    'nullable' => true,
+                    'unsigned' => true,
+                    'default' => 0,
+                    'comment' => 'Ajax Calls required for Scheduled Banners',
+                    'after' => 'slider_content'
+                ]
+            );
+
+        }
     }
 }

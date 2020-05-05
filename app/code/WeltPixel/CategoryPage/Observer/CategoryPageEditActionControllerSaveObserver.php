@@ -96,8 +96,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Backend\Model\Session\Proxy $session
-    )
-    {
+    ) {
         $this->_helper = $helper;
         $this->_frontendHelper = $frontendHelper;
         $this->_scopeConfig = $scopeConfig;
@@ -122,7 +121,6 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
         $directoryCode = $this->_dirReader->getModuleDir('view', 'WeltPixel_CategoryPage');
 
         foreach ($this->_storeCollection as $store) {
-
             $this->_listingBreakPoint = $this->_frontendHelper->getBreakpointM($store->getData('store_id'));
             $this->_xxsBreakPoint = $this->_frontendHelper->getBreakpointXXS($store->getData('store_id'));
 
@@ -136,6 +134,9 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
             $swatchListingOptions = $this->_helper->getProductListingSwatchOptions($store->getData('store_id'));
             $displaySwatches = $this->_helper->displaySwatches($store->getData('store_id'));
             $toolbarOptions = $this->_helper->getToolbarOptions($store->getData('store_id'));
+            $descriptionOptions = $this->_helper->getCategoryDescriptionOptions($store->getData('store_id'));
+            $defaultLineHeight = (int) $this->_helper->getDefaultLineHeight($store->getData('store_id')) ?
+                (int) $this->_helper->getDefaultLineHeight($store->getData('store_id')) : 20;
 
             $generatedCssDirectoryPath = DIRECTORY_SEPARATOR . 'frontend' .
                 DIRECTORY_SEPARATOR . 'web' .
@@ -144,6 +145,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
                 $store->getData('code') . '.less';
 
             $content = $this->_generateContent($displaySwatchTooltip, $productsPerLine);
+            $content .= $this->_generateDescriptionOptions($descriptionOptions, $defaultLineHeight);
             $content .= $this->_generateItemOptions($ItemOptions);
             $content .= $this->_generateNameOptions($NameOptions);
             $content .= $this->_generateReviewOptions($reviewOptions);
@@ -185,7 +187,6 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
         return $this;
     }
 
-
     /**
      * Convert HEX in RGB
      *
@@ -205,7 +206,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
             $g = hexdec(substr($hex, 2, 2));
             $b = hexdec(substr($hex, 4, 2));
         }
-        $rgb = array($r, $g, $b);
+        $rgb = [$r, $g, $b];
         //return implode(",", $rgb); // returns the rgb values separated by commas
         return $rgb; // returns an array with the rgb values
     }
@@ -282,7 +283,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
 
         $content = "
 @media (min-width: $breakPoint), print {
-    .page-products .grid.products-grid .product-item { width: $width% !important; }
+    .page-products .grid.products-grid :not(.widget-product-grid) .product-item { width: $width% !important; }
     .catalog-product-view .grid.products-grid .product-item { width: $widthPV% !important; }
     .catalog-product-view .grid.products-grid .owl-item .product-item { width: 100% !important; }
     .page-products .grid.products-grid .product-items,
@@ -290,28 +291,47 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
     .page-products .grid.products-grid .product-item {
         width: $width%;
         margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
-        padding: 0;";
+        padding: 0;
+        .product_image {
+            .product-item-actions{
+                .actions-secondary{
+                    display: block
+                }
+            }
+        }";
         switch ($productsPerLine) {
-            case 2 :
+            case 2:
                 $content .= "
         &:nth-child(2n+1) {
             margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
-        }";
-                break;
-            case 3 :
-                $content .= "
+        }
         &:nth-child(3n+1) {
             margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
         }";
                 break;
-            case 4 :
+            case 3:
                 $content .= "
+        &:nth-child(3n+1) {
+            margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
+        }
         &:nth-child(4n+1) {
             margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
         }";
                 break;
-            case 5 :
+            case 4:
                 $content .= "
+                 &:nth-child(3n+1) {
+            margin-left: 0;
+        }
+        &:nth-child(4n+1) {
+            margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
+        }";
+                break;
+            case 5:
+                $content .= "
+                 &:nth-child(3n+1) {
+            margin-left: 0;
+        }
         &:nth-child(4n+1) {
             margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
         }
@@ -327,20 +347,26 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
         margin-left: calc(~\"(100% - $productsPerLinePV * $widthPV%) / $productsPerLinePV\");
         padding: 0;";
         switch ($productsPerLinePV) {
-            case 4 :
+            case 4:
                 $content .= "
         &:nth-child(3n+1) {
             margin-left: calc(~\"(100% - $productsPerLinePV * $widthPV%) / $productsPerLinePV\");
         }";
                 break;
-            case 5 :
+            case 5:
                 $content .= "
+                &:nth-child(3n+1) {
+            margin-left: 0;
+        }
         &:nth-child(4n+1) {
             margin-left: calc(~\"(100% - $productsPerLinePV * $widthPV%) / $productsPerLinePV\");
         }";
                 break;
-            case 6 :
+            case 6:
                 $content .= "
+                 &:nth-child(3n+1) {
+            margin-left: 0;
+        }
         &:nth-child(4n+1) {
             margin-left: calc(~\"(100% - $productsPerLinePV * $widthPV%) / $productsPerLinePV\");
         }
@@ -520,7 +546,7 @@ $wrapperClass {
                 font-style: normal;
                 font-weight: 900;
                 font-variant: normal;
-                font-size: 0.6vw;
+                font-size: 12px;
                 text-transform: none;
                 text-align: center;
                 -webkit-font-smoothing: antialiased;
@@ -578,6 +604,7 @@ $wrapperClass {
                 border: 2px solid #999999 !important;
             }
         }
+       
     }
     $showOnHover
     .swatch-option {
@@ -595,6 +622,16 @@ $wrapperClass {
         font-size: $fontSize !important;
         margin: 3px !important;
     }
+    
+    .swatch-option:not(.image):not(.color):not(.text) {
+                border: 1px solid #ddd !important;
+                &:hover{
+                    border: 1px solid #999 !important;
+                }
+                &.selected{
+                    border: 1px solid #999 !important;
+                }
+            }
 }
         ";
 
@@ -632,19 +669,19 @@ $wrapperClass {
     &.wishlist {
 	    .product-item {
 	        .product-item-info {
+                border: 1px solid transparent !important;
 	            &:hover {
 	                position: relative;
-		            box-shadow: 1px 4px 6px 0 rgba(0, 0, 0, 0.3) !important;
+		            box-shadow: 3px 3px 4px 0 rgba(0, 0, 0, 0.3) !important;
+                    border: 1px solid rgba(0, 0, 0, 0.3) !important;
 			        .product-item-inner {
-			            box-shadow: 1px 4px 6px 0 rgba(0, 0, 0, 0.3);
-			            border: none;
-			            right: 0;
-			            left: 1px;
-			            width: 100%;
+			            box-shadow: 3px 3px 4px 0 rgba(0, 0, 0, 0.3);
+                        border: 1px solid rgba(0, 0, 0, 0.3);
+			            border-top: none;
 			        }
 	            }
 	        }
-	    }  
+	    }
     }
 	&.products-upsell {
 		.product-item {
@@ -668,6 +705,17 @@ $wrapperClass {
 	}
 }
         ";
+
+        return $content;
+    }
+
+    private function _generateDescriptionOptions($descriptionOptions, $defaultLineHeight)
+    {
+        $content = '';
+        if ($descriptionOptions['enable_show_more']) {
+            $descriptionHeight = (int) $descriptionOptions['show_more_lines'] ? (int) $descriptionOptions['show_more_lines'] * $defaultLineHeight . 'px' : 'unset';
+            $content .= ".category-view .category-description {max-height: $descriptionHeight; margin: 0 auto 10px;}";
+        }
 
         return $content;
     }
@@ -1171,5 +1219,4 @@ $wrapperClass {
 
         return $content;
     }
-
 }

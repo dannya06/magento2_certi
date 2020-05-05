@@ -141,7 +141,7 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
             foreach ($generationContainer as $key => $item) {
                 try {
                     $item->execute($observer);
-                    $successMsg[] = $key . ' module less was generated successfully.';
+                    $successMsg[] = $key . ' module less was generated successfully for all stores.';
                 } catch (\Exception $ex) {
                     $errorMsg[] = $key . ' module less was not generated.' . $ex->getMessage();
                 }
@@ -180,7 +180,7 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
                         if ($isPearlTheme) {
                             $this->generateCss->processContent($themePath, $locale, $storeCode);
                             $cssGenerated = true;
-                            $this->messageManager->addSuccess(__('Css generation finalized for storeview: ') . $storeCode);
+                            $this->messageManager->addSuccess(__('Css generation finalized for storeview code: ') . $storeCode);
                         }
                     } catch (\Exception $ex) {
                         $this->messageManager->addError($ex->getMessage() . ' : ' . $storeCode);
@@ -209,7 +209,7 @@ class GenerateCss extends \Magento\Backend\Controller\Adminhtml\Cache
                     if ($isPearlTheme) {
                         $this->generateCss->processContent($themePath, $locale, $storeCode);
                         $cssGenerated = true;
-                        $this->messageManager->addSuccess(__('Css generation finalized.'));
+                        $this->messageManager->addSuccess(__('Css generation finalized for storeview code: ') . $storeCode);
                     } else {
                         $this->messageManager->addNotice(__('Css generation works only for Pearl theme or subtheme.'));
                     }

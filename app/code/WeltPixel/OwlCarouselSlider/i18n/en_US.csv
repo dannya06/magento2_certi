@@ -28,6 +28,7 @@ Target,Target
 Video,Video
 "Desktop Image","Desktop Image"
 "Mobile Image","Mobile Image"
+"Thumb Image","Thumb Image"
 "Create Custom Banner here","Create Custom Banner here"
 "Alt Text","Alt Text"
 "Banner Class","Banner Class"
@@ -64,11 +65,13 @@ Image,Image
 "Sort Order","Sort Order"
 "Slider Details","Slider Details"
 "Slider Status","Slider Status"
-"<strong>Slider General Configuration</strong>","<strong>Slider General Configuration</strong>"
-"Next/Prev Buttons","Next/Prev Buttons"
+"Ajax Scheduled Banners","Ajax Scheduled Banners"
 True,True
 False,False
+"<strong>Slider General Configuration</strong>","<strong>Slider General Configuration</strong>"
+"Next/Prev Buttons","Next/Prev Buttons"
 Dots,Dots
+Thumbs,Thumbs
 "Banner Transition Effect","Banner Transition Effect"
 "Center Item","Center Item"
 StagePadding,StagePadding
@@ -144,14 +147,22 @@ Disabled,Disabled
 "OWL Product Carousels Pro","OWL Product Carousels Pro"
 "General Configuration for OWL Product Carousels and Banner Sliders","General Configuration for OWL Product Carousels and Banner Sliders"
 "Display wishlist","Display wishlist"
+"Display/Hide wishlist. <br/> This setting applies only to Related, Cross-Sell and Up-Sell carousels. For the rest, there are specific settings at the individual Product Carousel level.","Display/Hide wishlist. <br/> This setting applies only to Related, Cross-Sell and Up-Sell carousels. For the rest, there are specific settings at the individual Product Carousel level."
 "Display compare","Display compare"
+"Display/Hide compare. <br/> This setting applies only to Related, Cross-Sell and Up-Sell carousels. For the rest, there are specific settings at the individual Product Carousel level.","Display/Hide compare. <br/> This setting applies only to Related, Cross-Sell and Up-Sell carousels. For the rest, there are specific settings at the individual Product Carousel level."
 "New Products Carousel Settings","New Products Carousel Settings"
 "Enable New Product Carousel","Enable New Product Carousel"
 "Show Price","Show Price"
 "Show Add To Cart","Show Add To Cart"
+"Show/Hide ‘Add to cart’ button for products in the carousel.","Show/Hide ‘Add to cart’ button for products in the carousel."
 "Show Wishlist","Show Wishlist"
+"Show/Hide wishlist icon for products in the carousel.","Show/Hide wishlist icon for products in the carousel."
 "Show Compare","Show Compare"
+"Show/Hide Compare icon for products in the carousel","Show/Hide Compare icon for products in the carousel"
+"Show Reviews and Ratings","Show Reviews and Ratings"
+"Show/Hide Reviews and Ratings for products in the carousel","Show/Hide Reviews and Ratings for products in the carousel"
 "Random Sort","Random Sort"
+"If enabled, the products in the carousel are displayed in random order on each refresh.","If enabled, the products in the carousel are displayed in random order on each refresh."
 "Max Items","Max Items"
 "Slide By","Slide By"
 Center,Center

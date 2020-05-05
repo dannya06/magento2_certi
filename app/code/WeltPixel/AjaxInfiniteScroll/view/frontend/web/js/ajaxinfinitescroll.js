@@ -85,6 +85,13 @@ define(['jquery', 'ias', 'ajaxinfinitescroll'],
                             }
                         });
                         $(document).trigger("wpproductlabels:init");
+                        $.mage.formKey();
+                        $('li.product-item').trigger('contentUpdated');
+                        if (window.isSlCustomPopupUsed && parseInt(window.isSlCustomPopupUsed)) {
+                            $('li.product-item').find('.towishlist').each(function() {
+                                $(this).removeAttr('data-post');
+                            })
+                        }
                     });
 
                     /** adds a text when there are no more pages to load */
@@ -113,7 +120,7 @@ define(['jquery', 'ias', 'ajaxinfinitescroll'],
                         }));
                     } else {
                         ias.extension(new IASTriggerExtension({
-                            textPrev: 'Load previous items',
+                            textPrev: window.textPrevious,
                             htmlPrev: '<button class="button action ias-load-prev" type="button"><span>{text}</span></button>',
                             offset: 1000
                         }));
@@ -226,6 +233,13 @@ define(['jquery', 'ias', 'ajaxinfinitescroll'],
                                     jQuery('.toolbar-products .pages').first().remove();
                                 }
                                 $(document).trigger("wpproductlabels:init");
+                                $.mage.formKey();
+                                $('li.product-item').trigger('contentUpdated');
+                                if (window.isSlCustomPopupUsed && parseInt(window.isSlCustomPopupUsed)) {
+                                    $('li.product-item').find('.towishlist').each(function() {
+                                        $(this).removeAttr('data-post');
+                                    })
+                                }
                             });
 
                             ias.next();
@@ -259,7 +273,7 @@ define(['jquery', 'ias', 'ajaxinfinitescroll'],
 
             },
             fixAddToCart: function () {
-                if ($("form[data-role='tocart-form']").length) {
+                if (require.defined('catalogAddToCart') && $("form[data-role='tocart-form']").length) {
                     $("form[data-role='tocart-form']").catalogAddToCart();
                 }
             },
@@ -291,6 +305,7 @@ define(['jquery', 'ias', 'ajaxinfinitescroll'],
                         productImg
                             .hide()
                             .attr('src', productImg.data('original'))
+                            .css({'max-width' : '100%'})
                             .fadeIn('slow');
                     }
                 });

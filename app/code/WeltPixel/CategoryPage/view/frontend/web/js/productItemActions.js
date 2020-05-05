@@ -1,4 +1,4 @@
-define(['jquery'], function (jQuery) {
+define(['jquery','underscore'], function (jQuery,_) {
     "use strict";
 
     var CategoryPage = {
@@ -121,27 +121,24 @@ define(['jquery'], function (jQuery) {
 
         itemHeight: function () {
             var productItem = '.products-grid .product-item',
-                productItemHeight = {};
+                productItemHeightByCount = {}, productItemHeights = [];
             jQuery(productItem).each(function() {
-                /** if height was already set
-                 * keep this height for all the new items
-                 * loaded by ajaxInfiniteScroll
-                 */
+                var height = jQuery(this).height();
+                productItemHeights.push(height);
                 if (jQuery(this).filter('[style*=height]').length) {
-                    var height = parseInt(jQuery(this).css('height'));
-                    productItemHeight[height] = height;
                     return false;
-                } else {
-                    var height = jQuery(this).outerHeight();
                 }
-
-                productItemHeight[height] = height;
             });
-            var finalHeight = productItemHeight[Object.keys(productItemHeight)[Object.keys(productItemHeight).length - 1]];
+
+            productItemHeightByCount = _.countBy(productItemHeights);
+            var finalHeight = _.max(Object.keys(productItemHeightByCount), function (o) {
+                return productItemHeightByCount[o];
+            });
             jQuery(productItem).height(finalHeight);
         },
 
         actions: function () {
+            var that = this;
             var actions = window.actions;
             this.displayAddToCart(actions);
             this.displayWishlist(actions);
@@ -149,15 +146,19 @@ define(['jquery'], function (jQuery) {
             this.toCartWidth(actions);
             this.hoverShow(actions);
             this.buttonQuickView();
-            this.itemHeight();
 
-            var that = this;
+            setInterval(function(){
+                that.itemHeight();
+            }, 2000);
+
             jQuery(window).resize(function() {
                 that.toCartWidth(actions);
                 that.hoverShow(actions);
                 that.buttonQuickView();
                 that.itemHover();
             });
+
+
         }
 
     };

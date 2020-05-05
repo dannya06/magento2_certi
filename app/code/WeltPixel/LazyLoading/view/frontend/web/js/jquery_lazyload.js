@@ -12,11 +12,17 @@
  * Version:  1.10.0-dev
  *
  */
-define(['jquery'], function ($) {
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module depending on jQuery.
+        define(['jquery'], factory);
+    } else {
+        // No AMD. Register plugin with global jQuery object.
+        factory(jQuery);
+    }
+}(function ($) {
     "use strict";
-(function($, window, document, undefined) {
     var $window = $(window);
-
     $.fn.lazyload = function(options) {
         var elements = this;
         var $container;
@@ -76,7 +82,7 @@ define(['jquery'], function ($) {
 
         /* Cache container as jQuery as object. */
         $container = (settings.container === undefined ||
-        settings.container === window) ? $window : $(settings.container);
+            settings.container === window) ? $window : $(settings.container);
 
         /* Fire one scroll event per scroll. Not one scroll event per image. */
         if (0 === settings.event.indexOf("scroll")) {
@@ -260,5 +266,4 @@ define(['jquery'], function ($) {
         "left-of-fold"   : function(a) { return !$.rightoffold(a, {threshold : 0}); }
     });
 
-})(jQuery, window, document);
-});
+}));

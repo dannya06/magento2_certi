@@ -242,6 +242,19 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param int $storeId
+     * @return string
+     */
+    public function getFacebookRetailerId($storeId = 0)
+    {
+        if ($storeId) {
+            return $this->scopeConfig->getValue('weltpixel_google_cards/facebook_opengraph/retailer_id', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_cardsOptions['facebook_opengraph']['retailer_id'];
+        }
+    }
+
+    /**
+     * @param int $storeId
      * @return mixed
      */
     public function getGoogleCardsPrice($storeId = 0)
