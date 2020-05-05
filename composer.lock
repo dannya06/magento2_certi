@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03427e7487a61812d6f4750940c036cf",
+    "content-hash": "b7cc51815755285e747d2d37fe4b7192",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -3680,6 +3680,104 @@
             "time": "2020-03-24T01:50:29+00:00"
         },
         {
+            "name": "icubeus/magento2-checkout",
+            "version": "dev-masterdefault",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-checkout.git",
+                "reference": "8723f98707e2fb77d46af63fff96709f740ba4fa"
+            },
+            "replace": {
+                "icubeus/module-checkoutpg": "self.version",
+                "icubeus/module-oscoverridecheckout": "self.version"
+            },
+            "type": "magento2-component",
+            "autoload": {
+                "files": [
+                    "src/module-checkoutpg/registration.php",
+                    "src/module-oscoverridecheckout/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\Oscoverridecheckout\\": "src/module-oscoverridecheckout",
+                    "Icube\\Checkoutpg\\": "src/module-checkoutpg"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "checkout with payment grouping for Indonesia CLient",
+            "homepage": "https://github.com/icubeus/magento2-checkout",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2020-04-29T09:38:51+00:00"
+        },
+        {
+            "name": "icubeus/magento2-citykecamatan",
+            "version": "2.0.9",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-citykecamatan.git",
+                "reference": "18d762f026fc492cee6ec3b9d76bc103bd9e8272"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\City\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "City kecamatan for indonesia client",
+            "keywords": [
+                "city",
+                "kecamatan",
+                "magento 2"
+            ],
+            "time": "2020-04-29T09:41:46+00:00"
+        },
+        {
+            "name": "icubeus/magento2-confirmpayment",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-confirmpayment.git",
+                "reference": "1e6b8de25b56b7b723d0357470e308d168204e6f"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\Confirmpayment\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Confirm Payment with ID Translate",
+            "keywords": [
+                "confirm",
+                "magento 2",
+                "payment"
+            ],
+            "time": "2020-01-24T04:24:48+00:00"
+        },
+        {
             "name": "icubeus/magento2-indonesianlanguage",
             "version": "dev-master",
             "source": {
@@ -3704,6 +3802,53 @@
             ],
             "description": "Indonesian language package for Magento 2",
             "time": "2019-12-31T01:41:28+00:00"
+        },
+        {
+            "name": "icubeus/magento2-instantdelivery",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-instantdelivery.git",
+                "reference": "c94bec1317f414e9f4e8d570e46d1e1485cae9d8"
+            },
+            "replace": {
+                "icubeus/magento2-gosend": "self.version",
+                "icubeus/module-gosend": "self.version"
+            },
+            "type": "magento2-component",
+            "autoload": {
+                "files": [
+                    "src/module-pinlocation/registration.php",
+                    "src/module-gosend/registration.php",
+                    "src/module-grabexpress/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\PinLocation\\": "src/module-pinlocation",
+                    "Icube\\Gosend\\": "src/module-gosend",
+                    "Icube\\GrabExpress\\": "src/module-grabexpress"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Instant delivery shipping method",
+            "homepage": "https://github.com/icubeus/magento2-instantdelivery",
+            "keywords": [
+                "gojek",
+                "gosend",
+                "instantdelivery",
+                "magento",
+                "magento2",
+                "pinlocation",
+                "shipping"
+            ],
+            "time": "2020-04-16T10:12:14+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
@@ -3751,6 +3896,66 @@
                 "magento2"
             ],
             "time": "2020-04-17T09:04:29+00:00"
+        },
+        {
+            "name": "icubeus/magento2-payment",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-payment.git",
+                "reference": "5aa0a4f08757e7bdb25afdbccf9c536f7646f6cc"
+            },
+            "replace": {
+                "icubeus/module-faspaycredit": "self.version",
+                "icubeus/module-faspaydebit": "self.version",
+                "icubeus/module-hcid": "self.version",
+                "icubeus/module-ipay88": "self.version",
+                "icubeus/module-sprint": "self.version"
+            },
+            "type": "magento2-component",
+            "extra": {
+                "map": [
+                    [
+                        "src/lib/internal/ipay88-php",
+                        "lib/internal/ipay88-php"
+                    ]
+                ]
+            },
+            "autoload": {
+                "files": [
+                    "src/module-faspaycredit/registration.php",
+                    "src/module-faspaydebit/registration.php",
+                    "src/module-hcid/registration.php",
+                    "src/module-sprint/registration.php",
+                    "src/module-ipay88/registration.php"
+                ],
+                "psr-4": {
+                    "Faspay\\Credit\\": "src/module-faspaycredit",
+                    "Faspay\\Debit\\": "src/module-faspaydebit",
+                    "Icube\\Hcid\\": "src/module-hcid",
+                    "Icube\\Sprint\\": "src/module-sprint",
+                    "Ipay88\\Ipay88\\": "src/module-ipay88"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "fastpay,sprint,hcid payment,Ipay88",
+            "homepage": "https://github.com/icubeus/magento2-payment",
+            "keywords": [
+                "magento",
+                "magento2",
+                "payment",
+                "veritrans",
+                "vt-direct"
+            ],
+            "time": "2020-03-18T06:15:43+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
@@ -3833,6 +4038,47 @@
                 "magento2"
             ],
             "time": "2019-05-27T08:23:13+00:00"
+        },
+        {
+            "name": "icubeus/magento2-shippingshipper",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-shippingshipper.git",
+                "reference": "df86cf118a93455e016c22dba474bf06d4cf986f"
+            },
+            "require": {
+                "icubeus/magento2-shippingbase": "dev-master"
+            },
+            "replace": {
+                "icubeus/module-shippingshipper": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-shippingshipper/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\ShipperId\\": "src/module-shippingshipper"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Shipping Shipper ID Live for Indonesia CLient",
+            "homepage": "https://github.com/icubeus/magento2-shippingshipper",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2020-03-20T10:34:37+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -4015,6 +4261,63 @@
                 "trackorder"
             ],
             "time": "2020-04-17T07:29:18+00:00"
+        },
+        {
+            "name": "icubeus/magento2-veritranspayment",
+            "version": "2.0.13",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-veritranspayment.git",
+                "reference": "4ccdb3622df1f9bb19c87c4c14b9e4f8967ff3c2"
+            },
+            "replace": {
+                "icubeus/module-snap": "self.version",
+                "icubeus/module-vtdirect": "self.version",
+                "icubeus/module-vtdirectins": "self.version",
+                "icubeus/module-vtdirectva": "self.version"
+            },
+            "type": "magento2-component",
+            "extra": {
+                "map": [
+                    [
+                        "src/lib/internal/veritrans-php",
+                        "lib/internal/veritrans-php"
+                    ]
+                ]
+            },
+            "autoload": {
+                "files": [
+                    "src/module-vtdirect/registration.php",
+                    "src/module-vtdirectins/registration.php",
+                    "src/module-vtdirectva/registration.php",
+                    "src/module-snap/registration.php"
+                ],
+                "psr-4": {
+                    "Icubeus\\VTDirect\\": "src/module-vtdirect",
+                    "Icubeus\\VTDirectins\\": "src/module-vtdirectins",
+                    "Icubeus\\VTDirectva\\": "src/module-vtdirectva",
+                    "Icube\\Snap\\": "src/module-snap"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Veritrans payment vt direct",
+            "homepage": "https://github.com/icubeus/magento2-veritranspayment",
+            "keywords": [
+                "magento",
+                "magento2",
+                "payment",
+                "veritrans",
+                "vt-direct"
+            ],
+            "time": "2020-04-09T04:00:56+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -21347,6 +21650,11 @@
         "icubeus/magento2-smsgateaway": 20,
         "icubeus/magento2-notification": 20,
         "icubeus/magento2-smstada": 20,
+        "icubeus/magento2-confirmpayment": 20,
+        "icubeus/magento2-shippingshipper": 20,
+        "icubeus/magento2-checkout": 20,
+        "icubeus/magento2-payment": 20,
+        "icubeus/magento2-instantdelivery": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,

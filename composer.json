@@ -26,7 +26,15 @@
         "icubeus/magento2-smstada": "dev-master",
         "firebear/importexport-msi": "^1.0",
         "firebear/importexport": "^3.3",
-        "creativestyle/magesuite": "^5.0.0"
+        "creativestyle/magesuite": "^5.0.0",
+		"icubeus/magento2-citykecamatan": "^2.0",
+		"icubeus/magento2-veritranspayment": "^2.0",
+		"icubeus/magento2-confirmpayment": "dev-master",
+		"icubeus/magento2-indonesianlanguage": "dev-master",
+		"icubeus/magento2-shippingshipper": "dev-master",
+		"icubeus/magento2-checkout": "dev-masterdefault",
+		"icubeus/magento2-payment": "dev-master",
+        "icubeus/magento2-instantdelivery": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
@@ -142,6 +150,10 @@
         "firebear": {
             "type": "composer",
             "url": "https://firebearstudio.com/composer/download/package/type/ce/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/"
+        },
+        "icubeus-instantdelivery": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-instantdelivery.git"
         }
     },
     "extra": {
