@@ -52,7 +52,13 @@
                 <field id="open_minicart" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Open minicart after item is added</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>If set to Yes, the Quick Cart opens each time an item is added to the cart.</comment>
+                    <comment>
+                        <![CDATA[
+                        If set to Yes, the Quick Cart opens each time an item is added to the cart.<br/>
+                        <b>Note:</b> The option is ignored if the core magento setting Stores -> Configuration -> Sales
+                        -> Checkout -> Shopping Cart -> After Adding a Product Redirect to Shopping Cart is set to Yes.
+                        ]]>
+                    </comment>
                     <depends>
                         <field id="weltpixel_quick_cart/general/enable">1</field>
                     </depends>

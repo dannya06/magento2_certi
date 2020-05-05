@@ -25,6 +25,7 @@
                 <btt_offset>300</btt_offset>
                 <btt_offset_opacity>1200</btt_offset_opacity>
                 <btt_duration>700</btt_duration>
+                <collapsible_top_jump>0</collapsible_top_jump>
             </general>
         </weltpixel_design_elements>
     </default>

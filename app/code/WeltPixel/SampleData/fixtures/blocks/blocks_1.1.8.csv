@@ -37,7 +37,6 @@ title,identifier,content,is_active
                 <li><a href=""{{store url=""contact/""}}"">Contact Us</a></li>
                 <li><a href=""{{store url=""customer-service/""}}"">Customer Service</a></li>
                 <li><a href=""{{store url=""privacy-policy-cookie-restriction-mode/""}}"">Privacy Policy</a></li>
-                <li class=""nav item""><a href=""{{store url=""return-exchange""}}"">Return & Exchange</a></li>
             </ul>
         </div>
         <!-- FOOTER COLUMN #2 END -->
@@ -48,7 +47,7 @@ title,identifier,content,is_active
         <div class=""col-md-3 col-sm-6 col-xs-12 mobile-toggle"">
             <h4 class=""no-padding-mob"">Quick Links</h4>
             <ul class=""footer-v3-list"">
-                <li><a href=""{{store url=""sitemap.xml""}}"" title=""Site Map"">Site Map</a></li>
+                <li><a href=""{{store url=""/""}}sitemap.xml"" title=""Site Map"">Site Map</a></li>
                 <li><a href=""{{store url=""search/term/popular/""}}"" title=""Search Terms"">Search Terms</a></li>
                 <li><a href=""{{store url=""catalogsearch/advanced/""}}"" title=""Advanced Search"">Advanced Search</a></li>
                 <li><a target=""_blank"" href=""https://www.weltpixel.com/resources/PearlTheme/User-Guide-WeltPixel-Pearl-Theme-Magento2.html"" title=""Documentation"">Documentation</a></li>
@@ -130,8 +129,7 @@ title,identifier,content,is_active
 <a href="""">FAQ</a>
 <a href="""" >Privacy</a>
 <a href="""" >Terms of Use</a>
-<a href="""" >Contact</a>
-<a href=""{{store url=""return-exchange/""}}"">Return & Exchange</a></div>
+<a href="""" >Contact</a></div>
 </div>
 
 <div class=""clearfix""></div>

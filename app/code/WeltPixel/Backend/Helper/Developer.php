@@ -60,6 +60,17 @@ class Developer extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return string
      */
+    public function getCurrentServerUserGroup()
+    {
+        $groupid   = posix_getegid();
+        $groupinfo = posix_getgrgid($groupid);
+
+        return $groupinfo['name'];
+    }
+
+    /**
+     * @return string
+     */
     public function getMagentoEdition()
     {
         return $this->productMetaData->getEdition() . ' ( ' . $this->productMetaData->getVersion() . ' )';

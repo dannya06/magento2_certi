@@ -3,7 +3,7 @@
     <menu>
         <add
                 id="WeltPixel_LazyLoading::LazyLoading_Label"
-                title="Lazy Loading"
+                title="Lazy Loading PRO"
                 module="WeltPixel_LazyLoading"
                 sortOrder="82"
                 parent="WeltPixel_Backend::WeltPixel"

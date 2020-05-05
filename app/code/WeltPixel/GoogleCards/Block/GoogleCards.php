@@ -129,11 +129,17 @@ class GoogleCards extends \Magento\Framework\View\Element\Template
         $itemCondition = '';
         if ($itemConditionAttribute) {
             try {
-                $itemCondition = $product->getData($itemConditionAttribute);
+                $attributeSourceModel = $product->getResource()->getAttribute($itemConditionAttribute)->getSource();
+                if ($attributeSourceModel instanceof \WeltPixel\GoogleCards\Model\Config\Source\ItemConditionsOptions) {
+                    $itemCondition = $product->getData($itemConditionAttribute);
+                } else {
+                    $itemCondition = $product->getResource()->getAttribute($itemConditionAttribute)->getFrontend()->getValue($product);
+                }
             } catch (\Exception $ex) {
                 $itemCondition = '';
             }
         }
+
         return $itemCondition;
     }
 

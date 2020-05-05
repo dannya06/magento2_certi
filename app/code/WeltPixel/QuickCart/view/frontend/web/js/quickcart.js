@@ -10,7 +10,15 @@ define(['jquery', 'jquery/ui', 'domReady'], function ($) {
                 $('.quickcart-content-wrapper').on('click', '.qty-update', function () {
                     quickcart.updateQty($(this));
                 });
+                $('.quickcart-content-wrapper').on('click', '.action.delete', function () {
+                    $('#btn-minicart-close').trigger('click');
+                    $(".logo").removeAttr('style');
+                });
+                $('.quickcart-content-wrapper').on('click', '.action.close', function () {
+                    $(".logo").removeAttr('style');
+                });
                 $('.showcart').on('click', function () {
+                    $(".logo").attr('style', 'z-index: 0');
                     if(quickcart.checkSafariBrowser()){
                         $('.page-wrapper').css('overflow-x','visible');
                     }
@@ -18,6 +26,7 @@ define(['jquery', 'jquery/ui', 'domReady'], function ($) {
                         $('.block-quickcart').addClass('quickCartIE');
                     }
                 });
+
                 $('.quickcart-content-wrapper').on('click', '.close', function () {
                     $('.page-wrapper').css('overflow-x','hidden');
                     if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)){

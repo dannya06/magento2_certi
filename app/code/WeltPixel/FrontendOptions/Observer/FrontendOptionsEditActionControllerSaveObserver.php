@@ -325,7 +325,7 @@ class FrontendOptionsEditActionControllerSaveObserver implements ObserverInterfa
     {
         $storeId = $store->getStoreId();
         $storeCode = $store->getData('code');
-        $storeClassName = '.theme-pearl.store-view-' . preg_replace('#[^a-z0-9]+#', '-', strtolower($storeCode));
+        $storeClassName = '.theme-pearl.store-view-' . preg_replace('#[^a-z0-9-_]+#', '-', strtolower($storeCode));
 
         return array(
             $storeClassName,

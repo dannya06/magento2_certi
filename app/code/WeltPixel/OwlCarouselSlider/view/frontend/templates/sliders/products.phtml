@@ -6,11 +6,14 @@
 <?php $showAddToCart = array_key_exists('show_addto', $sliderData) ? $sliderData['show_addto'] : false; ?>
 <?php $showWishlist  = (array_key_exists('show_wishlist', $sliderData) && $sliderData['show_wishlist'] !=0) ? true : false; ?>
 <?php $showCompare   = (array_key_exists('show_compare', $sliderData) && $sliderData['show_compare'] !=0) ? true : false; ?>
+<?php $showReviewsRatins   = (array_key_exists('show_reviews_ratings', $sliderData) && $sliderData['show_reviews_ratings'] !=0) ? true : false; ?>
+<?php $randomSort = (array_key_exists('random_sort', $sliderData) && $sliderData['random_sort'] !=0) ? true : false; ?>
 <?php if(!$enabled){ return; } ?>
 
 <?php
 $productsType = $this->getData('products_type');
 $prCounter = 0;
+$templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
 
 if($productsType != 'recently_viewed') {
     $products = $this->getProductCollection();
@@ -42,6 +45,7 @@ if($productsType != 'recently_viewed') {
                 $productImageHoverUrl = false;
                 $productImageHoverPlaceholderUrl = false;
                 $_imagehelper = $this->helper('Magento\Catalog\Helper\Image');
+                $productImageAltText = $_imagehelper->init($product, 'category_page_list')->getLabel();
                 $productImage = $_imagehelper->init($product, 'category_page_list')->constrainOnly(FALSE)->keepAspectRatio(TRUE)->keepFrame(TRUE)->resize(480, 600)->getUrl();
                 $productUrl = $product->getUrlModel()->getUrl($product);
                 if ($isHoverImageEnabled) {
@@ -56,16 +60,17 @@ if($productsType != 'recently_viewed') {
                         <a tabindex="-1" class="product photo product-item-photo" href="<?php echo $productUrl; ?>">
                             <span style="width:240px;" class="product-image-container">
                                 <span style="padding-bottom: 125%;" class="product-image-wrapper">
-                                    <img width="240" height="300"
-                                         alt="<?php echo $product->getName(); ?>"
-                                        <?php if (!$sliderData['lazyLoad']) : ?>
+                                    <img width="240"
+                                         height="300"
+                                         alt="<?php echo $productImageAltText;?>"
+                                        <?php if (!$sliderData['lazyLoad'] || !$sliderData['loop']) : ?>
                                             src="<?php echo $productImage; ?>"
                                         <?php endif; ?>
                                         <?php if ($isHoverImageEnabled && ($productImageHoverUrl != $productImageHoverPlaceholderUrl)) : ?>
                                             data-hoversrc="<?php /* @escapeNotVerified */ echo $productImageHoverUrl; ?>"
-                                            onmouseover="this.setAttribute('data-tmp', this.src);this.src=this.getAttribute('data-hoversrc');"
-                                            onmouseout="this.src=this.getAttribute('data-tmp')"
-                                            onmousemove="if (this.getAttribute('data-hoversrc') != this.src) this.setAttribute('data-tmp', this.src)"
+                                            onmouseover="if(! /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {this.setAttribute('data-tmp', this.src);this.src=this.getAttribute('data-hoversrc');}"
+                                            onmouseout="if(! /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {this.src=this.getAttribute('data-tmp')}"
+                                            onmousemove="if(! /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {if (this.getAttribute('data-hoversrc') != this.src) this.setAttribute('data-tmp', this.src)}"
                                         <?php endif; ?>
                                         class="product-image-photo <?php echo $sliderData['lazyLoad'] ? 'owl-lazy' : '' ?>"
                                         <?php echo $sliderData['lazyLoad'] ? 'data-src="' . $productImage . '" data-src-retina="' . $productImage . '"' : '' ?>
@@ -79,13 +84,16 @@ if($productsType != 'recently_viewed') {
                                     <?php echo $product->getName(); ?>
                                 </a>
                             </strong>
-                            <?php if($showPrice) : ?>
+                            <?php if ($showReviewsRatins && $templateType): ?>
+                                <?= $block->getReviewsSummaryHtml($product, $templateType) ?>
+                            <?php endif; ?>
+                            <?php if ($showPrice) : ?>
                                 <?php /* @escapeNotVerified */ echo $this->getProductPrice($product); ?>
                             <?php endif; ?>
                             <div class="product-item-inner">
                                 <div class="product actions product-item-actions">
 
-                                    <?php if($showAddToCart) : ?>
+                                    <?php if ($showAddToCart) : ?>
                                         <div class="actions-primary">
                                             <?php if ($product->isSaleable()): ?>
                                                 <?php if ($product->getTypeInstance()->hasRequiredOptions($product)): ?>
@@ -186,6 +194,7 @@ if($productsType != 'recently_viewed') {
                         sPBrk_3 = slider_config.stagePadding_brk3 != '' ? parseInt(slider_config.stagePadding_brk3) : 0,
                         sPBrk_4 = slider_config.stagePadding_brk4 != '' ? parseInt(slider_config.stagePadding_brk4) : 0;
                             options = {
+                                thumbs: true,
                                 nav                 :parseInt(slider_config.nav) == 1 ? true : false,
                                 dots                :parseInt(slider_config.dots) == 1 ? true : false,
                                 center              :parseInt(slider_config.center) == 1 ? true : false,
@@ -231,11 +240,25 @@ if($productsType != 'recently_viewed') {
                         }
                     };
 
+                    <?php if ($randomSort) : ?>
+                    carouselElement.on('initialize.owl.carousel', function(event) {
+                        var $this = $(this);
+                        var carouselItems = $this.children();
+                        while (carouselItems.length) {
+                            $this.append(carouselItems.splice(Math.floor(Math.random() * carouselItems.length), 1)[0]);
+                        }
+                    });
+                    <?php endif; ?>
+
                     // workaround for owl carousel
                     // fix nav buttons display on load even when set as false
                     carouselElement.on('initialized.owl.carousel', function(event) {
                         setTimeout(function(){
                             carouselElement.trigger('next.owl.carousel');
+                            $('.owl-thumbs').each(function() {
+                                if (!$('.owl-thumbs').children().length) {$(this).remove();}
+                            });
+                            $('.cssload-loader').parent().remove();
                         }, 370);
                     });
                     /** Lazyload bug when fewer items exist in the carousel then the ones displayed */

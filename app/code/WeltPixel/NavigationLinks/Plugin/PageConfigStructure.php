@@ -46,14 +46,14 @@ class PageConfigStructure {
             case 'WeltPixel_NavigationLinks::css/navigation_mobile.css':
                 $attributes['media'] = 'screen and (max-width: ' . $mobileBreakPoint . ')';
                 if (!$this->_navigationHelper->isEnabled()) {
-                    $name = '';
+                    $subject->removeAssets($name);
                 }
                 break;
 
             case 'WeltPixel_NavigationLinks::css/navigation_desktop.css':
                 $attributes['media'] = 'screen and (min-width: ' . $desktopBreakPoint . ')';
                 if (!$this->_navigationHelper->isEnabled()) {
-                    $name = '';
+                    $subject->removeAssets($name);
                 }
                 break;
         }

@@ -52,15 +52,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		$this->_assetRepo = $assetRepo;
 	}
 
-    public function getStoreSwitcherTemplate()
-    {
-        if ($this->getIsEnabled()) {
-            return 'WeltPixel_Multistore::switch/languages.phtml';
-        }
-
-        return 'Magento_Store::switch/languages.phtml';
-    }
-
     /**
      * @param int $storeId
      * @return mixed

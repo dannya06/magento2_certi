@@ -2,27 +2,42 @@
 
 namespace WeltPixel\FrontendOptions\Block\Head;
 
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use WeltPixel\FrontendOptions\Helper\Data as DataHelper;
+use WeltPixel\FrontendOptions\Helper\Fonts as FontsHelper;
+
 /**
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Fonts extends \Magento\Framework\View\Element\Template {
+class Fonts extends Template
+{
 
     /**
-     * @var \WeltPixel\FrontendOptions\Helper\Fonts
+     * @var FontsHelper
      */
-    protected $_helper;
-    
+    protected $_fontsHelper;
+
     /**
-     * @param \WeltPixel\FrontendOptions\Helper\Fonts $_helper
-     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @var DataHelper
+     */
+    protected $_dataHelper;
+
+    /**
+     * @param FontsHelper $_fontsHelper
+     * @param DataHelper $_dataHelper
+     * @param Context $context
      * @param array $data
      */
     public function __construct(
-        \WeltPixel\FrontendOptions\Helper\Fonts $_helper,
-        \Magento\Framework\View\Element\Template\Context $context, array $data = []
+        FontsHelper $_fontsHelper,
+        DataHelper $_dataHelper,
+        Context $context,
+        array $data = []
     ) {
-        $this->_helper = $_helper;
+        $this->_fontsHelper = $_fontsHelper;
+        $this->_dataHelper = $_dataHelper;
         parent::__construct($context, $data);
     }
 
@@ -30,10 +45,27 @@ class Fonts extends \Magento\Framework\View\Element\Template {
      * Get the google font url to import in the head section
      * @return boolean|string
      */
-    public function getGoogleFonts() {
-        
-        $googleFonts = $this->_helper->getGoogleFonts();
+    public function getGoogleFonts()
+    {
+        $googleFonts = $this->_fontsHelper->getGoogleFonts();
         return $googleFonts;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAsyncFontFamilyOptions()
+    {
+        $asyncFontFamiliyOptions = $this->_fontsHelper->getAsyncFontFamilyOptions();
+        return $asyncFontFamiliyOptions;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAsyncFontLoadEnabled()
+    {
+        return $this->_dataHelper->getLoadGoogleFontAsyncrounously();
     }
 
 }

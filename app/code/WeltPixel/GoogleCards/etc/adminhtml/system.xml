@@ -42,7 +42,7 @@
                     <depends>
                         <field id="enable">1</field>
                     </depends>
-                    <comment><![CDATA[Select attribute used for product condition ( Attribute should have the following options: DamagedCondition / UsedCondition / NewCondition / RefurbishedCondition according to <a href="http://schema.org/OfferItemCondition" target="_blank">schema.org</a>)]]></comment>
+                    <comment><![CDATA[Select attribute used for product condition ( Attribute should have the following options: DamagedCondition / UsedCondition / NewCondition / RefurbishedCondition according to <a href="https://schema.org/OfferItemCondition" target="_blank">schema.org</a>)]]></comment>
                 </field>
 
                 <field id="brand" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1"
@@ -418,6 +418,14 @@
                        showInStore="1">
                     <label>App Id</label>
                     <comment>fb:app_id</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="retailer_id" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Retailer's ID for the item</label>
+                    <source_model>WeltPixel\GoogleCards\Model\Config\Source\Id</source_model>
+                    <comment>product:retailer_item_id</comment>
                     <depends>
                         <field id="enable">1</field>
                     </depends>

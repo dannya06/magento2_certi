@@ -1,8 +1,11 @@
 <?php  /* @var \WeltPixel\OwlCarouselSlider\Block\Slider\Custom $this */ ?>
 
-<?php $sliderConfig  = $this->getSliderConfiguration(); ?>
-<?php $sliderGeneral = $sliderConfig['slider_config']; ?>
-<?php $enabled       = (array_key_exists('status', $sliderGeneral) && $sliderGeneral['status'] !=0) ? true : false; ?>
+<?php $sliderConfig         = $this->getSliderConfiguration(); ?>
+<?php $sliderGeneral        = $sliderConfig['slider_config']; ?>
+<?php $enabled              = (array_key_exists('status', $sliderGeneral) && $sliderGeneral['status'] !=0) ? true : false; ?>
+<?php $thumbsEnabled        = (array_key_exists('thumbs', $sliderGeneral) && $sliderGeneral['thumbs'] !=0) ? true : false; ?>
+<?php $scheduledAjaxEnabled = (array_key_exists('scheduled_ajax', $sliderGeneral) && $sliderGeneral['scheduled_ajax'] !=0) ? true : false; ?>
+<?php $thumbsArr            = [];?>
 
 <?php if ($enabled) : ?>
 
@@ -23,8 +26,8 @@
     <?php endif; ?>
 
     <div class="custom-slider">
-        <div class="owl-carousel-custom-<?php echo $sliderId;?>">
-            <?php foreach($bannerConfig as $banner) : ?>
+        <div class="owl-carousel-custom-<?php echo $sliderId;?>" data-slider-id="<?php echo $sliderId;?>">
+            <?php $ctr=0; foreach($bannerConfig as $banner) : ?>
                 <?php
                     $title = (array_key_exists('title', $banner) && $banner['title'] !='') ? $banner['title'] : false;
                     $showTitle = array_key_exists('show_title', $banner) ? $banner['show_title'] : false;
@@ -41,7 +44,11 @@
                     }
                     $desktopimage = array_key_exists('image', $banner) ? $banner['image'] : '';
                     $mobileimage = array_key_exists('mobile_image', $banner) ? $banner['mobile_image'] : '';
+                    $thumbimage = array_key_exists('thumb_image', $banner) ? $banner['thumb_image'] : '';
+
                     if(!$desktopimage && $mobileimage) $desktopimage = $mobileimage;
+                    if(!$thumbimage && $desktopimage) $thumbimage = $desktopimage;
+
                     $altText = array_key_exists('alt_text', $banner) ? $banner['alt_text'] : '';
                     $video = array_key_exists('video', $banner) ? $banner['video'] : '';
                     $custom = array_key_exists('custom', $banner) ? $banner['custom'] : '';
@@ -55,6 +62,8 @@
                     $gaPromoPosition = array_key_exists('ga_promo_position', $banner) ? $banner['ga_promo_position'] : '';
 
                     $image = $desktopimage;
+                    $thumbsArr[$ctr]['img'] = $thumbimage;
+                    $thumbsArr[$ctr]['alt'] = $altText;
                     if ($mobileimage && $this->isMobile()) {
                         $image = $mobileimage;
                     }
@@ -190,7 +199,7 @@
                         </div>
                     </div>
 
-            <?php endforeach; ?>
+            <?php $ctr++; endforeach; ?>
         </div>
         <div id="pre-div">
             <?php $loaderHelper = $this->helper('WeltPixel\OwlCarouselSlider\Helper\ImageLoader'); ?>
@@ -212,7 +221,21 @@
                 </table>
             <?php endif; ?>
         </div>
+        <?php if($thumbsEnabled):?>
+            <div class="owl-thumbs" data-slider-id="<?php echo $sliderId;?>">
+                <?php foreach($thumbsArr as $img):?>
+                    <div class="owl-thumb-item">
+                        <img src="<?php echo $mediaUrl . $img['img']; ?>"
+                             alt="<?php echo $img['alt']; ?>"
+                             title="<?php echo $img['alt']; ?>"
+                        />
+                    </div>
+                <?php endforeach;?>
+            </div>
+        <?php endif;?>
     </div>
+
+
 
     <script>
         require(['jquery', 'underscore', 'owl_carousel', 'owl_config' ],
@@ -268,7 +291,7 @@
                         var $that = $(this);
                         setTimeout(function(){
                             $that.find('.owl-height').css('height', $that.find('.owl-item.active').height());
-                        }, 100);
+                        }, 1);
                     });
 
                     $(window).resize(function(){
@@ -277,6 +300,30 @@
 
                     adjustOwlImages();
 
+                    <?php endif; ?>
+
+                    <?php if ($scheduledAjaxEnabled) : ?>
+                    $('.owl-carousel-custom-'+slider_id).on('initialize.owl.carousel', function(event){
+                        var $this = $(this);
+                        var carouselItems = $this.children();
+                        var nrOfElements = carouselItems.length;
+                        var requestUrl = '<?php echo $this->getUrl("ajaxowl/banner/validity/slider_id/" . $sliderId); ?>';
+                        $.get({
+                            url: requestUrl,
+                            cache: false,
+                            async: false
+                        }, function(responseData) {
+                            var invalidBanners = responseData.invalidBanners;
+                            if (invalidBanners) {
+                                for (var i=0; i<nrOfElements; i++) {
+                                    var itemClasses = $(carouselItems[i]).get(0).className.split(' ');
+                                    if (_.intersection(itemClasses, invalidBanners).length) {
+                                        $(carouselItems[i]).remove();
+                                    }
+                                }
+                            }
+                        });
+                    });
                     <?php endif; ?>
 
                     /** Lazyload bug when fewer items exist in the carousel then the ones displayed */
@@ -298,7 +345,18 @@
                         }, 100);
                     });
 
+                    $('.owl-carousel-custom-'+slider_id).on('initialized.owl.carousel', function(event) {
+                        setTimeout(function(){
+                            $('.owl-thumbs').each(function() {
+                                if (!$('.owl-thumbs').children().length) {$(this).remove();}
+                            });
+                            $('.cssload-loader').parent().remove();
+                        }, 370);
+                    });
+
                     $('.owl-carousel-custom-'+slider_id).owlCarousel({
+                        thumbs:            parseInt(slider_config.thumbs) == 1 ? true : false,
+                        thumbsPrerendered: parseInt(slider_config.thumbs) == 1 ? true : false,
                         nav               :parseInt(slider_config.nav) == 1 ? true : false,
                         dots              :parseInt(slider_config.dots) == 1 ? true : false,
                         center            :(slider_config.center == 1 && animate_Out) ? true : false,

@@ -143,9 +143,6 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'column_css_class' => 'col-action',
             ]
         );
-        $this->addExportType('*/*/exportCsv', __('CSV'));
-        $this->addExportType('*/*/exportXml', __('XML'));
-        $this->addExportType('*/*/exportExcel', __('Excel'));
 
         return parent::_prepareColumns();
     }

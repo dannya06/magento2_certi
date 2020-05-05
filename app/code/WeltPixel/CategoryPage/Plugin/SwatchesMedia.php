@@ -36,7 +36,7 @@ class SwatchesMedia
             $layeredImageWidth = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_CATEGORYPAGE_LAYERED_SWATCH_WIDTH, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
             $layeredImageHeight = trim($this->scopeConfig->getValue(self::XML_PATH_WELTPIXEL_CATEGORYPAGE_LAYERED_SWATCH_HEIGHT, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
 
-            $swatchIds = ['swatch_image', 'swatch_thumb'];
+            $swatchIds = ['swatch_image','swatch_image_base'];
             foreach ($swatchIds as $id) {
                 $result[$id]['width'] = intval($layeredImageWidth);
                 $result[$id]['height'] = intval($layeredImageHeight);

@@ -24,18 +24,15 @@
                     <source_model>WeltPixel\CategoryPage\Model\Config\Source\ShowCompare</source_model>
                     <comment>Select position of Add to Compare icon on products from category page.</comment>
                 </field>
-                <field id="display_swatches" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="display_swatches" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display Swatches</label>
                     <source_model>WeltPixel\CategoryPage\Model\Config\Source\DisplaySwatche</source_model>
-                    <comment>Select Swatches behavior.</comment>
+                    <comment><![CDATA[Select Swatches behavior. <br/>  Note: Make sure that Stores -> Settings -> Configuration -> Catalog -> Catalog -> Storefront -> Show Swatches in Product List is set to Yes]]></comment>
                 </field>
-                <field id="display_swatch_tooltip" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="display_swatch_tooltip" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display Swatch Tooltip</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <depends>
-                        <field id="display_swatches" separator=",">1,2</field>
-                    </depends>
-                    <comment>Select Swatches behavior when hover over them.</comment>
+                    <comment><![CDATA[Select Swatches behavior when hover over them. <br/> Display tooltip on hover over the swatches from Layered Navigation and from the products on category page.]]></comment>
                 </field>
                 <field id="display_addtocart" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display Add to Cart</label>
@@ -442,6 +439,30 @@
                     <label>Swatch Align</label>
                     <source_model>WeltPixel\CategoryPage\Model\Config\Source\TextAlign</source_model>
                     <comment>Select swatch position in Layered Navigation.</comment>
+                </field>
+            </group>
+            <group id="description" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Description Options</label>
+                <field id="enable_show_more" translate="label tooltip comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show More/Less</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable show more/less trigger for category description, useful for long paragraphs.</comment>
+                </field>
+                <field id="show_more_lines" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Number of Lines</label>
+                    <validate>required-entry validate-number validate-zero-or-greater</validate>
+                    <comment>Insert the number of initially visible paragraph lines. Ex. 3, for first three lines of text. This value is multiplied with the value of WeltPixel > Frontend Options > Default > Line Height setting.</comment>
+                    <depends>
+                        <field id="enable_show_more">1</field>
+                    </depends>
+                </field>
+                <field id="animation_speed" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Animation Speed</label>
+                    <validate>required-entry validate-number validate-zero-or-greater</validate>
+                    <comment>Show more/less animation speed in milliseconds. Ex. 300</comment>
+                    <depends>
+                        <field id="enable_show_more">1</field>
+                    </depends>
                 </field>
             </group>
         </section>

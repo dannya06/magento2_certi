@@ -8,11 +8,11 @@ namespace WeltPixel\FrontendOptions\Helper;
  */
 class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    
+
     /**
      * @var string
      */
-    protected $_googlefontUrl = 'https://fonts.googleapis.com/css?family=';
+    protected $_googlefontUrl = 'https://fonts.googleapis.com/css?display=swap&family=';
 
     /**
      * @var array
@@ -28,7 +28,7 @@ class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
         'button__font____family',
         'form____element____input__font____family'
     ];
-    
+
     /**
      * @var array
      */
@@ -84,30 +84,57 @@ class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return array
      */
-    public function getFontFamilyOptions() {
+    public function getFontFamilyOptions()
+    {
         return $this->_fontFamilyOptions;
     }
 
     /**
      * @return bool|string
      */
-    public function getGoogleFonts() {
+    public function getGoogleFonts()
+    {
         $baseUrl = $this->_googlefontUrl;
-        
+
         $fontUrl = $this->_getFontFamilyMergedUrl();
-        
+
         if (strlen(trim($fontUrl))) {
             return $baseUrl . $fontUrl;
         }
-        
+
         return false;
     }
-    
+
+    /**
+     * @return array
+     */
+    public function getAsyncFontFamilyOptions()
+    {
+        $fontsArrayOptions = [];
+        foreach ($this->avilableFontFamilys as $availableFamily) {
+            $fontFamily = str_replace(' ', '+', $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['font'], \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+            if ($fontFamily) {
+                $fontWeight = $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['weight'], \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $fontCharacterset = $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['characterset'], \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                if ($fontWeight) {
+                    $fontsArrayOptions[$fontFamily]['weight'][] = array_map('trim', explode(',', $fontWeight));
+                }
+                if ($fontCharacterset) {
+                    $fontsArrayOptions[$fontFamily]['characterset'][] = explode(',', $fontCharacterset);
+                }
+
+            }
+        }
+
+        return $this->_buildAsyncOptions($fontsArrayOptions);
+    }
+
     /**
      *Gets all the font options from the backend and it will construct the final font url
      * @return boolean|string
      */
-    private function _getFontFamilyMergedUrl() {
+    private function _getFontFamilyMergedUrl()
+    {
         $fontsArray = [];
         foreach ($this->avilableFontFamilys as $availableFamily) {
             $fontFamily = str_replace(' ', '+', $this->scopeConfig->getValue('weltpixel_frontend_options/' . $availableFamily['font'], \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
@@ -120,46 +147,85 @@ class Fonts extends \Magento\Framework\App\Helper\AbstractHelper
                 if ($fontCharacterset) {
                     $fontsArray['_characterset'][] = explode(',', $fontCharacterset);
                 }
-                
+
             }
         }
-        
+
         return $this->_buildUrl($fontsArray);
     }
-    
+
     /**
      * Normalizes the admin options and constructs the final url into one merged font url
      * @param array $fontsArray
      * @return boolean|string
      */
-    private function _buildUrl($fontsArray) {
+    private function _buildUrl($fontsArray)
+    {
         if (empty($fontsArray)) {
             return false;
         }
-        
-        $normalizedFontOptions = array();
+
+        $normalizedFontOptions = [];
         $subset = '';
-        
+
         foreach ($fontsArray as $fontKey => $fontOptions) {
-            $tmpArray = array();
+            $tmpArray = [];
             foreach ($fontOptions as $options) {
                 $tmpArray = array_unique(array_merge($tmpArray, $options));
             }
-            
+
             if ($fontKey == '_characterset') {
                 $subset = implode(',', $tmpArray);
             } else {
-                $normalizedFontOptions[] = $fontKey.":".implode(',', $tmpArray);
+                $normalizedFontOptions[] = $fontKey . ":" . implode(',', $tmpArray);
             }
         }
-        
+
         $fontUrl = implode('%7C', $normalizedFontOptions);
-        
+
         if ($subset) {
             $fontUrl .= '&subset=' . $subset;
         }
-        
+
         return $fontUrl;
     }
-    
+
+    /**
+     * @param array $fontsArray
+     * @return array
+     */
+    private function _buildAsyncOptions($fontsArray)
+    {
+        if (empty($fontsArray)) {
+            return [];
+        }
+
+        $fontOptionsArray = [];
+
+        foreach ($fontsArray as $fontKey => $fontOptions) {
+            $tmpWeightArray = [];
+            $tmpCharactersetArray = [];
+            foreach ($fontOptions['weight'] as $options) {
+                $tmpWeightArray = array_unique(array_merge($tmpWeightArray, $options));
+            }
+
+            foreach ($fontOptions['characterset'] as $options) {
+                $tmpCharactersetArray = array_unique(array_merge($tmpCharactersetArray, $options));
+            }
+
+            $fontArrayOption = $fontKey . ":" . implode(',', $tmpWeightArray);
+            if ($tmpCharactersetArray) {
+                $subset = implode(',', $tmpCharactersetArray);
+                $fontArrayOption .= ':' . $subset;
+            }
+            $fontOptionsArray[] = $fontArrayOption;
+        }
+
+        $lastElement = array_slice($fontOptionsArray, -1, 1);
+        $lastElement = $lastElement[0] . '&display=swap';
+        $fontOptionsArray[count($fontOptionsArray) - 1] = $lastElement;
+
+        return $fontOptionsArray;
+    }
+
 }

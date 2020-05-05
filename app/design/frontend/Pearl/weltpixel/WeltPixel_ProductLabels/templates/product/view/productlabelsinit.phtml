@@ -5,8 +5,18 @@
             $.get({
                 url: requestUrl,
                 cache: false
-            }, function(result) {
-                $('.fotorama__stage').append(result);
+            }, function(labelData) {
+                if(labelData.imagePosition) {
+                    $('.fotorama__stage').append(labelData.imagePosition);
+                }
+                if(labelData.otherPosition) {
+                    var insertBeforeElement = $('.product-info-main').find('.product.info.detailed');
+                    if (insertBeforeElement.length) {
+                        $(labelData.otherPosition).insertBefore(insertBeforeElement);
+                    } else {
+                        $('.product-info-main').append(labelData.otherPosition);
+                    }
+                }
             });
         });
     });

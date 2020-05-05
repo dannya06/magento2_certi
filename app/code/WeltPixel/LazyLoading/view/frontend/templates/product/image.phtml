@@ -4,7 +4,9 @@ $_helper = $this->helper('WeltPixel\LazyLoading\Helper\Data');
 $isRequestAjax = $_helper->isRequestAjax();
 $imgSrc = $_helper->getImageLoader();
 $imgDataOriginal = $block->getImageUrl();
+$pWidth = $_helper->getPlaceholderWidth() ?? '100%';
 if ($isRequestAjax) {
+    $pWidth = '100%';
     $imgSrc = $imgDataOriginal;
 }
 ?>
@@ -14,4 +16,6 @@ if ($isRequestAjax) {
      data-original="<?php /* @escapeNotVerified */ echo $imgDataOriginal; ?>"
      width="<?php /* @escapeNotVerified */ echo $block->getWidth(); ?>"
      height="<?php /* @escapeNotVerified */ echo $block->getHeight(); ?>"
-     alt="<?php /* @escapeNotVerified */ echo $block->stripTags($block->getLabel(), null, true); ?>" />
+     alt="<?php /* @escapeNotVerified */ echo $block->stripTags($block->getLabel(), null, true); ?>"
+     style="max-width:<?php echo $pWidth ?>"
+/>

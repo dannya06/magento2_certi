@@ -61,7 +61,7 @@
 .navigation .megamenu.level-top-fullwidth .submenu .columns-group,
 .navigation .megamenu.level-top-sectioned .submenu .columns-group,
 .navigation .megamenu.level-top-boxed .submenu .columns-group {
-    padding: 10px 0 20px;
+    padding: 0;
 }
 .navigation .megamenu.level-top-fullwidth .submenu .columns-group li,
 .navigation .megamenu.level-top-sectioned .submenu .columns-group li,
@@ -111,7 +111,7 @@
 .navigation .megamenu.level-top-boxed .submenu .level1 .submenu {
     border: 0 none;
     box-shadow: inherit;
-    display: block !important;
+    display: contents !important;
     position: relative;
     left: 0 !important;
 }
@@ -243,6 +243,9 @@
 .navigation .megamenu.level-top-sectioned .submenu .columns-group:last-child > li:not(.parent) {
     padding-right: 20px;
 }
+.navigation .megamenu.level-top-sectioned .submenu .level1 {
+    clear: both;
+}
 .navigation .megamenu.level-top-sectioned .sectioned .columns-group li > a {
     white-space: nowrap;
 }
@@ -334,9 +337,6 @@
 }
 .theme-pearl .nav-sections.nav-sections .navigation .megamenu.level-top-fullwidth .level0.fullwidth .fullwidth-wrapper .fullwidth-wrapper-inner .columns-group:first-child {
     margin-left: 0 !important;
-}
-.theme-pearl .nav-sections.nav-sections .navigation .megamenu.level-top-sectioned .submenu .level1 {
-    clear: both;
 }
 .theme-pearl .nav-sections.nav-sections-2 .navigation .megamenu.level-top-fullwidth .level0.fullwidth .fullwidth-wrapper .fullwidth-wrapper-inner .columns-group:first-child {
     /*margin-left: -20px;*/

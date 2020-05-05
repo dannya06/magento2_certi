@@ -8,6 +8,7 @@
 
 namespace WeltPixel\RecentlyViewedBar\Block;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\Template;
 use WeltPixel\RecentlyViewedBar\Helper\Data as WpHelper;
 use Magento\Framework\App\Request\Http;
@@ -98,6 +99,7 @@ class RecentlyViewed extends \Magento\Framework\View\Element\Template
         $showAttributes = $this->getShowAttributes();
         $showButtons = $this->getShowButtons();
         $enableCms = $this->_wpHelper->getEnableCms();
+        $enableSl = $this->_wpHelper->getEnableSlIntegration();
         $cmsBlock = $this->_wpHelper->getCmsBlock();
         $buttonColor = $this->_wpHelper->getButtonColor();
         $buttonTextColor = $this->_wpHelper->getButtonTextColor();
@@ -113,6 +115,7 @@ class RecentlyViewed extends \Magento\Framework\View\Element\Template
             'show_attributes' => $showAttributes,
             'show_buttons' => $showButtons,
             'enable_cms' => $enableCms,
+            'enable_sl' => $enableSl,
             'cms_block' => $cmsBlock,
             'button_color' => $buttonColor,
             'button_text_color' => $buttonTextColor,
@@ -282,5 +285,53 @@ class RecentlyViewed extends \Magento\Framework\View\Element\Template
         }
 
         return false;
+    }
+
+    /**
+     * @return mixed
+     * @throws LocalizedException
+     */
+    public function loadRecentlyViewedWidget()
+    {
+        return $this->getLayout()->createBlock(
+            "Magento\Catalog\Block\Widget\RecentlyViewed",
+            "recently_viewed",
+            [
+                "data" => [
+                    "uiComponent" => "widget_recently_viewed",
+                    "page_size"   => $this->configData['item_limit'],
+                    "show_attributes" => $this->configData['show_attributes'],
+                    "show_buttons" => $this->configData['show_buttons']
+                ]
+            ]
+        )->setTemplate("Magento_Catalog::product/widget/viewed/grid.phtml");
+    }
+
+    /**
+     * @return mixed
+     * @throws LocalizedException
+     */
+    public function loadCmsBlock()
+    {
+        if ($this->configData['enable_sl'] && !$this->_wpHelper->isCustomerLoggedIn()) {
+            return $this->getSocialLoginWidget();
+        }
+
+        return $this->getLayout()
+            ->createBlock('Magento\Cms\Block\Block')
+            ->setBlockId($this->configData['cms_block']);
+    }
+
+    /**
+     * @return mixed
+     * @throws LocalizedException
+     */
+    protected function getSocialLoginWidget()
+    {
+        $slWidget = $this->getLayout()
+            ->createBlock('WeltPixel\SocialLogin\Block\Widget\Login')
+            ->setTemplate('widget/login.phtml');
+
+        return $slWidget;
     }
 }

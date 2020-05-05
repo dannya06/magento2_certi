@@ -16,8 +16,7 @@
             <?php else:?>
                 <span class="product-item-photo">
             <?php endif;?>
-
-                <?= $block->getImage($block->getProductFromItem($_item), 'cart_page_product_thumbnail')->toHtml(); ?>
+                <?= $block->getImage($_item, 'cart_page_product_thumbnail')->toHtml(); ?>
 
             <?php if ($_item->getProduct()->isVisibleInSiteVisibility()):?>
                 </a>

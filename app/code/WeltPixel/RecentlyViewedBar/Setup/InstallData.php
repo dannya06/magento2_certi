@@ -65,10 +65,10 @@ class InstallData implements InstallDataInterface
             if(!$this->appState->isAreaCodeEmulated()) {
                 $this->appState->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
             }
-        } catch (\Exception $ex) {}
+        } catch (\Exception $ex) {
+        }
 
         $content = <<<EOT
-{{widget type="WeltPixel\SocialLogin\Block\Widget\Login" type_name="Social Login Block"}}
 <div class="arv-cms-img"><img class="arv-desktop-img" src="{{view url='WeltPixel_RecentlyViewedBar/images/desktop_sample.png'}}"> <img class="arv-mobile-img" src="{{view url='WeltPixel_RecentlyViewedBar/images/mobile_sample.png'}}"></div>
 EOT;
 
@@ -81,7 +81,10 @@ EOT;
             'sort_order' => 0
         ];
 
-        $this->blockFactory->create()->setData($cmsBlockData)->save();
+        try {
+            $this->blockFactory->create()->setData($cmsBlockData)->save();
+        } catch (\Exception $ex) {
+        }
 
     }
 }
