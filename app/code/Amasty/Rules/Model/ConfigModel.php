@@ -1,13 +1,16 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Model;
 
+/**
+ * System config provider.
+ */
 class ConfigModel
 {
     /**
@@ -103,8 +106,8 @@ class ConfigModel
     }
 
     /**
-     * @param $section
-     * @param $field
+     * @param string $section
+     * @param string $field
      * @param string $module
      * @return mixed
      */

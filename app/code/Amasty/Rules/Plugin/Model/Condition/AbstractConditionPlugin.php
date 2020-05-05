@@ -1,20 +1,21 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Plugin\Model\Condition;
 
+/**
+ * fix Magento issue - validate by multiselect
+ */
 class AbstractConditionPlugin
 {
     /**
-     * fix Magento issue - validate by multiselect
-     *
      * @param \Magento\Rule\Model\Condition\AbstractCondition $subject
-     * @param array|string|int|float                          $result
+     * @param array|string|int|float $result
      *
      * @return array|string|int|float
      */

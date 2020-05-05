@@ -1,0 +1,30 @@
+<?php 
+$_product = $block->getProduct();
+$imageUrl = $this->helper('Magento\Catalog\Helper\Image')
+                    ->init($_product, 'product_base_image')
+                    ->constrainOnly(TRUE)
+                    ->keepAspectRatio(TRUE)
+                    ->keepTransparency(TRUE)
+                    ->keepFrame(FALSE)
+                    ->resize(150, 150)->getUrl();
+?>
+<?php if( $block->getEnable() == 1): ?>
+<div class="social-media-icons">
+    <!-- WhatsApp -->
+    <a target="_blank" href="https://api.whatsapp.com/send?text=<?php echo urlencode($_product->getProductUrl());?>">
+        <button class="whatsapp"><i class="fa fa-whatsapp fa-3" aria-hidden="true"></i></button>
+    </a>
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($_product->getProductUrl());?>&t=<?php echo urlencode($_product->getName())?>" onclick='javascript:window.open(this.href,"","width=640,height=480,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes");return false' title="Share on facebook">
+        <button class="facebook" ><i class="fa fa-facebook fa-3" aria-hidden="true"></i></button>
+    </a>
+    <!-- TWITTER -->
+    <a href="https://twitter.com/intent/tweet?text=<?php echo urlencode($_product->getProductUrl());?>(<?php echo urlencode($_product->getName())?>)" onclick='javascript:window.open(this.href,"","width=640,height=480,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes");return false' title="Share on Twitter">
+        <button class="twitter"><i class="fa fa-twitter fa-3" aria-hidden="true"></i></button>
+    </a>
+    <!-- Pinterest -->
+    <a href="https://pinterest.com/pin/create/button/?url=<?php echo urlencode($_product->getProductUrl()); ?>&media=<?php echo urlencode($imageUrl);?> &description=<?php echo urlencode($_product->getName()); ?>" onclick='javascript:window.open(this.href,"","width=640,height=480,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes");return false' title="Pin it">
+        <button class="pinterest"><i class="fa fa-pinterest fa-3" aria-hidden="true"></i></button>
+    </a>
+</div>
+<?php endif; ?>

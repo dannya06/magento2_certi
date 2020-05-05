@@ -303,6 +303,9 @@ $ishasSpecialday = count($specialDayData);
     </div>
 </script>
 <script type="text/javascript">
+    window.checkoutConfig = {
+        googleKeyApi: '<?php echo $block->getSystemConfig()->getGoogleApiKey(); ?>'
+    }
     require(['jquery', 'magestore/viewpage/map'], function ($) {
         $(document).ready(function ($) {
             $('.storeday-tab-bar').click(function () {

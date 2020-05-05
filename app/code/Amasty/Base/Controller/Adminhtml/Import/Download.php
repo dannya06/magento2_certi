@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -73,16 +73,16 @@ class Download
         }
 
         if (!preg_match('/[a-z0-9\-]+/i', $this->request->getParam('filename'))) {
-
             return $this->noEntityFound();
         }
+
         $fileName = $this->request->getParam('filename') . '.csv';
         $moduleDir = $this->reader->getModuleDir('', $moduleName);
         $fileAbsolutePath = $moduleDir . '/Files/Sample/' . $fileName;
         $directoryRead = $this->readFactory->create($moduleDir);
         $filePath = $directoryRead->getRelativePath($fileAbsolutePath);
-        if (!$directoryRead->isFile($filePath)) {
 
+        if (!$directoryRead->isFile($filePath)) {
             return $this->noEntityFound();
         }
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 
@@ -60,8 +60,8 @@ class Cache extends \Magento\Framework\Cache\Frontend\Decorator\TagScope
         CategoryFactory $categoryFactory,
         CategoryProduct $categoryProduct,
         FrontendPool $cacheFrontendPool,
-        Config\Proxy $config,
-        PurgeCache\Proxy $purgeCache
+        Config $config,
+        PurgeCache $purgeCache
     ) {
         parent::__construct($cacheFrontendPool->get(self::TYPE_IDENTIFIER), self::CACHE_TAG);
         $this->collectionFactory = $collectionFactory;

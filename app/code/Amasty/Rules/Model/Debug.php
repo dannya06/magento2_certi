@@ -1,17 +1,19 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
 
 namespace Amasty\Rules\Model;
 
-use Amasty\Rules\Model\ConfigModel;
-use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 
+/**
+ * Assist class for debug feature.
+ */
 class Debug
 {
     const LOCAL_IP = '127.0.0.1';
@@ -51,8 +53,8 @@ class Debug
     }
 
     /**
-    * @return bool
-    */
+     * @return bool
+     */
     public function isDebugDisplayAllowed()
     {
         return $this->configModel->isDebugEnable() && $this->isCurrentIpAllow();
@@ -63,10 +65,10 @@ class Debug
      */
     private function isCurrentIpAllow()
     {
-        $ip = $this->getCurrentIp();
+        $userIp = $this->getCurrentIp();
         $allowedIps = $this->configModel->getAllowedIps();
 
-        return strpos($allowedIps, $ip) !== false;
+        return strpos($allowedIps ?: '', $userIp) !== false;
     }
 
     /**

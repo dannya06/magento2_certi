@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -17,6 +17,10 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ExternalFKSetup;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 
+/**
+ * Class UpgradeSchema
+ * phpcs:ignoreFile
+ */
 class UpgradeSchema implements UpgradeSchemaInterface
 {
     /**
@@ -46,8 +50,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
     public function __construct(
         State $appState,
-        Operation\AddAmrulesTable\Proxy $addAmrulesTable,
-        Operation\MigrateRules\Proxy $migrateRules,
+        Operation\AddAmrulesTable $addAmrulesTable,
+        Operation\MigrateRules $migrateRules,
         ExternalFKSetup $externalFKSetup,
         MetadataPool $metadata
     ) {
@@ -129,6 +133,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
     /**
      * @param SchemaSetupInterface $setup
+     *
+     * @throws \Exception
      */
     private function changeForeignKey(SchemaSetupInterface $setup)
     {
@@ -158,6 +164,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
      * @param AdapterInterface $adapter
      * @param string $amruleTableName
      * @param string $salesruleTableName
+     *
+     * @throws \Zend_Db_Select_Exception
      */
     private function setRowIdInsteadRuleId($adapter, $amruleTableName, $salesruleTableName)
     {

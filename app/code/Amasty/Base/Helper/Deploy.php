@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
@@ -50,6 +50,7 @@ class Deploy extends AbstractHelper
 
     public function moveFilesFromTo($fromPath, $toPath)
     {
+        //phpcs:ignore
         $baseName = basename($fromPath);
         $files = $this->rootRead->readRecursively($fromPath);
         array_unshift($files, $fromPath);

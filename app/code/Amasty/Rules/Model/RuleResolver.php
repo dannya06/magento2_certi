@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -12,6 +12,9 @@ use Amasty\Rules\Api\Data\RuleInterface;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\SalesRule\Api\Data\RuleExtensionFactory;
 
+/**
+ * Class for connecting Amasty Rule with Magento SalesRule.
+ */
 class RuleResolver
 {
     /**
@@ -43,11 +46,13 @@ class RuleResolver
      * @param \Magento\SalesRule\Model\Rule $salesRule
      *
      * @return \Amasty\Rules\Model\Rule
+     *
+     * @throws \Exception
      */
     public function getSpecialPromotions($salesRule)
     {
         if (!$salesRule->hasData(RuleInterface::RULE_NAME)) {
-            $extensionAttributes = $salesRule->getExtensionAttrbiutes();
+            $extensionAttributes = $salesRule->getExtensionAttributes();
             if (!$extensionAttributes) {
                 $extensionAttributes = $this->extensionFactory->create();
             }
@@ -55,7 +60,7 @@ class RuleResolver
                 $amRule = $this->ruleProvider->getAmruleByRuleId($this->getLinkId($salesRule));
                 $extensionAttributes->setAmrules($amRule);
             }
-            $salesRule->setExtensionAttrbiutes($extensionAttributes);
+            $salesRule->setExtensionAttributes($extensionAttributes);
 
             $salesRule->setData(RuleInterface::RULE_NAME, $extensionAttributes->getAmrules());
         }
@@ -65,7 +70,10 @@ class RuleResolver
 
     /**
      * @param \Magento\Rule\Model\AbstractModel $rule
-     * @return int|null
+     *
+     * @return int
+     *
+     * @throws \Exception
      */
     public function getLinkId(\Magento\Rule\Model\AbstractModel $rule)
     {
@@ -74,6 +82,8 @@ class RuleResolver
 
     /**
      * @return string
+     *
+     * @throws \Exception
      */
     public function getLinkField()
     {

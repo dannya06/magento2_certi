@@ -1,10 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
+/**
+ * phpcs:ignoreFile
+ * @codeCoverageIgnore
+ */
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 /** @var Magento\Framework\Registry $registry */
@@ -22,4 +26,3 @@ if ($salesRuleId) {
 }
 
 $registry->unregister('Magento/SalesRule/_files/cart_rule_buy_x_gey_y_30_discount_amount');
-

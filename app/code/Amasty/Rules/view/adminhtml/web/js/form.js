@@ -9,18 +9,18 @@ define([
             if (!defaultOptions) {
                 defaultOptions = [];
                 options = $('[data-index="amrulesrule[apply_discount_to]"] select')[0].options;
-                $.each(options, function(key, el) {
+                $.each(options, function (key, el) {
                     defaultOptions[key] = el.label;
                 });
             }
-            $.each($('[data-index="amrulesrule[apply_discount_to]"] select')[0].options, function(key, el){
+            $.each($('[data-index="amrulesrule[apply_discount_to]"] select')[0].options, function (key, el) {
                 el.label = defaultOptions[key];
                 el.text = defaultOptions[key];
             });
             var action = '';
             this.resetFields(type);
             this.renameFieldsToBaseNames();
-            var actionFieldset = $('#' + type +'rule_actions_fieldset_').parent();
+            var actionFieldset = $('#' + type + 'rule_actions_fieldset_').parent();
             var notice = $('[data-index="simple_action"] .admin__field-note');
             var discountStep = $('[data-index="discount_step"]');
             var promoCategories = $('[data-index="amrulesrule[promo_cats]"]');
@@ -32,7 +32,7 @@ define([
             window.amRulesHide = 0;
 
             actionFieldset.show();
-            if (typeof window.amPromoHide !="undefined" && window.amPromoHide == 1) {
+            if (typeof window.amPromoHide != "undefined" && window.amPromoHide == 1) {
                 actionFieldset.hide();
             }
 
@@ -64,7 +64,7 @@ define([
                 case 'groupn':
                     this.hideElement(discountQty);
                     this.showElement(notice);
-                    this.showFields(['amrulesrule[skip_rule]','amrulesrule[apply_discount_to]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[skip_rule]', 'amrulesrule[apply_discount_to]', 'amrulesrule[max_discount]'], type);
                     break;
                 case 'thecheapest':
                 case 'themostexpencive':
@@ -73,33 +73,33 @@ define([
                     break;
                 case 'aftern_disc':
                     this.renameDropdownOptions();
-                    this.showFields(['amrulesrule[skip_rule]','amrulesrule[apply_discount_to]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[skip_rule]', 'amrulesrule[apply_discount_to]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
                     break;
                 case 'eachn_perc':
                     this.showFields(['amrulesrule[use_for]', 'amrulesrule[skip_rule]', 'amrulesrule[apply_discount_to]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
                     break;
                 case 'groupn_disc':
-                    this.showFields(['amrulesrule[skip_rule]','amrulesrule[apply_discount_to]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[skip_rule]', 'amrulesrule[apply_discount_to]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
                     break;
                 case 'eachn_fixdisc':
                 case 'eachn_fixprice':
                     this.checkPriceSelector();
-                    this.showFields(['amrulesrule[use_for]', 'amrulesrule[skip_rule]','amrulesrule[apply_discount_to]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[use_for]', 'amrulesrule[skip_rule]', 'amrulesrule[apply_discount_to]', 'amrulesrule[max_discount]'], type);
                     break;
                 case 'aftern_fixdisc':
                 case 'aftern_fixed':
                     this.checkPriceSelector();
-                    this.showFields(['amrulesrule[skip_rule]','amrulesrule[apply_discount_to]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[skip_rule]', 'amrulesrule[apply_discount_to]', 'amrulesrule[max_discount]'], type);
                     break;
                 case 'eachmaftn_perc':
                     this.renameDropdownOptions();
-                    this.showFields(['amrulesrule[eachm]','amrulesrule[apply_discount_to]', 'amrulesrule[skip_rule]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[eachm]', 'amrulesrule[apply_discount_to]', 'amrulesrule[skip_rule]', 'amrulesrule[priceselector]', 'amrulesrule[max_discount]'], type);
                     break;
                 case 'eachmaftn_fixdisc':
                 case 'eachmaftn_fixprice':
                     this.renameDropdownOptions();
                     this.checkPriceSelector();
-                    this.showFields(['amrulesrule[eachm]','amrulesrule[apply_discount_to]', 'amrulesrule[skip_rule]', 'amrulesrule[max_discount]'], type);
+                    this.showFields(['amrulesrule[eachm]', 'amrulesrule[apply_discount_to]', 'amrulesrule[skip_rule]', 'amrulesrule[max_discount]'], type);
                     break;
                 case 'buyxgetn_fixprice':
                 case 'buyxgetn_fixdisc':
@@ -130,27 +130,27 @@ define([
                     this.hideElement(notice);
             }
 
-            if (action.indexOf('fixprice') >= 0 || action == 'groupn' || action == 'setof_fixed'){
-                this.hideFields(['apply_to_shipping'],type);
+            if (action.indexOf('fixprice') >= 0 || action == 'groupn' || action == 'setof_fixed') {
+                this.hideFields(['apply_to_shipping'], type);
             }
         },
 
         renameDropdownOptions: function () {
             var newOptions = {
-                    'asc' : $.mage.__('Cheapest products, considering rule logic'),
-                    'desc' : $.mage.__('Most expensive products, considering rule logic')
-                },
+                'asc': $.mage.__('Cheapest products, considering rule logic'),
+                'desc': $.mage.__('Most expensive products, considering rule logic')
+            },
                 dropdown = $('[data-index="amrulesrule[apply_discount_to]"] select')[0].options;
-            $.each(dropdown, function(key, el) {
-                el.label = newOptions[ el.value ];
-                el.text = newOptions[ el.value ];
+            $.each(dropdown, function (key, el) {
+                el.label = newOptions[el.value];
+                el.text = newOptions[el.value];
             });
         },
 
         checkPriceSelector: function () {
             var priceselector = require('uiRegistry').get('sales_rule_form.sales_rule_form.actions.amrulesrule[priceselector]');
 
-            if(priceselector.value() != 0) {
+            if (priceselector.value() != 0) {
                 priceselector.value(0);
             }
         },
@@ -301,26 +301,25 @@ define([
             name.hide();
         },
 
-        renameFieldsToBaseNames:function ()
-        {
+        renameFieldsToBaseNames: function () {
             var discountQty = $('[data-index="discount_qty"] label span');
             discountQty.text($.mage.__("Maximum Qty Discount is Applied To"));
         },
 
-        checkFieldsValue:function () {
+        checkFieldsValue: function () {
             var discountQty = require('uiRegistry').get('sales_rule_form.sales_rule_form.actions.discount_qty'),
                 discountStep = require('uiRegistry').get('sales_rule_form.sales_rule_form.actions.discount_step');
 
-            if(discountQty.value() < 0) {
+            if (discountQty.value() < 0) {
                 discountQty.value(0);
             }
 
-            if(discountStep.value() == 0 || discountStep.value() == '') {
+            if (discountStep.value() == 0 || discountStep.value() == '') {
                 discountStep.value(1);
             }
         },
 
-        changeNoticeValue: function(notice, action) {
+        changeNoticeValue: function (notice, action) {
             var groupnNoticeText = $.mage.__('Please, change the priority of this rule to 0. If more than one rule has priority 0, the discount can be calculated incorrectly </br>'),
                 noticeContent = '',
                 productSetNotice = '<div>' + $.mage.__("WARNING: 'Product set' rules always have the highest prioity. If you have many rules and they work simultaneously, 'Product set' rule is applied before any other one. If you have multiple 'Product set' rules, they will be applied according to their priorities (still before all the other types of rules).") + '</div>';

@@ -10,10 +10,7 @@
     "require": {
         "magento/product-community-edition": "2.3.4",
         "composer/composer": "@alpha",
-        "icubeus/magento2-citykecamatan": "^2.0",
         "icubeus/magento2-advancerate": "^2.0",
-        "icubeus/magento2-veritranspayment": "^2.0",
-        "icubeus/magento2-confirmpayment": "dev-master",
         "icubeus/magento2-trackorder": "dev-master",
         "smile/elasticsuite": "~2.8.0",
         "icubeus/magento2-indonesianlanguage": "dev-master",
@@ -21,15 +18,15 @@
         "ebizmarts/mailchimp-lib": "^3.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
         "msp/recaptcha": "2.2.2",
-        "icubeus/magento2-gosend": "dev-masterootb",
-        "icubeus/magento2-swiftomschannel": "dev-masterdefault",
+		"icubeus/magento2-rapidflow": "^7.2",
+        "icubeus/magento2-swiftomschannel": "^2.1",
         "icubeus/magento2-shippingbase": "dev-master",
-        "icubeus/magento2-shippingshipper": "dev-master",
         "icubeus/magento2-smsgateaway": "dev-master",
         "icubeus/magento2-notification": "dev-master",
         "icubeus/magento2-smstada": "dev-master",
-        "icubeus/magento2-checkout": "dev-masterdefault",
-        "icubeus/magento2-rapidflow": "^7.2"
+        "firebear/importexport-msi": "^1.0",
+        "firebear/importexport": "^3.3",
+        "creativestyle/magesuite": "^5.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
@@ -137,6 +134,14 @@
         "icubeus-smstada": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-smstada.git"
+        },
+        "icubeus-payment": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-payment.git"
+		},
+        "firebear": {
+            "type": "composer",
+            "url": "https://firebearstudio.com/composer/download/package/type/ce/user/a6feb445a1121f4649b17bb00b206081/password/f36495bd3086c1fa33d86d29382e0112/"
         }
     },
     "extra": {

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -23,12 +23,12 @@ class ReadHandler implements ExtensionInterface
     /**
      * @var Rule
      */
-    protected $ruleResource;
+    private $ruleResource;
 
     /**
      * @var MetadataPool
      */
-    protected $metadataPool;
+    private $metadataPool;
 
     /**
      * @var RuleInterfaceFactory
@@ -47,11 +47,14 @@ class ReadHandler implements ExtensionInterface
 
     /**
      * Fill Sales Rule extension attributes with related Special Promotions Rule
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
      * @param \Magento\SalesRule\Model\Rule|\Magento\SalesRule\Model\Data\Rule $entity
      * @param array $arguments
+     *
      * @return \Magento\SalesRule\Model\Rule|\Magento\SalesRule\Model\Data\Rule
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
+     * @throws \Exception
      */
     public function execute($entity, $arguments = [])
     {

@@ -1,71 +1,119 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
-/**
- * Copyright © 2015 Amasty. All rights reserved.
- */
+
 namespace Amasty\Rules\Model\Rule\Action\Discount;
 
+use Magento\Quote\Model\Quote\Address;
+use Magento\Quote\Model\Quote\Item\AbstractItem;
+use Magento\SalesRule\Model\Rule;
+use Magento\SalesRule\Model\Rule\Action\Discount\Data;
+
+/**
+ * Amasty Rule calculation by action.
+ *
+ * @see \Amasty\Rules\Helper\Data::TYPE_CHEAPEST
+ */
 class Thecheapest extends AbstractRule
 {
     const RULE_VERSION = '1.0.0';
     const DEFAULT_SORT_ORDER = 'asc';
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param Rule $rule
+     * @param AbstractItem $item
      * @param float $qty
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
+     *
+     * @return Data
+     * @throws \Exception
      */
     public function calculate($rule, $item, $qty)
     {
-        $this->beforeCalculate($rule, $item, $qty);
+        $this->beforeCalculate($rule);
         $rulePercent = min(100, $rule->getDiscountAmount());
         $discountData = $this->_calculate($rule, $item, $rulePercent);
         $this->afterCalculate($discountData, $rule, $item);
+
         return $discountData;
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param Rule $rule
+     * @param AbstractItem $item
      * @param float $rulePercent
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data Data
+     * @return Data Data
      */
     protected function _calculate($rule, $item, $rulePercent)
     {
-        /** @var \Magento\SalesRule\Model\Rule\Action\Discount\Data $discountData */
+        /** @var Data $discountData */
         $discountData = $this->discountFactory->create();
-        $allItems = $this->getSortedItems($item->getAddress(), $rule, self::DEFAULT_SORT_ORDER);
-        $sliceQty = $this->ruleQuantity(count($allItems), $rule);
-        $allItems = array_slice($allItems, 0, $sliceQty);
-        $itemsId = $this->getItemsId($allItems);
-        if (in_array($item->getAmrulesId(), $itemsId)) {
-            $itemPrice = $this->rulesProductHelper->getItemPrice($item);
-            $baseItemPrice = $this->rulesProductHelper->getItemBasePrice($item);
-            $itemOriginalPrice = $this->rulesProductHelper->getItemOriginalPrice($item);
-            $baseItemOriginalPrice = $this->rulesProductHelper->getItemBaseOriginalPrice($item);
-            $itemQty = $this->getArrayValueCount($itemsId, $item->getAmrulesId());
-            $_rulePct = $rulePercent / 100;
-            $amount = $itemQty * $itemPrice * $_rulePct;
-            $baseOriginalAmount = $itemQty * $baseItemOriginalPrice * $_rulePct;
-            $baseAmount = $itemQty * $baseItemPrice * $_rulePct;
-            $originalAmount = $itemQty * $itemOriginalPrice * $_rulePct;
+        $itemsId = $this->getAllowedItemsIds($item->getAddress(), $rule);
 
-            $discountData->setAmount($amount);
-            $discountData->setBaseAmount($baseAmount);
-            $discountData->setOriginalAmount($originalAmount);
-            $discountData->setBaseOriginalAmount($baseOriginalAmount);
+        if (in_array($item->getAmrulesId(), $itemsId)) {
+            $itemQty = $this->getArrayValueCount($itemsId, $item->getAmrulesId());
+            /** @var Data $discountData */
+            $discountData = $this->calculateDiscount($item, $itemQty, $rulePercent);
 
             if (!$rule->getDiscountQty() || $rule->getDiscountQty() > $itemQty) {
                 $discountPercent = min(100, $item->getDiscountPercent() + $rulePercent);
                 $item->setDiscountPercent($discountPercent);
             }
         }
+
+        return $discountData;
+    }
+
+    /**
+     * @param Address $address
+     * @param Rule $rule
+     *
+     * @return array
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function getAllowedItemsIds($address, $rule)
+    {
+        $allItems = $this->getSortedItems($address, $rule, static::DEFAULT_SORT_ORDER);
+        $sliceQty = $this->ruleQuantity(count($allItems), $rule);
+        $allItems = array_slice($allItems, 0, $sliceQty);
+
+        return $this->getItemsId($allItems);
+    }
+
+    /**
+     * @param AbstractItem $item
+     * @param float $itemQty
+     * @param float $rulePercent
+     *
+     * @return Data
+     *
+     * @SuppressWarnings(PHPMD.LongVariable)
+     */
+
+    private function calculateDiscount($item, $itemQty, $rulePercent)
+    {
+        /** @var Data $discountData */
+        $discountData = $this->discountFactory->create();
+
+        $itemPrice = $this->rulesProductHelper->getItemPrice($item);
+        $baseItemPrice = $this->rulesProductHelper->getItemBasePrice($item);
+        $itemOriginalPrice = $this->rulesProductHelper->getItemOriginalPrice($item);
+        $baseItemOriginalPrice = $this->rulesProductHelper->getItemBaseOriginalPrice($item);
+
+        $rulePct = $rulePercent / 100;
+        $amount = $itemQty * $itemPrice * $rulePct;
+        $baseOriginalAmount = $itemQty * $baseItemOriginalPrice * $rulePct;
+        $baseAmount = $itemQty * $baseItemPrice * $rulePct;
+        $originalAmount = $itemQty * $itemOriginalPrice * $rulePct;
+
+        $discountData->setAmount($amount);
+        $discountData->setBaseAmount($baseAmount);
+        $discountData->setOriginalAmount($originalAmount);
+        $discountData->setBaseOriginalAmount($baseOriginalAmount);
 
         return $discountData;
     }

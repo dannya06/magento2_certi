@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Rules
  */
 
@@ -9,11 +9,15 @@
 namespace Amasty\Rules\Plugin\Cart;
 
 use Magento\Framework\App\ProductMetadataInterface;
-use Magento\Framework\Registry;
+use Amasty\Rules\Model\Registry;
 use Amasty\Rules\Model\DiscountRegistry;
 use Magento\Quote\Api\Data\TotalsExtensionFactory;
 use Amasty\Rules\Model\ConfigModel;
 
+/**
+ * Fix Magento bug on checkout API.
+ * Insert discount breakdown data.
+ */
 class CartTotalRepository
 {
     const REGISTRY_IGNORE_EXTENSION_ATTRIBUTES_KEY = 'amasty_checkout_ignore_extension_attributes';
@@ -62,9 +66,10 @@ class CartTotalRepository
      * @see \Amasty\Rules\Plugin\framework\Api\DataObjectHelperPlugin::beforePopulateWithArray
      *
      * @param \Magento\Quote\Model\Cart\CartTotalRepository $subject
-     * @param int|string                                    $cartId
+     * @param int|string $cartId
      *
      * @return array
+     *
      */
     public function beforeGet(\Magento\Quote\Model\Cart\CartTotalRepository $subject, $cartId)
     {
@@ -77,12 +82,14 @@ class CartTotalRepository
 
     /**
      * Fix Magento bug on checkout API
-     * @see \Amasty\Rules\Plugin\framework\Api\DataObjectHelperPlugin::beforePopulateWithArray
      *
      * @param \Magento\Quote\Model\Cart\CartTotalRepository $subject
-     * @param \Magento\Quote\Model\Cart\Totals              $quoteTotals
+     * @param \Magento\Quote\Model\Cart\Totals $quoteTotals
      *
      * @return \Magento\Quote\Model\Cart\Totals
+     *
+     * @see \Amasty\Rules\Plugin\framework\Api\DataObjectHelperPlugin::beforePopulateWithArray
+     *
      */
     public function afterGet(\Magento\Quote\Model\Cart\CartTotalRepository $subject, $quoteTotals)
     {

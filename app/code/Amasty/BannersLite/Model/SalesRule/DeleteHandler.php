@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_BannersLite
  */
 
@@ -67,7 +67,9 @@ class DeleteHandler implements ExtensionInterface
 
         /** @var \Amasty\BannersLite\Model\Banner $banner */
         foreach ($banners as $banner) {
-            $this->imageProcessor->deleteImage($banner->getBannerImage());
+            if(!is_array($banner)) {
+                $this->imageProcessor->deleteImage($banner->getBannerImage());
+            }
         }
     }
 }

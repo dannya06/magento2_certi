@@ -22,7 +22,7 @@ define([
             return this;
         },
 
-        selectChilds: function(data) {
+        selectChilds: function (data) {
             if (!this.isSelected(data.value)) {
                 this.value.push(data.value);
             }

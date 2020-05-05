@@ -1,13 +1,19 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Base
  */
 
 
 namespace Amasty\Base\Debug;
 
+/**
+ * For Remote Debug
+ * Output is to front
+ * @codeCoverageIgnore
+ * @codingStandardsIgnoreFile
+ */
 class VarDump
 {
     /**
@@ -159,7 +165,7 @@ class VarDump
     public static function isAllowed()
     {
         foreach (self::$addressPath as $path) {
-            if (!empty($_SERVER[$path]) && in_array($_SERVER[$path], self::$amastyIps)) {
+            if (!empty($_SERVER[$path]) && in_array($_SERVER[$path], self::$amastyIps, true)) {
                 return true;
             }
         }
@@ -173,9 +179,9 @@ class VarDump
     public static function amastyExit($code = 0)
     {
         if (self::isAllowed()) {
-            /** @codingStandardsIgnoreStart */
-            exit($code);
-            /** @codingStandardsIgnoreEnd */
+            if (class_exists(\Zend\Console\Response::class)) {
+                (new \Zend\Console\Response())->send();
+            }
         }
     }
 
@@ -185,9 +191,7 @@ class VarDump
     public static function amastyEcho($string)
     {
         if (self::isAllowed()) {
-            /** @codingStandardsIgnoreStart */
-            echo $string;
-            /** @codingStandardsIgnoreEnd */
+            printf('%s', $string);
         }
     }
 }
