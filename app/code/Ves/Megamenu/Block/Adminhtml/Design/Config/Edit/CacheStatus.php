@@ -50,9 +50,9 @@ class CacheStatus implements ButtonProviderInterface
     public function getButtonData()
     {
         if ($this->helper->getConfig('general_settings/enable_cache')) {
-            $title = __('Mega Menu Cache Status: <span style="background: #d0e5a9 none repeat scroll 0 0;border: 1px solid #5b8116;color: #185b00;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;">Enabled</span');
+            $title = __('Mega Menu Cache Status: Enabled');
         } else {
-            $title = __('Mega Menu Cache Status: <span style="background: #f9d4d4 none repeat scroll 0 0;border: 1px solid #e22626;color: #e22626;line-height: 17px;padding: 10px 10px;text-align: center;text-transform: uppercase;">Disabled</span');
+            $title = __('Mega Menu Cache Status: Disabled');
         }
 
         return [
