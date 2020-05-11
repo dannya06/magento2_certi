@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="xtento" sortOrder="9999999" translate="label" class="xtento-tab">>
+        <tab id="xtento" sortOrder="9999999" translate="label" class="xtento-tab">
             <label><![CDATA[XTENTO Extensions]]></label>
         </tab>
         <section id="xtcore" translate="label" sortOrder="1" showInDefault="1" showInStore="0" showInWebsite="0">
