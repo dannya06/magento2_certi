@@ -7,7 +7,7 @@ Instalation:
 
     git clone https://github.com/icubeus/swift.git
 
-    git checkout master_2.3.4
+    git checkout master_id
 	
 	rm -rf composer.* app/code/*
 	
@@ -61,7 +61,7 @@ How to update project that base from SWIFT
     
     git checkout -b master_swift
 
-    git pull swift master_2.3.4
+    git pull swift master_id
     
     composer install
     
@@ -79,7 +79,7 @@ How to update project that clone from SWIFT
 
     git fetch origin
 
-    git checkout master_swift -b swift/master_2.3.3
+    git checkout master_swift -b swift/master_id
     
     composer install
 
