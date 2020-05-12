@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/**
+ * Adding extra field of maximum cashback on sales_rule/promo_quote/edit page
+ * 
+ * @since 1.1.1
+ */
+-->
+
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="actions">
+        <field name="max_cashback" formElement="input" sortOrder="2">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">sales_rule</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Maximum Cashback Amount</label>
+                <dataScope>max_cashback</dataScope>
+            </settings>
+        </field>
+    </fieldset>
+</form>

@@ -37,6 +37,25 @@ class UpgradeSchema implements  UpgradeSchemaInterface
                 );
         }
 
+        if (version_compare($context->getVersion(), '1.1.1') < 0) {
+            // table name
+            $tableName = 'salesrule';
+            // extra column(s)
+            $columns = [
+                'max_cashback' => [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    'nullable' => true,
+                    'comment' => 'Max. Cashback'
+                ]
+            ];
+            // looping each column
+            foreach ($columns as $columnName => $columnValue) {
+                if ($setup->getConnection()->tableColumnExists($tableName, $columnName) === false) {
+                    $setup->getConnection()->addColumn($tableName, $columnName, $columnValue);
+                }
+            }
+        }
+
         $setup->endSetup();
     }
 }
