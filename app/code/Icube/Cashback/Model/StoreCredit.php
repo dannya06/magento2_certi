@@ -48,8 +48,12 @@ class StoreCredit{
 		} catch (\Magento\Framework\Exception\LocalizedException $e) {
 			 
 		}
-		$this->registry->register('isSecureArea', true);
 
+		if ($this->registry->registry('isSecureArea')) {
+			$this->registry->unregister('isSecureArea');
+		}
+
+		$this->registry->register('isSecureArea', true);
 
 		$cashbackList = $this->cashbackFactory->create()->getCollection()->addFieldToFilter('status',array('eq'=>'NEW'));
 		$this->proceedTransaction($cashbackList,false);
