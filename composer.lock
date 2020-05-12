@@ -3924,11 +3924,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "aae9a665de5558539697c9fbdf13607d22cd73d9"
+                "reference": "66c3e7fca24ef929e7a94e76ae371001a0584658"
             },
             "require": {
                 "magento/framework": ">=100.1.0",
@@ -3945,7 +3945,8 @@
                 "icubeus/module-orderexport": "self.version",
                 "icubeus/module-orderstatus": "self.version",
                 "icubeus/module-pickup": "self.version",
-                "icubeus/module-product": "self.version"
+                "icubeus/module-product": "self.version",
+                "icubeus/module-rma": "self.version"
             },
             "type": "magento2-component",
             "autoload": {
@@ -3955,6 +3956,7 @@
                     "src/module-pickup/registration.php",
                     "src/module-inventoryupdate/registration.php",
                     "src/module-product/registration.php",
+                    "src/module-rma/registration.php",
                     "src/module-orderstatus/registration.php",
                     "src/module-giftcard/registration.php"
                 ],
@@ -3964,6 +3966,7 @@
                     "Swiftoms\\Pickup\\": "src/module-pickup",
                     "Swiftoms\\InventoryUpdate\\": "src/module-inventoryupdate",
                     "Swiftoms\\Product\\": "src/module-product",
+                    "Swiftoms\\Rma\\": "src/module-rma",
                     "Swiftoms\\OrderStatus\\": "src/module-orderstatus",
                     "Swiftoms\\Giftcard\\": "src/module-giftcard"
                 }
@@ -3986,7 +3989,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2020-04-23T08:09:54+00:00"
+            "time": "2020-05-08T01:53:11+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
