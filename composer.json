@@ -13,7 +13,6 @@
         "icubeus/magento2-advancerate": "^2.0",
         "icubeus/magento2-trackorder": "dev-master",
         "smile/elasticsuite": "~2.8.0",
-        "icubeus/magento2-indonesianlanguage": "dev-master",
         "magepal/magento2-reindex": "^1.0",
         "ebizmarts/mailchimp-lib": "^3.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
@@ -34,7 +33,8 @@
 		"icubeus/magento2-shippingshipper": "dev-master",
 		"icubeus/magento2-checkout": "dev-masterdefault",
 		"icubeus/magento2-payment": "dev-master",
-        "icubeus/magento2-instantdelivery": "dev-master"
+        "icubeus/magento2-instantdelivery": "dev-master",
+        "icubeus/magento2-queues": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
@@ -154,6 +154,10 @@
         "icubeus-instantdelivery": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-instantdelivery.git"
+		},
+        "icubeus-queues": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-queues.git"
         }
     },
     "extra": {
