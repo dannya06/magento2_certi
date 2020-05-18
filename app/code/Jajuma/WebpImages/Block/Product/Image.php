@@ -17,6 +17,11 @@ class Image extends \Magento\Catalog\Block\Product\Image
         array $data = []
     ) {
         $this->helper = $helper;
+        $data['template']='Jajuma_WebpImages::category/custom.phtml';
+        if (isset($data['template'])) {
+            $this->setTemplate($data['template']);
+            unset($data['template']);
+        }
         parent::__construct($context, $data);
     }
 
@@ -39,5 +44,10 @@ class Image extends \Magento\Catalog\Block\Product\Image
         } else {
             return $hoverImageUrl;
         }
+    }
+
+    public function getOrigImageUrl()
+    {
+        return parent::getImageUrl();
     }
 }
