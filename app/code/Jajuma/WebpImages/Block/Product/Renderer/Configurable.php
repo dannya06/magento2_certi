@@ -50,12 +50,31 @@ class Configurable extends \Magento\Swatches\Block\Product\Renderer\Configurable
 
     protected function getOptionImages()
     {
+
         $result = parent::getOptionImages();
-        
         if (count($result) === 0) {
             return $result;
         }
 
+        $user_agent = $_SERVER['HTTP_USER_AGENT']; 
+        if (stripos($user_agent, 'Chrome') !== false)
+        {
+            return $this->convertToWebP($result);
+        } 
+        elseif (stripos( $user_agent, 'Safari') !== false){
+            return $result;
+        }
+        elseif (stripos( $user_agent, 'Opera') !== false){
+            return $this->convertToWebP($result);
+        }
+        else{
+            return $this->convertToWebP($result);
+        }
+
+        return $result;
+    }
+
+    private function convertToWebP($result){
         foreach ($result as $id => $images) {
             if (count($images) === 0) {
                 continue;
@@ -72,7 +91,6 @@ class Configurable extends \Magento\Swatches\Block\Product\Renderer\Configurable
                 }
             }
         }
-
         return $result;
     }
 }
