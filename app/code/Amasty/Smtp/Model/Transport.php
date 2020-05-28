@@ -146,7 +146,7 @@ class Transport extends \Zend_Mail_Transport_Smtp implements TransportInterface
                 $this->_message
                     ->addTo($testEmail)
                     ->setSubject(__('Amasty SMTP Email Test Message'))
-                    ->setBodyText(__('If you see this e-mail, your configuration is OK.'));
+                    ->setBodyText('If you see this e-mail, your configuration is OK.');
 
                 try {
                     $this->sendMessage();
