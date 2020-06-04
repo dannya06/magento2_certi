@@ -317,7 +317,7 @@ return [
         'MageSuite_DeferJs' => 1,
         'MageSuite_DynamicDirectives' => 1,
         'MageSuite_ElasticSuiteAddons' => 1,
-        'MageSuite_EmailAttachments' => 1,
+        'MageSuite_EmailAttachments' => 0,
         'MageSuite_ExtendedException' => 1,
         'MageSuite_FileUpload' => 1,
         'Icube_Magesuite' => 1,
