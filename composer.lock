@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "13eda7667b7cb9262b97c69309e117e2",
+    "content-hash": "e2a31a1f839dcf76450e11f71d7d924f",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -4303,11 +4303,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "2.0.13",
+            "version": "2.0.15",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "4ccdb3622df1f9bb19c87c4c14b9e4f8967ff3c2"
+                "reference": "d1428a0abf97bcb1d1e16a5d934f35b8ded0dd5e"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -4319,8 +4319,8 @@
             "extra": {
                 "map": [
                     [
-                        "src/lib/internal/veritrans-php",
-                        "lib/internal/veritrans-php"
+                        "src/lib/internal/midtrans-php",
+                        "lib/internal/midtrans-php"
                     ]
                 ]
             },
@@ -4356,7 +4356,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-04-09T04:00:56+00:00"
+            "time": "2020-05-28T03:35:26+00:00"
         },
         {
             "name": "justinrainbow/json-schema",

@@ -27,14 +27,14 @@
         "firebear/importexport": "^3.3",
         "creativestyle/magesuite": "^5.0.0",
 		"icubeus/magento2-citykecamatan": "^2.0",
-		"icubeus/magento2-veritranspayment": "^2.0",
 		"icubeus/magento2-confirmpayment": "dev-master",
 		"icubeus/magento2-indonesianlanguage": "dev-master",
 		"icubeus/magento2-shippingshipper": "dev-master",
 		"icubeus/magento2-checkout": "dev-masterdefault",
 		"icubeus/magento2-payment": "dev-master",
         "icubeus/magento2-instantdelivery": "dev-master",
-        "icubeus/magento2-queues": "dev-master"
+        "icubeus/magento2-queues": "dev-master",
+        "icubeus/magento2-veritranspayment": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
