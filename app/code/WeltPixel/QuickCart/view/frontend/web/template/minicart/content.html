@@ -17,6 +17,21 @@
 
 <div class="block-content block-content-quickcart">
     <div class="quickcart-top">
+        
+        <!-- ko if: getCartParam('summary_count') -->
+            <div class="items-total">
+                <span class="count" if="maxItemsToDisplay < getCartLineItemsCount()" text="maxItemsToDisplay"/>
+                <translate args="'of'" if="maxItemsToDisplay < getCartLineItemsCount()"/>
+                <span class="count"><!-- ko text: getCartParam('summary_count') --><!-- /ko --></span>
+                <!-- ko if: getCartParam('summary_count') == 1 -->
+                <!-- ko i18n: 'item' --><!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: getCartParam('summary_count') > 1 -->
+                <!-- ko i18n: 'items' --><!-- /ko -->
+                <!-- /ko -->
+            </div>
+        <!-- /ko -->
+
         <span class="text"><!-- ko i18n: 'My Cart' --><!-- /ko --></span>
         
         <button type="button"
@@ -31,7 +46,7 @@
     
     <strong class="subtitle"><!-- ko i18n: 'Recently added item(s)' --><!-- /ko --></strong>
     <div data-action="scroll" class="minicart-items-wrapper quickcart-items-wrapper">
-        <ol id="mini-cart" class="minicart-items quickcart-items" data-bind="foreach: { data: getCartParam('items'), as: 'item' }">
+        <ol id="mini-cart" class="minicart-items quickcart-items" data-bind="foreach: { data: getCartItems(), as: 'item' }">
             <!-- ko foreach: $parent.getRegion($parent.getItemRenderer(item.product_type)) -->
             <!-- ko template: {name: getTemplate(), data: item, afterRender: function() {$parents[1].initSidebar()}} --><!-- /ko -->
             <!-- /ko -->
@@ -60,16 +75,6 @@
     <!-- ko if: getCartParam('summary_count') -->
         
         <div class="quickcart-bottom-container">
-    
-            <div class="items-total">
-                <span class="count"><!-- ko text: getCartParam('summary_count') --><!-- /ko --></span>
-                <!-- ko if: getCartParam('summary_count') == 1 -->
-                <!-- ko i18n: 'item' --><!-- /ko -->
-                <!-- /ko -->
-                <!-- ko if: getCartParam('summary_count') > 1 -->
-                <!-- ko i18n: 'items' --><!-- /ko -->
-                <!-- /ko -->
-            </div>
             
             <!-- ko if: getCartParam('possible_onepage_checkout') -->
                 <!-- ko foreach: getRegion('subtotalContainer') -->
