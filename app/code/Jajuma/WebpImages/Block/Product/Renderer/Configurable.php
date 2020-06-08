@@ -55,23 +55,7 @@ class Configurable extends \Magento\Swatches\Block\Product\Renderer\Configurable
         if (count($result) === 0) {
             return $result;
         }
-
-        $user_agent = $_SERVER['HTTP_USER_AGENT']; 
-        if (stripos($user_agent, 'Chrome') !== false)
-        {
-            return $this->convertToWebP($result);
-        } 
-        elseif (stripos( $user_agent, 'Safari') !== false){
-            return $result;
-        }
-        elseif (stripos( $user_agent, 'Opera') !== false){
-            return $this->convertToWebP($result);
-        }
-        else{
-            return $this->convertToWebP($result);
-        }
-
-        return $result;
+        return $this->convertToWebP($result);
     }
 
     private function convertToWebP($result){
