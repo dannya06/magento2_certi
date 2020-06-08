@@ -50,12 +50,15 @@ class Configurable extends \Magento\Swatches\Block\Product\Renderer\Configurable
 
     protected function getOptionImages()
     {
+
         $result = parent::getOptionImages();
-        
         if (count($result) === 0) {
             return $result;
         }
+        return $this->convertToWebP($result);
+    }
 
+    private function convertToWebP($result){
         foreach ($result as $id => $images) {
             if (count($images) === 0) {
                 continue;
@@ -72,7 +75,6 @@ class Configurable extends \Magento\Swatches\Block\Product\Renderer\Configurable
                 }
             }
         }
-
         return $result;
     }
 }
