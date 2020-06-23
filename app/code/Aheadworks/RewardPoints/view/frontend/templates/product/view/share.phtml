@@ -7,7 +7,6 @@
 // @codingStandardsIgnoreFile
 
 /* @var $block \Aheadworks\RewardPoints\Block\Product\View\Share */
-
 $canShow = true;
 if (!$block->isAjax()): ?>
     <div data-aw-reward-points-block-name="<?php /* @noEscape */ echo $block->getNameInLayout() ?>"></div>
@@ -27,12 +26,18 @@ if (!$block->isAjax()): ?>
                 data-mage-init='{"awRewardPointsShare": {"productId": "<?php /* @noEscape */ echo $block->escapeHtml($block->getProductId());?>", "url": "<?php /* @noEscape */ echo $block->escapeHtml($block->getAjaxActionUrl());?>", "network": "twitter"}}'
             <?php endif; ?>
            target="_blank"><?php echo $block->escapeHtml(__('twitter')) ?></a>
-        <a href="<?php echo $block->escapeHtml($block->getGooglePlusShareUrl()); ?>"
-           class="reward-points-share-google-plus"
+        <a href="<?php echo $block->escapeHtml($block->getWhatsappUrl()); ?>"
+           class="reward-points-share-whatsapp"
             <?php if (!$block->isGuest()) : ?>
-                data-mage-init='{"awRewardPointsShare": {"productId": "<?php /* @noEscape */ echo $block->escapeHtml($block->getProductId());?>", "url": "<?php /* @noEscape */ echo $block->escapeHtml($block->getAjaxActionUrl());?>", "network": "google-plus"}}'
+                data-mage-init='{"awRewardPointsShare": {"productId": "<?php /* @noEscape */ echo $block->escapeHtml($block->getProductId());?>", "url": "<?php /* @noEscape */ echo $block->escapeHtml($block->getAjaxActionUrl());?>", "network": "whatsapp"}}'
             <?php endif; ?>
-           target="_blank"><?php echo $block->escapeHtml(__('google-plus')) ?></a>
+           target="_blank"><?php echo $block->escapeHtml(__('whatsapp')) ?></a>
+        <a href="<?php echo $block->escapeHtml($block->getPinterestUrl()); ?>"
+           class="reward-points-share-pinterest"
+            <?php if (!$block->isGuest()) : ?>
+                data-mage-init='{"awRewardPointsShare": {"productId": "<?php /* @noEscape */ echo $block->escapeHtml($block->getProductId());?>", "url": "<?php /* @noEscape */ echo $block->escapeHtml($block->getAjaxActionUrl());?>", "network": "pinterest"}}'
+            <?php endif; ?>
+           target="_blank"><?php echo $block->escapeHtml(__('pinterest')) ?></a>
         <?php if (!$block->isGuest() && $block->getAwardedPointsForShare() > 0) : ?>
             <br />
             <?php /* @noEscape */ echo __('Share this page to earn <strong>%1</strong> point(s) (<strong>%2</strong> discount).',
