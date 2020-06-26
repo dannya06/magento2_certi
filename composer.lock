@@ -3754,7 +3754,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-confirmpayment.git",
-                "reference": "82b5b3f9faf6770957dc0f09244e282fb2447bfb"
+                "reference": "2a48ca89cf642f74cdcb83e8493fcd9aec5ad040"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3775,7 +3775,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2020-06-08T06:22:09+00:00"
+            "time": "2020-06-22T04:52:56+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -3809,7 +3809,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "c94bec1317f414e9f4e8d570e46d1e1485cae9d8"
+                "reference": "ea65f728dcba86288b995144a70e34f98e020661"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -3848,7 +3848,7 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2020-04-16T10:12:14+00:00"
+            "time": "2020-06-24T09:23:28+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
@@ -4309,11 +4309,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "2.0.15",
+            "version": "2.0.18",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "d1428a0abf97bcb1d1e16a5d934f35b8ded0dd5e"
+                "reference": "28e62c4c7ffd069bda0e595d4f0f40a00b51202a"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -4362,7 +4362,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-05-28T03:35:26+00:00"
+            "time": "2020-06-25T03:11:54+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
