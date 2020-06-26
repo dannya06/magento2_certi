@@ -3711,7 +3711,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "a010f39be4c0d86dae6abcd424fe04f1be710e8e"
+                "reference": "e774db9a33a0b73d4591435e59b25b79d7f87c0f"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -3750,7 +3750,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-05-19T07:31:30+00:00"
+            "time": "2020-06-26T02:44:58+00:00"
         },
         {
             "name": "icubeus/magento2-queues",
@@ -3925,24 +3925,27 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "298ae5559017b9ac9fb354392f57f1709df323fd"
+                "reference": "5089e0e0110517f810d7044c1d747bba4f1b0535"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
             },
             "replace": {
                 "icubeus/module-smsotp": "self.version",
-                "icubeus/module-tada": "self.version"
+                "icubeus/module-tada": "self.version",
+                "icubeus/module-telephone": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
                 "files": [
                     "src/module-smsotp/registration.php",
-                    "src/module-tada/registration.php"
+                    "src/module-tada/registration.php",
+                    "src/module-telephone/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\SmsOtp\\": "src/module-smsotp",
-                    "Icube\\Tada\\": "src/module-tada"
+                    "Icube\\Tada\\": "src/module-tada",
+                    "Icube\\Telephone\\": "src/module-telephone"
                 }
             },
             "license": [
@@ -3961,17 +3964,18 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-04-21T08:26:05+00:00"
+            "time": "2020-06-26T02:45:47+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "2.1.3",
+            "version": "2.1.10",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "b2c8e27b9c0a2cea292bfd8e53c523e47c879080"
+                "reference": "f682a0ebcf2239d84a71bc42e4a0a949ec7bdb05"
             },
             "replace": {
+                "icubeus/module-autoinvoice": "self.version",
                 "icubeus/module-autoshipment": "self.version",
                 "icubeus/module-giftcard": "self.version",
                 "icubeus/module-inventoryupdate": "self.version",
@@ -3993,7 +3997,8 @@
                     "src/module-rma/registration.php",
                     "src/module-orderstatus/registration.php",
                     "src/module-giftcard/registration.php",
-                    "src/module-autoshipment/registration.php"
+                    "src/module-autoshipment/registration.php",
+                    "src/module-autoinvoice/registration.php"
                 ],
                 "psr-4": {
                     "Swiftoms\\OmsConnect\\": "src/module-omsconnect",
@@ -4004,7 +4009,8 @@
                     "Swiftoms\\Rma\\": "src/module-rma",
                     "Swiftoms\\OrderStatus\\": "src/module-orderstatus",
                     "Swiftoms\\Giftcard\\": "src/module-giftcard",
-                    "Swiftoms\\Shipment\\": "src/module-autoshipment"
+                    "Swiftoms\\Shipment\\": "src/module-autoshipment",
+                    "Swift\\Invoice\\": "src/module-autoinvoice"
                 }
             },
             "license": [
@@ -4025,7 +4031,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2020-05-15T04:41:25+00:00"
+            "time": "2020-06-08T10:02:27+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
