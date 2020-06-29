@@ -27,6 +27,3 @@ CONCAT('{\"event_type\":\"order_canceled\",\"object_typ\e":\"order\",\"object_id
 FROM sales_order_item soi
 left join sales_order so on soi.`order_id`=so.entity_id
 where soi.`product_type`="simple" and so.`status`="canceled";
-
-
-select sku,sum(quantity) from inventory_reservation group by sku;
