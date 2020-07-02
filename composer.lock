@@ -3685,7 +3685,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "eb3779bdfe291d1419f9f018637f3fbd2acbc9c9"
+                "reference": "a5b7505ae969e4f70c6e1a02ddd72aa766ede2e4"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -3717,15 +3717,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-05-15T05:09:33+00:00"
+            "time": "2020-07-02T03:31:33+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "2.0.9",
+            "version": "2.0.10",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "18d762f026fc492cee6ec3b9d76bc103bd9e8272"
+                "reference": "645715f5c08a55fb7f6a6d42c7aa457ab7272120"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3746,7 +3746,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2020-04-29T09:41:46+00:00"
+            "time": "2020-07-02T03:35:08+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -3809,7 +3809,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "ea65f728dcba86288b995144a70e34f98e020661"
+                "reference": "ea0725e43c3d8abacfbe6ae3a059a84184e59e73"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -3848,7 +3848,7 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2020-06-24T09:23:28+00:00"
+            "time": "2020-07-02T05:06:31+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
@@ -21706,6 +21706,5 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "platform-dev": []
 }
