@@ -42,7 +42,7 @@
             <parameter name="template" xsi:type="select" required="true" visible="true">
                 <label translate="true">Template</label>
                 <options>
-                    <option name="default" value="Icube_WidgetQty::product/widget/new/content/new_grid.phtml" selected="true">
+                    <option name="default" value="Icube_WidgetQty::new_grid.phtml" selected="true">
                         <label translate="true">New Products Grid Template</label>
                     </option>
                 </options>
