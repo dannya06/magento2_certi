@@ -12,14 +12,21 @@ printf "=====================================\n"
 printf "=====================================\n"
 printf "Deployment in pre code folder\n"
 printf "=====================================\n"
-
+rm -rf $site_dir$releases/pre_code && mkdir $site_dir$releases/pre_code
+cp -R $site_dir$current/. $site_dir$releases/pre_code
 rm -rf $site_dir$releases/pre_code/var/cache $site_dir$releases/pre_code/generated s$site_dir$releases/pre_code/var/view_preprocessed/* $site_dir$releases/pre_code/pub/static
 mkdir $site_dir$releases/pre_code/generated && mkdir $site_dir$releases/pre_code/pub/static
 chmod -R 777 $site_dir$releases/pre_code/generated
 chmod -R 777 $site_dir$releases/pre_code/pub/static
+
+cd $site_dir$releases/pre_code && git fetch origin
+
+printf "=====================================\n"
+printf "get latest code from "$1" branch\n"
+printf "=====================================\n"
+cd $site_dir$releases/pre_code && git checkout -b $release_version origin/$1
 cd $site_dir$releases/pre_code && composer install
 php $site_dir$releases/pre_code/bin/magento setup:di:compile
-php $site_dir$releases/pre_code/bin/magento cache:flush
 php $site_dir$releases/pre_code/bin/magento weltpixel:less:generate
 php $site_dir$releases/pre_code/bin/magento setup:static-content:deploy -f en_US id_ID
 
@@ -44,7 +51,7 @@ printf "=====================================\n"
 cd $site_dir$current && git fetch origin
 
 printf "=====================================\n"
-printf "get latest code from " $1 " branch\n"
+printf "get latest code from "$1" branch\n"
 printf "=====================================\n"
 cd $site_dir$current && git checkout -b $release_version origin/$1
 
