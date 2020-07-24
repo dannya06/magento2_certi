@@ -3685,7 +3685,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "a5b7505ae969e4f70c6e1a02ddd72aa766ede2e4"
+                "reference": "49faa31279e677142b9cd5a7645edeff18fda930"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -3717,7 +3717,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-07-02T03:31:33+00:00"
+            "time": "2020-07-23T05:12:38+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -4086,7 +4086,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "8affb47946f22884c79621fc2595ffb2b2fc8def"
+                "reference": "b6517939b2cf3945f07ce5430b476c3554f889ae"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -4119,7 +4119,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-07-07T09:26:43+00:00"
+            "time": "2020-07-23T05:12:01+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
