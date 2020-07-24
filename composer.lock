@@ -3754,7 +3754,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-confirmpayment.git",
-                "reference": "2a48ca89cf642f74cdcb83e8493fcd9aec5ad040"
+                "reference": "87a0a8397dcbc070d932b137ecbe243a0964b7e5"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3775,7 +3775,7 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2020-06-22T04:52:56+00:00"
+            "time": "2020-07-24T04:01:16+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
