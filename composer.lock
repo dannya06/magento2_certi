@@ -3809,7 +3809,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "ea0725e43c3d8abacfbe6ae3a059a84184e59e73"
+                "reference": "642f63d9ce3547646c1499fcd34bafcb45b2738b"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -3848,7 +3848,7 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2020-07-02T05:06:31+00:00"
+            "time": "2020-07-07T03:22:34+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
