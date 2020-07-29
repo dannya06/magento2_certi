@@ -6,6 +6,7 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Mail\Template\TransportBuilder;
+use Magento\Framework\Mail\Template\SenderResolverInterface;
 
 class OrderCancellationEmail implements ObserverInterface
 {
@@ -13,15 +14,19 @@ class OrderCancellationEmail implements ObserverInterface
     const XML_TEMPLATE = 'sales_email/order_cancel/template';
     const XML_IDENTITY = 'sales_email/order_cancel/identity';
     const XML_COPY_TO = 'sales_email/order_cancel/copy_to';
+    const XML_COPY_METHOD = 'sales_email/order_cancel/copy_method';
 
     protected $_transportBuilder;
+    protected $_senderResolver;
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        TransportBuilder $transportBuilder
+        TransportBuilder $transportBuilder,
+        SenderResolverInterface $senderResolver
     ){
         $this->_scopeConfig = $scopeConfig;
         $this->_transportBuilder = $transportBuilder;
+        $this->_senderResolver = $senderResolver;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -30,6 +35,8 @@ class OrderCancellationEmail implements ObserverInterface
         $template = $this->_scopeConfig->getValue(self::XML_TEMPLATE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $sender = $this->_scopeConfig->getValue(self::XML_IDENTITY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $copyTo = $this->_scopeConfig->getValue(self::XML_COPY_TO, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $copyMethod = $this->_scopeConfig->getValue(self::XML_COPY_METHOD, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $sendFrom = $this->_senderResolver->resolve($sender);
 
         if ($enabled == 1) {
             $order = $observer->getData('order');
@@ -47,12 +54,10 @@ class OrderCancellationEmail implements ObserverInterface
                     'customername' => $order->getCustomerName(),
                     'email_content' => 'Your order #'.$order->getIncrementId().' has been canceled.',
                 ])
-                ->setFrom(array($sender))
-                if (!empty($copyTo)) {
-                    ->addTo(array($order->getCustomerEmail().','.$copyTo))
-                } else {
-                    ->addTo(array($order->getCustomerEmail()))
-                }
+                ->setFrom($sendFrom)
+                ->addTo(array($order->getCustomerEmail()))
+                ->addTo(array($copyTo))
+                ->addBcc(array($copyTo))
                 ->getTransport();
             $transport->sendMessage();
         }
