@@ -1,0 +1,40 @@
+<div class="payment-grouping  ori-payment-grouping">
+    <div class="step-title" data-role="title">
+        <span data-bind="i18n: 'Payment Method'"></span>
+        <button type="button" class="action" data-trigger="trigger" style="float: right;">
+            <span data-bind="i18n: 'How to pay'"></span>
+        </button>
+    </div>
+    
+    <a href="javascript:void(0)" class="pg-banktransfer _active" data-bind="click: showPaymentMethod.bind($data,'pg-banktransfer'), css: {'_available': getCode($element)}">
+        <i class="fa fa-money"></i><span data-bind="i18n: 'Bank Transfer'"></span></a>
+    <span id="pg-banktransfer"></span>
+    <a href="javascript:void(0)" class="pg-installment" data-bind="click: showPaymentMethod.bind($data,'pg-installment'), css: {'_available': getCode($element)}">
+        <i class="fa fa-credit-card-alt"></i><span data-bind="i18n: 'Installment'"></span></a>
+    <span id="pg-installment"></span>
+    <a href="javascript:void(0)" class="pg-creditcard" data-bind="click: showPaymentMethod.bind($data,'pg-creditcard'), css: {'_available': getCode($element)}">
+        <i class="fa fa-credit-card"></i><span data-bind="i18n: 'Credit Card'"></span></a>
+    <span id="pg-creditcard"></span>
+    <a href="javascript:void(0)" class="pg-internetpayment" data-bind="click: showPaymentMethod.bind($data,'pg-internetpayment'), css: {'_available': getCode($element)}">
+        <i class="fa fa-tv"></i><span data-bind="i18n: 'Online Payment'"></span></a>
+    <span id="pg-internetpayment"></span>
+    <a href="javascript:void(0)" class="pg-virtualaccount" data-bind="click: showPaymentMethod.bind($data,'pg-virtualaccount'), css: {'_available': getCode($element)}">
+        <i class="fa fa-address-card-o"></i><span data-bind="i18n: 'Virtual Account'"></span></a>
+    <span id="pg-virtualaccount"></span>
+    <a href="javascript:void(0)" class="pg-others" data-bind="click: showPaymentMethod.bind($data,'pg-others'), css: {'_available': getCode($element)}">
+        <i class="fa fa fa-shopping-bag"></i><span data-bind="i18n: 'Others'"></span></a>
+    <span id="pg-others"></span>
+</div>
+
+<div data-bind="mageInit: {
+    'Magento_Ui/js/modal/modal':{
+        'type': 'popup',
+        'title': 'How to pay',
+        'trigger': '[data-trigger=trigger]',
+        'responsive': true,
+        'innerScroll': true,
+    }}">
+    <div class="content">
+        <div data-bind="html: window.checkoutConfig.cms_block_howtopay"></div>
+    </div>
+</div>
