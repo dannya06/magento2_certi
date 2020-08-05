@@ -39,9 +39,6 @@
         "friendsofphp/php-cs-fixer": "~2.10.1",
         "magento/magento-coding-standard": "^5.0"
     },
-    "config": {
-        "use-include-path": true
-    },
     "autoload": {
         "psr-4": {
             "Magento\\Framework\\": "lib/internal/Magento/Framework/",
