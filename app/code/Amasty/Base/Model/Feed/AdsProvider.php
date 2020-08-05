@@ -6,111 +6,32 @@
  */
 
 
-namespace Amasty\Base\Model;
+namespace Amasty\Base\Model\Feed;
 
-use Amasty\Base\Helper\Module;
-use Amasty\Base\Model\Ad\Offline as AdOfflineProvider;
+use Amasty\Base\Model\Feed\FeedTypes\Ads;
 use Magento\Framework\Module\FullModuleList;
-use Magento\Framework\Config\CacheInterface;
 
 /**
  * Class AdsProvider provide ads data
  */
 class AdsProvider
 {
-    const CSV_CACHE_ID = 'amasty_base_csv';
-
-    /**
-     * @var FeedContent
-     */
-    private $feedContent;
-
-    /**
-     * @var Parser
-     */
-    private $parser;
-
-    /**
-     * @var CacheInterface
-     */
-    private $cache;
-
-    /**
-     * @var Serializer
-     */
-    private $serializer;
-
     /**
      * @var FullModuleList
      */
     private $moduleList;
 
     /**
-     * @var Config
+     * @var Ads
      */
-    private $config;
-
-    /**
-     * @var AdOfflineProvider
-     */
-    private $adOffline;
-
-    /**
-     * @var Module
-     */
-    private $moduleHelper;
+    private $adsFeed;
 
     public function __construct(
-        FeedContent $feedContent,
-        Parser $parser,
-        CacheInterface $cache,
-        Serializer $serializer,
         FullModuleList $moduleList,
-        Config $config,
-        AdOfflineProvider $adOffline,
-        Module $moduleHelper
+        Ads $adsFeed
     ) {
-        $this->feedContent = $feedContent;
-        $this->parser = $parser;
-        $this->cache = $cache;
-        $this->serializer = $serializer;
         $this->moduleList = $moduleList;
-        $this->config = $config;
-        $this->adOffline = $adOffline;
-        $this->moduleHelper = $moduleHelper;
-    }
-
-    /**
-     * @return array
-     */
-    public function execute()
-    {
-       # $this->cache->remove(self::CSV_CACHE_ID);
-        if ($cache = $this->cache->load(self::CSV_CACHE_ID)) {
-            $result = $this->serializer->unserialize($cache);
-        } else {
-            $result = [];
-
-            if (!$this->moduleHelper->isOriginMarketplace()) {
-                $content = $this->feedContent->getFeedContent($this->feedContent->getFeedUrl(Feed::URN_ADS, true));
-                $result = $this->parser->parseCsv($content);
-            }
-
-            if (!$result) {
-                $result = $this->adOffline->getOfflineData($this->moduleHelper->isOriginMarketplace());
-            }
-
-            $result = $this->parser->trimCsvData($result, ['upsell_module_code', 'module_code']);
-
-            $this->cache->save(
-                $this->serializer->serialize($result),
-                self::CSV_CACHE_ID,
-                [self::CSV_CACHE_ID],
-                (int)$this->config->getFrequencyInSec()
-            );
-        }
-
-        return $result;
+        $this->adsFeed = $adsFeed;
     }
 
     /**
@@ -120,20 +41,9 @@ class AdsProvider
      */
     public function getDisplayAdvertise($moduleCode)
     {
-        $adsData = $this->execute();
-        $displayedAdvertise = $this->getActiveAdvertise($adsData, $moduleCode);
+        $adsData = $this->adsFeed->execute();
 
-        return $displayedAdvertise;
-    }
-
-    /**
-     * @param string $link
-     *
-     * @return bool
-     */
-    public function validateLink($link)
-    {
-        return $this->moduleHelper->validateLink($link);
+        return $this->getActiveAdvertise($adsData, $moduleCode);
     }
 
     /**
@@ -167,7 +77,6 @@ class AdsProvider
             if (isset($advertise['upsell_module_code']) && !empty($advertise['upsell_module_code'])
                 && !$this->moduleList->has($advertise['upsell_module_code'])
             ) {
-
                 return $advertise;
             }
         }

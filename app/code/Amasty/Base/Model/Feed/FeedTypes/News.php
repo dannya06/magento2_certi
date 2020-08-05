@@ -5,77 +5,55 @@
  * @package Amasty_Base
  */
 
+declare(strict_types=1);
 
-namespace Amasty\Base\Model;
+namespace Amasty\Base\Model\Feed\FeedTypes;
 
-use Amasty\Base\Helper\Module;
 use Amasty\Base\Model\AdminNotification\Model\ResourceModel\Inbox\Collection\ExistsFactory;
-use Amasty\Base\Model\AdminNotification\Model\ResourceModel\Inbox\Collection\Expired;
-use Amasty\Base\Model\AdminNotification\Model\ResourceModel\Inbox\Collection\ExpiredFactory;
+use Amasty\Base\Model\Config;
+use Amasty\Base\Model\Feed\FeedContentProvider;
+use Amasty\Base\Model\ModuleInfoProvider;
+use Amasty\Base\Model\Parser;
 use Amasty\Base\Model\Source\NotificationType;
+use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\DataObjectFactory;
 use Magento\Framework\Escaper;
+use Magento\Framework\Module\ModuleListInterface;
 use Magento\Framework\Notification\MessageInterface;
-use Magento\Store\Model\ScopeInterface;
 
-/**
- * Class Feed for get information
- */
-class Feed
+class News
 {
-    /**
-     * Path to NEWS
-     */
-    const URN_NEWS = 'amasty.com/feed-news-segments.xml';//do not use https:// or http
+    protected $amastyModules = [];
 
     /**
-     * Path to ADS
-     */
-    const URN_ADS = 'amasty.com/media/marketing/upsells.csv';
-
-    /**
-     * @var array
-     */
-    private $amastyModules = [];
-
-    /**
-     * @var \Amasty\Base\Model\Config
+     * @var Config
      */
     private $config;
 
     /**
-     * @var \Magento\Framework\App\ProductMetadataInterface
+     * @var FeedContentProvider
+     */
+    private $feedContentProvider;
+
+    /**
+     * @var Parser
+     */
+    private $parser;
+
+    /**
+     * @var ProductMetadataInterface
      */
     private $productMetadata;
 
     /**
-     * @var \Magento\AdminNotification\Model\InboxFactory
-     */
-    private $inboxFactory;
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * @var ExpiredFactory
-     */
-    private $expiredFactory;
-
-    /**
-     * @var \Magento\Framework\Module\ModuleListInterface
+     * @var ModuleListInterface
      */
     private $moduleList;
 
     /**
-     * @var AdminNotification\Model\ResourceModel\Inbox\Collection\ExistsFactory
+     * @var ExistsFactory
      */
     private $inboxExistsFactory;
-
-    /**
-     * @var Module
-     */
-    private $moduleHelper;
 
     /**
      * @var Escaper
@@ -83,88 +61,73 @@ class Feed
     private $escaper;
 
     /**
-     * @var FeedContent
+     * @var DataObjectFactory
      */
-    private $feedContent;
+    private $dataObjectFactory;
 
     /**
-     * @var Parser
+     * @var ModuleInfoProvider
      */
-    private $parser;
+    private $moduleInfoProvider;
 
     public function __construct(
-        \Amasty\Base\Model\Config $config,
-        \Magento\AdminNotification\Model\InboxFactory $inboxFactory,
-        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        ExpiredFactory $expiredFactory,
-        \Magento\Framework\Module\ModuleListInterface $moduleList,
+        Config $config,
+        FeedContentProvider $feedContentProvider,
+        Parser $parser,
+        ProductMetadataInterface $productMetadata,
+        ModuleListInterface $moduleList,
         ExistsFactory $inboxExistsFactory,
-        Module $moduleHelper,
         Escaper $escaper,
-        FeedContent $feedContent,
-        Parser $parser
+        DataObjectFactory $dataObjectFactory,
+        ModuleInfoProvider $moduleInfoProvider
     ) {
         $this->config = $config;
+        $this->feedContentProvider = $feedContentProvider;
+        $this->parser = $parser;
         $this->productMetadata = $productMetadata;
-        $this->inboxFactory = $inboxFactory;
-        $this->scopeConfig = $scopeConfig;
-        $this->expiredFactory = $expiredFactory;
         $this->moduleList = $moduleList;
         $this->inboxExistsFactory = $inboxExistsFactory;
-        $this->moduleHelper = $moduleHelper;
         $this->escaper = $escaper;
-        $this->feedContent = $feedContent;
-        $this->parser = $parser;
+        $this->dataObjectFactory = $dataObjectFactory;
+        $this->moduleInfoProvider = $moduleInfoProvider;
     }
 
     /**
-     * @return $this
+     * @return array
      */
-    public function checkUpdate()
+    public function execute(): array
     {
-        if ($this->config->getFrequencyInSec() + $this->config->getLastUpdate() > time()) {
-            return $this;
-        }
+        $feedData = [];
+        $allowedNotifications = $this->config->getEnabledNotificationTypes();
 
-        $allowedNotifications = $this->getAllowedTypes();
         if (empty($allowedNotifications) || in_array(NotificationType::UNSUBSCRIBE_ALL, $allowedNotifications)) {
-            return $this;
+            return $feedData;
         }
-
-        $feedData = null;
         $maxPriority = 0;
 
-        $content = $this->feedContent->getFeedContent($this->feedContent->getFeedUrl(self::URN_NEWS));
+        $content = $this->feedContentProvider->getFeedContent(
+            $this->feedContentProvider->getFeedUrl(FeedContentProvider::URN_NEWS)
+        );
         $feedXml = $this->parser->parseXml($content);
 
-        if ($feedXml && $feedXml->channel && $feedXml->channel->item) {
+        if (isset($feedXml->channel->item)) {
             $installDate = $this->config->getFirstModuleRun();
             foreach ($feedXml->channel->item as $item) {
                 if ((int)$item->version === 1 // for magento One
                     || ((string)$item->edition && (string)$item->edition !== $this->getCurrentEdition())
-                    || !array_intersect($this->convertToArray($item->type), $allowedNotifications)
+                    || !array_intersect($this->convertToArray($item->type ?? ''), $allowedNotifications)
                 ) {
                     continue;
                 }
+                $priority = $item->priority ?? 1;
 
-                $priority = (int)$item->priority ?: 1;
-                if ($priority <= $maxPriority
-                    || !$this->validateByExtension((string)$item->extension)
-                    || !$this->validateByAmastyCount($item->amasty_module_qty)
-                    || !$this->validateByNotInstalled((string)$item->amasty_module_not)
-                    || !$this->validateByExtension((string)$item->third_party_modules, true)
-                    || !$this->validateByDomainZone((string)$item->domain_zone)
-                    || $this->isItemExists($item)
-                ) {
+                if ($priority <= $maxPriority || !$this->isItemValid($item)) {
                     continue;
                 }
-
                 $date = strtotime((string)$item->pubDate);
-                $expired = (string)$item->expirationDate ? strtotime((string)$item->expirationDate) : null;
-                if ($installDate <= $date
-                    && (!$expired || $expired > gmdate('U'))
-                ) {
+                $expired = isset($item->expirationDate) ? strtotime((string)$item->expirationDate) : null;
+
+                if ($installDate <= $date && (!$expired || $expired > gmdate('U'))) {
                     $maxPriority = $priority;
                     $expired = $expired ? date('Y-m-d H:i:s', $expired) : null;
 
@@ -180,26 +143,9 @@ class Feed
                     ];
                 }
             }
-
-            if ($feedData) {
-                /** @var \Magento\AdminNotification\Model\Inbox $inbox */
-                $inbox = $this->inboxFactory->create();
-                $inbox->parse([$feedData]);
-            }
         }
-        $this->config->setLastUpdate();
 
-        return $this;
-    }
-
-    /**
-     * @param $value
-     *
-     * @return array
-     */
-    private function convertToArray($value)
-    {
-        return explode(',', (string)$value);
+        return $feedData;
     }
 
     /**
@@ -207,48 +153,32 @@ class Feed
      *
      * @return bool
      */
-    private function isItemExists(\SimpleXMLElement $item)
+    protected function isItemValid(\SimpleXMLElement $item): bool
     {
-        return $this->inboxExistsFactory->create()->execute($item);
+        return $this->validateByExtension((string)$item->extension)
+            && $this->validateByAmastyCount($item->amasty_module_qty)
+            && $this->validateByNotInstalled((string)$item->amasty_module_not)
+            && $this->validateByExtension((string)$item->third_party_modules, true)
+            && $this->validateByDomainZone((string)$item->domain_zone)
+            && !$this->isItemExists($item);
     }
 
     /**
      * @return string
      */
-    protected function getCurrentEdition()
+    protected function getCurrentEdition(): string
     {
         return $this->productMetadata->getEdition() === 'Community' ? 'ce' : 'ee';
     }
 
     /**
-     * @return $this
-     */
-    public function removeExpiredItems()
-    {
-        if ($this->config->getLastRemovement() + Config::REMOVE_EXPIRED_FREQUENCY > time()) {
-            return $this;
-        }
-
-        /** @var Expired $collection */
-        $collection = $this->expiredFactory->create();
-        foreach ($collection as $model) {
-            $model->setIsRemove(1)->save();
-        }
-
-        $this->config->setLastRemovement();
-
-        return $this;
-    }
-
-    /**
+     * @param mixed $value
+     *
      * @return array
      */
-    private function getAllowedTypes()
+    private function convertToArray($value): array
     {
-        $allowedNotifications = $this->getModuleConfig('notifications/type');
-        $allowedNotifications = explode(',', $allowedNotifications);
-
-        return $allowedNotifications;
+        return explode(',', (string)$value);
     }
 
     /**
@@ -256,32 +186,26 @@ class Feed
      *
      * @return string
      */
-    private function convertString(\SimpleXMLElement $data)
+    private function convertString(\SimpleXMLElement $data): string
     {
-        $data = $this->escaper->escapeHtml((string)$data);
-
-        return $data;
+        return $this->escaper->escapeHtml((string)$data);
     }
 
     /**
-     * @param string $path
-     * @param int    $storeId
-     *
-     * @return mixed
+     * @return string[]
      */
-    private function getModuleConfig($path, $storeId = null)
+    private function getAllExtensions(): array
     {
-        return $this->scopeConfig->getValue(
-            'amasty_base/' . $path,
-            ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
+        $modules = $this->moduleList->getNames();
+        $dispatchResult = $this->dataObjectFactory->create()->setData($modules);
+
+        return $dispatchResult->toArray();
     }
 
     /**
-     * @return array|string[]
+     * @return string[]
      */
-    private function getInstalledAmastyExtensions()
+    private function getInstalledAmastyExtensions(): array
     {
         if (!$this->amastyModules) {
             $modules = $this->moduleList->getNames();
@@ -302,29 +226,16 @@ class Feed
     }
 
     /**
-     * @return array|string[]
-     */
-    private function getAllExtensions()
-    {
-        $modules = $this->moduleList->getNames();
-
-        $dispatchResult = new \Magento\Framework\DataObject($modules);
-        $modules = $dispatchResult->toArray();
-
-        return $modules;
-    }
-
-    /**
      * @param string $extensions
-     * @param bool   $allModules
+     * @param bool $allModules
      *
      * @return bool
      */
-    private function validateByExtension($extensions, $allModules = false)
+    private function validateByExtension(string $extensions, bool $allModules = false): bool
     {
         if ($extensions) {
             $result = false;
-            $arrExtensions = $this->validateExtensionValue($extensions);
+            $arrExtensions = $this->getExtensionValue($extensions);
 
             if ($arrExtensions) {
                 $installedModules = $allModules ? $this->getAllExtensions() : $this->getInstalledAmastyExtensions();
@@ -345,11 +256,11 @@ class Feed
      *
      * @return bool
      */
-    private function validateByNotInstalled($extensions)
+    private function validateByNotInstalled(string $extensions): bool
     {
         if ($extensions) {
             $result = false;
-            $arrExtensions = $this->validateExtensionValue($extensions);
+            $arrExtensions = $this->getExtensionValue($extensions);
 
             if ($arrExtensions) {
                 $installedModules = $this->getInstalledAmastyExtensions();
@@ -370,7 +281,7 @@ class Feed
      *
      * @return array
      */
-    private function validateExtensionValue($extensions)
+    private function getExtensionValue(string $extensions): array
     {
         $arrExtensions = explode(',', $extensions);
         $arrExtensions = array_filter(
@@ -395,7 +306,7 @@ class Feed
      *
      * @return bool
      */
-    private function validateByAmastyCount($counts)
+    private function validateByAmastyCount($counts): bool
     {
         $result = true;
 
@@ -436,12 +347,12 @@ class Feed
      *
      * @return bool
      */
-    private function validateByDomainZone($zones)
+    private function validateByDomainZone(string $zones): bool
     {
         $result = true;
         if ($zones) {
             $arrZones = $this->convertToArray($zones);
-            $currentZone = $this->feedContent->getDomainZone();
+            $currentZone = $this->feedContentProvider->getDomainZone();
 
             if (!in_array($currentZone, $arrZones, true)) {
                 $result = false;
@@ -452,17 +363,17 @@ class Feed
     }
 
     /**
-     * @param $amastyModules
+     * @param string[] $amastyModules
      *
      * @return array
      */
-    private function getDependModules($amastyModules)
+    private function getDependModules(array $amastyModules): array
     {
         $depend = [];
         $result = [];
         $dataName = [];
         foreach ($amastyModules as $module) {
-            $data = $this->moduleHelper->getModuleInfo($module);
+            $data = $this->moduleInfoProvider->getModuleInfo($module);
             if (isset($data['name'])) {
                 $dataName[$data['name']] = $module;
             }
@@ -484,5 +395,15 @@ class Feed
         }
 
         return $result;
+    }
+
+    /**
+     * @param \SimpleXMLElement $item
+     *
+     * @return bool
+     */
+    private function isItemExists(\SimpleXMLElement $item): bool
+    {
+        return $this->inboxExistsFactory->create()->execute($item);
     }
 }

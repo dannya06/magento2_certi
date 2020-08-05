@@ -66,13 +66,9 @@ class BannerLabel extends Field
                 . ' For more options to customize your label message, use our Product Label extension which can be '
                 . "<a href= ". $url ." target='_blank'>configured here</a>";
         } else {
-            $url = $this->moduleHelper->isOriginMarketplace()
-                ? self::MARKETPLACE_URL
-                : self::LABEL_GUIDE_URL;
-
             $config['additionalInfo'] = 'Label will be rendered at the upper left corner of the product photo. '
                 . 'For more options to customize your label messages, consider using our Product Label extension. '
-                . "<a href= ". $url ." target='_blank'>Click here for more details</a>";
+                . "<a href= ". self::MARKETPLACE_URL ." target='_blank'>Click here for more details</a>";
         }
 
         $this->setData('config', $config);

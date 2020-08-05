@@ -6,7 +6,7 @@
  */
 
 
-namespace Amasty\Base\Model;
+namespace Amasty\Base\Model\Feed;
 
 use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\HTTP\Adapter\CurlFactory;
@@ -14,10 +14,25 @@ use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Class FeedContent for read file content by url
+ * Class FeedContentProvider for reading file content by url
  */
-class FeedContent
+class FeedContentProvider
 {
+    /**
+     * Path to NEWS
+     */
+    const URN_NEWS = 'amasty.com/feed-news-segments.xml';//do not use https:// or http
+
+    /**
+     * Path to ADS
+     */
+    const URN_ADS = 'amasty.com/media/marketing/upsells.csv';
+
+    /**
+     * Path to EXTENSIONS
+     */
+    const URN_EXTENSIONS = 'amasty.com/feed-extensions-m2.xml';
+
     /**
      * @var CurlFactory
      */
@@ -71,14 +86,13 @@ class FeedContent
         if ($result === false || $result === '') {
             return false;
         }
-
         $result = preg_split('/^\r?$/m', $result, 2);
         preg_match("/(?i)(\W|^)(Status: 404 File not found)(\W|$)/", $result[0], $notFoundFile);
+
         if ($notFoundFile) {
             return false;
         }
         $result = trim($result[1]);
-
         $curlObject->close();
 
         return $result;

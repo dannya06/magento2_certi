@@ -6,7 +6,7 @@
  */
 
 
-namespace Amasty\Base\Model\Ad;
+namespace Amasty\Base\Model\Feed\FeedTypes\Ad;
 
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;

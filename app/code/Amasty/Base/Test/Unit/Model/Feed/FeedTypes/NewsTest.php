@@ -6,55 +6,53 @@
  */
 
 
-namespace Amasty\Base\Test\Unit\Model;
+namespace Amasty\Base\Test\Unit\Model\Feed\FeedTypes;
 
 use Amasty\Base\Helper\Module;
-use Amasty\Base\Model\Feed;
+use Amasty\Base\Model\Feed\FeedTypes\News;
+use Amasty\Base\Model\ModuleInfoProvider;
 use Amasty\Base\Test\Unit\Traits;
-use Magento\Framework\HTTP\Adapter\Curl;
-use PHPUnit\Framework\MockObject\MockObject;
+use Magento\Framework\DataObjectFactory;
 
-/**
- * Class FeedTest
- *
- * @see Feed
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * phpcs:ignoreFile
- */
-class FeedTest extends \PHPUnit\Framework\TestCase
+class NewsTest extends \PHPUnit\Framework\TestCase
 {
     use Traits\ObjectManagerTrait;
     use Traits\ReflectionTrait;
 
     /**
-     * @var Feed
+     * @var News
      */
     private $model;
 
     /**
      * @var Module
      */
-    private $moduleHelper;
+    private $moduleInfoProvider;
 
     protected function setUp()
     {
         $moduleList = $this->createMock(\Magento\Framework\Module\ModuleListInterface::class);
-        $this->moduleHelper = $this->createMock(Module::class);
+        $this->moduleInfoProvider = $this->createMock(ModuleInfoProvider::class);
 
         $moduleList->expects($this->any())->method('getNames')->willReturn(['Magento_Catalog', 'Amasty_Seo']);
 
+        $dataObjectFactory = $this->createPartialMock(DataObjectFactory::class, ['create']);
+        $dataObjectFactory->expects($this->any())->method('create')->willReturn(
+            new \Magento\Framework\DataObject()
+        );
+
         $this->model = $this->getObjectManager()->getObject(
-            Feed::class,
+            News::class,
             [
                 'moduleList' => $moduleList,
-                'moduleHelper' => $this->moduleHelper,
+                'moduleInfoProvider' => $this->moduleInfoProvider,
+                'dataObjectFactory' => $dataObjectFactory
             ]
         );
     }
 
     /**
-     * @covers Feed::getInstalledAmastyExtensions
+     * @covers NewsProcessor::getInstalledAmastyExtensions
      */
     public function testGetInstalledAmastyExtensions()
     {
@@ -62,7 +60,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Feed::validateByExtension
+     * @covers NewsProcessor::validateByExtension
      * @dataProvider validateByExtensionDataProvider
      */
     public function testValidateByExtension($extensions, $result)
@@ -84,7 +82,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Feed::validateByNotInstalled
+     * @covers NewsProcessor::validateByNotInstalled
      * @dataProvider validateByNotInstalledDataProvider
      */
     public function testValidateByNotInstalled($extensions, $result)
@@ -106,11 +104,11 @@ class FeedTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Feed::getDependModules
+     * @covers NewsProcessor::getDependModules
      */
     public function testGetDependModules()
     {
-        $this->moduleHelper->expects($this->any())->method('getModuleInfo')
+        $this->moduleInfoProvider->expects($this->any())->method('getModuleInfo')
             ->willReturn(['name' => 'amasty', 'require' => ['magento' => 'catalog', 'amasty' => 'shopby']]);
         $this->assertEquals(['Amasty_Seo'], $this->invokeMethod($this->model, 'getDependModules', [['Amasty_Seo']]));
     }
