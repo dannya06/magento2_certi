@@ -67,14 +67,10 @@ class BannerLink extends Field
                 . ' which allows to display banners on cart page, category pages, etc. '
                 . "<a href= ". $url ." target='_blank'>Configure Promo Banners</a>";
         } else {
-            $url = $this->moduleHelper->isOriginMarketplace()
-                ? self::MARKETPLACE_URL
-                : self::PROMO_BANNERS_GUIDE_URL;
-
             $config['additionalInfo'] = 'Banner will appear on product pages only.'
                 . ' To highlight your promotions more effectively, consider installing our extension'
                 . ' Promo Banners for Magento 2 which allows to display banners on cart page, category pages, etc. '
-                . "<a href= ". $url ." target='_blank'>See more details here</a>";
+                . "<a href= ". self::MARKETPLACE_URL ." target='_blank'>See more details here</a>";
         }
 
         $this->setData('config', $config);
