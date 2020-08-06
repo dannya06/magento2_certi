@@ -7,6 +7,10 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Mail\Template\SenderResolverInterface;
+use Magento\Payment\Helper\Data as PaymentHelper;
+use Magento\Sales\Model\ResourceModel\Order as OrderResource;
+use Magento\Sales\Model\Order\Address\Renderer;
+use Magento\Sales\Model\Order\Email\Container\OrderIdentity;
 
 class OrderCancellationEmail implements ObserverInterface
 {
@@ -19,14 +23,42 @@ class OrderCancellationEmail implements ObserverInterface
     protected $_transportBuilder;
     protected $_senderResolver;
 
+    /**
+     * @var PaymentHelper
+     */
+    protected $paymentHelper;
+
+    /**
+     * @var OrderResource
+     */
+    protected $orderResource;
+
+    /**
+     * @var Renderer
+     */
+    protected $addressRenderer;
+
+    /**
+     * @var IdentityInterface
+     */
+    protected $identityContainer;
+
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         TransportBuilder $transportBuilder,
-        SenderResolverInterface $senderResolver
+        SenderResolverInterface $senderResolver,
+        Renderer $addressRenderer,
+        PaymentHelper $paymentHelper,
+        OrderResource $orderResource,
+        OrderIdentity $identityContainer
     ){
         $this->_scopeConfig = $scopeConfig;
         $this->_transportBuilder = $transportBuilder;
         $this->_senderResolver = $senderResolver;
+        $this->paymentHelper = $paymentHelper;
+        $this->orderResource = $orderResource;
+        $this->addressRenderer = $addressRenderer;
+        $this->identityContainer = $identityContainer;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -61,14 +93,22 @@ class OrderCancellationEmail implements ObserverInterface
         $this->_transportBuilder
             ->setTemplateIdentifier($template)
             ->setTemplateOptions([
-                'area' => 'frontend',
-                'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
+                'area' => \Magento\Framework\App\Area::AREA_FRONTEND,
+                'store' => $this->identityContainer->getStore()->getStoreId(),
             ])
             ->setTemplateVars([
                 'order' => $order,
-                'template_subject' => $order->getStoreName().' Order Cancel',
-                'customername' => $order->getCustomerName(),
-                'email_content' => 'Your order #'.$order->getIncrementId().' has been canceled.',
+                'billing' => $order->getBillingAddress(),
+                'store' => $order->getStore(),
+                'payment_html' => $this->paymentHelper->getInfoBlockHtml($order->getPayment(), $this->identityContainer->getStore()->getStoreId()),
+                'formattedShippingAddress' => $order->getIsVirtual() ? null : $this->addressRenderer->format($order->getShippingAddress(), 'html'),
+                'formattedBillingAddress' => $this->addressRenderer->format($order->getBillingAddress(), 'html'),
+                'order_data' => [
+                    'customer_name' => $order->getCustomerName(),
+                    'is_not_virtual' => $order->getIsNotVirtual(),
+                    'email_customer_note' => $order->getEmailCustomerNote(),
+                    'frontend_status_label' => $order->getFrontendStatusLabel()
+                ]
             ])
             ->setFrom($sendFrom);
     }
