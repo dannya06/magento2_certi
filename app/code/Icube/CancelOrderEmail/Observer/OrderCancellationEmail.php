@@ -16,6 +16,7 @@ class OrderCancellationEmail implements ObserverInterface
 {
     const XML_ENABLE = 'sales_email/order_cancel/enabled';
     const XML_TEMPLATE = 'sales_email/order_cancel/template';
+    const XML_TEMPLATE_GUEST = 'sales_email/order_cancel/guest_template';
     const XML_IDENTITY = 'sales_email/order_cancel/identity';
     const XML_COPY_TO = 'sales_email/order_cancel/copy_to';
     const XML_COPY_METHOD = 'sales_email/order_cancel/copy_method';
@@ -86,9 +87,16 @@ class OrderCancellationEmail implements ObserverInterface
 
     public function configureEmailTemplate($order)
     {
-        $template = $this->_scopeConfig->getValue(self::XML_TEMPLATE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $sender = $this->_scopeConfig->getValue(self::XML_IDENTITY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $sendFrom = $this->_senderResolver->resolve($sender);
+
+        if ($order->getCustomerIsGuest()) {
+            $template = $this->_scopeConfig->getValue(self::XML_TEMPLATE_GUEST, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $customerName = $order->getBillingAddress()->getName();
+        } else {
+            $template = $this->_scopeConfig->getValue(self::XML_TEMPLATE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $customerName = $order->getCustomerName();
+        }
 
         $this->_transportBuilder
             ->setTemplateIdentifier($template)
@@ -104,7 +112,7 @@ class OrderCancellationEmail implements ObserverInterface
                 'formattedShippingAddress' => $order->getIsVirtual() ? null : $this->addressRenderer->format($order->getShippingAddress(), 'html'),
                 'formattedBillingAddress' => $this->addressRenderer->format($order->getBillingAddress(), 'html'),
                 'order_data' => [
-                    'customer_name' => $order->getCustomerName(),
+                    'customer_name' => $customerName,
                     'is_not_virtual' => $order->getIsNotVirtual(),
                     'email_customer_note' => $order->getEmailCustomerNote(),
                     'frontend_status_label' => $order->getFrontendStatusLabel()
