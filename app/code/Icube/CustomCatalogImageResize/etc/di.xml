@@ -10,4 +10,7 @@
     <type name="Magento\Catalog\Block\Product\View\Gallery">
     	<plugin name="add_images_to_gallery" type="Icube\CustomCatalogImageResize\Plugin\AddImagesToGalleryBlock" />
 	</type>
+    <type name="Magento\Catalog\Block\Product\ListProduct">
+    	<plugin name="add_images_to_category_gallery" type="Icube\CustomCatalogImageResize\Plugin\AddImagesToCategoryGalleryBlock" />
+	</type>
 </config>
