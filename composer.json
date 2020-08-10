@@ -8,7 +8,7 @@
         "AFL-3.0"
     ],
     "require": {
-        "magento/product-community-edition": "2.3.4",
+        "magento/product-community-edition": "2.3.5",
         "composer/composer": "@alpha",
         "icubeus/magento2-advancerate": "^2.0",
         "icubeus/magento2-trackorder": "dev-master",
@@ -16,7 +16,7 @@
         "magepal/magento2-reindex": "^1.0",
         "ebizmarts/mailchimp-lib": "^3.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "msp/recaptcha": "2.2.2",
+        "msp/recaptcha": "2.2.3",
 		"icubeus/magento2-rapidflow": "^7.2",
         "icubeus/magento2-swiftomschannel": "^2.1",
         "icubeus/magento2-shippingbase": "dev-master",
@@ -45,9 +45,6 @@
         "sebastian/phpcpd": "~3.0.0",
         "friendsofphp/php-cs-fixer": "~2.10.1",
         "magento/magento-coding-standard": "^5.0"
-    },
-    "config": {
-        "use-include-path": true
     },
     "autoload": {
         "psr-4": {

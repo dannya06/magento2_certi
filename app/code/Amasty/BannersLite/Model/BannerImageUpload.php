@@ -13,7 +13,7 @@ class BannerImageUpload extends \Magento\Catalog\Model\ImageUploader
     /**
      * @inheritdoc
      */
-    public function moveFileFromTmp($imageName)
+    public function moveFileFromTmp($imageName, $returnRelativePath = false)
     {
         $baseTmpPath = $this->getBaseTmpPath();
         $basePath = $this->getBasePath();
@@ -37,7 +37,7 @@ class BannerImageUpload extends \Magento\Catalog\Model\ImageUploader
             );
         }
 
-        return $validName;
+        return $returnRelativePath ? $baseImagePath : $validName;
     }
 
     /**
