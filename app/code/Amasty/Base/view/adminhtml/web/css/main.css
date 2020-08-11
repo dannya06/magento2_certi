@@ -149,6 +149,10 @@
     background-size: contain;
 }
 
+.admin__menu .level-0 > .submenu {
+    min-height: calc(7.5rem + 2rem + 100%);
+}
+
 .admin__menu .level-0 > .submenu .submenu {
     min-width: 253px;
     min-height: 100%;
