@@ -415,6 +415,7 @@ return [
         'Xtento_ProductExport' => 1,
         'Xtento_TrackingImport' => 1,
         'SwiftomsChannel_OrderExport' => 0,
-        'Yotpo_Yotpo' => 1
+        'Yotpo_Yotpo' => 1,
+        'Icube_HowToPay' => 0
     ]
 ];
