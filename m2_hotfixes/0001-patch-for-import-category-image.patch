@@ -1,60 +1,46 @@
-From 9462a39c262f933af501ba43a33cef0ca9dbbff9 Mon Sep 17 00:00:00 2001
+From bae041d1619a6317f284b30ec17fd39aef5e5482 Mon Sep 17 00:00:00 2001
 From: Hanif Rizal <hanif@icube.us>
-Date: Fri, 12 Jun 2020 06:54:52 +0000
+Date: Mon, 31 Aug 2020 07:14:15 +0000
 Subject: [PATCH] patch for import category image
 
 ---
- .../Category/Attribute/Backend/Image.php      | 40 +++----------------
- 1 file changed, 5 insertions(+), 35 deletions(-)
+ .../Category/Attribute/Backend/Image.php      | 31 ++-----------------
+ 1 file changed, 2 insertions(+), 29 deletions(-)
 
 diff --git a/vendor/magento/module-catalog/Model/Category/Attribute/Backend/Image.php b/vendor/magento/module-catalog/Model/Category/Attribute/Backend/Image.php
-index 4880214e5..13d1effed 100644
+index ae5727a90..5a89d0b1e 100644
 --- a/vendor/magento/module-catalog/Model/Category/Attribute/Backend/Image.php
 +++ b/vendor/magento/module-catalog/Model/Category/Attribute/Backend/Image.php
-@@ -71,8 +71,7 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
- 
-     /**
-      * Gets image name from $value array.
--     *
--     * Will return empty string in a case when $value is not an array.
-+     * Will return empty string in a case when $value is not an array
-      *
-      * @param array $value Attribute value
-      * @return string
-@@ -87,28 +86,8 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
+@@ -103,26 +103,6 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
+         return '';
      }
  
-     /**
+-    /**
 -     * Check that image name exists in catalog/category directory and return new image name if it already exists.
 -     *
 -     * @param string $imageName
 -     * @return string
+-     * @throws \Magento\Framework\Exception\FileSystemException
 -     */
 -    private function checkUniqueImageName(string $imageName): string
 -    {
--        $imageUploader = $this->getImageUploader();
 -        $mediaDirectory = $this->_filesystem->getDirectoryWrite(DirectoryList::MEDIA);
 -        $imageAbsolutePath = $mediaDirectory->getAbsolutePath(
--            $imageUploader->getBasePath() . DIRECTORY_SEPARATOR . $imageName
+-            $this->imageUploader->getBasePath() . DIRECTORY_SEPARATOR . $imageName
 -        );
 -
--        $imageName = Uploader::getNewFilename($imageAbsolutePath);
+-        // phpcs:ignore Magento2.Functions.DiscouragedFunction
+-        $imageName = call_user_func([Uploader::class, 'getNewFilename'], $imageAbsolutePath);
 -
 -        return $imageName;
 -    }
 -
--    /**
--     * Avoiding saving potential upload data to DB.
--     *
--     * Will set empty image attribute value if image was not uploaded.
-+     * Avoiding saving potential upload data to DB
-+     * Will set empty image attribute value if image was not uploaded
+     /**
+      * Avoiding saving potential upload data to DB.
       *
-      * @param \Magento\Framework\DataObject $object
-      * @return $this
-@@ -121,15 +100,10 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
- 
-         if ($this->fileResidesOutsideCategoryDir($value)) {
+@@ -151,15 +131,10 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
+             }
+         } elseif ($this->fileResidesOutsideCategoryDir($value)) {
              // use relative path for image attribute so we know it's outside of category dir when we fetch it
 -            // phpcs:ignore Magento2.Functions.DiscouragedFunction
 -            $value[0]['url'] = parse_url($value[0]['url'], PHP_URL_PATH);
@@ -68,16 +54,7 @@ index 4880214e5..13d1effed 100644
              $object->setData($this->additionalData . $attributeName, $value);
              $object->setData($attributeName, $imageName);
          } elseif (!is_string($value)) {
-@@ -140,8 +114,6 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
-     }
- 
-     /**
--     * Get Instance of Category Image Uploader.
--     *
-      * @return \Magento\Catalog\Model\ImageUploader
-      *
-      * @deprecated 101.0.0
-@@ -182,11 +154,9 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
+@@ -195,11 +170,9 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
          $fileUrl = ltrim($value[0]['url'], '/');
          $baseMediaDir = $this->_filesystem->getUri(DirectoryList::MEDIA);
  
