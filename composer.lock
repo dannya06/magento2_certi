@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "56d67cf0f44b5916390554579cc71368",
+    "content-hash": "30ef24f1529d4d44e35c77d9c8a16107",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -699,6 +699,16 @@
                 "certificate",
                 "ssl",
                 "tls"
+            ],
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-04-08T08:27:21+00:00"
         },
@@ -2892,6 +2902,16 @@
                 "user agent",
                 "useragent"
             ],
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/donatj/15",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/donatj",
+                    "type": "github"
+                }
+            ],
             "time": "2020-04-07T15:47:30+00:00"
         },
         {
@@ -3271,6 +3291,7 @@
             },
             "require": {
                 "box/spout": "~2.7",
+                "google/apiclient": "^2.0",
                 "salsify/json-streaming-parser": "~6.0",
                 "tcdent/php-restclient": "^0.1.7"
             },
@@ -3828,21 +3849,27 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "49faa31279e677142b9cd5a7645edeff18fda930"
+                "reference": "a5f3b7caa9ed5dfbbc3754539e5e398da6ebe0d0"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
-                "icubeus/module-oscoverridecheckout": "self.version"
+                "icubeus/module-oscoverridecheckout": "self.version",
+                "icubeus/module-pwa-checkout": "self.version",
+                "icubeus/module-shipmentpg": "self.version"
             },
             "type": "magento2-component",
             "autoload": {
                 "files": [
                     "src/module-checkoutpg/registration.php",
-                    "src/module-oscoverridecheckout/registration.php"
+                    "src/module-oscoverridecheckout/registration.php",
+                    "src/module-pwa-checkout/registration.php",
+                    "src/module-shipmentpg/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\Oscoverridecheckout\\": "src/module-oscoverridecheckout",
-                    "Icube\\Checkoutpg\\": "src/module-checkoutpg"
+                    "Icube\\Checkoutpg\\": "src/module-checkoutpg",
+                    "Icube\\PwaCheckout\\": "src/module-pwa-checkout",
+                    "Icube\\Shipmentpg\\": "src/module-shipmentpg"
                 }
             },
             "license": [
@@ -3860,7 +3887,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-07-23T05:12:38+00:00"
+            "time": "2020-09-03T04:38:49+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -3897,7 +3924,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-confirmpayment.git",
-                "reference": "87a0a8397dcbc070d932b137ecbe243a0964b7e5"
+                "reference": "cec686f0765985aaecefa511154a32806295fe5a"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3918,7 +3945,113 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2020-07-24T04:01:16+00:00"
+            "time": "2020-07-27T01:21:10+00:00"
+        },
+        {
+            "name": "icubeus/magento2-graphql",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-graphql.git",
+                "reference": "02bd1ea91d889f1e16cab2eecda71d6829391d6e"
+            },
+            "require": {
+                "icubeus/magento2-citykecamatan": "^2.0",
+                "icubeus/magento2-instantdelivery": "dev-master",
+                "icubeus/magento2-notification": "dev-master",
+                "icubeus/magento2-smstada": "dev-master",
+                "icubeus/magento2-swiftomschannel": "^2.1",
+                "icubeus/magento2-veritranspayment": "^2.0"
+            },
+            "replace": {
+                "icubeus/module-aw-blog-graph-ql": "self.version",
+                "icubeus/module-aw-gift-card-graph-ql": "self.version",
+                "icubeus/module-aw-reward-points-graph-ql": "self.version",
+                "icubeus/module-aw-rma-graph-ql": "self.version",
+                "icubeus/module-aw-store-credit-graph-ql": "self.version",
+                "icubeus/module-brands-graph-ql": "self.version",
+                "icubeus/module-cashback-graph-ql": "self.version",
+                "icubeus/module-catalog-graph-ql": "self.version",
+                "icubeus/module-city-region-graph-ql": "self.version",
+                "icubeus/module-confirm-payment-graph-ql": "self.version",
+                "icubeus/module-contact-us-graph-ql": "self.version",
+                "icubeus/module-graphql": "self.version",
+                "icubeus/module-instant-delivery-graph-ql": "self.version",
+                "icubeus/module-notification-graph-ql": "self.version",
+                "icubeus/module-owl-carousel-slider-graph-ql": "self.version",
+                "icubeus/module-pickup-graph-ql": "self.version",
+                "icubeus/module-review-graph-ql": "self.version",
+                "icubeus/module-sales-graph-ql": "self.version",
+                "icubeus/module-sms-otp-graph-ql": "self.version",
+                "icubeus/module-snap-graph-ql": "self.version",
+                "icubeus/module-wishlist-graph-ql": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-aw-blog-graph-ql/registration.php",
+                    "src/module-aw-gift-card-graph-ql/registration.php",
+                    "src/module-aw-store-credit-graph-ql/registration.php",
+                    "src/module-aw-reward-points-graph-ql/registration.php",
+                    "src/module-aw-rma-graph-ql/registration.php",
+                    "src/module-brands-graph-ql/registration.php",
+                    "src/module-cashback-graph-ql/registration.php",
+                    "src/module-catalog-graph-ql/registration.php",
+                    "src/module-city-region-graph-ql/registration.php",
+                    "src/module-contact-us-graph-ql/registration.php",
+                    "src/module-confirm-payment-graph-ql/registration.php",
+                    "src/module-review-graph-ql/registration.php",
+                    "src/module-sales-graph-ql/registration.php",
+                    "src/module-sms-otp-graph-ql/registration.php",
+                    "src/module-graphql/registration.php",
+                    "src/module-instant-delivery-graph-ql/registration.php",
+                    "src/module-notification-graph-ql/registration.php",
+                    "src/module-owl-carousel-slider-graph-ql/registration.php",
+                    "src/module-snap-graph-ql/registration.php",
+                    "src/module-wishlist-graph-ql/registration.php",
+                    "src/module-pickup-graph-ql/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\AwBlogGraphQl\\": "src/module-aw-blog-graph-ql",
+                    "Icube\\AwGiftCardGraphQl\\": "src/module-aw-gift-card-graph-ql",
+                    "Icube\\AwStoreCreditGraphQl\\": "src/module-aw-store-credit-graph-ql",
+                    "Icube\\AwRewardPointsGraphQl\\": "src/module-aw-reward-points-graph-ql",
+                    "Icube\\AwRmaGraphQl\\": "src/module-aw-rma-graph-ql",
+                    "Icube\\BrandsGraphQl\\": "src/module-brands-graph-ql",
+                    "Icube\\CashbackGraphQl\\": "src/module-cashback-graph-ql",
+                    "Icube\\CatalogGraphQl\\": "src/module-catalog-graph-ql",
+                    "Icube\\CityRegionGraphQl\\": "src/module-city-region-graph-ql",
+                    "Icube\\ContactUsGraphQl\\": "src/module-contact-us-graph-ql",
+                    "Icube\\ConfirmPaymentGraphQl\\": "src/module-confirm-payment-graph-ql",
+                    "Icube\\ReviewGraphQl\\": "src/module-review-graph-ql",
+                    "Icube\\SalesGraphQl\\": "src/module-sales-graph-ql",
+                    "Icube\\SmsOtpGraphQl\\": "src/module-sms-otp-graph-ql",
+                    "Icube\\Graphql\\": "src/module-graphql",
+                    "Icube\\InstantDeliveryGraphQl\\": "src/module-instant-delivery-graph-ql",
+                    "Icube\\NotificationGraphQl\\": "src/module-notification-graph-ql",
+                    "Icube\\OwlCarouselSliderGraphQl\\": "src/module-owl-carousel-slider-graph-ql",
+                    "Icube\\SnapGraphQl\\": "src/module-snap-graph-ql",
+                    "Icube\\WishlistGraphQl\\": "src/module-wishlist-graph-ql",
+                    "Icube\\PickupGraphQl\\": "src/module-pickup-graph-ql"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Custom Graphql modules for Magento",
+            "homepage": "https://github.com/icubeus/magento2-graphql",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2020-07-24T10:58:49+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -3952,7 +4085,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "642f63d9ce3547646c1499fcd34bafcb45b2738b"
+                "reference": "8f2287eb3b9e68c4efcfe4b5063af3f94fcee336"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -3991,7 +4124,7 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2020-07-07T03:22:34+00:00"
+            "time": "2020-08-26T09:32:01+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
@@ -3999,7 +4132,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "e774db9a33a0b73d4591435e59b25b79d7f87c0f"
+                "reference": "cbeb1c305cc63f38fb9748c1325b567a3a332bbc"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "dev-master"
@@ -4038,7 +4171,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-06-26T02:44:58+00:00"
+            "time": "2020-08-14T02:17:20+00:00"
         },
         {
             "name": "icubeus/magento2-payment",
@@ -4046,14 +4179,10 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-payment.git",
-                "reference": "5aa0a4f08757e7bdb25afdbccf9c536f7646f6cc"
+                "reference": "b60912d4d03c0cf22f47c1368fcc1b4603cb31a0"
             },
             "replace": {
-                "icubeus/module-faspaycredit": "self.version",
-                "icubeus/module-faspaydebit": "self.version",
-                "icubeus/module-hcid": "self.version",
-                "icubeus/module-ipay88": "self.version",
-                "icubeus/module-sprint": "self.version"
+                "icubeus/module-ipay88": "self.version"
             },
             "type": "magento2-component",
             "extra": {
@@ -4066,17 +4195,9 @@
             },
             "autoload": {
                 "files": [
-                    "src/module-faspaycredit/registration.php",
-                    "src/module-faspaydebit/registration.php",
-                    "src/module-hcid/registration.php",
-                    "src/module-sprint/registration.php",
                     "src/module-ipay88/registration.php"
                 ],
                 "psr-4": {
-                    "Faspay\\Credit\\": "src/module-faspaycredit",
-                    "Faspay\\Debit\\": "src/module-faspaydebit",
-                    "Icube\\Hcid\\": "src/module-hcid",
-                    "Icube\\Sprint\\": "src/module-sprint",
                     "Ipay88\\Ipay88\\": "src/module-ipay88"
                 }
             },
@@ -4098,7 +4219,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-03-18T06:15:43+00:00"
+            "time": "2020-09-02T02:11:47+00:00"
         },
         {
             "name": "icubeus/magento2-queues",
@@ -4229,7 +4350,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "b6517939b2cf3945f07ce5430b476c3554f889ae"
+                "reference": "bc70fe05e24368141565794ffa517bb7cf178a0e"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "dev-master"
@@ -4262,7 +4383,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-07-23T05:12:01+00:00"
+            "time": "2020-09-03T07:03:00+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -4428,7 +4549,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "dd0a758aa3ad580daa380f7039addcf65bf1d39a"
+                "reference": "f6a109a4c6d00ae673f53c74926def35e1ff1794"
             },
             "type": "magento2-module",
             "autoload": {
@@ -4448,7 +4569,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2020-06-08T07:33:21+00:00"
+            "time": "2020-08-07T02:04:09+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -4712,38 +4833,6 @@
             "license": [
                 "Apache-2.0"
             ],
-            "authors": [
-                {
-                    "name": "Joe Constant",
-                    "email": "joe.constant@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dario Kassler",
-                    "email": "dario.kassler@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Kenny Gilles",
-                    "email": "kenny.gilles@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Simon",
-                    "email": "markus.simon2@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Fei Chen",
-                    "email": "fei.chen@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Jason Grim",
-                    "email": "jason.grim@klarna.com",
-                    "role": "Developer"
-                }
-            ],
             "description": "Klarna Core Magento 2 Extension"
         },
         {
@@ -4799,38 +4888,6 @@
             "license": [
                 "Apache-2.0"
             ],
-            "authors": [
-                {
-                    "name": "Joe Constant",
-                    "email": "joe.constant@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dario Kassler",
-                    "email": "dario.kassler@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Kenny Gilles",
-                    "email": "kenny.gilles@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Simon",
-                    "email": "markus.simon2@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Fei Chen",
-                    "email": "fei.chen@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Jason Grim",
-                    "email": "jason.grim@klarna.com",
-                    "role": "Developer"
-                }
-            ],
             "description": "Klarna Payments Magento 2 Extension"
         },
         {
@@ -4879,38 +4936,6 @@
             },
             "license": [
                 "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Joe Constant",
-                    "email": "joe.constant@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dario Kassler",
-                    "email": "dario.kassler@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Kenny Gilles",
-                    "email": "kenny.gilles@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Simon",
-                    "email": "markus.simon2@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Fei Chen",
-                    "email": "fei.chen@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Jason Grim",
-                    "email": "jason.grim@klarna.com",
-                    "role": "Developer"
-                }
             ],
             "description": "Klarna Order Management Magento 2 Extension"
         },
@@ -18056,6 +18081,16 @@
                 "parser",
                 "validator"
             ],
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/seld/jsonlint",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-04-30T19:05:18+00:00"
         },
         {
@@ -21971,6 +22006,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2017-11-27T05:48:46+00:00"
         },
         {
@@ -22436,6 +22472,7 @@
             ],
             "description": "FinderFacade is a convenience wrapper for Symfony's Finder component.",
             "homepage": "https://github.com/sebastianbergmann/finder-facade",
+            "abandoned": true,
             "time": "2020-01-16T08:08:45+00:00"
         },
         {
