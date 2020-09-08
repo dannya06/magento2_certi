@@ -25,6 +25,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $directory = $objectManager->get('\Magento\Framework\Filesystem\DirectoryList');
         $fileDriver = $objectManager->create('Magento\Framework\Filesystem\Driver\File');
         $mediaDirectory = $directory->getPath('media').'/catalog/product/cache/';
+        $mediaDirectoryOrigin = $directory->getPath('media').'/catalog/product';
 
         foreach ($params as $miscParams) {
             if (isset($miscParams['image_type'])) {
@@ -36,7 +37,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $path = $this->hashDir($miscParams);
             foreach ($product as $image) {
                 if (!$fileDriver->isExists($mediaDirectory.$path.$image)) {
-                    $this->imageResize->resizeFromImageName($image, $params);
+                    if ($fileDriver->isExists($mediaDirectoryOrigin.$image)) { 
+                        $this->imageResize->resizeFromImageName($image, $params);
+                    }
                 } 
             }
         }

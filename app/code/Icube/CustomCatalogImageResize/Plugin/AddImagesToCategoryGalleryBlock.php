@@ -29,7 +29,10 @@ class AddImagesToCategoryGalleryBlock
     {
         $enabled = $this->_scopeConfig->getValue(self::XML_ENABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($enabled == 1) {
-            $arrImage = array($product->getImage());
+            $arrImage = array(
+                $product->getData('small_image'),
+                $product->getData('swatch_image')
+            );
             $paramsAll = $this->imageResize->getViewImages($this->imageResize->getThemesInUse());
             $params = array_filter($paramsAll, function($elem) {
                 $image_id = $elem['id'];
