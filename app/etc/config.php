@@ -350,7 +350,6 @@ return [
         'Magefan_Community' => 1,
         'Magefan_LoginAsCustomer' => 1,
         'Magestore_Storepickup' => 1,
-        'NS8_CSP' => 0,
         'Smile_ElasticsuiteAdminNotification' => 1,
         'Smile_ElasticsuiteTracker' => 0,
         'MageSuite_BrandManagement' => 0,
