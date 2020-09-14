@@ -134,7 +134,7 @@ class Save extends \WeltPixel\OwlCarouselSlider\Controller\Adminhtml\Banner
             }
 
             // ICUBE CUSTOM
-            if (!$bannerId) {
+            if ($bannerId) {
                 $arrSortOrder = [];
 
                 foreach ($data['slider_id'] as $sliderId) {
