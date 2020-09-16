@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "30ef24f1529d4d44e35c77d9c8a16107",
+    "content-hash": "6e7c503a6d57e6bbe9ebc3e619046edf",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -3949,11 +3949,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "02bd1ea91d889f1e16cab2eecda71d6829391d6e"
+                "reference": "6128dc1569a57025e24e41d1093966d1694adb32"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^2.0",
@@ -3984,6 +3984,8 @@
                 "icubeus/module-sales-graph-ql": "self.version",
                 "icubeus/module-sms-otp-graph-ql": "self.version",
                 "icubeus/module-snap-graph-ql": "self.version",
+                "icubeus/module-store-locator-graph-ql": "self.version",
+                "icubeus/module-ves-menu-graph-ql": "self.version",
                 "icubeus/module-wishlist-graph-ql": "self.version"
             },
             "type": "magento2-module",
@@ -4009,7 +4011,9 @@
                     "src/module-owl-carousel-slider-graph-ql/registration.php",
                     "src/module-snap-graph-ql/registration.php",
                     "src/module-wishlist-graph-ql/registration.php",
-                    "src/module-pickup-graph-ql/registration.php"
+                    "src/module-pickup-graph-ql/registration.php",
+                    "src/module-ves-menu-graph-ql/registration.php",
+                    "src/module-store-locator-graph-ql/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\AwBlogGraphQl\\": "src/module-aw-blog-graph-ql",
@@ -4032,7 +4036,9 @@
                     "Icube\\OwlCarouselSliderGraphQl\\": "src/module-owl-carousel-slider-graph-ql",
                     "Icube\\SnapGraphQl\\": "src/module-snap-graph-ql",
                     "Icube\\WishlistGraphQl\\": "src/module-wishlist-graph-ql",
-                    "Icube\\PickupGraphQl\\": "src/module-pickup-graph-ql"
+                    "Icube\\PickupGraphQl\\": "src/module-pickup-graph-ql",
+                    "Icube\\VesMenuGraphQl\\": "src/module-ves-menu-graph-ql",
+                    "Icube\\StoreLocatorGraphQl\\": "src/module-store-locator-graph-ql"
                 }
             },
             "license": [
@@ -4051,7 +4057,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-07-24T10:58:49+00:00"
+            "time": "2020-09-07T04:12:06+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -23238,6 +23244,7 @@
         "icubeus/magento2-payment": 20,
         "icubeus/magento2-instantdelivery": 20,
         "icubeus/magento2-queues": 20,
+        "icubeus/magento2-graphql": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": true,
