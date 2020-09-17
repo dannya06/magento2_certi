@@ -1,0 +1,781 @@
+From 83ceafd96bf651d8470cfd2c369723c0dd41977b Mon Sep 17 00:00:00 2001
+From: yohansyahck <yohansyah@icube.us>
+Date: Thu, 17 Sep 2020 10:07:45 +0000
+Subject: [PATCH] Catalog image resize on the fly
+
+---
+ .../Console/Command/ImagesResizeCommand.php   |  95 +++++
+ .../CustomCatalogImageResize/Helper/Data.php  |  71 ++++
+ .../AddImagesToCategoryGalleryBlock.php       |  49 +++
+ .../Plugin/AddImagesToGalleryBlock.php        |  49 +++
+ .../Service/ImageResize.php                   | 356 ++++++++++++++++++
+ .../etc/adminhtml/system.xml                  |  20 +
+ .../CustomCatalogImageResize/etc/config.xml   |  10 +
+ .../Icube/CustomCatalogImageResize/etc/di.xml |  16 +
+ .../CustomCatalogImageResize/etc/module.xml   |  12 +
+ .../CustomCatalogImageResize/registration.php |   7 +
+ 10 files changed, 685 insertions(+)
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/Helper/Data.php
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/Service/ImageResize.php
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/etc/adminhtml/system.xml
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/etc/config.xml
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/etc/di.xml
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/etc/module.xml
+ create mode 100644 app/code/Icube/CustomCatalogImageResize/registration.php
+
+diff --git a/app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php b/app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php
+new file mode 100644
+index 000000000..dd1a640be
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php
+@@ -0,0 +1,95 @@
++<?php
++
++namespace Icube\CustomCatalogImageResize\Console\Command;
++
++use Magento\Framework\App\Area;
++use Magento\Framework\App\ObjectManager;
++use Magento\Framework\App\State;
++use Magento\Framework\ObjectManagerInterface;
++use Magento\MediaStorage\Service\ImageResize;
++use Symfony\Component\Console\Helper\ProgressBar;
++use Symfony\Component\Console\Helper\ProgressBarFactory;
++use Symfony\Component\Console\Input\InputInterface;
++use Symfony\Component\Console\Output\OutputInterface;
++
++class ImagesResizeCommand extends \Symfony\Component\Console\Command\Command
++{
++    private $resize;
++    private $appState;
++    private $progressBarFactory;
++
++    public function __construct(
++        State $appState,
++        ImageResize $resize,
++        ObjectManagerInterface $objectManager,
++        ProgressBarFactory $progressBarFactory = null
++    ) {
++        parent::__construct();
++        $this->resize = $resize;
++        $this->appState = $appState;
++        $this->progressBarFactory = $progressBarFactory
++            ?: ObjectManager::getInstance()->get(ProgressBarFactory::class);
++    }
++
++    protected function configure()
++    {
++        $this->setName('icube:catalog:images:resize')
++            ->setDescription('Creates resized product images by Icube');
++    }
++
++    protected function execute(InputInterface $input, OutputInterface $output)
++    {
++        try {
++            $errors = [];
++            $this->appState->setAreaCode(Area::AREA_GLOBAL);
++            $generator = $this->resize->resizeFromThemes();
++
++            $progress = $this->progressBarFactory->create(
++                [
++                    'output' => $output,
++                    'max' => $generator->current()
++                ]
++            );
++            $progress->setFormat(
++                "%current%/%max% [%bar%] %percent:3s%% %elapsed% %memory:6s% \t| <info>%message%</info>"
++            );
++
++            if ($output->getVerbosity() !== OutputInterface::VERBOSITY_NORMAL) {
++                $progress->setOverwrite(false);
++            }
++
++            while ($generator->valid()) {
++                $resizeInfo = $generator->key();
++                $error = $resizeInfo['error'];
++                $filename = $resizeInfo['filename'];
++
++                if ($error !== '') {
++                    $errors[$filename] = $error;
++                }
++
++                $progress->setMessage($filename);
++                $progress->advance();
++                $generator->next();
++            }
++        } catch (\Exception $e) {
++            $output->writeln("<error>{$e->getMessage()}</error>");
++            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
++        }
++
++        $output->write(PHP_EOL);
++        if (count($errors)) {
++            $output->writeln("<info>Some product images resized successfully.\nBut you've to fix ".count($errors)." errors.\nSee details: /var/log/exception-imageresize.log</info>");
++            foreach ($errors as $error) {
++                $arrErr[] = array('Fix: ' => $error);
++            }
++            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/exception-imageresize.log');
++            $logger = new \Zend\Log\Logger();
++            $logger->addWriter($writer);
++            $logger->info($arrErr);  
++        } else {
++            $output->writeln("<info>Product images resized successfully</info>");
++        }
++
++        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
++    }
++}
+diff --git a/app/code/Icube/CustomCatalogImageResize/Helper/Data.php b/app/code/Icube/CustomCatalogImageResize/Helper/Data.php
+new file mode 100644
+index 000000000..51e7a7ab3
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/Helper/Data.php
+@@ -0,0 +1,71 @@
++<?php 
++
++namespace Icube\CustomCatalogImageResize\Helper;
++
++use Magento\Framework\Encryption\Encryptor;
++use Magento\Framework\Encryption\EncryptorInterface;
++use Icube\CustomCatalogImageResize\Service\ImageResize;
++
++class Data extends \Magento\Framework\App\Helper\AbstractHelper
++{
++    protected $imageResize;
++    protected $encryptor;
++
++	public function __construct(
++        ImageResize $imageResize,
++        EncryptorInterface $encryptor
++    ) {
++        $this->imageResize = $imageResize;
++        $this->encryptor = $encryptor;
++    }
++
++    public function resizeImage($product, $params)
++    {
++        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
++        $directory = $objectManager->get('\Magento\Framework\Filesystem\DirectoryList');
++        $fileDriver = $objectManager->create('Magento\Framework\Filesystem\Driver\File');
++        $mediaDirectory = $directory->getPath('media').'/catalog/product/cache/';
++        $mediaDirectoryOrigin = $directory->getPath('media').'/catalog/product';
++
++        foreach ($params as $miscParams) {
++            if (isset($miscParams['image_type'])) {
++                unset($miscParams['image_type']);
++            }
++            if (isset($miscParams['id'])) {
++                unset($miscParams['id']);
++            }
++            $path = $this->hashDir($miscParams);
++            foreach ($product as $image) {
++                if (!$fileDriver->isExists($mediaDirectory.$path.$image)) {
++                    if ($fileDriver->isExists($mediaDirectoryOrigin.$image)) { 
++                        $this->imageResize->resizeFromImageName($image, $params);
++                    }
++                }
++            }
++        }
++    }
++
++    private function hashDir(array $miscParams)
++    {
++        return $this->encryptor->hash(
++            implode('_', $this->convertToReadableFormat($miscParams)),
++            Encryptor::HASH_VERSION_MD5
++        );
++    }
++
++    private function convertToReadableFormat(array $miscParams)
++    {
++        $miscParams['image_height'] = 'h:' . ($miscParams['image_height'] ?? 'empty');
++        $miscParams['image_width'] = 'w:' . ($miscParams['image_width'] ?? 'empty');
++        $miscParams['quality'] = 'q:' . ($miscParams['quality'] ?? 'empty');
++        $miscParams['angle'] = 'r:' . ($miscParams['angle'] ?? 'empty');
++        $miscParams['keep_aspect_ratio'] = (!empty($miscParams['keep_aspect_ratio']) ? '' : 'non') . 'proportional';
++        $miscParams['keep_frame'] = (!empty($miscParams['keep_frame']) ? '' : 'no') . 'frame';
++        $miscParams['keep_transparency'] = (!empty($miscParams['keep_transparency']) ? '' : 'no') . 'transparency';
++        $miscParams['constrain_only'] = (!empty($miscParams['constrain_only']) ? 'do' : 'not') . 'constrainonly';
++        $miscParams['background'] = !empty($miscParams['background'])
++            ? 'rgb' . implode(',', $miscParams['background'])
++            : 'nobackground';
++        return $miscParams;
++    }
++}
+\ No newline at end of file
+diff --git a/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
+new file mode 100644
+index 000000000..3996cc872
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
+@@ -0,0 +1,49 @@
++<?php
++
++namespace Icube\CustomCatalogImageResize\Plugin;
++
++use Magento\Catalog\Block\Product\ListProduct;
++use Magento\Catalog\Model\Product;
++use Magento\Framework\App\Config\ScopeConfigInterface;
++use Icube\CustomCatalogImageResize\Helper\Data;
++use Icube\CustomCatalogImageResize\Service\ImageResize;
++
++class AddImagesToCategoryGalleryBlock
++{
++    const XML_ENABLE = 'icube_image_resize/general/enable';
++
++    protected $imageResize;
++    protected $resize;
++
++    public function __construct(
++        ScopeConfigInterface $scopeConfig,
++        ImageResize $imageResize,
++        Data $resize
++    ) {
++        $this->_scopeConfig = $scopeConfig;
++        $this->imageResize = $imageResize;
++        $this->resize = $resize;
++    }
++
++    public function afterGetProductDetailsHtml(ListProduct $subject, $result, Product $product) 
++    {
++        $enabled = $this->_scopeConfig->getValue(self::XML_ENABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
++        if ($enabled == 1) {
++            $arrImage = array(
++                $product->getData('small_image'),
++                $product->getData('swatch_image')
++            );
++            $paramsAll = $this->imageResize->getViewImages($this->imageResize->getThemesInUse());  
++            $params = array_filter($paramsAll, function($elem) {
++                $image_id = $elem['id'];
++                return preg_match("/category/", $image_id);
++            }); 
++            foreach ($arrImage as $image) {
++                $arrNew[] = $image;
++                $this->resize->resizeImage($arrNew, $params);
++            }
++            return $result;
++        }
++        return $result;
++    }
++}
+\ No newline at end of file
+diff --git a/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
+new file mode 100644
+index 000000000..3ea578932
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
+@@ -0,0 +1,49 @@
++<?php
++
++namespace Icube\CustomCatalogImageResize\Plugin;
++
++use Magento\Catalog\Block\Product\View\Gallery;
++use Magento\Framework\App\Config\ScopeConfigInterface;
++use Icube\CustomCatalogImageResize\Service\ImageResize;
++use Icube\CustomCatalogImageResize\Helper\Data;
++
++class AddImagesToGalleryBlock
++{
++    const XML_ENABLE = 'icube_image_resize/general/enable';
++
++    protected $imageResize;
++    protected $resize;
++
++    public function __construct(
++        ScopeConfigInterface $scopeConfig,
++        ImageResize $imageResize,
++        Data $resize
++    ) {
++        $this->_scopeConfig = $scopeConfig;
++        $this->imageResize = $imageResize;
++        $this->resize = $resize;
++    }
++
++    public function afterGetGalleryImages(Gallery $subject, $images) 
++    {
++        $enabled = $this->_scopeConfig->getValue(self::XML_ENABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
++        if ($enabled == 1) {
++            $image = $subject->getProduct();
++            $paramsAll = $this->imageResize->getViewImages($this->imageResize->getThemesInUse());
++            $params = array_filter($paramsAll, function($elem) {
++                $image_id = $elem['id'];
++                return !preg_match("/category/", $image_id);
++            }); 
++            foreach ($image->getMediaGalleryImages() as $key) {
++                if (!$key->getFile() == '') {
++                    $product[] = $key->getFile();
++                    $this->resize->resizeImage($product, $params);
++                    return $images;
++                }
++                return $images;
++            }
++            return $images;
++        }
++        return $images;
++    }
++}
+\ No newline at end of file
+diff --git a/app/code/Icube/CustomCatalogImageResize/Service/ImageResize.php b/app/code/Icube/CustomCatalogImageResize/Service/ImageResize.php
+new file mode 100644
+index 000000000..6ef1d268b
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/Service/ImageResize.php
+@@ -0,0 +1,356 @@
++<?php
++/**
++ * Copyright © Magento, Inc. All rights reserved.
++ * See COPYING.txt for license details.
++ */
++declare(strict_types=1);
++
++namespace Icube\CustomCatalogImageResize\Service;
++
++use Generator;
++use Magento\Catalog\Helper\Image as ImageHelper;
++use Magento\Catalog\Model\Product\Image\ParamsBuilder;
++use Magento\Catalog\Model\View\Asset\ImageFactory as AssertImageFactory;
++use Magento\Framework\App\Area;
++use Magento\Framework\App\ObjectManager;
++use Magento\Framework\Exception\NotFoundException;
++use Magento\Framework\Filesystem;
++use Magento\Framework\Image;
++use Magento\Framework\Image\Factory as ImageFactory;
++use Magento\Catalog\Model\Product\Media\ConfigInterface as MediaConfig;
++use Magento\Framework\App\State;
++use Magento\Framework\View\ConfigInterface as ViewConfig;
++use \Magento\Catalog\Model\ResourceModel\Product\Image as ProductImage;
++use Magento\Store\Model\StoreManagerInterface;
++use Magento\Theme\Model\Config\Customization as ThemeCustomizationConfig;
++use Magento\Theme\Model\ResourceModel\Theme\Collection;
++use Magento\Framework\App\Filesystem\DirectoryList;
++use Magento\MediaStorage\Helper\File\Storage\Database;
++use Magento\Theme\Model\Theme;
++
++/**
++ * Image resize service.
++ *
++ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
++ */
++class ImageResize
++{
++    /**
++     * @var State
++     */
++    private $appState;
++
++    /**
++     * @var MediaConfig
++     */
++    private $imageConfig;
++
++    /**
++     * @var ProductImage
++     */
++    private $productImage;
++
++    /**
++     * @var ImageFactory
++     */
++    private $imageFactory;
++
++    /**
++     * @var ParamsBuilder
++     */
++    private $paramsBuilder;
++
++    /**
++     * @var ViewConfig
++     */
++    private $viewConfig;
++
++    /**
++     * @var AssertImageFactory
++     */
++    private $assertImageFactory;
++
++    /**
++     * @var ThemeCustomizationConfig
++     */
++    private $themeCustomizationConfig;
++
++    /**
++     * @var Collection
++     */
++    private $themeCollection;
++
++    /**
++     * @var Filesystem
++     */
++    private $mediaDirectory;
++
++    /**
++     * @var Filesystem
++     */
++    private $filesystem;
++
++    /**
++     * @var Database
++     */
++    private $fileStorageDatabase;
++    /**
++     * @var StoreManagerInterface
++     */
++    private $storeManager;
++
++    /**
++     * @param State $appState
++     * @param MediaConfig $imageConfig
++     * @param ProductImage $productImage
++     * @param ImageFactory $imageFactory
++     * @param ParamsBuilder $paramsBuilder
++     * @param ViewConfig $viewConfig
++     * @param AssertImageFactory $assertImageFactory
++     * @param ThemeCustomizationConfig $themeCustomizationConfig
++     * @param Collection $themeCollection
++     * @param Filesystem $filesystem
++     * @param Database $fileStorageDatabase
++     * @param StoreManagerInterface $storeManager
++     * @throws \Magento\Framework\Exception\FileSystemException
++     * @internal param ProductImage $gallery
++     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
++     */
++    public function __construct(
++        State $appState,
++        MediaConfig $imageConfig,
++        ProductImage $productImage,
++        ImageFactory $imageFactory,
++        ParamsBuilder $paramsBuilder,
++        ViewConfig $viewConfig,
++        AssertImageFactory $assertImageFactory,
++        ThemeCustomizationConfig $themeCustomizationConfig,
++        Collection $themeCollection,
++        Filesystem $filesystem,
++        Database $fileStorageDatabase = null,
++        StoreManagerInterface $storeManager = null
++    ) {
++        $this->appState = $appState;
++        $this->imageConfig = $imageConfig;
++        $this->productImage = $productImage;
++        $this->imageFactory = $imageFactory;
++        $this->paramsBuilder = $paramsBuilder;
++        $this->viewConfig = $viewConfig;
++        $this->assertImageFactory = $assertImageFactory;
++        $this->themeCustomizationConfig = $themeCustomizationConfig;
++        $this->themeCollection = $themeCollection;
++        $this->mediaDirectory = $filesystem->getDirectoryWrite(DirectoryList::MEDIA);
++        $this->filesystem = $filesystem;
++        $this->fileStorageDatabase = $fileStorageDatabase ?:
++            ObjectManager::getInstance()->get(Database::class);
++        $this->storeManager = $storeManager ?? ObjectManager::getInstance()->get(StoreManagerInterface::class);
++    }
++
++    /**
++     * Create resized images of different sizes from an original image.
++     *
++     * @param string $originalImageName
++     * @throws NotFoundException
++     */
++    public function resizeFromImageName(string $originalImageName, array $currentViewImage)
++    {
++        $mediastoragefilename = $this->imageConfig->getMediaPath($originalImageName);
++        $originalImagePath = $this->mediaDirectory->getAbsolutePath($mediastoragefilename);
++
++        if ($this->fileStorageDatabase->checkDbUsage() &&
++            !$this->mediaDirectory->isFile($mediastoragefilename)
++        ) {
++            $this->fileStorageDatabase->saveFileToFilesystem($mediastoragefilename);
++        }
++
++        if (!$this->mediaDirectory->isFile($originalImagePath)) {
++            throw new NotFoundException(__('Cannot resize image "%1" - original image not found', $originalImagePath));
++        }
++        foreach ($currentViewImage as $viewImage) {
++            $this->resize($viewImage, $originalImagePath, $originalImageName);
++        }
++    }
++
++    /**
++     * Create resized images of different sizes from themes.
++     *
++     * @param array|null $themes
++     * @return Generator
++     * @throws NotFoundException
++     */
++    public function resizeFromThemes(array $themes = null): Generator
++    {
++        $count = $this->productImage->getCountUsedProductImages();
++        if (!$count) {
++            throw new NotFoundException(__('Cannot resize images - product images not found'));
++        }
++
++        $productImages = $this->productImage->getUsedProductImages();
++        $viewImages = $this->getViewImages($themes ?? $this->getThemesInUse());
++
++        foreach ($productImages as $image) {
++            $error = '';
++            $originalImageName = $image['filepath'];
++
++            $mediastoragefilename = $this->imageConfig->getMediaPath($originalImageName);
++            $originalImagePath = $this->mediaDirectory->getAbsolutePath($mediastoragefilename);
++
++            if ($this->fileStorageDatabase->checkDbUsage()) {
++                $this->fileStorageDatabase->saveFileToFilesystem($mediastoragefilename);
++            }
++            if ($this->mediaDirectory->isFile($originalImagePath)) {
++                foreach ($viewImages as $viewImage) {
++                    $this->resize($viewImage, $originalImagePath, $originalImageName);
++                }
++            } else {
++                $error = __('Cannot resize image "%1" - original image not found', $originalImagePath);
++            }
++
++            yield ['filename' => $originalImageName, 'error' => $error] => $count;
++        }
++    }
++
++    /**
++     * Search the current theme.
++     *
++     * @return array
++     */
++    public function getThemesInUse(): array
++    {
++        $themesInUse = [];
++        $registeredThemes = $this->themeCollection->loadRegisteredThemes();
++        $storesByThemes = $this->themeCustomizationConfig->getStoresByThemes();
++        $keyType = is_integer(key($storesByThemes)) ? 'getId' : 'getCode';
++        foreach ($registeredThemes as $registeredTheme) {
++            if (array_key_exists($registeredTheme->$keyType(), $storesByThemes)) {
++                $themesInUse[] = $registeredTheme;
++            }
++        }
++        return $themesInUse;
++    }
++
++    /**
++     * Get view images data from themes.
++     *
++     * @param array $themes
++     * @return array
++     */
++    public function getViewImages(array $themes): array
++    {
++        $viewImages = [];
++        $stores = $this->storeManager->getStores(true);
++        /** @var Theme $theme */
++        foreach ($themes as $theme) {
++            $config = $this->viewConfig->getViewConfig(
++                [
++                    'area' => Area::AREA_FRONTEND,
++                    'themeModel' => $theme,
++                ]
++            );
++            $images = $config->getMediaEntities('Magento_Catalog', ImageHelper::MEDIA_TYPE_CONFIG_NODE);
++            foreach ($images as $imageId => $imageData) {
++                foreach ($stores as $store) {
++                    $data = $this->paramsBuilder->build($imageData, (int) $store->getId());
++                    $uniqIndex = $this->getUniqueImageIndex($data);
++                    $data['id'] = $imageId;
++                    $viewImages[$uniqIndex] = $data;
++                }
++            }
++        }
++        return $viewImages;
++    }
++
++    /**
++     * Get unique image index.
++     *
++     * @param array $imageData
++     * @return string
++     */
++    public function getUniqueImageIndex(array $imageData): string
++    {
++        ksort($imageData);
++        unset($imageData['type']);
++        // phpcs:disable Magento2.Security.InsecureFunction
++        return md5(json_encode($imageData));
++    }
++
++    /**
++     * Make image.
++     *
++     * @param string $originalImagePath
++     * @param array $imageParams
++     * @return Image
++     */
++    public function makeImage(string $originalImagePath, array $imageParams): Image
++    {
++        $image = $this->imageFactory->create($originalImagePath);
++        $image->keepAspectRatio($imageParams['keep_aspect_ratio']);
++        $image->keepFrame($imageParams['keep_frame']);
++        $image->keepTransparency($imageParams['keep_transparency']);
++        $image->constrainOnly($imageParams['constrain_only']);
++        $image->backgroundColor($imageParams['background']);
++        $image->quality($imageParams['quality']);
++        return $image;
++    }
++
++    /**
++     * Resize image.
++     *
++     * @param array $imageParams
++     * @param string $originalImagePath
++     * @param string $originalImageName
++     */
++    public function resize(array $imageParams, string $originalImagePath, string $originalImageName)
++    {
++        unset($imageParams['id']);
++        $image = $this->makeImage($originalImagePath, $imageParams);
++        $imageAsset = $this->assertImageFactory->create(
++            [
++                'miscParams' => $imageParams,
++                'filePath' => $originalImageName,
++            ]
++        );
++
++        if (isset($imageParams['watermark_file'])) {
++            if ($imageParams['watermark_height'] !== null) {
++                $image->setWatermarkHeight($imageParams['watermark_height']);
++            }
++
++            if ($imageParams['watermark_width'] !== null) {
++                $image->setWatermarkWidth($imageParams['watermark_width']);
++            }
++
++            if ($imageParams['watermark_position'] !== null) {
++                $image->setWatermarkPosition($imageParams['watermark_position']);
++            }
++
++            if ($imageParams['watermark_image_opacity'] !== null) {
++                $image->setWatermarkImageOpacity($imageParams['watermark_image_opacity']);
++            }
++
++            $image->watermark($this->getWatermarkFilePath($imageParams['watermark_file']));
++        }
++
++        if ($imageParams['image_width'] !== null && $imageParams['image_height'] !== null) {
++            $image->resize($imageParams['image_width'], $imageParams['image_height']);
++        }
++        $image->save($imageAsset->getPath());
++
++        if ($this->fileStorageDatabase->checkDbUsage()) {
++            $mediastoragefilename = $this->mediaDirectory->getRelativePath($imageAsset->getPath());
++            $this->fileStorageDatabase->saveFile($mediastoragefilename);
++        }
++    }
++
++    /**
++     * Returns watermark file absolute path
++     *
++     * @param string $file
++     * @return string
++     */
++    public function getWatermarkFilePath($file)
++    {
++        $path = $this->imageConfig->getMediaPath('/watermark/' . $file);
++        return $this->mediaDirectory->getAbsolutePath($path);
++    }
++}
+diff --git a/app/code/Icube/CustomCatalogImageResize/etc/adminhtml/system.xml b/app/code/Icube/CustomCatalogImageResize/etc/adminhtml/system.xml
+new file mode 100644
+index 000000000..732d5eb35
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/etc/adminhtml/system.xml
+@@ -0,0 +1,20 @@
++<?xml version="1.0"?>
++<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
++    <system>
++        <tab id="icube" translate="label" sortOrder="1000">
++            <label>Icube Extension</label>
++        </tab>
++        <section id="icube_image_resize" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
++            <label>Image Resize On The Fly</label>
++            <tab>icube</tab>
++            <resource>Icube_CustomCatalogImageResize::config</resource>
++            <group id="general" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
++                <label>General</label>
++                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
++                   <label>Enable</label>
++                   <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
++                </field>
++            </group>
++        </section>
++    </system>
++</config>
+\ No newline at end of file
+diff --git a/app/code/Icube/CustomCatalogImageResize/etc/config.xml b/app/code/Icube/CustomCatalogImageResize/etc/config.xml
+new file mode 100644
+index 000000000..5710d9e9d
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/etc/config.xml
+@@ -0,0 +1,10 @@
++<?xml version="1.0"?>
++<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
++    <default>
++        <icube_image_resize>
++            <general>
++                <enable>1</enable>
++            </general>
++        </icube_image_resize>
++    </default>
++</config>
+diff --git a/app/code/Icube/CustomCatalogImageResize/etc/di.xml b/app/code/Icube/CustomCatalogImageResize/etc/di.xml
+new file mode 100644
+index 000000000..823ec2dc0
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/etc/di.xml
+@@ -0,0 +1,16 @@
++<?xml version="1.0"?>
++<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
++    <type name="Magento\Framework\Console\CommandList">
++	    <arguments>
++	        <argument name="commands" xsi:type="array">
++	            <item name="CustomImagesResize" xsi:type="object">Icube\CustomCatalogImageResize\Console\Command\ImagesResizeCommand</item>
++	        </argument>
++	    </arguments>
++	</type>
++    <type name="Magento\Catalog\Block\Product\View\Gallery">
++    	<plugin name="add_images_to_gallery" type="Icube\CustomCatalogImageResize\Plugin\AddImagesToGalleryBlock" />
++	</type>
++    <type name="Magento\Catalog\Block\Product\ListProduct">
++    	<plugin name="add_images_to_category_gallery" type="Icube\CustomCatalogImageResize\Plugin\AddImagesToCategoryGalleryBlock" />
++	</type>
++</config>
+\ No newline at end of file
+diff --git a/app/code/Icube/CustomCatalogImageResize/etc/module.xml b/app/code/Icube/CustomCatalogImageResize/etc/module.xml
+new file mode 100644
+index 000000000..1bcc6f7e7
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/etc/module.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0"?>
++<!--
++/**
++ * Copyright  2020 Icube, Inc. All rights reserved.
++ * See COPYING.txt for license details.
++ */
++-->
++<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Module/etc/module.xsd">
++  <module name="Icube_CustomCatalogImageResize" setup_version="1.0.0">
++  </module>
++</config>
++
+diff --git a/app/code/Icube/CustomCatalogImageResize/registration.php b/app/code/Icube/CustomCatalogImageResize/registration.php
+new file mode 100644
+index 000000000..b1f064943
+--- /dev/null
++++ b/app/code/Icube/CustomCatalogImageResize/registration.php
+@@ -0,0 +1,7 @@
++<?php
++\Magento\Framework\Component\ComponentRegistrar::register(
++    \Magento\Framework\Component\ComponentRegistrar::MODULE,
++    'Icube_CustomCatalogImageResize',
++    __DIR__
++);
++
+-- 
+2.20.1
+
