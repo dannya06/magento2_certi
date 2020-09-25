@@ -1,20 +1,20 @@
-From e5bdae738797b3706103f16ef68811dd4fc8363f Mon Sep 17 00:00:00 2001
+From f695dd7e8ff3b9f1fc09353b069e383c705dc5a8 Mon Sep 17 00:00:00 2001
 From: yohansyahck <yohansyah@icube.us>
-Date: Mon, 14 Sep 2020 02:29:28 +0000
-Subject: [PATCH] Catalog image resize on the fly
+Date: Fri, 18 Sep 2020 02:18:15 +0000
+Subject: [PATCH] update catalog image resize patch
 
 ---
  .../Console/Command/ImagesResizeCommand.php   |  95 +++++
  .../CustomCatalogImageResize/Helper/Data.php  |  71 ++++
  .../AddImagesToCategoryGalleryBlock.php       |  49 +++
- .../Plugin/AddImagesToGalleryBlock.php        |  45 +++
+ .../Plugin/AddImagesToGalleryBlock.php        |  49 +++
  .../Service/ImageResize.php                   | 356 ++++++++++++++++++
  .../etc/adminhtml/system.xml                  |  20 +
  .../CustomCatalogImageResize/etc/config.xml   |  10 +
  .../Icube/CustomCatalogImageResize/etc/di.xml |  16 +
  .../CustomCatalogImageResize/etc/module.xml   |  12 +
  .../CustomCatalogImageResize/registration.php |   7 +
- 10 files changed, 681 insertions(+)
+ 10 files changed, 685 insertions(+)
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Helper/Data.php
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
@@ -263,10 +263,10 @@ index 000000000..3996cc872
 \ No newline at end of file
 diff --git a/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
 new file mode 100644
-index 000000000..8df2a4d8b
+index 000000000..3ea578932
 --- /dev/null
 +++ b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
-@@ -0,0 +1,45 @@
+@@ -0,0 +1,49 @@
 +<?php
 +
 +namespace Icube\CustomCatalogImageResize\Plugin;
@@ -304,9 +304,13 @@ index 000000000..8df2a4d8b
 +                return !preg_match("/category/", $image_id);
 +            }); 
 +            foreach ($image->getMediaGalleryImages() as $key) {
-+                $product[] = $key->getFile();
++                if (!$key->getFile() == '') {
++                    $product[] = $key->getFile();
++                    $this->resize->resizeImage($product, $params);
++                    return $images;
++                }
++                return $images;
 +            }
-+            $this->resize->resizeImage($product, $params);
 +            return $images;
 +        }
 +        return $images;
