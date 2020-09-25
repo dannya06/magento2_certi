@@ -7,12 +7,19 @@
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
+        <add id="Icube_ShipmentRate::shipment"
+             title="Shipment Rates"
+             module="Icube_ShipmentRate"
+             sortOrder="20"
+             resource="Icube_ShipmentRate::shipment"
+        />
+        
     	<add id="Icube_ShipmentRate::shipmentrate"
              title="Rates"
              module="Icube_ShipmentRate"
              sortOrder="20"
              resource="Icube_ShipmentRate::shipmentrate"
-             parent="Temando_Shipping::shipping"
+             parent="Icube_ShipmentRate::shipment"
              action="icube_shipmentrate/rate/index"
         />
     </menu>
