@@ -35,9 +35,13 @@ class AddImagesToGalleryBlock
                 return !preg_match("/category/", $image_id);
             }); 
             foreach ($image->getMediaGalleryImages() as $key) {
-                $product[] = $key->getFile();
+                if (!$key->getFile() == '') {
+                    $product[] = $key->getFile();
+                    $this->resize->resizeImage($product, $params);
+                    return $images;
+                }
+                return $images;
             }
-            $this->resize->resizeImage($product, $params);
             return $images;
         }
         return $images;
