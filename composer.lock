@@ -3953,7 +3953,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "6128dc1569a57025e24e41d1093966d1694adb32"
+                "reference": "7ce0441d8c27cbd58bfea527a6e48c9d7e4bb222"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^2.0",
@@ -3964,6 +3964,7 @@
                 "icubeus/magento2-veritranspayment": "^2.0"
             },
             "replace": {
+                "icubeus/module-am-extrafee-graph-ql": "self.version",
                 "icubeus/module-aw-blog-graph-ql": "self.version",
                 "icubeus/module-aw-gift-card-graph-ql": "self.version",
                 "icubeus/module-aw-reward-points-graph-ql": "self.version",
@@ -3985,6 +3986,7 @@
                 "icubeus/module-sms-otp-graph-ql": "self.version",
                 "icubeus/module-snap-graph-ql": "self.version",
                 "icubeus/module-store-locator-graph-ql": "self.version",
+                "icubeus/module-swatches-graph-ql": "self.version",
                 "icubeus/module-ves-menu-graph-ql": "self.version",
                 "icubeus/module-wishlist-graph-ql": "self.version"
             },
@@ -4013,7 +4015,9 @@
                     "src/module-wishlist-graph-ql/registration.php",
                     "src/module-pickup-graph-ql/registration.php",
                     "src/module-ves-menu-graph-ql/registration.php",
-                    "src/module-store-locator-graph-ql/registration.php"
+                    "src/module-store-locator-graph-ql/registration.php",
+                    "src/module-am-extrafee-graph-ql/registration.php",
+                    "src/module-swatches-graph-ql/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\AwBlogGraphQl\\": "src/module-aw-blog-graph-ql",
@@ -4038,7 +4042,9 @@
                     "Icube\\WishlistGraphQl\\": "src/module-wishlist-graph-ql",
                     "Icube\\PickupGraphQl\\": "src/module-pickup-graph-ql",
                     "Icube\\VesMenuGraphQl\\": "src/module-ves-menu-graph-ql",
-                    "Icube\\StoreLocatorGraphQl\\": "src/module-store-locator-graph-ql"
+                    "Icube\\StoreLocatorGraphQl\\": "src/module-store-locator-graph-ql",
+                    "Icube\\AmastyExtraFeeGraphQl\\": "src/module-am-extrafee-graph-ql",
+                    "Icube\\SwatchesGraphQl\\": "src/module-swatches-graph-ql"
                 }
             },
             "license": [
@@ -4057,7 +4063,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-09-07T04:12:06+00:00"
+            "time": "2020-09-24T10:21:32+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
