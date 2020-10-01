@@ -3,6 +3,7 @@
 namespace Icube\CustomCatalogImageResize\Plugin;
 
 use Magento\Catalog\Block\Product\View\Gallery;
+use Magento\Catalog\Model\Product;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Icube\CustomCatalogImageResize\Service\ImageResize;
 use Icube\CustomCatalogImageResize\Helper\Data;
@@ -13,14 +14,17 @@ class AddImagesToGalleryBlock
 
     protected $imageResize;
     protected $resize;
+    protected $product;
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
+        Product $product,
         ImageResize $imageResize,
         Data $resize
     ) {
         $this->_scopeConfig = $scopeConfig;
         $this->imageResize = $imageResize;
+        $this->product = $product;
         $this->resize = $resize;
     }
 
@@ -44,13 +48,24 @@ class AddImagesToGalleryBlock
                         }
                     }
                 }
-            } else {
-                foreach ($image->getMediaGalleryImages() as $key) {
-                    if (!$key->getFile() == '') {                    
-                        $product[] = $key->getFile();
-                    }
+            }
+
+            foreach ($image->getMediaGalleryImages() as $key) {
+                if (!$key->getFile() == '') {                    
+                    $product[] = $key->getFile();
                 }
             }
+
+            $relatedProducts = $image->getRelatedProducts();
+            if (!empty($relatedProducts)) {  
+                foreach ($relatedProducts as $relatedProduct) {
+                    $_product = $this->product->load($relatedProduct->getId());
+                    if (!$_product->getThumbnail() == '') {
+                        $product[] = $_product->getThumbnail();
+                    }
+                }
+            }  
+            
             $this->resize->resizeImage(array_unique($product), $params);
             return $images;
         }
