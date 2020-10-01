@@ -1,30 +1,24 @@
-From 4dba0294a2702bed6d7ec60c904add709856c8b3 Mon Sep 17 00:00:00 2001
+From c3ab2ac87492a1517047b21346560db21cf98939 Mon Sep 17 00:00:00 2001
 From: yohansyahck <yohansyah@icube.us>
-Date: Thu, 1 Oct 2020 03:55:39 +0000
+Date: Thu, 1 Oct 2020 10:38:16 +0000
 Subject: [PATCH] Catalog image resize on the fly
 
 ---
  .../Console/Command/ImagesResizeCommand.php   |  95 +++++
  .../CustomCatalogImageResize/Helper/Data.php  |  71 ++++
- .../AddImagesToCategoryGalleryBlock.php       |  49 +++
- .../Plugin/AddImagesToGalleryBlock.php        |  59 +++
  .../Service/ImageResize.php                   | 356 ++++++++++++++++++
  .../etc/adminhtml/system.xml                  |  20 +
  .../CustomCatalogImageResize/etc/config.xml   |  10 +
  .../Icube/CustomCatalogImageResize/etc/di.xml |  16 +
  .../CustomCatalogImageResize/etc/module.xml   |  12 +
- .../CustomCatalogImageResize/registration.php |   7 +
- 10 files changed, 695 insertions(+)
+ 7 files changed, 580 insertions(+)
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Helper/Data.php
- create mode 100644 app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
- create mode 100644 app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Service/ImageResize.php
  create mode 100644 app/code/Icube/CustomCatalogImageResize/etc/adminhtml/system.xml
  create mode 100644 app/code/Icube/CustomCatalogImageResize/etc/config.xml
  create mode 100644 app/code/Icube/CustomCatalogImageResize/etc/di.xml
  create mode 100644 app/code/Icube/CustomCatalogImageResize/etc/module.xml
- create mode 100644 app/code/Icube/CustomCatalogImageResize/registration.php
 
 diff --git a/app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php b/app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php
 new file mode 100644
@@ -202,128 +196,6 @@ index 000000000..82f2a0a2a
 +            ? 'rgb' . implode(',', $miscParams['background'])
 +            : 'nobackground';
 +        return $miscParams;
-+    }
-+}
-\ No newline at end of file
-diff --git a/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
-new file mode 100644
-index 000000000..bd5053198
---- /dev/null
-+++ b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
-@@ -0,0 +1,49 @@
-+<?php
-+
-+namespace Icube\CustomCatalogImageResize\Plugin;
-+
-+use Magento\Catalog\Block\Product\ListProduct;
-+use Magento\Catalog\Model\Product;
-+use Magento\Framework\App\Config\ScopeConfigInterface;
-+use Icube\CustomCatalogImageResize\Helper\Data;
-+use Icube\CustomCatalogImageResize\Service\ImageResize;
-+
-+class AddImagesToCategoryGalleryBlock
-+{
-+    const XML_ENABLE = 'icube_image_resize/general/enable';
-+
-+    protected $imageResize;
-+    protected $resize;
-+
-+    public function __construct(
-+        ScopeConfigInterface $scopeConfig,
-+        ImageResize $imageResize,
-+        Data $resize
-+    ) {
-+        $this->_scopeConfig = $scopeConfig;
-+        $this->imageResize = $imageResize;
-+        $this->resize = $resize;
-+    }
-+
-+    public function afterGetProductDetailsHtml(ListProduct $subject, $result, Product $product) 
-+    {
-+        $enabled = $this->_scopeConfig->getValue(self::XML_ENABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-+        if ($enabled == 1) {
-+            $arrImage = array(
-+                $product->getData('small_image'),
-+                $product->getData('swatch_image')
-+            );
-+            $paramsAll = $this->imageResize->getViewImages($this->imageResize->getThemesInUse());
-+            $params = array_filter($paramsAll, function($elem) {
-+                $image_id = $elem['id'];
-+                return preg_match("/category/", $image_id);
-+            }); 
-+            foreach ($arrImage as $image) {
-+                $arrNew[] = $image;
-+                $this->resize->resizeImage($arrNew, $params);
-+            }
-+            return $result;
-+        }
-+        return $result;
-+    }
-+}
-\ No newline at end of file
-diff --git a/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
-new file mode 100644
-index 000000000..b6a72e2d1
---- /dev/null
-+++ b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
-@@ -0,0 +1,59 @@
-+<?php
-+
-+namespace Icube\CustomCatalogImageResize\Plugin;
-+
-+use Magento\Catalog\Block\Product\View\Gallery;
-+use Magento\Framework\App\Config\ScopeConfigInterface;
-+use Icube\CustomCatalogImageResize\Service\ImageResize;
-+use Icube\CustomCatalogImageResize\Helper\Data;
-+
-+class AddImagesToGalleryBlock
-+{
-+    const XML_ENABLE = 'icube_image_resize/general/enable';
-+
-+    protected $imageResize;
-+    protected $resize;
-+
-+    public function __construct(
-+        ScopeConfigInterface $scopeConfig,
-+        ImageResize $imageResize,
-+        Data $resize
-+    ) {
-+        $this->_scopeConfig = $scopeConfig;
-+        $this->imageResize = $imageResize;
-+        $this->resize = $resize;
-+    }
-+
-+    public function afterGetGalleryImages(Gallery $subject, $images) 
-+    {
-+        $enabled = $this->_scopeConfig->getValue(self::XML_ENABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-+        if ($enabled == 1) {
-+            $image = $subject->getProduct();
-+            $paramsAll = $this->imageResize->getViewImages($this->imageResize->getThemesInUse());
-+            $params = array_filter($paramsAll, function($elem) {
-+                $image_id = $elem['id'];
-+                return !preg_match("/category/", $image_id);
-+            }); 
-+            $product = array();
-+            if ($image->getTypeId() == 'configurable') {
-+                $_children = $image->getTypeInstance()->getUsedProducts($image);
-+                foreach ($_children as $child){
-+                    foreach ($child->getMediaGalleryImages() as $imageChild) {
-+                        if (!$imageChild->getFile() == '') {
-+                            $product[] = $imageChild->getFile();
-+                        }
-+                    }
-+                }
-+            } else {
-+                foreach ($image->getMediaGalleryImages() as $key) {
-+                    if (!$key->getFile() == '') {                    
-+                        $product[] = $key->getFile();
-+                    }
-+                }
-+            }
-+            $this->resize->resizeImage(array_unique($product), $params);
-+            return $images;
-+        }
-+        return $images;
 +    }
 +}
 \ No newline at end of file
@@ -772,19 +644,6 @@ index 000000000..1bcc6f7e7
 +  <module name="Icube_CustomCatalogImageResize" setup_version="1.0.0">
 +  </module>
 +</config>
-+
-diff --git a/app/code/Icube/CustomCatalogImageResize/registration.php b/app/code/Icube/CustomCatalogImageResize/registration.php
-new file mode 100644
-index 000000000..b1f064943
---- /dev/null
-+++ b/app/code/Icube/CustomCatalogImageResize/registration.php
-@@ -0,0 +1,7 @@
-+<?php
-+\Magento\Framework\Component\ComponentRegistrar::register(
-+    \Magento\Framework\Component\ComponentRegistrar::MODULE,
-+    'Icube_CustomCatalogImageResize',
-+    __DIR__
-+);
 +
 -- 
 2.20.1
