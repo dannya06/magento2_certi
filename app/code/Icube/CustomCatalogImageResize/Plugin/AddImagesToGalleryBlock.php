@@ -34,14 +34,24 @@ class AddImagesToGalleryBlock
                 $image_id = $elem['id'];
                 return !preg_match("/category/", $image_id);
             }); 
-            foreach ($image->getMediaGalleryImages() as $key) {
-                if (!$key->getFile() == '') {
-                    $product[] = $key->getFile();
-                    $this->resize->resizeImage($product, $params);
-                    return $images;
+            $product = array();
+            if ($image->getTypeId() == 'configurable') {
+                $_children = $image->getTypeInstance()->getUsedProducts($image);
+                foreach ($_children as $child){
+                    foreach ($child->getMediaGalleryImages() as $imageChild) {
+                        if (!$imageChild->getFile() == '') {
+                            $product[] = $imageChild->getFile();
+                        }
+                    }
                 }
-                return $images;
+            } else {
+                foreach ($image->getMediaGalleryImages() as $key) {
+                    if (!$key->getFile() == '') {                    
+                        $product[] = $key->getFile();
+                    }
+                }
             }
+            $this->resize->resizeImage(array_unique($product), $params);
             return $images;
         }
         return $images;
