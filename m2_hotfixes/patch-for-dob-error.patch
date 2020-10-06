@@ -1,0 +1,12 @@
+diff -ruN a/vendor/magento/module-customer/Block/Widget/Dob.php b/vendor/magento/module-customer/Block/Widget/Dob.php
+--- a/vendor/magento/module-customer/Block/Widget/Dob.php	2020-10-06 11:26:08.000000000 +0700
++++ b/vendor/magento/module-customer/Block/Widget/Dob.php	2020-10-06 11:30:36.607354300 +0700
+@@ -281,7 +281,7 @@
+     {
+         $dateFormat = $this->_localeDate->getDateFormatWithLongYear();
+         /** Escape RTL characters which are present in some locales and corrupt formatting */
+-        $escapedDateFormat = preg_replace('/[^MmDdYy\/\.\-]/', '', $dateFormat);
++        $escapedDateFormat = 'M/dd/Y';
+ 
+         return $escapedDateFormat;
+     }
