@@ -1,20 +1,20 @@
-From f695dd7e8ff3b9f1fc09353b069e383c705dc5a8 Mon Sep 17 00:00:00 2001
+From 8fe9126404bf7dda6bfde74a98bd47a35936450c Mon Sep 17 00:00:00 2001
 From: yohansyahck <yohansyah@icube.us>
-Date: Fri, 18 Sep 2020 02:18:15 +0000
-Subject: [PATCH] update catalog image resize patch
+Date: Fri, 2 Oct 2020 02:17:00 +0000
+Subject: [PATCH] Catalog image resize on the fly
 
 ---
  .../Console/Command/ImagesResizeCommand.php   |  95 +++++
  .../CustomCatalogImageResize/Helper/Data.php  |  71 ++++
  .../AddImagesToCategoryGalleryBlock.php       |  49 +++
- .../Plugin/AddImagesToGalleryBlock.php        |  49 +++
+ .../Plugin/AddImagesToGalleryBlock.php        |  74 ++++
  .../Service/ImageResize.php                   | 356 ++++++++++++++++++
  .../etc/adminhtml/system.xml                  |  20 +
  .../CustomCatalogImageResize/etc/config.xml   |  10 +
  .../Icube/CustomCatalogImageResize/etc/di.xml |  16 +
  .../CustomCatalogImageResize/etc/module.xml   |  12 +
  .../CustomCatalogImageResize/registration.php |   7 +
- 10 files changed, 685 insertions(+)
+ 10 files changed, 710 insertions(+)
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Console/Command/ImagesResizeCommand.php
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Helper/Data.php
  create mode 100644 app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
@@ -129,7 +129,7 @@ index 000000000..dd1a640be
 +}
 diff --git a/app/code/Icube/CustomCatalogImageResize/Helper/Data.php b/app/code/Icube/CustomCatalogImageResize/Helper/Data.php
 new file mode 100644
-index 000000000..51e7a7ab3
+index 000000000..82f2a0a2a
 --- /dev/null
 +++ b/app/code/Icube/CustomCatalogImageResize/Helper/Data.php
 @@ -0,0 +1,71 @@
@@ -175,7 +175,7 @@ index 000000000..51e7a7ab3
 +                    if ($fileDriver->isExists($mediaDirectoryOrigin.$image)) { 
 +                        $this->imageResize->resizeFromImageName($image, $params);
 +                    }
-+                }
++                } 
 +            }
 +        }
 +    }
@@ -207,7 +207,7 @@ index 000000000..51e7a7ab3
 \ No newline at end of file
 diff --git a/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
 new file mode 100644
-index 000000000..3996cc872
+index 000000000..bd5053198
 --- /dev/null
 +++ b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToCategoryGalleryBlock.php
 @@ -0,0 +1,49 @@
@@ -246,7 +246,7 @@ index 000000000..3996cc872
 +                $product->getData('small_image'),
 +                $product->getData('swatch_image')
 +            );
-+            $paramsAll = $this->imageResize->getViewImages($this->imageResize->getThemesInUse());  
++            $paramsAll = $this->imageResize->getViewImages($this->imageResize->getThemesInUse());
 +            $params = array_filter($paramsAll, function($elem) {
 +                $image_id = $elem['id'];
 +                return preg_match("/category/", $image_id);
@@ -263,15 +263,16 @@ index 000000000..3996cc872
 \ No newline at end of file
 diff --git a/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
 new file mode 100644
-index 000000000..3ea578932
+index 000000000..83c895ecc
 --- /dev/null
 +++ b/app/code/Icube/CustomCatalogImageResize/Plugin/AddImagesToGalleryBlock.php
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,74 @@
 +<?php
 +
 +namespace Icube\CustomCatalogImageResize\Plugin;
 +
 +use Magento\Catalog\Block\Product\View\Gallery;
++use Magento\Catalog\Model\Product;
 +use Magento\Framework\App\Config\ScopeConfigInterface;
 +use Icube\CustomCatalogImageResize\Service\ImageResize;
 +use Icube\CustomCatalogImageResize\Helper\Data;
@@ -282,14 +283,17 @@ index 000000000..3ea578932
 +
 +    protected $imageResize;
 +    protected $resize;
++    protected $product;
 +
 +    public function __construct(
 +        ScopeConfigInterface $scopeConfig,
++        Product $product,
 +        ImageResize $imageResize,
 +        Data $resize
 +    ) {
 +        $this->_scopeConfig = $scopeConfig;
 +        $this->imageResize = $imageResize;
++        $this->product = $product;
 +        $this->resize = $resize;
 +    }
 +
@@ -303,14 +307,35 @@ index 000000000..3ea578932
 +                $image_id = $elem['id'];
 +                return !preg_match("/category/", $image_id);
 +            }); 
-+            foreach ($image->getMediaGalleryImages() as $key) {
-+                if (!$key->getFile() == '') {
-+                    $product[] = $key->getFile();
-+                    $this->resize->resizeImage($product, $params);
-+                    return $images;
++            $product = array();
++            if ($image->getTypeId() == 'configurable') {
++                $_children = $image->getTypeInstance()->getUsedProducts($image);
++                foreach ($_children as $child){
++                    foreach ($child->getMediaGalleryImages() as $imageChild) {
++                        if (!$imageChild->getFile() == '') {
++                            $product[] = $imageChild->getFile();
++                        }
++                    }
 +                }
-+                return $images;
 +            }
++
++            foreach ($image->getMediaGalleryImages() as $key) {
++                if (!$key->getFile() == '') {                    
++                    $product[] = $key->getFile();
++                }
++            }
++
++            $relatedProducts = $image->getRelatedProducts();
++            if (!empty($relatedProducts)) {  
++                foreach ($relatedProducts as $relatedProduct) {
++                    $_product = $this->product->load($relatedProduct->getId());
++                    if (!$_product->getThumbnail() == '') {
++                        $product[] = $_product->getThumbnail();
++                    }
++                }
++            }  
++            
++            $this->resize->resizeImage(array_unique($product), $params);
 +            return $images;
 +        }
 +        return $images;
