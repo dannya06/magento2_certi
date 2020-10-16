@@ -1,28 +1,31 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
+
 namespace Amasty\Promo\Setup;
 
-/**
- * Class UpgradeSchema
- *
- * @author Artem Brunevski
- */
-
 use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\Setup\UpgradeSchemaInterface;
 
-/**
- * @codeCoverageIgnore
- */
 class UpgradeSchema implements UpgradeSchemaInterface
 {
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    private $objectManager;
+
+    public function __construct(
+        \Magento\Framework\ObjectManagerInterface $objectManager
+    ) {
+        $this->objectManager = $objectManager;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,16 +37,20 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->addBannersToRule($installer);
         }
 
-        if (version_compare($context->getVersion(), '1.0.2', '<')) {
-            $this->updateImageFields($installer);
-        }
-
         if (version_compare($context->getVersion(), '1.3.0', '<')) {
             $this->addPromoItemsDiscount($installer);
         }
 
         if (version_compare($context->getVersion(), '1.3.1', '<')) {
             $this->addControlTaxShippingSettings($installer);
+        }
+
+        if (version_compare($context->getVersion(), '2.3.0', '<')) {
+            $this->objectManager->create(Operation\ChangeFk::class)->execute($setup);
+        }
+
+        if ($context->getVersion() && version_compare($context->getVersion(), '2.4.2', '<')) {
+            $this->objectManager->create(Operation\UpgradeSchemaTo242::class)->execute($setup);
         }
 
         $installer->endSetup();
@@ -54,54 +61,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
      */
     private function addBannersToRule(SchemaSetupInterface $setup)
     {
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'top_banner_image',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Banner Image'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'top_banner_alt',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Banner Alt'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'top_banner_on_hover_text',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Banner On Hover Text'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'top_banner_link',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Banner Link'
-            ]
-        );
-
         $setup->getConnection()->addColumn(
             $setup->getTable('amasty_ampromo_rule'),
             'top_banner_show_gift_images',
@@ -115,154 +74,12 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         $setup->getConnection()->addColumn(
             $setup->getTable('amasty_ampromo_rule'),
-            'top_banner_description',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => '64k',
-                'comment' => 'Banner Description'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'after_product_banner_image',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Banner Image'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'after_product_banner_alt',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Banner Alt'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'after_product_banner_on_hover_text',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Banner On Hover Text'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'after_product_banner_link',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Banner Link'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
             'after_product_banner_show_gift_images',
             [
                 'type' => Table::TYPE_BOOLEAN,
                 'nullable' => false,
                 'default' => false,
                 'comment' => 'Show Gift Images'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'after_product_banner_description',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => '64k',
-                'comment' => 'Banner Description'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'label_image',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Label Image'
-            ]
-        );
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'label_image_alt',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => 255,
-                'comment' => 'Label Image Alt'
-            ]
-        );
-
-    }
-
-    /**
-     * @param SchemaSetupInterface $setup
-     */
-    private function updateImageFields(SchemaSetupInterface $setup)
-    {
-        $setup->getConnection()->changeColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'top_banner_image',
-            'top_banner_image',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => '128k',
-                'comment' => 'Banner Image'
-            ]
-        );
-
-        $setup->getConnection()->changeColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'after_product_banner_image',
-            'after_product_banner_image',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => '128k',
-                'comment' => 'Banner Image'
-            ]
-        );
-
-        $setup->getConnection()->changeColumn(
-            $setup->getTable('amasty_ampromo_rule'),
-            'label_image',
-            'label_image',
-            [
-                'type' => Table::TYPE_TEXT,
-                'nullable' => true,
-                'default' => '',
-                'length' => '128k',
-                'comment' => 'Label Image'
             ]
         );
     }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -13,47 +13,24 @@ namespace Amasty\Promo\Model\Rule\Action\Discount;
 class SameProduct extends AbstractDiscount
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function _addFreeItems(
         \Magento\SalesRule\Model\Rule $rule,
         \Magento\Quote\Model\Quote\Item\AbstractItem $item,
         $qty
     ) {
-        if ($this->promoItemHelper->isPromoItem($item)) {
+        if (!$this->isItemValid($item)) {
             return;
         }
 
-        $discountStep   = max(1, $rule->getDiscountStep());
-        $discountAmount = max(1, $rule->getDiscountAmount());
-        $maxDiscountQty = 100000;
-        if ($rule->getDiscountQty()) {
-            $maxDiscountQty = (int) max(1, $rule->getDiscountQty());
-        }
+        $qty = $this->_getFreeItemsQty($rule, $item);
 
-        $qty = min(
-            floor($item->getQty() / $discountStep) * $discountAmount,
-            $maxDiscountQty
-        );
-
-        if ($item->getParentItemId()) {
+        if ($qty < 1 || $this->_skip($rule, $item)) {
             return;
         }
 
-        if ($item['product_type'] == 'downloadable') {
-            return;
-        }
-
-        if ($qty < 1) {
-            return;
-        }
-
-        if ($this->_skip($rule, $item)) {
-            return;
-        }
-        $ampromoRule = $this->ruleFactory->create();
-
-        $ampromoRule = $ampromoRule->loadBySalesrule($rule);
+        $ampromoRule = $this->ruleResolver->getFreeGiftRule($rule);
 
         $discountData = [
             'discount_item' => $ampromoRule->getItemsDiscount(),
@@ -72,6 +49,40 @@ class SameProduct extends AbstractDiscount
             $discountData,
             $ampromoRule->getType(),
             $rule->getDiscountAmount()
+        );
+    }
+
+    /**
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem|\Magento\Quote\Model\Quote\Item $item
+     *
+     * @return bool
+     */
+    protected function isItemValid($item)
+    {
+        return !$item->getParentItem()
+            && $item->getRealProductType() !== \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE
+            && !$this->promoItemHelper->isPromoItem($item);
+    }
+
+    /**
+     * @param \Magento\SalesRule\Model\Rule $rule
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem|\Magento\Quote\Model\Quote\Item $item
+     * @return int|float
+     */
+    protected function _getFreeItemsQty(
+        \Magento\SalesRule\Model\Rule $rule,
+        \Magento\Quote\Model\Quote\Item\AbstractItem $item
+    ) {
+        $discountStep   = max(1, $rule->getDiscountStep());
+        $discountAmount = max(1, $rule->getDiscountAmount());
+        $maxDiscountQty = 100000;
+        if ($rule->getDiscountQty()) {
+            $maxDiscountQty = (int) max(1, $rule->getDiscountQty());
+        }
+
+        return min(
+            floor($item->getQty() / $discountStep) * $discountAmount,
+            $maxDiscountQty
         );
     }
 }

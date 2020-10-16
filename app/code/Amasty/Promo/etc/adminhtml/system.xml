@@ -2,14 +2,14 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 -->
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="ampromo" translate="label" type="text" sortOrder="161809" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="ampromo" translate="label" type="text" sortOrder="061807" showInDefault="1" showInWebsite="1" showInStore="1">
             <resource>Amasty_Promo::config_promo</resource>
             <class>separator-top</class>
             <label>Free Gift</label>
@@ -24,6 +24,11 @@
                     <label>Add Simple/Virtual/Downloadable Products Automatically, Without Confirmation</label>
                     <comment>Products will be added automatically only if there are no options to specify</comment>
                     <source_model>Amasty\Promo\Model\Config\Source\AutoAdd\Mode</source_model>
+                </field>
+                <field id="discount_include" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="01">
+                    <label>Auto Add Free Items Based on Cart Amount</label>
+                    <comment>Applicable only for Every X Spent Free Gift Rules</comment>
+                    <source_model>Amasty\Promo\Model\Config\Source\AutoAdd\Discount</source_model>
                 </field>
             </group>
             <group id="messages" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -68,11 +73,11 @@
                     <label>Display Remaining Gifts Counter</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="display_notification" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="display_notification" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Reminder about Available Promos</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="notification_text" translate="label" type="textarea" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="notification_text" translate="label" type="textarea" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Notification Message</label>
                     <comment>{url checkout/cart} placeholder will be replaced with actual cart url</comment>
                     <depends>
@@ -92,26 +97,6 @@
                     <depends>
                         <field id="skip_special_price">1</field>
                     </depends>
-                </field>
-            </group>
-            <group id="banners" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Product Page Banners</label>
-                <field id="mode" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Validate condition based on</label>
-                    <source_model>Amasty\Promo\Model\Config\Source\Banner\Mode</source_model>
-                </field>
-                <field id="enabled_top" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable Top Banners</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="enabled_above_cart" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable After Product Description Banner</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="single" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Show One Banner Only</label>
-                    <comment>Please select `No` to show all banners from matched rules.</comment>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
             <group id="gift_images" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">

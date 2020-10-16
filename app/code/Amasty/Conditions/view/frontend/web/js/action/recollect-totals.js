@@ -22,22 +22,29 @@ define([
             payload,
             address,
             paymentMethod,
-            requiredFields = ['countryId', 'region', 'regionId', 'postcode'],
+            requiredFields = ['countryId', 'region', 'regionId', 'postcode', 'city'],
             newAddress = quote.shippingAddress() ? quote.shippingAddress() : quote.billingAddress(),
             city;
 
         serviceUrl = resourceUrlManager.getUrlForTotalsEstimationForNewAddress(quote);
         address = _.pick(newAddress, requiredFields);
         paymentMethod = quote.paymentMethod() ? quote.paymentMethod().method : null;
-        city = quote.shippingAddress() ? quote.shippingAddress().city : null;
-
+        
+        city = '';
+        if (quote.isVirtual() && quote.billingAddress()) {
+            city = quote.billingAddress().city;
+        } else if (quote.shippingAddress()) {
+            city = quote.shippingAddress().city;
+        }
+        
         address.extension_attributes = {
             advanced_conditions: {
                 custom_attributes: quote.shippingAddress() ? quote.shippingAddress().custom_attributes : [],
                 payment_method: paymentMethod,
                 city: city,
                 shipping_address_line: quote.shippingAddress() ? quote.shippingAddress().street : null,
-                billing_address_country: quote.billingAddress() ? quote.billingAddress().countryId : null
+                billing_address_country: quote.billingAddress() ? quote.billingAddress().countryId : null,
+                currency: totalsService.totals() ? totalsService.totals().quote_currency_code : null
             }
         };
 

@@ -1,12 +1,12 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 ?>
 <?php
-// @codingStandardsIgnoreFile
+// phpcs:ignoreFile
 ?>
 
 <?php
@@ -17,15 +17,15 @@ $_attributes = $block->decorateArray($block->getAllowAttributes());
 <?php if ($_product->isSaleable() && count($_attributes)):?>
     <?php foreach ($_attributes as $_attribute): ?>
         <div class="field configurable required">
-            <label class="label" for="attribute<?= $_attribute->getAttributeId() ?>">
+            <label class="label" for="attribute<?= (int)$_attribute->getAttributeId() ?>">
                 <span><?= $block->escapeHtml($_attribute->getProductAttribute()->getStoreLabel()) ?></span>
             </label>
             <div class="control">
-                <select name="super_attribute[<?= $_attribute->getAttributeId() ?>]"
+                <select name="super_attribute[<?= (int)$_attribute->getAttributeId() ?>]"
                         data-validate="{required:true}"
                         id="attribute<?= $_attribute->getAttributeId() . "-" . $_product->getId() ?>"
                         class="super-attribute-select">
-                    <option value=""><?= __('Choose an Option...') ?></option>
+                    <option value=""><?= $block->escapeHtml(__('Choose an Option...')); ?></option>
                 </select>
             </div>
         </div>
@@ -37,12 +37,14 @@ $_attributes = $block->decorateArray($block->getAllowAttributes());
                 'Amasty_Promo/js/type/configurable',
                 'Amasty_Promo/js/price-updater'
             ], function($) {
-                $('a[data-role="ampromo-popup-show"]').on('click', function () {
+                var popupOverlay = $('[data-role=ampromo-overlay]');
+
+                popupOverlay.on('init.ampopup', function () {
                     initConfigurable();
                 });
 
                 function initConfigurable() {
-                    $('div.ampromo-items').ampromoPriceUpdater({
+                    $('[data-ampromo-js="items-content"]').ampromoPriceUpdater({
                         productId: <?= $block->escapeHtml($_product->getId()) ?>,
                         priceConfig: <?= /* @escapeNotVerified */ $block->getJsonConfig() ?>
                     });

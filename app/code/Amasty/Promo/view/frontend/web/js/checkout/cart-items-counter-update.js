@@ -7,7 +7,7 @@ define(
         'use strict';
 
         var mixin = _.extend({
-            getItemsQty: function() {
+            getItemsQty: function () {
                 if (quote.totals().items_qty != this.totals.items_qty) {
                     this.totals = quote.totals();
                 }

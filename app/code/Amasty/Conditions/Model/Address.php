@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Conditions
  */
 
@@ -101,5 +101,22 @@ class Address extends DataObject implements AddressInterface
     public function setCity($city)
     {
         return $this->setData(self::CITY, $city);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->_getData(self::CURRENCY);
+    }
+
+    /**
+     * @param string $currency
+     * @return AddressInterface|Address
+     */
+    public function setCurrency($currency)
+    {
+        return $this->setData(self::CURRENCY, $currency);
     }
 }

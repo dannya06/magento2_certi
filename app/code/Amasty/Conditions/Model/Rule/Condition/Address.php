@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Conditions
  */
 
@@ -9,27 +9,41 @@
 namespace Amasty\Conditions\Model\Rule\Condition;
 
 use Amasty\Conditions\Api\Data\AddressInterface;
+use Amasty\Conditions\Model\AddressFactory;
 use Amasty\Conditions\Model\Constants;
+use Magento\Config\Model\Config\Source\Locale\Currency;
+use Magento\Directory\Model\Config\Source\Country;
+use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Payment\Model\Config\Source\Allmethods;
+use Magento\Rule\Model\Condition\AbstractCondition;
+use Magento\Rule\Model\Condition\Context;
+use Magento\Store\Model\StoreManagerInterface;
 
-class Address extends \Magento\Rule\Model\Condition\AbstractCondition
+class Address extends AbstractCondition
 {
     const CUSTOM_OPERATORS = [
         AddressInterface::SHIPPING_ADDRESS_LINE,
         AddressInterface::CITY,
+        AddressInterface::CURRENCY
     ];
 
     /**
-     * @var \Magento\Directory\Model\Config\Source\Country
+     * @var Country
      */
     private $country;
 
     /**
-     * @var \Magento\Framework\App\ProductMetadataInterface
+     * @var Currency
+     */
+    private $currency;
+
+    /**
+     * @var ProductMetadataInterface
      */
     private $productMetadata;
 
     /**
-     * @var \Magento\Payment\Model\Config\Source\Allmethods
+     * @var Allmethods
      */
     private $allMethods;
 
@@ -38,19 +52,35 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
      */
     private $address;
 
+    /**
+     * @var AddressFactory
+     */
+    private $addressFactory;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
     public function __construct(
-        \Magento\Rule\Model\Condition\Context $context,
-        \Magento\Directory\Model\Config\Source\Country $country,
-        \Magento\Payment\Model\Config\Source\Allmethods $allMethods,
-        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
+        Context $context,
+        ProductMetadataInterface $productMetadata,
+        Country $country,
+        Currency $currency,
+        Allmethods $allMethods,
         \Amasty\Conditions\Model\Address $address,
+        AddressFactory $addressFactory,
+        StoreManagerInterface $storeManager,
         array $data = []
     ) {
-        parent::__construct($context, $data);
         $this->productMetadata = $productMetadata;
         $this->country = $country;
+        $this->currency = $currency;
         $this->allMethods = $allMethods;
         $this->address = $address;
+        $this->addressFactory = $addressFactory;
+        $this->storeManager = $storeManager;
+        parent::__construct($context, $data);
     }
 
     /**
@@ -63,8 +93,13 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
             AddressInterface::BILLING_ADDRESS_COUNTRY => __('Billing Address Country'),
             AddressInterface::PAYMENT_METHOD => __('Payment Method'),
             AddressInterface::SHIPPING_ADDRESS_LINE => __('Shipping Address Line'),
-            AddressInterface::CITY => __('City'),
+            AddressInterface::CITY => __('City')
         ];
+
+        if (version_compare($this->productMetadata->getVersion(), '2.3.0', '>=')) {
+            $attributes[AddressInterface::CURRENCY] = __('Storeview currency');
+        }
+
         $this->setAttributeOption($attributes);
 
         return $this;
@@ -99,23 +134,37 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
      */
     private function getOperators()
     {
-        if ($this->getAttribute() === AddressInterface::SHIPPING_ADDRESS_LINE) {
-            return [
-                '{}' => __('contains'),
-                '!{}' => __('does not contain'),
-            ];
-        } elseif ($this->getAttribute() === AddressInterface::CITY) {
-            return [
-                '{}' => __('contains'),
-                '!{}' => __('does not contain'),
-                '==' => __('is'),
-                '!=' => __('is not'),
-                '()' => __('is one of'),
-                '!()' => __('is not one of'),
-            ];
+        switch ($this->getAttribute()) {
+            case AddressInterface::SHIPPING_ADDRESS_LINE:
+                $result = [
+                    '{}' => __('contains'),
+                    '!{}' => __('does not contain')
+                ];
+                break;
+
+            case AddressInterface::CITY:
+                $result = [
+                    '{}' => __('contains'),
+                    '!{}' => __('does not contain'),
+                    '==' => __('is'),
+                    '!=' => __('is not'),
+                    '()' => __('is one of'),
+                    '!()' => __('is not one of')
+                ];
+                break;
+
+            case AddressInterface::CURRENCY:
+                $result = [
+                    '()' => __('is one of'),
+                    '!()' => __('is not one of')
+                ];
+                break;
+
+            default:
+                $result = [];
         }
 
-        return [];
+        return $result;
     }
 
     /**
@@ -136,10 +185,21 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
      */
     public function getInputType()
     {
-        return $this->getAttribute() === AddressInterface::SHIPPING_ADDRESS_LINE
-        || $this->getAttribute() === AddressInterface::CITY
-            ? 'string'
-            : 'select';
+        switch ($this->getAttribute()) {
+            case AddressInterface::SHIPPING_ADDRESS_LINE:
+            case AddressInterface::CITY:
+                $result = 'string';
+                break;
+
+            case AddressInterface::CURRENCY:
+                $result = 'multiselect';
+                break;
+
+            default:
+                $result = 'select';
+        }
+
+        return $result;
     }
 
     /**
@@ -148,10 +208,21 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
      */
     public function getValueElementType()
     {
-        return $this->getAttribute() === AddressInterface::SHIPPING_ADDRESS_LINE
-        || $this->getAttribute() === AddressInterface::CITY
-            ? 'text'
-            : 'select';
+        switch ($this->getAttribute()) {
+            case AddressInterface::SHIPPING_ADDRESS_LINE:
+            case AddressInterface::CITY:
+                $result = 'text';
+                break;
+
+            case AddressInterface::CURRENCY:
+                $result = 'multiselect';
+                break;
+
+            default:
+                $result = 'select';
+        }
+
+        return $result;
     }
 
     /**
@@ -170,6 +241,10 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
                     $options = $this->allMethods->toOptionArray();
                     break;
 
+                case AddressInterface::CURRENCY:
+                    $options = $this->currency->toOptionArray();
+                    break;
+
                 default:
                     $options = [];
             }
@@ -181,6 +256,7 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
 
     /**
      * @param \Magento\Framework\Model\AbstractModel $model
+     *
      * @return bool
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -195,7 +271,11 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
 
         $attrValue = $this->getAttributeValue($address);
         if (!$attrValue) {
-            $attrValue = $this->getDefaultAttrValue($address);
+            try {
+                $attrValue = $this->getDefaultAttrValue($address);
+            } catch (\Exception $e) {
+                $attrValue = null;
+            }
         }
 
         return parent::validateAttribute($attrValue);
@@ -203,6 +283,7 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
 
     /**
      * @param \Magento\Quote\Model\Quote\Address $address
+     *
      * @return string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -215,7 +296,7 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
                 break;
 
             case AddressInterface::PAYMENT_METHOD:
-                $attrValue = $address->getPaymentMethod();
+                $attrValue = $address->getQuote()->getPayment()->getMethod();
                 break;
 
             case AddressInterface::SHIPPING_ADDRESS_LINE:
@@ -225,6 +306,10 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
             case AddressInterface::CITY:
                 $attrValue = $address->getCity();
                 break;
+
+            case AddressInterface::CURRENCY:
+                $attrValue = $address->getCurrency();
+                break;
         }
 
         return $attrValue;
@@ -232,16 +317,23 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
 
     /**
      * @param \Magento\Quote\Model\Quote\Address $address
+     *
      * @return int|mixed|null|string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function getAttributeValue(\Magento\Quote\Model\Quote\Address $address)
     {
         $attrValue = null;
+        if (!$this->address->isAdvancedConditions($address)) {
+            $this->resolveAdvancedConditions($address);
+        }
+
         if ($this->address->isAdvancedConditions($address)) {
             $advConditions = $address->getExtensionAttributes()->getAdvancedConditions();
+
             switch ($this->getAttribute()) {
                 case AddressInterface::BILLING_ADDRESS_COUNTRY:
+                case \Magento\Quote\Api\Data\AddressInterface::KEY_COUNTRY_ID:
                     $attrValue = $advConditions->getBillingAddressCountry();
                     break;
 
@@ -256,6 +348,10 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
                 case AddressInterface::CITY:
                     $attrValue = $advConditions->getCity();
                     break;
+
+                case AddressInterface::CURRENCY:
+                    $attrValue = $advConditions->getCurrency();
+                    break;
             }
         }
 
@@ -264,10 +360,34 @@ class Address extends \Magento\Rule\Model\Condition\AbstractCondition
 
     /**
      * @param $address
+     *
      * @return mixed|string
      */
     private function getStreetFull($address)
     {
         return is_array($address) ? implode("\n", $address) : $address;
+    }
+
+    /**
+     * @param \Magento\Quote\Model\Quote\Address $address
+     */
+    private function resolveAdvancedConditions(\Magento\Quote\Model\Quote\Address $address)
+    {
+        $quote = $address->getQuote();
+        if ($extensionAttributes = $address->getExtensionAttributes()) {
+            $addressModel = $this->addressFactory->create();
+
+            $advancedConditionData = [
+                'payment_method' => $quote->getPaymentMethod(),
+                'city' => $quote->getBillingAddress()->getCity(),
+                'shipping_address_line' => $quote->getBillingAddress()->getStreet(),
+                'custom_attributes' => $quote->getBillingAddress()->getCustomAttributes(),
+                'billing_address_country' => $quote->getBillingAddress()->getCountryId(),
+                'currency' => $this->storeManager->getStore()->getCurrentCurrency()->getCode()
+            ];
+            $addressModel->setData($advancedConditionData);
+
+            $extensionAttributes->setAdvancedConditions($addressModel);
+        }
     }
 }

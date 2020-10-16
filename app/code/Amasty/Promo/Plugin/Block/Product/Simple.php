@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -53,7 +53,10 @@ class Simple
         \Magento\Catalog\Block\Product\View $subject,
         \Closure $proceed
     ) {
-        if (version_compare($this->productMetadata->getVersion(), '2.2.0', '<')) {
+        if (version_compare($this->productMetadata->getVersion(), '2.2.0', '<')
+            && ($subject->getRequest()->getModuleName() === 'checkout'
+                || $subject->getRequest()->getModuleName() === 'amasty_promo')
+        ) {
             /** @var $product \Magento\Catalog\Model\Product */
             $product = $subject->getProduct();
 

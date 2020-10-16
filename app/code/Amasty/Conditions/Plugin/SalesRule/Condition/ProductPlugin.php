@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Conditions
  */
 
@@ -34,7 +34,10 @@ class ProductPlugin
         $subject->setAttributeOption(
             array_merge(
                 $subject->getAttributeOption(),
-                ['quote_item_sku' => __('Custom Options SKU')]
+                [
+                    'quote_item_sku' => __('Custom Options SKU'),
+                    'quote_item_row_total_incl_tax' => __('Row total in cart with tax')
+                ]
             )
         );
 
@@ -61,6 +64,7 @@ class ProductPlugin
 
         if ($product && $product->getTypeId() !== 'skip') {
             $product->setQuoteItemSku($model->getSku());
+            $product->setQuoteItemRowTotalInclTax($model->getBaseRowTotalInclTax());
         }
     }
 }

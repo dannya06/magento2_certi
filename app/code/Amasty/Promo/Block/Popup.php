@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -10,15 +10,13 @@ namespace Amasty\Promo\Block;
 
 use Magento\Framework\View\Element\Template;
 
+/**
+ * Popup Style
+ */
 class Popup extends \Magento\Framework\View\Element\Template
 {
     const POPUP_ONE_BY_ONE = 0;
     const POPUP_MULTIPLE = 1;
-
-    /**
-     * @var \Amasty\Promo\Helper\Config
-     */
-    private $config;
 
     /**
      * @var \Amasty\Promo\Model\Config
@@ -32,20 +30,21 @@ class Popup extends \Magento\Framework\View\Element\Template
 
     public function __construct(
         Template\Context $context,
-        \Amasty\Promo\Helper\Config $config,
         \Amasty\Promo\Model\Config $modelConfig,
         \Amasty\Promo\Helper\Data $promoHelper,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->config = $config;
         $this->modelConfig = $modelConfig;
         $this->promoHelper = $promoHelper;
     }
 
+    /**
+     * @return int|null
+     */
     public function getCountersMode()
     {
-        return $this->config->getScopeValue("messages/display_remaining_gifts_counter");
+        return $this->modelConfig->getScopeValue("messages/display_remaining_gifts_counter");
     }
 
     /**
@@ -53,7 +52,7 @@ class Popup extends \Magento\Framework\View\Element\Template
      */
     public function getPopupName()
     {
-        $popupTitle = $this->escapeHtml($this->modelConfig->getPopupName());
+        $popupTitle = $this->modelConfig->getPopupName();
 
         if (!$popupTitle) {
             $popupTitle = __('Free Items');
@@ -63,7 +62,7 @@ class Popup extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getItemsCount()
     {

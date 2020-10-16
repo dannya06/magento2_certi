@@ -1,162 +1,94 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Helper;
 
-use Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface;
-use Magento\CatalogInventory\Model\Spi\StockStateProviderInterface;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Amasty\Promo\Model\ItemRegistry\PromoItemData;
+use Amasty\Promo\Model\Product as ProductStock;
+use Magento\Catalog\Model\Product;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Model\Quote;
 
-class Cart extends \Magento\Framework\App\Helper\AbstractHelper
+/**
+ * Add promo items to cart, update total quantity of cart
+ */
+class Cart
 {
     /**
-     * @var \Magento\Checkout\Model\Cart
-     */
-    private $cart;
-
-    /**
-     * @var \Amasty\Promo\Model\Registry
-     */
-    private $promoRegistry;
-
-    /**
-     * @var \Magento\CatalogInventory\Api\StockRegistryInterface
-     */
-    private $stockRegistry;
-
-    /**
-     * @var \Amasty\Promo\Helper\Messages
+     * @var Messages
      */
     private $promoMessagesHelper;
-    
-    /**
-     * @var StockStateProviderInterface
-     */
-    private $stockStateProvider;
 
     /**
-     * @var \Magento\Framework\App\ProductMetadataInterface
+     * @var ProductStock
      */
-    private $metadata;
-
-    /**
-     * @var \Amasty\Promo\Helper\Item
-     */
-    private $promoItemHelper;
-
-    private $addedProducts = [];
+    private $product;
 
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Checkout\Model\Cart $cart,
-        \Amasty\Promo\Model\Registry $promoRegistry,
-        StockRegistryProviderInterface $stockRegistry,
-        \Amasty\Promo\Helper\Messages $promoMessagesHelper,
-        StockStateProviderInterface $stockStateProvider,
-        \Magento\Framework\App\ProductMetadataInterface $metadata,
-        \Amasty\Promo\Helper\Item $promoItemHelper
+        Messages $promoMessagesHelper,
+        ProductStock $product
     ) {
-        parent::__construct($context);
-
-        $this->cart = $cart;
-        $this->promoRegistry = $promoRegistry;
-        $this->stockRegistry = $stockRegistry;
         $this->promoMessagesHelper = $promoMessagesHelper;
-        $this->stockStateProvider = $stockStateProvider;
-        $this->metadata = $metadata;
-        $this->promoItemHelper = $promoItemHelper;
+        $this->product = $product;
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product $product
-     * @param $qty
-     * @param bool $ruleId
+     * @param Product $product
+     * @param int $qty
+     * @param PromoItemData $promoItemData
      * @param array $requestParams
-     * @param null $discount
-     * @param null $minimalPrice
-     * @param \Magento\Quote\Model\Quote|null $quote
+     * @param Quote|null $quote
+     *
+     * @return bool
      */
     public function addProduct(
-        \Magento\Catalog\Model\Product $product,
+        Product $product,
         $qty,
-        $ruleId = false,
-        $requestParams = [],
-        $discount = null,
-        $minimalPrice = null,
-        \Magento\Quote\Model\Quote $quote = null
+        $promoItemData,
+        array $requestParams,
+        Quote $quote
     ) {
-        if (isset($this->addedProducts[$product->getId()])) {
-            return;
+        if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE) {
+            $qty = $this->resolveQty($product, $qty, $quote);
+        }
+        if ($qty == 0) {
+            return false;
         }
 
-        if ($product->getTypeId() == 'simple') {
-            $availableQty = $this->checkAvailableQty($product, $qty, $quote);
-
-            if ($availableQty <= 0) {
-                $this->promoMessagesHelper->addAvailabilityError($product);
-
-                return;
-            } else {
-                if ($availableQty < $qty) {
-                    $this->promoMessagesHelper->showMessage(
-                        __(
-                            "We apologize, but requested quantity of free gift <strong>%1</strong> is not available at the moment",
-                            $product->getName()
-                        ),
-                        false,
-                        true
-                    );
-                }
-            }
-
-            $qty = $availableQty;
-        }
-
-        $requestInfo = [
-            'qty' => $qty,
-            'options' => []
-        ];
-
-        if (!empty($requestParams)) {
-            $requestInfo = array_merge_recursive($requestParams, $requestInfo);
-        }
-
-        $requestInfo['options']['ampromo_rule_id'] = $ruleId;
-        $requestInfo['options']['discount'] = $discount;
-        $requestInfo['options']['minimal_price'] = $minimalPrice;
+        $ruleId = $promoItemData->getRuleId();
+        //TODO ST-1949 process not free items with custom_price
+        $requestParams['qty'] = $qty;
+        $requestParams['options']['ampromo_rule_id'] = $ruleId;
+        $requestParams['options']['discount'] = $promoItemData->getDiscountArray();
 
         try {
-            $product->setData('ampromo_rule_id', $ruleId);
-            if ($quote instanceof \Magento\Quote\Model\Quote
-                && !$this->cart->hasData('quote')
-            ) {
-                $this->cart->setQuote($quote); //prevent quote afterload event in cart::addProduct()
-            }
-            $cartQuote = $this->cart->getQuote();
-            $item = $cartQuote->addProduct($product, new \Magento\Framework\DataObject($requestInfo));
+            $item = $quote->addProduct($product, new \Magento\Framework\DataObject($requestParams));
 
             if ($item instanceof \Magento\Quote\Model\Quote\Item) {
-                $this->collectTotals($item, $cartQuote);
+                $item->setData('ampromo_rule_id', $ruleId);
             } else {
                 throw new LocalizedException(__($item));
             }
 
-            $this->addedProducts[$product->getId()] = $item->getQty();
+            //qty for promoItemData will be reserved later
+            $promoItemData->isDeleted(false);
+            if (!$quote->hasData('is_copy')) {
+                $this->promoMessagesHelper->showMessage(
+                    __(
+                        "Free gift <strong>%1</strong> was added to your shopping cart",
+                        $product->getName()
+                    ),
+                    false,
+                    true
+                );
+            }
 
-            $this->promoMessagesHelper->showMessage(
-                __(
-                    "Free gift <strong>%1</strong> was added to your shopping cart",
-                    $product->getName()
-                ),
-                false,
-                true
-            );
+            return true;
         } catch (\Exception $e) {
             $this->promoMessagesHelper->showMessage(
                 $e->getMessage(),
@@ -164,36 +96,45 @@ class Cart extends \Magento\Framework\App\Helper\AbstractHelper
                 true
             );
         }
+
+        return false;
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Item $item
-     * @param \Magento\Quote\Model\Quote $cartQuote
+     * @param Product $product
+     * @param int $qty
+     * @param Quote $quote
+     *
+     * @return float|int
      */
-    private function collectTotals(\Magento\Quote\Model\Quote\Item $item, \Magento\Quote\Model\Quote $cartQuote)
+    private function resolveQty($product, $qty, $quote)
     {
-        if ($item->getProductType() !== Configurable::TYPE_CODE) {
-            $items = $cartQuote->getShippingAddress()->getAllItems();
-            $items[] = $item;
-            $cartQuote->getShippingAddress()->setCollectShippingRates(true);
-            $cartQuote->getShippingAddress()->setData('cached_items_all', $items);
-            $cartQuote->collectTotals();
+        $availableQty = $this->product->checkAvailableQty($product->getSku(), $qty, $quote);
+
+        if ($availableQty <= 0) {
+            $this->promoMessagesHelper->addAvailabilityError($product);
+
+            $availableQty = 0;
+        } elseif ($availableQty < $qty) {
+            $this->promoMessagesHelper->showMessage(
+                __(
+                    "We apologize, but requested quantity of free gift <strong>%1</strong>"
+                    . " is not available at the moment",
+                    $product->getName()
+                ),
+                false,
+                true
+            );
         }
+
+        return $availableQty;
     }
 
     /**
-     * @param bool $saveCart
-     * @param \Magento\Quote\Model\Quote|null $quote
-     * @throws \Exception
+     * @param Quote $quote
      */
-    public function updateQuoteTotalQty(
-        $saveCart = false,
-        \Magento\Quote\Model\Quote $quote = null
-    ) {
-        if (!$quote) {
-            $quote = $this->cart->getQuote();
-        }
-
+    public function updateTotalQty($quote)
+    {
         $quote->setItemsCount(0);
         $quote->setItemsQty(0);
         $quote->setVirtualItemsQty(0);
@@ -217,87 +158,8 @@ class Cart extends \Magento\Framework\App\Helper\AbstractHelper
             if ($item->getProduct()->getIsVirtual()) {
                 $quote->setVirtualItemsQty($quote->getVirtualItemsQty() + $item->getQty());
             }
-            $quote->setItemsCount($quote->getItemsCount()+1);
-            $quote->setItemsQty((float) $quote->getItemsQty()+$item->getQty());
-        }
-
-        if ($saveCart) {
-            try {
-                if (version_compare($this->metadata->getVersion(), '2.2.0', '>=')) {
-                    $quote->getItemsCollection()->each([$this, 'removeDeleteMark']);
-                }
-
-                $quote->save();
-                $this->cart->save();
-            } catch (\Exception $e) {
-                $this->promoMessagesHelper->showMessage(
-                    __(
-                        "Something went wrong. Please try again later."
-                    ),
-                    true,
-                    true
-                );
-                $this->_logger->critical($e->getTraceAsString());
-            }
-        }
-    }
-
-    /**
-     * @param \Magento\Quote\Model\Quote\Item $item
-     */
-    public function removeDeleteMark(\Magento\Quote\Model\Quote\Item $item)
-    {
-        if ($this->promoItemHelper->isPromoItem($item) && $item->getProductType() !== Configurable::TYPE_CODE) {
-            $item->isDeleted(false);
-        }
-    }
-
-    /**
-     * @param \Magento\Catalog\Model\Product $product
-     * @param $qtyRequested
-     * @param null $quote
-     *
-     * @return float|int
-     */
-    public function checkAvailableQty(
-        \Magento\Catalog\Model\Product $product,
-        $qtyRequested,
-        $quote = null
-    ) {
-        $stockItem = $this->stockRegistry->getStockItem(
-            $product->getId(),
-            $product->getStore()->getWebsiteId()
-        );
-
-        $qtyAdded = 0;
-        if ($quote instanceof \Magento\Quote\Model\Quote) {
-            $items = $quote->getItemsCollection();
-        } else {
-            $items =  $this->cart->getItems();
-        }
-        foreach ($items as $item) {
-            if ($item->getProductId() == $product->getId()) {
-                $qtyAdded += $item->getQty();
-            }
-        }
-
-        $totalQty = $qtyRequested + $qtyAdded;
-
-        $checkResult = $this->stockStateProvider->checkQuoteItemQty(
-            $stockItem,
-            $qtyRequested,
-            $totalQty,
-            $qtyRequested
-        );
-
-        if ($checkResult->getData('has_error')) {
-            if (!$this->stockStateProvider->checkQty($stockItem, $totalQty)) {
-                return $stockItem->getQty() - $qtyAdded;
-            }
-
-            return 0;
-        } else {
-            return $qtyRequested;
+            $quote->setItemsCount($quote->getItemsCount() + 1);
+            $quote->setItemsQty((float)$quote->getItemsQty() + $item->getQty());
         }
     }
 }

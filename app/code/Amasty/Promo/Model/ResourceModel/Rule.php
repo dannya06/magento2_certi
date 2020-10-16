@@ -1,11 +1,13 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 namespace Amasty\Promo\Model\ResourceModel;
+
+use Amasty\Promo\Api\Data\GiftRuleInterface;
 
 class Rule extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
@@ -19,7 +21,7 @@ class Rule extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected function _construct()
     {
-        $this->_init('amasty_ampromo_rule', 'entity_id');
+        $this->_init('amasty_ampromo_rule', GiftRuleInterface::ENTITY_ID);
     }
 
     /**

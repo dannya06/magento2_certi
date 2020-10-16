@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -11,6 +11,9 @@ namespace Amasty\Promo\Plugin\OfflineShipping\Model\SalesRule;
 use Magento\OfflineShipping\Model\SalesRule\Calculator as ShippingCalculator;
 use Magento\Quote\Model\Quote\Item\AbstractItem;
 
+/**
+ * Free Shipping for Full Discounted Promo Items
+ */
 class Calculator
 {
     /**
@@ -33,6 +36,11 @@ class Calculator
      */
     private $checkoutSession;
 
+    /**
+     * @var array
+     */
+    protected $appliedShipping = [];
+
     public function __construct(
         \Amasty\Promo\Helper\Item $helperItem,
         \Amasty\Promo\Model\ResourceModel\Rule $ruleResource,
@@ -46,34 +54,32 @@ class Calculator
     /**
      * @param ShippingCalculator $subject
      * @param ShippingCalculator $result
+     * @param AbstractItem $item
+     *
      * @return ShippingCalculator
      */
     public function afterProcessFreeShipping(
         ShippingCalculator $subject,
-        $result
+        $result,
+        $item
     ) {
-
         $fullDiscountItems = $this->checkoutSession->getAmpromoFullDiscountItems();
-        $itemSku = $this->helperItem->getItemSku($this->item);
+        $itemSku = $this->helperItem->getItemSku($item);
 
-        if ($this->helperItem->isPromoItem($this->item)
-            && isset($fullDiscountItems[$itemSku])
-            && !$this->ruleResource->isApplyShipping($fullDiscountItems[$itemSku]['rule_ids'])
+        if (isset($fullDiscountItems[$itemSku])
+            && $this->helperItem->isPromoItem($item)
+            && $this->helperItem->getRuleId($item)
         ) {
-            $this->item->setFreeShipping(true);
+            if (!isset($this->appliedShipping[$itemSku])) {
+                $this->appliedShipping[$itemSku] = $this->ruleResource
+                    ->isApplyShipping($fullDiscountItems[$itemSku]['rule_ids']);
+            }
+
+            if ($this->appliedShipping[$itemSku] === false) {
+                $item->setFreeShipping(true);
+            }
         }
 
         return $result;
-    }
-
-    /**
-     * @param ShippingCalculator $subject
-     * @param AbstractItem $item
-     */
-    public function beforeProcessFreeShipping(
-        ShippingCalculator $subject,
-        $item
-    ) {
-        $this->item = $item;
     }
 }

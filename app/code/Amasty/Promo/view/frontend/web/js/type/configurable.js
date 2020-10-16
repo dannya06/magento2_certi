@@ -1,8 +1,7 @@
-/*jshint browser:true jquery:true*/
 define([
-    "jquery",
+    'jquery',
     'Magento_ConfigurableProduct/js/configurable'
-], function($) {
+], function ($) {
     'use strict';
 
     $.widget('mage.ampromoConfigurable', $.mage.configurable, {
@@ -98,7 +97,7 @@ define([
             } else {
                 $(this.options.slyOldPriceSelector).hide();
             }
-        },
+        }
     });
 
     return $.mage.ampromoConfigurable;

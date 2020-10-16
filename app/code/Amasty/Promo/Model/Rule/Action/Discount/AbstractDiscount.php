@@ -1,12 +1,15 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 namespace Amasty\Promo\Model\Rule\Action\Discount;
 
+/**
+ * Validate and register Promo Items
+ */
 abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Discount\AbstractDiscount
 {
     /**
@@ -20,7 +23,7 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
     protected $promoItemHelper;
 
     /**
-     * @var \Amasty\Promo\Helper\Config
+     * @var \Amasty\Promo\Model\Config
      */
     protected $config;
 
@@ -30,9 +33,9 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
     protected $productCollectionFactory;
 
     /**
-     * @var \Amasty\Promo\Model\RuleFactory
+     * @var \Amasty\Promo\Model\RuleResolver
      */
-    protected $ruleFactory;
+    protected $ruleResolver;
 
     protected $_itemsWithDiscount;
 
@@ -42,16 +45,16 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
         \Amasty\Promo\Helper\Item $promoItemHelper,
         \Amasty\Promo\Model\Registry $promoRegistry,
-        \Amasty\Promo\Helper\Config $config,
+        \Amasty\Promo\Model\Config $config,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
-        \Amasty\Promo\Model\RuleFactory $ruleFactory
+        \Amasty\Promo\Model\RuleResolver $ruleResolver
     ) {
         parent::__construct($validator, $discountDataFactory, $priceCurrency);
         $this->promoItemHelper          = $promoItemHelper;
         $this->config                   = $config;
         $this->promoRegistry            = $promoRegistry;
         $this->productCollectionFactory = $productCollectionFactory;
-        $this->ruleFactory = $ruleFactory;
+        $this->ruleResolver = $ruleResolver;
     }
 
     /**
@@ -69,7 +72,7 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
 
     /**
      * @param \Magento\SalesRule\Model\Rule $rule
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem|\Magento\Quote\Model\Quote\Item $item
      * @param int $qty
      *
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -79,13 +82,7 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
         \Magento\Quote\Model\Quote\Item\AbstractItem $item,
         $qty
     ) {
-        if (!$this->promoRegistry->getApplyAttempt($rule->getId())) {
-            return;
-        }
-        /** @var \Amasty\Promo\Model\Rule $ampromoRule */
-        $ampromoRule = $this->ruleFactory->create();
-
-        $ampromoRule = $ampromoRule->loadBySalesrule($rule);
+        $ampromoRule = $this->ruleResolver->getFreeGiftRule($rule);
 
         $promoSku = $ampromoRule->getSku();
         if (!$promoSku) {
@@ -93,11 +90,8 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
         }
 
         $qty = $this->_getFreeItemsQty($rule, $item);
-        if (!$qty) {
-            return;
-        }
 
-        if ($this->_skip($rule, $item)) {
+        if (!$qty || $this->_skip($rule, $item)) {
             return;
         }
         $discountData = [
@@ -142,6 +136,11 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
         \Magento\SalesRule\Model\Rule $rule,
         \Magento\Quote\Model\Quote\Item\AbstractItem $item
     ) {
+        if ($this->promoItemHelper->isPromoItem($item)) {
+
+            return 0;
+        }
+
         return max(1, $rule->getDiscountAmount());
     }
 
@@ -155,11 +154,7 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
         \Magento\SalesRule\Model\Rule $rule,
         \Magento\Quote\Model\Quote\Item\AbstractItem $item
     ) {
-        if (!$this->config->getScopeValue('limitations/skip_special_price')) {
-            return false;
-        }
-
-        if ($item->getProductType() == 'bundle') {
+        if ($item->getProductType() == 'bundle' || !$this->config->getScopeValue('limitations/skip_special_price')) {
             return false;
         }
 
@@ -211,7 +206,17 @@ abstract class AbstractDiscount extends \Magento\SalesRule\Model\Rule\Action\Dis
      */
     protected function _getAllItems(\Magento\Quote\Model\Quote\Item\AbstractItem $item)
     {
-        return $item->getAddress()->getAllItems();
+        $items = [];
+        foreach ($item->getAddress()->getAllItems() as $item) {
+            if ($item->getParentItem()
+                && $item->getParentItem()->getProductType() === \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE
+            ) {
+                continue;
+            }
+            $items[] = $item;
+        }
+
+        return $items;
     }
 
     /**

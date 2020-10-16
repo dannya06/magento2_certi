@@ -16,10 +16,12 @@ define([
             }
 
             var selector = $('[data-index="simple_action"] select');
-            if (type !== 'sales_rule_form') {
-                action = selector[1] ? selector[1].value ? selector[0].value : selector[0].value : undefined;
-            } else {
-                action = selector.val();
+            if (selector.length) {
+                if (type !== 'sales_rule_form') {
+                    action = selector[1] ? selector[1].value : selector[0].value ? selector[0].value : undefined;
+                } else {
+                    action = selector.val();
+                }
             }
 
             if (!action) {
@@ -45,15 +47,11 @@ define([
                     break;
                 case 'ampromo_items':
                     this.showFields(['ampromorule[sku]', 'ampromorule[type]', 'ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
-                    this.showBannersTab();
                     this.showPromoItemPriceTab();
-                    this.showProductLabelTab();
                     break;
                 case 'ampromo_product':
-                    this.showBannersTab();
                     this.showFields(['ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
                     this.showPromoItemPriceTab();
-                    this.showProductLabelTab();
                     break;
                 case 'ampromo_spent':
                     this.showFields(['ampromorule[sku]', 'ampromorule[type]', 'ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
@@ -62,34 +60,17 @@ define([
                 case 'ampromo_eachn':
                     this.showFields(['ampromorule[sku]', 'ampromorule[type]', 'ampromorule[apply_tax]', 'ampromorule[apply_shipping]'], type);
                     this.showPromoItemPriceTab();
-                    this.showBannersTab();
-                    this.showProductLabelTab();
                     break;
             }
         },
-        showBannersTab: function(){
-            $('[data-index=ampromorule_top_banner]').show();
-            $('[data-index=ampromorule_after_product_banner]').show();
-        },
-        hideBannersTab: function(){
-            $('[data-index=ampromorule_top_banner]').hide();
-            $('[data-index=ampromorule_after_product_banner]').hide();
-        },
-        showPromoItemPriceTab: function(){
+        showPromoItemPriceTab: function () {
             $('[data-index=ampromorule_items_price]').show();
         },
-        hidePromoItemPriceTab: function(){
+
+        hidePromoItemPriceTab: function () {
             $('[data-index=ampromorule_items_price]').hide();
         },
-        showProductLabelTab: function(){
-            $('[data-index=ampromorule_product_label]').show();
-        },
-        hideProductLabelTab: function(){
-            $('[data-index=ampromorule_product_label]').hide();
-        },
-        hideHighlightPromotionTab: function(){
-            $('[data-index=ampromo_promo_highlights]').hide();
-        },
+
         resetFields: function (type) {
             this.showFields([
                 'discount_qty', 'discount_step', 'apply_to_shipping', 'simple_free_shipping'
@@ -149,11 +130,6 @@ define([
 
         hideTabs: function () {
             this.hidePromoItemPriceTab();
-            this.hideBannersTab();
-            this.hideProductLabelTab();
-            if ($('[data-index=promo_highlights]').length) {
-                this.hideHighlightPromotionTab();
-            }
         }
     };
 

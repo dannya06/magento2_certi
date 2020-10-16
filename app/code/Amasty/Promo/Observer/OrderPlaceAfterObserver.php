@@ -1,47 +1,45 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Observer;
 
+use Amasty\Promo\Model\Prefix;
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Item;
 
+/**
+ * event name: sales_order_place_after
+ */
 class OrderPlaceAfterObserver implements ObserverInterface
 {
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var Prefix
      */
-    protected $scopeConfig;
+    private $prefix;
 
     public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-    )
-    {
-        $this->scopeConfig = $scopeConfig;
+        Prefix $prefix
+    ) {
+        $this->prefix = $prefix;
     }
 
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    /**
+     * @param Observer $observer
+     */
+    public function execute(Observer $observer)
     {
-        /** @var \Magento\Sales\Model\Order $order */
+        /** @var Order $order */
         $order = $observer->getOrder();
-
-        $prefix = $this->scopeConfig->getValue(
-            'ampromo/messages/prefix',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-
-        if ($prefix) {
-            foreach ($order->getAllItems() as $item) {
-                $buyRequest = $item->getBuyRequest();
-
-                if (isset($buyRequest['options']['ampromo_rule_id'])) {
-                    $item->setName($prefix . ' ' . $item->getName());
-                }
-            }
+        /** @var Item $item */
+        foreach ($order->getAllItems() as $item) {
+            $this->prefix->addPrefixToName($item);
         }
     }
 }
