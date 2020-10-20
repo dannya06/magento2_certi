@@ -10,7 +10,7 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Backend::stores">
-                    <resource id="Icube_ShipmentRate::shipment">
+                    <resource id="Icube_ShipmentRate::shipment" title="Shipment" translate="title" sortOrder="15">
                         <resource id="Icube_ShipmentRate::shipmentrate" title="Rates" sortOrder="15" />
                     </resource>
                 </resource>
