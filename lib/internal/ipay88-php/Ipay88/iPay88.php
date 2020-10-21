@@ -37,6 +37,7 @@ class IPay88 {
         22 => array('name' => 'Pay4ME', 'logo' => 'opay4me_s.png'),
         55 => array('name' => 'Kredivo', 'logo' => 'okredivo_s.png'),
         60 => array('name' => 'Alfamart', 'logo' => 'oalfamart_s.png'),
+        75 => array('name' => 'ShopeePay', 'logo' => 'oshopeepay_s.png'),
     );
 
     public static $paymentUrl               = 'https://payment.ipay88.co.id/epayment/entry.asp';
