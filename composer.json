@@ -109,14 +109,6 @@
             "type": "git",
             "url": "git@github.com:icubeus/magento2-rapidflow.git"
         },
-        "icubeus-gosend": {
-            "type": "git",
-            "url": "git@github.com:icube-mage/magento2-gosend.git"
-        },
-        "icubeus-osc": {
-            "type": "git",
-            "url": "git@github.com:icubeus/magento2-osc.git"
-        },
         "icubeus-swiftomschannel": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-swiftomschannel.git"
