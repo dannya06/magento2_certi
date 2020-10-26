@@ -124,9 +124,14 @@ namespace Icube\PromoShipping\Model\Quote;
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         $salesRule = $om->get("Magento\SalesRule\Model\Rule");
         $cartObj = $om->get('\Magento\Checkout\Model\Cart');   
+        $quoteObj = $om->get('\Magento\Backend\Model\Session\Quote');   
 
         $quoteId = $cartObj->getQuote()->getId();
-        $getAppliedRuleIds = $cartObj->getQuote()->getAppliedRuleIds();
+        if (!empty($quoteId)) {
+            $getAppliedRuleIds = $cartObj->getQuote()->getAppliedRuleIds();
+        } else {
+            $getAppliedRuleIds = $quoteObj->getQuote()->getAppliedRuleIds();
+        }
         $appliedRuleIds = explode(",",$getAppliedRuleIds);
 
         $arrRule = [];
