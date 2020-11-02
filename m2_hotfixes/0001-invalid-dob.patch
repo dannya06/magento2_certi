@@ -1,0 +1,84 @@
+From 12e3c9d9456934f7989c9c6423adad89503bab6e Mon Sep 17 00:00:00 2001
+From: Hanif Rizal <hanif@icube.us>
+Date: Tue, 13 Oct 2020 03:07:34 +0000
+Subject: [PATCH] invalid dob
+
+---
+ lib/web/mage/validation.js                                | 5 +++--
+ vendor/magento/module-customer/Block/Widget/Dob.php       | 4 +++-
+ .../module-customer/view/frontend/web/js/validation.js    | 8 +++++---
+ 3 files changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/lib/web/mage/validation.js b/lib/web/mage/validation.js
+index 51c23a9b2..4b7b2b34e 100644
+--- a/lib/web/mage/validation.js
++++ b/lib/web/mage/validation.js
+@@ -6,10 +6,11 @@
+ define([
+     'jquery',
+     'moment',
++    'mageUtils',
+     'jquery-ui-modules/widget',
+     'jquery/validate',
+     'mage/translate'
+-], function ($, moment) {
++], function ($, moment, utils) {
+     'use strict';
+ 
+     var creditCartTypes, rules, showLabel, originValidateDelegate;
+@@ -1032,7 +1033,7 @@ define([
+         ],
+         'validate-date': [
+             function (value, params, additionalParams) {
+-                var test = moment(value, additionalParams.dateFormat);
++                var test = moment(value, utils.convertToMomentFormat(additionalParams.dateFormat));
+ 
+                 return $.mage.isEmptyNoTrim(value) || test.isValid();
+             },
+diff --git a/vendor/magento/module-customer/Block/Widget/Dob.php b/vendor/magento/module-customer/Block/Widget/Dob.php
+index e020de79a..135c04757 100644
+--- a/vendor/magento/module-customer/Block/Widget/Dob.php
++++ b/vendor/magento/module-customer/Block/Widget/Dob.php
+@@ -267,7 +267,9 @@ class Dob extends AbstractWidget
+         $validators['validate-date'] = [
+             'dateFormat' => $this->getDateFormat()
+         ];
+-        $validators['validate-dob'] = true;
++        $validators['validate-dob'] = [
++            'dateFormat' => $this->getDateFormat()
++        ];
+ 
+         return 'data-validate="' . $this->_escaper->escapeHtml(json_encode($validators)) . '"';
+     }
+diff --git a/vendor/magento/module-customer/view/frontend/web/js/validation.js b/vendor/magento/module-customer/view/frontend/web/js/validation.js
+index 67a714212..784c7fba1 100644
+--- a/vendor/magento/module-customer/view/frontend/web/js/validation.js
++++ b/vendor/magento/module-customer/view/frontend/web/js/validation.js
+@@ -1,19 +1,21 @@
+ define([
+     'jquery',
+     'moment',
++    'mageUtils',
+     'jquery/validate',
+     'mage/translate'
+-], function ($, moment) {
++], function ($, moment, utils) {
+     'use strict';
+ 
+     $.validator.addMethod(
+         'validate-dob',
+-        function (value) {
++        function (value, element, params) {
++            var dateFormat = utils.convertToMomentFormat(params.dateFormat);
+             if (value === '') {
+                 return true;
+             }
+ 
+-            return moment(value).isBefore(moment());
++            return moment(value, dateFormat).isBefore(moment());
+         },
+         $.mage.__('The Date of Birth should not be greater than today.')
+     );
+-- 
+2.20.1
+
