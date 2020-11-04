@@ -30,7 +30,7 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
         \Magento\Framework\Translate\Inline\StateInterface $inlineTranslation,
         \Magento\Sales\Model\Order\Address\Renderer $addressRenderer,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Locale\ResolverInterface $localeResolver,
+        \Magento\Store\Model\App\Emulation $appEmulation,
         \Magestore\Storepickup\Helper\Data $storepickupHelper,
         array $data = []
     ) {
@@ -47,7 +47,7 @@ class Invoice extends \Magento\Sales\Model\Order\Pdf\Invoice
             $inlineTranslation,
             $addressRenderer,
             $storeManager,
-            $localeResolver,
+            $appEmulation,
             $data
         );
     }

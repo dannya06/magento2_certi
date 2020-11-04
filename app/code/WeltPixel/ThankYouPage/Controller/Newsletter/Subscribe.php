@@ -8,6 +8,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Newsletter\Model\SubscriberFactory;
 use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Newsletter\Model\SubscriptionManagerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -23,6 +24,11 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
      * @var JsonFactory
      */
     protected $resultJsonFactory;
+    
+    /**
+     * @var SubscriptionManagerInterface
+     */
+    private $subscriptionManager;
 
     /**
      * Initialize dependencies.
@@ -43,6 +49,7 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
         StoreManagerInterface $storeManager,
         CustomerUrl $customerUrl,
         CustomerAccountManagement $customerAccountManagement,
+        SubscriptionManagerInterface $subscriptionManager,
         \Magento\Checkout\Model\Session $checkoutSession,
         JsonFactory $resultJsonFactory
     ) {
@@ -54,7 +61,8 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
             $customerSession,
             $storeManager,
             $customerUrl,
-            $customerAccountManagement
+            $customerAccountManagement,
+            $subscriptionManager
         );
     }
 
