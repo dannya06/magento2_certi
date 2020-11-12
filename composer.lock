@@ -4092,7 +4092,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "c29b04976428d06aad05db6539254ecf72e108af"
+                "reference": "e267c90d260f43ae0ec481519d8600052d222d84"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^2.0",
@@ -4124,6 +4124,7 @@
                 "icubeus/module-owl-carousel-slider-graph-ql": "self.version",
                 "icubeus/module-pickup-graph-ql": "self.version",
                 "icubeus/module-promo-graph-ql": "self.version",
+                "icubeus/module-quote-graph-ql": "self.version",
                 "icubeus/module-review-graph-ql": "self.version",
                 "icubeus/module-sales-graph-ql": "self.version",
                 "icubeus/module-sms-otp-graph-ql": "self.version",
@@ -4163,7 +4164,8 @@
                     "src/module-swatches-graph-ql/registration.php",
                     "src/module-Ipay88-payment-graph-ql/registration.php",
                     "src/module-promo-graph-ql/registration.php",
-                    "src/module-newsletter-graph-ql/registration.php"
+                    "src/module-newsletter-graph-ql/registration.php",
+                    "src/module-quote-graph-ql/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\AwBlogGraphQl\\": "src/module-aw-blog-graph-ql",
@@ -4193,7 +4195,8 @@
                     "Icube\\SwatchesGraphQl\\": "src/module-swatches-graph-ql",
                     "Icube\\Ipay88PaymentGraphQl\\": "src/module-Ipay88-payment-graph-ql",
                     "Icube\\PromoGraphQl\\": "src/module-promo-graph-ql",
-                    "Icube\\NewsletterGraphQl\\": "src/module-newsletter-graph-ql"
+                    "Icube\\NewsletterGraphQl\\": "src/module-newsletter-graph-ql",
+                    "Icube\\QuoteGraphQl\\": "src/module-quote-graph-ql"
                 }
             },
             "license": [
@@ -4212,7 +4215,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-11-12T05:06:28+00:00"
+            "time": "2020-11-12T06:51:10+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
