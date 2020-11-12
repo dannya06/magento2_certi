@@ -4092,7 +4092,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "94324e03fba775af262ac4d38ea749054f2e07c6"
+                "reference": "c29b04976428d06aad05db6539254ecf72e108af"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^2.0",
@@ -4212,7 +4212,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-10-27T09:29:24+00:00"
+            "time": "2020-11-12T05:06:28+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
