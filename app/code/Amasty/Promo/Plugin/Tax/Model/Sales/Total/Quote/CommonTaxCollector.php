@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -13,6 +13,9 @@ use Amasty\Promo\Model\Storage;
 use Magento\Tax\Model\Sales\Total\Quote\CommonTaxCollector as TaxCollector;
 use Magento\Tax\Model\Sales\Quote\ItemDetails;
 
+/**
+ * Tax apply for Promo Item
+ */
 class CommonTaxCollector
 {
     /**
@@ -34,6 +37,11 @@ class CommonTaxCollector
      * @var AbstractItem
      */
     private $item;
+
+    /**
+     * @var array
+     */
+    protected $appliedTax = [];
 
     public function __construct(
         \Amasty\Promo\Helper\Item $helperItem,
@@ -61,15 +69,10 @@ class CommonTaxCollector
         $priceIncludesTax,
         $useBaseCurrency,
         $parentCode = null
-
     ) {
         $this->item = $item;
 
         if ($this->isApplyTaxToFreeGift()) {
-            if ($this->isWrongQtyOfFreeGift()) {
-                $this->item->setQty($this->isWrongQtyOfFreeGift());
-            }
-
             $this->item->setNotUsePricePlugin(true);
 
             $this->item->setBasePrice($this->item->getProduct()->getPrice());
@@ -109,21 +112,16 @@ class CommonTaxCollector
         $fullDiscountItems = $this->checkoutSession->getAmpromoFullDiscountItems();
         $itemSku = $this->helperItem->getItemSku($this->item);
 
-        return $this->helperItem->isPromoItem($this->item)
-            && isset($fullDiscountItems[$itemSku])
-            && $this->ruleResource->isApplyTax($fullDiscountItems[$itemSku]['rule_ids']);
-    }
+        if (isset($fullDiscountItems[$itemSku]['rule_ids'])
+            && $this->helperItem->isPromoItem($this->item)
+        ) {
+            if (!isset($this->appliedTax[$itemSku])) {
+                $this->appliedTax[$itemSku] = $this->ruleResource->isApplyTax($fullDiscountItems[$itemSku]['rule_ids']);
+            }
 
-    /**
-     * @return bool
-     */
-    private function isWrongQtyOfFreeGift()
-    {
-        $sku = $this->helperItem->getItemSku($this->item);
-        $items = $this->checkoutSession->getAmpromoItems();
+            return (bool)$this->appliedTax[$itemSku];
+        }
 
-        return $items && isset($items[$sku]) && $this->item->getQty() != $items[$sku]['qty'] ?
-            $items[$sku]['qty'] :
-            false;
+        return false;
     }
 }

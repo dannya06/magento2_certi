@@ -1,117 +1,106 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Helper;
 
-class Data extends \Magento\Framework\App\Helper\AbstractHelper
+/**
+ * Helper probably will be moved/separated
+ */
+class Data
 {
+    /**
+     * Allowed product types for precess as Free Gift (Promo Item)
+     */
+    const ALLOWED_PRODUCT_TYPES = [
+        \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE,
+        \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE,
+        \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL,
+        \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE,
+        'giftcard',//EE
+    ];
+
     /**
      * @var \Amasty\Promo\Model\Registry
      */
-    protected $promoRegistry;
+    private $promoRegistry;
 
     /**
      * @var \Amasty\Promo\Helper\Messages
      */
-    protected $promoMessagesHelper;
+    private $promoMessagesHelper;
 
     /**
-     * @var \Magento\Catalog\Model\ProductFactory
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Collection|null|false
      */
-    protected $_productFactory;
+    protected $productsCache = null;
 
     /**
-     * @var \Amasty\Promo\Helper\Cart
+     * @var array|null
      */
-    protected $promoCartHelper;
-
-    protected $_productsCache = null;
-
-    protected $_allowedTypes = [
-        'simple',
-        'configurable',
-        'virtual',
-        'downloadable'
-    ];
+    protected $itemsPopupDataCache = null;
 
     /**
      * @var \Amasty\Promo\Model\Product
      */
     private $product;
 
-    private $promoSku = [];
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
+     */
+    private $collectionFactory;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var \Amasty\Promo\Model\ItemRegistry\PromoItemRegistry
      */
-    private $session;
-
-    /**
-     * @var \Amasty\Promo\Helper\Item
-     */
-    private $promoItemHelper;
+    private $promoItemRegistry;
 
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
         \Amasty\Promo\Model\Registry $promoRegistry,
         \Amasty\Promo\Helper\Messages $promoMessagesHelper,
-        \Magento\Catalog\Model\ProductFactory $productFactory,
-        \Amasty\Promo\Helper\Cart $promoCartHelper,
         \Amasty\Promo\Model\Product $product,
-        \Magento\Checkout\Model\Session $session,
-        \Amasty\Promo\Helper\Item $promoItemHelper
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $collectionFactory,
+        \Amasty\Promo\Model\ItemRegistry\PromoItemRegistry $promoItemRegistry
     ) {
-        parent::__construct($context);
-
         $this->promoRegistry = $promoRegistry;
         $this->promoMessagesHelper = $promoMessagesHelper;
-        $this->_productFactory = $productFactory;
-        $this->promoCartHelper = $promoCartHelper;
         $this->product = $product;
-        $this->session = $session;
-        $this->promoItemHelper = $promoItemHelper;
+        $this->collectionFactory = $collectionFactory;
+        $this->promoItemRegistry = $promoItemRegistry;
     }
 
     /**
-     * @return bool|null
+     * Reset local cache
+     */
+    public function resetStorage()
+    {
+        $this->productsCache = $this->itemsPopupDataCache = null;
+    }
+
+    /**
+     * @return \Magento\Catalog\Model\ResourceModel\Product\Collection|false
      */
     public function getNewItems()
     {
-        if ($this->_productsCache === null) {
-            $ruleItems = $this->promoRegistry->getLimits();
-            $allowedSku = [];
-
-            $groups = $ruleItems['_groups'];
-            unset($ruleItems['_groups']);
-
-            if (!$ruleItems && !$groups) {
-                $this->_productsCache = false;
-
+        if ($this->productsCache === null) {
+            $this->productsCache = false;
+            $this->promoRegistry->updatePromoItemsReservedQty();
+            if (!$allowedSku = $this->promoItemRegistry->getAllowedSkus()) {
                 return false;
             }
-
-            foreach ($ruleItems as $ruleItem) {
-                if (isset($ruleItem['sku'])) {
-                    $allowedSku = array_merge($allowedSku, array_keys($ruleItem['sku']));
-                }
-            }
-
-            foreach ($groups as $rule) {
-                $allowedSku = array_merge($allowedSku, $rule['sku']);
-            }
-
-            $products = $this->_productFactory->create()->getCollection()
+            /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $products */
+            $products = $this->collectionFactory->create()
                 ->addAttributeToSelect(['name', 'small_image', 'status', 'visibility'])
                 ->addFieldToFilter('sku', ['in' => $allowedSku])
-            ;
+                ->setFlag('has_stock_status_filter', false);
 
+            /** @var \Magento\Catalog\Model\Product $product */
             foreach ($products as $key => $product) {
-                if (!in_array($product->getTypeId(), $this->_allowedTypes)) {
+                if (!in_array($product->getTypeId(), static::ALLOWED_PRODUCT_TYPES)) {
                     $this->promoMessagesHelper->showMessage(__(
                         "We apologize, but products of type <strong>%1</strong> are not supported",
                         $product->getTypeId()
@@ -120,8 +109,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     $products->removeItemByKey($key);
                 }
 
-                if ($product->getTypeId() == 'simple' && (!$product->isInStock() || !$product->isSalable()
-                    || !$this->promoCartHelper->checkAvailableQty($product, 1))
+                if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE
+                    && (!$product->isSalable() || !$this->product->checkAvailableQty($product->getSku(), 1))
                 ) {
                     $this->promoMessagesHelper->addAvailabilityError($product);
 
@@ -132,109 +121,85 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     $option->setProduct($product);
                     $product->addOption($option);
                 }
-
-                $this->recursiveFindDiscount($ruleItems, $product);
             }
 
             if ($products->getSize() > 0) {
-                $this->_productsCache = $products;
-            } else {
-                $this->_productsCache = false;
+                $this->productsCache = $products;
             }
         }
 
-        return $this->_productsCache;
+        return $this->productsCache;
     }
 
     /**
-     * @param $ruleItems
-     * @param $product
-     *
-     * @return bool
-     */
-    private function recursiveFindDiscount($ruleItems, $product)
-    {
-        $iterator  = new \RecursiveArrayIterator($ruleItems);
-        $recursive = new \RecursiveIteratorIterator(
-            $iterator,
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        foreach ($recursive as $key => $value) {
-            if ($key === $product->getSku()) {
-                $product->setAmpromoDiscount($value['discount']);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @return null
+     * @return array
+     * @deprecated
      */
     public function getAllowedProductQty()
     {
-        $result = [];
-        $rulesItems = $this->promoRegistry->getLimits();
-        $discountData = [];
-        $qty = 0;
-
-        if (isset($rulesItems['_groups'])) {
-            $rules = $rulesItems['_groups'];
-            foreach ($rules as $ruleId => $rule) {
-                if (isset($rule['sku'])) {
-                    $qty += $rule['qty'];
-                    $discountData[$ruleId]['rule_type'] = $rule['rule_type'];
-                    $discountData[$ruleId]['discount_amount'] = $rule['discount_amount'];
-                    foreach ($rule['sku'] as $sku) {
-                        $discountData[$ruleId]['sku'][$sku] = [
-                            'discount' => $rule['discount'],
-                            'qty' => $rule['qty']
-                        ];
-                    }
-                }
-            }
-
-            unset($rulesItems['_groups']);
-            if (is_array($rulesItems)) {
-                foreach ($rulesItems as $key => $ruleItems) {
-                    foreach ($ruleItems['sku'] as $sku => $item) {
-                        if (isset($item['qty'])) {
-                            $productQty = $this->product->getProductQty($sku);
-
-                            if ($productQty !== false && $item['qty'] > $productQty) {
-                                $rulesItems[$key]['sku'][$sku]['qty'] = $productQty;
-                                $item['qty'] = $productQty;
-                            }
-
-                            $qty += $item['qty'];
-                        }
-                    }
-                }
-            }
-
-            $discountData += $rulesItems;
-            array_map([$this, 'promoSkuMerge'], $discountData);
-
-            $result += [
-                'common_qty' => $qty,
-                'triggered_products' => $discountData,
-                'promo_sku' => $this->promoSku
-            ];
-        }
-
-        return $result;
+        return $this->getPromoItemsDataArray();
     }
 
     /**
-     * @param $item
+     * Gat data for popup
      *
-     * @return bool
+     * @return array
      */
-    public function promoSkuMerge($item)
+    public function getPromoItemsDataArray()
     {
-        $this->promoSku = array_merge($this->promoSku, $item['sku']);
+        if ($this->itemsPopupDataCache !== null) {
+            return $this->itemsPopupDataCache;
+        }
 
-        return true;
+        $promoSkus = $discountData = [];
+        $this->promoRegistry->updatePromoItemsReservedQty();
+        $qtyByRule = [0 => 0];
+
+        foreach ($this->promoItemRegistry->getAllowedItems() as $promoItemData) {
+            $sku = $promoItemData->getSku();
+            $ruleId = $promoItemData->getRuleId();
+            $itemQty = $promoItemData->getQtyToProcess();
+            if ($promoItemData->getRuleType() == \Amasty\Promo\Model\Rule::RULE_TYPE_ONE) {
+                // items with rule type 'one of' have qty for group
+                // must be before qty fix
+                $qtyByRule[$promoItemData->getRuleId()] = $itemQty;
+            }
+
+            $itemQty = $this->fixQty($sku, $itemQty);
+
+            if ($promoItemData->getRuleType() == \Amasty\Promo\Model\Rule::RULE_TYPE_ALL) {
+                // items with rule type 'all' have qty for each item
+                // should be after qty fix
+                $qtyByRule[0] += $itemQty;
+            }
+
+            $itemData = [
+                'discount' => $promoItemData->getDiscountArray(),
+                'qty' => $itemQty
+            ];
+            $discountData[$ruleId]['rule_type'] = $promoItemData->getRuleType();
+            $discountData[$ruleId]['discount_amount'] = $promoItemData->getDiscountAmount();
+            $discountData[$ruleId]['sku'][$sku] = $itemData;
+            $promoSkus[$sku] = &$discountData[$ruleId]['sku'][$sku];
+        }
+
+        return $this->itemsPopupDataCache = [
+            'common_qty' => array_sum($qtyByRule),
+            'triggered_products' => $discountData,
+            'promo_sku' => $promoSkus
+        ];
+    }
+
+    /**
+     * Check available inventory
+     *
+     * @param string $sku
+     * @param int|float $qty
+     *
+     * @return float|int
+     */
+    protected function fixQty($sku, $qty)
+    {
+        return $this->product->checkAvailableQty($sku, $qty);
     }
 }

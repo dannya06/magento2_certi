@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -13,20 +13,20 @@ class CalculatorFactory
     /**
      * @var \Magento\Framework\ObjectManagerInterface
      */
-    protected $_objectManager;
+    protected $objectManager;
 
     protected $classByType = [
-        \Amasty\Promo\Model\Rule::SAME_PRODUCT  => 'Amasty\Promo\Model\Rule\Action\Discount\SameProduct',
-        \Amasty\Promo\Model\Rule::PER_PRODUCT   => 'Amasty\Promo\Model\Rule\Action\Discount\Product',
-        \Amasty\Promo\Model\Rule::WHOLE_CART    => 'Amasty\Promo\Model\Rule\Action\Discount\Cart',
-        \Amasty\Promo\Model\Rule::SPENT         => 'Amasty\Promo\Model\Rule\Action\Discount\Spent',
-        \Amasty\Promo\Model\Rule::EACHN         => 'Amasty\Promo\Model\Rule\Action\Discount\Eachn',
+        \Amasty\Promo\Model\Rule::SAME_PRODUCT => \Amasty\Promo\Model\Rule\Action\Discount\SameProduct::class,
+        \Amasty\Promo\Model\Rule::PER_PRODUCT => \Amasty\Promo\Model\Rule\Action\Discount\Product::class,
+        \Amasty\Promo\Model\Rule::WHOLE_CART => \Amasty\Promo\Model\Rule\Action\Discount\Cart::class,
+        \Amasty\Promo\Model\Rule::SPENT => \Amasty\Promo\Model\Rule\Action\Discount\Spent::class,
+        \Amasty\Promo\Model\Rule::EACHN => \Amasty\Promo\Model\Rule\Action\Discount\Eachn::class,
     ];
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager
     ) {
-        $this->_objectManager = $objectManager;
+        $this->objectManager = $objectManager;
     }
 
     public function aroundCreate(
@@ -35,7 +35,7 @@ class CalculatorFactory
         $type
     ) {
         if (isset($this->classByType[$type])) {
-            return $this->_objectManager->create($this->classByType[$type]);
+            return $this->objectManager->create($this->classByType[$type]);
         }
 
         return $proceed($type);

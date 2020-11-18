@@ -2,16 +2,18 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 -->
 
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="ampromo_popup" />
+    <head>
+        <link src="Amasty_Promo::js/amastyNoticeDisable.js"/>
+    </head>
     <body>
-        <move element="ampromo.add" destination="checkout.cart.container" before="checkout.cart.form" />
-        <referenceBlock name="amasty.promo.notification" remove="true"/>
+        <move element="ampromo.add" destination="checkout.cart.items" before="checkout.cart.container" />
         <referenceBlock name="checkout.cart.totals">
             <arguments>
                 <argument name="jsLayout" xsi:type="array">

@@ -1,13 +1,23 @@
+"Option ID","Option ID"
+"Option Title","Option Title"
+"Product SKU","Product SKU"
+"Product Name","Product Name"
+"Option Type","Option Type"
 "Billing Address Country","Billing Address Country"
 "Payment Method","Payment Method"
 "Shipping Address Line","Shipping Address Line"
 City,City
+"Storeview currency","Storeview currency"
 contains,contains
 "does not contain","does not contain"
 is,is
 "is not","is not"
 "is one of","is one of"
 "is not one of","is not one of"
+"Open Chooser","Open Chooser"
+"If Product Custom Options IDs %1 %2","If Product Custom Options IDs %1 %2"
+matches,matches
+"does not match","does not match"
 "Customer ID","Customer ID"
 "Membership Days","Membership Days"
 "Average Order Value","Average Order Value"
@@ -23,3 +33,6 @@ Weight,Weight
 "Quantity In Stock","Quantity In Stock"
 "Orders Subselection","Orders Subselection"
 "Custom Options SKU","Custom Options SKU"
+"Row total in cart with tax","Row total in cart with tax"
+"Cart Item Attribute","Cart Item Attribute"
+"Product Custom Options IDs","Product Custom Options IDs"

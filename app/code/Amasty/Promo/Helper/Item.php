@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -10,7 +10,10 @@ namespace Amasty\Promo\Helper;
 
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 
-class Item extends \Magento\Framework\App\Helper\AbstractHelper
+/**
+ * Retrieve specific Cart Item Data
+ */
+class Item
 {
     /**
      * Store manager
@@ -20,29 +23,38 @@ class Item extends \Magento\Framework\App\Helper\AbstractHelper
     private $storeManager;
 
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
-        parent::__construct($context);
         $this->storeManager = $storeManager;
     }
 
     /**
      * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
-     * @return mixed|null
+     * @return int|null
      */
     public function getRuleId(\Magento\Quote\Model\Quote\Item\AbstractItem $item)
     {
         if (!($ruleId = $item->getData('ampromo_rule_id'))) {
-            $buyRequest = $item->getBuyRequest();
-
-            $ruleId = isset($buyRequest['options']['ampromo_rule_id'])
-                ? $buyRequest['options']['ampromo_rule_id'] : null;
+            $ruleId = $this->getRuleIdFromBuyRequest($item->getBuyRequest());
 
             $item->setData('ampromo_rule_id', $ruleId);
         }
 
         return $ruleId;
+    }
+
+    /**
+     * @param array|\Magento\Framework\DataObject $buyRequest
+     *
+     * @return int|null
+     */
+    public function getRuleIdFromBuyRequest($buyRequest)
+    {
+        if (isset($buyRequest['options']['ampromo_rule_id'])) {
+            return (int)$buyRequest['options']['ampromo_rule_id'];
+        }
+
+        return null;
     }
 
     /**

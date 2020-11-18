@@ -32,14 +32,13 @@ define([
             }
         },
 
-        getPercentDiscount: function(itemPrice, promoDiscount) {
+        getPercentDiscount: function (itemPrice, promoDiscount) {
             var percent = parseFloat(promoDiscount.replace("%", "", promoDiscount));
 
             return itemPrice * percent / 100;
         },
 
-        getFixedDiscount: function(itemPrice, promoDiscount)
-        {
+        getFixedDiscount: function (itemPrice, promoDiscount) {
             var discount = Math.abs(promoDiscount);
             if (discount > itemPrice) {
                 discount = itemPrice;
@@ -48,8 +47,7 @@ define([
             return discount;
         },
 
-        getFixedPrice: function(itemPrice, promoDiscount)
-        {
+        getFixedPrice: function (itemPrice, promoDiscount) {
             var discount = itemPrice - parseFloat(promoDiscount);
             if (discount < 0) {
                 discount = 0;
@@ -58,8 +56,7 @@ define([
             return discount;
         },
 
-        getDiscountAfterMinimalPrice: function(minimalPrice, itemPrice, discount)
-        {
+        getDiscountAfterMinimalPrice: function (minimalPrice, itemPrice, discount) {
             itemPrice = Number(itemPrice);
             minimalPrice = Number(minimalPrice);
             if (itemPrice > minimalPrice && itemPrice - discount < minimalPrice) {

@@ -1,18 +1,29 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Observer\Salesrule;
 
+use Amasty\Promo\Model\DiscountCalculator;
 use Amasty\Promo\Model\Rule;
+use Amasty\Promo\Model\RuleResolver;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Model\Quote\Item;
+use Magento\SalesRule\Model\Rule\Action\Discount\Data;
+use Psr\Log\LoggerInterface;
 
+/**
+ * Event name salesrule_validator_process
+ */
 class Discount implements ObserverInterface
 {
     const PROMO_RULES = [
@@ -22,90 +33,80 @@ class Discount implements ObserverInterface
         Rule::WHOLE_CART,
         Rule::EACHN,
     ];
+
     /**
      * @var \Amasty\Promo\Helper\Item
      */
     private $promoItemHelper;
 
     /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     * @var ProductRepositoryInterface
      */
     private $productRepository;
 
     /**
-     * @var \Amasty\Promo\Model\DiscountCalculator
+     * @var DiscountCalculator
      */
     private $discountCalculator;
 
     /**
-     * @var \Amasty\Promo\Model\RuleFactory
+     * @var RuleResolver
      */
-    private $ruleFactory;
+    private $ruleResolver;
 
     /**
-     * @var \Magento\Framework\App\State
+     * @var State
      */
     private $state;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
 
     public function __construct(
         \Amasty\Promo\Helper\Item $promoItemHelper,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Amasty\Promo\Model\DiscountCalculator $discountCalculator,
-        \Amasty\Promo\Model\RuleFactory $ruleFactory,
-        \Magento\Framework\App\State $state,
-        \Psr\Log\LoggerInterface $logger
+        ProductRepositoryInterface $productRepository,
+        DiscountCalculator $discountCalculator,
+        RuleResolver $ruleResolver,
+        State $state,
+        LoggerInterface $logger
     ) {
         $this->promoItemHelper = $promoItemHelper;
         $this->productRepository = $productRepository;
         $this->discountCalculator = $discountCalculator;
-        $this->ruleFactory = $ruleFactory;
+        $this->ruleResolver = $ruleResolver;
         $this->state = $state;
         $this->logger = $logger;
     }
 
     /**
      * @param Observer $observer
-     * @return \Magento\SalesRule\Model\Rule\Action\Discount\Data|void
+     *
+     * @return Data|void
      */
     public function execute(Observer $observer)
     {
         try {
-            /** @var \Magento\Quote\Model\Quote\Item $item */
+            /** @var Item $item */
             $item = $observer->getItem();
+            /** @var \Magento\SalesRule\Model\Rule $rule */
+            $rule = $observer->getRule();
 
-            /** @var \Magento\SalesRule\Model\Rule\Action\Discount\Data $result */
-            $result = $observer->getResult();
+            if ($this->checkItemForPromo($rule, $item)) {
+                /** @var Data $result */
+                $result = $observer->getResult();
+                if (!$item->getAmDiscountAmount()) {
+                    $baseDiscount = $this->discountCalculator->getBaseDiscountAmount($observer->getRule(), $item);
+                    $discount = $this->discountCalculator->getDiscountAmount($observer->getRule(), $item);
 
-            if ($this->promoItemHelper->isPromoItem($item)
-                && in_array($observer->getRule()->getSimpleAction(), self::PROMO_RULES)
-            ) {
-                $isValid = $this->checkItemForPromo($observer, $item);
-
-                try {
-                    $areaCode = $this->state->getAreaCode();
-                } catch (LocalizedException $exception) {
-                    $areaCode = \Magento\Framework\App\Area::AREA_FRONTEND;
-                }
-
-                $ruleId = $observer->getRule()->getId();
-                if ($isValid && (int)$ruleId === $item->getAmpromoRuleId()) {
-                    if (!$item->getAmDiscountAmount()) {
-                        $baseDiscount = $this->discountCalculator->getBaseDiscountAmount($observer->getRule(), $item);
-                        $discount = $this->discountCalculator->getDiscountAmount($observer->getRule(), $item);
-
-                        $result->setBaseAmount($baseDiscount);
-                        $result->setAmount($discount);
-                        $item->setAmBaseDiscountAmount($baseDiscount);
-                        $item->setAmDiscountAmount($discount);
-                    } elseif ($areaCode === \Magento\Framework\App\Area::AREA_WEBAPI_REST) {
-                        $result->setAmount($item->getAmDiscountAmount());
-                        $result->setBaseAmount($item->getAmBaseDiscountAmount());
-                    }
+                    $result->setBaseAmount($baseDiscount);
+                    $result->setAmount($discount);
+                    $item->setAmBaseDiscountAmount($baseDiscount);
+                    $item->setAmDiscountAmount($discount);
+                } elseif ($this->state->getAreaCode() === Area::AREA_WEBAPI_REST) {
+                    $result->setAmount($item->getAmDiscountAmount());
+                    $result->setBaseAmount($item->getAmBaseDiscountAmount());
                 }
             }
         } catch (LocalizedException $e) {
@@ -114,34 +115,57 @@ class Discount implements ObserverInterface
     }
 
     /**
-     * @param Observer $observer
-     * @param \Magento\Quote\Model\Quote\Item $item
+     * Is discount should be given for current cart item
+     *
+     * @param \Magento\SalesRule\Model\Rule $rule
+     * @param Item $item
      *
      * @return bool
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
-    private function checkItemForPromo($observer, $item)
+    public function checkItemForPromo($rule, $item)
     {
-        $itemSku = $item->getSku();
-        $ampromoRule = $observer->getRule()->getAmpromoRule();
-        if (!$ampromoRule) {
-            $ampromoRule = $this->ruleFactory->create();
-            $ampromoRule = $ampromoRule->loadBySalesrule($observer->getRule());
-        }
-        $promoDiscount = $ampromoRule->getItemsDiscount();
-        $minimalPrice = $ampromoRule->getMinimalItemsPrice();
-        if (!$minimalPrice && (!$promoDiscount || $promoDiscount === "100%")) {
+        if (!in_array($rule->getSimpleAction(), self::PROMO_RULES)
+            || !$this->promoItemHelper->isPromoItem($item)
+            || (int)$rule->getId() !== (int)$item->getAmpromoRuleId()
+        ) {
             return false;
         }
-        $promoSku = explode(",", $observer->getRule()->getAmpromoRule()->getSku());
-        $isValid = false;
-        foreach ($promoSku as $sku) {
-            if ($sku && stristr($itemSku, $sku)) {
-                $isValid = true;
-                break;
+        $ampromoRule = $this->ruleResolver->getFreeGiftRule($rule);
+
+        if ($item->getProductType() !== 'giftcard'
+            && $this->isFullDiscountRule($ampromoRule)
+        ) {
+            return false;
+        }
+        $itemSku = $item->getProduct()->getData('sku');
+
+        if ($rule->getSimpleAction() === Rule::SAME_PRODUCT) {
+            return true;
+        }
+
+        $promoSkuArray = explode(",", $ampromoRule->getSku());
+        foreach ($promoSkuArray as &$promoSku) {
+            if (trim($promoSku) == $itemSku) {
+                return true;
             }
         }
 
-        return $isValid || $observer->getRule()->getSimpleAction() === Rule::SAME_PRODUCT;
+        return false;
+    }
+
+    /**
+     * @param Rule $ampromoRule
+     *
+     * @return bool
+     */
+    private function isFullDiscountRule($ampromoRule)
+    {
+        return $this->discountCalculator->isFullDiscount(
+            [
+                'minimal_price' => $ampromoRule->getMinimalItemsPrice(),
+                'discount_item' => $ampromoRule->getItemsDiscount()
+            ]
+        );
     }
 }

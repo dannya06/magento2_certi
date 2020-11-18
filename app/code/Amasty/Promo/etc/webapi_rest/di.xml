@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 -->
@@ -11,5 +11,8 @@
     <type name="Magento\Quote\Model\Cart\Totals\Item">
         <!--add images data for added products by coupon-->
         <plugin name="Amasty_Promo::addImageDataAsExtensionAttribute" type="Amasty\Promo\Plugin\QuoteTotalItems"/>
+    </type>
+    <type name="Magento\Quote\Model\Quote\TotalsCollector">
+        <plugin name="AmastyPromo::AutoAdd" type="Amasty\Promo\Plugin\Quote\Model\Quote\TotalsCollectorPlugin"/>
     </type>
 </config>

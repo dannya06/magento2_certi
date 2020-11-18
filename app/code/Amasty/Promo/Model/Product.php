@@ -1,107 +1,182 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Model;
 
+use Magento\CatalogInventory\Api\StockRegistryInterface;
+use Magento\Checkout\Model\Session;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
+
+/**
+ * Product Stock provider
+ * @sine 2.8.0 MSI compatibility; optimization
+ */
 class Product
 {
     /**
-     * @var \Magento\CatalogInventory\Api\StockStateInterface
-     */
-    private $state;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    private $productRepository;
-
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
     private $storeManager;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
 
     /**
-     * @var \Magento\CatalogInventory\Api\StockConfigurationInterface
+     * @var Session
      */
-    private $stockConfiguration;
+    private $checkoutSession;
 
     /**
-     * @var \Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface
+     * MSI have backward compatibility for getStockStatusBySku
+     *
+     * @var StockRegistryInterface
      */
-    private $stockRegistryProvider;
+    private $stockRegistry;
+
+    /**
+     * @var ResourceModel\GetProductTypesBySkus
+     */
+    private $getProductTypesBySkus;
+
+    private $productQty = [];
 
     public function __construct(
-        \Magento\CatalogInventory\Api\StockStateInterface $state,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration,
-        \Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface $stockRegistryProvider
+        StoreManagerInterface $storeManager,
+        Session $checkoutSession,
+        LoggerInterface $logger,
+        StockRegistryInterface $stockRegistry,
+        ResourceModel\GetProductTypesBySkus $getProductTypes
     ) {
-        $this->state = $state;
-        $this->productRepository = $productRepository;
         $this->storeManager = $storeManager;
+        $this->checkoutSession = $checkoutSession;
         $this->logger = $logger;
-        $this->stockConfiguration = $stockConfiguration;
-        $this->stockRegistryProvider = $stockRegistryProvider;
+        $this->stockRegistry = $stockRegistry;
+        $this->getProductTypesBySkus = $getProductTypes;
+    }
+
+    /**
+     * reset local cache
+     */
+    public function resetStorage()
+    {
+        $this->productQty = [];
     }
 
     /**
      * @param string $sku
      *
-     * @return bool|float|int
+     * @return float|int
      */
     public function getProductQty($sku)
     {
-        $qty = 0;
+        if (!isset($this->productQty[$sku])) {
 
-        try {
-            /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
-            $product = $this->productRepository->get($sku, false, $this->storeManager->getStore()->getId());
-            if ($product->getTypeId() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE
-                || $product->getTypeId() === \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE
+            $productType = $this->getProductTypesBySkus->execute([$sku])[$sku];
+
+            if ($productType === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE
+                || $productType === \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE
+                || $productType === \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL
             ) {
-                return false;
+                $this->productQty[$sku] = false;
+            } else {
+                $this->productQty[$sku] = $this->getStockQty($sku);
             }
+        }
 
-            if (!$this->isManageStock((int)$product->getId())) {
-                return false;
-            }
+        return $this->productQty[$sku];
+    }
 
-            $qty = $this->state->getStockQty(
-                $product->getId(),
+    /**
+     * @param string $sku
+     *
+     * @return float|int
+     */
+    private function getStockQty($sku)
+    {
+        try {
+            /** backorder and manage stock statuses */
+            $stockItem = $this->stockRegistry->getStockItemBySku(
+                $sku,
                 $this->storeManager->getWebsite()->getId()
             );
+
+            /** MSI compatibility (status and salable qty) */
+            $stockStatus = $this->stockRegistry->getStockStatusBySku(
+                $sku,
+                $this->storeManager->getWebsite()->getId()
+            );
+
+            if (!$stockStatus->getStockStatus()) {
+                return 0;
+            }
+
+            if (!$stockItem->getManageStock() || $stockItem->getBackorders()) {
+                return $stockItem->getMaxSaleQty();
+            }
+
+            return $stockStatus->getQty();
         } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
             $this->logger->critical($e->getTraceAsString());
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->logger->critical($e->getTraceAsString());
         }
 
-        return $qty;
+        return 0;
     }
 
     /**
-     * @param int $productId
+     * fix qty
      *
-     * @return bool
+     * @param string $sku
+     * @param int $qtyRequested
+     * @param \Magento\Quote\Model\Quote|null $quote
+     *
+     * @return float|int
      */
-    private function isManageStock($productId)
-    {
-        $scopeId = $this->stockConfiguration->getDefaultScopeId();
-        /** @var \Magento\CatalogInventory\Api\Data\StockItemInterface $stockItem */
-        $stockItem = $this->stockRegistryProvider->getStockItem($productId, $scopeId);
+    public function checkAvailableQty(
+        $sku,
+        $qtyRequested,
+        $quote = null
+    ) {
+        $stockQty = $this->getProductQty($sku);
 
-        return $stockItem->getManageStock();
+        if ($stockQty === false) {
+            return $qtyRequested;
+        }
+
+        if (!$stockQty) {
+            return 0;
+        }
+
+        $qtyAdded = 0;
+        if (!$quote) {
+            $quote = $this->checkoutSession->getQuote();
+        }
+
+        /** @var \Magento\Quote\Model\Quote\Item $item */
+        foreach ($quote->getAllVisibleItems() as $item) {
+            //items with custom options may have modified sku
+            if ($item->getSku() === $sku
+                || ($item->hasData('product') && $item->getProduct()->getSku() == $sku)
+            ) {
+                $qtyAdded += $item->getQty();
+            }
+        }
+
+        $totalQty = $qtyRequested + $qtyAdded;
+
+        if ($totalQty > $stockQty) {
+            return max($stockQty - $qtyAdded, 0);
+        }
+
+        return $qtyRequested;
     }
 }

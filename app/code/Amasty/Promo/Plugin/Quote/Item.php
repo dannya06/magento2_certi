@@ -1,64 +1,73 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Plugin\Quote;
 
-use Magento\Framework\Api\SortOrder;
-use Magento\Quote\Model\Quote\Item\AbstractItem;
+use Amasty\Promo\Helper\Item as HelperItem;
+use Amasty\Promo\Model\DiscountCalculator;
+use Amasty\Promo\Model\Prefix;
 use Amasty\Promo\Model\Storage;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\State;
+use Magento\Quote\Model\Quote\Item\AbstractItem;
+use Magento\SalesRule\Api\RuleRepositoryInterface;
 use Magento\SalesRule\Model\Data\Rule;
 
+/**
+ * Cort Item compatibility with Promo Cart Item
+ */
 class Item
 {
     /**
-     * @var \Amasty\Promo\Helper\Item
+     * @var HelperItem
      */
     private $promoItemHelper;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
     private $scopeConfig;
 
     /**
-     * @var \Amasty\Promo\Model\DiscountCalculator
+     * @var DiscountCalculator
      */
     private $discountCalculator;
 
     /**
-     * @var \Magento\SalesRule\Api\RuleRepositoryInterface
+     * @var RuleRepositoryInterface
      */
     private $ruleRepository;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder
+     * @var State
      */
-    private $searchCriteriaBuilder;
+    private $state;
 
     /**
-     * @var \Magento\Framework\Api\SortOrderBuilder
+     * @var Prefix
      */
-    private $sortOrderBuilder;
+    private $prefix;
 
     public function __construct(
-        \Amasty\Promo\Helper\Item $promoItemHelper,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Amasty\Promo\Model\DiscountCalculator $discountCalculator,
-        \Magento\SalesRule\Api\RuleRepositoryInterface $ruleRepository,
-        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
-        \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder
+        HelperItem $promoItemHelper,
+        ScopeConfigInterface $scopeConfig,
+        DiscountCalculator $discountCalculator,
+        RuleRepositoryInterface $ruleRepository,
+        State $state,
+        Prefix $prefix
     ) {
         $this->promoItemHelper = $promoItemHelper;
-        $this->scopeConfig     = $scopeConfig;
+        $this->scopeConfig = $scopeConfig;
         $this->discountCalculator = $discountCalculator;
         $this->ruleRepository = $ruleRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->sortOrderBuilder = $sortOrderBuilder;
+        $this->state = $state;
+        $this->prefix = $prefix;
     }
 
     /**
@@ -92,6 +101,7 @@ class Item
             if ($this->promoItemHelper->isPromoItem($subject)
                 && $this->isFullDiscount($subject)
                 && $subject->getNotUsePricePlugin() !== true
+                && $subject->getProduct()->getTypeId() !== 'giftcard'
             ) {
                 if (isset(Storage::$cachedQuoteItemPricesWithTax[$subject->getSku()][$key])) {
                     return [$key, Storage::$cachedQuoteItemPricesWithTax[$subject->getSku()][$key]];
@@ -119,7 +129,7 @@ class Item
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $subject
+     * @param AbstractItem $subject
      * @param \Closure $proceed
      * @param \Magento\Catalog\Model\Product $product
      *
@@ -130,56 +140,35 @@ class Item
         \Closure $proceed,
         \Magento\Catalog\Model\Product $product
     ) {
-        if ($proceed($product)) {
-            $productRuleId = $product->getData('ampromo_rule_id');
-            $itemRuleId    = $this->promoItemHelper->getRuleId($subject);
+        if ($result = $proceed($product)) {
+            $productRuleId = (int)$product->getData('ampromo_rule_id');
+            $itemRuleId = (int)$this->promoItemHelper->getRuleId($subject);
 
-            return $productRuleId === $itemRuleId;
-        } else {
-            return false;
+            if ($productRuleId || $itemRuleId) {
+                return $productRuleId === $itemRuleId;
+            }
         }
+
+        return $result;
     }
 
     /**
      * @param \Magento\Quote\Model\Quote\Item\AbstractItem $subject
-     * @param \Closure $proceed
-     * @param bool $string
+     * @param string"array $result
      *
      * @return array|mixed|string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function aroundGetMessage(
-        AbstractItem $subject,
-        \Closure $proceed,
-        $string = true
-    ) {
-        $result = $proceed($string);
-
+    public function afterGetMessage(AbstractItem $subject, $result)
+    {
         if ($this->promoItemHelper->isPromoItem($subject)) {
-            $customMessage = $this->scopeConfig->getValue(
-                'ampromo/messages/cart_message',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-            );
-
-            if (!$customMessage) {
-                /** @var \Magento\Framework\Api\SearchCriteria $searchCriteria */
-                $searchCriteria = $this->getSearchCriteria((string)$subject->getAmpromoRuleId());
-                /** @var \Magento\SalesRule\Api\Data\RuleSearchResultInterface $rules */
-                $rules = $this->ruleRepository->getList($searchCriteria);
-                foreach ($rules->getItems() as $rule) {
-                    $ruleLabel = $this->getStoreLabel($rule, $subject->getStoreId());
-                    if ($ruleLabel) {
-                        $customMessage = $ruleLabel->getStoreLabel();
-
-                        if ($customMessage) {
-                            break;
-                        }
-                    }
-                }
+            if ($this->state->getAreaCode() === Area::AREA_ADMINHTML) {
+                $this->prefix->addPrefixToName($subject);
             }
 
+            $customMessage = $this->getCustomMessage($subject);
             if ($customMessage) {
-                if ($string) {
+                if (is_string($result)) {
                     $result .= __("\n" . $customMessage);
                 } else {
                     $result[] = __($customMessage);
@@ -191,24 +180,27 @@ class Item
     }
 
     /**
-     * @param string $ruleIds
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
      *
-     * @return \Magento\Framework\Api\SearchCriteria
+     * @return string|null
      */
-    private function getSearchCriteria($ruleIds)
+    protected function getCustomMessage($item)
     {
-        /** @var \Magento\Framework\Api\SortOrder $sortOrder */
-        $sortOrder = $this->sortOrderBuilder->setField(Rule::KEY_SORT_ORDER)
-            ->setDirection(SortOrder::SORT_ASC)
-            ->create();
+        $customMessage = $this->scopeConfig->getValue(
+            'ampromo/messages/cart_message',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
 
-        return $this->searchCriteriaBuilder->addFilter(
-            Rule::KEY_RULE_ID,
-            $ruleIds,
-            'in'
-        )
-            ->addSortOrder($sortOrder)
-            ->create();
+        if (!$customMessage) {
+            /** @var \Magento\SalesRule\Api\Data\RuleSearchResultInterface $rules */
+            $rule = $this->ruleRepository->getById($item->getAmpromoRuleId());
+            $ruleLabel = $this->getStoreLabel($rule, $item->getStoreId());
+            if ($ruleLabel) {
+                $customMessage = $ruleLabel->getStoreLabel();
+            }
+        }
+
+        return $customMessage;
     }
 
     /**

@@ -18,25 +18,25 @@ define(
                     };
                 }
             },
-            getSrc: function(item) {
+            getSrc: function (item) {
                 if (!this.imageData[item.item_id]) {
                     this.updateImageConfig(item);
                 }
                 return this._super();
             },
-            getWidth: function(item) {
+            getWidth: function (item) {
                 if (!this.imageData[item.item_id]) {
                     this.updateImageConfig(item);
                 }
                 return this._super();
             },
-            getHeight: function(item) {
+            getHeight: function (item) {
                 if (!this.imageData[item.item_id]) {
                     this.updateImageConfig(item);
                 }
                 return this._super();
             },
-            getAlt: function(item) {
+            getAlt: function (item) {
                 if (!this.imageData[item.item_id]) {
                     this.updateImageConfig(item);
                 }

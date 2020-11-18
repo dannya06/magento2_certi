@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 -->
@@ -13,5 +13,15 @@
     </event>
     <event name="salesrule_validator_process">
         <observer name="amasty_promo_salesrule_validator_process" instance="Amasty\Promo\Observer\Salesrule\Discount" />
+    </event>
+    <event name="catalog_product_type_prepare_full_options">
+        <observer name="add_promo_options" instance="Amasty\Promo\Observer\AddPromoOptionsToCandidate" />
+    </event>
+    <event name="checkout_cart_update_items_before">
+        <observer name="amasty_promo_update_qty_before" instance="Amasty\Promo\Observer\CheckoutCartUpdateItemsBefore"/>
+    </event>
+    <!-- for add prefix to item name -->
+    <event name="items_additional_data">
+        <observer name="Amasty_Promo::item_converter" instance="Amasty\Promo\Observer\Quote\Cart\Totals\ItemConverterObserver" />
     </event>
 </config>

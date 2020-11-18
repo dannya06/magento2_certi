@@ -1,18 +1,27 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Model;
 
+/**
+ * Config Provider
+ */
 class Config
 {
     const PROMO_SECTION = 'ampromo/';
+
     const GROUP_PROMO_MESSAGES = 'messages/';
+
     const GENERAL_GROUP = 'general/';
+
+    const GIFT_IMAGES_GROUP = 'gift_images/';
+
+    const PREFIX_FIELD = 'prefix';
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -25,12 +34,12 @@ class Config
     }
 
     /**
-     * @param $group
-     * @param $path
+     * @param string $group
+     * @param string|null $path
      *
-     * @return mixed
+     * @return string
      */
-    private function getScopeValue($group, $path)
+    public function getScopeValue($group, $path = null)
     {
         return $this->config->getValue(
             self::PROMO_SECTION . $group . $path,
@@ -106,5 +115,53 @@ class Config
     public function getAddButtonName()
     {
         return $this->getScopeValue(self::GROUP_PROMO_MESSAGES, 'add_button_title');
+    }
+
+    /**
+     * @return int
+     */
+    public function isDiscountIncluded()
+    {
+        return (bool) $this->getScopeValue(self::GENERAL_GROUP, 'discount_include');
+    }
+
+    /**
+     * @return string
+     */
+    public function getAttrForHeader()
+    {
+        return $this->getScopeValue(self::GIFT_IMAGES_GROUP, 'attribute_header');
+    }
+
+    /**
+     * @return string
+     */
+    public function getAttrForDescription()
+    {
+        return $this->getScopeValue(self::GIFT_IMAGES_GROUP, 'attribute_description');
+    }
+
+    /**
+     * @return float
+     */
+    public function getImageWidth()
+    {
+        return $this->getScopeValue(self::GIFT_IMAGES_GROUP, 'gift_image_width');
+    }
+
+    /**
+     * @return float
+     */
+    public function getImageHeight()
+    {
+        return $this->getScopeValue(self::GIFT_IMAGES_GROUP, 'gift_image_height');
+    }
+
+    /**
+     * @return string
+     */
+    public function getProductPrefix()
+    {
+        return $this->getScopeValue(self::GROUP_PROMO_MESSAGES, self::PREFIX_FIELD);
     }
 }
