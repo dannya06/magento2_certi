@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <icube_paymentreminder>
+            <general>
+                <active>0</active>
+                <expired_after>2</expired_after>
+                <notify_after>1</notify_after>
+                <template_cancel>icube_paymentreminder_general_template_cancel</template_cancel>
+                <template_reminder>icube_paymentreminder_general_template_reminder</template_reminder>
+            </general>
+        </icube_paymentreminder>
+    </default>
+</config>
