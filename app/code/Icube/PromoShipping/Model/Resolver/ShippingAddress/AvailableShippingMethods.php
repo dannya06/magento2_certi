@@ -110,7 +110,7 @@ class AvailableShippingMethods implements ResolverInterface
         }
 
         if (empty($data['original_amount'])) {
-            $data['price_incl_tax'] =  ['value' => $data['amount'], 'currency' => $quoteCurrencyCode];
+            $data['price_incl_tax'] =  ['value' => $data['price_incl_tax'], 'currency' => $quoteCurrencyCode];
         }else{
             $data['price_incl_tax'] =  ['value' => $data['original_amount'], 'currency' => $quoteCurrencyCode];
         }
@@ -122,9 +122,6 @@ class AvailableShippingMethods implements ResolverInterface
             $data['price_excl_tax'] = ['value' => $data['price_excl_tax'], 'currency' => $quoteCurrencyCode];
         }
 
-        // if (isset($data['price_incl_tax'])) {
-        //     $data['price_incl_tax'] = ['value' => $data['price_incl_tax'], 'currency' => $quoteCurrencyCode];
-        // }
         return $data;
     }
 }
