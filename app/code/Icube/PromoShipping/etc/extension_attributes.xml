@@ -10,6 +10,6 @@
         <attribute code="shipping_promo_name" type="string" />
     </extension_attributes>
     <extension_attributes for="Magento\Quote\Api\Data\ShippingMethodInterface">
-        <attribute code="shipping_original_price" type="string" />
+        <attribute code="original_amount" type="int" />
     </extension_attributes>
 </config>

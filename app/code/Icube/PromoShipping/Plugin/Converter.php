@@ -35,8 +35,7 @@ class Converter
                         $extensibleAttribute->setShippingPromoName($arrRateDescription[1]);
                     }
                     if(isset($arrRateDescription[2])){
-                        $formattedCurrencyValue = $this->_priceHelper->currency($arrRateDescription[2],true,false);
-                        $extensibleAttribute->setShippingOriginalPrice($formattedCurrencyValue);
+                        $extensibleAttribute->setOriginalAmount($arrRateDescription[2]);
                     }
                 }
             }
