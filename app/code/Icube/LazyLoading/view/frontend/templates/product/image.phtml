@@ -1,0 +1,76 @@
+<?php /** @var $block \Magento\Catalog\Block\Product\Image */ ?>
+<?php $lazyLoadHelper = $this->helper('Icube\LazyLoading\Helper\Data');
+$pWidth = $lazyLoadHelper->getPlaceholderWidth() ?? '100%';
+$isRequestAjax = $lazyLoadHelper->isRequestAjax();
+$isImageLoaderSet = $lazyLoadHelper->getImageLoaderIsSet();
+$lazyLodImgSrc = $lazyLoadHelper->getImageLoader();
+if (!$isImageLoaderSet) {
+    $imageId = 'product_small_image';
+    $width = 10;
+    $height = 10;
+    $lazyLodImgSrc = $lazyLoadHelper->getSmallImageLoader($block->getProductId(), $imageId, $width, $height)->getUrl();
+}
+$lazyLoadImgDataOriginal = $block->getImageUrl();
+if ($isRequestAjax) {
+    $pWidth = '100%';
+    $lazyLodImgSrc = $lazyLoadImgDataOriginal;
+}
+$negativeMargin = $lazyLoadHelper->startLoadingEarly() ? $lazyLoadHelper->getNegativeMargin() : 0;
+$effectSpeed = $lazyLoadHelper->startLoadingEarly() ? $lazyLoadHelper->getEffectSpeed() : 0;
+?>
+
+<?php
+$lazyLoadClass = '';
+if ($block->getLazyLoad()) {
+    $pWidth = '100%';
+    $lazyLoadClass = 'owl-lazy';
+} elseif ($lazyLoadHelper->startLoadingPlaceholder() && !$block->getOwlcarousel() ) {
+    $lazyLoadClass = 'lazy';
+}
+?>
+
+<img class="photo image <?php echo $lazyLoadClass; ?>"
+    <?php /* @escapeNotVerified */ echo $block->getCustomAttributes(); ?>
+    <?php if (!$block->getLazyLoad()): ?>
+        <?php if ($lazyLoadHelper->startLoadingPlaceholder() && !$block->getOwlcarousel()) : ?>
+            src="<?php /* @escapeNotVerified */ echo $lazyLodImgSrc; ?>"
+            data-original="<?php /* @escapeNotVerified */ echo $lazyLoadImgDataOriginal; ?>"
+            <?php if ($isImageLoaderSet) :  ?>
+                style="max-width:<?php echo $pWidth ?>"
+            <?php endif; ?>
+        <?php else:  ?>
+            src="<?php /* @escapeNotVerified */ echo $block->getImageUrl(); ?>"
+        <?php endif; ?>
+    <?php endif; ?>
+    <?php if ($block->getHoverImageUrl()) :  ?>
+        data-hoversrc="<?php /* @escapeNotVerified */ echo $block->getHoverImageUrl(); ?>"
+        data-origsrc="<?php /* @escapeNotVerified */ echo $lazyLoadImgDataOriginal; ?>"
+        onmouseover="this.setAttribute('data-tmp', this.src);this.src=this.getAttribute('data-hoversrc');"
+        onmouseout="this.src=this.getAttribute('data-tmp')"
+        onmousemove="if (this.getAttribute('data-hoversrc') != this.src) this.setAttribute('data-tmp', this.src)"
+    <?php endif; ?>
+     width="<?php /* @escapeNotVerified */ echo $block->getWidth(); ?>"
+     height="<?php /* @escapeNotVerified */ echo $block->getHeight(); ?>"
+     alt="<?php /* @escapeNotVerified */ echo $block->stripTags($block->getLabel(), null, true); ?>"
+    <?php if ($block->getLazyLoad()): ?>
+         data-src="<?php /* @escapeNotVerified */ echo $block->getImageUrl(); ?>"
+         data-src-retina="<?php /* @escapeNotVerified */ echo $block->getImageUrl(); ?>"
+         <?php if ($isImageLoaderSet) :  ?>
+            style="max-width:<?php echo $pWidth ?>"
+         <?php endif; ?>
+    <?php endif; ?>
+/>
+
+<script type="text/javascript">
+    require(['jquery', 'WeltPixel_LazyLoading/js/jquery_lazyload'], function($) {
+        $("img.lazy").lazyload({
+            effect: "fadeIn",
+            effectspeed: <?php echo $effectSpeed ?>,
+            imageloader: "<?php echo $lazyLodImgSrc ?>",
+            threshold: "<?php echo $negativeMargin ?>",
+            load: function(elements_left, settings) {
+                $(this).css({'max-width':'100%'});
+            }
+        });
+    });
+</script>
