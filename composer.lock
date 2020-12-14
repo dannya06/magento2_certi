@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e69678bceecbc62c8550e4864317fa10",
+    "content-hash": "eaf47c110adccdda272ecae881b3a1a9",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -3956,11 +3956,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "2.0.3",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "5d41ac78b677d0adfd5420dd138a0e65bf97d3f1"
+                "reference": "205b31ab18e3d0616534eb379db1b0e6df8349a4"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3980,15 +3980,15 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2020-03-24T01:50:29+00:00"
+            "time": "2020-12-09T08:51:00+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "dev-masterdefault",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "a5f3b7caa9ed5dfbbc3754539e5e398da6ebe0d0"
+                "reference": "4cc07d638a894526abc12ddbb92f54eb54a7cf8d"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -4026,15 +4026,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-09-03T04:38:49+00:00"
+            "time": "2020-12-09T09:43:11+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "2.0.10",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "645715f5c08a55fb7f6a6d42c7aa457ab7272120"
+                "reference": "ba5ee9438cf445fef78a4effaf0391738d4290c9"
             },
             "type": "magento2-module",
             "autoload": {
@@ -4055,15 +4055,15 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2020-07-02T03:35:08+00:00"
+            "time": "2020-12-09T11:13:48+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-confirmpayment.git",
-                "reference": "cec686f0765985aaecefa511154a32806295fe5a"
+                "reference": "68a6e5888bbd95498afdfa46eec4fe2419d9bb33"
             },
             "type": "magento2-module",
             "autoload": {
@@ -4084,24 +4084,24 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2020-07-27T01:21:10+00:00"
+            "time": "2020-12-14T02:35:16+00:00"
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "e267c90d260f43ae0ec481519d8600052d222d84"
+                "reference": "18d6e00fb9a9d761d66010a1aee6aa4a2aa4a0cd"
             },
             "require": {
-                "icubeus/magento2-citykecamatan": "^2.0",
-                "icubeus/magento2-instantdelivery": "dev-master",
-                "icubeus/magento2-notification": "dev-master",
-                "icubeus/magento2-payment": "dev-master",
-                "icubeus/magento2-smstada": "dev-master",
-                "icubeus/magento2-swiftomschannel": "^2.1",
-                "icubeus/magento2-veritranspayment": "^2.0"
+                "icubeus/magento2-citykecamatan": "^4.1",
+                "icubeus/magento2-instantdelivery": "^4.1",
+                "icubeus/magento2-notification": "^4.1",
+                "icubeus/magento2-payment": "^4.1",
+                "icubeus/magento2-smstada": "^4.1",
+                "icubeus/magento2-swiftomschannel": "^4.1",
+                "icubeus/magento2-veritranspayment": "^4.1"
             },
             "replace": {
                 "icubeus/module-am-extrafee-graph-ql": "self.version",
@@ -4215,15 +4215,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-11-12T06:51:10+00:00"
+            "time": "2020-12-09T11:23:51+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-indonesianlanguage.git",
-                "reference": "3124ced3411c7698c8ae1c9bc3fa9f50f9dbff99"
+                "reference": "fdcb94020517a98920d99ebe18e190e46cd712ab"
             },
             "type": "magento2-language",
             "autoload": {
@@ -4241,15 +4241,15 @@
                 }
             ],
             "description": "Indonesian language package for Magento 2",
-            "time": "2019-12-31T01:41:28+00:00"
+            "time": "2020-12-14T02:45:04+00:00"
         },
         {
             "name": "icubeus/magento2-instantdelivery",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "0a2daa0aa3b43bd2338009d0ebc6c9729cd1c299"
+                "reference": "aed9d87da3fff12876df08d5309271c9febb4d97"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -4288,18 +4288,18 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2020-10-30T04:11:54+00:00"
+            "time": "2020-12-09T11:52:46+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "cbeb1c305cc63f38fb9748c1325b567a3a332bbc"
+                "reference": "8e7bcfdd8425b57cdc5dd93b899317e8433b1598"
             },
             "require": {
-                "icubeus/magento2-smsgateaway": "dev-master"
+                "icubeus/magento2-smsgateaway": "^4.1"
             },
             "replace": {
                 "icubeus/module-event": "self.version",
@@ -4335,15 +4335,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-08-14T02:17:20+00:00"
+            "time": "2020-12-09T11:44:06+00:00"
         },
         {
             "name": "icubeus/magento2-payment",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-payment.git",
-                "reference": "f662fae7cf18b6eb5d4bf48e697f5d40863e278f"
+                "reference": "972c9e819d26e3b7f5556eabc36acc5188d20241"
             },
             "replace": {
                 "icubeus/module-ipay88": "self.version"
@@ -4383,15 +4383,15 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-10-16T09:02:49+00:00"
+            "time": "2020-12-09T11:59:34+00:00"
         },
         {
             "name": "icubeus/magento2-queues",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-queues.git",
-                "reference": "093cdbe06563a8276d9e3c6ae5d3c38c4cd8cdab"
+                "reference": "cac09e8e99b32dd685457b7d181178f6403cf2f2"
             },
             "replace": {
                 "icubeus/module-queues": "self.version",
@@ -4424,7 +4424,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-06-26T02:45:16+00:00"
+            "time": "2020-12-14T04:04:25+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
@@ -4472,11 +4472,11 @@
         },
         {
             "name": "icubeus/magento2-shippingbase",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingbase.git",
-                "reference": "64e9ab2ce7d7440576d16196ef87fff31c09764b"
+                "reference": "7c37abdb6cdf88ec0ddb30ef5b6ddf6e262bd035"
             },
             "replace": {
                 "icubeus/module-shippingbase": "self.version"
@@ -4506,18 +4506,18 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2019-05-27T08:23:13+00:00"
+            "time": "2020-12-14T01:39:58+00:00"
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "5d25b12f0c32f54e5b9c1d43c90f6e1e064d9764"
+                "reference": "14b4b25dfb2d129344d3f0d9e19e2c635b0f8b95"
             },
             "require": {
-                "icubeus/magento2-shippingbase": "dev-master"
+                "icubeus/magento2-shippingbase": "^4.1"
             },
             "replace": {
                 "icubeus/module-shippingshipper": "self.version"
@@ -4547,19 +4547,20 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-10-30T04:03:11+00:00"
+            "time": "2020-12-14T02:14:08+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smsgateaway.git",
-                "reference": "b6dae71487c0dd8ab9458de2b86476eb99ab0eb8"
+                "reference": "fc3bc59b7e3b044e3d563af53d3af8cbb2bb8630"
             },
             "replace": {
                 "icubeus/module-citcal": "self.version",
                 "icubeus/module-lenna": "self.version",
+                "icubeus/module-sirclochat": "self.version",
                 "icubeus/module-twilio": "self.version"
             },
             "type": "magento2-module",
@@ -4567,12 +4568,14 @@
                 "files": [
                     "src/module-twilio/registration.php",
                     "src/module-lenna/registration.php",
-                    "src/module-citcal/registration.php"
+                    "src/module-citcal/registration.php",
+                    "src/module-sirclochat/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\Twilio\\": "src/module-twilio",
                     "Icube\\Lenna\\": "src/module-lenna",
-                    "Icube\\Citcall\\": "src/module-citcal"
+                    "Icube\\Citcall\\": "src/module-citcal",
+                    "Icube\\SircloChat\\": "src/module-sirclochat"
                 }
             },
             "license": [
@@ -4591,18 +4594,18 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-06-26T02:46:36+00:00"
+            "time": "2020-12-09T11:34:39+00:00"
         },
         {
             "name": "icubeus/magento2-smstada",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "5c47431a1ea9369cbfcc496e1f4f915be329dc80"
+                "reference": "1a2bc3ae8ca3d584a1dae046ca34a36deed33b7f"
             },
             "require": {
-                "icubeus/magento2-smsgateaway": "dev-master"
+                "icubeus/magento2-smsgateaway": "^4.1"
             },
             "replace": {
                 "icubeus/module-smsotp": "self.version",
@@ -4638,15 +4641,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-07-23T10:33:08+00:00"
+            "time": "2020-12-09T11:32:19+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "2.1.14",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "3ae51fa0b0388c7f230ee409da57f2f80698f848"
+                "reference": "4663065d4db0ab622443dd41998fde1a6e8d4de9"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -4705,15 +4708,15 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2020-10-09T10:25:42+00:00"
+            "time": "2020-12-09T11:56:55+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "f6a109a4c6d00ae673f53c74926def35e1ff1794"
+                "reference": "91253340cc01e8624f18f72999a8e5ac7b70c402"
             },
             "type": "magento2-module",
             "autoload": {
@@ -4733,15 +4736,15 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2020-08-07T02:04:09+00:00"
+            "time": "2020-11-23T08:11:35+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "2.0.21",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "d84363e0031104c800a09f597e1f9a8247b00b19"
+                "reference": "d0156bb56a6458138e19e446c1b670d64123288d"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -4790,7 +4793,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-10-20T07:25:22+00:00"
+            "time": "2020-12-01T14:15:08+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -25733,20 +25736,7 @@
     "aliases": [],
     "minimum-stability": "alpha",
     "stability-flags": {
-        "composer/composer": 15,
-        "icubeus/magento2-trackorder": 20,
-        "icubeus/magento2-shippingbase": 20,
-        "icubeus/magento2-smsgateaway": 20,
-        "icubeus/magento2-notification": 20,
-        "icubeus/magento2-smstada": 20,
-        "icubeus/magento2-confirmpayment": 20,
-        "icubeus/magento2-indonesianlanguage": 20,
-        "icubeus/magento2-shippingshipper": 20,
-        "icubeus/magento2-checkout": 20,
-        "icubeus/magento2-payment": 20,
-        "icubeus/magento2-instantdelivery": 20,
-        "icubeus/magento2-queues": 20,
-        "icubeus/magento2-graphql": 20
+        "composer/composer": 15
     },
     "prefer-stable": true,
     "prefer-lowest": false,
