@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2016-04-14T15:37:56+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-11-25T09:30:05+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Destination/Edit/Tab/Type/Ftp.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -86,6 +86,13 @@ class Ftp extends AbstractType
                 'name' => 'ftp_pasv',
                 'values' => $this->yesNo->toOptionArray(),
                 'note' => __('If your server is behind a firewall, or if the extension has problems uploading the exported files, please set this to "Yes".')
+            ]
+            );
+            $fieldset->addField('ftp_ignorepasvaddress', 'select', [
+                'label' => __('Passive Mode: Ignore IP returned by server'),
+                'name' => 'ftp_ignorepasvaddress',
+                'values' => $this->yesNo->toOptionArray(),
+                'note' => __('Default value: No. If enabled, the (local) IP address returned by the FTP server will be ignored (useful for servers behind NAT) and instead the servers public IP address will be used. Can help with "Operation now in progress" errors or other directory listing/transfer issues.')
             ]
             );
         }

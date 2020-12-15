@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-05-10T19:18:39+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-06-05T17:58:44+00:00
  * File:          app/code/Xtento/ProductExport/Setup/UpgradeSchema.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -83,6 +83,43 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'unsigned' => true,
                     'nullable' => true,
                     'comment' => 'Port'
+                ]
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.11.9', '<')) {
+            // Move cronjobs into separate cron group
+            $connection->query(
+                "UPDATE " . $setup->getTable('core_config_data') . " 
+                    SET path = REPLACE(path, 'crontab/default/jobs/" . \Xtento\ProductExport\Cron\Export::CRON_GROUP . "', 'crontab/" . \Xtento\ProductExport\Cron\Export::CRON_GROUP . "/jobs/" . \Xtento\ProductExport\Cron\Export::CRON_GROUP . "')
+                    WHERE path LIKE 'crontab/default/jobs/" . \Xtento\ProductExport\Cron\Export::CRON_GROUP . "%'"
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.12.6', '<')) {
+            $connection->addColumn(
+                $setup->getTable('xtento_productexport_destination'),
+                'ftp_ignorepasvaddress',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
+                    'nullable' => false,
+                    'default' => false,
+                    'length' => 1,
+                    'comment' => 'FTP Ignore PASV Address'
+                ]
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.13.9', '<')) {
+            $connection->addColumn(
+                $setup->getTable('xtento_productexport_destination'),
+                'email_bcc',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'nullable' => false,
+                    'default' => false,
+                    'length' => 255,
+                    'comment' => 'E-Mail BCC'
                 ]
             );
         }

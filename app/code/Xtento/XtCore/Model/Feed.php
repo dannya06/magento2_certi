@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_XtCore
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-05-06T10:38:21+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-08-29T15:41:05+00:00
  * File:          app/code/Xtento/XtCore/Model/Feed.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -280,8 +280,8 @@ class Feed extends \Magento\Framework\Model\AbstractModel
     {
         try {
             $status = $this->moduleStatus;
-            if (@preg_match('/remove_xtento_module_xml/', $error)) {
-                $status->setIsEnabled(false, [@preg_replace("/[^A-Za-z0-9_\.]/", "", $errorNo)]);
+            if (preg_match('/remove_xtento_module_xml/', $error)) {
+                $status->setIsEnabled(false, [preg_replace("/[^A-Za-z0-9_\.]/", "", $errorNo)]);
             }
         } catch (\Exception $e) {
             return false;

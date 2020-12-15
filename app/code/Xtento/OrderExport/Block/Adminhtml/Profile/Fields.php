@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-12-13T18:43:42+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-03-11T13:44:25+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Profile/Fields.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -74,7 +74,7 @@ class Fields extends \Magento\Backend\Block\Template
         $newArray = [];
 
         $depth++;
-        if ($depth >= '100') {
+        if ($depth >= 250) {
             return '';
         }
 
@@ -87,7 +87,9 @@ class Fields extends \Magento\Backend\Block\Template
                     $val = __('NULL');
                 }
                 if (function_exists('mb_convert_encoding')) {
-                    $val = @mb_convert_encoding($val, 'UTF-8', 'auto');
+                    try {
+                        $val = mb_convert_encoding($val, 'UTF-8', 'auto');
+                    } catch (\Exception $e) {}
                 }
                 $newArray[] = ['text' => $key, 'leaf' => false, 'cls' => 'x-tree-noicon', 'children' => [['text' => $val, 'leaf' => true, 'cls' => 'x-tree-noicon']]];
             }

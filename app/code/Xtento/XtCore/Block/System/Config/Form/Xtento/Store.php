@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_XtCore
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2018-09-05T16:34:14+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-05-29T13:06:01+00:00
  * File:          app/code/Xtento/XtCore/Block/System/Config/Form/Xtento/Store.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -22,7 +22,7 @@ class Store extends \Magento\Config\Block\System\Config\Form\Field
 <script>
 requirejs(['prototype'], function() {
     if (typeof $$(".save")[0] !== 'undefined') {
-        $$(".save")[0].down('span').innerHTML = 'Open the XTENTO Extension Store in a new window'
+        $$(".save")[0].down('span').innerHTML = 'Open the XTENTO Extension Store in a new window';
         $$(".save")[0].setAttribute('onclick', "window.open('{$extStoreUrl}', '_blank'); return false;");
     }
 });

@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-01-22T16:29:19+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-10-09T19:21:20+00:00
  * File:          app/code/Xtento/OrderExport/Model/Profile.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -228,7 +228,7 @@ class Profile extends \Magento\Rule\Model\AbstractModel
     public function beforeDelete()
     {
         // Remove existing cronjobs
-        $this->cronHelper->removeCronjobsLike('orderexport_profile_' . $this->getId() . '_%');
+        $this->cronHelper->removeCronjobsLike('orderexport_profile_' . $this->getId() . '_%', \Xtento\OrderExport\Cron\Export::CRON_GROUP);
 
         return parent::beforeDelete();
     }
@@ -239,7 +239,7 @@ class Profile extends \Magento\Rule\Model\AbstractModel
     protected function updateCronjobs()
     {
         // Remove existing cronjobs
-        $this->cronHelper->removeCronjobsLike('orderexport_profile_' . $this->getId() . '_%');
+        $this->cronHelper->removeCronjobsLike('orderexport_profile_' . $this->getId() . '_%', \Xtento\OrderExport\Cron\Export::CRON_GROUP);
 
         if (!$this->getEnabled()) {
             return $this; // Profile not enabled
@@ -269,7 +269,8 @@ class Profile extends \Magento\Rule\Model\AbstractModel
                 $this->cronHelper->addCronjob(
                     $cronIdentifier,
                     $cronFrequency,
-                    $cronRunModel
+                    $cronRunModel,
+                    \Xtento\OrderExport\Cron\Export::CRON_GROUP
                 );
             }
         } else {
@@ -282,7 +283,8 @@ class Profile extends \Magento\Rule\Model\AbstractModel
             $this->cronHelper->addCronjob(
                 $cronIdentifier,
                 $cronFrequency,
-                $cronRunModel
+                $cronRunModel,
+                \Xtento\OrderExport\Cron\Export::CRON_GROUP
             );
         }
 

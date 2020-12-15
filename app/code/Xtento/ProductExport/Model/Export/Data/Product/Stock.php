@@ -2,14 +2,15 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-04-02T08:37:07+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-07-16T12:58:54+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/Stock.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\ProductExport\Model\Export\Data\Product;
 
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\ObjectManagerInterface;
 
@@ -116,13 +117,15 @@ class Stock extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         ) {
             if ($this->fieldLoadingRequired('msi_stocks')) {
                 $returnArray['msi_stocks'] = [];
-                $stockInfo = $this->objectManager->get('Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku')->execute($product->getSku());
-                foreach ($stockInfo as $stockSource) {
-                    $this->writeArray = &$returnArray['msi_stocks'][];
-                    foreach ($stockSource as $key => $value) {
-                        $this->writeValue($key, $value);
+                try {
+                    $stockInfo = $this->objectManager->get('Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku')->execute($product->getSku());
+                    foreach ($stockInfo as $stockSource) {
+                        $this->writeArray = &$returnArray['msi_stocks'][];
+                        foreach ($stockSource as $key => $value) {
+                            $this->writeValue($key, $value);
+                        }
                     }
-                }
+                } catch (NoSuchEntityException $e) {} catch (InputException $e) {}
                 $this->writeArray = &$returnArray; // Write on product level
             }
             if ($this->fieldLoadingRequired('msi_sources')) {
@@ -135,7 +138,7 @@ class Stock extends \Xtento\ProductExport\Model\Export\Data\AbstractData
                             $this->writeValue($key, $value);
                         }
                     }
-                } catch (NoSuchEntityException $e) {}
+                } catch (NoSuchEntityException $e) {} catch (InputException $e) {}
                 $this->writeArray = &$returnArray; // Write on product level
             }
         }

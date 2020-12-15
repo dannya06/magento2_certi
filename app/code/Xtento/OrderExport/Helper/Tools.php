@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2018-08-16T11:07:07+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-08-30T12:11:36+00:00
  * File:          app/code/Xtento/OrderExport/Helper/Tools.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -170,7 +170,11 @@ class Tools extends \Magento\Framework\App\Helper\AbstractHelper
                     $fieldsToCheck = ['conditions_serialized'];
                     foreach ($fieldsToCheck as $fieldToCheck) {
                         if (isset($profileData[$fieldToCheck])) {
-                            $jsonData = @json_decode($profileData[$fieldToCheck], true);
+                            try {
+                                $jsonData = json_decode($profileData[$fieldToCheck], true);
+                            } catch (\Exception $e) {
+                                $jsonData = '';
+                            }
                             if (json_last_error() == JSON_ERROR_NONE) {
                                 // It's json, we need to serialize it for M2.0/2.1
                                 $profileData[$fieldToCheck] = serialize($jsonData);

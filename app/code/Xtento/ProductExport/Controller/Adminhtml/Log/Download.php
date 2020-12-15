@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2016-04-21T11:05:27+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-04-09T12:15:13+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Log/Download.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -82,12 +82,16 @@ class Download extends \Xtento\ProductExport\Controller\Adminhtml\Log
         $resultPage = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_RAW);
         $file = $this->utilsHelper->prepareFilesForDownload($exportedFiles);
         if (empty($file)) {
-            throw new LocalizedException(
+            $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);
+            $this->messageManager->addWarningMessage(
                 __(
                     'No files have been exported or the backup files in the export_bkp folder have been deleted from the filesystem. Exported files don\'t exist anymore.'
                 )
             );
+            $resultRedirect->setPath('*/*/');
+            return $resultRedirect;
         }
+
         $resultPage->setHttpResponseCode(200)
             ->setHeader('Pragma', 'public', true)
             ->setHeader('Content-type', 'application/octet-stream', true)

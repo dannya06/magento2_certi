@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-12-12T14:25:13+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-07-16T13:39:10+00:00
  * File:          app/code/Xtento/ProductExport/Ui/Plugin/Component/MassActionPlugin.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -134,6 +134,9 @@ class MassActionPlugin
             $config['component'] = 'Magento_Ui/js/grid/tree-massactions';
         }
 
+        if (!isset($config['actions'])) {
+            $config['actions'] = [];
+        }
         $config['actions'] = $this->addExportAction($subject, $config['actions'], $entity);
 
         $subject->setData('config', $config);

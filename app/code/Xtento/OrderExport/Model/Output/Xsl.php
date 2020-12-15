@@ -2,14 +2,16 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2018-08-30T12:36:05+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-11-06T13:09:18+00:00
  * File:          app/code/Xtento/OrderExport/Model/Output/Xsl.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Model\Output;
 
+use Magento\Framework\Api\Uploader;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
 
@@ -64,6 +66,11 @@ class Xsl extends AbstractOutput
     protected $exportSettings;
 
     /**
+     * @var \Magento\Framework\Filesystem
+     */
+    protected $filesystem;
+
+    /**
      * @var ObjectManagerInterface
      */
     protected $objectManager;
@@ -87,6 +94,7 @@ class Xsl extends AbstractOutput
      * @param \Magento\Sales\Model\ResourceModel\Order\Shipment\CollectionFactory $shipmentCollectionFactory
      * @param \Magento\Sales\Model\ResourceModel\Order\Creditmemo\CollectionFactory $creditmemoCollectionFactory
      * @param \Magento\Framework\Config\DataInterface $exportSettings
+     * @param \Magento\Framework\Filesystem $filesystem
      * @param ObjectManagerInterface $objectManager
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
@@ -109,6 +117,7 @@ class Xsl extends AbstractOutput
         \Magento\Sales\Model\ResourceModel\Order\Shipment\CollectionFactory $shipmentCollectionFactory,
         \Magento\Sales\Model\ResourceModel\Order\Creditmemo\CollectionFactory $creditmemoCollectionFactory,
         \Magento\Framework\Config\DataInterface $exportSettings,
+        \Magento\Framework\Filesystem $filesystem,
         ObjectManagerInterface $objectManager,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -135,6 +144,7 @@ class Xsl extends AbstractOutput
         $this->shipmentCollectionFactory = $shipmentCollectionFactory;
         $this->creditmemoCollectionFactory = $creditmemoCollectionFactory;
         $this->exportSettings = $exportSettings;
+        $this->filesystem = $filesystem;
         $this->objectManager = $objectManager;
     }
 
@@ -146,7 +156,7 @@ class Xsl extends AbstractOutput
      */
     public function convertData($exportArray)
     {
-        if (!@class_exists('\XSLTProcessor')) {
+        if (!class_exists('\XSLTProcessor')) {
             throw new LocalizedException(__('The XSLTProcessor class could not be found. This means your PHP installation is missing XSL features. You cannot export output formats using XSL Templates without the PHP XSL extension. Please get in touch with your hoster or server administrator to add XSL to your PHP configuration.'));
         }
         // Some libxml settings, constants
@@ -182,7 +192,19 @@ class Xsl extends AbstractOutput
             throw new LocalizedException(__('No XSL Template has been set up for this export profile. Please open the export profile and set up your XSL Template in the "Output Format" tab.'));
         }
         try {
-            $outputFormatXml = new \SimpleXMLElement($outputFormatMarkup, null, strpos($outputFormatMarkup, '<') === false);
+            $loadTemplateFromFile = strpos($outputFormatMarkup, '<') === false;
+            if ($loadTemplateFromFile) {
+                $outputFormatMarkup = $this->fixBasePath($outputFormatMarkup);
+                try {
+                    $fileExists = file_exists($outputFormatMarkup);
+                } catch (\Exception $e) {
+                    $fileExists = false;
+                }
+                if (!$fileExists) {
+                    throw new LocalizedException(__('The path to the XSL Template you have specified does not exist. Please make sure the XSL Template file exists, or simply paste the XSL Template into the profiles output format tab directly.'));
+                }
+            }
+            $outputFormatXml = new \SimpleXMLElement($outputFormatMarkup, null, $loadTemplateFromFile);
         } catch (\Exception $e) {
             $this->throwXmlException(__("Please repair the XSL Template of this profile. You need to have a valid XSL Template in order to export orders. Could not load XSL Template:"));
         }
@@ -267,7 +289,11 @@ class Xsl extends AbstractOutput
                     $xmlDoc->loadXML($adjustedXml, $libxmlConstants);
                 }
 
-                $outputBeforeEncoding = @$xslTemplateObj->transformToXML($xmlDoc);
+                try {
+                    $outputBeforeEncoding = $xslTemplateObj->transformToXML($xmlDoc); // Prepend @ if you have issues. Exception is not thrown then but template is generated.
+                } catch (\Exception $e) {
+                    throw new LocalizedException(__('There was a problem transforming the output. Error message: %1', $e->getMessage()));
+                }
                 $output = $this->changeEncoding($outputBeforeEncoding, $charsetEncoding, $charsetLocale);
                 if (!$output && !empty($outputBeforeEncoding)) {
                     $this->throwXmlException(__("Please repair the XSL Template of this profile, check the encoding tag, or make sure output has been generated by this template. No output has been generated."));
@@ -279,21 +305,25 @@ class Xsl extends AbstractOutput
                 $outputArray[$filename] = $output;
             }
             if ($this->_registry->registry('is_test_orderexport') !== true) {
-                if ($fileType == 'invoice_pdf' || $fileType == 'packingslip_pdf' || $fileType == 'creditmemo_pdf'
-                    || preg_match('/fooman\_/', $fileType) || preg_match('/xtento\_/', $fileType)) {
-                    $orderIds = [];
-                    foreach ($exportArray as $exportObject) {
-                        if (isset($exportObject['order']) && isset($exportObject['order']['entity_id'])) {
-                            $orderIds[] = $exportObject['order']['entity_id'];
-                        } else {
-                            $orderIds[] = $exportObject['entity_id'];
-                        }
+                $orderIds = [];
+                foreach ($exportArray as $exportObject) {
+                    if (isset($exportObject['order']) && isset($exportObject['order']['entity_id'])) {
+                        $orderIds[] = $exportObject['order']['entity_id'];
+                    } else {
+                        $orderIds[] = $exportObject['entity_id'];
                     }
-                    if (!empty($orderIds)) {
+                }
+                if (!empty($orderIds)) {
+                    if ($fileType == 'invoice_pdf' || $fileType == 'packingslip_pdf' || $fileType == 'creditmemo_pdf'
+                        || preg_match('/fooman\_/', $fileType) || preg_match('/xtento\_/', $fileType)) {
                         $pdfContent = $this->getPdfsForOrderIds($orderIds, $fileType);
                         if ($pdfContent) {
                             $outputArray[$filename] = $pdfContent;
                         }
+                    }
+                    // If Xtento_CustomAttributes is installed, you can export uploaded files to your destinations
+                    if (preg_match('/xtentocustomattribute_order\_/', $fileType)) {
+                        $outputArray = $this->getOrderFilesFromXtentoCustomAttributes($outputArray, $orderIds, $fileType);
                     }
                 }
             }
@@ -312,7 +342,10 @@ class Xsl extends AbstractOutput
         if ($data === null) {
             return "";
         }
-        $current = @current($data);
+        $current = false;
+        try {
+            $current = current($data);
+        } catch (\Exception $e) {}
         if ($current === false) {
             $stringData = (string)$data;
             if (isset($data[0])) {
@@ -424,7 +457,7 @@ class Xsl extends AbstractOutput
      *
      * @return bool|string
      */
-    protected function getPdfsForOrderIds($orderIds, $fileType)
+    public function getPdfsForOrderIds($orderIds, $fileType)
     {
         /*if (preg_match("/fooman\_/", $fileType)) { // Valid types: fooman_invoice, fooman_order, fooman_shipment, fooman_creditmemo
             return Mage::getModel('pdfcustomiser/' . str_replace('fooman_', '', $fileType))->renderPdf(null, $orderIds, null, true, null, null)->Output('', 'S');
@@ -475,5 +508,54 @@ class Xsl extends AbstractOutput
             return $pdf['output'];
         }
         return false;
+    }
+
+    /**
+     * @param $outputArray
+     * @param $orderIds
+     * @param $fileType
+     */
+    public function getOrderFilesFromXtentoCustomAttributes($outputArray, $orderIds, $fileType)
+    {
+        $fileTypeSplit = explode("_", $fileType);
+        $entity = $fileTypeSplit[1];
+        unset($fileTypeSplit[0]);
+        unset($fileTypeSplit[1]);
+        $attributeCode = implode("_", $fileTypeSplit);
+        $collection = false;
+        if ($entity == 'order') {
+            $collection = $this->orderCollectionFactory->create()->addFieldToFilter('entity_id', ['in' => $orderIds]);
+        }
+        if ($collection === false || !$collection->getSize()) {
+            return false;
+        }
+        foreach ($collection as $object) {
+            $incrementId = $object->getIncrementId();
+            $filename = $object->getData($attributeCode);
+            if (empty($filename)) continue;
+            $dispersionPath = Uploader::getDispersionPath($filename);
+            $mediaDir = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
+            $customerPath = $mediaDir->getAbsolutePath('customer' . $dispersionPath);
+            $filePath = $customerPath . DIRECTORY_SEPARATOR . $filename;
+            if (!file_exists($filePath)) continue;
+            $outputArray[$incrementId . '_' . $filename] = file_get_contents($filePath);
+        }
+        return $outputArray;
+    }
+
+    public function fixBasePath($originalPath)
+    {
+        /*
+        * Let's try to fix the import directory and replace the dot with the actual Magento root directory.
+        * Why? Because if the cronjob is executed using the PHP binary a different working directory (when using a dot (.) in a directory path) could be used.
+        * But Magento is able to return the right base path, so let's use it instead of the dot.
+        */
+        $originalPath = str_replace('/', DIRECTORY_SEPARATOR, $originalPath);
+        if (substr($originalPath, 0, 2) == '.' . DIRECTORY_SEPARATOR) {
+            return rtrim($this->filesystem->getDirectoryRead(
+                \Magento\Framework\App\Filesystem\DirectoryList::ROOT
+            )->getAbsolutePath(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . substr($originalPath, 2);
+        }
+        return $originalPath;
     }
 }

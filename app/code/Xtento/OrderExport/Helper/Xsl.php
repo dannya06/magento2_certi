@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-03-26T21:16:46+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-10-19T14:32:30+00:00
  * File:          app/code/Xtento/OrderExport/Helper/Xsl.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -50,6 +50,26 @@ class Xsl extends \Magento\Framework\App\Helper\AbstractHelper
         /** @var \Magento\Framework\Encryption\EncryptorInterface $encryptor */
         $encryptor = ObjectManager::getInstance()->create('\Magento\Framework\Encryption\EncryptorInterface');
         return $encryptor->decrypt($value);
+    }
+
+    public static function currencyByStore($value, $store = null, $format = true)
+    {
+        $pricingHelper = ObjectManager::getInstance()->create('\Magento\Framework\Pricing\Helper\Data');
+        return $pricingHelper->currencyByStore($value, $store, $format, false);
+    }
+
+    /**
+     * @param $value
+     * @param $fromCurrency
+     * @param null $toCurrency
+     * @return mixed
+     *
+     * If this function returns a blank page/errors out, the currency rate doesn't exist in Magento probably.
+     */
+    public static function currencyConvert($value, $fromCurrency, $toCurrency = null)
+    {
+        $pricingHelper = ObjectManager::getInstance()->create('\Magento\Directory\Helper\Data');
+        return $pricingHelper->currencyConvert($value, $fromCurrency, $toCurrency);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
  * Last Modified: 2017-04-27T19:29:20+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Tools/ImportSettings.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.

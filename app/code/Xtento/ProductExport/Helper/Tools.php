@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-11-08T10:48:19+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-03-24T11:29:55+00:00
  * File:          app/code/Xtento/ProductExport/Helper/Tools.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -161,6 +161,10 @@ class Tools extends \Magento\Framework\App\Helper\AbstractHelper
         // Process profiles
         if (isset($settingsArray['profiles'])) {
             foreach ($settingsArray['profiles'] as $profileData) {
+                if (isset($profileData['store_ids'])) {
+                    // Field was renamed from store_ids (M1) to store_id (M2)
+                    $profileData['store_id'] = $profileData['store_ids'];
+                }
                 if ($serializedToJsonConverter !== false) {
                     if (isset($profileData['conditions_serialized']))
                         $profileData['conditions_serialized'] = $serializedToJsonConverter->convert($profileData['conditions_serialized']);
@@ -170,7 +174,11 @@ class Tools extends \Magento\Framework\App\Helper\AbstractHelper
                     $fieldsToCheck = ['conditions_serialized'];
                     foreach ($fieldsToCheck as $fieldToCheck) {
                         if (isset($profileData[$fieldToCheck])) {
-                            $jsonData = @json_decode($profileData[$fieldToCheck], true);
+                            try {
+                                $jsonData = json_decode($profileData[$fieldToCheck], true);
+                            } catch (\Exception $e) {
+                                $jsonData = '';
+                            }
                             if (json_last_error() == JSON_ERROR_NONE) {
                                 // It's json, we need to serialize it for M2.0/2.1
                                 $profileData[$fieldToCheck] = serialize($jsonData);

@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-01-22T16:29:19+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-08-04T15:03:48+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Profile/Edit/Tab/Filters.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -197,9 +197,9 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
                     'label' => __('Created during the last X days'),
                     'name' => 'export_filter_last_x_days',
                     'maxlength' => 5,
-                    'style' => 'width: 70px !important;" min="0',
+                    'style' => 'width: 70px !important;',
                     'note' => __(
-                        'Export only %1s created during the last X days (including day X). Only enter numbers here, nothing else. Leave empty if no "created during the last X days" filter should be applied.',
+                        'Export only %1s created during the last X days (including day X). Only enter numbers here, nothing else. Leave empty if no "created during the last X days" filter should be applied. Minimum value: 0',
                         $entity
                     )
                 ]
@@ -212,9 +212,9 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
                     'label' => __('Older than X minutes'),
                     'name' => 'export_filter_older_x_minutes',
                     'maxlength' => 10,
-                    'style' => 'width: 75px !important;" min="1',
+                    'style' => 'width: 75px !important;',
                     'note' => __(
-                        'Export only %1s which have been created at least X minutes ago. Only enter numbers here, nothing else. Leave empty if no filter should be applied.',
+                        'Export only %1s which have been created at least X minutes ago. Only enter numbers here, nothing else. Leave empty if no filter should be applied. Minimum value: 1',
                         $entity
                     )
                 ]

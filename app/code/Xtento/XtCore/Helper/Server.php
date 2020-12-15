@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_XtCore
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-08-16T08:52:13+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-08-29T15:40:04+00:00
  * File:          app/code/Xtento/XtCore/Helper/Server.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -73,7 +73,11 @@ class Server extends \Magento\Framework\App\Helper\AbstractHelper
         $currentLimitInBytes = $this->convertToByte($currentLimit);
         $newMemoryLimitInBytes = $this->convertToByte($newMemoryLimit);
         if ($currentLimitInBytes < $newMemoryLimitInBytes) {
-            @ini_set('memory_limit', $newMemoryLimit);
+            try {
+                ini_set('memory_limit', $newMemoryLimit);
+            } catch (\Exception $e) {
+                return false;
+            }
             return true;
         } else {
             return false;

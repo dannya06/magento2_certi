@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-07-11T13:07:23+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-11-21T14:48:56+00:00
  * File:          app/code/Xtento/ProductExport/Console/Command/ConfigImportCommand.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -25,7 +25,7 @@ class ConfigImportCommand extends Command
     protected $appState;
 
     /**
-     * @var \Xtento\ProductExport\Helper\Tools\Proxy
+     * @var \Xtento\ProductExport\Helper\Tools
      */
     protected $toolsHelper;
 
@@ -33,11 +33,11 @@ class ConfigImportCommand extends Command
      * ConfigImportCommand constructor.
      *
      * @param AppState $appState
-     * @param \Xtento\ProductExport\Helper\Tools\Proxy $toolsHelper
+     * @param \Xtento\ProductExport\Helper\Tools $toolsHelper
      */
     public function __construct(
         AppState $appState,
-        \Xtento\ProductExport\Helper\Tools\Proxy $toolsHelper
+        \Xtento\ProductExport\Helper\Tools $toolsHelper
     ) {
         $this->appState = $appState;
         $this->toolsHelper = $toolsHelper;

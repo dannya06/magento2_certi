@@ -2,7 +2,7 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
  * Last Modified: 2019-05-04T21:00:41+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Custom/Order/AmastyExtraFee.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.

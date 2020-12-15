@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-01-04T18:31:58+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-07-03T14:59:06+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Review/General.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -71,6 +71,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Catalog\Helper\Image $imageHelper,
+        \Magento\Catalog\Helper\Data $catalogHelper,
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Review\Model\ResourceModel\Review\CollectionFactory $reviewCollectionFactory,
         ParentProduct $parentProduct,
@@ -78,7 +79,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\Product\General
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        parent::__construct($context, $registry, $dateHelper, $utilsHelper, $taxConfig, $resourceProduct, $storeManager, $attributeSetFactory, $localeDate, $productRepository, $taxCalculation, $productMetadata, $objectManager, $imageHelper, $resource, $resourceCollection, $data);
+        parent::__construct($context, $registry, $dateHelper, $utilsHelper, $taxConfig, $resourceProduct, $storeManager, $attributeSetFactory, $localeDate, $productRepository, $taxCalculation, $productMetadata, $objectManager, $imageHelper, $catalogHelper, $resource, $resourceCollection, $data);
 
         $this->url = $urlBuilder;
         $this->reviewCollectionFactory = $reviewCollectionFactory;

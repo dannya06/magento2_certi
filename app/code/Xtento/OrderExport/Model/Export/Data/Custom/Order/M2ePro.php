@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2018-11-20T10:46:19+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-05-11T09:10:09+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Custom/Order/M2ePro.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -65,10 +65,12 @@ class M2ePro extends \Xtento\OrderExport\Model\Export\Data\AbstractData
 
         // Fetch fields to export
         $order = $collectionItem->getOrder();
+        $m2eOrderId = false;
 
-        if ($this->fieldLoadingRequired('m2epro_ebay') || $this->fieldLoadingRequired('m2epro_amazon')) {
+        if ($this->fieldLoadingRequired('m2epro_ebay') || $this->fieldLoadingRequired('m2epro_order') || $this->fieldLoadingRequired('m2epro_amazon')) {
             try {
                 // Get M2e order_id
+                $this->writeArray = &$returnArray['m2epro_order'];
                 $resource = $this->objectManager->get('Magento\Framework\App\ResourceConnection');
                 $readAdapter = $resource->getConnection();
                 $table = $resource->getTableName('m2epro_order');
@@ -76,46 +78,56 @@ class M2ePro extends \Xtento\OrderExport\Model\Export\Data\AbstractData
                     'magento_order_id' => $order->getId(),
                 ];
                 $dataRow = $readAdapter->fetchRow("SELECT * FROM {$table} WHERE magento_order_id = :magento_order_id", $binds);
+                if (is_array($dataRow)) {
+                    foreach ($dataRow as $key => $value) {
+                        $this->writeValue($key, $value);
+                    }
+                }
                 $m2eOrderId = isset($dataRow['id']) ? $dataRow['id'] : false;
             } catch (\Exception $e) {
 
             }
-        }
-
-        if (!empty($m2eOrderId) && $this->fieldLoadingRequired('m2epro_ebay')) {
-            try {
-                $this->writeArray = &$returnArray['m2epro_ebay'];
-                $table = $resource->getTableName('m2epro_ebay_order');
-                $binds = [
-                    'order_id' => $m2eOrderId,
-                ];
-                $dataRow = $readAdapter->fetchRow("SELECT * FROM {$table} WHERE order_id = :order_id", $binds);
-
-                foreach ($dataRow as $key => $value) {
-                    $this->writeValue($key, $value);
-                }
-            } catch (\Exception $e) {
-
-            }
             $this->writeArray = &$returnArray;
-        }
 
-        if ($this->fieldLoadingRequired('m2epro_amazon')) {
-            try {
-                $this->writeArray = &$returnArray['m2epro_amazon'];
-                $table = $resource->getTableName('m2epro_amazon_order');
-                $binds = [
-                    'order_id' => $m2eOrderId,
-                ];
-                $dataRow = $readAdapter->fetchRow("SELECT * FROM {$table} WHERE order_id = :order_id", $binds);
+            if (!empty($m2eOrderId) && $this->fieldLoadingRequired('m2epro_ebay')) {
+                try {
+                    $this->writeArray = &$returnArray['m2epro_ebay'];
+                    $table = $resource->getTableName('m2epro_ebay_order');
+                    $binds = [
+                        'order_id' => $m2eOrderId,
+                    ];
+                    $dataRow = $readAdapter->fetchRow("SELECT * FROM {$table} WHERE order_id = :order_id", $binds);
 
-                foreach ($dataRow as $key => $value) {
-                    $this->writeValue($key, $value);
+                    if (is_array($dataRow)) {
+                        foreach ($dataRow as $key => $value) {
+                            $this->writeValue($key, $value);
+                        }
+                    }
+                } catch (\Exception $e) {
+
                 }
-            } catch (\Exception $e) {
-
+                $this->writeArray = &$returnArray;
             }
-            $this->writeArray = &$returnArray;
+
+            if (!empty($m2eOrderId) && $this->fieldLoadingRequired('m2epro_amazon')) {
+                try {
+                    $this->writeArray = &$returnArray['m2epro_amazon'];
+                    $table = $resource->getTableName('m2epro_amazon_order');
+                    $binds = [
+                        'order_id' => $m2eOrderId,
+                    ];
+                    $dataRow = $readAdapter->fetchRow("SELECT * FROM {$table} WHERE order_id = :order_id", $binds);
+
+                    if (is_array($dataRow)) {
+                        foreach ($dataRow as $key => $value) {
+                            $this->writeValue($key, $value);
+                        }
+                    }
+                } catch (\Exception $e) {
+
+                }
+                $this->writeArray = &$returnArray;
+            }
         }
 
         // Done

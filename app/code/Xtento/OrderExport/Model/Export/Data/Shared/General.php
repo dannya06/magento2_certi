@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-02-25T14:25:39+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-11-11T15:44:10+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Shared/General.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -55,6 +55,27 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             // Just the entity_id at least for orders
             $this->writeValue('entity_id', $object->getId());
         }
+
+        // AW Gift Card - Sample code to get gift cards redeemed - Order load needed to get extension attributes
+        /*
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $order = $objectManager->create('\Magento\Sales\Model\OrderFactory')->create()->load($object->getId());
+        $giftcards = $order->getExtensionAttributes()->getAwGiftcardCodes();
+        if ($giftcards) {
+            $gcCodes = [];
+            $originalValue = 0;
+            foreach ($giftcards as $giftcard) {
+                $gcId = $giftcard->getGiftcardId();
+                $gc = $objectManager->create('\Aheadworks\Giftcard\Model\GiftcardFactory')->create()->load($gcId);
+                $originalValue += $gc->getInitialBalance();
+                $gcCodes[] = $giftcard->getGiftcardCode();
+            }
+            if (!empty($gcCodes)) {
+                $codes = implode(',', $gcCodes);
+                $this->writeValue('gift_codes', $codes);
+            }
+            $this->writeValue('gc_original', $originalValue);
+        }*/
 
         // Done
         return $returnArray;

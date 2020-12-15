@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-07-11T13:03:08+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-10-04T11:10:18+00:00
  * File:          app/code/Xtento/ProductExport/Console/Command/ExportCommand.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -11,6 +11,8 @@
 namespace Xtento\ProductExport\Console\Command;
 
 use Magento\Framework\App\State as AppState;
+use Magento\Framework\App\AreaList as AreaList;
+use Magento\Framework\App\Area as Area;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,6 +24,16 @@ class ExportCommand extends Command
      * @var AppState
      */
     protected $appState;
+
+    /**
+     * @var AreaList
+     */
+    protected $areaList;
+
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    protected $objectManager;
 
     /**
      * @var \Xtento\ProductExport\Model\ProfileFactory
@@ -36,15 +48,22 @@ class ExportCommand extends Command
     /**
      * ExportCommand constructor.
      *
+     * @param AppState $appState
+     * @param AreaList $areaList
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Xtento\ProductExport\Model\ProfileFactory $profileFactory
      * @param \Xtento\ProductExport\Model\ExportFactory $exportFactory
      */
     public function __construct(
         AppState $appState,
+        AreaList $areaList,
+        \Magento\Framework\ObjectManagerInterface $objectManager,
         \Xtento\ProductExport\Model\ProfileFactory $profileFactory,
         \Xtento\ProductExport\Model\ExportFactory $exportFactory
     ) {
         $this->appState = $appState;
+        $this->areaList = $areaList;
+        $this->objectManager = $objectManager;
         $this->profileFactory = $profileFactory;
         $this->exportFactory = $exportFactory;
         parent::__construct();
@@ -78,7 +97,10 @@ class ExportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->appState->setAreaCode('adminhtml');
+            $this->appState->setAreaCode(Area::AREA_CRONTAB);
+            $configLoader = $this->objectManager->get(\Magento\Framework\ObjectManager\ConfigLoaderInterface::class);
+            $this->objectManager->configure($configLoader->load(Area::AREA_CRONTAB));
+            $this->areaList->getArea(Area::AREA_CRONTAB)->load(Area::PART_TRANSLATE);
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             // intentionally left empty
         }

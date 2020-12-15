@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2016-02-29T14:40:37+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-11-25T12:29:34+00:00
  * File:          app/code/Xtento/OrderExport/Model/Destination/Ftp.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -30,16 +30,26 @@ class Ftp extends AbstractClass
         $testResult = new \Magento\Framework\DataObject();
         $this->setTestResult($testResult);
 
+        $this->connection = false;
+        $warning = '';
         if ($this->getDestination()->getFtpType() == self::TYPE_FTPS) {
             if (function_exists('ftp_ssl_connect')) {
-                $this->connection = @ftp_ssl_connect($this->getDestination()->getHostname(), $this->getDestination()->getPort(), $this->getDestination()->getTimeout());
+                try {
+                    $this->connection = ftp_ssl_connect($this->getDestination()->getHostname(), $this->getDestination()->getPort(), $this->getDestination()->getTimeout());
+                } catch (\Exception $e) {
+                    $warning = '(' . __('Detailed Error') . ': ' . substr($e->getMessage(), 0, strrpos($e->getMessage(), ' in ')) . ')';
+                }
             } else {
                 $this->getTestResult()->setSuccess(false)->setMessage(__('No FTP-SSL functions found. Please compile PHP with SSL support.'));
                 return false;
             }
         } else {
             if (function_exists('ftp_connect')) {
-                $this->connection = @ftp_connect($this->getDestination()->getHostname(), $this->getDestination()->getPort(), $this->getDestination()->getTimeout());
+                try {
+                    $this->connection = ftp_connect($this->getDestination()->getHostname(), $this->getDestination()->getPort(), $this->getDestination()->getTimeout());
+                } catch (\Exception $e) {
+                    $warning = '(' . __('Detailed Error') . ': ' . substr($e->getMessage(), 0, strrpos($e->getMessage(), ' in ')) . ')';
+                }
             } else {
                 $this->getTestResult()->setSuccess(false)->setMessage(__('No FTP functions found. Please compile PHP with FTP support.'));
                 return false;
@@ -47,26 +57,46 @@ class Ftp extends AbstractClass
         }
 
         if (!$this->connection) {
-            $this->getTestResult()->setSuccess(false)->setMessage(__('Could not connect to FTP server. Please make sure that there is no firewall blocking the outgoing connection to the FTP server and that the timeout is set to a high enough value. If this error keeps occurring, please get in touch with your server hoster / server administrator AND with the server hoster / server administrator of the remote FTP server. A firewall is probably blocking ingoing/outgoing FTP connections.'));
+            $this->getTestResult()->setSuccess(false)->setMessage(__('Could not connect to FTP server. Please make sure that there is no firewall blocking the outgoing connection to the FTP server and that the timeout is set to a high enough value. If this error keeps occurring, please get in touch with your server hoster / server administrator AND with the server hoster / server administrator of the remote FTP server. A firewall is probably blocking ingoing/outgoing FTP connections. %1', $warning));
             return false;
         }
 
-        if (!@ftp_login($this->connection, $this->getDestination()->getUsername(), $this->encryptor->decrypt($this->getDestination()->getPassword()))) {
-            $this->getTestResult()->setSuccess(false)->setMessage(__('Could not log into FTP server. Wrong username or password.'));
+        $warning = '';
+        $loginResult = false;
+        try {
+            $loginResult = ftp_login($this->connection, $this->getDestination()->getUsername(), $this->encryptor->decrypt($this->getDestination()->getPassword()));
+        } catch (\Exception $e) {
+            $warning = '(' . __('Detailed Error') . ': ' . substr($e->getMessage(), 0, strrpos($e->getMessage(), ' in ')) . ')';
+        }
+        if (!$loginResult) {
+            $this->getTestResult()->setSuccess(false)->setMessage(__('Could not log into FTP server. Wrong username or password. %1', $warning));
             return false;
+        }
+
+        if ($this->getDestination()->getFtpIgnorepasvaddress()) {
+            ftp_set_option($this->connection, FTP_USEPASVADDRESS, false);
         }
 
         if ($this->getDestination()->getFtpPasv()) {
             // Enable passive mode
-            if (!@ftp_pasv($this->connection, true)) {
-                #$this->getTestResult()->setSuccess(false)->setMessage(__('Could not enable passive mode for FTP connection.'));
-                #$this->getDestination()->setLastResult($this->getTestResult()->getSuccess())->setLastResultMessage($this->getTestResult()->getMessage())->save();
-                #return false;
-            }
+            try {
+                if (!ftp_pasv($this->connection, true)) {
+                    #$this->getTestResult()->setSuccess(false)->setMessage(__('Could not enable passive mode for FTP connection.'));
+                    #$this->getDestination()->setLastResult($this->getTestResult()->getSuccess())->setLastResultMessage($this->getTestResult()->getMessage())->save();
+                    #return false;
+                }
+            } catch (\Exception $e) {}
         }
 
-        if (!@ftp_chdir($this->connection, $this->getDestination()->getPath())) {
-            $this->getTestResult()->setSuccess(false)->setMessage(__('Could not change directory on FTP server to export directory. Please make sure the directory exists (base path must be exactly the same) and that we have rights to read in the directory.'));
+        $warning = '';
+        $chdirResult = false;
+        try {
+            $chdirResult = ftp_chdir($this->connection, $this->getDestination()->getPath());
+        } catch (\Exception $e) {
+            $warning = '(' . __('Detailed Error') . ': ' . substr($e->getMessage(), 0, strrpos($e->getMessage(), ' in ')) . ')';
+        }
+        if (!$chdirResult) {
+            $this->getTestResult()->setSuccess(false)->setMessage(__('Could not change directory on FTP server to export directory. Please make sure the directory exists (base path must be exactly the same) and that we have rights to read in the directory. %1', $warning));
             return false;
         }
 
@@ -100,9 +130,17 @@ class Ftp extends AbstractClass
             $tempHandle = fopen('php://temp', 'r+');
             fwrite($tempHandle, $data);
             rewind($tempHandle);
-            if (!@ftp_fput($this->connection, $filename, $tempHandle, FTP_BINARY)) {
+
+            $warning = '';
+            $uploadResult = false;
+            try {
+                $uploadResult = ftp_fput($this->connection, $filename, $tempHandle, FTP_BINARY);
+            } catch (\Exception $e) {
+                $warning = '(' . __('Detailed Error') . ': ' . substr($e->getMessage(), 0, strrpos($e->getMessage(), ' in ')) . ')';
+            }
+            if (!$uploadResult) {
                 $logEntry->setResult(\Xtento\OrderExport\Model\Log::RESULT_WARNING);
-                $message = sprintf("Could not save file %1 in directory %2 on FTP server %3. You can try enabling passive mode in the configuration. Please make sure the directory is writable. Also please make sure that there is no firewall blocking the outgoing connection to the FTP server. If this error keeps occurring, please get in touch with your server hoster / server administrator AND with the server hoster / server administrator of the remote FTP server, so they can adjust the firewall.", $filename, $this->getDestination()->getPath(), $this->getDestination()->getHostname());
+                $message = sprintf("Could not save file %1 in directory %2 on FTP server %3. You can try enabling passive mode in the configuration. Please make sure the directory is writable. Also please make sure that there is no firewall blocking the outgoing connection to the FTP server. If this error keeps occurring, please get in touch with your server hoster / server administrator AND with the server hoster / server administrator of the remote FTP server, so they can adjust the firewall. %4", $filename, $this->getDestination()->getPath(), $this->getDestination()->getHostname(), $warning);
                 $logEntry->addResultMessage(__('Destination "%1" (ID: %2): %3', $this->getDestination()->getName(), $this->getDestination()->getId(), $message));
                 if (!$this->getDestination()->getBackupDestination()) {
                     $this->getDestination()->setLastResultMessage(__($message));
@@ -111,7 +149,9 @@ class Ftp extends AbstractClass
                 $savedFiles[] = $this->getDestination()->getPath() . $originalFilename;
             }
         }
-        @ftp_close($this->connection);
+        try {
+            ftp_close($this->connection);
+        } catch (\Exception $e) {}
         return $savedFiles;
     }
 }

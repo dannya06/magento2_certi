@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2016-05-25T11:07:59+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-27T12:30:21+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Action.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -80,7 +80,7 @@ abstract class Action extends \Magento\Backend\App\Action
         }
         if ($this->getRequest()->getActionName() !== 'redirect') {
             // Check XSL status
-            if (!@class_exists('XSLTProcessor')) {
+            if (!class_exists('XSLTProcessor')) {
                 $this->addWarning(
                     __(
                         'The XSLTProcessor class could not be found. This means your PHP installation is missing XSL features. You cannot export output formats using XSL Templates without the PHP XSL extension. Please get in touch with your hoster or server administrator to add XSL to your PHP configuration.'

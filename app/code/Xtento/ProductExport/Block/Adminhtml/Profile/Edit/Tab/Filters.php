@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-07-24T15:22:44+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-08-04T15:05:07+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Profile/Edit/Tab/Filters.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -237,9 +237,9 @@ class Filters extends \Xtento\ProductExport\Block\Adminhtml\Widget\Tab implement
                 'label' => __('Created during the last X days'),
                 'name' => 'export_filter_last_x_days',
                 'maxlength' => 5,
-                'style' => 'width: 70px !important;" min="0',
+                'style' => 'width: 70px !important;',
                 'note' => __(
-                    'Export only %1 created during the last X days (including day X). Only enter numbers here, nothing else. Leave empty if no "created during the last X days" filter should be applied.',
+                    'Export only %1 created during the last X days (including day X). Only enter numbers here, nothing else. Leave empty if no "created during the last X days" filter should be applied. Minimum value: 0',
                     $this->entityHelper->getPluralEntityName($entity)
                 )
             ]
@@ -253,9 +253,9 @@ class Filters extends \Xtento\ProductExport\Block\Adminhtml\Widget\Tab implement
                     'label' => __('Updated during the last X minutes'),
                     'name' => 'export_filter_updated_last_x_minutes',
                     'maxlength' => 5,
-                    'style' => 'width: 70px !important;" min="1',
+                    'style' => 'width: 70px !important;',
                     'note' => __(
-                        'Export only %1 updated during the last X minutes. Only enter numbers here, nothing else. Leave empty if no "created during the last X days" filter should be applied.',
+                        'Export only %1 updated during the last X minutes. Only enter numbers here, nothing else. Leave empty if no "created during the last X days" filter should be applied. Minimum value: 1',
                         $this->entityHelper->getPluralEntityName($entity)
                     )
                 ]
