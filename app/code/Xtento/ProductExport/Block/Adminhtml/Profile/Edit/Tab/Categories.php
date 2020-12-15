@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-09-29T13:59:24+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-29T15:43:16+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Profile/Edit/Tab/Categories.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -115,7 +115,7 @@ class Categories extends \Xtento\ProductExport\Block\Adminhtml\Widget\Tab implem
         }
 
         $profile = $this->_coreRegistry->registry('productexport_profile');
-        $this->categoryMapping = @json_decode($profile->getCategoryMapping(), true) ?: [];
+        $this->categoryMapping = json_decode($profile->getCategoryMapping(), true) ?: [];
         $storeId = $profile->getStoreId();
         if ($storeId) {
             $store = $this->_storeManager->getStore($storeId);

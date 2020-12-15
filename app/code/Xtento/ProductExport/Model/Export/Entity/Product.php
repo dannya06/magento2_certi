@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-12-21T10:48:33+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-02-10T19:59:09+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Entity/Product.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -111,7 +111,7 @@ class Product extends AbstractEntity
                 }
                 $this->collection->getSelect()->joinLeft(
                     $this->resourceConnection->getTableName('catalog_product_index_price') . ' AS price_index',
-                    'price_index.entity_id=e.entity_id AND customer_group_id=0 AND price_index.website_id=' . $websiteId,
+                    'price_index.entity_id=e.entity_id AND customer_group_id=' . intval($this->getProfile()->getCustomerGroupId() ? $this->getProfile()->getCustomerGroupId() : 0) . ' AND price_index.website_id=' . $websiteId,
                     [
                         'min_price' => 'min_price',
                         'max_price' => 'max_price',

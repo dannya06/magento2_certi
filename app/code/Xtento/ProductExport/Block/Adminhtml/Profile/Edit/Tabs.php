@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2016-04-14T15:37:57+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-29T13:35:26+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Profile/Edit/Tabs.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -67,6 +67,9 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
     public function addTab($tabId, $tab)
     {
         if ($tabId == 'general' || $this->registry->registry('productexport_profile')->getId()) {
+            if ($tabId == 'categories' && $this->_scopeConfig->isSetFlag('productexport/advanced/disable_category_mapper')) {
+                return $this; // Disable category mapper
+            }
             return parent::addTab($tabId, $tab);
         } else {
             return $this;

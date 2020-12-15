@@ -33,7 +33,7 @@
                 <tr>
                     <td class="label"><?php echo __('Ending ID')?> <span class="required">*</span></td>
                     <td class="input-ele" style="padding-top: 5px;">
-                        <input class="input-text required-entry" name="increment_to" id="increment_to" value="0"/> (0 = <?php echo __('until the last object created')?>)
+                        <input class="input-text required-entry" name="increment_to" id="increment_to" value=""/> (empty = <?php echo __('until the last object created')?>)
                     </td>
                 </tr>
                 <tr>
@@ -111,7 +111,7 @@ require(["jquery", "prototype"], function(jQuery) {
         <?php
         if ($block->getRequest()->getParam('profile_id', false)) {
             ?>
-        $('profile_id').value = '<?php echo htmlspecialchars($block->getRequest()->getParam('profile_id')) ?>';
+        $('profile_id').value = '<?php echo $block->escapeJs($block->getRequest()->getParam('profile_id')) ?>';
         $$('select#profile_id option').each(function (o) {
             if (o.readAttribute('value') == $('profile_id').value) {
                 o.selected = true;

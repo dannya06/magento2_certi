@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2018-02-27T11:27:12+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-08-28T13:51:33+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Order/Payment.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -89,11 +89,17 @@ class Payment extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             // Additional data - serialized array
             $additionalData = $payment->getAdditionalData();
             if (!empty($additionalData) && $this->fieldLoadingRequired('additional_fields')) {
-                if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
-                    $additionalData = @json_decode($additionalData);
-                } else {
-                    $additionalData = @unserialize($additionalData);
-                }
+                try {
+                    if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
+                        $additionalData = json_decode($additionalData);
+                    } else {
+                        if (version_compare(phpversion(), '7.0.0', '>=')) {
+                            $additionalData = unserialize($additionalData, ['allowed_classes' => false]);
+                        } else {
+                            $additionalData = unserialize($additionalData);
+                        }
+                    }
+                } catch (\Exception $e) {}
                 if ($additionalData && is_array($additionalData)) {
                     $this->writeArray = & $returnArray['payment']['additional_fields'];
                     foreach ($additionalData as $key => $value) {
@@ -137,11 +143,17 @@ class Payment extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             // Authorize.net authorize_cards
             if ($this->fieldLoadingRequired('authorize_cards')) {
                 $additionalData = $payment->getAdditionalData();
-                if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
-                    $additionalData = @json_decode($additionalData);
-                } else {
-                    $additionalData = @unserialize($additionalData);
-                }
+                try {
+                    if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
+                        $additionalData = json_decode($additionalData);
+                    } else {
+                        if (version_compare(phpversion(), '7.0.0', '>=')) {
+                            $additionalData = unserialize($additionalData, ['allowed_classes' => false]);
+                        } else {
+                            $additionalData = unserialize($additionalData);
+                        }
+                    }
+                } catch (\Exception $e) {}
                 if ($additionalData && is_array($additionalData)) {
                     if (isset($additionalData['authorize_cards'])) {
                         $this->writeArray = & $returnArray['payment']['authorize_cards'];

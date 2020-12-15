@@ -15,7 +15,7 @@ define([
                 $.ajax({
                     type: 'GET',
                     url: 'https://www.xtento.com/xtcustom/profileSettings/load',
-                    data: 'source=Xtento_ProductExport&version=M2&demo=' + window.isDemoEnvironment,
+                    data: 'source=Xtento_ProductExport&version=M2&entity=' + $('#entity').val() + '&demo=' + window.isDemoEnvironment,
                     dataType: 'jsonp',
                     success: function (responseData, textStatus, jqXHR) {
                         if (responseData.success === false) {
@@ -182,7 +182,7 @@ define([
         });
         $('#load_default_template_window').show();
 
-        if ($('#entity').val() == 'product' && $('#xsl_template').val() == '' && $('#output_type') != 'xml') {
+        if ($('#xsl_template').val() == '' && $('#output_type') != 'xml') {
             // New profile, open onboarding popup
             window.defaultTemplateModal.open();
         }

@@ -2,13 +2,15 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2016-04-08T15:10:03+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-11-25T12:29:16+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Destination/Edit/Tab/Configuration.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
 
 namespace Xtento\OrderExport\Block\Adminhtml\Destination\Edit\Tab;
+
+use Xtento\OrderExport\Model\Destination;
 
 class Configuration extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements \Magento\Backend\Block\Widget\Tab\TabInterface
 {
@@ -134,6 +136,22 @@ class Configuration extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab imple
             );
 
             $this->addFieldsForType($form, $model->getType());
+
+            if ($model->getType() == Destination::TYPE_FTP) {
+                // Define field dependencies
+                $this->setChild(
+                    'form_after',
+                    $this->getLayout()->createBlock(
+                        \Magento\Backend\Block\Widget\Form\Element\Dependence::class
+                    )->addFieldMap('ftp_ignorepasvaddress', 'ftp_ignorepasvaddress')
+                        ->addFieldMap('ftp_pasv', 'ftp_pasv')
+                        ->addFieldDependence(
+                            'ftp_ignorepasvaddress',
+                            'ftp_pasv',
+                            '1'
+                        )
+                );
+            }
         }
 
         $form->setValues($model->getData());

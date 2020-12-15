@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-03-06T13:48:57+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-11-11T14:18:41+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -162,6 +162,9 @@ class Data extends \Magento\Framework\Model\AbstractModel
             }
             if (!isset($exportData['customer_email'])) {
                 $privateFields['customer_email'] = $collectionItem->getObject()->getCustomerEmail();
+                if (empty($privateFields['customer_email']) && $collectionItem->getOrder()) {
+                    $privateFields['customer_email'] = $collectionItem->getOrder()->getCustomerEmail();
+                }
             }
             if (!isset($exportData['increment_id'])) {
                 $privateFields['increment_id'] = $collectionItem->getObject()->getIncrementId();

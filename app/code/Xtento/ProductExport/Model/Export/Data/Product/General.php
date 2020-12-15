@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-04-02T08:37:07+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-29T15:43:47+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/General.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -72,6 +72,11 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
     protected $imageHelper;
 
     /**
+     * @var \Magento\Catalog\Helper\Data
+     */
+    protected $catalogHelper;
+
+    /**
      * General constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -88,6 +93,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
      * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Catalog\Helper\Image $imageHelper
+     * @param \Magento\Catalog\Helper\Data $catalogHelper
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -107,6 +113,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Catalog\Helper\Image $imageHelper,
+        \Magento\Catalog\Helper\Data $catalogHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -122,6 +129,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         $this->objectManager = $objectManager;
         $this->productMetadata = $productMetadata;
         $this->imageHelper = $imageHelper;
+        $this->catalogHelper = $catalogHelper;
     }
 
     public function getConfiguration()
@@ -313,7 +321,7 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
         // Extended fields
         if ($this->fieldLoadingRequired('xtento_mapped_category')) {
             if (self::$categoryMapping === null) {
-                self::$categoryMapping = @json_decode($this->getProfile()->getCategoryMapping(), true);
+                self::$categoryMapping = json_decode($this->getProfile()->getCategoryMapping(), true) ?: [];
             }
             $mappedCategory = '';
             $categoryIds = $product->getCategoryIds();
@@ -349,7 +357,11 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
             $this->writeValue('product_url', $productUrl);
         }
         if ($this->fieldLoadingRequired('price')) {
-            $this->writeValue('price', $this->getPrice($product));
+            $price = $this->getPrice($product);
+            $this->writeValue('price', $price);
+            if ($this->fieldLoadingRequired('price_incl_tax')) {
+                $this->writeValue('price_incl_tax', $this->getPriceInclTax($product, $price));
+            }
         }
         if ($this->fieldLoadingRequired('final_price')) {
             //$appEmulation = $this->objectManager->get('\Magento\Store\Model\App\Emulation');
@@ -639,7 +651,6 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
      */
     protected function addTax($product, $price, $key)
     {
-        $taxPercent = false;
         if ($product->getTaxPercent()) {
             $taxPercent = $product->getTaxPercent();
         } else {
@@ -677,5 +688,18 @@ class General extends \Xtento\ProductExport\Model\Export\Data\AbstractData
             $this->writeValue($key . '_excl_tax', $price);
         }
         return $price;
+    }
+
+    /**
+     * @param $product
+     * @param $price
+     *
+     * @return float
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    protected function getPriceInclTax($product, $price)
+    {
+        $priceInclTax = $this->catalogHelper->getTaxPrice($product, $price, true, null, null, null, $this->storeManager->getStore($product->getStoreId()));
+        return $priceInclTax;
     }
 }

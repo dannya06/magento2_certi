@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-07-11T13:03:10+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-10-04T12:32:49+00:00
  * File:          app/code/Xtento/OrderExport/Console/Command/ExportCommand.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -11,6 +11,8 @@
 namespace Xtento\OrderExport\Console\Command;
 
 use Magento\Framework\App\State as AppState;
+use Magento\Framework\App\AreaList as AreaList;
+use Magento\Framework\App\Area as Area;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,6 +24,16 @@ class ExportCommand extends Command
      * @var AppState
      */
     protected $appState;
+
+    /**
+     * @var AreaList
+     */
+    protected $areaList;
+
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    protected $objectManager;
 
     /**
      * @var \Xtento\OrderExport\Model\ProfileFactory
@@ -41,17 +53,24 @@ class ExportCommand extends Command
     /**
      * ExportCommand constructor.
      *
+     * @param AppState $appState
+     * @param AreaList $areaList
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Xtento\OrderExport\Model\ProfileFactory $profileFactory
      * @param \Xtento\OrderExport\Model\ExportFactory $exportFactory
      * @param \Xtento\OrderExport\Cron\Export $cronExport
      */
     public function __construct(
         AppState $appState,
+        AreaList $areaList,
+        \Magento\Framework\ObjectManagerInterface $objectManager,
         \Xtento\OrderExport\Model\ProfileFactory $profileFactory,
         \Xtento\OrderExport\Model\ExportFactory $exportFactory,
         \Xtento\OrderExport\Cron\Export $cronExport
     ) {
         $this->appState = $appState;
+        $this->areaList = $areaList;
+        $this->objectManager = $objectManager;
         $this->profileFactory = $profileFactory;
         $this->exportFactory = $exportFactory;
         $this->cronExport = $cronExport;
@@ -76,7 +95,10 @@ class ExportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->appState->setAreaCode('adminhtml');
+            $this->appState->setAreaCode(Area::AREA_CRONTAB);
+            $configLoader = $this->objectManager->get(\Magento\Framework\ObjectManager\ConfigLoaderInterface::class);
+            $this->objectManager->configure($configLoader->load(Area::AREA_CRONTAB));
+            $this->areaList->getArea(Area::AREA_CRONTAB)->load(Area::PART_TRANSLATE);
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             // intentionally left empty
         }

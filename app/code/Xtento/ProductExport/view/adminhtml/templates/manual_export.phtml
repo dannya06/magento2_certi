@@ -78,7 +78,7 @@ require(["jquery", "prototype"], function(jQuery) {
         <?php
         if ($block->getRequest()->getParam('profile_id', false)) {
             ?>
-        $('profile_id').value = '<?php echo htmlspecialchars($block->getRequest()->getParam('profile_id')) ?>';
+        $('profile_id').value = '<?php echo $block->escapeJs($block->getRequest()->getParam('profile_id')) ?>';
         $$('select#profile_id option').each(function (o) {
             if (o.readAttribute('value') == $('profile_id').value) {
                 o.selected = true;

@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-10-15T10:36:00+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-27T13:37:38+00:00
  * File:          app/code/Xtento/ProductExport/Helper/Module.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -70,7 +70,7 @@ class Module extends \Xtento\XtCore\Helper\AbstractModule
 
     public function getExportBkpDir()
     {
-        return $this->serverHelper->getBaseDir()->getAbsolutePath() . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . "productexport_bkp" . DIRECTORY_SEPARATOR;
+        return rtrim($this->serverHelper->getBaseDir()->getAbsolutePath(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . "productexport_bkp" . DIRECTORY_SEPARATOR;
     }
 
     /**

@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2016-09-09T12:16:06+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-09-05T09:54:24+00:00
  * File:          app/code/Xtento/ProductExport/Helper/Entity.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -51,7 +51,7 @@ class Entity extends \Magento\Framework\App\Helper\AbstractHelper
         if ($entity == Export::ENTITY_PRODUCT) {
             return __("Product");
         }
-        if ($entity == Export::ENTITY_PRODUCT) {
+        if ($entity == Export::ENTITY_REVIEW) {
             return __("Product Review");
         }
         if ($entity == Export::ENTITY_CATEGORY) {

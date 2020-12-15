@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2016-04-14T15:37:57+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-28T11:20:00+00:00
  * File:          app/code/Xtento/ProductExport/Model/Destination/Local.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -35,19 +35,29 @@ class Local extends AbstractClass
 
         if (!is_dir($exportDirectory) && !preg_match('/%exportid%/', $exportDirectory)) {
             // Try to create the directory.
-            if (!@mkdir($exportDirectory)) {
+            $warning = '';
+            $mkdirResult = false;
+            try {
+                $mkdirResult = mkdir($exportDirectory);
+            } catch (\Exception $e) {
+                $warning = '(' . __('Detailed Error') . ': ' . substr($e->getMessage(), 0, strrpos($e->getMessage(), ' in ')) . ')';
+            }
+            if (!$mkdirResult) {
                 return $testResult->setSuccess(false)->setMessage(
                     __(
-                        'The specified local directory does not exist. We could not create it either. Please make sure the parent directory is writable or create the directory manually: %1',
-                        $exportDirectory
+                        'The specified local directory does not exist. We could not create it either. Please make sure the parent directory is writable or create the directory manually: %1 %2',
+                        $exportDirectory, $warning
                     )
                 );
             } else {
                 $testResult->setDirectoryCreated(true);
             }
         }
-        $this->connection = @opendir($exportDirectory);
-        if (!$this->connection || @!is_writable($exportDirectory)) {
+        $this->connection = false;
+        try {
+            $this->connection = opendir($exportDirectory);
+        } catch (\Exception $e) {}
+        if (!$this->connection || !is_writable($exportDirectory)) {
             return $testResult->setSuccess(false)->setMessage(
                 __(
                     'Could not open local export directory for writing. Please make sure that we have rights to read and write in the directory: %1',
@@ -118,15 +128,25 @@ class Local extends AbstractClass
                 }
                 $exportDirectory = preg_replace('/%exportid%/', $exportId, $exportDirectory);
                 if (!is_dir($exportDirectory)) {
-                    @mkdir($exportDirectory);
+                    try {
+                        mkdir($exportDirectory);
+                    } catch (\Exception $e) {}
                 }
             }
-            if (!@file_put_contents($exportDirectory . $filename, $data) && !empty($data)) {
+            $warning = '';
+            $filePutContentsResult = false;
+            try {
+                $filePutContentsResult = file_put_contents($exportDirectory . $filename, $data);
+            } catch (\Exception $e) {
+                $warning = '(' . __('Detailed Error') . ': ' . substr($e->getMessage(), 0, strrpos($e->getMessage(), ' in ')) . ')';
+            }
+            if (!$filePutContentsResult && !empty($data)) {
                 $logEntry->setResult(\Xtento\ProductExport\Model\Log::RESULT_WARNING);
                 $message = __(
-                    "Could not save file %1 in directory %2. Please make sure the directory is writable.",
+                    "Could not save file %1 in directory %2. Please make sure the directory is writable. %3",
                     $filename,
-                    $exportDirectory
+                    $exportDirectory,
+                    $warning
                 );
                 $logEntry->addResultMessage(
                     __(

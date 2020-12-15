@@ -2,7 +2,7 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
  * Last Modified: 2016-02-25T18:43:03+00:00
  * File:          app/code/Xtento/OrderExport/Model/System/Config/Source/Cron/Frequency.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
@@ -17,7 +17,7 @@ use Magento\Framework\Option\ArrayInterface;
  */
 class Frequency implements ArrayInterface
 {
-    const VERSION = 'MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=';
+    const VERSION = 'bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=';
 
     const CRON_CUSTOM = 'custom';
     const CRON_1MINUTE = '* * * * *';

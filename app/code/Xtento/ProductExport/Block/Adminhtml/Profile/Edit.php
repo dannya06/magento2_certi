@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-08-29T18:51:16+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-09-05T09:54:37+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Profile/Edit.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -64,17 +64,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                 0
             );
 
-            $model = $this->registry->registry('productexport_profile');
-            if ($model->getEntity() == Export::ENTITY_PRODUCT) {
-                $this->buttonList->add(
-                    'load_default_template',
-                    [
-                        'label' => __('Load Default Profile'),
-                        'onclick' => 'window.defaultTemplateModal.open()'
-                    ],
-                    -200
-                );
-            }
+            $this->buttonList->add(
+                'load_default_template',
+                [
+                    'label' => __('Load Default Profile'),
+                    'onclick' => 'window.defaultTemplateModal.open()'
+                ],
+                -200
+            );
 
             $this->buttonList->update('save', 'label', __('Save Profile'));
             $this->buttonList->update('delete', 'label', __('Delete Profile'));

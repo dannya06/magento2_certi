@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-12-20T15:05:50+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-11-04T12:10:28+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Entity/AbstractEntity.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -33,12 +33,19 @@ abstract class AbstractEntity extends \Magento\Framework\Model\AbstractModel
     protected $exportDataSingleton;
 
     /**
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     */
+    protected $timezone;
+
+    /**
      * AbstractEntity constructor.
+     *
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Xtento\OrderExport\Model\ProfileFactory $profileFactory
      * @param \Xtento\OrderExport\Model\ResourceModel\History\CollectionFactory $historyCollectionFactory
      * @param \Xtento\OrderExport\Model\Export\Data $exportData
+     * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -49,6 +56,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\AbstractModel
         \Xtento\OrderExport\Model\ProfileFactory $profileFactory,
         \Xtento\OrderExport\Model\ResourceModel\History\CollectionFactory $historyCollectionFactory,
         \Xtento\OrderExport\Model\Export\Data $exportData,
+        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -57,6 +65,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\AbstractModel
         $this->profileFactory = $profileFactory;
         $this->historyCollectionFactory = $historyCollectionFactory;
         $this->exportDataSingleton = $exportData;
+        $this->timezone = $timezone;
     }
 
     public function runExport($forcedCollectionItem = false)
@@ -75,6 +84,16 @@ abstract class AbstractEntity extends \Magento\Framework\Model\AbstractModel
             // Force load profile for rule validation, as it fails on some stores if the profile is not re-loaded
             $validationProfile = $this->profileFactory->create()->load($this->getProfile()->getId());
         }
+        // Dispatch event before export to add ability for users to manipulate the collection / add additional filters directly to the collection
+        $this->_eventManager->dispatch(
+            'xtento_orderexport_export_before_prepare_collection',
+            [
+                'entity' => $this->getProfile()->getEntity(),
+                'profile' => $this->getProfile(),
+                'collection' => $this->collection,
+                'forced_collection_item' => $forcedCollectionItem // Used with event exports only. Then there is just this item, and no collection itself. This would contain the item to export then
+            ]
+        );
         // Reset export classes
         $this->exportDataSingleton->resetExportClasses();
         // Get export fields
@@ -87,7 +106,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\AbstractModel
             $break = false;
             while ($break !== true) {
                 $collection = clone $originalCollection;
-                $collection->setPageSize(100);
+                $collection->setPageSize(500);
                 $collection->setCurPage($currPage);
                 $collection->load();
                 if (is_null($collectionCount)) {
@@ -132,8 +151,24 @@ abstract class AbstractEntity extends \Magento\Framework\Model\AbstractModel
                                     break 3;
                                 }
                             }
-                            // Date filters not implemented (yet?)
-                            #var_dump($filterField, $itemData, $acceptedValues);
+                            if ($filterConditionType == 'to') {
+                                $objectTimestamp = (new \DateTime($forcedCollectionItem->getData($filterField), new \DateTimeZone(date_default_timezone_get())))->getTimestamp();
+                                $toTimestamp = (new \DateTime($acceptedValues, new \DateTimeZone(date_default_timezone_get())))->getTimestamp();
+                                $filterMatches = $toTimestamp >= $objectTimestamp;
+                                if (!$filterMatches) {
+                                    $collectionItemValidated = false;
+                                    break 3;
+                                }
+                            }
+                            if ($filterConditionType == 'from') {
+                                $objectTimestamp = (new \DateTime($forcedCollectionItem->getData($filterField), new \DateTimeZone(date_default_timezone_get())))->getTimestamp();
+                                $fromTimestamp = (new \DateTime($acceptedValues, new \DateTimeZone(date_default_timezone_get())))->getTimestamp();
+                                $filterMatches = $fromTimestamp <= $objectTimestamp;
+                                if (!$filterMatches) {
+                                    $collectionItemValidated = false;
+                                    break 3;
+                                }
+                            }
                         }
                     }
                 }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="xtento" sortOrder="9999999" translate="label" class="xtento-tab">
+        <tab id="xtento" sortOrder="9999999" translate="label" class="tab-xtento-extensions">
             <label><![CDATA[XTENTO Extensions]]></label>
         </tab>
         <section id="xtcore" translate="label" sortOrder="1" showInDefault="1" showInStore="0" showInWebsite="0">
@@ -56,8 +56,8 @@
 <!--
 /**
  * Product:       Xtento_XtCore
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-08-16T08:52:13+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-10-09T18:51:12+00:00
  * File:          app/code/Xtento/XtCore/etc/adminhtml/system.xml
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */

@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-09-27T14:03:57+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-27T12:39:17+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Log.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -120,7 +120,12 @@ abstract class Log extends \Xtento\ProductExport\Controller\Adminhtml\Action
 
         foreach ($baseFilenames as $filename) {
             $filePath = $this->moduleHelper->getExportBkpDir() . $logId . '_' . $filename;
-            $data = @file_get_contents($filePath);
+            $data = false;
+            if (file_exists($filePath)) {
+                try {
+                    $data = file_get_contents($filePath);
+                } catch (\Exception $e) {}
+            }
             if ($data === false && !$this->getRequest()->getParam('force', false)) {
                 $filesNotFound++;
                 if (!$massDownload) {
@@ -171,7 +176,13 @@ abstract class Log extends \Xtento\ProductExport\Controller\Adminhtml\Action
 
         foreach ($baseFilenames as $filename) {
             $filePath = $this->moduleHelper->getExportBkpDir() . $model->getId() . '_' . $filename;
-            @unlink($filePath);
+            try {
+                unlink($filePath);
+            } catch (\Exception $e) {
+                $this->messageManager->addWarningMessage(
+                    __('File could not be deleted, probably a permissions issue or file has been deleted already: %1', $filePath)
+                );
+            }
         }
         return true;
     }

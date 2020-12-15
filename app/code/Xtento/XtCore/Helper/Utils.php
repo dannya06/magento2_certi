@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_XtCore
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-05-07T19:39:40+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-03-18T18:54:06+00:00
  * File:          app/code/Xtento/XtCore/Helper/Utils.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -106,14 +106,14 @@ class Utils extends \Magento\Framework\App\Helper\AbstractHelper
     {
         if (count($fileArray) > 1) {
             // We need to zip multiple files and return a ZIP file to browser
-            if (!@class_exists('ZipArchive') && !function_exists('gzopen')) {
+            if (!class_exists('ZipArchive')) {
                 throw new LocalizedException(__(
                     'PHP ZIP extension not found. Please download files manually from the server, or install the ZIP extension, or export just one file with each profile.'
                 ));
             }
             // ZIP creation
             $zipFile = false;
-            if (@class_exists('ZipArchive')) {
+            if (class_exists('ZipArchive')) {
                 // Try creating it using the PHP ZIP functions
                 $zipArchive = new \ZipArchive();
                 $zipFile = tempnam(sys_get_temp_dir(), 'zip');
@@ -122,43 +122,19 @@ class Utils extends \Magento\Framework\App\Helper\AbstractHelper
                         'Could not generate temporary file in tmp folder to store ZIP file. Please contact your hoster and make sure the PHP "tmp" (tempnam(sys_get_temp_dir())) directory is writable. ZIP creation failed.'
                     ));
                 }
-                if ($zipArchive->open($zipFile, \ZipArchive::CREATE) !== true) {
+                if ($zipArchive->open($zipFile, \ZipArchive::OVERWRITE) !== true) {
                     throw new LocalizedException(__('Could not open file ' . $zipFile . '. ZIP creation failed.'));
                 }
                 foreach ($fileArray as $filename => $content) {
                     $zipArchive->addFromString($filename, $content);
                 }
                 $zipArchive->close();
-            } else {
-                if (function_exists('gzopen')) {
-                    // Try creating it using the PclZip class
-                    $zipFile = tempnam(sys_get_temp_dir(), 'zip');
-                    if (!$zipFile) {
-                        throw new LocalizedException(__(
-                            'Could not generate temporary file in tmp folder to store ZIP file. Please contact your hoster and make sure the PHP "tmp" (tempnam(sys_get_temp_dir())) directory is writable. ZIP creation failed.'
-                        ));
-                    }
-                    $zipArchive = new \Xtento\XtCore\lib\PclZip($zipFile);
-                    if (!$zipArchive) {
-                        throw new LocalizedException(__('Could not open file ' . $zipFile . '. ZIP creation failed.'));
-                    }
-                    foreach ($fileArray as $filename => $content) {
-                        $zipArchive->add(
-                            [
-                                [
-                                    PCLZIP_ATT_FILE_NAME => $filename,
-                                    PCLZIP_ATT_FILE_CONTENT => $content
-                                ]
-                            ]
-                        );
-                    }
-                }
             }
             if (!$zipFile) {
                 throw new LocalizedException(__('ZIP file couldn\'t be created.'));
             }
             $zipData = file_get_contents($zipFile);
-            @unlink($zipFile);
+            unlink($zipFile);
             return ['filename' => 'export_' . time() . '.zip', 'data' => $zipData];
         } else {
             // Just one file, output to browser
@@ -196,7 +172,7 @@ class Utils extends \Magento\Framework\App\Helper\AbstractHelper
                 $cacheKey .= '_' . str_replace('.', '_', $moduleVersion);
             }
         }
-        $cacheKey .= substr(md5(__DIR__), 0, 10); // Unique per Magento installation
+        $cacheKey .= substr(sha1(__DIR__), 0, 10); // Unique per Magento installation
         // Is the response cached?
         $cachedHtml = $cache->load($cacheKey);
         #$cachedHtml = false; // Test: disable cache
@@ -234,7 +210,11 @@ class Utils extends \Magento\Framework\App\Helper\AbstractHelper
         if (preg_match('/There has been an error processing your request/', $storeJson)) {
             return '';
         }
-        $storeJson = @json_decode($storeJson, true);
+        try {
+            $storeJson = json_decode($storeJson, true);
+        } catch (\Exception $e) {
+            $storeJson = [];
+        }
         if (isset($storeJson['html'])) {
             $statusHtml = $storeJson['html'];
         } else {

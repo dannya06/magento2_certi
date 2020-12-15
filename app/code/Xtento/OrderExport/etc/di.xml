@@ -22,6 +22,16 @@
             </argument>
         </arguments>
     </type>
+    <type name="Xtento\OrderExport\Console\Command\ConfigExportCommand">
+        <arguments>
+            <argument name="toolsHelper" xsi:type="object">\Xtento\OrderExport\Helper\Tools\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Xtento\OrderExport\Console\Command\ConfigImportCommand">
+        <arguments>
+            <argument name="toolsHelper" xsi:type="object">\Xtento\OrderExport\Helper\Tools\Proxy</argument>
+        </arguments>
+    </type>
     <virtualType name="XtentoOrderExportConfigData" type="Magento\Framework\Config\Data">
         <arguments>
             <argument name="reader" xsi:type="object">XtentoOrderExportConfigDataReader</argument>
@@ -74,8 +84,8 @@
 <!--
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2018-09-17T12:29:04+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-08-28T12:05:17+00:00
  * File:          app/code/Xtento/OrderExport/etc/di.xml
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */

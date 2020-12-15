@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-08-02T13:31:22+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-11-08T17:40:30+00:00
  * File:          app/code/Xtento/ProductExport/Controller/Adminhtml/Profile/DownloadTestExport.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -74,7 +74,11 @@ class DownloadTestExport extends \Xtento\ProductExport\Controller\Adminhtml\Prof
             return $resultPage;
         }
 
-        $data = @json_decode($this->systemTmpDir->readFile('profile_' . $profileId));
+        try {
+            $data = json_decode($this->systemTmpDir->readFile('profile_' . $profileId), true);
+        } catch (\Exception $e) {
+            $data = [];
+        }
         $file = $this->utilsHelper->prepareFilesForDownload($data);
         if (empty($file)) {
             throw new LocalizedException(

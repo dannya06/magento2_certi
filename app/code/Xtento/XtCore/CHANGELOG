@@ -56,3 +56,27 @@ Xtento_XtCore
  + Added additional debug information in XtCore configuration section
  * Bugfix release
  * Removed unnecessary admin URL retrieval
+
+===== 2.6.0 =====
+ * Removed PclZip library from module. Old, outdated and not required anymore.
+ * Module code updated to comply with Magento Coding Standard as of August 2019
+ * Removed silenced errors ("@function") entirely. Improved logging in such cases so those errors are logged/reported.
+ * Logging improvements
+
+===== 2.7.0 =====
+ + Added ability to define cronjobs (those added by our extensions) in their own cron groups
+
+===== 2.8.0 =====
+ * Established compatibility with Magento 2.2.10 / 2.3.3
+ * Established compatibility with PHP 7.3
+ * Fixed an issue in 2.2.10/2.3.3 that lead to HTML being shown instead of a logo in the system configuration
+
+===== 2.9.0 =====
+ * Fixed an issue related to ZIP creation where under certain conditions ZIP files cannot be created
+
+===== 2.10.0 =====
+ * Established compatibility with Magento 2.4.0 and 2.3.5-p2
+ * Established compatibility with PHP 7.4, dropped support for PHP 5.x
+
+===== 2.11.0 =====
+ + Added Content Security Policy (CSP) support. XTENTO resources are whitelisted so our images/scripts can be loaded.

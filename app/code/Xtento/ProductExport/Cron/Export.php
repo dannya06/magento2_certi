@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2016-07-21T11:31:49+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-08-04T15:00:19+00:00
  * File:          app/code/Xtento/ProductExport/Cron/Export.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -14,6 +14,8 @@ use Magento\Framework\Exception\LocalizedException;
 
 class Export extends \Xtento\ProductExport\Model\AbstractAutomaticExport
 {
+    const CRON_GROUP = 'xtento_productexport';
+
     /**
      * Run automatic export, dispatched by Magento cron scheduler
      *
@@ -24,11 +26,11 @@ class Export extends \Xtento\ProductExport\Model\AbstractAutomaticExport
         try {
             if (!$this->moduleHelper->isModuleEnabled() || !$this->moduleHelper->isModuleProperlyInstalled()) {
                 $this->xtentoLogger->info('Cronjob executed, but module is disabled or not installed properly. Stopping.');
-                return;
+                return true;
             }
             if (!$schedule) {
                 $this->xtentoLogger->info('Cronjob executed, but no schedule is defined for cron. Stopping.');
-                return;
+                return true;
             }
             $jobCode = $schedule->getJobCode();
             preg_match('/profile_(\d+)/', $jobCode, $jobMatch);
@@ -39,14 +41,14 @@ class Export extends \Xtento\ProductExport\Model\AbstractAutomaticExport
             $profile = $this->profileFactory->create()->load($profileId);
             if (!$profile->getId()) {
                 // Remove existing cronjobs
-                $this->cronHelper->removeCronjobsLike('productexport_profile_' . $profileId . '_%');
+                $this->cronHelper->removeCronjobsLike('productexport_profile_' . $profileId . '_%', \Xtento\ProductExport\Cron\Export::CRON_GROUP);
                 throw new LocalizedException(__('Profile ID %1 does not seem to exist anymore.', $profileId));
             }
             if (!$profile->getEnabled()) {
-                return; // Profile not enabled
+                return true; // Profile not enabled
             }
             if (!$profile->getCronjobEnabled()) {
-                return; // Cronjob not enabled
+                return true; // Cronjob not enabled
             }
             $exportModel = $this->exportFactory->create()->setProfile($profile);
             $filters = $this->addProfileFilters($profile);
@@ -54,5 +56,6 @@ class Export extends \Xtento\ProductExport\Model\AbstractAutomaticExport
         } catch (\Exception $e) {
             $this->xtentoLogger->critical('Cronjob exception for job_code ' . $jobCode . ': ' . $e->getMessage());
         }
+        return true;
     }
 }

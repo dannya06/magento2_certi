@@ -92,14 +92,32 @@
                   <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
+            <group id="advanced" translate="label" showInDefault="1" sortOrder="500">
+                <label>Advanced Configuration</label>
+                <field id="disable_category_mapper" translate="label comment" type="select" showInDefault="1" sortOrder="10">
+                    <label><![CDATA[Disable Category Mapper]]></label>
+                    <comment>Only required if you have ten thousands of categories. Then your export profile page could be hanging and disabling the category mapper will fix it. It is better to map such an amount of categories via a product attribute or directly in the XSL Template.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="collection_batch_size" translate="label" sortOrder="20" type="text" showInDefault="1">
+                    <label>Collection: Batch Size</label>
+                    <comment>Default value: 500. Use this to decrease or increase the number of collection items loaded during each iteration when loading collections. Higher or lower values can have better performance depending on your server setup. Too high values will cause memory issues.</comment>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                </field>
+                <field id="memory_limit" translate="label" sortOrder="30" type="text" showInDefault="1">
+                    <label>PHP: memory_limit (MB)</label>
+                    <comment>Default value: 2048. Has no effects when ran from cronjob/CLI, but important for manual exports.</comment>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                </field>
+            </group>
         </section>
     </system>
 </config>
 <!--
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-07-26T13:32:05+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-11-20T11:31:30+00:00
  * File:          app/code/Xtento/ProductExport/etc/adminhtml/system.xml
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
