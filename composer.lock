@@ -4088,11 +4088,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "18d6e00fb9a9d761d66010a1aee6aa4a2aa4a0cd"
+                "reference": "0e81e5344becad38099382dbe31d48742bb486db"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -4215,7 +4215,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-12-09T11:23:51+00:00"
+            "time": "2020-12-16T03:38:48+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
