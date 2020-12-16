@@ -9,4 +9,5 @@
     <type name="Magento\Quote\Model\Cart\ShippingMethodConverter">
         <plugin name="RatePromoIcube" type="Icube\PromoShipping\Plugin\Converter" sortOrder="1" />
    </type>
+   <preference for="Magento\QuoteGraphQl\Model\Resolver\ShippingAddress\AvailableShippingMethods" type="Icube\PromoShipping\Model\Resolver\ShippingAddress\AvailableShippingMethods" />
 </config>
