@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-05-16T14:24:02+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-11-01T15:16:08+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -385,7 +385,11 @@ class Export extends \Magento\Framework\Model\AbstractModel
     protected function runExport($filters, $forcedCollectionItem = false)
     {
         try {
-            @set_time_limit(0);
+            if (function_exists('set_time_limit')) {
+                try {
+                    set_time_limit(0);
+                } catch (\Exception $e) {}
+            }
             $this->serverHelper->increaseMemoryLimit('2048M');
             if (!$this->getProfile()) {
                 throw new LocalizedException(__('No profile to export specified.'));
@@ -773,6 +777,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
                         }
                         /** @var \Magento\Sales\Model\Order\Shipment $shipment */
                         $shipment = $this->shipmentFactory->create($order, $items);
+                        $this->setMsiSource($shipment);
                         $shipment->register();
                         $shipment->setCustomerNoteNotify($doNotifyShipment);
                         $shipment->getOrder()->setIsInProcess(true);
@@ -810,6 +815,55 @@ class Export extends \Magento\Framework\Model\AbstractModel
     }
 
     /**
+     * Set Magento 2.3 MSI source. Must use ObjectManager as otherwise code would not be compatible with Magento <2.3
+     *
+     * @param $shipment
+     * @param bool $sourceCode
+     *
+     * @return $this
+     */
+    protected function setMsiSource($shipment, $sourceCode = false)
+    {
+        if (version_compare($this->utilsHelper->getMagentoVersion(), '2.3', '<') || !$this->utilsHelper->isExtensionInstalled('Magento_Inventory') || !$this->utilsHelper->isExtensionInstalled('Magento_InventorySalesApi') || !$this->utilsHelper->isExtensionInstalled('Magento_InventoryShippingAdminUi')) {
+            return $this;
+        }
+
+        $sourceCode = false;
+        $shipmentExtension = $shipment->getExtensionAttributes();
+        if ($shipmentExtension && $shipmentExtension->getSourceCode()) {
+            // Already set by MSI
+            $sourceCode = $shipmentExtension->getSourceCode();
+        }
+        if (empty($shipmentExtension)) {
+            $shipmentExtension = $this->objectManager->create('Magento\Sales\Api\Data\ShipmentExtensionFactory')->create();
+        }
+        // Determine source code
+        $order = $shipment->getOrder();
+        foreach ($order->getAllItems() as $orderItem) {
+            if ($orderItem->getIsVirtual()
+                || $orderItem->getLockedDoShip()
+                || $orderItem->getHasChildren()) {
+                continue;
+            }
+
+            $item = $orderItem->isDummy(true) ? $orderItem->getParentItem() : $orderItem;
+            $qty = $item->getSimpleQtyToShip();
+            $sku = $this->objectManager->create('Magento\InventorySalesApi\Model\GetSkuFromOrderItemInterface')->execute($item);
+            $sources = $this->objectManager->create('Magento\InventoryShippingAdminUi\Ui\DataProvider\GetSourcesByOrderIdSkuAndQty')->execute($order->getId(), $sku, $qty);
+            if (isset($sources[0]) && isset($sources[0]['sourceCode'])) {
+                $sourceCode = $sources[0]['sourceCode'];
+                break;
+            }
+        }
+        if ($sourceCode === false) {
+            // Get default source
+            $sourceCode = $this->objectManager->create('Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface')->getCode();
+        }
+        $shipmentExtension->setSourceCode($sourceCode);
+        $shipment->setExtensionAttributes($shipmentExtension);
+    }
+
+    /**
      * Change order status function
      *
      * @param $newStatus
@@ -844,6 +898,15 @@ class Export extends \Magento\Framework\Model\AbstractModel
                         }*/
                         // End
                         $order->save();
+                    } else {
+                        // Order status was changed already by invoice/ship action for example and thus only the commend must be added
+                        if ($this->getProfile()->getExportActionAddComment() != '') {
+                            $order->addStatusHistoryComment(
+                                $this->getProfile()->getExportActionAddComment(),
+                                false
+                            )->setIsCustomerNotified(0);
+                            $order->save();
+                        }
                     }
                 }
             } catch (\Exception $e) {
@@ -904,7 +967,13 @@ class Export extends \Magento\Framework\Model\AbstractModel
             try {
                 $order = $this->orderFactory->create()->load($object['entity_id']);
                 if ($order->getId()) {
-                    $order->cancel()->save();
+                    if (!$order->canCancel()) {
+                        $this->getLogEntry()->addResultMessage(
+                            __('Order #%1 could not be canceled because Magento does not allowing canceling it. Probably the order is holded, already invoiced or order status does not allowing canceling. If you dont see the Cancel button when viewing the order in Magento, you cannot cancel it using our extension either.', $object['increment_id'])
+                        );
+                    } else {
+                        $order->cancel()->save();
+                    }
                 }
             } catch (\Exception $e) {
                 $this->xtentoLogger->warning(
@@ -925,6 +994,31 @@ class Export extends \Magento\Framework\Model\AbstractModel
      */
     protected function setOrderState($order, $newOrderStatus)
     {
+        // Check current order state with priority, as a status can be assigned to multiple states
+        foreach ($this->orderStatuses->getStates() as $state => $label) {
+            if ($state == $order->getState()) {
+                $stateStatuses = $this->orderStatuses->getStateStatuses($state, false);
+                foreach ($stateStatuses as $status) {
+                    if ($status == $newOrderStatus) {
+                        // Get order status history commment to add
+                        $orderStatusHistoryComment = '';
+                        if ($this->getProfile()->getExportActionAddComment() != '') {
+                            $orderStatusHistoryComment = $this->getProfile()->getExportActionAddComment();
+                        }
+                        // Change state/status
+                        $order->setData('state', $state);
+                        $order->setStatus($newOrderStatus);
+                        $order->addStatusHistoryComment(
+                            $orderStatusHistoryComment,
+                            false
+                        )->setIsCustomerNotified(0);
+                        return true; // Correct state already set
+                    }
+                }
+                break;
+            }
+        }
+        // Status to set is from different state, find state and set
         foreach ($this->orderStatuses->getStates() as $state => $label) {
             $stateStatuses = $this->orderStatuses->getStateStatuses($state, false);
             foreach ($stateStatuses as $status) {
@@ -984,7 +1078,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
      *
      * @return $this
      */
-    protected function errorEmailNotification()
+    public function errorEmailNotification()
     {
         if (!$this->moduleHelper->isDebugEnabled() || $this->moduleHelper->getDebugEmail() == '') {
             return $this;

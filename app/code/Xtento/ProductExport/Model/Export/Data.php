@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-03-06T13:48:57+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-11-19T10:50:07+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -28,12 +28,18 @@ class Data extends \Magento\Framework\Model\AbstractModel
     protected $exportConfig;
 
     /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
+    /**
      * Data constructor.
      *
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Framework\Config\DataInterface $exportConfig
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -43,12 +49,14 @@ class Data extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Registry $registry,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Framework\Config\DataInterface $exportConfig,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->objectManager = $objectManager;
         $this->exportConfig = $exportConfig;
+        $this->scopeConfig = $scopeConfig;
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -146,13 +154,15 @@ class Data extends \Magento\Framework\Model\AbstractModel
             if (!isset($exportData['entity_id'])) {
                 $privateFields['entity_id'] = $collectionItem->getObject()->getId();
             }
-            #if (!isset($exportData['store_id'])) {
-                #$privateFields['store_id'] = $collectionItem->getObject()->getStoreId();
-            #}
             if (!isset($exportData['created_at'])) {
                 $privateFields['created_at'] = $collectionItem->getObject()->getCreatedAt();
             }
         }
         return $privateFields;
+    }
+
+    public function getCollectionBatchSize()
+    {
+        return max(1, intval($this->scopeConfig->getValue('productexport/advanced/collection_batch_size')));
     }
 }

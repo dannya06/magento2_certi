@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-05-07T21:03:46+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-06-05T17:58:17+00:00
  * File:          app/code/Xtento/OrderExport/Setup/UpgradeSchema.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -46,6 +46,57 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'unsigned' => true,
                     'nullable' => true,
                     'comment' => 'Port'
+                ]
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.10.4', '<')) {
+            // Move cronjobs into separate cron group
+            $connection->query(
+                "UPDATE " . $setup->getTable('core_config_data') . " 
+                    SET path = REPLACE(path, 'crontab/default/jobs/" . \Xtento\OrderExport\Cron\Export::CRON_GROUP . "', 'crontab/" . \Xtento\OrderExport\Cron\Export::CRON_GROUP . "/jobs/" . \Xtento\OrderExport\Cron\Export::CRON_GROUP . "')
+                    WHERE path LIKE 'crontab/default/jobs/" . \Xtento\OrderExport\Cron\Export::CRON_GROUP . "%'"
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.10.8', '<')) {
+            $connection->addColumn(
+                $setup->getTable('xtento_orderexport_destination'),
+                'email_send_files_separately',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
+                    'nullable' => false,
+                    'default' => false,
+                    'length' => 1,
+                    'comment' => 'Send each attachment separately'
+                ]
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.11.2', '<')) {
+            $connection->addColumn(
+                $setup->getTable('xtento_orderexport_destination'),
+                'ftp_ignorepasvaddress',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
+                    'nullable' => false,
+                    'default' => false,
+                    'length' => 1,
+                    'comment' => 'FTP Ignore PASV Address'
+                ]
+            );
+        }
+
+        if (version_compare($context->getVersion(), '2.13.1', '<')) {
+            $connection->addColumn(
+                $setup->getTable('xtento_orderexport_destination'),
+                'email_bcc',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'nullable' => false,
+                    'default' => false,
+                    'length' => 255,
+                    'comment' => 'E-Mail BCC'
                 ]
             );
         }

@@ -1,56 +1,49 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Model;
 
-class Registry extends \Magento\Framework\Model\AbstractModel
+/**
+ * Promo Items Registry
+ */
+class Registry
 {
-    protected $_hasItems = false;
-    protected $_locked = false;
-    protected $_isHandled = [];
-    protected $autoAddTypes = ['simple', 'virtual', 'downloadable'];
+    /**
+     * Product types available for auto add to cart
+     */
+    const AUTO_ADD_PRODUCT_TYPES = ['simple', 'virtual', 'downloadable'];
 
     /**
      * @var \Magento\Checkout\Model\Session
      */
-    protected $_checkoutSession;
+    private $checkoutSession;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var \Magento\Catalog\Model\ProductRepository
      */
-    protected $scopeConfig;
-
-    /**
-     * @var \Magento\Catalog\Model\ProductFactory
-     */
-    protected $_productFactory;
+    private $productRepository;
 
     /**
      * Store manager
      *
      * @var \Magento\Store\Model\StoreManagerInterface
      */
-    protected $_storeManager;
+    private $storeManager;
 
     /**
      * @var \Amasty\Promo\Helper\Item
      */
-    protected $promoItemHelper;
+    private $promoItemHelper;
 
     /**
      * @var \Amasty\Promo\Helper\Messages
      */
-    protected $promoMessagesHelper;
-
-    /**
-     * @var \Amasty\Promo\Model\Config
-     */
-    private $config;
+    private $promoMessagesHelper;
 
     /**
      * @var \Magento\Store\Model\Store
@@ -72,157 +65,157 @@ class Registry extends \Magento\Framework\Model\AbstractModel
      */
     private $discountCalculator;
 
+    /**
+     * @var ItemRegistry\PromoItemRegistry
+     */
+    private $promoItemRegistry;
+
     public function __construct(
         \Magento\Checkout\Model\Session $resourceSession,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Catalog\Model\ProductFactory $productFactory,
+        \Magento\Catalog\Model\ProductRepository $productRepository,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Amasty\Promo\Helper\Item $promoItemHelper,
         \Amasty\Promo\Helper\Messages $promoMessagesHelper,
-        \Amasty\Promo\Model\Config $config,
         \Magento\Store\Model\Store $store,
         \Amasty\Promo\Model\Product $product,
-        \Amasty\Promo\Model\DiscountCalculator $discountCalculator
+        \Amasty\Promo\Model\DiscountCalculator $discountCalculator,
+        ItemRegistry\PromoItemRegistry $promoItemRegistry
     ) {
-        $this->_checkoutSession    = $resourceSession;
-        $this->scopeConfig         = $scopeConfig;
-        $this->_productFactory     = $productFactory;
-        $this->_storeManager       = $storeManager;
-        $this->promoItemHelper     = $promoItemHelper;
+        $this->checkoutSession = $resourceSession;
+        $this->productRepository = $productRepository;
+        $this->storeManager = $storeManager;
+        $this->promoItemHelper = $promoItemHelper;
         $this->promoMessagesHelper = $promoMessagesHelper;
-        $this->config              = $config;
-        $this->store               = $store;
-        $this->fullDiscountItems   = [];
+        $this->store = $store;
+        $this->fullDiscountItems = [];
         $this->product = $product;
         $this->discountCalculator = $discountCalculator;
-    }
-
-    public function getApplyAttempt($ruleId)
-    {
-        if (isset($this->_isHandled[$ruleId])) {
-            return false;
-        }
-        $this->_isHandled[$ruleId] = true;
-
-        return true;
+        $this->promoItemRegistry = $promoItemRegistry;
     }
 
     /**
-     * @param $sku
-     * @param $qty
-     * @param $ruleId
-     * @param $discountData
-     * @param $type
-     * @param $discountAmount
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * Add Items to Registry
+     *
+     * @param string|array $sku
+     * @param int $qty
+     * @param int $ruleId
+     * @param array $discountData
+     * @param int $type
+     * @param string $discountAmount
+     *
+     * @sine 2.8.0 qty check removed; item check only if no checked before (performance)
      */
     public function addPromoItem($sku, $qty, $ruleId, $discountData, $type, $discountAmount)
     {
-        if ($this->_locked) {
-            return;
-        }
-
-        if (!$this->_hasItems) {
-            $this->reset();
-        }
-
         $discountData = $this->getCurrencyDiscount($discountData);
 
-        $this->_hasItems = true;
-        $items = $this->getPromoItems();
         $autoAdd = false;
 
-        $isFullDiscount = $this->discountCalculator->isFullDiscount($discountData);
-
-        if (is_array($sku) && count($sku) == 1) {
+        if (is_array($sku) && count($sku) === 1) {
+            // if rule with behavior 'one of' have only single product item,
+            // then behavior should be the same as rule 'all'
             $sku = $sku[0];
         }
 
         if (!is_array($sku)) {
-            $productQty = $this->product->getProductQty($sku);
+            $item = $this->promoItemRegistry->getItemBySkuAndRuleId($sku, $ruleId);
 
-            if ($productQty !== false && $qty > $productQty) {
-                $qty = $productQty;
-            }
-
-            if ($this->discountCalculator->isEnableAutoAdd($discountData)) {
-                $collection = $this->_productFactory->create()->getCollection()
-                    ->addAttributeToSelect(['name', 'status', 'required_options'])
-                    ->addAttributeToFilter('sku', $sku)
-                    ->setPage(1, 1);
-
-                $product = $collection->getFirstItem();
-
-                $currentWebsiteId = $this->_storeManager->getWebsite()->getId();
-                if (!is_array($product->getWebsiteIds())
-                    || !in_array($currentWebsiteId, $product->getWebsiteIds())
-                ) {
-                    // Ignore products from other websites
+            if ($item === null && $this->discountCalculator->isEnableAutoAdd($discountData)) {
+                if (!$this->isProductValid($sku)) {
                     return;
                 }
-
-                if (!$product || !$product->isInStock() || !$product->isSalable()) {
-                    $this->promoMessagesHelper->addAvailabilityError($product);
-                } else {
-                    if (in_array($product->getTypeId(), $this->autoAddTypes)
-                        && !$product->getTypeInstance(true)->hasRequiredOptions($product)
-                    ) {
-                        $autoAdd = true;
-                    }
-                }
+                $autoAdd = $this->isProductCanBeAutoAdded($sku);
             }
 
-            if (isset($items[$ruleId])) {
-                $items[$ruleId]['sku'] += [
-                    $sku => [
-                        'sku' => $sku,
-                        'qty' => $qty,
-                        'auto_add' => $autoAdd,
-                        'discount' => $discountData,
-                    ],
-                ];
-            } elseif (isset($items[$ruleId]) && isset($items[$ruleId]['sku'][$sku])) {
-                $items[$ruleId][$sku]['qty'] += $qty;
-            } else {
-                $items[$ruleId] = [
-                    'sku' => [
-                        $sku => [
-                            'qty' => $qty,
-                            'auto_add' => $autoAdd,
-                            'discount' => $discountData,
-                        ],
-                    ],
-                    'rule_type' => $type,
-                    'discount_amount' => $discountAmount
-                ];
+            $item = $this->promoItemRegistry->registerItem(
+                $sku,
+                $qty,
+                $ruleId,
+                $type,
+                $discountData['minimal_price'],
+                $discountData['discount_item'],
+                $discountAmount
+            );
+
+            if ($autoAdd) {
+                $item->setAutoAdd($autoAdd);
             }
         } else {
-            $items['_groups'][$ruleId] = [
-                'sku' => $sku,
-                'qty' => $qty,
-                'discount' => $discountData,
-                'rule_type' => $type,
-                'discount_amount' => $discountAmount
-            ];
+            foreach ($sku as $skuValue) {
+                $this->promoItemRegistry->registerItem(
+                    $skuValue,
+                    $qty,
+                    $ruleId,
+                    $type,
+                    $discountData['minimal_price'],
+                    $discountData['discount_item'],
+                    $discountAmount
+                );
+            }
         }
 
-        if ($isFullDiscount) {
+        if ($this->discountCalculator->isFullDiscount($discountData)) {
             if (!is_array($sku)) {
                 $sku = [$sku];
             }
 
             foreach ($sku as $itemSku) {
-                $this->fullDiscountItems[$itemSku]['rule_ids'][] = $ruleId;
+                $this->fullDiscountItems[$itemSku]['rule_ids'][$ruleId] = $ruleId;
             }
         }
 
-        $this->_checkoutSession->setAmpromoFullDiscountItems($this->fullDiscountItems);
-        $this->_checkoutSession->setAmpromoItems($items);
+        $this->checkoutSession->setAmpromoFullDiscountItems($this->fullDiscountItems);
     }
 
     /**
-     * @param $discountData
-     * @return mixed
+     * @param string $sku
+     *
+     * @return bool
+     */
+    private function isProductValid(string $sku): bool
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get($sku);
+
+        $currentWebsiteId = $this->storeManager->getWebsite()->getId();
+        if (!is_array($product->getWebsiteIds())
+            || !in_array($currentWebsiteId, $product->getWebsiteIds())
+        ) {
+            // Ignore products from other websites
+            return false;
+        }
+
+        if (!$product || !$product->isInStock() || !$product->isSalable()) {
+            $this->promoMessagesHelper->addAvailabilityError($product);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $sku
+     *
+     * @return bool
+     */
+    private function isProductCanBeAutoAdded(string $sku): bool
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get($sku);
+
+        if (in_array($product->getTypeId(), static::AUTO_ADD_PRODUCT_TYPES)
+            && !$product->getTypeInstance(true)->hasRequiredOptions($product)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $discountData
+     * @return array
      */
     private function getCurrencyDiscount($discountData)
     {
@@ -234,112 +227,52 @@ class Registry extends \Magento\Framework\Model\AbstractModel
         return $discountData;
     }
 
-    public function setPromoItems($items)
+    /**
+     * Set reserved quantity according cart products
+     */
+    public function updatePromoItemsReservedQty($quote = null)
     {
-        $this->_checkoutSession->setAmpromoItems($items);
-    }
-
-    public function getPromoItems()
-    {
-        $items = $this->_checkoutSession->getAmpromoItems();
-
-        return $items ? $items : ['_groups' => []];
-    }
-
-    public function reset()
-    {
-        if ($this->_hasItems) {
-            $this->_locked = true;
-            return;
+        if (!$quote) {
+            $quote = $this->checkoutSession->getQuote();
         }
+        $this->promoItemRegistry->resetQtyReserve();
 
-        $this->_checkoutSession->setAmpromoItems(['_groups' => []]);
-    }
-
-    public function getLimits()
-    {
-        $allowed = null;
-        $quote   = $this->_checkoutSession->getQuote();
-
-        if ($quote->getId() > 0) {
-            $allowed = $this->getPromoItems();
-            foreach ($quote->getAllItems() as $item) {
+        /** @var \Magento\Quote\Model\Quote\Item $item */
+        foreach ($quote->getAllVisibleItems() as $item) {
+            if ($this->promoItemHelper->isPromoItem($item)) {
                 $sku = $item->getProduct()->getData('sku');
-
-                if ($this->promoItemHelper->isPromoItem($item)) {
-                    $ruleId = $this->promoItemHelper->getRuleId($item);
-
-                    if (isset($allowed['_groups'][$ruleId])) {
-                        if ($item->getParentItem()) {
-                            continue;
-                        }
-
-                        $allowed['_groups'][$ruleId]['qty'] -= $item->getQty();
-                        if ($allowed['_groups'][$ruleId]['qty'] <= 0) {
-                            unset($allowed['_groups'][$ruleId]);
-                        }
-                    } else {
-                        $groups = $allowed['_groups'];
-                        unset($allowed['_groups']);
-                        foreach ($allowed as $allowedRuleId => &$rule) {
-                            if (isset($rule['sku'][$sku]) && $allowedRuleId === $ruleId) {
-                                $rule['sku'][$sku]['qty'] -= $item->getQty();
-
-                                if ($rule['sku'][$sku]['qty'] <= 0) {
-                                    unset($allowed[$allowedRuleId]['sku'][$sku]);
-                                }
-                            }
-                        }
-
-                        $allowed['_groups'] = $groups;
-                    }
+                $ruleId = $this->promoItemHelper->getRuleId($item);
+                $promoItem = $this->promoItemRegistry->getItemBySkuAndRuleId($sku, $ruleId);
+                if (!$promoItem) {
+                    continue;
                 }
+
+                $this->promoItemRegistry->assignQtyToItem(
+                    $item->getQty(),
+                    $promoItem,
+                    ItemRegistry\PromoItemRegistry::QTY_ACTION_RESERVE
+                );
             }
         }
-
-        return $allowed;
     }
 
-    public function deleteProduct($sku)
+    /**
+     * @param \Magento\Quote\Model\Quote\Item $item
+     */
+    public function deleteProduct($item)
     {
-        $deletedItems = $this->_checkoutSession->getAmpromoDeletedItems();
-        $fullDiscountItems = $this->_checkoutSession->getAmpromoFullDiscountItems();
+        $fullDiscountItems = $this->checkoutSession->getAmpromoFullDiscountItems();
+        $sku = $item->getProduct()->getSku();
 
-        if (!$deletedItems) {
-            $deletedItems = [];
+        $item = $this->promoItemRegistry->getItemBySkuAndRuleId($sku, $this->promoItemHelper->getRuleId($item));
+        if ($item) {
+            $item->isDeleted(true);
+            $item->setReservedQty(0);
         }
-
-        $deletedItems[$sku] = true;
-
-        $this->_checkoutSession->setAmpromoDeletedItems($deletedItems);
 
         if (isset($fullDiscountItems[$sku])) {
             unset($fullDiscountItems[$sku]);
-            $this->_checkoutSession->setAmpromoFullDiscountItems($fullDiscountItems);
+            $this->checkoutSession->setAmpromoFullDiscountItems($fullDiscountItems);
         }
-    }
-
-    public function restore($sku)
-    {
-        $deletedItems = $this->_checkoutSession->getAmpromoDeletedItems();
-
-        if (!$deletedItems || !isset($deletedItems[$sku])) {
-            return;
-        }
-
-        unset($deletedItems[$sku]);
-
-        $this->_checkoutSession->setAmpromoDeletedItems($deletedItems);
-    }
-
-    public function getDeletedItems()
-    {
-        $deletedItems = $this->_checkoutSession->getAmpromoDeletedItems();
-
-        if (!$deletedItems) {
-            $deletedItems = [];
-        }
-
-        return $deletedItems;
     }
 }

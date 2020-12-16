@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2016-01-08T13:39:10+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-06-05T18:01:38+00:00
  * File:          app/code/Xtento/OrderExport/Block/Adminhtml/Destination/Grid/Renderer/Configuration.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -34,6 +34,7 @@ class Configuration extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\A
         if ($row->getType() == \Xtento\OrderExport\Model\Destination::TYPE_EMAIL) {
             $configuration['from'] = $row->getEmailSender();
             $configuration['to'] = $row->getEmailRecipient();
+            $configuration['bcc'] = $row->getEmailBcc();
             $configuration['subject'] = $row->getEmailSubject();
         }
         if ($row->getType() == \Xtento\OrderExport\Model\Destination::TYPE_CUSTOM) {

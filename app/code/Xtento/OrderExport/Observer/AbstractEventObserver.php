@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2018-09-17T12:44:44+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-02-10T19:12:05+00:00
  * File:          app/code/Xtento/OrderExport/Observer/AbstractEventObserver.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -26,6 +26,7 @@ class AbstractEventObserver extends \Xtento\OrderExport\Model\AbstractAutomaticE
     const EVENT_SALES_ORDER_SHIPMENT_SAVE_AFTER = 6;
     const EVENT_SALES_ORDER_CREDITMEMO_SAVE_AFTER = 7;
     const EVENT_SALES_ORDER_SERVICE_PLACE_AFTER = 8;
+    const EVENT_SALES_ORDER_ADDRESS_UPDATE_ADMIN = 9;
     // Customer events
     const EVENT_CUSTOMER_SAVE_AFTER = 20;
     const EVENT_CUSTOMER_AFTER_REGISTRATION = 21;
@@ -88,6 +89,11 @@ class AbstractEventObserver extends \Xtento\OrderExport\Model\AbstractAutomaticE
                 'event' => 'sales_order_creditmemo_save_after',
                 'label' => __('After credit memo creation (Event: sales_order_creditmemo_save_after)'),
                 'method' => 'getCreditmemo()->getOrder()'
+            ];
+            $events[Export::ENTITY_ORDER][self::EVENT_SALES_ORDER_ADDRESS_UPDATE_ADMIN] = [
+                'event' => 'admin_sales_order_address_update',
+                'label' => __('After order address is edited in admin (Event: admin_sales_order_address_update)'),
+                'method' => 'getOrderId()'
             ];
         }
         // Events where invoice information can be exported
@@ -184,10 +190,15 @@ class AbstractEventObserver extends \Xtento\OrderExport\Model\AbstractAutomaticE
                     $entityIdField = 'entity_id';
                 }
                 $exportObject = $this->getExportObject($entity, $event, $eventId);
-                $exportObjectId = $exportObject->getId();
-                if (!$exportObjectId && $exportObject->getIncrementId()) {
-                    $exportObjectId = $exportObject->getIncrementId();
-                    $entityIdField = 'increment_id';
+                if (!is_object($exportObject) && $eventId == self::EVENT_SALES_ORDER_ADDRESS_UPDATE_ADMIN) {
+                    $exportObjectId = $exportObject;
+                    $entityIdField = 'entity_id';
+                } else {
+                    $exportObjectId = $exportObject->getId();
+                    if (!$exportObjectId && $exportObject->getIncrementId()) {
+                        $exportObjectId = $exportObject->getIncrementId();
+                        $entityIdField = 'increment_id';
+                    }
                 }
                 if ($exportObject) {
                     if (!in_array($exportObjectId, self::$exportedIds[$profileId])) {

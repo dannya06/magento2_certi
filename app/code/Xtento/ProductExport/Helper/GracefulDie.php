@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-05-14T12:38:32+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-11-14T11:08:58+00:00
  * File:          app/code/Xtento/ProductExport/Helper/GracefulDie.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -42,14 +42,18 @@ class GracefulDie
             $registry = $objectManager->get('\Magento\Framework\Registry');
             $logEntry = $registry->registry('productexport_log');
             if ($logEntry && $logEntry->getId()) {
+                if (strstr($message, 'should always be of the type int since Symfony') !== false) {
+                    return; // Ignore
+                }
                 $logEntry->setResult(Log::RESULT_FAILED);
                 $logEntry->addResultMessage($message);
                 $logEntry->setResultMessage($logEntry->getResultMessages());
                 $logEntry->save();
+                if (strlen($message) > 16) {
+                    // No empty error message
+                    $objectManager->get('\Xtento\ProductExport\Model\Export')->setLogEntry($logEntry)->errorEmailNotification();
+                }
             }
-            /*if ($exit) {
-                exit;
-            }*/
         }
     }
 

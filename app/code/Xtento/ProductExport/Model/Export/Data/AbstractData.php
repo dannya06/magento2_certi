@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-03-10T10:21:59+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-05-11T09:24:27+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/AbstractData.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -76,9 +76,25 @@ abstract class AbstractData extends \Magento\Framework\Model\AbstractModel imple
             return $this;
         }
         $xslTemplate = $this->getProfile()->getXslTemplate();
-        if (!strstr($xslTemplate, '<file') && @file_exists($xslTemplate)) {
+        $loadTemplateFromFile = strpos($xslTemplate, '<') === false;
+        if ($loadTemplateFromFile) {
+            $xslTemplate = \Magento\Framework\App\ObjectManager::getInstance()->get('\Xtento\ProductExport\Model\Output\Xsl')->fixBasePath($xslTemplate);
+            try {
+                $fileExists = file_exists($xslTemplate);
+            } catch (\Exception $e) {
+                $fileExists = false;
+            }
+            if (!$fileExists) {
+                return $this; // Fetch all fields
+            }
             // XSL Template is loaded from file, fetch fields from there
-            $xslTemplate = @file_get_contents($xslTemplate);
+            if (!empty($xslTemplate)) {
+                try {
+                    $xslTemplate = file_get_contents($xslTemplate);
+                } catch (\Exception $e) {
+                    $xslTemplate = '';
+                }
+            }
             if (empty($xslTemplate)) {
                 return $this; // Fetch all fields
             }
@@ -110,7 +126,7 @@ abstract class AbstractData extends \Magento\Framework\Model\AbstractModel imple
         if (empty($this->fieldsToFetch) || $this->getShowEmptyFields()) {
             return true;
         }
-        $fieldHash = md5($field);
+        $fieldHash = sha1($field);
         if (isset($this->fieldsNotFound[$fieldHash])) {
             return false;
         }
@@ -119,7 +135,7 @@ abstract class AbstractData extends \Magento\Framework\Model\AbstractModel imple
         }
         if (!in_array($field, $this->fieldsToFetch)) {
             foreach ($this->fieldsToFetch as $fieldToFetch) {
-                if (stristr($fieldToFetch, $field)) {
+                if (stristr($fieldToFetch, strval($field))) {
                     $this->fieldsFound[$fieldHash] = true;
                     return true;
                 }

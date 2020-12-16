@@ -1,12 +1,15 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 namespace Amasty\Promo\Block;
 
+/**
+ * Popup with Promo Items initialization and link for open
+ */
 class Add extends \Magento\Framework\View\Element\Template
 {
     /**
@@ -47,9 +50,18 @@ class Add extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return mixed
+     * @return string
+     * @deprecated since 2.5.0
      */
     public function getMessage()
+    {
+        return $this->getPopupLinkHtml();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopupLinkHtml()
     {
         return $this->config->getAddMessage();
     }
@@ -71,11 +83,11 @@ class Add extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return null
+     * @return array
      */
     public function getAvailableProductQty()
     {
-        return $this->promoHelper->getAllowedProductQty();
+        return $this->promoHelper->getPromoItemsDataArray();
     }
 
     /**
@@ -87,7 +99,7 @@ class Add extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
     public function getSelectionMethod()
     {
@@ -95,7 +107,9 @@ class Add extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return mixed
+     * Is gift counter visible
+     *
+     * @return int|null
      */
     public function getGiftsCounter()
     {

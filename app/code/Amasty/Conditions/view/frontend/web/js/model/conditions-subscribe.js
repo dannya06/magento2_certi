@@ -4,15 +4,18 @@ define([
     'uiComponent',
     'Magento_Checkout/js/model/quote',
     'Amasty_Conditions/js/action/recollect-totals',
+    'Amasty_Conditions/js/model/subscriber',
     'Magento_Checkout/js/model/shipping-service',
     'Magento_Checkout/js/model/shipping-rate-processor/new-address',
+    'Magento_Checkout/js/model/totals',
     'Magento_SalesRule/js/view/payment/discount',
     'rjsResolver'
-], function ($, _, Component, quote, recollect, shippingService, shippingProcessor, discount, resolver) {
+], function ($, _, Component, quote, recollect, subscriber, shippingService, shippingProcessor, totals, discount, resolver) {
     'use strict';
 
     return Component.extend({
         previousShippingMethodData: {},
+        previousItemsData: [],
         billingAddressCountry: null,
         city: null,
         street: null,
@@ -23,6 +26,9 @@ define([
 
             resolver(function() {
                 this.isPageLoaded = true;
+
+                totals.getItems().subscribe(this.storeOldItems, this, "beforeChange");
+                totals.getItems().subscribe(this.recollectOnItems, this);
             }.bind(this));
 
             discount().isApplied.subscribe(function () {
@@ -42,8 +48,13 @@ define([
             }.bind(this));
 
             quote.billingAddress.subscribe(function (newBillAddress) {
-                if (this._isNeededRecollectBilling(newBillAddress, this.billingAddressCountry)) {
+                if (this._isNeededRecollectBilling(
+                    newBillAddress,
+                    this.billingAddressCountry,
+                    this.billingAddressCity
+                )) {
                     this.billingAddressCountry = newBillAddress.countryId;
+                    this.billingAddressCity = newBillAddress.city;
                     if (!this._isVirtualQuote()
                         && (quote.shippingAddress() && newBillAddress.countryId !== quote.shippingAddress().countryId)
                     ) {
@@ -70,7 +81,6 @@ define([
             return this;
         },
 
-
         /**
          * Store before change shipping method, because sometimes shipping methods updates always (not by change)
          *
@@ -86,6 +96,53 @@ define([
             }
         },
 
+        /**
+         * Store before change cart items
+         *
+         * @param {Array} oldItems
+         * @since 1.3.13
+         */
+        storeOldItems: function (oldItems) {
+            this.previousItemsData = this._prepareArrayForCompare(oldItems);
+        },
+
+        /**
+         * Recollect totals on cart items update
+         *
+         * @param {Array} newItems
+         * @since 1.3.13 improve compatibility with modules which allow update cart items on checkout page
+         *        and ajax update cart items
+         */
+        recollectOnItems: function (newItems) {
+            if (!_.isEqual(this.previousItemsData, this._prepareArrayForCompare(newItems))) {
+                // totals should be already collected, trigger subscribers
+                // for more stability but less performance can be replaced with recollect(true);
+                subscriber.isLoading.valueHasMutated();
+            }
+        },
+
+        /**
+         * Remove all not simple types from array items
+         *
+         * @param {Array} data
+         * @returns {Array}
+         * @private
+         * @since 1.3.13
+         */
+        _prepareArrayForCompare: function (data) {
+            var result = [],
+                itemData = {};
+
+            _.each(data, function(item) {
+                itemData = _.pick(item, function (value) {
+                    return !_.isObject(value);
+                });
+                result.push(itemData);
+            }.bind(this));
+
+            return result;
+        },
+
         _isVirtualQuote: function () {
             return quote.isVirtual()
                 || window.checkoutConfig.activeCarriers && window.checkoutConfig.activeCarriers.length === 0;
@@ -99,11 +156,15 @@ define([
                     && (newShippingAddress.city != city || !_.isEqual(newShippingAddress.street, street)));
         },
 
-        _isNeededRecollectBilling: function (newBillAddress, billingAddressCountry) {
-            return this.isPageLoaded
-                && newBillAddress
-                && newBillAddress.countryId
-                && newBillAddress.countryId != billingAddressCountry
+        _isNeededRecollectBilling: function (newBillAddress, billingAddressCountry, billingAddressCity) {
+            var isNeedRecollectByCountry = newBillAddress
+                    && newBillAddress.countryId
+                    && newBillAddress.countryId !== billingAddressCountry,
+                isNeedRecollectByCity = newBillAddress
+                    && newBillAddress.city
+                    && newBillAddress.city !== billingAddressCity;
+
+            return this.isPageLoaded && (isNeedRecollectByCountry || isNeedRecollectByCity);
         },
 
         _insertPolyfills: function () {

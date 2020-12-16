@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2016-02-25T15:17:49+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-08-27T13:18:52+00:00
  * File:          app/code/Xtento/OrderExport/Model/Destination/Custom.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -26,12 +26,17 @@ class Custom extends AbstractClass
         $this->setDestination($this->destinationFactory->create()->load($this->getDestination()->getId()));
         $testResult = new \Magento\Framework\DataObject();
         $this->setTestResult($testResult);
-        if (!@$this->objectManager->create($this->getDestination()->getCustomClass())) {
+        $customClass = false;
+        try {
+            $customClass = $this->objectManager->create($this->getDestination()->getCustomClass());
+        } catch (\Exception $e) {}
+        if (!$customClass) {
             $this->getTestResult()->setSuccess(false)->setMessage(__('Custom class NOT found.'));
+            return false;
         } else {
             $this->getTestResult()->setSuccess(true)->setMessage(__('Custom class found and ready to use.'));
+            return true;
         }
-        return true;
     }
 
     public function saveFiles($fileArray)
@@ -40,9 +45,11 @@ class Custom extends AbstractClass
             return [];
         }
         // Init connection
-        $this->initConnection();
+        if (!$this->initConnection()) {
+            return [];
+        }
         // Call custom class
-        @$this->objectManager->create($this->getDestination()->getCustomClass())->saveFiles($fileArray);
+        $this->objectManager->create($this->getDestination()->getCustomClass())->saveFiles($fileArray);
         return array_keys($fileArray);
     }
 }

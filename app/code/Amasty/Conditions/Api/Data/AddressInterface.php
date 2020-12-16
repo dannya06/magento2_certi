@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Conditions
  */
 
@@ -10,7 +10,7 @@ namespace Amasty\Conditions\Api\Data;
 
 interface AddressInterface
 {
-    /**#@+
+    /**
      * Constants defined for keys of array, makes typos less likely
      */
     const PAYMENT_METHOD = 'payment_method';
@@ -18,7 +18,7 @@ interface AddressInterface
     const CUSTOM_ATTRIBUTES = 'custom_attributes';
     const BILLING_ADDRESS_COUNTRY = 'billing_address_country';
     const CITY = 'city';
-    /**#@-*/
+    const CURRENCY = 'currency';
 
     /**
      * Get payment method
@@ -89,4 +89,15 @@ interface AddressInterface
      * @return $this
      */
     public function setBillingAddressCountry($billingAddressCountry);
+
+    /**
+     * @return string
+     */
+    public function getCurrency();
+
+    /**
+     * @param string $currency
+     * @return $this
+     */
+    public function setCurrency($currency);
 }

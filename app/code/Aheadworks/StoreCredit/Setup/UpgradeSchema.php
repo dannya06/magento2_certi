@@ -208,7 +208,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                         try {
                             $order = $this->orderRepository->get($orderId);
                         } catch (NoSuchEntityException $e) {
-                            continue;
+                            continue 2;
                         }
                         $bind = [
                             [
@@ -233,12 +233,12 @@ class UpgradeSchema implements UpgradeSchemaInterface
                         try {
                             $order = $this->orderRepository->get($data[0]);
                         } catch (NoSuchEntityException $e) {
-                            continue;
+                            continue 2;
                         }
                         try {
                             $creditMemo = $this->creditmemoRepository->get($data[1]);
                         } catch (NoSuchEntityException $e) {
-                            continue;
+                            continue 2;
                         }
                         $bind = [
                             [

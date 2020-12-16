@@ -8,6 +8,8 @@
 
 namespace Amasty\BannersLite\Model;
 
+use Magento\Customer\Model\Context;
+
 class ProductBannerProvider
 {
     /**
@@ -50,6 +52,11 @@ class ProductBannerProvider
      */
     private $storeManager;
 
+    /**
+     * @var \Magento\Framework\App\Http\Context
+     */
+    private $httpContext;
+
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Amasty\BannersLite\Model\ResourceModel\BannerRule\CollectionFactory $bannerRuleFactory,
@@ -57,7 +64,8 @@ class ProductBannerProvider
         \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         \Amasty\BannersLite\Model\ResourceModel\Banner\CollectionFactory $bannerFactory,
         \Magento\SalesRule\Api\RuleRepositoryInterface $ruleCartPrice,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\App\Http\Context $httpContext
     ) {
         $this->productRepository = $productRepository;
         $this->bannerRuleFactory = $bannerRuleFactory;
@@ -66,6 +74,7 @@ class ProductBannerProvider
         $this->bannerFactory = $bannerFactory;
         $this->ruleCartPrice = $ruleCartPrice;
         $this->storeManager = $storeManager;
+        $this->httpContext = $httpContext;
     }
 
     /**
@@ -128,9 +137,9 @@ class ProductBannerProvider
         $linkField = $this->metadataPool->getMetadata(\Magento\SalesRule\Api\Data\RuleInterface::class)->getLinkField();
         /** @var \Amasty\BannersLite\Model\ResourceModel\Rule\Collection $ruleCollection */
         $ruleCollection = $this->ruleFactory->create();
-        $groupId = $this->storeManager->getGroup()->getId();
+        $customerGroupId = $this->httpContext->getValue(Context::CONTEXT_GROUP);
         $websiteId = $this->storeManager->getWebsite()->getId();
-        $ruleCollection->addWebsiteGroupDateFilter($websiteId, $groupId);
+        $ruleCollection->addWebsiteGroupDateFilter($websiteId, $customerGroupId);
 
         return $ruleCollection->getActiveRuleIds($linkField, $bannerRuleIds);
     }

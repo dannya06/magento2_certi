@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-01-19T15:13:59+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-06-02T19:39:39+00:00
  * File:          app/code/Xtento/OrderExport/Controller/Adminhtml/Manual/ManualPost.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -311,7 +311,7 @@ class ManualPost extends \Xtento\OrderExport\Controller\Adminhtml\Manual
             $toDate->setTimezone(new \DateTimeZone('UTC'));
             $dateRangeFilter['to'] = $toDate->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT);
         }
-        if ($this->getRequest()->getPost('last_x_days') != '') {
+        if (empty($dateRangeFilter) && $this->getRequest()->getPost('last_x_days') != '') {
             $profileFilterCreatedLastXDays = $this->getRequest()->getPost('last_x_days');
             if (!empty($profileFilterCreatedLastXDays) || $profileFilterCreatedLastXDays == '0') {
                 $profileFilterCreatedLastXDays = preg_replace('/[^0-9]/', '', $profileFilterCreatedLastXDays);

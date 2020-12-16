@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-11-27T20:10:50+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-08-27T12:44:55+00:00
  * File:          app/code/Xtento/OrderExport/Controller/Adminhtml/Profile/ValidateXslTemplate.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -59,7 +59,7 @@ class ValidateXslTemplate extends \Xtento\OrderExport\Controller\Adminhtml\Profi
     }
 
     /**
-     * @return \Magento\Backend\Model\View\Result\Page
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Raw|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
@@ -103,7 +103,11 @@ class ValidateXslTemplate extends \Xtento\OrderExport\Controller\Adminhtml\Profi
                 }
                 // Store file so it can be served to the browser
                 if ($this->getRequest()->getParam('serve_to_browser', false)) {
-                    $serializedArray = @json_encode($outputFiles);
+                    try {
+                        $serializedArray = json_encode($outputFiles);
+                    } catch (\Exception $e) {
+                        $serializedArray = '';
+                    }
                     if (!$this->systemTmpDir->writeFile('profile_' . $profileId, $serializedArray)) {
                         $output .= __(
                             "\n\nAttention: Could not save temporary file to store test export for serving the file to the browser."

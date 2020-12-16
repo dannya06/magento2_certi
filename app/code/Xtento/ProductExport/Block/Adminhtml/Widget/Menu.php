@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-05-10T19:18:39+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-04-09T12:30:16+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Widget/Menu.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */

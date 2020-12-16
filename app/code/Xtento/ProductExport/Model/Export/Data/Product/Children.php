@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-05-13T13:13:21+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-23T08:49:02+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/Children.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -68,6 +68,7 @@ class Children extends General
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Catalog\Helper\Image $imageHelper,
+        \Magento\Catalog\Helper\Data $catalogHelper,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -88,6 +89,7 @@ class Children extends General
             $productMetadata,
             $objectManager,
             $imageHelper,
+            $catalogHelper,
             $resource,
             $resourceCollection,
             $data
@@ -166,7 +168,7 @@ class Children extends General
                 $childProducts->getSelect()->joinLeft($this->resourceConnection->getTableName(
                         'catalog_product_index_price'
                     ) . ' AS price_index',
-                    'price_index.entity_id=e.entity_id AND customer_group_id=0 AND  price_index.website_id=' . $this->storeManager->getStore(
+                    'price_index.entity_id=e.entity_id AND customer_group_id=' . intval($this->getProfile()->getCustomerGroupId() ? $this->getProfile()->getCustomerGroupId() : 0) . ' AND price_index.website_id=' . $this->storeManager->getStore(
                         $this->getProfile()->getStoreId()
                     )->getWebsiteId(),
                     [
@@ -177,6 +179,7 @@ class Children extends General
                     ]
                 );
                 $childProducts->addStoreFilter($this->getProfile()->getStoreId());
+                $childProducts->setStore($this->getProfile()->getStoreId());
                 $childProducts->addAttributeToSelect('tax_class_id');
             }
 

@@ -1,32 +1,60 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Plugin;
 
+use Amasty\Base\Model\Serializer;
+use Amasty\Promo\Api\Data\GiftRuleInterface;
+use Amasty\Promo\Api\Data\GiftRuleInterfaceFactory;
+
 class SalesRule
 {
     /**
-     * Core registry
-     *
-     * @var \Magento\Framework\Registry
+     * @var GiftRuleInterfaceFactory
      */
-    protected $coreRegistry;
+    private $giftRuleFactory;
+
+    /**
+     * @var Serializer
+     */
+    private $serializer;
 
     public function __construct(
-        \Magento\Framework\Registry $registry
+        GiftRuleInterfaceFactory $giftRuleFactory,
+        Serializer $serializer
     ) {
-        $this->coreRegistry = $registry;
+        $this->giftRuleFactory = $giftRuleFactory;
+        $this->serializer = $serializer;
     }
 
-    public function afterAfterSave(\Magento\SalesRule\Model\Rule $subject, $result)
+    /**
+     * @param \Magento\SalesRule\Model\Rule $subject
+     * @param \Magento\SalesRule\Model\Rule $salesRule
+     *
+     * @return \Magento\SalesRule\Model\Rule
+     */
+    public function afterLoadPost(\Magento\SalesRule\Model\Rule $subject, $salesRule)
     {
-        $this->coreRegistry->register('ampromo_current_salesrule', $subject, true);
+        /** @var array $attributes */
+        $attributes = $salesRule->getExtensionAttributes() ?: [];
+        if (!isset($attributes[GiftRuleInterface::EXTENSION_CODE])
+            || !is_array($attributes[GiftRuleInterface::EXTENSION_CODE])
+        ) {
+            return $salesRule;
+        }
 
-        return $result;
+        /** @var \Amasty\Promo\Model\Rule $amRule */
+        $amRule = $this->giftRuleFactory->create();
+        $amRule->setData($attributes[GiftRuleInterface::EXTENSION_CODE]);
+
+        $attributes[GiftRuleInterface::EXTENSION_CODE] = $amRule;
+        $subject->setExtensionAttributes($attributes);
+
+        return $salesRule;
     }
 }

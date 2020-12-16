@@ -2,7 +2,7 @@
 
 /**
  * Product:       Xtento_XtCore
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
  * Last Modified: 2018-07-26T14:50:20+00:00
  * File:          app/code/Xtento/XtCore/Helper/AbstractModule.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.

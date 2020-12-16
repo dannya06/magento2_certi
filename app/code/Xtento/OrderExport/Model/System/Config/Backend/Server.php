@@ -2,7 +2,7 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
  * Last Modified: 2016-04-03T15:19:28+00:00
  * File:          app/code/Xtento/OrderExport/Model/System/Config/Backend/Server.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
@@ -12,7 +12,7 @@ namespace Xtento\OrderExport\Model\System\Config\Backend;
 
 class Server extends \Xtento\XtCore\Model\System\Config\Backend\Server
 {
-    protected $version = 'MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=';
+    protected $version = 'bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=';
 
     /**
      * Server constructor.

@@ -11,6 +11,7 @@ define([
                 var fields = originalAction();
                 fields.push('street');
                 fields.push('city');
+                fields.push('region_id');
 
                 return fields;
             }

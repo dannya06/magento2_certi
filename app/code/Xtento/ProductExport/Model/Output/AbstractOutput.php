@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-03-16T16:37:24+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-28T11:50:08+00:00
  * File:          app/code/Xtento/ProductExport/Model/Output/AbstractOutput.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -221,18 +221,18 @@ abstract class AbstractOutput extends \Magento\Framework\Model\AbstractModel imp
         if ($variable == 'guid') {
             return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
                 // 32 bits for "time_low"
-                mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+                random_int(0, 0xffff), random_int(0, 0xffff),
                 // 16 bits for "time_mid"
-                mt_rand(0, 0xffff),
+                random_int(0, 0xffff),
                 // 16 bits for "time_hi_and_version",
                 // four most significant bits holds version number 4
-                mt_rand(0, 0x0fff) | 0x4000,
+                random_int(0, 0x0fff) | 0x4000,
                 // 16 bits, 8 bits for "clk_seq_hi_res",
                 // 8 bits for "clk_seq_low",
                 // two most significant bits holds zero and one for variant DCE1.1
-                mt_rand(0, 0x3fff) | 0x8000,
+                random_int(0, 0x3fff) | 0x8000,
                 // 48 bits for "node"
-                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+                random_int(0, 0xffff), random_int(0, 0xffff), random_int(0, 0xffff)
             );
         }
         return '';
@@ -257,14 +257,21 @@ abstract class AbstractOutput extends \Magento\Framework\Model\AbstractModel imp
         if (!empty($charsetLocale)) {
             // Set locale based on XSL Template "locale" attribute
             $oldLocale = setlocale(LC_CTYPE, "0"); // Get current locale
-            @setlocale(LC_CTYPE, $charsetLocale);
+            try {
+                setlocale(LC_CTYPE, $charsetLocale);
+            } catch (\Exception $e) {}
         }
         $output = $input;
-        if (!empty($encoding) && @function_exists('iconv')) {
-            $output = @iconv("UTF-8", $encoding, $input);
+        if (!empty($encoding) && function_exists('iconv')) {
+            $output = false;
+            try {
+                $output = iconv("UTF-8", $encoding, $input);
+            } catch (\Exception $e) {}
             if (!$output && !empty($input)) {
                 // Conversion failed, try as UTF-8 re-encoded
-                $output = @iconv("UTF-8", $encoding, utf8_encode(utf8_decode($input)));
+                try {
+                    $output = iconv("UTF-8", $encoding, utf8_encode(utf8_decode($input)));
+                } catch (\Exception $e) {}
                 if (!$output && !empty($input)) {
                     if (!empty($charsetLocale)) {
                         // Reset locale

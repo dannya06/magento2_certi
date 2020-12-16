@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -10,6 +10,9 @@ namespace Amasty\Promo\Model;
 
 use Magento\Quote\Model\Quote\Item;
 
+/**
+ * Calculator for promo items (free gift) price discount
+ */
 class DiscountCalculator
 {
     /**
@@ -39,9 +42,12 @@ class DiscountCalculator
      */
     public function getBaseDiscountAmount(\Magento\SalesRule\Model\Rule $rule, Item $item)
     {
-        $promoDiscount = trim($rule->getAmpromoRule()->getItemsDiscount());
-        $itemPrice = $item->getPrice();
-        switch ($promoDiscount) {
+        /** @var Rule $promoRule */
+        $promoRule = $rule->getAmpromoRule();
+        $promoDiscount = trim($promoRule->getItemsDiscount());
+        $itemPrice = $item->getBasePrice();
+
+        switch (true) {
             case $promoDiscount === "100%":
             case $promoDiscount == "":
                 $baseDiscount = $itemPrice;
@@ -60,7 +66,7 @@ class DiscountCalculator
                 break;
         }
 
-        $baseDiscount = $this->getDiscountAfterMinimalPrice($rule, $itemPrice, $baseDiscount) * $item->getQty();
+        $baseDiscount = $this->getDiscountAfterMinimalPrice($promoRule, $itemPrice, $baseDiscount) * $item->getQty();
 
         return $baseDiscount;
     }
@@ -123,16 +129,17 @@ class DiscountCalculator
     }
 
     /**
-     * @param \Magento\SalesRule\Model\Rule $rule
-     * @param $itemPrice
-     * @param $discount
+     * @param Rule $promoRule
+     * @param float $itemPrice
+     * @param float $discount
      *
      * @return mixed
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function getDiscountAfterMinimalPrice(\Magento\SalesRule\Model\Rule $rule, $itemPrice, $discount)
+    private function getDiscountAfterMinimalPrice(Rule $promoRule, $itemPrice, $discount)
     {
-        $minimalPrice = $rule->getAmpromoRule()->getMinimalItemsPrice();
+        $minimalPrice = (float)$promoRule->getMinimalItemsPrice();
+
         if ($itemPrice > $minimalPrice && $itemPrice - $discount < $minimalPrice) {
             $discount = $itemPrice - $minimalPrice;
         }
@@ -141,26 +148,20 @@ class DiscountCalculator
     }
 
     /**
-     * @param $discount
+     * @param array $discount
      *
      * @return bool
      */
     public function isFullDiscount($discount)
     {
         if ($discount) {
-            $discountItem = isset($discount['discount_item']) ? $discount['discount_item'] : '';
-            $minimalPrice = isset($discount['minimal_price']) ? $discount['minimal_price'] : '';
+            $discountItem = $discount['discount_item'] ?? '';
+            $minimalPrice = $discount['minimal_price'] ?? '';
             if ($minimalPrice) {
                 return false;
             }
 
-            if ($discountItem === false) {
-                return true;
-            }
-
-            if ($discountItem === "100%" || $discountItem === null || $discountItem === "") {
-                return true;
-            }
+            return empty($discountItem) || $discountItem === "100%";
         }
 
         return false;

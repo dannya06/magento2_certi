@@ -1,13 +1,16 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 
 namespace Amasty\Promo\Helper;
 
+/**
+ * Promo Messages for customer
+ */
 class Messages extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
@@ -42,7 +45,7 @@ class Messages extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param $message
+     * @param string|\Magento\Framework\Phrase $message
      * @param bool $isError
      * @param bool $showEachTime
      */
@@ -75,17 +78,37 @@ class Messages extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         if ($isError && $this->_request->getParam('debug')) {
+            // method addErrorMessage is not applicable because of html escape
             $this->messageManager->addError($message);
-        } else {
-            $arr = $this->_checkoutSession->getAmpromoMessages();
-            if (!is_array($arr)) {
-                $arr = [];
-            }
-            if (!in_array($message, $arr) || $showEachTime) {
-                $this->messageManager->addNotice($message);
-                $arr[] = $message;
-                $this->_checkoutSession->setAmpromoMessages($arr);
-            }
+        } elseif ($showEachTime || !$this->isMessageWasShown($message)) {
+            // method addNoticeMessage is not applicable because of html escape
+            $this->messageManager->addNotice($message);
         }
+    }
+
+    /**
+     * @param string|\Magento\Framework\Phrase $message
+     *
+     * @return bool
+     */
+    private function isMessageWasShown($message)
+    {
+        if ($message instanceof \Magento\Framework\Phrase) {
+            $messageText = $message->getText();
+        } else {
+            $messageText = $message;
+        }
+        $arr = $this->_checkoutSession->getAmpromoMessages();
+        if (!is_array($arr)) {
+            $arr = [];
+        }
+        if (!in_array($messageText, $arr)) {
+            $arr[] = $messageText;
+            $this->_checkoutSession->setAmpromoMessages($arr);
+
+            return false;
+        }
+
+        return true;
     }
 }

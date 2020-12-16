@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-01-22T16:29:19+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-08-28T13:51:33+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Order/General.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -213,14 +213,25 @@ class General extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             if ($order->getData('gift_cards')) {
                 #$giftCardSerialized = 'a:1:{i:0;a:5:{s:1:"i";s:1:"1";s:1:"c";s:12:"01S003ZRDKQD";s:1:"a";d:10.99;s:2:"ba";d:10.99;s:10:"authorized";d:10.99;}}';
                 $giftCardSerialized = $order->getData('gift_cards');
-                if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
-                    $giftCards = @json_decode($giftCardSerialized);
-                    if (!$giftCards) {
-                        $giftCards = @unserialize($giftCardSerialized);
+                $giftCards = [];
+                try {
+                    if (version_compare($this->utilsHelper->getMagentoVersion(), '2.2', '>=')) {
+                        $giftCards = json_decode($giftCardSerialized);
+                        if (!$giftCards) {
+                            if (version_compare(phpversion(), '7.0.0', '>=')) {
+                                $giftCards = unserialize($giftCardSerialized, ['allowed_classes' => false]);
+                            } else {
+                                $giftCards = unserialize($giftCardSerialized);
+                            }
+                        }
+                    } else {
+                        if (version_compare(phpversion(), '7.0.0', '>=')) {
+                            $giftCards = unserialize($giftCardSerialized, ['allowed_classes' => false]);
+                        } else {
+                            $giftCards = unserialize($giftCardSerialized);
+                        }
                     }
-                } else {
-                    $giftCards = @unserialize($giftCardSerialized);
-                }
+                } catch (\Exception $e) {}
                 if (!empty($giftCards) && is_array($giftCards)) {
                     foreach ($giftCards as $giftCard) {
                         $this->writeArray = &$giftCardsArray[];

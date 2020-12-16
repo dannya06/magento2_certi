@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-03-16T16:37:40+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-08-27T12:30:21+00:00
  * File:          app/code/Xtento/ProductExport/Model/Output/Xml.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -67,7 +67,7 @@ class Xml extends AbstractOutput
 
     public function convertData($exportArray)
     {
-        if (!@class_exists('\XMLWriter')) {
+        if (!class_exists('\XMLWriter')) {
             throw new LocalizedException(__('The XMLWriter class could not be found. This means your PHP installation is missing XMLWriter features. You cannot export XML/XSL types without XMLWriter. Please get in touch with your hoster or server administrator to add XMLWriter features.'));
         }
         // Some libxml settings

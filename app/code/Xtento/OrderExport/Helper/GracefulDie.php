@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-05-14T12:38:32+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-11-14T11:07:25+00:00
  * File:          app/code/Xtento/OrderExport/Helper/GracefulDie.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -42,14 +42,18 @@ class GracefulDie
             $registry = $objectManager->get('\Magento\Framework\Registry');
             $logEntry = $registry->registry('orderexport_log');
             if ($logEntry && $logEntry->getId()) {
+                if (strstr($message, 'should always be of the type int since Symfony') !== false) {
+                    return; // Ignore
+                }
                 $logEntry->setResult(Log::RESULT_FAILED);
                 $logEntry->addResultMessage($message);
                 $logEntry->setResultMessage($logEntry->getResultMessages());
                 $logEntry->save();
+                if (strlen($message) > 16) {
+                    // No empty error message
+                    $objectManager->get('\Xtento\OrderExport\Model\Export')->setLogEntry($logEntry)->errorEmailNotification();
+                }
             }
-            /*if ($exit) {
-                exit;
-            }*/
         }
     }
 

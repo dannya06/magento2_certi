@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_XtCore
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-08-16T08:52:13+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-10-04T12:21:08+00:00
  * File:          app/code/Xtento/XtCore/Helper/Cron.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -12,7 +12,7 @@ namespace Xtento\XtCore\Helper;
 
 class Cron extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    const CRON_PATH_PREFIX = 'crontab/default/jobs/xtento_';
+    const CRON_PATH_PREFIX = 'crontab/%s/jobs/xtento_';
 
     /**
      * @var \Magento\Framework\App\ResourceConnection
@@ -91,26 +91,27 @@ class Cron extends \Magento\Framework\App\Helper\AbstractHelper
      * @param $cronIdentifier
      * @param $cronExpression
      * @param $cronRunModel
+     * @param $cronGroup
      * @return $this
      */
-    public function addCronjob($cronIdentifier, $cronExpression, $cronRunModel)
+    public function addCronjob($cronIdentifier, $cronExpression, $cronRunModel, $cronGroup = 'default')
     {
         $this->configValueFactory->create()->load(
-            $this->getCronExpressionConfigPath($cronIdentifier),
+            $this->getCronExpressionConfigPath($cronIdentifier, $cronGroup),
             'path'
         )->setValue(
             $cronExpression
         )->setPath(
-            $this->getCronExpressionConfigPath($cronIdentifier)
+            $this->getCronExpressionConfigPath($cronIdentifier, $cronGroup)
         )->save();
 
         $this->configValueFactory->create()->load(
-            $this->getCronRunModelConfigPath($cronIdentifier),
+            $this->getCronRunModelConfigPath($cronIdentifier, $cronGroup),
             'path'
         )->setValue(
             $cronRunModel
         )->setPath(
-            $this->getCronRunModelConfigPath($cronIdentifier)
+            $this->getCronRunModelConfigPath($cronIdentifier, $cronGroup)
         )->save();
 
         return $this;
@@ -120,14 +121,23 @@ class Cron extends \Magento\Framework\App\Helper\AbstractHelper
      * Remove cronjob from database
      *
      * @param $cronIdentifier
+     * @param $cronGroup
      * @return $this
      */
-    public function removeCronjob($cronIdentifier)
+    public function removeCronjob($cronIdentifier, $cronGroup = 'default')
     {
         $this->configValueFactory->create()
-            ->load($this->getCronExpressionConfigPath($cronIdentifier), 'path')->delete();
+            ->load($this->getCronExpressionConfigPath($cronIdentifier, $cronGroup), 'path')->delete();
         $this->configValueFactory->create()
-            ->load($this->getCronRunModelConfigPath($cronIdentifier), 'path')->delete();
+            ->load($this->getCronRunModelConfigPath($cronIdentifier, $cronGroup), 'path')->delete();
+
+        if ($cronGroup != 'default') {
+            // Remove legacy cronjobs
+            $this->configValueFactory->create()
+                ->load($this->getCronExpressionConfigPath($cronIdentifier, 'default'), 'path')->delete();
+            $this->configValueFactory->create()
+                ->load($this->getCronRunModelConfigPath($cronIdentifier, 'default'), 'path')->delete();
+        }
 
         return $this;
     }
@@ -138,10 +148,11 @@ class Cron extends \Magento\Framework\App\Helper\AbstractHelper
      * $cronIdentifier should contain %
      *
      * @param $cronIdentifier
+     * @param $cronGroup
      *
      * @return $this
      */
-    public function removeCronjobsLike($cronIdentifier)
+    public function removeCronjobsLike($cronIdentifier, $cronGroup = 'default')
     {
         if (empty($cronIdentifier)) {
             return $this;
@@ -149,7 +160,12 @@ class Cron extends \Magento\Framework\App\Helper\AbstractHelper
 
         $configTable = $this->resourceConnection->getTableName('core_config_data');
         $connection = $this->resourceConnection->getConnection();
-        $connection->delete($configTable, ['path LIKE ?' => self::CRON_PATH_PREFIX . $cronIdentifier]);
+        $connection->delete($configTable, ['path LIKE ?' => sprintf(self::CRON_PATH_PREFIX, $cronGroup) . $cronIdentifier]);
+
+        if ($cronGroup != 'default') {
+            // Remove legacy cronjobs
+            $connection->delete($configTable, ['path LIKE ?' => sprintf(self::CRON_PATH_PREFIX, 'default') . $cronIdentifier]);
+        }
 
         return $this;
     }
@@ -158,21 +174,24 @@ class Cron extends \Magento\Framework\App\Helper\AbstractHelper
      * Get config path to save cron expression in
      *
      * @param $cronIdentifier
+     * @param $cronGroup
      * @return string
      */
-    protected function getCronExpressionConfigPath($cronIdentifier)
+    protected function getCronExpressionConfigPath($cronIdentifier, $cronGroup)
     {
-        return self::CRON_PATH_PREFIX . $cronIdentifier . '/schedule/cron_expr';
+        return sprintf(self::CRON_PATH_PREFIX, $cronGroup) . $cronIdentifier . '/schedule/cron_expr';
     }
 
     /**
      * Get config path to save cron run model in
      *
      * @param $cronIdentifier
+     * @param $cronGroup
+     *
      * @return string
      */
-    protected function getCronRunModelConfigPath($cronIdentifier)
+    protected function getCronRunModelConfigPath($cronIdentifier, $cronGroup)
     {
-        return self::CRON_PATH_PREFIX . $cronIdentifier . '/run/model';
+        return sprintf(self::CRON_PATH_PREFIX, $cronGroup) . $cronIdentifier . '/run/model';
     }
 }

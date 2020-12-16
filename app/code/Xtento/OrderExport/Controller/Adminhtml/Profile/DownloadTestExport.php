@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-11-27T20:11:04+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2019-11-08T17:39:04+00:00
  * File:          app/code/Xtento/OrderExport/Controller/Adminhtml/Profile/DownloadTestExport.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -60,7 +60,9 @@ class DownloadTestExport extends \Xtento\OrderExport\Controller\Adminhtml\Profil
     }
 
     /**
-     * @return \Magento\Backend\Model\View\Result\Page
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Raw|\Magento\Framework\Controller\ResultInterface
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function execute()
     {
@@ -73,7 +75,11 @@ class DownloadTestExport extends \Xtento\OrderExport\Controller\Adminhtml\Profil
             return $resultPage;
         }
 
-        $data = @json_decode($this->systemTmpDir->readFile('profile_' . $profileId));
+        try {
+            $data = json_decode($this->systemTmpDir->readFile('profile_' . $profileId), true);
+        } catch (\Exception $e) {
+            $data = [];
+        }
         $file = $this->utilsHelper->prepareFilesForDownload($data);
         if (empty($file)) {
             throw new LocalizedException(

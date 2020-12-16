@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -23,7 +23,7 @@ class Spent extends AbstractDiscount
         \Magento\Quote\Model\Quote\Item\AbstractItem $item
     ) {
         $amount = max(1, $rule->getDiscountAmount());
-        $step   = $this->priceCurrency->convert($rule->getDiscountStep());
+        $step   = $rule->getDiscountStep();
 
         if (!$step && $this->isSkipCalculation($rule->getRuleId())) {
             return 0;
@@ -51,8 +51,8 @@ class Spent extends AbstractDiscount
     }
 
     /**
-     * @param $ruleId
-     * @param $total
+     * @param int $ruleId
+     * @param float $total
      * @return $this
      */
     public function setCalculatedTotals($ruleId, $total)
@@ -63,15 +63,19 @@ class Spent extends AbstractDiscount
     }
 
     /**
-     * @param $ruleItems
+     * @param \Magento\Quote\Model\Quote\Address\Item[] $ruleItems
      * @return float|int
      */
-    private function getItemsSpent($ruleItems)
+    protected function getItemsSpent($ruleItems)
     {
         $total = 0;
+        $withDiscount = $this->config->isDiscountIncluded();
         /** @var \Magento\Quote\Model\Quote\Item\AbstractItem $item */
         foreach ($ruleItems as $item) {
             $total += $item->getBaseRowTotal();
+            if ($withDiscount) {
+                $total -= $item->getBaseDiscountAmount();
+            }
         }
 
         return $total;
@@ -82,21 +86,16 @@ class Spent extends AbstractDiscount
      * @param \Magento\SalesRule\Model\Rule $rule
      *
      * @return \Magento\Quote\Model\Quote\Address\Item[]
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function getRuleItems($item, $rule)
+    protected function getRuleItems($item, $rule)
     {
         $validItems = [];
-        if ($item->getProductType() === \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
-            $validItems[] = $item;
-        } else {
-            foreach ($this->_getAllItems($item) as $item) {
-                if ($rule->getActions()->validate($item)) {
-                    $validItems[] = $item;
-                }
+
+        foreach ($this->_getAllItems($item) as $item) {
+            if ($rule->getActions()->validate($item)) {
+                $validItems[] = $item;
             }
         }
-
         return $validItems;
     }
 }

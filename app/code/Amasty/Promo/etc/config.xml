@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 -->
@@ -12,6 +12,7 @@
         <ampromo>
             <general>
                 <auto_add>1</auto_add>
+                <discount_include>0</discount_include>
             </general>
             <messages>
                 <cart_message>FREE!</cart_message>
@@ -22,12 +23,6 @@
                 <display_notification>0</display_notification>
                 <notification_text><![CDATA[You did not add any gift products to the cart. <a href="{url checkout/cart}#choose-gift">Check your available gifts!</a>]]></notification_text>
             </messages>
-            <banners>
-                <mode>product</mode>
-                <single>1</single>
-                <enabled_top>1</enabled_top>
-                <enabled_above_cart>1</enabled_above_cart>
-            </banners>
             <limitations>
                 <skip_special_price>0</skip_special_price>
                 <skip_special_price_configurable>0</skip_special_price_configurable>

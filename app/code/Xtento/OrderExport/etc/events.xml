@@ -31,12 +31,15 @@
     <event name="customer_address_save_after">
         <observer name="xtento_orderexport_customer_address_save_after_registration" instance="Xtento\OrderExport\Observer\CustomerAddressSaveAfterObserver" shared="false"/>
     </event>
+    <event name="admin_sales_order_address_update">
+        <observer name="xtento_orderexport_admin_sales_order_address_update" instance="Xtento\OrderExport\Observer\AdminSalesOrderAddressUpdateObserver" shared="false"/>
+    </event>
 </config>
 <!--
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2018-09-17T12:34:58+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-02-10T13:21:38+00:00
  * File:          app/code/Xtento/OrderExport/etc/events.xml
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */

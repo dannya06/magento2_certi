@@ -123,7 +123,7 @@ namespace Icube\PromoShipping\Model\Quote;
 
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         $salesRule = $om->get("Magento\SalesRule\Model\Rule");
-        $cartObj = $om->get('\Magento\Checkout\Model\Cart');   
+        $cartObj = $om->get('\Magento\Checkout\Model\Cart'); 
         $quote = $om->get('\Magento\Quote\Model\Quote');   
 
         $quoteId = $cartObj->getQuote()->getId();

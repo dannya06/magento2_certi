@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-08-16T11:08:14+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-02-28T18:34:21+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Order/Payment/Cc.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -64,9 +64,17 @@ class Cc extends \Xtento\OrderExport\Model\Export\Data\AbstractData
         // Fetch fields to export
         $payment = $collectionItem->getOrder()->getPayment();
         if ($payment) {
-            $this->writeValue('cc_number_dec', preg_replace("/[^0-9\-]/", "", $this->encryptor->decrypt($payment->getCcNumberEnc())));
+            try {
+                $this->writeValue('cc_number_dec', preg_replace("/[^0-9\-]/", "", $this->encryptor->decrypt($payment->getCcNumberEnc())));
+            } catch (\Exception $e) {
+                $this->writeValue('cc_number_dec', 'DECRYPTION_FAILED_WRONG_KEY');
+            }
+            try {
+                $this->writeValue('cc_cvv2_dec', preg_replace("/[^0-9\-]/", "", $this->encryptor->decrypt($payment->getCcCidEnc())));
+            } catch (\Exception $e) {
+                $this->writeValue('cc_cvv2_dec', 'DECRYPTION_FAILED_WRONG_KEY');
+            }
             $this->writeValue('cc_cvv2', preg_replace("/[^0-9\-]/", "", $payment->getCcCid()));
-            $this->writeValue('cc_cvv2_dec', preg_replace("/[^0-9\-]/", "", $this->encryptor->decrypt($payment->getCcCidEnc())));
         }
         // Done
         return $returnArray;

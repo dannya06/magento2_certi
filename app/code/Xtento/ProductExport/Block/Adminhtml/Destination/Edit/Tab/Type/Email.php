@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2016-04-15T12:11:47+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-06-05T18:04:15+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Destination/Edit/Tab/Type/Email.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -29,15 +29,21 @@ class Email extends AbstractType
         $fieldset->addField('email_sender', 'text', [
             'label' => __('E-Mail From Address'),
             'name' => 'email_sender',
-            'note' => __('Enter the email address that should be set as the sender of the email. '),
+            'note' => __('Enter the email address that should be set as the sender of the email. If you need to specify the "From" name, enter the e-mail address in this format: some@email.com|Some Sender Name'),
             'required' => true
         ]
         );
         $fieldset->addField('email_recipient', 'text', [
             'label' => __('E-Mail Recipient Address'),
             'name' => 'email_recipient',
-            'note' => __('Enter the email address where exports should be sent to. Separate multiple emails using a comma.'),
+            'note' => __('Enter the email address where exports should be sent to. Separate multiple emails using commas'),
             'required' => true
+        ]
+        );
+        $fieldset->addField('email_bcc', 'text', [
+            'label' => __('E-Mail BCC'),
+            'name' => 'email_bcc',
+            'note' => __('Enter BCC recipients who should receive a blind copy of the email. Separate multiple emails using commas'),
         ]
         );
         $fieldset->addField('email_subject', 'text', [

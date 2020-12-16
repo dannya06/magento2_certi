@@ -48,6 +48,7 @@ class Ipay88_Indonesia
     const PAYMENT_METHOD_PAY4ME = 22;
     const PAYMENT_METHOD_KREDIVO = 55;
     const PAYMENT_METHOD_ALFAMART = 60;
+    const PAYMENT_METHOD_SHOPEEPAY = 75;
 
     const PAYMENT_METHOD_CREDIT_BCA_CONFIG_KEY = 'ipay88_credit_card_bca_bank_config';
     const PAYMENT_METHOD_CREDIT_BRI_CONFIG_KEY = 'ipay88_credit_card_bri_bank_config';
@@ -76,6 +77,7 @@ class Ipay88_Indonesia
     const PAYMENT_METHOD_PAY4ME_CONFIG_KEY = 'ipay88_pay4me_bank_config';
     const PAYMENT_METHOD_KREDIVO_CONFIG_KEY = 'ipay88_kredivo_bank_config';
     const PAYMENT_METHOD_ALFAMART_CONFIG_KEY = 'ipay88_alfamart_bank_config';
+    const PAYMENT_METHOD_SHOPEEPAY_CONFIG_KEY = 'ipay88_shopeepay_bank_config';
 
     protected $paymentMethod;
 
@@ -255,6 +257,7 @@ class Ipay88_Indonesia
         self::PAYMENT_METHOD_PAY4ME_CONFIG_KEY => array('paymentId' => self::PAYMENT_METHOD_PAY4ME, 'name' => 'Pay4ME', 'logo' => 'opay4me_s.png'),
         self::PAYMENT_METHOD_KREDIVO_CONFIG_KEY => array('paymentId' => self::PAYMENT_METHOD_KREDIVO, 'name' => 'Kredivo', 'logo' => 'okredivo_s.png'),
         self::PAYMENT_METHOD_ALFAMART_CONFIG_KEY => array('paymentId' => self::PAYMENT_METHOD_ALFAMART, 'name' => 'Alfamart', 'logo' => 'oalfamart_s.png'),
+        self::PAYMENT_METHOD_SHOPEEPAY_CONFIG_KEY => array('paymentId' => self::PAYMENT_METHOD_SHOPEEPAY, 'name' => 'ShopeePay', 'logo' => 'oshopeepay_s.png'),
     );
 
     /**
@@ -298,6 +301,7 @@ class Ipay88_Indonesia
         self::PAYMENT_METHOD_PAY4ME_CONFIG_KEY => array('name' => 'Pay4ME', 'logo' => 'opay4me_s.png'),
         self::PAYMENT_METHOD_KREDIVO_CONFIG_KEY => array('name' => 'Kredivo', 'logo' => 'okredivo_s.png'),
         self::PAYMENT_METHOD_ALFAMART_CONFIG_KEY => array('name' => 'Alfamart', 'logo' => 'oalfamart_s.png'),
+        self::PAYMENT_METHOD_SHOPEEPAY_CONFIG_KEY => array('name' => 'ShopeePay', 'logo' => 'oshopeepay_s.png'),
     );
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
@@ -10,6 +10,9 @@ namespace Amasty\Promo\Block\Adminhtml\System\Config;
 
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
+/**
+ * Information block for Configuration page
+ */
 class Information extends \Magento\Config\Block\System\Config\Form\Fieldset
 {
     /**

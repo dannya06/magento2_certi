@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2016-10-20T12:16:27+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-09-29T14:37:38+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Condition/ObjectCondition.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -132,9 +132,9 @@ class ObjectCondition extends \Magento\SalesRule\Model\Rule\Condition\Address
     public function validate(\Magento\Framework\Model\AbstractModel $object)
     {
         if ($this->getAttribute() == 'payment_method' && !$object->hasPaymentMethod()) {
-            if ($object->getOrder()) {
+            if ($object->getOrder() && $object->getOrder()->getPayment()) {
                 $object->setPaymentMethod($object->getOrder()->getPayment()->getMethod());
-            } else {
+            } else if ($object->getPayment()) {
                 $object->setPaymentMethod($object->getPayment()->getMethod());
             }
         }

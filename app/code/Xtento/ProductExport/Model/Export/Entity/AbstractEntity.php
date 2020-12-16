@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-02-15T13:33:10+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-11-19T10:50:34+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Entity/AbstractEntity.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -112,18 +112,30 @@ abstract class AbstractEntity extends \Magento\Framework\Model\AbstractModel
             );
             $ruleDataChanged = true;
         }
+        // Dispatch event before export to add ability for users to manipulate the collection / add additional filters directly to the collection
+        $this->_eventManager->dispatch(
+            'xtento_productexport_export_before_prepare_collection',
+            [
+                'entity' => $this->getProfile()->getEntity(),
+                'profile' => $this->getProfile(),
+                'collection' => $this->collection,
+                'forced_collection_item' => $forcedCollectionItem // Used with event exports only. Then there is just this item, and no collection itself. This would contain the item to export then
+            ]
+        );
+        $collectionBatchSize = $this->exportDataSingleton->getCollectionBatchSize();
         $exportedIds = [];
         // Get export fields
         if ($forcedCollectionItem === false) {
             $collectionCount = null;
             $currItemNo = 1;
             $originalCollection = $this->collection;
+            $originalCollection->setOrder('entity_id', 'asc'); // Fix for missing categories as supplied by Jan-Henning Rühl
             $currPage = 1;
             $lastPage = 0;
             $break = false;
             while ($break !== true) {
                 $collection = clone $originalCollection;
-                $collection->setPageSize(100);
+                $collection->setPageSize($collectionBatchSize);
                 $collection->setCurPage($currPage);
                 $collection->load();
                 if (is_null($collectionCount)) {

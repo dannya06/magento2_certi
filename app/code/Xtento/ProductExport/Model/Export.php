@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-05-16T14:24:02+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-10-23T10:21:51+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -82,6 +82,11 @@ class Export extends \Magento\Framework\Model\AbstractModel
     protected $scopeConfig;
 
     /**
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
      * Export constructor.
      *
      * @param \Magento\Framework\Model\Context $context
@@ -97,6 +102,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
      * @param HistoryFactory $historyFactory
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Xtento\ProductExport\Logger\Logger $xtentoLogger
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -115,6 +121,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         HistoryFactory $historyFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Xtento\ProductExport\Logger\Logger $xtentoLogger,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -131,6 +138,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->historyFactory = $historyFactory;
         $this->scopeConfig = $scopeConfig;
         $this->xtentoLogger = $xtentoLogger;
+        $this->productRepository = $productRepository;
     }
 
     /**
@@ -179,7 +187,18 @@ class Export extends \Magento\Framework\Model\AbstractModel
         $this->setExportType(self::EXPORT_TYPE_TEST);
         $this->_registry->register('is_test_productexport', true, true);
         $filterField = $this->getProfile()->getEntity() == self::ENTITY_REVIEW ? 'main_table.review_id': 'entity_id';
-        $filters[] = [$filterField => ['in' => explode(",", $exportId)]];
+        if ($this->getProfile()->getEntity() == self::ENTITY_PRODUCT) {
+            // Check if ID doesn't exist, if so, try to load by SKU
+            try {
+                $this->productRepository->getById(explode(",", $exportId)[0]);
+                $filters[] = [$filterField => ['in' => explode(",", $exportId)]];
+            } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                // Load by SKU instead
+                $filters[] = ['sku' => $exportId];
+            }
+        } else {
+            $filters[] = [$filterField => ['in' => explode(",", $exportId)]];
+        }
         $exportedFiles = $this->runExport($filters);
         return $exportedFiles;
     }
@@ -309,8 +328,13 @@ class Export extends \Magento\Framework\Model\AbstractModel
     protected function runExport($filters, $forcedCollectionItem = false)
     {
         try {
-            @set_time_limit(0);
-            $this->serverHelper->increaseMemoryLimit('2048M');
+            if (function_exists('set_time_limit')) {
+                try {
+                    set_time_limit(0);
+                } catch (\Exception $e) {}
+            }
+            $memoryLimit = max(1024, intval($this->scopeConfig->getValue('productexport/advanced/memory_limit')));
+            $this->serverHelper->increaseMemoryLimit($memoryLimit . 'M');
             if (!$this->getProfile()) {
                 throw new LocalizedException(__('No profile to export specified.'));
             }
@@ -616,7 +640,7 @@ class Export extends \Magento\Framework\Model\AbstractModel
      *
      * @return $this
      */
-    protected function errorEmailNotification()
+    public function errorEmailNotification()
     {
         if (!$this->moduleHelper->isDebugEnabled() || $this->moduleHelper->getDebugEmail() == '') {
             return $this;

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Conditions
  */
 
@@ -77,6 +77,9 @@ class Product extends \Magento\Rule\Model\Condition\AbstractCondition
     public function validate(\Magento\Framework\Model\AbstractModel $model)
     {
         $quote = $model;
+        if ($quote instanceof \Magento\Quote\Model\Quote\Address) {
+            $quote = $model->getQuote();
+        }
         $isValid = false;
 
         /** @var \Magento\Quote\Model\Quote\Item $item */

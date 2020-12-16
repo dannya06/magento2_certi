@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-05-10T19:17:42+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-05-01T12:54:11+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Custom/Order/WyomindAdvancedInventory.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -66,6 +66,10 @@ class WyomindAdvancedInventory extends \Xtento\OrderExport\Model\Export\Data\Abs
         // Fetch fields to export
         $order = $collectionItem->getOrder();
 
+        // Match like this:
+        // <xsl:variable name="orderItemId" select="item_id" />
+        // <xsl:value-of select="../../wyomind_advancedinventory_assignations/wyomind_advancedinventory_assignation[item_id=$orderItemId]/place_id"/>
+
         if ($this->fieldLoadingRequired('wyomind_advancedinventory_assignations')) {
             try {
                 $this->writeArray = &$returnArray['wyomind_advancedinventory_assignations']; // Write on "wyomind_advancedinventory_assignations" level
@@ -103,6 +107,18 @@ class WyomindAdvancedInventory extends \Xtento\OrderExport\Model\Export\Data\Abs
                         }
                     }
                 }
+
+                $this->writeArray = &$returnArray['wyomind_advancedinventory_items']; // Write on "wyomind_advancedinventory_items" level
+                $collection = $this->objectManager->create('\Wyomind\AdvancedInventory\Model\ResourceModel\Order\Item\Collection');
+                $data = $collection->getAssignationByOrderId($order->getId());
+
+                foreach ($data as $row) {
+                    $this->writeArray = & $returnArray['wyomind_advancedinventory_items'][];
+                    foreach ($row->getData() as $key => $value) {
+                        $this->writeValue($key, $value);
+                    }
+                }
+
             } catch (\Exception $e) {
 
             }

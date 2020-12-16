@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="style-src">
+            <values>
+                <value id="googleapis" type="host">*.googleapis.com</value>
+                <value id="gstatic" type="host">*.gstatic.com</value>
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <value id="gstatic" type="host">*.gstatic.com</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="data" type="host">data:</value>
+                <value id="googleapis" type="host">*.googleapis.com</value>
+                <value id="gstatic" type="host">*.gstatic.com</value>
+                <value id="everesttech" type="host">*.everesttech.net</value>
+                <value id="demdex" type="host">*.demdex.net</value>
+                <value id="omtrdc" type="host">amcglobal.sc.omtrdc.net</value>
+                <value id="google" type="host">*.google.com</value>
+                <value id="google" type="host">*.google.co.id</value>
+                <value id="xtento" type="host">*.xtento.com</value>
+                <value id="klarna" type="host">https://cdn.klarna.com</value>
+                <value id="ebizmarts" type="host">https://ebizmarts-website.s3.amazonaws.com</value>
+            </values>
+        </policy>
+        <policy id="script-src">
+            <values>
+                <value id="midtrans" type="host">*.midtrans.com</value>
+                <value id="googleapis" type="host">*.googleapis.com</value>
+                <value id="google" type="host">*.google.com</value>
+                <value id="gstatic" type="host">*.gstatic.com</value>
+                <value id="gtm" type="host">*.googletagmanager.com</value>
+                <value id="cloudflare" type="host">*.cloudflare.com</value>
+                <value id="instagram" type="host">*.instagram.com</value>
+                <value id="rawgit" type="host">https://cdn.rawgit.com</value>
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="midtrans" type="host">*.midtrans.com</value>
+                <value id="demdex" type="host">*.demdex.net</value>
+                <value id="google" type="host">*.google.com</value>
+                <value id="xtento" type="host">*.xtento.com</value>
+                <value id="weltpixel" type="host">*.weltpixel.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="demdex" type="host">*.demdex.net</value>
+                <value id="google-analytics" type="host">*.google-analytics.com</value>
+                <value id="doubleclick" type="host">*.doubleclick.net</value>
+                <value id="omtrdc" type="host">amcglobal.sc.omtrdc.net</value>
+            </values>
+        </policy>
+        <policy id="form-action">
+            <values>
+                <value id="odnoklassniki" type="host">*.ok.ru</value>
+                <value id="paypal" type="host">*.paypal.com</value>
+                <value id="vk" type="host">*.vk.com</value>
+                <value id="pinterest" type="host">*.pinterest.com</value>
+                <value id="instagram" type="host">*.instagram.com</value>
+                <value id="linkedin" type="host">*.linkedin.com</value>
+                <value id="google" type="host">*.google.com</value>
+                <value id="facebook" type="host">*.facebook.com</value>
+                <value id="twitter" type="host">*.twitter.com</value>
+                <value id="ipay88" type="host">*.ipay88.co.id</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2017-12-13T18:45:49+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2020-07-26T19:06:55+00:00
  * File:          app/code/Xtento/ProductExport/Block/Adminhtml/Profile/Fields.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -28,11 +28,18 @@ class Fields extends \Magento\Backend\Block\Template
     protected $xmlWriter;
 
     /**
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
      * Fields constructor.
+     *
      * @param \Magento\Backend\Block\Widget\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Xtento\ProductExport\Model\Output\Xml\Writer $xmlWriter
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      * @param array $data
      */
     public function __construct(
@@ -40,11 +47,13 @@ class Fields extends \Magento\Backend\Block\Template
         \Magento\Framework\Registry $registry,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Xtento\ProductExport\Model\Output\Xml\Writer $xmlWriter,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         array $data = []
     ) {
         $this->registry = $registry;
         $this->objectManager = $objectManager;
         $this->xmlWriter = $xmlWriter;
+        $this->productRepository = $productRepository;
         parent::__construct($context, $data);
     }
 
@@ -54,11 +63,19 @@ class Fields extends \Magento\Backend\Block\Template
         $export->setShowEmptyFields(1);
         $export->setProfile($this->registry->registry('productexport_profile'));
         $filterField = $this->registry->registry('productexport_profile')->getEntity() == \Xtento\ProductExport\Model\Export::ENTITY_REVIEW ? 'main_table.review_id': 'entity_id';
-        $export->setCollectionFilters(
-            [
-                [$filterField => ['in' => explode(",", $this->getTestId())]]
-            ]
-        );
+        if ($this->registry->registry('productexport_profile')->getEntity() == \Xtento\ProductExport\Model\Export::ENTITY_PRODUCT) {
+            // Check if ID doesn't exist, if so, try to load by SKU
+            try {
+                $this->productRepository->getById(explode(",", $this->getTestId())[0]);
+                $filters[] = [$filterField => ['in' => explode(",", $this->getTestId())]];
+            } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                // Load by SKU instead
+                $filters[] = ['sku' => $this->getTestId()];
+            }
+        } else {
+            $filters[] = [$filterField => ['in' => explode(",", $this->getTestId())]];
+        }
+        $export->setCollectionFilters($filters);
         $returnArray = $export->runExport();
         if (empty($returnArray)) {
             return false;
@@ -75,7 +92,7 @@ class Fields extends \Magento\Backend\Block\Template
         $newArray = [];
 
         $depth++;
-        if ($depth >= '100') {
+        if ($depth >= 250) {
             return '';
         }
 
@@ -88,7 +105,9 @@ class Fields extends \Magento\Backend\Block\Template
                     $val = __('NULL');
                 }
                 if (function_exists('mb_convert_encoding')) {
-                    $val = @mb_convert_encoding($val, 'UTF-8', 'auto');
+                    try {
+                        $val = mb_convert_encoding($val, 'UTF-8', 'auto');
+                    } catch (\Exception $e) {}
                 }
                 $newArray[] = ['text' => $key, 'leaf' => false, 'cls' => 'x-tree-noicon', 'children' => [['text' => $val, 'leaf' => true, 'cls' => 'x-tree-noicon']]];
             }

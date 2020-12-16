@@ -1,18 +1,15 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2018 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
  * @package Amasty_Promo
  */
 
 namespace Amasty\Promo\Model\Config\Source;
 
 /**
- * Class Attribute
- *
- * @author Artem Brunevski
+ * Product Attribute options provider for system.xml configuration
  */
-
 class Attribute implements \Magento\Framework\Option\ArrayInterface
 {
     /** @var \Magento\Framework\Convert\DataObject */
@@ -38,10 +35,10 @@ class Attribute implements \Magento\Framework\Option\ArrayInterface
      *
      * @return array
      */
-    public function toOptionArray($withAdmin = false)
+    public function toOptionArray()
     {
         $optionArray = [];
-        $arr         = $this->toArray($withAdmin);
+        $arr         = $this->toArray();
         foreach ($arr as $value => $label) {
             $optionArray[] = [
                 'value' => $value,

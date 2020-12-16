@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2019-05-13T14:03:05+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-07-03T14:58:24+00:00
  * File:          app/code/Xtento/ProductExport/Model/Export/Data/Product/ParentProduct.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -86,6 +86,7 @@ class ParentProduct extends General
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Catalog\Helper\Image $imageHelper,
+        \Magento\Catalog\Helper\Data $catalogHelper,
         Categories $categoriesSingleton,
         \Magento\GroupedProduct\Model\Product\Type\Grouped $productTypeGrouped,
         \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $productTypeConfigurable,
@@ -109,6 +110,7 @@ class ParentProduct extends General
             $productMetadata,
             $objectManager,
             $imageHelper,
+            $catalogHelper,
             $resource,
             $resourceCollection,
             $data

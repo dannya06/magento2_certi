@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_ProductExport
- * ID:            1PtGHiXzc4DmEiD7yFkLjUPclACnZa8jv+NX0Ca0xsI=
- * Last Modified: 2018-07-11T12:35:25+00:00
+ * ID:            sLHQuusmovgdU4nT0PbxWdfJtxtU78F+Lw5mXvtO9gk=
+ * Last Modified: 2019-10-09T19:22:12+00:00
  * File:          app/code/Xtento/ProductExport/Model/Profile.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -168,7 +168,7 @@ class Profile extends \Magento\Rule\Model\AbstractModel
     public function beforeDelete()
     {
         // Remove existing cronjobs
-        $this->cronHelper->removeCronjobsLike('productexport_profile_' . $this->getId() . '_%');
+        $this->cronHelper->removeCronjobsLike('productexport_profile_' . $this->getId() . '_%', \Xtento\ProductExport\Cron\Export::CRON_GROUP);
 
         return parent::beforeDelete();
     }
@@ -179,7 +179,7 @@ class Profile extends \Magento\Rule\Model\AbstractModel
     protected function updateCronjobs()
     {
         // Remove existing cronjobs
-        $this->cronHelper->removeCronjobsLike('productexport_profile_' . $this->getId() . '_%');
+        $this->cronHelper->removeCronjobsLike('productexport_profile_' . $this->getId() . '_%', \Xtento\ProductExport\Cron\Export::CRON_GROUP);
 
         if (!$this->getEnabled()) {
             return $this; // Profile not enabled
@@ -209,7 +209,8 @@ class Profile extends \Magento\Rule\Model\AbstractModel
                 $this->cronHelper->addCronjob(
                     $cronIdentifier,
                     $cronFrequency,
-                    $cronRunModel
+                    $cronRunModel,
+                    \Xtento\ProductExport\Cron\Export::CRON_GROUP
                 );
             }
         } else {
@@ -222,7 +223,8 @@ class Profile extends \Magento\Rule\Model\AbstractModel
             $this->cronHelper->addCronjob(
                 $cronIdentifier,
                 $cronFrequency,
-                $cronRunModel
+                $cronRunModel,
+                \Xtento\ProductExport\Cron\Export::CRON_GROUP
             );
         }
 

@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2017-12-29T16:07:50+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-04-09T12:13:08+00:00
  * File:          app/code/Xtento/OrderExport/Controller/Adminhtml/Log/MassDownload.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -86,11 +86,14 @@ class MassDownload extends \Xtento\OrderExport\Controller\Adminhtml\Log
         $resultPage = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_RAW);
         $file = $this->utilsHelper->prepareFilesForDownload($allExportedFiles);
         if (empty($file)) {
-            throw new LocalizedException(
+            $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);
+            $this->messageManager->addWarningMessage(
                 __(
                     'No files have been exported or the backup files in the export_bkp folder have been deleted from the filesystem. Exported files don\'t exist anymore.'
                 )
             );
+            $resultRedirect->setPath('*/*/');
+            return $resultRedirect;
         }
         $resultPage->setHttpResponseCode(200)
             ->setHeader('Pragma', 'public', true)

@@ -2,8 +2,8 @@
 
 /**
  * Product:       Xtento_OrderExport
- * ID:            MlbKB4xzfXDFlN04cZrwR1LbEaw8WMlnyA9rcd7bvA8=
- * Last Modified: 2019-05-07T18:33:18+00:00
+ * ID:            bY/Ft2U8dyxRjeo/M3VIOTeBSPY04gzxxlhY9eC916A=
+ * Last Modified: 2020-08-05T12:18:24+00:00
  * File:          app/code/Xtento/OrderExport/Model/Export/Data/Shared/Customer.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -195,6 +195,40 @@ class Customer extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             if ($key == 'entity_id') {
                 continue;
             }
+            /*$attribute = $customer->getResource()->getAttribute($key);
+            if ($attribute instanceof \Magento\Catalog\Model\ResourceModel\Eav\Attribute) {
+                $attribute->setStoreId($order->getStoreId());
+            }
+
+            $attrText = '';
+            if ($attribute) {
+                if ($attribute->usesSource()) {
+                    try {
+                        $attrText = $product->getAttributeText($key);
+                    } catch (\Exception $e) {
+                        //echo "Problem with attribute $key: ".$e->getMessage();
+                        continue;
+                    }
+                }
+            }
+            if (!empty($attrText)) {
+                if (is_array($attrText)) {
+                    // Multiselect:
+                    foreach ($attrText as $index => $val) {
+                        if (!is_array($index) && !is_array($val)) {
+                            $this->writeValue($key . '_value_' . $index, $val);
+                        }
+                    }
+                    $this->writeValue($key, implode(",", $attrText));
+                } else {
+                    if ($attribute->getFrontendInput() == 'multiselect') {
+                        $this->writeValue($key . '_value_0', $attrText);
+                    }
+                    $this->writeValue($key, $attrText);
+                }
+            } else {
+                $this->writeValue($key, $value);
+            }*/
             $this->writeValue($key, $value);
         }
 
