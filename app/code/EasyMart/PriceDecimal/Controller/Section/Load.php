@@ -39,7 +39,7 @@ class Load extends \Magento\Customer\Controller\Section\Load
             $response = ['message' => $this->escaper->escapeHtml($e->getMessage())];
         }
 
-        if ($response['cart']) {
+        if (isset($response['cart'])) {
 
             $subtotalInclTax = substr($this->getTextBetweenTags($response['cart']['subtotal_incl_tax'], "span"), 0, -3);
             $subtotalExclTax = substr($this->getTextBetweenTags($response['cart']['subtotal_excl_tax'], "span"), 0, -3);
