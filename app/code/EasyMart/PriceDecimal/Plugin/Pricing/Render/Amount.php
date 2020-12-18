@@ -43,6 +43,7 @@ class Amount
 		$includeContainer = true,
         $precision = PriceCurrencyInterface::DEFAULT_PRECISION
     ) {
+            $price = round($price, 2);
 			$priceNumber = floor($price);
 			$fraction = $price - $priceNumber;
 			if($fraction > 0 && $fraction < 1){
