@@ -28,6 +28,7 @@ class SalesOrder implements ObserverInterface
             return;
         }
 
+
         $appliedRuleIds = $order->getAppliedRuleIds();
         $subtotal = $order->getBaseSubtotal();
         $shippingAmount = $order->getBaseShippingAmount();
@@ -35,6 +36,11 @@ class SalesOrder implements ObserverInterface
         $getCashback = $this->_helper->getCashback($appliedRuleIds, $subtotal, $shippingAmount);
 
         if ($getCashback['is_cashback'] === false) {
+            return;
+        }
+
+        $cashbackList = $this->cashbackFactory->create()->getCollection()->addFieldToFilter('order_id',array('eq'=>$order->getId()));
+        if(!empty($cashbackList->getData())){
             return;
         }
 
