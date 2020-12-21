@@ -28,7 +28,6 @@ class SalesOrder implements ObserverInterface
             return;
         }
 
-
         $appliedRuleIds = $order->getAppliedRuleIds();
         $subtotal = $order->getBaseSubtotal();
         $shippingAmount = $order->getBaseShippingAmount();
