@@ -871,27 +871,7 @@ public function _optionToHtml($option)
                 $html .= '</div>';
                 $html .= '<div class="input-media">';
                 $html .= '<input data-bind="{value: '.$fieldName.'}" class="'.$classes.'" id="'.$editorId.'" type="text"/>';
-
-                $html .= $this->_layout->createBlock(
-                    'Magento\Backend\Block\Widget\Button',
-                    '',
-                    [
-                    'data' => [
-                    'label' => __('Insert Image'),
-                    'type' => 'button',
-                    'class' => 'action-wysiwyg',
-                    'onclick' => "MediabrowserUtility.openDialog('" . $this->_backendData->getUrl('cms/wysiwyg_images/index',
-                        [
-                        'target_element_id'=>$editorId,
-                        'as_is' => 'ves'
-                        ]
-                        ) . "', null, null,'" . $this->escaper->escapeQuote(
-                        __('Upload Image'),
-                        true
-                        ) . "', '" . '' . "');",
-                        ]
-                        ]
-                        )->toHtml();
+                $html .= '<button title="Insert Image" type="button" class="action-default scalable action-wysiwyg" onclick="MediabrowserUtility.openDialog(\'' . $this->_backendData->getUrl('cms/wysiwyg_images/index',['target_element_id'=>$editorId,'as_is' => 'ves']) . '\', null, null,\'' . $this->escaper->escapeQuote(__('Upload Image'),true) . '\', \'' . '' . '\');" data-ui-id="widget-button-0"><span>Insert Image</span></button>';
                 $html .= '</div>';
                 $html .= '<div class="field-cm">'.(isset($field['note'])?$field['note']:'').'</div>';
                 break;
@@ -899,21 +879,7 @@ public function _optionToHtml($option)
                 $tinyMCEConfig = json_encode($this->getWysiwygConfigObject()->getConfig());
                 $editorId = 'editor'.time().rand();
                 $html = '<textarea id="'.$editorId.'" data-key=' . $fieldName . ' class="'.$classes.' ves-editor" style="height:400px;"  data-bind="{value: '.$fieldName.', if: status==1}" data-ui-id="product-tabs-attributes-tab-fieldset-element-textarea-'.$editorId.' aria-hidden="true"></textarea>';
-                $html .= $this->_layout->createBlock(
-                    'Magento\Backend\Block\Widget\Button',
-                    '',
-                    [
-                    'data' => [
-                    'label' => __('WYSIWYG Editor'),
-                    'type' => 'button',
-                    'class' => 'action-wysiwyg',
-                    'style' => 'margin-top: 10px;',
-                    'onclick' => 'megamenuWysiwygEditor.open(\'' . $this->_backendData->getUrl(
-                        'vesmegamenu/product/wysiwyg'
-                        ) . '\', \''.$editorId.'\' , ' . json_encode($tinyMCEConfig) . ')',
-                    ]
-                    ]
-                    )->toHtml();
+                $html .= '<button title="WYSIWYG Editor" type="button" class="action-default scalable action-wysiwyg" onclick="megamenuWysiwygEditor.open(\'' . $this->_backendData->getUrl('vesmegamenu/product/wysiwyg') . '\', \''.$editorId.'\' , \'' . htmlspecialchars(json_encode($tinyMCEConfig)) . '\')" style="margin-top: 10px;" data-ui-id="widget-button-2"><span>WYSIWYG Editor</span></button>';
                 $html .= '<div class="field-cm">'.(isset($field['note'])?$field['note']:'').'</div>';
                 break;
                 case 'separator':
