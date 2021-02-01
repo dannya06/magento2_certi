@@ -38,6 +38,11 @@ class SalesOrder implements ObserverInterface
             return;
         }
 
+        $cashbackList = $this->cashbackFactory->create()->getCollection()->addFieldToFilter('order_id',array('eq'=>$order->getId()));
+        if(!empty($cashbackList->getData())){
+            return;
+        }
+
         $promo_names = [];
         foreach ($getCashback['data'] as $promo) {
             array_push($promo_names, $promo['promo_name']);
