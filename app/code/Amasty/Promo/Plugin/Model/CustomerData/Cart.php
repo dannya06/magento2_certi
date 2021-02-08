@@ -78,7 +78,7 @@ class Cart
     protected function getRecentItems(\Magento\Checkout\CustomerData\Cart $cart, $sectionData)
     {
         $items = [];
-        if (!$sectionData['summary_count']) {
+        if (empty($sectionData['summary_count'])) {
             return $items;
         }
 
