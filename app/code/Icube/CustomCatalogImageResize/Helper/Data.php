@@ -38,7 +38,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             foreach ($product as $image) {
                 if (!$fileDriver->isExists($mediaDirectory.$path.$image)) {
                     if ($fileDriver->isExists($mediaDirectoryOrigin.$image)) { 
-                        $this->imageResize->resizeFromImageName($image, $params);
+                        if (!empty($image)) {
+                            $this->imageResize->resizeFromImageName($image, $params);
+                        }
                     }
                 } 
             }
