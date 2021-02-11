@@ -4092,13 +4092,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "3747de4dd36ecf494fe5e741febaa40688bd1402"
+                "reference": "a8c13756c30a981952b167616ab6b7ccff9ba58f"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
                 "icubeus/magento2-instantdelivery": "^4.1",
                 "icubeus/magento2-notification": "^4.1",
-                "icubeus/magento2-payment": "^4.1",
                 "icubeus/magento2-smstada": "^4.1",
                 "icubeus/magento2-swiftomschannel": "^4.1",
                 "icubeus/magento2-veritranspayment": "^4.1"
@@ -4212,7 +4211,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-02-05T07:52:32+00:00"
+            "time": "2021-02-09T09:42:19+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -4595,11 +4594,11 @@
         },
         {
             "name": "icubeus/magento2-smstada",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "1a2bc3ae8ca3d584a1dae046ca34a36deed33b7f"
+                "reference": "368a4bb7ef5bed223e2b4b0f0f75a8537493a33d"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "^4.1"
@@ -4638,7 +4637,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-12-09T11:32:19+00:00"
+            "time": "2021-02-11T08:12:03+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -4737,11 +4736,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "d0156bb56a6458138e19e446c1b670d64123288d"
+                "reference": "320d8dd916487894c5373866e23875df48a759d8"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -4790,7 +4789,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-12-01T14:15:08+00:00"
+            "time": "2021-02-11T08:12:22+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
