@@ -4088,17 +4088,16 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "3c0f87027541d19201700f47d4b8912770b8ee81"
+                "reference": "a8c13756c30a981952b167616ab6b7ccff9ba58f"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
                 "icubeus/magento2-instantdelivery": "^4.1",
                 "icubeus/magento2-notification": "^4.1",
-                "icubeus/magento2-payment": "^4.1",
                 "icubeus/magento2-smstada": "^4.1",
                 "icubeus/magento2-swiftomschannel": "^4.1",
                 "icubeus/magento2-veritranspayment": "^4.1"
@@ -4118,7 +4117,6 @@
                 "icubeus/module-contact-us-graph-ql": "self.version",
                 "icubeus/module-graphql": "self.version",
                 "icubeus/module-instant-delivery-graph-ql": "self.version",
-                "icubeus/module-ipay88-payment-graph-ql": "self.version",
                 "icubeus/module-newsletter-graph-ql": "self.version",
                 "icubeus/module-notification-graph-ql": "self.version",
                 "icubeus/module-owl-carousel-slider-graph-ql": "self.version",
@@ -4162,7 +4160,6 @@
                     "src/module-store-locator-graph-ql/registration.php",
                     "src/module-am-extrafee-graph-ql/registration.php",
                     "src/module-swatches-graph-ql/registration.php",
-                    "src/module-Ipay88-payment-graph-ql/registration.php",
                     "src/module-promo-graph-ql/registration.php",
                     "src/module-newsletter-graph-ql/registration.php",
                     "src/module-quote-graph-ql/registration.php"
@@ -4193,7 +4190,6 @@
                     "Icube\\StoreLocatorGraphQl\\": "src/module-store-locator-graph-ql",
                     "Icube\\AmastyExtraFeeGraphQl\\": "src/module-am-extrafee-graph-ql",
                     "Icube\\SwatchesGraphQl\\": "src/module-swatches-graph-ql",
-                    "Icube\\Ipay88PaymentGraphQl\\": "src/module-Ipay88-payment-graph-ql",
                     "Icube\\PromoGraphQl\\": "src/module-promo-graph-ql",
                     "Icube\\NewsletterGraphQl\\": "src/module-newsletter-graph-ql",
                     "Icube\\QuoteGraphQl\\": "src/module-quote-graph-ql"
@@ -4215,7 +4211,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-12-16T07:21:06+00:00"
+            "time": "2021-02-09T09:42:19+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -4339,11 +4335,11 @@
         },
         {
             "name": "icubeus/magento2-payment",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-payment.git",
-                "reference": "972c9e819d26e3b7f5556eabc36acc5188d20241"
+                "reference": "212e0983e732f9738ddbe836bb7a151af5af3e39"
             },
             "replace": {
                 "icubeus/module-ipay88": "self.version"
@@ -4383,7 +4379,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-12-09T11:59:34+00:00"
+            "time": "2021-02-05T07:39:59+00:00"
         },
         {
             "name": "icubeus/magento2-queues",
@@ -4598,11 +4594,11 @@
         },
         {
             "name": "icubeus/magento2-smstada",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "1a2bc3ae8ca3d584a1dae046ca34a36deed33b7f"
+                "reference": "368a4bb7ef5bed223e2b4b0f0f75a8537493a33d"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "^4.1"
@@ -4641,7 +4637,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-12-09T11:32:19+00:00"
+            "time": "2021-02-11T08:12:03+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -4740,11 +4736,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "d0156bb56a6458138e19e446c1b670d64123288d"
+                "reference": "320d8dd916487894c5373866e23875df48a759d8"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -4793,7 +4789,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2020-12-01T14:15:08+00:00"
+            "time": "2021-02-11T08:12:22+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -25688,12 +25684,12 @@
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },

@@ -1,5 +1,5 @@
 # ICUBE SWIFT
-This is SWIFT code base using Magento CE 2.3.1
+This is SWIFT code base using Magento CE 2.4.1
 
 
 Instalation:
@@ -7,7 +7,7 @@ Instalation:
 
     git clone https://github.com/icubeus/swift.git
 
-    git checkout master_id
+    git checkout master_id_2.4.1
 	
 	rm -rf composer.* app/code/*
 	
@@ -52,7 +52,7 @@ Instalation:
     chmod -R 777 var/ pub/ generated/ 
     (*optional)
 
-How to update project that base from SWIFT
+How to update project that base from SWIFT to version 2.4.1
 =============================================================
 
     git remote add swift https://github.com/icubeus/swift.git
@@ -61,7 +61,7 @@ How to update project that base from SWIFT
     
     git checkout -b master_swift
 
-    git pull swift master_id
+    git pull swift master_id_2.4.1
     
     composer install
     
@@ -74,12 +74,12 @@ How to update project that base from SWIFT
     Continue will pull request
 
 
-How to update project that clone from SWIFT
+How to update project that clone from SWIFT to version 2.4.1
 =============================================================
 
     git fetch origin
 
-    git checkout master_swift -b swift/master_id
+    git checkout master_swift -b swift/master_id_2.4.1
     
     composer install
 

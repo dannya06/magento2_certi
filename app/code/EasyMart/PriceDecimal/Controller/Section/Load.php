@@ -21,6 +21,10 @@ class Load extends \Magento\Customer\Controller\Section\Load
         $resultJson = $this->resultJsonFactory->create();
         $resultJson->setHeader('Cache-Control', 'max-age=0, must-revalidate, no-cache, no-store', true);
         $resultJson->setHeader('Pragma', 'no-cache', true);
+        
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();   
+        $this->escaper = $objectManager->get("\Magento\Framework\Escaper");
+
         try {
             $sectionNames = $this->getRequest()->getParam('sections');
             $sectionNames = $sectionNames ? array_unique(\explode(',', $sectionNames)) : null;

@@ -452,8 +452,15 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
                 $connection = $resource->getConnection();
                 $sql = "Select * FROM amasty_extrafee_quote where quote_id = ".$quote->getId()." and option_id = ".$item['entity_id'];
                 $result = $connection->fetchRow($sql);
-                if ($result['fee_id'] && $result['fee_amount']>0) {
-                    $basePrice = $result['fee_amount'];
+                $feeId = null;
+                $feeAmount = null;
+                if (!empty($result)) {
+                    $feeId = !empty($result['fee_id']) ? (int) $result['fee_id'] : false;
+                    $feeAmount = !empty($result['fee_amount']) ? (int) $result['fee_amount'] : false;
+                }
+
+                if ($feeId && $feeAmount>0) {
+                    $basePrice = $feeAmount;
                 }else{
                     $basePrice = $unicode;  
                 }
