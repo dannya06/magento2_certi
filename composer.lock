@@ -4641,11 +4641,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "4663065d4db0ab622443dd41998fde1a6e8d4de9"
+                "reference": "b3fe343fff53d02c2e50526fe7a7c28ce735a12b"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -4704,7 +4704,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2020-12-09T11:56:55+00:00"
+            "time": "2021-02-22T01:39:27+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
