@@ -38,7 +38,7 @@ class Get extends Action
         Context $context,
         \Ebizmarts\MailChimp\Helper\Data $helper
     ) {
-    
+
         parent::__construct($context);
         $this->_resultFactory       = $context->getResultFactory();
         $this->_helper                  = $helper;
@@ -47,22 +47,32 @@ class Get extends Action
     {
         $param = $this->getRequest()->getParams();
         $apiKey = $param['apikey'];
+        $encrypt = $param['encrypt'];
         try {
-            $api = $this->_helper->getApiByApiKey($apiKey);
+            $api = $this->_helper->getApiByApiKey($apiKey, $encrypt);
             $stores = $api->ecommerce->stores->get(null, null, null, self::MAX_STORES);
             $result = [];
+            $result['valid'] = 1;
+            $result['stores'] = [];
             foreach ($stores['stores'] as $store) {
                 if ($store['platform'] == \Ebizmarts\MailChimp\Helper\Data::PLATFORM) {
                     if ($store['list_id']=='') {
                         continue;
                     }
                     $list = $api->lists->getLists($store['list_id']);
-                    $result[] = ['id' => $store['id'], 'name' => $store['name'], 'list_name' => $list['name'], 'list_id' => $store['list_id']];
+                    $result['stores'][] = [
+                        'id' => $store['id'],
+                        'name' => $store['name'],
+                        'list_name' => $list['name'],
+                        'list_id' => $store['list_id']
+                    ];
+                    $result['valid'] = 1;
                 }
             }
         } catch (\Mailchimp_Error $e) {
             $this->_helper->log($e->getFriendlyMessage());
-            $result = [];
+            $result['valid'] = 0;
+            $result['errormsg'] = $e->getTitle();
         }
         $resultJson = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
         $resultJson->setData($result);

@@ -7,8 +7,8 @@
  * @author Ebizmarts Team <info@ebizmarts.com>
  * @copyright Ebizmarts (http://ebizmarts.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @date: 3/12/18 4:14 PM
- * @file: CreateWebhook.php
+ * @date: 2/21/17 5:07 PM
+ * @file: ResetLocalErrors.php
  */
 
 namespace Ebizmarts\MailChimp\Controller\Adminhtml\Ecommerce;
@@ -17,7 +17,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\ValidatorException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
-class CreateWebhook extends \Magento\Backend\App\Action
+class ResyncSubscribers extends \Magento\Backend\App\Action
 {
     /**
      * @var JsonFactory
@@ -33,19 +33,17 @@ class CreateWebhook extends \Magento\Backend\App\Action
     protected $storeManager;
 
     /**
-     * DeleteStore constructor.
+     * ResetLocalErrors constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param JsonFactory $resultJsonFactory
      * @param \Magento\Store\Model\StoreManagerInterface $storeManagerInterface
      * @param \Ebizmarts\MailChimp\Helper\Data $helper
-     * @param \Magento\Config\Model\ResourceModel\Config $config
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         JsonFactory $resultJsonFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManagerInterface,
-        \Ebizmarts\MailChimp\Helper\Data $helper,
-        \Magento\Config\Model\ResourceModel\Config $config
+        \Ebizmarts\MailChimp\Helper\Data $helper
     ) {
     
         parent::__construct($context);
@@ -59,19 +57,32 @@ class CreateWebhook extends \Magento\Backend\App\Action
         $valid = 1;
         $message = '';
         $params = $this->getRequest()->getParams();
-        $apiKey = $params['apikey'];
-        $listId = $params['listId'];
-        if ($apiKey=='******') {
-            $apiKey = $this->helper->getApiKey($this->storeManager->getStore()->getId());
+        if (isset($params['website'])) {
+            $mailchimpList = $this->helper->getConfigValue(
+                \Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST,
+                $params['website'],
+                'website'
+            );
+        } elseif (isset($params['store'])) {
+            $mailchimpList = $this->helper->getConfigValue(
+                \Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST,
+                $params['store'],
+                'store'
+            );
+        } else {
+            $mailchimpList = $this->helper->getConfigValue(
+                \Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST,
+                $this->storeManager->getStore()
+            );
         }
 
-        $return = $this->helper->createWebHook($apiKey, $listId);
-        if (isset($return['message'])) {
-            $valid = 0;
-            $message = $return['message'];
-        }
         $resultJson = $this->resultJsonFactory->create();
-
+        try {
+            $this->helper->resyncAllSubscribers($mailchimpList);
+        } catch (ValidatorException $e) {
+            $valid = 0;
+            $message = $e->getMessage();
+        }
         return $resultJson->setData([
             'valid' => (int)$valid,
             'message' => $message,

@@ -39,7 +39,9 @@ class Interest implements \Magento\Framework\Option\ArrayInterface
         }
         if ($helper->getApiKey($storeId, $scope)) {
             try {
-                $this->options = $helper->getApi($storeId, $scope)->lists->interestCategory->getAll($helper->getConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST, $storeId, $scope));
+                $this->options = $helper->getApi($storeId, $scope)->lists->interestCategory->getAll(
+                    $helper->getConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_LIST, $storeId, $scope)
+                );
             } catch (\Mailchimp_Error $e) {
                 $helper->log($e->getFriendlyMessage());
             }
@@ -48,7 +50,7 @@ class Interest implements \Magento\Framework\Option\ArrayInterface
 
     public function toOptionArray()
     {
-        if (is_array($this->options['categories']) && count($this->options['categories'])) {
+        if (is_array($this->options) && is_array($this->options['categories']) && count($this->options['categories'])) {
             $rc = [];
             foreach ($this->options['categories'] as $interest) {
                 $rc[] = ['value'=> $interest['id'], 'label' => $interest['title']];
