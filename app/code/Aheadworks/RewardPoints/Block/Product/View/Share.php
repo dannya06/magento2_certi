@@ -23,6 +23,7 @@ use Magento\Framework\View\Element\Template\Context;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Pricing\Helper\Data as PriceHelper;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Helper\Image;
 
 /**
  * Class Aheadworks\RewardPoints\Block\Product\View\Share
@@ -43,6 +44,16 @@ class Share extends \Magento\Framework\View\Element\Template
      * Template of Google+ sharing link
      */
     const GOOGLE_PLUS_SHARE_LINK = 'https://plus.google.com/share?url=';
+
+    /**
+     * Whatsapp share link
+     */
+    const WHATSAPP_SHARE_LINK = 'https://api.whatsapp.com/send?text=';
+
+    /**
+     * Pinterest share link
+     */
+    const PINTEREST_SHARE_LINK = 'https://pinterest.com/pin/create/button/?url=';
 
     /**
      * Block template filename
@@ -86,6 +97,8 @@ class Share extends \Magento\Framework\View\Element\Template
      */
     private $productRepository;
 
+    protected $_imageHelper;
+
     /**
      * @param Context $context
      * @param CustomerRewardPointsManagementInterface $customerRewardPointsService
@@ -106,6 +119,7 @@ class Share extends \Magento\Framework\View\Element\Template
         PriceHelper $priceHelper,
         \Magento\Framework\App\Http\Context $httpContext,
         ProductRepositoryInterface $productRepository,
+        \Magento\Catalog\Helper\Image $imageHelper,
         array $data = []
     ) {
         $this->customerRewardPointsService = $customerRewardPointsService;
@@ -115,6 +129,7 @@ class Share extends \Magento\Framework\View\Element\Template
         $this->priceHelper = $priceHelper;
         $this->httpContext = $httpContext;
         $this->productRepository = $productRepository;
+        $this->_imageHelper = $imageHelper;
         parent::__construct($context, $data);
     }
 
@@ -261,5 +276,41 @@ class Share extends \Magento\Framework\View\Element\Template
     public function getGooglePlusShareUrl()
     {
         return self::GOOGLE_PLUS_SHARE_LINK . $this->escapeUrl($this->getCurrentProductUrl());
+    }
+
+    /**
+     * Get whatsapp share url
+     *
+     * @return string
+     */
+    public function getWhatsappUrl()
+    {
+        return self::WHATSAPP_SHARE_LINK . $this->escapeUrl($this->getCurrentProductUrl());
+    }
+
+    /**
+     * Get product
+     *
+     * @return int
+     */
+    public function getProductImage()
+    {
+        return $this->_imageHelper
+        ->init($this->getProduct(), 'product_base_image')
+        ->constrainOnly(TRUE)
+        ->keepAspectRatio(TRUE)
+        ->keepTransparency(TRUE)
+        ->keepFrame(FALSE)
+        ->resize(150, 150)->getUrl();
+    }
+
+    /**
+     * Get pinterest share url
+     *
+     * @return string
+     */
+    public function getPinterestUrl()
+    {
+        return self::PINTEREST_SHARE_LINK . $this->escapeUrl($this->getCurrentProductUrl()) . '&media=' . $this->escapeUrl($this->getProductImage());
     }
 }
