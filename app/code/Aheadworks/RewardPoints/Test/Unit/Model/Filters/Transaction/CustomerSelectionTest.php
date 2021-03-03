@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Filters\Transaction;
 
 use Aheadworks\RewardPoints\Model\Filters\Transaction\CustomerSelection;
@@ -25,13 +35,22 @@ class CustomerSelectionTest extends \PHPUnit\Framework\TestCase
      */
     private $objectManager;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
 
         $this->object = $this->objectManager->getObject(CustomerSelection::class, []);
-
-        $this->assertAttributeEquals(CustomerSelection::DEFAULT_FIELD_NAME, 'fieldName', $this->object);
+        $ref = new \ReflectionClass($this->object);
+        $prop = $ref->getProperty('fieldName');
+        $prop->setAccessible(true);
+        $value = $prop->getValue($this->object);
+        $prop->setAccessible(false);
+        $this->assertTrue($value == CustomerSelection::DEFAULT_FIELD_NAME);
     }
 
     /**
@@ -42,7 +61,12 @@ class CustomerSelectionTest extends \PHPUnit\Framework\TestCase
         $customeFieldName = 'custome_field_name';
 
         $object = $this->objectManager->getObject(CustomerSelection::class, ['fieldName' => $customeFieldName]);
-        $this->assertAttributeEquals($customeFieldName, 'fieldName', $object);
+        $ref = new \ReflectionClass($object);
+        $prop = $ref->getProperty('fieldName');
+        $prop->setAccessible(true);
+        $value = $prop->getValue($object);
+        $prop->setAccessible(false);
+        $this->assertTrue($value == $customeFieldName);
     }
 
     /**

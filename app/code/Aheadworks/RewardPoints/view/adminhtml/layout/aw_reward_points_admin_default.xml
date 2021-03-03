@@ -1,11 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <css src="Aheadworks_RewardPoints::css/page-menu.css"/>
@@ -49,7 +42,7 @@
                     <arguments>
                         <argument name="label" xsi:type="string">Readme</argument>
                         <argument name="link_attributes" xsi:type="array">
-                            <item name="href" xsi:type="string">http://confluence.aheadworks.com/display/EUDOC/Reward+Points+-+Magento+2</item>
+                            <item name="href" xsi:type="string">https://aheadworks.atlassian.net/wiki/spaces/EUDOC/pages/1229161505/Reward+Points+-+Magento+2#RewardPoints-Magento2-IntroducingRewardPoints</item>
                             <item name="target" xsi:type="string">_blank</item>
                             <item name="class" xsi:type="string">separator</item>
                         </argument>

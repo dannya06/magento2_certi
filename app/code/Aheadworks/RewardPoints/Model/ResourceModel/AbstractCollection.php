@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\ResourceModel;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection as FrameworkAbstractCollection;
@@ -68,23 +78,19 @@ class AbstractCollection extends FrameworkAbstractCollection
             foreach ($this as $item) {
                 $result = [];
                 $id = $item->getData($columnName);
-                foreach ($relationTableData as $data) {
-                    if ($data[$linkageColumnName] == $id) {
-                        if (is_array($columnNameRelationTable)) {
-                            $fieldValue = [];
-                            foreach ($columnNameRelationTable as $columnNameRelation) {
-                                $fieldValue[$columnNameRelation] = $data[$columnNameRelation];
-                            }
-                            $result[] = $fieldValue;
-                        } else {
-                            $result[] = $data[$columnNameRelationTable];
-                        }
-                    }
+                foreach ($relationTableData as $dataRow) {
+                    $result = $this->processDataRow(
+                        $dataRow,
+                        $linkageColumnName,
+                        $id,
+                        $columnNameRelationTable,
+                        $result
+                    );
                 }
                 if (!empty($result)) {
                     $fieldData = $setDataAsArray ? $result : array_shift($result);
                     $item->setData($fieldName, $fieldData);
-                } else if (!empty($default) && $default[$linkageColumnName] == $id) {
+                } elseif (!empty($default) && $default[$linkageColumnName] == $id) {
                     $item->setData($fieldName, $default[$columnNameRelationTable]);
                 }
             }
@@ -127,5 +133,36 @@ class AbstractCollection extends FrameworkAbstractCollection
         }
 
         return $this;
+    }
+
+    /**
+     * Process data row to attach
+     *
+     * @param array $dataRow
+     * @param string $linkageColumnName
+     * @param int $id
+     * @param string|array $columnNameRelationTable
+     * @param array $result
+     * @return array
+     */
+    private function processDataRow(
+        $dataRow,
+        $linkageColumnName,
+        $id,
+        $columnNameRelationTable,
+        $result
+    ) {
+        if ($dataRow[$linkageColumnName] == $id) {
+            if (is_array($columnNameRelationTable)) {
+                $fieldValue = [];
+                foreach ($columnNameRelationTable as $columnNameRelation) {
+                    $fieldValue[$columnNameRelation] = $dataRow[$columnNameRelation];
+                }
+                $result[] = $fieldValue;
+            } else {
+                $result[] = $dataRow[$columnNameRelationTable];
+            }
+        }
+        return $result;
     }
 }

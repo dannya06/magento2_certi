@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Api\Data;
 
 /**
@@ -31,6 +41,7 @@ interface PointsSummaryInterface
     const IS_AWARDED_FOR_NEWSLETTER_SIGNUP = 'is_awarded_for_newsletter_signup';
     const BALANCE_UPDATE_NOTIFICATION_STATUS = 'balance_update_notification_status';
     const EXPIRATION_NOTIFICATION_STATUS = 'expiration_notification_status';
+    const DOB_UPDATE_DATE = 'dob_update_date';
     /**#@-*/
 
     /**
@@ -258,4 +269,19 @@ interface PointsSummaryInterface
      * @return int
      */
     public function getExpirationNotificationStatus();
+
+    /**
+     * Set dob update date
+     *
+     * @param string|null $date
+     * @return PointsSummaryInterface
+     */
+    public function setDobUpdateDate($date);
+
+    /**
+     * Get dob update date
+     *
+     * @return string|null
+     */
+    public function getDobUpdateDate();
 }

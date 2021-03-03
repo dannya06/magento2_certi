@@ -1,14 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\Condition;
 
 use Magento\Framework\ObjectManagerInterface;
 use Magento\CatalogRule\Model\Rule;
 use Magento\Rule\Model\Condition\AbstractCondition;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 
 /**
  * Class Factory
@@ -45,7 +56,9 @@ class Factory
         $conditionModel = $this->objectManager->create($type);
 
         if (!$conditionModel instanceof AbstractCondition) {
-            throw new \Exception('Condition must be instance of AbstractCondition');
+            throw new ConfigurationMismatchException(
+                __('Condition must be instance of %1', AbstractCondition::class)
+            );
         }
 
         $conditionModel

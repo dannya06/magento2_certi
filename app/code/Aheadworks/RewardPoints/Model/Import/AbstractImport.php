@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\Import;
 
 use Aheadworks\RewardPoints\Model\Import\Exception\ImportValidatorException;
@@ -161,6 +171,16 @@ abstract class AbstractImport
     }
 
     /**
+     * Retrieve path to log file
+     *
+     * @return string
+     */
+    public function getPathToLogFile()
+    {
+        return 'var/log/' . $this->logFileName . '.log';
+    }
+
+    /**
      * Process import data
      *
      * @param [] $filteredRows
@@ -277,7 +297,8 @@ abstract class AbstractImport
     protected function filterRawData($rawData, $validFields)
     {
         $filteredData = [];
-        for ($index = 0; $index < count($rawData); $index++) {
+        $rawDataCount = count($rawData);
+        for ($index = 0; $index < $rawDataCount; $index++) {
             // Skip first row (header in array)
             if ($index == 0) {
                 continue;
@@ -401,15 +422,5 @@ abstract class AbstractImport
         }
 
         return $this->requiredFields;
-    }
-
-    /**
-     * Retrieve path to log file
-     *
-     * @return string
-     */
-    private function getPathToLogFile()
-    {
-        return 'var/log/' . $this->logFileName . '.log';
     }
 }

@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Service;
 
 use Aheadworks\RewardPoints\Model\Service\PointsSummaryService;
@@ -57,7 +67,12 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
      */
     private $dateTimeMock;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -68,7 +83,7 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
             false,
             true,
             false,
-            ['getBalanceUpdateNotificationStatus', 'getExpirationNotificationStatus']
+            ['getBalanceUpdateNotificationStatus', 'getExpirationNotificationStatus', 'getDobUpdateDate']
         );
 
         $this->pointsSummaryRepositoryMock = $this->getMockBuilder(PointsSummaryRepositoryInterface::class)
@@ -319,6 +334,9 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
         $this->transactionMock->expects($this->once())
             ->method('getWebsiteId')
             ->willReturn($websiteId);
+        $this->transactionMock->expects($this->once())
+            ->method('getDobUpdateDate')
+            ->willReturn(null);
         $this->transactionMock->expects($this->exactly(2))
             ->method('getBalance')
             ->willReturn($balance);
@@ -347,6 +365,9 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
         $this->transactionMock->expects($this->once())
             ->method('getWebsiteId')
             ->willReturn($websiteId);
+        $this->transactionMock->expects($this->once())
+            ->method('getDobUpdateDate')
+            ->willReturn(null);
         $this->transactionMock->expects($this->exactly(2))
             ->method('getBalance')
             ->willReturn($balance);
@@ -376,6 +397,9 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
         $this->transactionMock->expects($this->once())
             ->method('getWebsiteId')
             ->willReturn($websiteId);
+        $this->transactionMock->expects($this->once())
+            ->method('getDobUpdateDate')
+            ->willReturn(null);
         $this->transactionMock->expects($this->exactly(2))
             ->method('getBalance')
             ->willReturn($balance);
@@ -419,6 +443,9 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
         $this->transactionMock->expects($this->exactly(2))
             ->method('getBalance')
             ->willReturn($balance);
+        $this->transactionMock->expects($this->once())
+            ->method('getDobUpdateDate')
+            ->willReturn(null);
         $this->transactionMock->expects($this->any())
             ->method('getType')
             ->willReturn(Type::POINTS_REWARDED_FOR_NEWSLETTER_SIGNUP);
@@ -458,6 +485,9 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
         $this->transactionMock->expects($this->exactly(2))
             ->method('getBalance')
             ->willReturn($balance);
+        $this->transactionMock->expects($this->once())
+            ->method('getDobUpdateDate')
+            ->willReturn(null);
         $this->transactionMock->expects($this->any())
             ->method('getType')
             ->willReturn(Type::POINTS_REWARDED_FOR_NEWSLETTER_SIGNUP);
@@ -600,5 +630,5 @@ class PointsSummaryServiceTest extends \PHPUnit\Framework\TestCase
             ->method('save')
             ->with($this->pointsSummaryMock)
             ->willThrowException(new \Exception('Unable save data'));
-    }
+$this->expectException(\Exception::class);    }
 }

@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model;
 
 use Aheadworks\RewardPoints\Model\TransactionRepository;
@@ -11,6 +21,7 @@ use Aheadworks\RewardPoints\Model\ResourceModel\Transaction as TransactionResour
 use Aheadworks\RewardPoints\Api\Data\TransactionInterface;
 use Aheadworks\RewardPoints\Api\Data\TransactionInterfaceFactory;
 use Magento\Framework\EntityManager\EntityManager;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
@@ -43,7 +54,12 @@ class TransactionRepositoryTest extends \PHPUnit\Framework\TestCase
      */
     private $dataModelMock;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -112,7 +128,7 @@ class TransactionRepositoryTest extends \PHPUnit\Framework\TestCase
             ->method('save')
             ->with($this->dataModelMock)
             ->willThrowException(new \Exception('Unable save transaction'));
-
+$this->expectException(\Exception::class);
         $this->object->save($this->dataModelMock);
     }
 
@@ -149,7 +165,7 @@ class TransactionRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->dataModelMock->expects($this->once())
             ->method('getTransactionId')
             ->willReturn(null);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->modelFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($this->dataModelMock);

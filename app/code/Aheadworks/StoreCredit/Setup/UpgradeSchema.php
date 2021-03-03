@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Setup;
 
 use Aheadworks\StoreCredit\Model\Source\Transaction\EntityType;
@@ -14,9 +24,9 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Aheadworks\StoreCredit\Model\Source\TransactionType;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Aheadworks\StoreCredit\Model\Comment\CommentPoolInterface;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\State;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
+use Magento\Framework\App\Area;
 
 /**
  * Class UpgradeSchema
@@ -41,6 +51,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
     private $creditmemoRepository;
 
     /**
+     * @var State
+     */
+    private $appState;
+
+    /**
      * @param State $appState
      * @param CommentPoolInterface $commentPool
      * @param OrderRepositoryInterface $orderRepository
@@ -52,13 +67,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
         OrderRepositoryInterface $orderRepository,
         CreditmemoRepositoryInterface $creditmemoRepository
     ) {
-        try {
-            if (!$appState->getAreaCode()) {
-                $appState->setAreaCode('adminhtml');
-            }
-        } catch (LocalizedException $e) {
-            $appState->setAreaCode('adminhtml');
-        }
+        $this->appState = $appState;
         $this->commentPool = $commentPool;
         $this->orderRepository = $orderRepository;
         $this->creditmemoRepository = $creditmemoRepository;
@@ -72,7 +81,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
         if ($context->getVersion() && version_compare($context->getVersion(), '1.1.0', '<')) {
             $this->addColumnsToTransactionTable($setup);
             $this->addTransactionEntityTable($setup);
-            $this->updateTransactionData($setup);
+            $this->appState->emulateAreaCode(
+                Area::AREA_ADMINHTML,
+                [$this, 'updateTransactionData'],
+                [$setup]
+            );
         }
     }
 

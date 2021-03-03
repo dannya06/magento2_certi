@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\Source\Transaction;
 
 use Magento\Framework\Option\ArrayInterface;
@@ -31,6 +41,7 @@ class Type implements ArrayInterface
     const POINTS_EXPIRED = 11;
     const CANCEL_EARNED_POINTS_FOR_REFUND_ORDER = 12;
     const BALANCE_IMPORTED_BY_ADMIN = 13;
+    const POINTS_REWARDED_FOR_BIRTHDAY = 14;
     /**#@-*/
 
     /**
@@ -71,6 +82,10 @@ class Type implements ArrayInterface
             [
                 'value' => self::POINTS_REWARDED_FOR_REGISTRATION,
                 'label' => __('Registration')
+            ],
+            [
+                'value' => self::POINTS_REWARDED_FOR_BIRTHDAY,
+                'label' => __('Customer birthday')
             ],
             [
                 'value' => self::POINTS_REWARDED_FOR_REVIEW_APPROVED_BY_ADMIN,

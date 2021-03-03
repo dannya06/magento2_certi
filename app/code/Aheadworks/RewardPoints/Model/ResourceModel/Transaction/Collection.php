@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\ResourceModel\Transaction;
 
 use Aheadworks\RewardPoints\Api\Data\TransactionSearchResultsInterface;
@@ -310,6 +320,7 @@ class Collection extends AbstractCollection implements TransactionSearchResultsI
      * @param string $columnNameRelationTable
      * @param string $fieldName
      * @return void
+     * phpcs:disable Generic.Metrics.NestingLevel
      */
     private function attachRelationTable(
         $tableName,
@@ -338,7 +349,8 @@ class Collection extends AbstractCollection implements TransactionSearchResultsI
                         $result = [];
                 }
                 $id = $item->getData($columnName);
-                foreach ($connection->fetchAll($select) as $data) {
+                $fetchedData = $connection->fetchAll($select);
+                foreach ($fetchedData as $data) {
                     if ($data[$linkageColumnName] == $id) {
                         switch ($fieldName) {
                             case 'entities':

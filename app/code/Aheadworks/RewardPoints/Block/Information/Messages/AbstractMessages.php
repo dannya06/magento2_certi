@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Block\Information\Messages;
 
 use Aheadworks\RewardPoints\Model\Config;
@@ -15,6 +25,7 @@ use Aheadworks\RewardPoints\Model\Calculator\RateCalculator;
 use Magento\Framework\Pricing\Helper\Data as PriceHelper;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Aheadworks\RewardPoints\Api\CustomerRewardPointsManagementInterface;
+use Magento\Newsletter\Model\Subscriber;
 use Magento\Quote\Model\Cart\CartTotalRepository;
 use Aheadworks\RewardPoints\Model\Calculator\Earning as EarningCalculator;
 
@@ -61,6 +72,11 @@ abstract class AbstractMessages extends \Magento\Framework\View\Element\Template
     protected $earningCalculator;
 
     /**
+     * @var Subscriber
+     */
+    protected $subscriber;
+
+    /**
      * @var CurrentCustomer
      */
     private $currentCustomer;
@@ -84,9 +100,10 @@ abstract class AbstractMessages extends \Magento\Framework\View\Element\Template
      * @param RateCalculator $rateCalculator
      * @param PriceHelper $priceHelper
      * @param CheckoutSession $checkoutSession
-     * @param CartTotalRepository $cartTotalRepository
      * @param CustomerRewardPointsManagementInterface $customerRewardPointsService
+     * @param CartTotalRepository $cartTotalRepository
      * @param EarningCalculator $earningCalculator
+     * @param Subscriber $subscriber
      * @param array $data
      */
     public function __construct(
@@ -101,6 +118,7 @@ abstract class AbstractMessages extends \Magento\Framework\View\Element\Template
         CustomerRewardPointsManagementInterface $customerRewardPointsService,
         CartTotalRepository $cartTotalRepository,
         EarningCalculator $earningCalculator,
+        Subscriber $subscriber,
         array $data = []
     ) {
         $this->config = $config;
@@ -113,6 +131,7 @@ abstract class AbstractMessages extends \Magento\Framework\View\Element\Template
         $this->customerRewardPointsService = $customerRewardPointsService;
         $this->cartTotalRepository = $cartTotalRepository;
         $this->earningCalculator = $earningCalculator;
+        $this->subscriber = $subscriber;
         parent::__construct($context, $data);
     }
 

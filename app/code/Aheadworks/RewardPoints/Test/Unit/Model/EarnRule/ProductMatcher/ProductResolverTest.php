@@ -1,15 +1,26 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\EarnRule\ProductMatcher;
 
 use Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver;
 use Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver\Pool;
 use Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolverInterface;
 use Magento\Catalog\Model\Product;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
@@ -33,7 +44,7 @@ class ProductResolverTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -78,9 +89,6 @@ class ProductResolverTest extends TestCase
 
     /**
      * Test getProductsForValidation method if an exception occurs
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Product resolver must implements ProductResolverInterface
      */
     public function testGetProductsForValidationException()
     {
@@ -94,7 +102,13 @@ class ProductResolverTest extends TestCase
         $this->poolMock->expects($this->once())
             ->method('getResolverByCode')
             ->with($productType)
-            ->willThrowException(new \Exception('Product resolver must implements ProductResolverInterface'));
+            ->willThrowException(
+                new ConfigurationMismatchException(
+                    __('Product resolver must implements %1', ProductResolverInterface::class)
+                )
+            );
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->productResolver->getProductsForValidation($productMock);
     }

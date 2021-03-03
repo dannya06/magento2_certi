@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Controller\Adminhtml\Earning\Rules;
 
 use Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\Save;
@@ -71,7 +81,7 @@ class SaveTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -154,7 +164,7 @@ class SaveTest extends TestCase
 
         $this->messageManagerMock->expects($this->once())
             ->method('addSuccessMessage')
-            ->with(__('Rule saved successfully'))
+            ->with(__('Rule was saved successfully'))
             ->willReturnSelf();
 
         $redirectMock = $this->createMock(Redirect::class);
@@ -248,6 +258,7 @@ class SaveTest extends TestCase
                 ->method('updateRule')
                 ->with($ruleId, $preparedData)
                 ->willThrowException(new CouldNotSaveException(__($errorMessage)));
+
         } else {
             $this->ruleManagementMock->expects($this->once())
                 ->method('createRule')

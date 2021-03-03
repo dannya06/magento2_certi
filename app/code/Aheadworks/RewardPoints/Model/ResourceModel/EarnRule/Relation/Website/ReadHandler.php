@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Relation\Website;
 
 use Aheadworks\RewardPoints\Api\Data\EarnRuleInterface;
@@ -13,6 +23,7 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class ReadHandler
@@ -32,15 +43,23 @@ class ReadHandler implements ExtensionInterface
     private $metadataPool;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param MetadataPool $metadataPool
      * @param ResourceConnection $resourceConnection
+     * @param Logger $logger
      */
     public function __construct(
         MetadataPool $metadataPool,
-        ResourceConnection $resourceConnection
+        ResourceConnection $resourceConnection,
+        Logger $logger
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->metadataPool = $metadataPool;
+        $this->logger = $logger;
     }
 
     /**
@@ -74,6 +93,7 @@ class ReadHandler implements ExtensionInterface
                 ->where('rule_id = :id');
             $websiteData = $connection->fetchCol($select, ['id' => $entityId]);
         } catch (\Exception $exception) {
+            $this->logger->critical($exception->getMessage());
         }
         return $websiteData;
     }

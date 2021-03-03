@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\EarnRule;
 
 use Aheadworks\RewardPoints\Model\EarnRule;
@@ -17,7 +27,9 @@ use Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\CollectionFactory as Ea
 use Aheadworks\RewardPoints\Model\Repository\CollectionProcessorInterface;
 use Aheadworks\RewardPoints\Model\Indexer\EarnRule\Processor as EarnRuleIndexerProcessor;
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
@@ -80,7 +92,7 @@ class RepositoryTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -161,7 +173,7 @@ class RepositoryTest extends TestCase
             ->method('save')
             ->with($ruleMock)
             ->willThrowException(new \Exception($errorMessage));
-
+$this->expectException(\Exception::class);
         $this->indexerProcessorMock->expects($this->never())
             ->method('markIndexerAsInvalid');
 
@@ -180,7 +192,7 @@ class RepositoryTest extends TestCase
         $ruleMock->expects($this->once())
             ->method('validate')
             ->willThrowException(new ValidatorException(__($errorMessage)));
-
+        $this->expectException(CouldNotSaveException::class);
         $this->entityManagerMock->expects($this->never())
             ->method('save');
 
@@ -313,7 +325,7 @@ class RepositoryTest extends TestCase
             ->method('load')
             ->with($ruleMock, $ruleId, $arguments)
             ->willReturn($ruleMock);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->repository->get($ruleId, $storeId);
     }
 
@@ -347,7 +359,7 @@ class RepositoryTest extends TestCase
             ->method('load')
             ->with($ruleMock, $ruleId, $arguments)
             ->willReturn($ruleMock);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->repository->get($ruleId, $storeId);
     }
 
@@ -381,7 +393,7 @@ class RepositoryTest extends TestCase
             ->method('load')
             ->with($ruleMock, $ruleId, $arguments)
             ->willReturn($ruleMock);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->repository->get($ruleId, $storeId);
     }
 
@@ -583,7 +595,7 @@ class RepositoryTest extends TestCase
             ->method('load')
             ->with($ruleOneMock, $ruleId)
             ->willReturn($ruleTwoMock);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->repository->delete($ruleOneMock);
     }
 
@@ -636,7 +648,7 @@ class RepositoryTest extends TestCase
             ->method('load')
             ->with($ruleMock, $ruleId)
             ->willReturn($ruleMock);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->repository->deleteById($ruleId);
     }
 }

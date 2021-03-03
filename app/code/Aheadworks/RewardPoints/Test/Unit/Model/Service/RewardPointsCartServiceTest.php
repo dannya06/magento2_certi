@@ -1,13 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Service;
 
 use Aheadworks\RewardPoints\Model\Service\RewardPointsCartService;
 use Aheadworks\RewardPoints\Api\CustomerRewardPointsManagementInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Api\Data\AddressInterface;
@@ -39,7 +51,12 @@ class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
      */
     private $quoteMock;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -124,7 +141,7 @@ class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteMock->expects($this->never())
             ->method('getAwUseRewardPoints')
             ->willReturn($awUseRewardPoints);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->get($cartId);
     }
 
@@ -211,7 +228,7 @@ class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteMock->expects($this->once())
             ->method('getItemsCount')
             ->willReturn(0);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->set($cartId);
     }
 
@@ -247,7 +264,7 @@ class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteMock->expects($this->once())
             ->method('getStore')
             ->willReturn($storeMock);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->set($cartId);
     }
 
@@ -289,7 +306,7 @@ class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getCustomerRewardPointsBalance')
             ->with($customerId)
             ->willReturn(0);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->set($cartId);
     }
 
@@ -356,7 +373,7 @@ class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
             ->method('save')
             ->with($this->quoteMock)
             ->willThrowException(new \Exception('Oh oh oh!!!'));
-
+$this->expectException(\Exception::class);
         $this->object->set($cartId);
     }
 
@@ -422,7 +439,7 @@ class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteMock->expects($this->once())
             ->method('getItemsCount')
             ->willReturn(0);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->remove($cartId);
     }
 
@@ -469,7 +486,7 @@ class RewardPointsCartServiceTest extends \PHPUnit\Framework\TestCase
             ->method('save')
             ->with($this->quoteMock)
             ->willThrowException(new \Exception('Oh oh oh!!!'));
-
+        $this->expectException(CouldNotDeleteException::class);
         $this->object->remove($cartId);
     }
 }

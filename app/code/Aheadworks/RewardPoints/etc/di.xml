@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Aheadworks\RewardPoints\Api\EarnRateRepositoryInterface" type="Aheadworks\RewardPoints\Model\EarnRateRepository" />
     <preference for="Aheadworks\RewardPoints\Api\EarnRuleRepositoryInterface" type="Aheadworks\RewardPoints\Model\EarnRule\Repository" />
@@ -43,6 +36,7 @@
                 <item name="default" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentDefault</item>
                 <item name="comment_for_purchases" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentForPurchases</item>
                 <item name="comment_for_registration" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentForRegistration</item>
+                <item name="comment_for_birthday" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentForBirthday</item>
                 <item name="comment_for_review" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentForReview</item>
                 <item name="comment_for_share" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentForShare</item>
                 <item name="comment_for_newsletter_signup" xsi:type="string">Aheadworks\RewardPoints\Model\Comment\CommentForNewsletterSignup</item>
@@ -67,6 +61,12 @@
         <arguments>
             <argument name="type" xsi:type="const">Aheadworks\RewardPoints\Model\Source\Transaction\Type::POINTS_REWARDED_FOR_REGISTRATION</argument>
             <argument name="label" xsi:type="string">Reward points for registration</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Aheadworks\RewardPoints\Model\Comment\CommentForBirthday" type="Aheadworks\RewardPoints\Model\Comment\CommentDefault">
+        <arguments>
+            <argument name="type" xsi:type="const">Aheadworks\RewardPoints\Model\Source\Transaction\Type::POINTS_REWARDED_FOR_BIRTHDAY</argument>
+            <argument name="label" xsi:type="string">Reward points for customer birthday</argument>
         </arguments>
     </virtualType>
     <virtualType name="Aheadworks\RewardPoints\Model\Comment\CommentForReview" type="Aheadworks\RewardPoints\Model\Comment\CommentDefault">
@@ -154,6 +154,9 @@
     <type name="Magento\Sales\Model\Service\CreditmemoService">
         <plugin name="refund_reward_points_on_creditmemo" type="Aheadworks\RewardPoints\Plugin\Model\Service\CreditmemoServicePlugin"/>
     </type>
+    <type name="Magento\Sales\Api\RefundOrderInterface">
+        <plugin name="refund_reward_points_on_creditmemo" type="Aheadworks\RewardPoints\Plugin\Model\RefundOrderPlugin"/>
+    </type>
     <type name="Magento\Sales\Api\OrderRepositoryInterface">
         <plugin name="get_aw_reward_points" type="Aheadworks\RewardPoints\Plugin\Model\Sales\OrderPlugin" />
     </type>
@@ -189,6 +192,9 @@
     </type>
     <type name="Magento\GroupedProduct\Block\Product\View\Type\Grouped">
         <plugin name="aw_rewardpoints_product_list" type="Aheadworks\RewardPoints\Plugin\Block\Product\GroupedTypePlugin"/>
+    </type>
+    <type name="Aheadworks\AdvancedReviews\Model\Service\ReviewService">
+        <plugin name="aw_rewardpoints" type="Aheadworks\RewardPoints\Plugin\Model\Service\ReviewServicePlugin"/>
     </type>
 
     <type name="Magento\Framework\EntityManager\MetadataPool">
@@ -308,6 +314,24 @@
             <argument name="resourceModel" xsi:type="string">Magento\Customer\Model\ResourceModel\Customer</argument>
         </arguments>
     </type>
+
+    <virtualType name="Aheadworks\RewardPoints\Ui\DataProvider\BaseDataProvider\SortOrderBuilder"
+                 type="Magento\Framework\Api\SortOrderBuilder">
+    </virtualType>
+
+    <virtualType name="Aheadworks\RewardPoints\Ui\DataProvider\BaseDataProvider\SearchCriteriaBuilder"
+                 type="Magento\Framework\Api\Search\SearchCriteriaBuilder">
+        <arguments>
+            <argument name="sortOrderBuilder" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\BaseDataProvider\SortOrderBuilder</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Aheadworks\RewardPoints\Ui\DataProvider\BaseDataProvider"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="searchCriteriaBuilder" xsi:type="object">Aheadworks\RewardPoints\Ui\DataProvider\BaseDataProvider\SearchCriteriaBuilder</argument>
+        </arguments>
+    </virtualType>
 
     <type name="Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Grid\Collection">
         <arguments>
@@ -432,6 +456,17 @@
             <argument name="resolvers" xsi:type="array">
                 <item name="default" xsi:type="object">Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver\Simple</item>
                 <item name="configurable" xsi:type="object">Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver\Configurable</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\RewardPoints\Controller\Block\Render">
+        <arguments>
+            <argument name="renders" xsi:type="array">
+                <item name="aw_reward_points.product.view.earning" xsi:type="string">Aheadworks\RewardPoints\Block\Product\View\Earning</item>
+                <item name="aw_reward_points.product.view.discount" xsi:type="string">Aheadworks\RewardPoints\Block\Product\View\Discount</item>
+                <item name="aw_reward_points.product.view.share" xsi:type="string">Aheadworks\RewardPoints\Block\Product\View\Share</item>
+                <item name="aw_rp_balance_toplink" xsi:type="string">Aheadworks\RewardPoints\Block\Customer\RewardPointsBalance\Toplink</item>
+                <item name="aw_reward_points.product.info.grouped" xsi:type="string">Aheadworks\RewardPoints\Block\ProductList\Grouped\ProductInfo</item>
             </argument>
         </arguments>
     </type>

@@ -1,15 +1,22 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Controller\Block;
 
-use Aheadworks\RewardPoints\Block\Product\View\Discount;
-use Aheadworks\RewardPoints\Block\Product\View\Earning;
-use Aheadworks\RewardPoints\Block\Product\View\Share;
-use Aheadworks\RewardPoints\Block\Customer\RewardPointsBalance\Toplink;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Translate\InlineInterface;
 use Magento\Framework\App\Action\Context;
 
@@ -26,15 +33,31 @@ class Render extends \Magento\Framework\App\Action\Action
     private $translateInline;
 
     /**
+     * @var ProductRepositoryInterface
+     */
+    private $productRepository;
+
+    /**
+     * @var array
+     */
+    private $renders;
+
+    /**
      * @param Context $context
      * @param InlineInterface $translateInline
+     * @param ProductRepositoryInterface $productRepository
+     * @param array $renders
      */
     public function __construct(
         Context $context,
-        InlineInterface $translateInline
+        InlineInterface $translateInline,
+        ProductRepositoryInterface $productRepository,
+        array $renders = []
     ) {
         parent::__construct($context);
         $this->translateInline = $translateInline;
+        $this->productRepository = $productRepository;
+        $this->renders = $renders;
     }
 
     /**
@@ -91,23 +114,8 @@ class Render extends \Magento\Framework\App\Action\Action
         $data = [];
         $layout = $this->_view->getLayout();
         foreach ($blocks as $key => $blockName) {
-            $class = '';
-            switch ($blockName) {
-                case 'aw_reward_points.product.view.earning':
-                    $class = Earning::class;
-                    break;
-                case 'aw_reward_points.product.view.discount':
-                    $class = Discount::class;
-                    break;
-                case 'aw_rp_balance_toplink':
-                    $class = Toplink::class;
-                    break;
-                case 'aw_reward_points.product.view.share':
-                    $class = Share::class;
-                    break;
-            }
-            if ($class) {
-                $blockInstance = $layout->createBlock($class);
+            if (isset($this->renders[$blockName])) {
+                $blockInstance = $layout->createBlock($this->renders[$blockName]);
                 if (is_object($blockInstance)) {
                     $blockInstance->setNameInLayout($blockName . '_' . $key);
                     $data[$blockName] = $blockInstance->toHtml();

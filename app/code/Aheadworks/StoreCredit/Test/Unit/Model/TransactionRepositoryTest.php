@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Test\Unit\Model;
 
 use Aheadworks\StoreCredit\Model\TransactionRepository;
@@ -11,6 +21,8 @@ use Aheadworks\StoreCredit\Model\ResourceModel\Transaction as TransactionResourc
 use Aheadworks\StoreCredit\Api\Data\TransactionInterface;
 use Aheadworks\StoreCredit\Api\Data\TransactionInterfaceFactory;
 use Magento\Framework\EntityManager\EntityManager;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
@@ -43,7 +55,12 @@ class TransactionRepositoryTest extends \PHPUnit\Framework\TestCase
      */
     private $dataModelMock;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -116,7 +133,7 @@ class TransactionRepositoryTest extends \PHPUnit\Framework\TestCase
             ->method('save')
             ->with($this->dataModelMock)
             ->willThrowException(new \Exception('Unable save transaction'));
-
+        $this->expectException(CouldNotSaveException::class);
         $this->object->save($this->dataModelMock);
     }
 
@@ -162,7 +179,7 @@ class TransactionRepositoryTest extends \PHPUnit\Framework\TestCase
             ->method('load')
             ->with($this->dataModelMock, 1)
             ->willReturnSelf();
-
+        $this->expectException(NoSuchEntityException::class);
         $actual = $this->object->getById(1);
 
         $this->assertEquals($actual, $this->object->getById(1));

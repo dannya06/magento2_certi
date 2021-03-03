@@ -1,12 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver;
 
 use Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolverInterface;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 
 /**
  * Class Pool
@@ -15,7 +26,7 @@ use Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolverInterfa
 class Pool
 {
     /**
-     * Default resolver code
+     * Array key for default resolver
      */
     const DEFAULT_RESOLVER_CODE = 'default';
 
@@ -57,7 +68,9 @@ class Pool
         }
         $resolver = $this->resolvers[$code];
         if (!$resolver instanceof ProductResolverInterface) {
-            throw new \Exception('Product resolver must implements ProductResolverInterface');
+            throw new ConfigurationMismatchException(
+                __('Product resolver must implements %1', ProductResolverInterface::class)
+            );
         }
 
         return $resolver;

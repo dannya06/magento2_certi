@@ -1,12 +1,21 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Setup;
 
-use Braintree\Exception;
 use Magento\Quote\Setup\QuoteSetupFactory;
 use Magento\Quote\Setup\QuoteSetup;
 use Magento\Sales\Setup\SalesSetupFactory;
@@ -18,6 +27,7 @@ use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Cms\Model\PageFactory;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class Aheadworks\RewardPoints\Setup\InstallData
@@ -48,21 +58,29 @@ class InstallData implements InstallDataInterface
     private $pageFactory;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param QuoteSetupFactory $setupFactory
      * @param SalesSetupFactory $salesSetupFactory
      * @param CategorySetupFactory $categorySetupFactory
      * @param PageFactory $pageFactory
+     * @param Logger $logger
      */
     public function __construct(
         QuoteSetupFactory $setupFactory,
         SalesSetupFactory $salesSetupFactory,
         CategorySetupFactory $categorySetupFactory,
-        PageFactory $pageFactory
+        PageFactory $pageFactory,
+        Logger $logger
     ) {
         $this->quoteSetupFactory = $setupFactory;
         $this->salesSetupFactory = $salesSetupFactory;
         $this->categorySetupFactory = $categorySetupFactory;
         $this->pageFactory = $pageFactory;
+        $this->logger = $logger;
     }
 
     /**
@@ -144,7 +162,8 @@ class InstallData implements InstallDataInterface
 
         try {
             $this->pageFactory->create()->setData($cmsPage)->save();
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
+            $this->logger->critical($exception->getMessage());
         }
     }
 }

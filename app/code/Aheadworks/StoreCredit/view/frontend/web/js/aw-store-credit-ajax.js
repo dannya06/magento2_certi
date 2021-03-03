@@ -1,9 +1,4 @@
 /**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
-/**
  * Initialization widget to upload html content by Ajax
  *
  * @method ajax(placeholders)

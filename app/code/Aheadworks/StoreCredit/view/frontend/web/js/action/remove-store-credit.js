@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 /*global define,alert*/
 define(
     [
@@ -31,7 +26,7 @@ define(
         return function (isApplied, isLoading, deferred) {
             var quoteId = quote.getQuoteId(),
                 url = urlManager.getRemoveStoreCreditUrl(quoteId), 
-                message = $t('Store Credit were successfully removed.');
+                message = $t('Store Credit was successfully removed.');
             
             messageContainer.clear();
             if (typeof deferred == 'undefined') {

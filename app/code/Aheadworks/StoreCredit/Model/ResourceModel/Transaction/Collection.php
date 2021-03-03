@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Model\ResourceModel\Transaction;
 
 use Aheadworks\StoreCredit\Api\Data\TransactionSearchResultsInterface;
@@ -218,30 +228,63 @@ class Collection extends AbstractCollection implements TransactionSearchResultsI
                 ->from([$tableName . '_table' => $this->getTable($tableName)])
                 ->where($tableName . '_table.' . $linkageColumnName . ' IN (?)', $ids);
 
+            $relationTableData = $connection->fetchAll($select);
+
             /** @var \Magento\Framework\DataObject $item */
             foreach ($this as $item) {
                 $result = [];
                 $id = $item->getData($columnName);
-                foreach ($connection->fetchAll($select) as $data) {
-                    if ($data[$linkageColumnName] == $id) {
-                        switch ($fieldName) {
-                            case 'created_by':
-                                $result = $data['firstname'] . ' ' . $data['lastname'];
-                                break;
-                            case 'entities':
-                                $result[$data['entity_type']] = [
-                                    'entity_id'    => $data['entity_id'],
-                                    'entity_label' => $data['entity_label']
-                                ];
-                                break;
-                            default:
-                                $result[] = $data[$columnNameRelationTable];
-                                break;
-                        }
-                    }
+
+                foreach ($relationTableData as $dataRow) {
+                    $result = $this->processDataRow(
+                        $dataRow,
+                        $linkageColumnName,
+                        $id,
+                        $columnNameRelationTable,
+                        $fieldName,
+                        $result
+                    );
                 }
                 $item->setData($fieldName, $result);
             }
         }
+    }
+
+    /**
+     * Process data row to attach
+     *
+     * @param array $dataRow
+     * @param string $linkageColumnName
+     * @param int $id
+     * @param string $columnNameRelationTable
+     * @param string $fieldName
+     * @param string|array $result
+     * @return string|array
+     */
+    private function processDataRow(
+        $dataRow,
+        $linkageColumnName,
+        $id,
+        $columnNameRelationTable,
+        $fieldName,
+        $result
+    ) {
+        if ($dataRow[$linkageColumnName] == $id) {
+            switch ($fieldName) {
+                case 'created_by':
+                    $result = $dataRow['firstname'] . ' ' . $dataRow['lastname'];
+                    break;
+                case 'entities':
+                    $result[$dataRow['entity_type']] = [
+                        'entity_id'    => $dataRow['entity_id'],
+                        'entity_label' => $dataRow['entity_label']
+                    ];
+                    break;
+                default:
+                    $result[] = $dataRow[$columnNameRelationTable];
+                    break;
+            }
+        }
+        return $result;
     }
 }

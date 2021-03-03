@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Block\Html;
 
 use Magento\Framework\Api\SearchResultsInterface;
@@ -226,7 +236,7 @@ class Pager extends \Magento\Framework\View\Element\Template
      */
     public function isShowPerPage()
     {
-        if (sizeof($this->getAvailableLimit()) <= 1) {
+        if (count($this->getAvailableLimit()) <= 1) {
             return false;
         }
         return $this->showPerPage;
@@ -325,7 +335,7 @@ class Pager extends \Magento\Framework\View\Element\Template
             $pages = 1;
         }
 
-        $lastPageNumber = intval($pages);
+        $lastPageNumber = (int)($pages);
         if ($pages > $lastPageNumber) {
             $lastPageNumber++;
         }
@@ -591,7 +601,7 @@ class Pager extends \Magento\Framework\View\Element\Template
      */
     public function setFrameLength($frame)
     {
-        $frame = abs(intval($frame));
+        $frame = abs((int)($frame));
         if ($frame == 0) {
             $frame = $this->frameLength;
         }
@@ -611,7 +621,7 @@ class Pager extends \Magento\Framework\View\Element\Template
      */
     public function setJump($jump)
     {
-        $jump = abs(intval($jump));
+        $jump = abs((int)($jump));
         if ($this->getJump() != $jump) {
             $this->_setFrameInitialized(false);
             $this->jump = $jump;

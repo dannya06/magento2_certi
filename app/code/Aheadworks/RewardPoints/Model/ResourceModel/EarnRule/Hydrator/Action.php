@@ -1,15 +1,26 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Hydrator;
 
 use Aheadworks\RewardPoints\Api\Data\EarnRuleInterface;
 use Aheadworks\RewardPoints\Model\Action\Converter as ActionConverter;
 use Aheadworks\RewardPoints\Api\Data\ActionInterface;
 use Magento\Framework\EntityManager\HydratorInterface;
+use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Class Action
@@ -23,12 +34,20 @@ class Action implements HydratorInterface
     private $actionConverter;
 
     /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
      * @param ActionConverter $actionConverter
+     * @param SerializerInterface $serializer
      */
     public function __construct(
-        ActionConverter $actionConverter
+        ActionConverter $actionConverter,
+        SerializerInterface $serializer
     ) {
         $this->actionConverter = $actionConverter;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -55,7 +74,7 @@ class Action implements HydratorInterface
     {
         $actionData = $this->actionConverter->dataModelToArray($action);
 
-        return serialize($actionData);
+        return $this->serializer->serialize($actionData);
     }
 
     /**
@@ -79,7 +98,7 @@ class Action implements HydratorInterface
      */
     private function getActionUnserialized($serializedAction)
     {
-        $actionData = unserialize($serializedAction);
+        $actionData = $this->serializer->unserialize($serializedAction);
 
         return $this->actionConverter->arrayToDataModel($actionData);
     }

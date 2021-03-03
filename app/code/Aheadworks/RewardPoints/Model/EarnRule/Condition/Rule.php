@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\EarnRule\Condition;
 
 use Aheadworks\RewardPoints\Model\EarnRule\ProductMatcher\ProductResolver;
@@ -29,12 +39,12 @@ use Magento\Store\Model\StoreManagerInterface;
 class Rule extends AbstractRuleModel
 {
     /**
-     * Condition id
+     * Default condition id value
      */
     const CONDITION_ID = 1;
 
     /**
-     * Condition prefix
+     * Condition prefix value
      */
     const CONDITIONS_PREFIX = 'conditions';
 

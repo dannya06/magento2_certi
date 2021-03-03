@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="aheadworks" translate="label" sortOrder="300">
@@ -25,6 +18,12 @@
                 <field id="is_applying_points_to_shipping" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Allow applying points to shipping amount</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="lifetime_sales_start_date" translate="label, comment" type="date" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Start Date of Lifetime Sales Calculation</label>
+                    <frontend_model>Aheadworks\RewardPoints\Block\Adminhtml\Form\Field\Date</frontend_model>
+                    <backend_model>Aheadworks\RewardPoints\Model\Config\Backend\Date</backend_model>
+                    <comment>Leave empty if Lifetime Sales should be calculated from Magento installation date</comment>
                 </field>
                 <field id="earn_rates" translate="label,comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Earn Rates</label>
@@ -60,6 +59,11 @@
                     <label>Share of purchase that could be covered by points, %</label>
                     <comment><![CDATA[empty or 0 - no limitations]]></comment>
                     <validate>validate-digits validate-digits-range digits-range-0-100</validate>
+                </field>
+                <field id="is_enable_applying_points_on_subscription" translate="label,comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable applying points on subscription products</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <frontend_model>Aheadworks\RewardPoints\Block\Adminhtml\Form\Field\Subscription</frontend_model>
                 </field>
                 <field id="is_cancel_earned_points_refund_order" translate="label,comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Cancel points earned on refunded order</label>
@@ -109,6 +113,18 @@
                 <field id="is_product_review_owner" translate="label,comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Product review points awarded to product owners only</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="customer_birthday" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Customer birthday</label>
+                    <validate>validate-digits</validate>
+                </field>
+                <field id="customer_birthday_in_advance_days" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Add points for birthday in X days in advance</label>
+                    <validate>validate-digits</validate>
+                </field>
+                <field id="customer_birthday_limit" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Limit DOB change by customer</label>
+                    <source_model>Aheadworks\RewardPoints\Model\Source\Customer\BirthdayLimit</source_model>
                 </field>
             </group>
             <group id="frontend" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">

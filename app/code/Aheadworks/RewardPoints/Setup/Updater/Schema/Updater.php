@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Setup\Updater\Schema;
 
 use Aheadworks\RewardPoints\Model\ResourceModel\EarnRule as EarnRuleResource;
@@ -70,6 +80,18 @@ class Updater
         $this->addRuleIndexTable($setup, EarnRuleResource::PRODUCT_IDX_TABLE_NAME);
         $this->addCommentToAminPlaceholderColumnToTransactionTable($setup);
         $this->addLabelTable($setup);
+        return $this;
+    }
+
+    /**
+     * Update to 1.7.0 version
+     *
+     * @param SchemaSetupInterface $setup
+     * @return $this
+     */
+    public function update170(SchemaSetupInterface $setup)
+    {
+        $this->addDobUpdateDateColumnToSummaryTable($setup);
         return $this;
     }
 
@@ -489,6 +511,33 @@ class Updater
                 Table::ACTION_CASCADE
             )->setComment('Aheadworks Reward Points Entity Label To Store Relation Table');
         $installer->getConnection()->createTable($labelTable);
+        return $this;
+    }
+
+    /**
+     * Adding column dob update date to summary table
+     *
+     * @param SchemaSetupInterface $setup
+     * @return $this
+     */
+    private function addDobUpdateDateColumnToSummaryTable(SchemaSetupInterface $setup)
+    {
+        $connection = $setup->getConnection();
+        $summaryTableName = $setup->getTable('aw_rp_points_summary');
+        if (!$connection->tableColumnExists($summaryTableName, 'dob_update_date')) {
+            $connection->addColumn(
+                $summaryTableName,
+                'dob_update_date',
+                [
+                    'type' => Table::TYPE_DATE,
+                    'nullable' => true,
+                    'default' => null,
+                    'after' => 'monthly_share_points_date',
+                    'comment' => 'Dob Update date'
+                ]
+            );
+        }
+
         return $this;
     }
 }

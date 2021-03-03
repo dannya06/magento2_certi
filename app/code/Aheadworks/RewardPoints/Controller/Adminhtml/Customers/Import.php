@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Controller\Adminhtml\Customers;
 
 use Magento\Backend\App\Action\Context;
@@ -157,7 +167,7 @@ class Import extends Action
             'Import successfully completed! %1 of %2 records have been imported. See details in log file: %3',
             $countOfImportedRows,
             $countOfRowsToImport,
-            $this->importPointsSummary->getUrlToLogFile()
+            $this->importPointsSummary->getPathToLogFile()
         );
 
         return $resultMessage;

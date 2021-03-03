@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Aheadworks\StoreCredit\Api\TransactionRepositoryInterface" type="Aheadworks\StoreCredit\Model\TransactionRepository" />
     <preference for="Aheadworks\StoreCredit\Api\TransactionManagementInterface" type="Aheadworks\StoreCredit\Model\Service\TransactionService" />
@@ -130,9 +123,6 @@
     </type>
     <type name="Magento\Sales\Model\Service\OrderService">
         <plugin name="spend_store_credit_on_checkout" type="Aheadworks\StoreCredit\Plugin\Model\Service\OrderServicePlugin"/>
-    </type>
-    <type name="Magento\Sales\Controller\Adminhtml\Order\MassCancel">
-        <plugin name="refund_store_credit_mass_cancel" type="Aheadworks\StoreCredit\Plugin\Controller\Adminhtml\Order\MassCancelPlugin"/>
     </type>
     <type name="Magento\Quote\Model\Cart\CartTotalRepository">
         <plugin name="store_credit_total" type="Aheadworks\StoreCredit\Plugin\Model\Cart\CartTotalRepositoryPlugin" />

@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Block\Product\View;
 
 use Aheadworks\RewardPoints\Api\CustomerRewardPointsManagementInterface;
@@ -21,17 +31,17 @@ use Magento\Catalog\Helper\Image;
 class Share extends \Magento\Framework\View\Element\Template
 {
     /**
-     * Facebook share link
+     * Template of FB sharing link
      */
     const FACEBOOK_SHARE_LINK = 'https://www.facebook.com/sharer/sharer.php?u=';
 
     /**
-     * Twitter share link
+     * Template of Twitter sharing link
      */
     const TWITTER_SHARE_LINK = 'https://twitter.com/intent/tweet?url=';
 
     /**
-     * Google+ share link
+     * Template of Google+ sharing link
      */
     const GOOGLE_PLUS_SHARE_LINK = 'https://plus.google.com/share?url=';
 
@@ -277,8 +287,7 @@ class Share extends \Magento\Framework\View\Element\Template
     {
         return self::WHATSAPP_SHARE_LINK . $this->escapeUrl($this->getCurrentProductUrl());
     }
-    
-    
+
     /**
      * Get product
      *

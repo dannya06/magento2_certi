@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
@@ -24,7 +17,7 @@
     </argument>
     <dataSource name="aw_reward_points_earning_rules_listing_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider</argument>
+            <argument name="class" xsi:type="string">Aheadworks\RewardPoints\Ui\DataProvider\BaseDataProvider</argument>
             <argument name="name" xsi:type="string">aw_reward_points_earning_rules_listing_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">id</argument>
             <argument name="requestFieldName" xsi:type="string">id</argument>
@@ -198,9 +191,8 @@
                     <item name="label" xsi:type="string" translate="true">Date Start</item>
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
                     <item name="dataType" xsi:type="string">date</item>
-                    <item name="dateFormat" xsi:type="string">MMM d, y</item>
-                    <item name="timezone" xsi:type="boolean">false</item>
                     <item name="fieldClass" xsi:type="string">date-column</item>
+                    <item name="dateFormat" xsi:type="string">MMM d, y</item>
                     <item name="sortOrder" xsi:type="number">50</item>
                 </item>
             </argument>
@@ -212,7 +204,6 @@
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
                     <item name="dataType" xsi:type="string">date</item>
                     <item name="dateFormat" xsi:type="string">MMM d, y</item>
-                    <item name="timezone" xsi:type="boolean">false</item>
                     <item name="fieldClass" xsi:type="string">date-column</item>
                     <item name="sortOrder" xsi:type="number">60</item>
                 </item>

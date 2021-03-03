@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Calculator\Earning\EarnItemResolver;
 
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemInterface;
@@ -11,6 +21,7 @@ use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductPro
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor\TypeProcessorPool;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor\TypeProcessorInterface;
 use Magento\Catalog\Model\Product;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
@@ -34,7 +45,7 @@ class ProductProcessorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -94,9 +105,6 @@ class ProductProcessorTest extends TestCase
 
     /**
      * Test getEarnItems method if an exception occurs
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Type processor must implements TypeProcessorInterface
      */
     public function testGetEarnItemsException()
     {
@@ -110,7 +118,13 @@ class ProductProcessorTest extends TestCase
         $this->typeProcessorPoolMock->expects($this->once())
             ->method('getProcessorByCode')
             ->with($productType)
-            ->willThrowException(new \Exception('Type processor must implements TypeProcessorInterface'));
+            ->willThrowException(
+                new ConfigurationMismatchException(
+                    __('Type processor must implements %1', TypeProcessorInterface::class)
+                )
+            );
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->processor->getEarnItems($productMock, true);
     }

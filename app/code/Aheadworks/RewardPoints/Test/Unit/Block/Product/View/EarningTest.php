@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Block\Product\View;
 
 use Aheadworks\RewardPoints\Block\Product\View\Earning;
@@ -72,7 +82,7 @@ class EarningTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -156,7 +166,6 @@ class EarningTest extends TestCase
                 ->method('getStore')
                 ->willThrowException(new LocalizedException(__("Error!")));
         }
-
         $this->customerSessionMock->expects($this->once())
             ->method('isLoggedIn')
             ->willReturn($isLoggedIn);
@@ -476,7 +485,9 @@ class EarningTest extends TestCase
                     ->method('getById')
                     ->with($productId)
                     ->willThrowException(new NoSuchEntityException(__('No such entity!')));
-            } else {
+
+$this->expectException(NoSuchEntityException::class);
+} else {
                 $this->productRepositoryMock->expects($this->once())
                     ->method('getById')
                     ->with($productId)

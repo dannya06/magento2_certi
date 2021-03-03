@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\Service;
 
 use Aheadworks\RewardPoints\Api\Data\CustomerRewardPointsDetailsInterfaceFactory;
@@ -46,6 +56,7 @@ use Magento\Sales\Api\InvoiceRepositoryInterface;
 use Aheadworks\RewardPoints\Model\Import\PointsSummary as ImportPointsSummary;
 use Aheadworks\RewardPoints\Api\Data\PointsSummaryInterface;
 use Magento\Framework\DataObject;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class Aheadworks\RewardPoints\Model\Service\CustomerRewardPointsManagement
@@ -171,6 +182,11 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
     private $dataObject;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param CustomerRewardPointsDetailsInterfaceFactory $customerRewardPointsDetailsFactory
      * @param TransactionManagementInterface $transactionService
      * @param PointsSummaryService $pointsSummaryService
@@ -191,6 +207,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
      * @param StoreManagerInterface $storeManager
      * @param ImportPointsSummary $importPointsSummary
      * @param DataObject $dataObject
+     * @param Logger $logger
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -213,7 +230,8 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
         EarningCalculator $earningCalculator,
         StoreManagerInterface $storeManager,
         ImportPointsSummary $importPointsSummary,
-        DataObject $dataObject
+        DataObject $dataObject,
+        Logger $logger
     ) {
         $this->customerRewardPointsDetailsFactory = $customerRewardPointsDetailsFactory;
         $this->transactionService = $transactionService;
@@ -235,6 +253,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
         $this->storeManager = $storeManager;
         $this->importPointsSummary = $importPointsSummary;
         $this->dataObject = $dataObject;
+        $this->logger = $logger;
     }
 
     /**
@@ -315,6 +334,32 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                 $transactionType = TransactionType::POINTS_REWARDED_FOR_REGISTRATION;
                 return $this->createTransaction(
                     $rewardPointsForRegister,
+                    $this->getExpirationDate($websiteId),
+                    $this->getCommentToCustomer($transactionType)->renderComment(),
+                    $this->getCommentToCustomer($transactionType)->getLabel(),
+                    null,
+                    null,
+                    $websiteId,
+                    $transactionType
+                );
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addPointsForCustomerBirthday($customerId, $websiteId = null)
+    {
+        if (null != $customerId) {
+            $this->customer = null;
+            $this->setCustomerId($customerId);
+            $rewardPointsForBirthday = $this->config->getAwardedPointsForCustomerBirthday($websiteId);
+            if ($rewardPointsForBirthday > 0) {
+                $transactionType = TransactionType::POINTS_REWARDED_FOR_BIRTHDAY;
+                return $this->createTransaction(
+                    $rewardPointsForBirthday,
                     $this->getExpirationDate($websiteId),
                     $this->getCommentToCustomer($transactionType)->renderComment(),
                     $this->getCommentToCustomer($transactionType)->getLabel(),
@@ -492,7 +537,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
                     ]
                 );
             } catch (\Exception $exception) {
-                //todo: save exception to log
+                $this->logger->critical($exception->getMessage());
             }
         }
         return $result;
@@ -784,6 +829,19 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
     {
         $customerRewardPointsDetails = $this->getCustomerRewardPointsDetails($customerId, $websiteId);
         return $customerRewardPointsDetails->getCustomerRewardPointsBalance();
+    }
+
+    /**
+     * Workaround solution for compatibility with Aheadworks_Ca
+     * Retrieve only root customer balance
+     *
+     * @param int $customerId
+     * @param int|null $websiteId
+     * @return int
+     */
+    public function getCustomerRewardPointsBalanceForTransaction($customerId, $websiteId = null)
+    {
+        return $this->getCustomerRewardPointsBalance($customerId, $websiteId = null);
     }
 
     /**
@@ -1087,7 +1145,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
     private function getOnceMinBalance($balance, $websiteId = null)
     {
         if ($onceMinBalance = $this->config->getOnceMinBalance($websiteId)) {
-            $onceMinBalance = max(0, intval($onceMinBalance));
+            $onceMinBalance = max(0, (int)($onceMinBalance));
             if ($balance >= $onceMinBalance) {
                 $onceMinBalance = 0;
             }
@@ -1352,7 +1410,7 @@ class CustomerRewardPointsService implements CustomerRewardPointsManagementInter
             }
 
             $this->resetRewardPointsDetailsCache($customerId);
-            $pointsBalance = $this->getCustomerRewardPointsBalance($customerId);
+            $pointsBalance = $this->getCustomerRewardPointsBalanceForTransaction($customerId);
 
             $transaction = $this->transactionRepository->getById($result->getTransactionId());
             $transaction->setCurrentBalance($pointsBalance);

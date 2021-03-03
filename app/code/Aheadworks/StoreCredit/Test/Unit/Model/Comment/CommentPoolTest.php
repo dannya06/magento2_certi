@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Test\Unit\Model\Comment;
 
 use Aheadworks\StoreCredit\Model\Comment\CommentPool;
@@ -43,7 +53,12 @@ class CommentPoolTest extends \PHPUnit\Framework\TestCase
      */
     private $comments = [];
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -80,6 +95,7 @@ class CommentPoolTest extends \PHPUnit\Framework\TestCase
     public function testConstructLogicException()
     {
         $this->data['comments'] = [];
+        $this->expectException(\LogicException::class);
         $this->objectManager->getObject(CommentPool::class, $this->data);
     }
 
@@ -89,9 +105,20 @@ class CommentPoolTest extends \PHPUnit\Framework\TestCase
     public function testConstruct()
     {
         $this->initCommentPool();
+        $ref = new \ReflectionClass($this->object);
 
-        $this->assertAttributeEquals($this->comments, 'comments', $this->object);
-        $this->assertAttributeEquals($this->objectManagerMock, 'objectManager', $this->object);
+        $propComments = $ref->getProperty('comments');
+        $propComments->setAccessible(true);
+        $valueComments = $propComments->getValue($this->object);
+        $propComments->setAccessible(false);
+
+        $propObjectManager = $ref->getProperty('objectManager');
+        $propObjectManager->setAccessible(true);
+        $valueObjectManager = $propObjectManager->getValue($this->object);
+        $propObjectManager->setAccessible(false);
+
+        $this->assertTrue($valueComments == $this->comments);
+        $this->assertTrue($valueObjectManager == $this->objectManagerMock);
     }
 
     /**
@@ -169,27 +196,8 @@ class CommentPoolTest extends \PHPUnit\Framework\TestCase
     {
         $this->initCommentPool();
 
-        $commentDefaultInstanceMock = $this->getMockForAbstractClass(
-            CommentInterface::class,
-            ['getComment'],
-            '',
-            false
-        );
-
-        $commentDefaultInstanceMock->expects($this->any())
-            ->method('getComment')
-            ->willReturn('default_comment');
-
-        $commentForPurchaseInstanceMock = $this->getMockForAbstractClass(
-            CommentInterface::class,
-            ['getComment'],
-            '',
-            false
-        );
-
-        $commentForPurchaseInstanceMock->expects($this->any())
-            ->method('getComment')
-            ->willReturn('comment_for_purchases');
+        $commentDefaultInstanceMock = $this->createMock(CommentInterface::class);
+        $commentForPurchaseInstanceMock = $this->createMock(CommentInterface::class);
 
         $this->objectManagerMock->expects($this->exactly(2))
             ->method('get')

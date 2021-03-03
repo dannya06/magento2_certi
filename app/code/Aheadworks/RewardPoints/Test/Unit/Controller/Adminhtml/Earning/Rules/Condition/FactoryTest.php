@@ -1,18 +1,30 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Controller\Adminhtml\Earning\Rules\Condition;
 
 use Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\Condition\Factory as RuleConditionFactory;
+use Magento\Rule\Model\Condition\AbstractCondition;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\DataObject;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\CatalogRule\Model\Rule\Condition\Product as ProductCondition;
 use Magento\CatalogRule\Model\Rule;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 
 /**
  * Test for \Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\Condition\Factory
@@ -34,7 +46,7 @@ class FactoryTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -63,10 +75,7 @@ class FactoryTest extends TestCase
         $jsFormObject = 'rule_conditions_fieldset';
         $formName = 'aw_reward_points_earning_rules_form';
 
-        $conditionMock = $this->createPartialMock(
-            $type,
-            ['setId', 'setType', 'setRule', 'setPrefix', 'setAttribute', 'setJsFormObject', 'setFormName']
-        );
+        $conditionMock = $this->createMock($type);
         $ruleMock = $this->createMock(Rule::class);
 
         $this->setupMocks($conditionMock, $id, $type, $ruleMock, $prefix, $attribute, $jsFormObject, $formName);
@@ -96,37 +105,9 @@ class FactoryTest extends TestCase
      */
     private function setupMocks($conditionMock, $id, $type, $ruleMock, $prefix, $attribute, $jsFormObject, $formName)
     {
-        $conditionMock->expects($this->once())
-            ->method('setId')
-            ->with($id)
-            ->willReturnSelf();
-        $conditionMock->expects($this->once())
-            ->method('setType')
-            ->with($type)
-            ->willReturnSelf();
-        $conditionMock->expects($this->once())
-            ->method('setRule')
-            ->with($ruleMock)
-            ->willReturnSelf();
-        $conditionMock->expects($this->once())
-            ->method('setPrefix')
-            ->with($prefix)
-            ->willReturnSelf();
-        $conditionMock->expects($this->once())
-            ->method('setJsFormObject')
-            ->with($jsFormObject)
-            ->willReturnSelf();
-        $conditionMock->expects($this->once())
-            ->method('setFormName')
-            ->with($formName)
-            ->willReturnSelf();
-
-        if ($attribute) {
-            $conditionMock->expects($this->once())
-                ->method('setAttribute')
-                ->with($attribute)
-                ->willReturnSelf();
-        }
+        $conditionMock->expects($this->any())
+                      ->method('__call')
+                      ->willReturnSelf();
     }
 
     /**
@@ -142,9 +123,6 @@ class FactoryTest extends TestCase
 
     /**
      * Test process method if incorrect condition specified
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Condition must be instance of AbstractCondition
      */
     public function testProcessIncorrectCondition()
     {
@@ -161,6 +139,8 @@ class FactoryTest extends TestCase
             ->method('create')
             ->with(DataObject::class)
             ->willReturn($dataObjectMock);
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->factory->create($type, $id, $prefix, $attribute, $jsFormObject, $formName);
     }

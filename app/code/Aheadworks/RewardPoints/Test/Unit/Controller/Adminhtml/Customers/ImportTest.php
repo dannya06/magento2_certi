@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Controller\Adminhtml\Customers;
 
 use Magento\Backend\App\Action\Context;
@@ -57,7 +67,7 @@ class ImportTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -86,7 +96,7 @@ class ImportTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['importPointsSummary'])
             ->getMockForAbstractClass();
         $this->importPointsSummaryMock = $this->getMockBuilder(ImportPointsSummary::class)
-            ->setMethods(['create', 'getUrlToLogFile'])
+            ->setMethods(['create', 'getPathToLogFile'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -145,7 +155,7 @@ class ImportTest extends \PHPUnit\Framework\TestCase
             ]
         ];
         $importedRecords = ['1', '2'];
-        $urlToLogFile = 'https://ecommerce.aheadworks.com/' . 'var/log/aw_rp_points_summary_import.log';
+        $urlToLogFile = 'var/log/aw_rp_points_summary_import.log';
 
         $result = [
             'messages' =>
@@ -169,7 +179,7 @@ class ImportTest extends \PHPUnit\Framework\TestCase
             ->willReturn($importedRecords);
 
         $this->importPointsSummaryMock->expects($this->once())
-            ->method('getUrlToLogFile')
+            ->method('getPathToLogFile')
             ->willReturn($urlToLogFile);
 
         $resultJsonMock = $this->getMockBuilder(ResultJson::class)

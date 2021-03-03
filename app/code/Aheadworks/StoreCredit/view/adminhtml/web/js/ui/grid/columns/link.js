@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'Magento_Ui/js/grid/columns/column'
 ], function (Component) {
@@ -24,5 +19,12 @@ define([
             }
             return record[this.index];
         },
+
+        /**
+         * @inheritDoc
+         */
+        hasFieldAction: function () {
+            return false;
+        }
     });
 });

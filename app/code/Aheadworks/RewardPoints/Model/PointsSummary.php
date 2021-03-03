@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model;
 
 use Aheadworks\RewardPoints\Api\Data\PointsSummaryInterface;
@@ -260,5 +270,21 @@ class PointsSummary extends \Magento\Framework\Model\AbstractModel implements Po
     public function getExpirationNotificationStatus()
     {
         return $this->getData(self::EXPIRATION_NOTIFICATION_STATUS);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    public function setDobUpdateDate($date)
+    {
+        return $this->setData(self::DOB_UPDATE_DATE, $date);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    public function getDobUpdateDate()
+    {
+        return $this->getData(self::DOB_UPDATE_DATE);
     }
 }
