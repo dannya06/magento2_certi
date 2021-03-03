@@ -1,6 +1,153 @@
 # Change Log
 
-## [102.3.34](https://github.com/mailchimp/mc-magento2/tree/HEAD)
+## [102.3.42](https://github.com/mailchimp/mc-magento2/tree/102.3.42)
+
+[Full Changelog](https://github.com/mailchimp/mc-magento2/compare/102.3.41...102.3.42)
+
+**Implemented enhancements:**
+
+- Create custom field mapping [\#1025](https://github.com/mailchimp/mc-magento2/issues/1025)
+
+**Fixed bugs:**
+
+- Subscribing for a second time does not work. [\#1078](https://github.com/mailchimp/mc-magento2/issues/1078)
+- Invalid date format when use mysql 8 [\#1066](https://github.com/mailchimp/mc-magento2/issues/1066)
+- Unable to capture the order for a campaign [\#1065](https://github.com/mailchimp/mc-magento2/issues/1065)
+- Notice: Undefined index: image\_url Model/Api/Product.php [\#1059](https://github.com/mailchimp/mc-magento2/issues/1059)
+- Multistore product sync wrong name  [\#1055](https://github.com/mailchimp/mc-magento2/issues/1055)
+
+## [102.3.41](https://github.com/mailchimp/mc-magento2/tree/102.3.41)
+
+[Full Changelog](https://github.com/mailchimp/mc-magento2/compare/102.3.40...102.3.41)
+
+**Implemented enhancements:**
+
+- Coupon Codes \(Promo Codes\) Do Not Send to Mailchimp With Order Data [\#1032](https://github.com/mailchimp/mc-magento2/issues/1032)
+
+**Fixed bugs:**
+
+- "Unable to unserialize value." issue avoids ecommerce syncing. This happens some times when "Send Promo Codes and Promo Rules" is enabled [\#1035](https://github.com/mailchimp/mc-magento2/issues/1035)
+- Fallback to JQueryUI Compat activated. [\#1034](https://github.com/mailchimp/mc-magento2/issues/1034)
+- Abandoned Cart revenue not showing on Mailchimp account [\#1033](https://github.com/mailchimp/mc-magento2/issues/1033)
+
+## [102.3.40](https://github.com/mailchimp/mc-magento2/tree/102.3.40)
+
+[Full Changelog](https://github.com/mailchimp/mc-magento2/compare/102.3.39...102.3.40)
+
+**Implemented enhancements:**
+
+- Add magento 2.4 compatibility [\#1027](https://github.com/mailchimp/mc-magento2/issues/1027)
+
+## [102.3.39](https://github.com/mailchimp/mc-magento2/tree/102.3.39)
+
+[Full Changelog](https://github.com/mailchimp/mc-magento2/compare/102.3.38...102.3.39)
+
+**Implemented enhancements:**
+
+- Licensing? [\#996](https://github.com/mailchimp/mc-magento2/issues/996)
+
+**Fixed bugs:**
+
+- Typo in campaigncatcher.js causing Javascript error [\#1015](https://github.com/mailchimp/mc-magento2/issues/1015)
+- The mailchimp groups are not shown correctly in the customer account [\#1009](https://github.com/mailchimp/mc-magento2/issues/1009)
+- Improper call to interest-categories in the webhook processing [\#1002](https://github.com/mailchimp/mc-magento2/issues/1002)
+- MapFields not getting synced when configured in storeView. [\#998](https://github.com/mailchimp/mc-magento2/issues/998)
+- Eternal Spinning gif after invalid API key has been entered in the configuration [\#990](https://github.com/mailchimp/mc-magento2/issues/990)
+- Syncing customer group changed some customers group id to 0 [\#989](https://github.com/mailchimp/mc-magento2/issues/989)
+- Issue syncing DOB merge field [\#987](https://github.com/mailchimp/mc-magento2/issues/987)
+- JS error on product page with slow internet [\#912](https://github.com/mailchimp/mc-magento2/issues/912)
+
+## [102.3.38](https://github.com/mailchimp/mc-magento2/tree/102.3.38)
+
+[Full Changelog](https://github.com/mailchimp/mc-magento2/compare/102.3.37...102.3.38)
+
+**Implemented enhancements:**
+
+- Optimize MailChimp JS block [\#895](https://github.com/mailchimp/mc-magento2/issues/895)
+- Optimize MailChimp JS block [\#891](https://github.com/mailchimp/mc-magento2/pull/891) ([andrey-legayev](https://github.com/andrey-legayev))
+
+**Fixed bugs:**
+
+- Incorrect import in Webhook controller [\#976](https://github.com/mailchimp/mc-magento2/issues/976)
+- The street line 3 is not synced in orders [\#963](https://github.com/mailchimp/mc-magento2/issues/963)
+- Loading screen stuck when attempting to save the API key. [\#940](https://github.com/mailchimp/mc-magento2/issues/940)
+- \[Performance Issue\] HTTP calls to mailchimp on every page request and config cache flush [\#939](https://github.com/mailchimp/mc-magento2/issues/939)
+- Strong check for interest groups [\#932](https://github.com/mailchimp/mc-magento2/issues/932)
+- Take the first date value from storeview scope. [\#931](https://github.com/mailchimp/mc-magento2/issues/931)
+- Bad management of the groups in the webhooks [\#926](https://github.com/mailchimp/mc-magento2/issues/926)
+- Error grid, bad data when try to sort for one field 3 times [\#922](https://github.com/mailchimp/mc-magento2/issues/922)
+- Uncaught TypeError: strpos\(\) expects parameter 1 to be string, null given in vendor/magento/module-theme/Controller/Result/JsFooterPlugin.php:44 in Magento 2.3.3 [\#920](https://github.com/mailchimp/mc-magento2/issues/920)
+- JS error on product page with slow internet [\#912](https://github.com/mailchimp/mc-magento2/issues/912)
+- Invalid API key error when attempting to update settings. [\#906](https://github.com/mailchimp/mc-magento2/issues/906)
+- Typo in Ecommerce cron when mark an object with error [\#900](https://github.com/mailchimp/mc-magento2/issues/900)
+- Error in cron when split databases [\#887](https://github.com/mailchimp/mc-magento2/issues/887)
+- Make changes to pass code sniffer [\#881](https://github.com/mailchimp/mc-magento2/issues/881)
+- Fix catching campaign with enabled Varnish FPC [\#874](https://github.com/mailchimp/mc-magento2/issues/874)
+- Fix incorrect import in Webhook controller [\#973](https://github.com/mailchimp/mc-magento2/pull/973) ([ihor-sviziev](https://github.com/ihor-sviziev))
+
+## [102.3.37](https://github.com/mailchimp/mc-magento2/tree/102.3.37)
+
+[Full Changelog](https://github.com/mailchimp/mc-magento2/compare/102.3.36...102.3.37)
+
+**Implemented enhancements:**
+
+- Make strong check for the API key [\#849](https://github.com/mailchimp/mc-magento2/issues/849)
+- Add alt text to the order grid in the mailchimp sync image [\#810](https://github.com/mailchimp/mc-magento2/issues/810)
+- Send the merge\_fields for customers [\#790](https://github.com/mailchimp/mc-magento2/issues/790)
+
+**Fixed bugs:**
+
+- Do not add anything to frontend if module disabled [\#866](https://github.com/mailchimp/mc-magento2/issues/866)
+- Made sure a missing "simple\_sku" won't break the entire sync [\#862](https://github.com/mailchimp/mc-magento2/issues/862)
+- Not all batches are saved when multi store enabled [\#857](https://github.com/mailchimp/mc-magento2/issues/857)
+- Mark orders with error to not try to re-sync [\#841](https://github.com/mailchimp/mc-magento2/issues/841)
+- PayPal Express orders sync fails - Last name is NULL [\#840](https://github.com/mailchimp/mc-magento2/issues/840)
+- Bad management of old batches [\#821](https://github.com/mailchimp/mc-magento2/issues/821)
+- Bad batches management [\#817](https://github.com/mailchimp/mc-magento2/issues/817)
+- Bad way to test if the json\_encode fails [\#805](https://github.com/mailchimp/mc-magento2/issues/805)
+- Rename delete customer account option [\#801](https://github.com/mailchimp/mc-magento2/issues/801)
+- Orders with no products are not marked as synced [\#797](https://github.com/mailchimp/mc-magento2/issues/797)
+- Re sync the subscriber when the customer is modified [\#786](https://github.com/mailchimp/mc-magento2/issues/786)
+- Use always the md5 of the customer email to identify the customer [\#782](https://github.com/mailchimp/mc-magento2/issues/782)
+- Error when select a website scope in config [\#773](https://github.com/mailchimp/mc-magento2/issues/773)
+- Change the Resync Customers button [\#768](https://github.com/mailchimp/mc-magento2/issues/768)
+-  ebizmarts\_ecommerce has an error [\#767](https://github.com/mailchimp/mc-magento2/issues/767)
+- Unhandled `Magento\Framework\Serialize\Serializer\Json::\(un\)serialize` calls [\#758](https://github.com/mailchimp/mc-magento2/issues/758)
+
+## [102.3.36](https://github.com/mailchimp/mc-magento2/tree/102.3.36)
+
+[Full Changelog](https://github.com/mailchimp/mc-magento2/compare/102.3.35...102.3.36)
+
+**Implemented enhancements:**
+
+- Take the version from the composer.json [\#759](https://github.com/mailchimp/mc-magento2/issues/759)
+
+## [102.3.35](https://github.com/mailchimp/mc-magento2/tree/102.3.35)
+
+[Full Changelog](https://github.com/mailchimp/mc-magento2/compare/102.3.34...101.2.35)
+
+**Implemented enhancements:**
+
+- Show the amount of list subscribers [\#740](https://github.com/mailchimp/mc-magento2/issues/740)
+- Wrong error message in order grid [\#710](https://github.com/mailchimp/mc-magento2/issues/710)
+- Add a button to re sync customers [\#702](https://github.com/mailchimp/mc-magento2/issues/702)
+- Encrypt sensitive data [\#701](https://github.com/mailchimp/mc-magento2/issues/701)
+- Some exceptions are not added into logs, making it hard to find the error message. [\#700](https://github.com/mailchimp/mc-magento2/issues/700)
+
+**Fixed bugs:**
+
+- Remove error message when resend an item with error [\#719](https://github.com/mailchimp/mc-magento2/issues/719)
+- Error message 'Resource Not Found' on creating new customers [\#715](https://github.com/mailchimp/mc-magento2/issues/715)
+- Don't delete the cart from ecommerce table when the order is made [\#706](https://github.com/mailchimp/mc-magento2/issues/706)
+- Success unsubscription, if subscribe again doesn't send confirm subscription emails [\#696](https://github.com/mailchimp/mc-magento2/issues/696)
+- Customer and subscriber with same email sent to mailchimp with different id [\#692](https://github.com/mailchimp/mc-magento2/issues/692)
+- Order is not marked to resync when the credit memo comes via magento API [\#687](https://github.com/mailchimp/mc-magento2/issues/687)
+- Order is not marked to resync when the invoice comes via magento API [\#682](https://github.com/mailchimp/mc-magento2/issues/682)
+- Order is not marked to resync when the shipment comes via magento API [\#678](https://github.com/mailchimp/mc-magento2/issues/678)
+- Multistore with different Mailchimp account wrong synchronization on customer delete/unsubcribe from magento admin [\#674](https://github.com/mailchimp/mc-magento2/issues/674)
+- MySQL error during setup:upgrade after module install \(with split database Magento EE feature enabled\) [\#664](https://github.com/mailchimp/mc-magento2/issues/664)
+
+## [102.3.34](https://github.com/mailchimp/mc-magento2/tree/102.3.34)
 
 [Full Changelog](https://github.com/mailchimp/mc-magento2/compare/1.3.33...102.3.34)
 

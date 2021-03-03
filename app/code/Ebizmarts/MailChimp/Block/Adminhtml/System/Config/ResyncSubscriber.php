@@ -7,7 +7,7 @@
  */
 namespace Ebizmarts\MailChimp\Block\Adminhtml\System\Config;
 
-class CreateWebhook extends \Magento\Config\Block\System\Config\Form\Field
+class ResyncSubscriber extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
      * @var \Ebizmarts\MailChimp\Helper\Data
@@ -33,7 +33,7 @@ class CreateWebhook extends \Magento\Config\Block\System\Config\Form\Field
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('system/config/createwebhook.phtml');
+        $this->setTemplate('system/config/resyncsubscriber.phtml');
     }
 
     protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
@@ -42,33 +42,9 @@ class CreateWebhook extends \Magento\Config\Block\System\Config\Form\Field
         $this->addData(
             [
                 'button_label' => __($originalData['button_label']),
-                'button_url' => $this->getAjaxCheckUrl(),
                 'html_id' => $element->getHtmlId(),
             ]
         );
         return $this->_toHtml();
-    }
-
-    public function getButtonHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
-    {
-        $originalData = $element->getOriginalData();
-        $label = $originalData['button_label'];
-        $this->addData([
-            'button_label' => __($label),
-            'button_url'   => $this->getAjaxCreateWebhookUrl(),
-            'html_id' => $element->getHtmlId(),
-        ]);
-        return $this->_toHtml();
-    }
-    public function getAjaxCreateWebhookUrl()
-    {
-        $params = $this->getRequest()->getParams();
-        $scope = [];
-        if (isset($params['website'])) {
-            $scope = ['website'=>$params['website']];
-        } elseif (isset($params['store'])) {
-            $scope = ['store'=>$params['store']];
-        }
-        return $this->_urlBuilder->getUrl('mailchimp/ecommerce/CreateWebhook', $scope);
     }
 }

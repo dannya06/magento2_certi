@@ -1,48 +1,46 @@
 <?php
 /**
- * mc-magento2 Magento Component
+ * Ebizmarts_mc-magento22 Magento component
  *
- * @category Ebizmarts
- * @package mc-magento2
- * @author Ebizmarts Team <info@ebizmarts.com>
- * @copyright Ebizmarts (http://ebizmarts.com)
+ * @category    Ebizmarts
+ * @package     Ebizmarts_mc-magento2
+ * @author      Ebizmarts Team <info@ebizmarts.com>
+ * @copyright   Ebizmarts (http://ebizmarts.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @date: 2/15/17 3:38 PM
- * @file: SaveAfter.php
+ *
  */
+namespace Ebizmarts\MailChimp\Model\Plugin;
 
-namespace Ebizmarts\MailChimp\Observer\Sales\Order;
+use Magento\Sales\Api\Data\InvoiceInterface;
+use Magento\Sales\Api\InvoiceRepositoryInterface as SalesInvoiceRepositoryInterface;
 
-use Magento\Framework\Event\Observer;
-
-class SaveAfter implements \Magento\Framework\Event\ObserverInterface
+class Invoice
 {
     /**
      * @var \Ebizmarts\MailChimp\Helper\Data
      */
-    protected $_helper;
+    private $_helper;
 
     /**
-     * SaveAfter constructor.
+     * Ship constructor.
      * @param \Ebizmarts\MailChimp\Helper\Data $helper
      */
     public function __construct(
         \Ebizmarts\MailChimp\Helper\Data $helper
     ) {
-    
-        $this->_helper      = $helper;
+        $this->_helper  = $helper;
     }
-
-    public function execute(\Magento\Framework\Event\Observer $observer)
-    {
-        $order = $observer->getEvent()->getOrder();
+    public function afterSave(
+        SalesInvoiceRepositoryInterface $subject,
+        InvoiceInterface $invoice
+    ) {
         $mailchimpStoreId = $this->_helper->getConfigValue(
             \Ebizmarts\MailChimp\Helper\Data::XML_MAILCHIMP_STORE,
-            $order->getStoreId()
+            $invoice->getStoreId()
         );
         $this->_helper->saveEcommerceData(
             $mailchimpStoreId,
-            $order->getId(),
+            $invoice->getOrderId(),
             \Ebizmarts\MailChimp\Helper\Data::IS_ORDER,
             null,
             null,
@@ -51,5 +49,6 @@ class SaveAfter implements \Magento\Framework\Event\ObserverInterface
             null,
             \Ebizmarts\MailChimp\Helper\Data::NEEDTORESYNC
         );
+        return $invoice;
     }
 }

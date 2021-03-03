@@ -20,6 +20,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\ResultInterface;
 
 class Index extends Action implements CsrfAwareActionInterface
 {
@@ -77,32 +78,44 @@ class Index extends Action implements CsrfAwareActionInterface
     public function execute()
     {
         $requestKey = $this->getRequest()->getParam('wkey');
+        /**
+         * @var ResultInterface $result
+         */
+        $result = $this->_resultFactory->create(ResultFactory::TYPE_RAW);
+        $result->setContents('');
         if (!$requestKey) {
             $this->_helper->log('No wkey parameter from ip: '.$this->_remoteAddress->getRemoteAddress());
-            $result = $this->_resultFactory->create(ResultFactory::TYPE_RAW)->setHttpResponseCode(403);
+            $result->setHttpResponseCode(403);
             return $result;
         }
         $key = $this->_helper->getWebhooksKey();
         if ($key!=$requestKey) {
             $this->_helper->log('wkey parameter is invalid from ip: '.$this->_remoteAddress->getRemoteAddress());
-            $result = $this->_resultFactory->create(ResultFactory::TYPE_RAW)->setHttpResponseCode(403);
+            $result->setHttpResponseCode(403);
             return $result;
         }
         if ($this->getRequest()->getPost('type')) {
             $request = $this->getRequest()->getPost();
             if ($this->_helper->getConfigValue(\Ebizmarts\MailChimp\Helper\Data::XML_PATH_WEBHOOK_ACTIVE) ||
                 $request['type']==\Ebizmarts\MailChimp\Cron\Webhook::TYPE_SUBSCRIBE) {
-                $chimpRequest = $this->_chimpWebhookRequestFactory->create();
-                $chimpRequest->setType($request['type']);
-                $chimpRequest->setFiredAt($request['fired_at']);
-                $chimpRequest->setDataRequest($this->_helper->serialize($request['data']));
-                $chimpRequest->setProcessed(false);
-                $chimpRequest->getResource()->save($chimpRequest);
+                try {
+                    $chimpRequest = $this->_chimpWebhookRequestFactory->create();
+                    $chimpRequest->setType($request['type']);
+                    $chimpRequest->setFiredAt($request['fired_at']);
+                    $chimpRequest->setDataRequest($this->_helper->serialize($request['data']));
+                    $chimpRequest->setProcessed(false);
+                    $chimpRequest->getResource()->save($chimpRequest);
+                    $result->setHttpResponseCode(200);
+                } catch(\Exception $e) {
+                    $this->_helper->log($e->getMessage());
+                    $this->_helper->log($request['data']);
+                    $result->setHttpResponseCode(403);
+                }
             }
         } else {
             $this->_helper->log('An empty request comes from ip: '.$this->_remoteAddress->getRemoteAddress());
-            $result = $this->_resultFactory->create(ResultFactory::TYPE_RAW)->setHttpResponseCode(200);
-            return $result;
+            $result->setHttpResponseCode(200);
         }
+        return $result;
     }
 }
