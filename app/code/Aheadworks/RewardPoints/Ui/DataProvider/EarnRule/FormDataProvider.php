@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Ui\DataProvider\EarnRule;
 
 use Aheadworks\RewardPoints\Api\Data\EarnRuleInterface;
@@ -15,6 +25,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Api\Filter;
 use Magento\Ui\DataProvider\AbstractDataProvider;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class FormDataProvider
@@ -58,6 +69,11 @@ class FormDataProvider extends AbstractDataProvider
     private $metaProcessor;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
@@ -80,6 +96,7 @@ class FormDataProvider extends AbstractDataProvider
         EarnRuleRepositoryInterface $ruleRepository,
         ProcessorInterface $dataProcessor,
         ProcessorInterface $metaProcessor,
+        Logger $logger,
         array $meta = [],
         array $data = []
     ) {
@@ -90,6 +107,7 @@ class FormDataProvider extends AbstractDataProvider
         $this->ruleRepository = $ruleRepository;
         $this->dataProcessor = $dataProcessor;
         $this->metaProcessor = $metaProcessor;
+        $this->logger = $logger;
     }
 
     /**
@@ -109,7 +127,8 @@ class FormDataProvider extends AbstractDataProvider
                 $rule = $this->ruleRepository->get($id);
                 $data = $this->dataObjectProcessor->buildOutputDataArray($rule, EarnRuleInterface::class);
                 $preparedData[$id] = $this->dataProcessor->process($data);
-            } catch (NoSuchEntityException $e) {
+            } catch (NoSuchEntityException $exception) {
+                $this->logger->critical($exception->getMessage());
             }
         }
 

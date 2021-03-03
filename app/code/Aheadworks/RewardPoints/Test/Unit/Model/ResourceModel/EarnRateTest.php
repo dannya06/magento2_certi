@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\ResourceModel;
 
 use Aheadworks\RewardPoints\Model\ResourceModel\EarnRate;
@@ -47,7 +57,12 @@ class EarnRateTest extends \PHPUnit\Framework\TestCase
      */
     private $connectionMock;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -155,8 +170,8 @@ class EarnRateTest extends \PHPUnit\Framework\TestCase
         $this->connectionMock->expects($this->once())
             ->method('delete')
             ->with('aw_rp_earn_rate')
-            ->willThrowException(new \Exception('Unable delete data'));
-
+            ->willThrowException(new \Exception("Unable delete data"));
+        $this->expectException(\Exception::class);
         $this->object->clear();
     }
 
@@ -500,7 +515,7 @@ class EarnRateTest extends \PHPUnit\Framework\TestCase
             ->method('insert')
             ->with('aw_rp_earn_rate', $data)
             ->willThrowException(new \Exception());
-
+        $this->expectException(\Exception::class);
         $this->object->saveConfigValue([$data]);
     }
 

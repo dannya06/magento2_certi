@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Block\ProductList\Grouped;
 
 use Aheadworks\RewardPoints\Block\ProductList\Grouped\ProductText;
@@ -23,6 +33,7 @@ use Magento\Catalog\Model\Product;
 use Magento\Store\Api\Data\WebsiteInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Api\Data\StoreInterface;
+use Magento\Framework\App\Request\Http;
 
 /**
  * Test for \Aheadworks\RewardPoints\Block\ProductList\Grouped\ProductText
@@ -80,15 +91,26 @@ class ProductTextTest extends TestCase
     private $productMock;
 
     /**
+     * @var Http|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $requestMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
-        $this->contextMock = $objectManager->getObject(Context::class, []);
+        $this->requestMock = $this->createMock(Http::class);
+        $this->contextMock = $objectManager->getObject(
+            Context::class,
+            [
+                'request' => $this->requestMock
+            ]
+        );
         $this->configMock = $this->createMock(Config::class);
         $this->earningCalculatorMock = $this->createMock(EarningCalculator::class);
         $this->productPromoTextResolverMock = $this->createMock(ProductPromoTextResolver::class);
@@ -120,6 +142,7 @@ class ProductTextTest extends TestCase
      * @param string $text
      * @param int $maxPoints
      * @param int|null $customerId
+     * @param bool $isAjax
      * @param bool $result
      * @dataProvider isDisplayBlockDataProvider
      */
@@ -128,6 +151,7 @@ class ProductTextTest extends TestCase
         $text,
         $maxPoints,
         $customerId,
+        $isAjax,
         $result
     ) {
 
@@ -141,6 +165,9 @@ class ProductTextTest extends TestCase
             ->method('getId')
             ->willReturn($productId);
         $this->block->setProduct($this->productMock);
+        $this->requestMock->expects($this->any())
+            ->method('isAjax')
+            ->willReturn($isAjax);
 
         $websiteMock = $this->createMock(WebsiteInterface::class);
         $websiteMock->expects($this->once())
@@ -219,6 +246,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 10,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => true
             ],
             [
@@ -226,6 +254,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 10,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => true
             ],
             [
@@ -233,6 +262,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 125,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => true
             ],
             [
@@ -240,6 +270,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 125,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => true
             ],
             [
@@ -247,6 +278,7 @@ class ProductTextTest extends TestCase
                 'text' => '',
                 'maxPoints' => 125,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => false
             ],
             [
@@ -254,6 +286,7 @@ class ProductTextTest extends TestCase
                 'text' => '',
                 'maxPoints' => 125,
                 'customerId' => null,
+                'isAjax' => true,
                 'result' => false
             ],
             [
@@ -261,6 +294,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 10,
                 'customerId' => null,
+                'isAjax' => true,
                 'result' => true
             ],
             [
@@ -268,6 +302,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 10,
                 'customerId' => null,
+                'isAjax' => true,
                 'result' => true
             ],
             [
@@ -275,6 +310,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 125,
                 'customerId' => null,
+                'isAjax' => true,
                 'result' => true
             ],
             [
@@ -282,6 +318,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 125,
                 'customerId' => null,
+                'isAjax' => true,
                 'result' => true
             ],
             [
@@ -289,6 +326,7 @@ class ProductTextTest extends TestCase
                 'text' => '',
                 'maxPoints' => 125,
                 'customerId' => null,
+                'isAjax' => true,
                 'result' => false
             ],
             [
@@ -296,6 +334,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 0,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => false
             ],
             [
@@ -303,6 +342,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 0,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => false
             ],
             [
@@ -310,6 +350,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 0,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => false
             ],
             [
@@ -317,6 +358,7 @@ class ProductTextTest extends TestCase
                 'text' => 'Sample %X points',
                 'maxPoints' => 0,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => false
             ],
             [
@@ -324,6 +366,7 @@ class ProductTextTest extends TestCase
                 'text' => '',
                 'maxPoints' => 0,
                 'customerId' => 10,
+                'isAjax' => true,
                 'result' => false
             ],
             [
@@ -331,6 +374,15 @@ class ProductTextTest extends TestCase
                 'text' => '',
                 'maxPoints' => 0,
                 'customerId' => null,
+                'isAjax' => true,
+                'result' => false
+            ],
+            [
+                'loggedIn' => true,
+                'text' => 'Sample %X points',
+                'maxPoints' => 10,
+                'customerId' => 10,
+                'isAjax' => false,
                 'result' => false
             ],
         ];

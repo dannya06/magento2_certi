@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Calculator;
 
 use Aheadworks\RewardPoints\Model\Calculator\RateCalculator;
@@ -93,7 +103,12 @@ class RateCalculatorTest extends \PHPUnit\Framework\TestCase
      */
     private $storeManagerMock;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -190,8 +205,12 @@ class RateCalculatorTest extends \PHPUnit\Framework\TestCase
         $methodSetCustomerId = $class->getMethod('setCustomerId');
         $methodSetCustomerId->setAccessible(true);
         $methodSetCustomerId->invoke($this->object, $expectedCustomerId);
-
-        $this->assertAttributeEquals($expectedCustomerId, 'customerId', $this->object);
+        $ref = new \ReflectionClass($this->object);
+        $prop = $ref->getProperty('customerId');
+        $prop->setAccessible(true);
+        $value = $prop->getValue($this->object);
+        $prop->setAccessible(false);
+        $this->assertTrue($value == $expectedCustomerId);
     }
 
     /**

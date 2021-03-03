@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Model\Comment;
 
 use Magento\Framework\UrlInterface;
@@ -11,7 +21,8 @@ use Aheadworks\StoreCredit\Model\Source\Transaction\EntityType as TransactionEnt
 use Magento\Framework\Phrase\Renderer\Placeholder;
 
 /**
- * Class Aheadworks\StoreCredit\Model\Comment\CommentDefault
+ * Class CommentDefault
+ * @package Aheadworks\StoreCredit\Model\Comment
  */
 class CommentDefault implements CommentInterface
 {
@@ -72,7 +83,7 @@ class CommentDefault implements CommentInterface
                 ? $this->label[$key]
                 : $label = $this->label['default'];
         }
-        return __($label, $arguments);
+        return (string)(__($label, $arguments));
     }
 
     /**
@@ -81,6 +92,7 @@ class CommentDefault implements CommentInterface
     public function renderComment($arguments = [], $key = null, $label = null, $renderingUrl = false, $frontend = false)
     {
         $labelArguments = [];
+        $label = __($label);
         foreach ($arguments as $entityType => $entity) {
             switch ($entityType) {
                 case TransactionEntityType::ORDER_ID:
@@ -109,14 +121,11 @@ class CommentDefault implements CommentInterface
                         );
                     }
                     break;
-                case TransactionEntityType::TRANSACTION_ID:
-                    $labelArguments['transaction_id'] = $entity['entity_id'];
-                    break;
             }
         }
 
         return $renderingUrl
-            ? $this->placeholder->render([$label], $labelArguments)
+            ? (string)$this->placeholder->render([$label], $labelArguments)
             : $this->getLabel($key, $labelArguments);
     }
 

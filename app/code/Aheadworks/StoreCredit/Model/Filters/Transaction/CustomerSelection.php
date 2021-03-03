@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Model\Filters\Transaction;
 
 use Aheadworks\StoreCredit\Api\Data\TransactionInterface;
@@ -48,7 +58,7 @@ class CustomerSelection implements \Zend_Filter_Interface
         ) {
             foreach ($value[$this->fieldName] as $customerSelection) {
                 $websiteId = $this->get($value, TransactionInterface::WEBSITE_ID);
-                if ($customerSelection['website_id'][0] != $websiteId) {
+                if ($customerSelection['website_id'] != $websiteId) {
                     continue;
                 }
                 $result[] = [

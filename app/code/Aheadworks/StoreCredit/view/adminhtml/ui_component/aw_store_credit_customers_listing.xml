@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
@@ -70,6 +63,7 @@
                         <item name="index" xsi:type="string">customer_id</item>
                         <item name="dataScope" xsi:type="string">customer_name</item>
                         <item name="label" xsi:type="string" translate="true">Customer Name</item>
+                        <item name="template" xsi:type="string">ui/grid/filters/field</item>
                     </item>
                 </argument>
             </filterInput>

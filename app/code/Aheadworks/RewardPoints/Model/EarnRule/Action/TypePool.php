@@ -1,10 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\EarnRule\Action;
+
+use Magento\Framework\Exception\ConfigurationMismatchException;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class TypePool
@@ -18,11 +31,19 @@ class TypePool
     private $types;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
+     * @param Logger $logger
      * @param array $types
      */
     public function __construct(
+        Logger $logger,
         $types = []
     ) {
+        $this->logger = $logger;
         $this->types = $types;
     }
 
@@ -60,7 +81,7 @@ class TypePool
     {
         $types = $this->getTypes();
         if (!isset($types[$code])) {
-            throw new \Exception(sprintf('Unknown action type: %s requested', $code));
+            throw new ConfigurationMismatchException(__('Unknown action type: %1 requested', $code));
         }
 
         return $types[$code];
@@ -78,7 +99,8 @@ class TypePool
         try {
             $types = $this->getTypes();
             $result = isset($types[$code]);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
+            $this->logger->critical($exception->getMessage());
         }
 
         return $result;

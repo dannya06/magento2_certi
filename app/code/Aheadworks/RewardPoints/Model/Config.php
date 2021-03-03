@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -23,10 +33,13 @@ class Config
         'aw_rewardpoints/calculation/points_earning_calculation';
     const XML_PATH_AW_REWARDPOINTS_IS_APPLYING_POINTS_TO_SHIPPING =
         'aw_rewardpoints/calculation/is_applying_points_to_shipping';
+    const XML_PATH_AW_REWARDPOINTS_LIFETIME_SALES_START_DATE = 'aw_rewardpoints/calculation/lifetime_sales_start_date';
     const XML_PATH_AW_REWARDPOINTS_IS_REFUND_AUTOMATICALLY = 'aw_rewardpoints/calculation/is_refund_automatically';
     const XML_PATH_AW_REWARDPOINTS_EXPIRE_REWARD_POINTS = 'aw_rewardpoints/calculation/expire_reward_points';
     const XML_PATH_AW_REWARDPOINTS_IS_REIMBURSE_REFUND_POINTS =
         'aw_rewardpoints/calculation/is_reimburse_refund_points';
+    const XML_PATH_AW_REWARDPOINTS_IS_ENABLE_APPLYING_POINTS_ON_SUBSCRIPTION =
+        'aw_rewardpoints/calculation/is_enable_applying_points_on_subscription';
     const XML_PATH_AW_REWARDPOINTS_IS_CANCEL_EARNED_POINTS_REFUND_ORDER =
         'aw_rewardpoints/calculation/is_cancel_earned_points_refund_order';
     const XML_PATH_AW_REWARDPOINTS_SHARE_COVERED = 'aw_rewardpoints/calculation/share_covered';
@@ -39,6 +52,10 @@ class Config
     const XML_PATH_AW_REWARDPOINTS_AWARDED_SHARE_MONTHLY_LIMIT = 'aw_rewardpoints/awarded/sharing_monthly_limit';
     const XML_PATH_AW_REWARDPOINTS_AWARDED_REVIEW_ISPRODUCT_OWNER = 'aw_rewardpoints/awarded/is_product_review_owner';
     const XML_PATH_AW_REWARDPOINTS_AWARDED_NEWSLETTER_SIGNUP = 'aw_rewardpoints/awarded/newsletter_signup';
+    const XML_PATH_AW_REWARDPOINTS_AWARDED_CUSTOMER_BIRTHDAY = 'aw_rewardpoints/awarded/customer_birthday';
+    const XML_PATH_AW_REWARDPOINTS_AWARDED_CUSTOMER_BIRTHDAY_IN_ADVANCE_DAYS =
+        'aw_rewardpoints/awarded/customer_birthday_in_advance_days';
+    const XML_PATH_AW_REWARDPOINTS_AWARDED_CUSTOMER_BIRTHDAY_LIMIT = 'aw_rewardpoints/awarded/customer_birthday_limit';
     const XML_PATH_AW_REWARDPOINTS_FRONTEND_IS_TOP_LINK = 'aw_rewardpoints/frontend/is_points_balance_top_link';
     const XML_PATH_AW_REWARDPOINTS_FRONTEND_IS_HIDE_IF_BALANCE_EMPTY =
         'aw_rewardpoints/frontend/is_hide_if_rewardpoints_balance_empty';
@@ -128,6 +145,16 @@ class Config
     }
 
     /**
+     * Retrieve config value for lifetime sales start date
+     *
+     * @return string
+     */
+    public function getLifetimeSalesStartDate()
+    {
+        return (string)$this->scopeConfig->getValue(self::XML_PATH_AW_REWARDPOINTS_LIFETIME_SALES_START_DATE);
+    }
+
+    /**
      * Retrieve config value for Refund to Reward Points Automatically
      *
      * @return boolean
@@ -194,6 +221,21 @@ class Config
     {
         return (int) $this->scopeConfig->getValue(
             self::XML_PATH_AW_REWARDPOINTS_ONCE_MIN_BALANCE,
+            ScopeInterface::SCOPE_WEBSITE,
+            $websiteId
+        );
+    }
+
+    /**
+     * Retrieve config value for Enable applying points on subscription products
+     *
+     * @param  int|null $websiteId
+     * @return boolean
+     */
+    public function isEnableApplyingPointsOnSubscription($websiteId = null)
+    {
+        return (boolean) $this->scopeConfig->isSetFlag(
+            self::XML_PATH_AW_REWARDPOINTS_IS_ENABLE_APPLYING_POINTS_ON_SUBSCRIPTION,
             ScopeInterface::SCOPE_WEBSITE,
             $websiteId
         );
@@ -319,6 +361,49 @@ class Config
         return (int) $this->scopeConfig->getValue(
             self::XML_PATH_AW_REWARDPOINTS_AWARDED_NEWSLETTER_SIGNUP,
             ScopeInterface::SCOPE_WEBSITE
+        );
+    }
+
+    /**
+     * Retrieve config value for awarded points for customer birthday
+     *
+     * @param int|null $websiteId
+     * @return int
+     */
+    public function getAwardedPointsForCustomerBirthday($websiteId = null)
+    {
+        return (int) $this->scopeConfig->getValue(
+            self::XML_PATH_AW_REWARDPOINTS_AWARDED_CUSTOMER_BIRTHDAY,
+            ScopeInterface::SCOPE_WEBSITE,
+            $websiteId
+        );
+    }
+
+    /**
+     * Retrieve config value for customer birthday in advance days
+     *
+     * @return int
+     */
+    public function getCustomerBirthdayInAdvanceDays()
+    {
+        return (int) $this->scopeConfig->getValue(
+            self::XML_PATH_AW_REWARDPOINTS_AWARDED_CUSTOMER_BIRTHDAY_IN_ADVANCE_DAYS,
+            ScopeInterface::SCOPE_WEBSITE
+        );
+    }
+
+    /**
+     * Retrieve config value for customer birthday limit
+     *
+     * @param int|null $websiteId
+     * @return string
+     */
+    public function getCustomerBirthdayLimit($websiteId = null)
+    {
+        return (string) $this->scopeConfig->getValue(
+            self::XML_PATH_AW_REWARDPOINTS_AWARDED_CUSTOMER_BIRTHDAY_LIMIT,
+            ScopeInterface::SCOPE_WEBSITE,
+            $websiteId
         );
     }
 

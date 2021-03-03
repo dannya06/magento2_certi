@@ -1,10 +1,22 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver;
+
+use Magento\Framework\Exception\ConfigurationMismatchException;
 
 /**
  * Class ItemProcessorPool
@@ -13,7 +25,7 @@ namespace Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver;
 class ItemProcessorPool
 {
     /**
-     * Default processor code
+     * Array key for default processor
      */
     const DEFAULT_PROCESSOR_CODE = 'default';
 
@@ -55,7 +67,9 @@ class ItemProcessorPool
         }
         $processor = $this->processors[$code];
         if (!$processor instanceof ItemProcessorInterface) {
-            throw new \Exception('Item processor must implements ItemProcessorInterface');
+            throw new ConfigurationMismatchException(
+                __('Item processor must implements %1', ItemProcessorInterface::class)
+            );
         }
 
         return $processor;

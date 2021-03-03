@@ -1,13 +1,26 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Test\Unit\Model\Service;
 
 use Aheadworks\StoreCredit\Model\Service\StoreCreditCartService;
 use Aheadworks\StoreCredit\Api\CustomerStoreCreditManagementInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Api\Data\AddressInterface;
@@ -38,7 +51,12 @@ class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
      */
     private $quoteMock;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -123,7 +141,7 @@ class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteMock->expects($this->never())
             ->method('getAwUseStoreCredit')
             ->willReturn($awUseStoreCredit);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->get($cartId);
     }
 
@@ -198,7 +216,7 @@ class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteMock->expects($this->once())
             ->method('getItemsCount')
             ->willReturn(0);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->set($cartId);
     }
 
@@ -223,7 +241,7 @@ class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteMock->expects($this->once())
             ->method('getCustomerId')
             ->willReturn(null);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->set($cartId);
     }
 
@@ -254,7 +272,7 @@ class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getCustomerStoreCreditBalance')
             ->with($customerId)
             ->willReturn(0);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->set($cartId);
     }
 
@@ -309,8 +327,8 @@ class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteRepositoryMock->expects($this->once())
             ->method('save')
             ->with($this->quoteMock)
-            ->willThrowException(new \Exception('Oh oh oh!!!'));
-
+            ->willThrowException(new \Exception('Could not apply Store Credit'));
+        $this->expectException(CouldNotSaveException::class);
         $this->object->set($cartId);
     }
 
@@ -376,7 +394,7 @@ class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteMock->expects($this->once())
             ->method('getItemsCount')
             ->willReturn(0);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->remove($cartId);
     }
 
@@ -422,8 +440,8 @@ class StoreCreditCartServiceTest extends \PHPUnit\Framework\TestCase
         $this->quoteRepositoryMock->expects($this->once())
             ->method('save')
             ->with($this->quoteMock)
-            ->willThrowException(new \Exception('Oh oh oh!!!'));
-
+            ->willThrowException(new \Exception('Could not remove Store Credit'));
+        $this->expectException(CouldNotDeleteException::class);
         $this->object->remove($cartId);
     }
 }

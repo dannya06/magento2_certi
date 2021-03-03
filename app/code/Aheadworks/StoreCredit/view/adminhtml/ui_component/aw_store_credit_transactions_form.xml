@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
@@ -226,6 +219,9 @@
                         <item name="label" xsi:type="string"/>
                         <item name="sortOrder" xsi:type="number">10</item>
                         <item name="additionalClasses" xsi:type="string">admin__field-wide</item>
+                        <item name="dndConfig" xsi:type="array">
+                            <item name="enabled" xsi:type="boolean">false</item>
+                        </item>
                         <item name="component" xsi:type="string">Magento_Ui/js/dynamic-rows/dynamic-rows-grid</item>
                         <item name="template" xsi:type="string">Aheadworks_StoreCredit/ui/dynamic-rows/templates/grid</item>
                         <item name="columnsHeader" xsi:type="boolean">true</item>
@@ -271,6 +267,7 @@
                                 <item name="label" xsi:type="string">Customer Id</item>
                                 <item name="showFallbackReset" xsi:type="boolean">false</item>
                                 <item name="elementTmpl" xsi:type="string">ui/dynamic-rows/cells/text</item>
+                                <item name="sortOrder" xsi:type="string">10</item>
                             </item>
                         </argument>
                     </field>
@@ -284,6 +281,7 @@
                                 <item name="label" xsi:type="string">Customer Name</item>
                                 <item name="showFallbackReset" xsi:type="boolean">false</item>
                                 <item name="elementTmpl" xsi:type="string">ui/dynamic-rows/cells/text</item>
+                                <item name="sortOrder" xsi:type="string">20</item>
                             </item>
                         </argument>
                     </field>
@@ -297,6 +295,7 @@
                                 <item name="label" xsi:type="string">Customer Email</item>
                                 <item name="showFallbackReset" xsi:type="boolean">false</item>
                                 <item name="elementTmpl" xsi:type="string">ui/dynamic-rows/cells/text</item>
+                                <item name="sortOrder" xsi:type="string">30</item>
                             </item>
                         </argument>
                     </field>
@@ -311,6 +310,7 @@
                                 <item name="label" xsi:type="string">Web Site</item>
                                 <item name="showFallbackReset" xsi:type="boolean">false</item>
                                 <item name="template" xsi:type="string">Aheadworks_StoreCredit/ui/dynamic-rows/templates/cells/select-text</item>
+                                <item name="sortOrder" xsi:type="string">40</item>
                             </item>
                         </argument>
                     </field>

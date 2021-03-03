@@ -1,14 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\EarnRule\Applier;
 
 use Aheadworks\RewardPoints\Api\Data\ActionInterface;
 use Aheadworks\RewardPoints\Model\EarnRule\Action\Type as ActionType;
 use Aheadworks\RewardPoints\Model\EarnRule\Action\TypePool as ActionTypePool;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class ActionApplier
@@ -22,12 +33,20 @@ class ActionApplier
     private $actionTypePool;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param ActionTypePool $actionTypePool
+     * @param Logger $logger
      */
     public function __construct(
-        ActionTypePool $actionTypePool
+        ActionTypePool $actionTypePool,
+        Logger $logger
     ) {
         $this->actionTypePool = $actionTypePool;
+        $this->logger = $logger;
     }
 
     /**
@@ -46,7 +65,8 @@ class ActionApplier
             $processor = $actionType->getProcessor();
 
             $points = $processor->process($points, $qty, $action->getAttributes());
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
+            $this->logger->critical($exception->getMessage());
         }
 
         return $points;

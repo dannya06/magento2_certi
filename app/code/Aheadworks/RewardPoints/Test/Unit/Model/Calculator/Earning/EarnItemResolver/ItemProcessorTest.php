@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Calculator\Earning\EarnItemResolver;
 
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemInterface;
@@ -11,6 +21,7 @@ use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemInterf
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessor;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessorInterface;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessorPool;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
@@ -34,7 +45,7 @@ class ItemProcessorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -120,9 +131,6 @@ class ItemProcessorTest extends TestCase
 
     /**
      * Test getEarnItem method if an exception occurs
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Item processor must implements ItemProcessorInterface
      */
     public function testGetEarnItemException()
     {
@@ -131,7 +139,13 @@ class ItemProcessorTest extends TestCase
         $this->processorPoolMock->expects($this->once())
             ->method('getProcessorByCode')
             ->with('simple')
-            ->willThrowException(new \Exception('Item processor must implements ItemProcessorInterface'));
+            ->willThrowException(
+                new ConfigurationMismatchException(
+                    __('Item processor must implements %1', ItemProcessorInterface::class)
+                )
+            );
+
+        $this->expectException(ConfigurationMismatchException::class);
 
          $this->processor->getEarnItem($items);
     }

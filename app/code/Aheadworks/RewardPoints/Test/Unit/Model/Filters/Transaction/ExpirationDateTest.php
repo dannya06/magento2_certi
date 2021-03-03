@@ -1,13 +1,24 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Filters\Transaction;
 
 use Aheadworks\RewardPoints\Model\Filters\Transaction\ExpirationDate;
 use Aheadworks\RewardPoints\Model\DateTime;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
@@ -30,7 +41,12 @@ class ExpirationDateTest extends \PHPUnit\Framework\TestCase
      */
     private $dateTimeMock;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -83,9 +99,6 @@ class ExpirationDateTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test filter method input string throw exception
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Invalid input date format test_string
      */
     public function testFilterMethodInputStringThrowException()
     {
@@ -94,7 +107,13 @@ class ExpirationDateTest extends \PHPUnit\Framework\TestCase
         $this->dateTimeMock->expects($this->once())
             ->method('getDate')
             ->with($date)
-            ->willThrowException(new \Exception('Invalid input date format test_string'));
+            ->willThrowException(
+                new LocalizedException(
+                    __('Invalid input date format %1', $date)
+                )
+            );
+
+        $this->expectException(LocalizedException::class);
 
         $this->object->filter($date);
     }

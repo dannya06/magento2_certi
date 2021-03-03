@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Indexer;
 
 use Aheadworks\RewardPoints\Model\Indexer\EarnRule as EarnRuleIndexer;
@@ -45,7 +55,7 @@ class EarnRuleTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -81,7 +91,7 @@ class EarnRuleTest extends TestCase
     /**
      * Test execute method if an empty row ids specified
      *
-     * @expectedException \Magento\Framework\Exception\InputException
+     * @expectedException \Exception
      * @expectedExceptionMessage Bad value was supplied.
      */
     public function testExecuteEmpty()
@@ -91,8 +101,9 @@ class EarnRuleTest extends TestCase
         $this->ruleIndexerRowsMock->expects($this->once())
             ->method('execute')
             ->with($rowIds)
-            ->willThrowException(new InputException(__('Bad value was supplied.')));
+            ->willThrowException(new \Exception('Bad value was supplied.'));
 
+        $this->expectException(\Exception::class);
         $this->indexer->execute($rowIds);
     }
 
@@ -111,7 +122,8 @@ class EarnRuleTest extends TestCase
             ->with($rowIds)
             ->willThrowException(new LocalizedException(__('Error!')));
 
-        $this->indexer->execute($rowIds);
+$this->expectException(LocalizedException::class);
+$this->indexer->execute($rowIds);
     }
 
     /**
@@ -137,7 +149,7 @@ class EarnRuleTest extends TestCase
         $this->ruleIndexerFullMock->expects($this->once())
             ->method('execute')
             ->willThrowException(new LocalizedException(__('Error!')));
-
+        $this->expectException(LocalizedException::class);
         $this->indexer->executeFull();
     }
 
@@ -170,7 +182,7 @@ class EarnRuleTest extends TestCase
             ->method('execute')
             ->with($rowIds)
             ->willThrowException(new InputException(__('Bad value was supplied.')));
-
+        $this->expectException(InputException::class);
         $this->indexer->executeList($rowIds);
     }
 
@@ -188,7 +200,7 @@ class EarnRuleTest extends TestCase
             ->method('execute')
             ->with($rowIds)
             ->willThrowException(new LocalizedException(__('Error!')));
-
+        $this->expectException(LocalizedException::class);
         $this->indexer->executeList($rowIds);
     }
 
@@ -221,7 +233,7 @@ class EarnRuleTest extends TestCase
             ->method('execute')
             ->with($rowId)
             ->willThrowException(new InputException(__('We can\'t rebuild the index for an undefined entity.')));
-
+        $this->expectException(InputException::class);
         $this->indexer->executeRow($rowId);
     }
 
@@ -239,7 +251,7 @@ class EarnRuleTest extends TestCase
             ->method('execute')
             ->with($rowId)
             ->willThrowException(new LocalizedException(__('Error!')));
-
+        $this->expectException(LocalizedException::class);
         $this->indexer->executeRow($rowId);
     }
 }

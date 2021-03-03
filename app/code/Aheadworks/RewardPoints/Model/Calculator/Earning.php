@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\Calculator;
 
 use Aheadworks\RewardPoints\Model\Calculator\Earning\Calculator;
@@ -96,14 +106,16 @@ class Earning
         if (!$websiteId) {
             return $this->calculator->getEmptyResult();
         }
-        if (!$customerId) {
-            $customerId = $this->config->getDefaultCustomerGroupIdForGuest();
-        }
         $beforeTax = $this->config->getPointsEarningCalculation($websiteId) == PointsEarning::BEFORE_TAX;
         try {
             /** @var EarnItem[] $items */
             $items = $this->earnItemsResolver->getItemsByQuote($quote, $beforeTax);
-            $result = $this->calculator->calculate($items, $customerId, $websiteId);
+            if (!$customerId) {
+                $customerGroupId = $this->config->getDefaultCustomerGroupIdForGuest();
+                $result = $this->calculator->calculateByCustomerGroup($items, $customerGroupId, $websiteId);
+            } else {
+                $result = $this->calculator->calculate($items, $customerId, $websiteId);
+            }
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage());
             $result = $this->calculator->getEmptyResult();

@@ -1,15 +1,26 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\EarnRule;
 
 use Aheadworks\RewardPoints\Api\Data\EarnRuleInterface;
 use Aheadworks\RewardPoints\Api\EarnRuleRepositoryInterface;
 use Aheadworks\RewardPoints\Model\Config;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class ProductPromoTextResolver
@@ -28,15 +39,23 @@ class ProductPromoTextResolver
     private $earnRuleRepository;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param Config $config
      * @param EarnRuleRepositoryInterface $earnRuleRepository
+     * @param Logger $logger
      */
     public function __construct(
         Config $config,
-        EarnRuleRepositoryInterface $earnRuleRepository
+        EarnRuleRepositoryInterface $earnRuleRepository,
+        Logger $logger
     ) {
         $this->config = $config;
         $this->earnRuleRepository = $earnRuleRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -57,7 +76,8 @@ class ProductPromoTextResolver
                 /** @var EarnRuleInterface $rule */
                 $rule = $this->earnRuleRepository->get($ruleId, $storeId);
                 $promoText = $rule->getCurrentLabels()->getProductPromoText();
-            } catch (NoSuchEntityException $e) {
+            } catch (NoSuchEntityException $exception) {
+                $this->logger->critical($exception->getMessage());
             }
         }
 

@@ -1,13 +1,24 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Repository;
 
 use Aheadworks\RewardPoints\Model\Repository\CollectionProcessor;
 use Aheadworks\RewardPoints\Model\Repository\CollectionProcessorInterface;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Framework\Api\SearchCriteria;
 use Magento\Framework\DataObject;
@@ -29,7 +40,7 @@ class CollectionProcessorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -84,9 +95,6 @@ class CollectionProcessorTest extends TestCase
 
     /**
      * Test process method if not valid processor
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Collection processor must implement CollectionProcessorInterface!
      */
     public function testProcessNotValidProcessor()
     {
@@ -96,6 +104,8 @@ class CollectionProcessorTest extends TestCase
         $processorMock = $this->createMock(DataObject::class);
         $processors = [$processorMock];
         $this->setProperty('processors', $processors);
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->assertNull($this->processor->process($searchCriteriaMock, $collectionMock));
     }

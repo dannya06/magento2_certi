@@ -1,15 +1,26 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Hydrator;
 
 use Aheadworks\RewardPoints\Api\Data\EarnRuleInterface;
 use Aheadworks\RewardPoints\Model\EarnRule\Condition\Converter as ConditionConverter;
 use Aheadworks\RewardPoints\Api\Data\ConditionInterface;
 use Magento\Framework\EntityManager\HydratorInterface;
+use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Class Condition
@@ -23,11 +34,19 @@ class Condition implements HydratorInterface
     private $conditionConverter;
 
     /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
      * @param ConditionConverter $conditionConverter
+     * @param SerializerInterface $serializer
      */
     public function __construct(
-        ConditionConverter $conditionConverter
+        ConditionConverter $conditionConverter,
+        SerializerInterface $serializer
     ) {
+        $this->serializer = $serializer;
         $this->conditionConverter = $conditionConverter;
     }
 
@@ -55,7 +74,7 @@ class Condition implements HydratorInterface
     {
         $conditionData = $this->conditionConverter->dataModelToArray($condition);
 
-        return serialize($conditionData);
+        return $this->serializer->serialize($conditionData);
     }
 
     /**
@@ -79,7 +98,7 @@ class Condition implements HydratorInterface
      */
     private function getConditionUnserialized($serializedCondition)
     {
-        $conditionData = unserialize($serializedCondition);
+        $conditionData = $this->serializer->unserialize($serializedCondition);
 
         return $this->conditionConverter->arrayToDataModel($conditionData);
     }

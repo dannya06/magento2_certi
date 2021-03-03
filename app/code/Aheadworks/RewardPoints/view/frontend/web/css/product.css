@@ -13,14 +13,3 @@
 .product-reward-points-share a.reward-points-share-google-plus {
 	background: url("../images/google-plus.png") center center no-repeat;
 }
-.product-reward-points-share a.reward-points-share-whatsapp {
-	background: url("../images/whatsapp.png") center center no-repeat;
-	background-color: #25D366;
-	background-size: 20px;
-}
-.product-reward-points-share a.reward-points-share-pinterest {
-	background: url("../images/pinterest.png") center center no-repeat;
-	background-color: #BD081C;
-	background-size: 20px;
-}
-

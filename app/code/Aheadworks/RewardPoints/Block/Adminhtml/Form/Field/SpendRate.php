@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Block\Adminhtml\Form\Field;
 
 use Aheadworks\RewardPoints\Model\Source\Customer\Group as CustomerSourceGroup;
@@ -107,21 +117,22 @@ class SpendRate extends \Magento\Config\Block\System\Config\Form\Field\FieldArra
     {
         switch ($columnName) {
             case 'website_id':
-                return $this->createHtmlSelectElement(
+                $cellHtml = $this->createHtmlSelectElement(
                     $columnName,
                     $this->systemStore->getWebsiteValuesForForm()
                 );
                 break;
             case 'customer_group_id':
-                return $this->createHtmlSelectElement(
+                $cellHtml = $this->createHtmlSelectElement(
                     $columnName,
                     $this->customerGroup->toOptionArray()
                 );
                 break;
             default:
-                return parent::renderCellTemplate($columnName);
+                $cellHtml = parent::renderCellTemplate($columnName);
                 break;
         }
+        return $cellHtml;
     }
 
     /**

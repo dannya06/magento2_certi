@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Controller\Adminhtml\Earning\Rules;
 
 use Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\Index;
@@ -40,7 +50,7 @@ class IndexTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -61,17 +71,17 @@ class IndexTest extends TestCase
      */
     public function testExecute()
     {
-        $titleMock = $this->createPartialMock(Title::class, ['prepend']);
+        $titleMock = $this->createMock(Title::class);
 
-        $pageConfigMock = $this->createPartialMock(Config::class, ['getTitle']);
+        $pageConfigMock = $this->createMock(Config::class);
         $pageConfigMock->expects($this->once())
             ->method('getTitle')
             ->willReturn($titleMock);
 
-        $resultPageMock = $this->createPartialMock(
-            Page::class,
-            ['setActiveMenu', 'getConfig', 'addBreadcrumb']
-        );
+        $resultPageMock = $this->getMockBuilder(Page::class)
+                               ->disableOriginalCOnstructor()
+                               ->setMethods(['setActiveMenu', 'getConfig', 'addBreadcrumb'])
+                               ->getMock();
         $resultPageMock->expects($this->once())
             ->method('setActiveMenu')
             ->willReturnSelf();

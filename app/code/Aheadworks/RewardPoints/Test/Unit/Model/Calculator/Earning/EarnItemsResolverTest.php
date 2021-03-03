@@ -1,20 +1,33 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Calculator\Earning;
 
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemInterface;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemInterface;
+use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessorInterface;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor;
+use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ProductProcessor\TypeProcessorInterface;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\CreditmemoProcessor;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\InvoiceProcessor;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemsResolver;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemProcessor;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor\QuoteProcessor;
 use Magento\Catalog\Model\Product;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 use Magento\Quote\Model\Quote;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\InvoiceInterface;
@@ -61,7 +74,7 @@ class EarnItemsResolverTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -121,9 +134,6 @@ class EarnItemsResolverTest extends TestCase
 
     /**
      * Test getItemsByQuote method if an exception occurs
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Item processor must implements ItemProcessorInterface
      */
     public function testGetItemsByQuoteException()
     {
@@ -142,7 +152,13 @@ class EarnItemsResolverTest extends TestCase
         $this->itemProcessorMock->expects($this->once())
             ->method('getEarnItem')
             ->with($groupSimple, $beforeTax)
-            ->willThrowException(new \Exception('Item processor must implements ItemProcessorInterface'));
+            ->willThrowException(
+                new ConfigurationMismatchException(
+                    __('Item processor must implements %1', ItemProcessorInterface::class)
+                )
+            );
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->resolver->getItemsByQuote($quoteMock, $beforeTax);
     }
@@ -185,9 +201,6 @@ class EarnItemsResolverTest extends TestCase
 
     /**
      * Test getItemsByInvoice method if an exception occurs
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Item processor must implements ItemProcessorInterface
      */
     public function testGetItemsByInvoiceException()
     {
@@ -206,7 +219,13 @@ class EarnItemsResolverTest extends TestCase
         $this->itemProcessorMock->expects($this->once())
             ->method('getEarnItem')
             ->with($groupSimple, $beforeTax)
-            ->willThrowException(new \Exception('Item processor must implements ItemProcessorInterface'));
+            ->willThrowException(
+                new ConfigurationMismatchException(
+                    __('Item processor must implements %1', ItemProcessorInterface::class)
+                )
+            );
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->resolver->getItemsByInvoice($invoiceMock, $beforeTax);
     }
@@ -249,9 +268,6 @@ class EarnItemsResolverTest extends TestCase
 
     /**
      * Test getItemsByCreditmemo method if an exception occurs
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Item processor must implements ItemProcessorInterface
      */
     public function testGetItemsByCreditmemoException()
     {
@@ -270,7 +286,13 @@ class EarnItemsResolverTest extends TestCase
         $this->itemProcessorMock->expects($this->once())
             ->method('getEarnItem')
             ->with($groupSimple, $beforeTax)
-            ->willThrowException(new \Exception('Item processor must implements ItemProcessorInterface'));
+            ->willThrowException(
+                new ConfigurationMismatchException(
+                    __('Item processor must implements %1', ItemProcessorInterface::class)
+                )
+            );
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->resolver->getItemsByCreditmemo($creditmemoMock, $beforeTax);
     }
@@ -297,10 +319,6 @@ class EarnItemsResolverTest extends TestCase
 
     /**
      * Test getItemsByProduct method if an exception occurs
-     *
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Type processor must implements TypeProcessorInterface
      */
     public function testGetItemsByProductException()
     {
@@ -310,7 +328,13 @@ class EarnItemsResolverTest extends TestCase
         $this->productProcessorMock->expects($this->once())
             ->method('getEarnItems')
             ->with($productMock, $beforeTax)
-            ->willThrowException(new \Exception('Type processor must implements TypeProcessorInterface'));
+            ->willThrowException(
+                new ConfigurationMismatchException(
+                    __('Type processor must implements %1', TypeProcessorInterface::class)
+                )
+            );
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->resolver->getItemsByProduct($productMock, $beforeTax);
     }

@@ -1,15 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\ResourceModel;
 
 use Aheadworks\RewardPoints\Model\EarnRate as EarnRateModel;
 use Magento\Customer\Api\Data\GroupInterface;
-use Magento\Framework\DB\Adapter\DuplicateException;
-use Magento\Framework\Exception\AlreadyExistsException;
 
 /**
  * Class Aheadworks\RewardPoints\Model\ResourceModel\EarnRate
@@ -44,21 +52,6 @@ class EarnRate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     }
                 }
                 $this->transactionManager->commit();
-            } catch (DuplicateException $e) {
-                $this->transactionManager->rollBack();
-                throw new AlreadyExistsException(
-                    __('"Customer Lifetime Sales" values can\'t be the same for one group'),
-                    $e
-                );
-            } catch (\Zend_Db_Statement_Exception $e) {
-                $this->transactionManager->rollBack();
-                if ($e->getCode() != 23000) {
-                    throw $e;
-                }
-                throw new AlreadyExistsException(
-                    __('"Customer Lifetime Sales" values can\'t be the same for one group'),
-                    $e
-                );
             } catch (\Exception $e) {
                 $this->transactionManager->rollBack();
                 throw $e;

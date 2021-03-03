@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Calculator;
 
 use Aheadworks\RewardPoints\Model\Calculator\Earning as EarningCalculator;
@@ -70,7 +80,7 @@ class EarningTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -177,7 +187,7 @@ class EarningTest extends TestCase
     public function testCalculationByQuoteNoCustomerId($websiteSpecified, $beforeTax)
     {
         $quoteMock = $this->createMock(Quote::class);
-        $defaultCustomerId = 10;
+        $defaultCustomerGroupId = 5;
         $websiteId = 3;
         $pointsEarningCalculation = $beforeTax ? PointsEarning::BEFORE_TAX : PointsEarning::AFTER_TAX;
         $earnItems = [$this->createMock(EarnItemInterface::class)];
@@ -193,7 +203,7 @@ class EarningTest extends TestCase
             ->willReturn($pointsEarningCalculation);
         $this->configMock->expects($this->once())
             ->method('getDefaultCustomerGroupIdForGuest')
-            ->willReturn($defaultCustomerId);
+            ->willReturn($defaultCustomerGroupId);
 
         $this->earnItemsResolverMock->expects($this->once())
             ->method('getItemsByQuote')
@@ -201,8 +211,8 @@ class EarningTest extends TestCase
             ->willReturn($earnItems);
 
         $this->calculatorMock->expects($this->once())
-            ->method('calculate')
-            ->with($earnItems, $defaultCustomerId, $websiteId)
+            ->method('calculateByCustomerGroup')
+            ->with($earnItems, $defaultCustomerGroupId, $websiteId)
             ->willReturn($resultMock);
 
         if (!$websiteSpecified) {

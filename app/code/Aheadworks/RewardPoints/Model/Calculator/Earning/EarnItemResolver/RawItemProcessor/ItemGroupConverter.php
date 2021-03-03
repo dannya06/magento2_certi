@@ -1,14 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\RawItemProcessor;
 
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemInterface;
 use Aheadworks\RewardPoints\Model\Calculator\Earning\EarnItemResolver\ItemInterfaceFactory;
 use Magento\Framework\DataObject\Copy as ObjectCopyService;
+use Magento\Sales\Model\Order\Invoice\Item as InvoiceItem;
 
 /**
  * Class ItemGroupConverter
@@ -86,10 +97,10 @@ class ItemGroupConverter implements ItemGroupConverterInterface
     /**
      * Get item from object item
      *
-     * @param $objectItem
+     * @param InvoiceItem $objectItem
      * @return ItemInterface
      */
-    private function getItem($objectItem)
+    public function getItem($objectItem)
     {
         $item = $this->itemFactory->create();
         $this->objectCopyService->copyFieldsetToTarget(

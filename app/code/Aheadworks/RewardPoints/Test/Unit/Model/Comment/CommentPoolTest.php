@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Comment;
 
 use Aheadworks\RewardPoints\Model\Comment\CommentPool;
@@ -43,7 +53,12 @@ class CommentPoolTest extends \PHPUnit\Framework\TestCase
      */
     private $comments = [];
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -80,6 +95,7 @@ class CommentPoolTest extends \PHPUnit\Framework\TestCase
     public function testConstructLogicException()
     {
         $this->data['comments'] = [];
+        $this->expectException(\LogicException::class);
         $this->objectManager->getObject(CommentPool::class, $this->data);
     }
 
@@ -89,9 +105,20 @@ class CommentPoolTest extends \PHPUnit\Framework\TestCase
     public function testConstruct()
     {
         $this->initCommentPool();
+        $ref = new \ReflectionClass($this->object);
 
-        $this->assertAttributeEquals($this->comments, 'comments', $this->object);
-        $this->assertAttributeEquals($this->objectManagerMock, 'objectManager', $this->object);
+        $prop = $ref->getProperty('objectManager');
+        $prop->setAccessible(true);
+        $value = $prop->getValue($this->object);
+        $prop->setAccessible(false);
+
+        $propComments = $ref->getProperty('comments');
+        $propComments->setAccessible(true);
+        $valueComments = $propComments->getValue($this->object);
+        $propComments->setAccessible(false);
+
+        $this->assertTrue($this->comments == $valueComments);
+        $this->assertTrue($this->objectManagerMock == $value);
     }
 
     /**

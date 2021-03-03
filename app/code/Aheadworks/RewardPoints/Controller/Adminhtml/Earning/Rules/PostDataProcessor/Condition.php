@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Controller\Adminhtml\Earning\Rules\PostDataProcessor;
 
 use Aheadworks\RewardPoints\Api\Data\ConditionInterface;
@@ -81,6 +91,7 @@ class Condition implements ProcessorInterface
      * @param array $allowedKeys
      * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * phpcs:disable Generic.Metrics.NestingLevel
      */
     private function convertFlatToRecursive(array $data, $allowedKeys = [])
     {
@@ -91,7 +102,8 @@ class Condition implements ProcessorInterface
                     $path = explode('--', $id);
                     $node = & $result;
 
-                    for ($i = 0, $l = sizeof($path); $i < $l; $i++) {
+                    $pathCount = count($path);
+                    for ($i = 0, $l = $pathCount; $i < $l; $i++) {
                         if (!isset($node[$key][$path[$i]])) {
                             $node[$key][$path[$i]] = [];
                         }

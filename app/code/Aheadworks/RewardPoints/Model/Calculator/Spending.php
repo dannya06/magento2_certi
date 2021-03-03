@@ -1,13 +1,24 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\Calculator;
 
 use Aheadworks\RewardPoints\Model\Config;
 use Aheadworks\RewardPoints\Model\CategoryAllowed;
+use Magento\Quote\Api\Data\CartItemInterface;
 use Magento\Quote\Model\Quote\Item\AbstractItem;
 use Magento\Quote\Api\Data\AddressInterface;
 use Aheadworks\RewardPoints\Model\Validator\Pool as ValidatorPool;
@@ -209,9 +220,11 @@ class Spending
      * Check on elements we can apply the points
      *
      * @param AbstractItem $item
+     * @param int|null $websiteId
      * @return bool
+     * @throws \Zend_Validate_Exception
      */
-    public function canApplyRewardPoints(AbstractItem $item)
+    public function canApplyRewardPoints(AbstractItem $item, $websiteId = null)
     {
         $result = true;
         $categoryIds = $item->getProduct()->getCategoryIds();
@@ -227,13 +240,17 @@ class Spending
             }
         }
 
+        if ($this->isSubscription($item) && !$this->config->isEnableApplyingPointsOnSubscription($websiteId)) {
+            return false;
+        }
+
         return $result;
     }
 
     /**
      * Retrieve calculate Reward Points amount for applying
      *
-     * @param \Magento\Quote\Api\Data\CartItemInterface[] $items
+     * @param CartItemInterface[] $items
      * @param AddressInterface|Address $address
      * @param int $customerId
      * @param int $websiteId
@@ -256,16 +273,7 @@ class Spending
             }
 
             if ($this->canApplyRewardPoints($item)) {
-                // For dynamic bundle
-                if ($item->getHasChildren() && $item->isChildrenCalculated()) {
-                    foreach ($item->getChildren() as $child) {
-                        $maxTotal = $maxTotal + $this->getItemBasePrice($child) * $child->getTotalQty()
-                            - $child->getBaseDiscountAmount();
-                    }
-                } else {
-                    $maxTotal = $maxTotal + $this->getItemBasePrice($item) * $item->getTotalQty()
-                        - $item->getBaseDiscountAmount();
-                }
+                $maxTotal += $this->getItemTotal($item, $this->getItemBasePrice($item));
             }
             $validItemsCount++;
         }
@@ -273,7 +281,7 @@ class Spending
         $baseItemsTotal = $maxTotal;
         $baseShippingAmount = 0;
         if ($this->config->isApplyingPointsToShipping($websiteId)) {
-            if ($address->getBaseShippingAmountForDiscount() !== null) {
+            if ($address->getBaseShippingAmountForDiscount() > 0.0001) {
                 $baseShippingAmount = $address->getBaseShippingAmountForDiscount();
             } elseif ($this->config->isShippingPriceIncludesTax($address->getQuote()->getStore()->getId())) {
                 $baseShippingAmount = $address->getBaseShippingInclTax();
@@ -283,8 +291,7 @@ class Spending
             $maxTotal = $maxTotal + $baseShippingAmount - $address->getBaseShippingDiscountAmount();
         }
 
-        if ($shareCoveredValue = $this->config->getShareCoveredValue($websiteId)) {
-            $shareCoveredValue = max(0, intval($shareCoveredValue));
+        if ($shareCoveredValue = $this->getCleanShareCoveredValue($websiteId)) {
             $maxTotal = $maxTotal * $shareCoveredValue / 100;
         }
 
@@ -316,6 +323,72 @@ class Spending
     }
 
     /**
+     * Retrieve item total
+     *
+     * @param CartItemInterface $item
+     * @param float $itemBasePrice
+     * @return float|int
+     */
+    public function getItemTotal($item, $itemBasePrice)
+    {
+        $total = 0;
+        // For dynamic bundle
+        if ($item->getHasChildren() && $item->isChildrenCalculated()) {
+            foreach ($item->getChildren() as $child) {
+                $total += $this->getItemBasePrice($child) * $child->getTotalQty() - $child->getBaseDiscountAmount();
+            }
+        } else {
+            $total = $itemBasePrice * $item->getTotalQty() - $item->getBaseDiscountAmount();
+        }
+
+        return $total;
+    }
+
+    /**
+     * Retrieve item price with discount
+     *
+     * @param AbstractItem $item
+     * @param float $itemPrice
+     * @return float|int
+     */
+    public function getItemPriceWithDiscount($item, $itemPrice)
+    {
+        $qty = $item->getTotalQty();
+        $updatedItemPrice = $itemPrice * $qty - $item->getDiscountAmount();
+        // Calculate item price with discount for bundle dynamic product
+        if ($item->getHasChildren() && $item->isChildrenCalculated()) {
+            $updatedItemPrice = $itemPrice * $qty;
+            foreach ($item->getChildren() as $child) {
+                $updatedItemPrice = $updatedItemPrice - $child->getDiscountAmount();
+            }
+        }
+
+        return $updatedItemPrice;
+    }
+
+    /**
+     * Retrieve base item price with discount
+     *
+     * @param AbstractItem $item
+     * @param float $baseItemPrice
+     * @return float|int
+     */
+    public function getItemBasePriceWithDiscount($item, $baseItemPrice)
+    {
+        $qty = $item->getTotalQty();
+        $updatedBaseItemPrice = $baseItemPrice * $qty - $item->getBaseDiscountAmount();
+        // Calculate item price with discount for bundle dynamic product
+        if ($item->getHasChildren() && $item->isChildrenCalculated()) {
+            $updatedBaseItemPrice = $baseItemPrice * $qty;
+            foreach ($item->getChildren() as $child) {
+                $updatedBaseItemPrice = $updatedBaseItemPrice - $child->getBaseDiscountAmount();
+            }
+        }
+
+        return $updatedBaseItemPrice;
+    }
+
+    /**
      * Apply points amount to item
      *
      * @param AbstractItem $item
@@ -325,32 +398,36 @@ class Spending
      */
     private function applyPoints($item, $customerId, $websiteId)
     {
-        $qty = $item->getTotalQty();
         $itemPrice = $this->getItemPrice($item);
         $baseItemPrice = $this->getItemBasePrice($item);
+        $shippingPointAmount = $this->getAvailableShipmentPointsAmount(
+            $websiteId,
+            $this->rewardPointsData->getItemsTotal(),
+            $this->rewardPointsData->getShippingAmount(),
+            $this->rewardPointsData->getAvailablePointsAmount()
+        );
+        $baseShippingPointAmount = $this->getAvailableShipmentPointsAmount(
+            $websiteId,
+            $this->rewardPointsData->getBaseItemsTotal(),
+            $this->rewardPointsData->getBaseShippingAmount(),
+            $this->rewardPointsData->getBaseAvailablePointsAmount()
+        );
 
-        $itemRewardPointsAmount = $this->rewardPointsData->getAvailablePointsAmountLeft();
-        $itemBaseRewardPointsAmount = $this->rewardPointsData->getBaseAvailablePointsAmountLeft();
+        $itemRewardPointsAmount = $this->rewardPointsData->getAvailablePointsAmountLeft() - $shippingPointAmount;
+        $itemBaseRewardPointsAmount = $this->rewardPointsData->getBaseAvailablePointsAmountLeft()
+            - $baseShippingPointAmount;
 
-        // Calculate item price with discount for bundle dynamic product
-        if ($item->getHasChildren() && $item->isChildrenCalculated()) {
-            $itemPrice = $itemPrice * $qty;
-            $baseItemPrice = $baseItemPrice * $qty;
-            foreach ($item->getChildren() as $child) {
-                $itemPrice = $itemPrice - $child->getDiscountAmount();
-                $baseItemPrice = $baseItemPrice - $child->getBaseDiscountAmount();
-            }
-        } else {
-            $itemPrice = $itemPrice * $qty - $item->getDiscountAmount();
-            $baseItemPrice = $baseItemPrice * $qty - $item->getBaseDiscountAmount();
-        }
+        $itemPrice = $this->getItemPriceWithDiscount($item, $itemPrice);
+        $baseItemPrice = $this->getItemBasePriceWithDiscount($item, $baseItemPrice);
 
         if ($this->rewardPointsData->getItemsCount() > 1) {
             $rateForItem = $baseItemPrice / $this->rewardPointsData->getBaseItemsTotal();
-            $itemBaseRewardPointsAmount = $this->rewardPointsData->getBaseAvailablePointsAmount() * $rateForItem;
+            $itemBaseRewardPointsAmount =
+                ($this->rewardPointsData->getBaseAvailablePointsAmount() - $baseShippingPointAmount) * $rateForItem;
 
             $rateForItem = $itemPrice / $this->rewardPointsData->getItemsTotal();
-            $itemRewardPointsAmount = $this->rewardPointsData->getAvailablePointsAmount() * $rateForItem;
+            $itemRewardPointsAmount =
+                ($this->rewardPointsData->getAvailablePointsAmount() - $shippingPointAmount) * $rateForItem;
 
             $this->rewardPointsData->setItemsCount($this->rewardPointsData->getItemsCount() - 1);
         }
@@ -402,5 +479,61 @@ class Spending
         return $price !== null
             ? $item->getBaseDiscountCalculationPrice()
             : $item->getBaseCalculationPrice();
+    }
+
+    /**
+     * Retrieve point amount fot shipment
+     *
+     * @param int $websiteId
+     * @param float $itemsTotal
+     * @param float $shippingAmount
+     * @param float $availablePointsAmount
+     * @return float|int
+     */
+    private function getAvailableShipmentPointsAmount($websiteId, $itemsTotal, $shippingAmount, $availablePointsAmount)
+    {
+        if (!$shippingAmount) {
+            return 0;
+        }
+
+        $shippingPointAmount = $shippingAmount;
+        if ($shareCoveredValue = $this->getCleanShareCoveredValue($websiteId)) {
+            $shippingPointAmount *= $shareCoveredValue / 100;
+            $itemsTotal *= $shareCoveredValue / 100;
+        }
+
+        if ($availablePointsAmount - $itemsTotal < 0) {
+            $shippingPointAmount = 0;
+        } elseif ($availablePointsAmount - $itemsTotal - $shippingAmount < 0) {
+            $shippingPointAmount = $availablePointsAmount - $itemsTotal;
+        }
+
+        return $shippingPointAmount;
+    }
+
+    /**
+     * Retrieve clean share of purchase that could be covered by points
+     *
+     * @param int $websiteId
+     * @return int
+     */
+    private function getCleanShareCoveredValue($websiteId)
+    {
+        $shareCoveredValue = $this->config->getShareCoveredValue($websiteId);
+
+        return max(0, (int)($shareCoveredValue));
+    }
+
+    /**
+     * Check if quote item is subscription
+     *
+     * @param AbstractItem $item
+     * @return bool
+     */
+    public function isSubscription($item)
+    {
+        $optionId = $item->getOptionByCode('aw_sarp2_subscription_type');
+
+        return $optionId && $optionId->getValue();
     }
 }

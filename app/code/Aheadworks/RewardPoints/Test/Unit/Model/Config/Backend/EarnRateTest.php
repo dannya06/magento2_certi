@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\Config\Backend;
 
 use Aheadworks\RewardPoints\Model\Config\Backend\EarnRate;
@@ -11,6 +21,7 @@ use Aheadworks\RewardPoints\Model\ResourceModel\EarnRate as EarnRateResource;
 use Aheadworks\RewardPoints\Model\ResourceModel\EarnRate\CollectionFactory;
 use Aheadworks\RewardPoints\Model\ResourceModel\EarnRate\Collection;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Serialize\Serializer\Serialize;
 
 /**
  * Class Aheadworks\RewardPoints\Test\Unit\Model\Config\Backend\EarnRateTest
@@ -37,7 +48,17 @@ class EarnRateTest extends \PHPUnit\Framework\TestCase
      */
     private $object;
 
-    protected function setUp()
+    /**
+     * @var Serialize
+     */
+    private $serializerMock;
+
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -55,6 +76,12 @@ class EarnRateTest extends \PHPUnit\Framework\TestCase
             )
             ->getMock();
 
+        $this->serializerMock = $this->getMockBuilder(Serialize::class)
+            ->setMethods(
+                ['serialize']
+            )
+            ->getMock();
+
         $this->earnRateCollectionMock = $this->getMockBuilder(Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(
@@ -65,6 +92,7 @@ class EarnRateTest extends \PHPUnit\Framework\TestCase
         $data = [
             'earnRateResource' => $this->earnRateResourceMock,
             'earnRateCollectionFactory' => $this->earnRateCollectionFactoryMock,
+            'serializer' => $this->serializerMock
         ];
 
         $this->object = $objectManager->getObject(EarnRate::class, $data);
@@ -74,14 +102,21 @@ class EarnRateTest extends \PHPUnit\Framework\TestCase
      * Test beforeSave method
      *
      * @dataProvider valueProvider
+     * @param mixed $internalValue
+     * @param string $expectedValue
      */
-    public function testBeforeSave($expectedValue)
+    public function testBeforeSave($internalValue, $expectedValue)
     {
-        $this->object->setValue($expectedValue);
+        $this->serializerMock
+            ->method('serialize')
+            ->with($internalValue)
+            ->willReturn($expectedValue);
+
+        $this->object->setValue($internalValue);
         $this->object->beforeSave();
 
-        $this->assertEquals($expectedValue, $this->object->getEarnRateValue());
-        $this->assertEquals(serialize($expectedValue), $this->object->getValue());
+        $this->assertEquals($internalValue, $this->object->getEarnRateValue());
+        $this->assertEquals($expectedValue, $this->object->getValue());
     }
 
     /**
@@ -129,11 +164,11 @@ class EarnRateTest extends \PHPUnit\Framework\TestCase
     public function valueProvider()
     {
         return [
-            ['setTestConfigValue'],
-            [15],
-            [null],
-            [new \stdClass(11)],
-            [[1,2,3,4]]
+            ['setTestConfigValue', 's:18:"setTestConfigValue";'],
+            [15, 'i:15;'],
+            [null, 'N;'],
+            [new \stdClass(11), 'O:8:"stdClass":0:{}'],
+            [[1,2,3,4], 'a:4:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;}']
         ];
     }
 }

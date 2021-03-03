@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'Magento_Ui/js/form/components/insert-listing',
 ], function (InsertListing) {

@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Block\Product\View;
 
 use Aheadworks\RewardPoints\Api\CustomerRewardPointsManagementInterface;
@@ -13,7 +23,6 @@ use Magento\Framework\View\Element\Template\Context;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Pricing\Helper\Data as PriceHelper;
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Helper\Image;
 
 /**
  * Class Aheadworks\RewardPoints\Block\Product\View\Share
@@ -21,29 +30,19 @@ use Magento\Catalog\Helper\Image;
 class Share extends \Magento\Framework\View\Element\Template
 {
     /**
-     * Facebook share link
+     * Template of FB sharing link
      */
     const FACEBOOK_SHARE_LINK = 'https://www.facebook.com/sharer/sharer.php?u=';
 
     /**
-     * Twitter share link
+     * Template of Twitter sharing link
      */
     const TWITTER_SHARE_LINK = 'https://twitter.com/intent/tweet?url=';
 
     /**
-     * Google+ share link
+     * Template of Google+ sharing link
      */
     const GOOGLE_PLUS_SHARE_LINK = 'https://plus.google.com/share?url=';
-
-    /**
-     * Whatsapp share link
-     */
-    const WHATSAPP_SHARE_LINK = 'https://api.whatsapp.com/send?text=';
-
-    /**
-     * Pinterest share link
-     */
-    const PINTEREST_SHARE_LINK = 'https://pinterest.com/pin/create/button/?url=';
 
     /**
      * Block template filename
@@ -87,8 +86,6 @@ class Share extends \Magento\Framework\View\Element\Template
      */
     private $productRepository;
 
-    protected $_imageHelper;
-
     /**
      * @param Context $context
      * @param CustomerRewardPointsManagementInterface $customerRewardPointsService
@@ -109,7 +106,6 @@ class Share extends \Magento\Framework\View\Element\Template
         PriceHelper $priceHelper,
         \Magento\Framework\App\Http\Context $httpContext,
         ProductRepositoryInterface $productRepository,
-        \Magento\Catalog\Helper\Image $imageHelper,
         array $data = []
     ) {
         $this->customerRewardPointsService = $customerRewardPointsService;
@@ -119,7 +115,6 @@ class Share extends \Magento\Framework\View\Element\Template
         $this->priceHelper = $priceHelper;
         $this->httpContext = $httpContext;
         $this->productRepository = $productRepository;
-        $this->_imageHelper = $imageHelper;
         parent::__construct($context, $data);
     }
 
@@ -266,42 +261,5 @@ class Share extends \Magento\Framework\View\Element\Template
     public function getGooglePlusShareUrl()
     {
         return self::GOOGLE_PLUS_SHARE_LINK . $this->escapeUrl($this->getCurrentProductUrl());
-    }
-
-    /**
-     * Get whatsapp share url
-     *
-     * @return string
-     */
-    public function getWhatsappUrl()
-    {
-        return self::WHATSAPP_SHARE_LINK . $this->escapeUrl($this->getCurrentProductUrl());
-    }
-    
-    
-    /**
-     * Get product
-     *
-     * @return int
-     */
-    public function getProductImage()
-    {
-        return $this->_imageHelper
-        ->init($this->getProduct(), 'product_base_image')
-        ->constrainOnly(TRUE)
-        ->keepAspectRatio(TRUE)
-        ->keepTransparency(TRUE)
-        ->keepFrame(FALSE)
-        ->resize(150, 150)->getUrl();
-    }
-
-    /**
-     * Get pinterest share url
-     *
-     * @return string
-     */
-    public function getPinterestUrl()
-    {
-        return self::PINTEREST_SHARE_LINK . $this->escapeUrl($this->getCurrentProductUrl()) . '&media=' . $this->escapeUrl($this->getProductImage());
     }
 }

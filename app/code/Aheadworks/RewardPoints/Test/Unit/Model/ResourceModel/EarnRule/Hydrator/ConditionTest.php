@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\ResourceModel\EarnRule\Hydrator;
 
 use Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Hydrator\Condition as ConditionHydrator;
@@ -13,6 +23,7 @@ use Aheadworks\RewardPoints\Model\Condition;
 use Aheadworks\RewardPoints\Model\EarnRule\Condition\Converter as ConditionConverter;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Serialize\Serializer\Serialize;
 
 /**
  * Test for \Aheadworks\RewardPoints\Model\ResourceModel\EarnRule\Hydrator\Condition
@@ -30,20 +41,31 @@ class ConditionTest extends TestCase
     private $conditionConverterMock;
 
     /**
+     * @var Serialize
+     */
+    private $serializerMock;
+
+    /**
      * Init mocks for tests
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
         $this->conditionConverterMock = $this->createMock(ConditionConverter::class);
+        $this->serializerMock = $this->getMockBuilder(Serialize::class)
+            ->setMethods(
+                ['serialize']
+            )
+            ->getMock();
 
         $this->hydrator = $objectManager->getObject(
             ConditionHydrator::class,
             [
-                'conditionConverter' => $this->conditionConverterMock
+                'conditionConverter' => $this->conditionConverterMock,
+                'serializer' => $this->serializerMock
             ]
         );
     }
@@ -57,7 +79,12 @@ class ConditionTest extends TestCase
         $conditionData = [
             Condition::AGGREGATOR => 'all'
         ];
-        $serializedConditionData = serialize($conditionData);
+        $serializedConditionData = 'a:1:{s:' . strlen(Condition::AGGREGATOR) . ':"'
+            . Condition::AGGREGATOR . '";s:3:"all";}';
+        $this->serializerMock
+            ->method('serialize')
+            ->with($conditionData)
+            ->willReturn($serializedConditionData);
         $result = [
             EarnRuleInterface::CONDITION => $serializedConditionData
         ];
@@ -96,7 +123,8 @@ class ConditionTest extends TestCase
         $conditionData = [
             Condition::AGGREGATOR => 'all'
         ];
-        $serializedConditionData = serialize($conditionData);
+        $serializedConditionData = 'a:1:{s:' . strlen(Condition::AGGREGATOR) . ':"'
+            . Condition::AGGREGATOR . '";s:3:"all";}';
         $data = [
             EarnRuleInterface::CONDITION => $serializedConditionData
         ];

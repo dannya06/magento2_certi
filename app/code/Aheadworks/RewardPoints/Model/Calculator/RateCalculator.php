@@ -1,15 +1,26 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Model\Calculator;
 
 use Aheadworks\RewardPoints\Api\Data\EarnRateInterface;
 use Aheadworks\RewardPoints\Api\Data\SpendRateInterface;
 use Aheadworks\RewardPoints\Api\EarnRateRepositoryInterface;
 use Aheadworks\RewardPoints\Api\SpendRateRepositoryInterface;
+use Aheadworks\RewardPoints\Model\Config;
 use Aheadworks\RewardPoints\Model\Service\PointsSummaryService;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
@@ -86,6 +97,11 @@ class RateCalculator
     private $storeManager;
 
     /**
+     * @var Config
+     */
+    private $config;
+
+    /**
      * @param EarnRateRepositoryInterface $earnRateRepository
      * @param SpendRateRepositoryInterface $spendRateRepository
      * @param PointsSummaryService $pointsSummaryService
@@ -94,6 +110,7 @@ class RateCalculator
      * @param GroupManagementInterface $groupService
      * @param PriceCurrencyInterface $priceCurrency
      * @param StoreManagerInterface $storeManager
+     * @param Config $config
      */
     public function __construct(
         EarnRateRepositoryInterface $earnRateRepository,
@@ -103,7 +120,8 @@ class RateCalculator
         CustomerRepositoryInterface $customerRepository,
         GroupManagementInterface $groupService,
         PriceCurrencyInterface $priceCurrency,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        Config $config
     ) {
         $this->earnRateRepository = $earnRateRepository;
         $this->spendRateRepository = $spendRateRepository;
@@ -113,6 +131,7 @@ class RateCalculator
         $this->groupService = $groupService;
         $this->priceCurrency = $priceCurrency;
         $this->storeManager = $storeManager;
+        $this->config = $config;
     }
 
     /**
@@ -435,14 +454,18 @@ class RateCalculator
     /**
      * Retrieve lifetime sales value
      *
-     * @param int $customerId
-     * @param [] $storeIds
+     * @param int|array $customerIds
+     * @param array $storeIds
      * @return float
      */
-    private function getLifetimeSalesValue($customerId, $storeIds)
+    public function getLifetimeSalesValue($customerIds, $storeIds)
     {
+        if (!is_array($customerIds)) {
+            $customerIds = [$customerIds];
+        }
         /** @var $salesCollection \Magento\Sales\Model\ResourceModel\Sale\Collection */
         $salesCollection = $this->saleCollectionFactory->create();
+        $lifetimeSalesStartDate = $this->config->getLifetimeSalesStartDate();
         $connection = $salesCollection->getConnection();
         $columns = $connection->describeTable($salesCollection->getTable('sales_order'));
         $lifetimeSumQuery = 'SUM(IFNULL(base_total_invoiced, 0)) - SUM(IFNULL(base_total_refunded, 0))';
@@ -462,7 +485,7 @@ class RateCalculator
                 $salesCollection->getTable('sales_order'),
                 ['lifetime_sales' => new \Zend_Db_Expr('(' . $lifetimeSumQuery . ')')]
             )
-            ->where('customer_id=?', $customerId)
+            ->where('customer_id IN (?)', $customerIds)
             ->where(
                 'state IN (?)',
                 [Order::STATE_COMPLETE, Order::STATE_CLOSED, Order::STATE_PROCESSING]
@@ -470,6 +493,10 @@ class RateCalculator
                 'store_id IN (?)',
                 implode(',', $storeIds)
             )->group('store_id');
+
+        if (!empty($lifetimeSalesStartDate)) {
+            $select->where('created_at >= ?', $lifetimeSalesStartDate);
+        }
 
         return floatval($connection->fetchOne($select));
     }

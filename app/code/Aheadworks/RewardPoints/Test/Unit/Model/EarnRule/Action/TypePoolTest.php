@@ -1,13 +1,24 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\EarnRule\Action;
 
 use Aheadworks\RewardPoints\Model\EarnRule\Action\TypePool;
 use Aheadworks\RewardPoints\Model\EarnRule\Action\TypeInterface;
+use Magento\Framework\Exception\ConfigurationMismatchException;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
@@ -26,7 +37,7 @@ class TypePoolTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -124,9 +135,6 @@ class TypePoolTest extends TestCase
 
     /**
      * Test getTypeByCode method if no type with the code specified
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Unknown action type: type_two requested
      */
     public function testGetTypeByCodeNoCode()
     {
@@ -136,6 +144,8 @@ class TypePoolTest extends TestCase
         ];
 
         $this->setProperty('types', $types);
+
+        $this->expectException(ConfigurationMismatchException::class);
 
         $this->typePool->getTypeByCode('type_two');
     }

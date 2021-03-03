@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    RewardPoints
+ * @version    1.7.2
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\RewardPoints\Test\Unit\Model\EarnRule;
 
 use Aheadworks\RewardPoints\Api\Data\EarnRuleSearchResultsInterface;
@@ -61,7 +71,7 @@ class ManagementTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -121,15 +131,16 @@ class ManagementTest extends TestCase
         $this->earnRuleRepositoryMock->expects($this->once())
             ->method('get')
             ->with($ruleId)
-            ->willThrowException(new NoSuchEntityException(__($errorMessage)));
+            ->willThrowException(new NoSuchEntityException(__('No such entity!')));
 
+        $this->expectException(NoSuchEntityException::class);
         $this->management->enable($ruleId);
     }
 
     /**
      * Test enable method if the rule can not be saved
      *
-     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
+     * @expectedException \Exception
      * @expectedExceptionMessage Could not save the rule!
      */
     public function testEnableNotSaved()
@@ -150,8 +161,10 @@ class ManagementTest extends TestCase
         $this->earnRuleRepositoryMock->expects($this->once())
             ->method('save')
             ->with($ruleMock)
-            ->willThrowException(new CouldNotSaveException(__($errorMessage)));
+            ->willThrowException(new \Exception('Error!'));
 
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Error!');
         $this->management->enable($ruleId);
     }
 
@@ -194,7 +207,7 @@ class ManagementTest extends TestCase
             ->method('get')
             ->with($ruleId)
             ->willThrowException(new NoSuchEntityException(__($errorMessage)));
-
+        $this->expectException(NoSuchEntityException::class);
         $this->management->disable($ruleId);
     }
 
@@ -223,7 +236,7 @@ class ManagementTest extends TestCase
             ->method('save')
             ->with($ruleMock)
             ->willThrowException(new CouldNotSaveException(__($errorMessage)));
-
+        $this->expectException(CouldNotSaveException::class);
         $this->management->disable($ruleId);
     }
 
@@ -280,7 +293,7 @@ class ManagementTest extends TestCase
             ->method('save')
             ->with($ruleMock)
             ->willThrowException(new CouldNotSaveException(__('Error!')));
-
+        $this->expectException(CouldNotSaveException::class);
         $this->management->createRule($ruleData);
     }
 
@@ -332,7 +345,7 @@ class ManagementTest extends TestCase
             ->method('get')
             ->with($ruleId)
             ->willThrowException(new NoSuchEntityException(__('No such entity!')));
-
+        $this->expectException(NoSuchEntityException::class);
         $this->management->updateRule($ruleId, $ruleData);
     }
 
@@ -365,7 +378,7 @@ class ManagementTest extends TestCase
             ->method('save')
             ->with($ruleMock)
             ->willThrowException(new CouldNotSaveException(__('Error!')));
-
+        $this->expectException(CouldNotSaveException::class);
         $this->management->updateRule($ruleId, $ruleData);
     }
 

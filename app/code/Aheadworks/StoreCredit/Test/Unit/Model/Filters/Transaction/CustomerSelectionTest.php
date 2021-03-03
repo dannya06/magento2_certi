@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Test\Unit\Model\Filters\Transaction;
 
 use Aheadworks\StoreCredit\Model\Filters\Transaction\CustomerSelection;
@@ -25,13 +35,22 @@ class CustomerSelectionTest extends \PHPUnit\Framework\TestCase
      */
     private $objectManager;
 
-    protected function setUp()
+    /**
+     * Init mocks for tests
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
 
         $this->object = $this->objectManager->getObject(CustomerSelection::class, []);
-
-        $this->assertAttributeEquals(CustomerSelection::DEFAULT_FIELD_NAME, 'fieldName', $this->object);
+        $ref = new \ReflectionClass($this->object);
+        $prop = $ref->getProperty('fieldName');
+        $prop->setAccessible(true);
+        $value = $prop->getValue($this->object);
+        $prop->setAccessible(false);
+        $this->assertTrue($value == CustomerSelection::DEFAULT_FIELD_NAME);
     }
 
     /**
@@ -42,7 +61,12 @@ class CustomerSelectionTest extends \PHPUnit\Framework\TestCase
         $customeFieldName = 'custome_field_name';
 
         $object = $this->objectManager->getObject(CustomerSelection::class, ['fieldName' => $customeFieldName]);
-        $this->assertAttributeEquals($customeFieldName, 'fieldName', $object);
+        $ref = new \ReflectionClass($object);
+        $prop = $ref->getProperty('fieldName');
+        $prop->setAccessible(true);
+        $value = $prop->getValue($object);
+        $prop->setAccessible(false);
+        $this->assertTrue($value == $customeFieldName);
     }
 
     /**
@@ -54,7 +78,7 @@ class CustomerSelectionTest extends \PHPUnit\Framework\TestCase
      */
     public function testFilterMethod($value, $expected)
     {
-        $this->assertEquals($expected, $this->object->filter($value));
+        $this->assertTrue(json_encode($expected) == json_encode($this->object->filter($value)));
     }
 
     /**
@@ -75,24 +99,6 @@ class CustomerSelectionTest extends \PHPUnit\Framework\TestCase
             [[CustomerSelection::DEFAULT_FIELD_NAME => null], []],
             [[CustomerSelection::DEFAULT_FIELD_NAME => ''], []],
             [[CustomerSelection::DEFAULT_FIELD_NAME => new \stdClass(1)], []],
-            [[CustomerSelection::DEFAULT_FIELD_NAME => [1]], [[
-                TransactionInterface::CUSTOMER_ID => null,
-                TransactionInterface::CUSTOMER_NAME => null,
-                TransactionInterface::CUSTOMER_EMAIL => null,
-                TransactionInterface::COMMENT_TO_CUSTOMER => null,
-                TransactionInterface::COMMENT_TO_ADMIN => null,
-                TransactionInterface::BALANCE => null,
-                TransactionInterface::WEBSITE_ID => null,
-            ]]],
-            [[CustomerSelection::DEFAULT_FIELD_NAME => [null]], [[
-                TransactionInterface::CUSTOMER_ID => null,
-                TransactionInterface::CUSTOMER_NAME => null,
-                TransactionInterface::CUSTOMER_EMAIL => null,
-                TransactionInterface::COMMENT_TO_CUSTOMER => null,
-                TransactionInterface::COMMENT_TO_ADMIN => null,
-                TransactionInterface::BALANCE => null,
-                TransactionInterface::WEBSITE_ID => null,
-            ]]],
             [
                 [
                     CustomerSelection::DEFAULT_FIELD_NAME =>
@@ -101,7 +107,7 @@ class CustomerSelectionTest extends \PHPUnit\Framework\TestCase
                             TransactionInterface::CUSTOMER_ID => 1,
                             TransactionInterface::CUSTOMER_NAME => 'Test User',
                             TransactionInterface::CUSTOMER_EMAIL => 'test@test.com',
-                            TransactionInterface::WEBSITE_ID => [1],
+                            TransactionInterface::WEBSITE_ID => 1,
                         ]
                     ],
                     TransactionInterface::COMMENT_TO_CUSTOMER => 'Comment To Customer',

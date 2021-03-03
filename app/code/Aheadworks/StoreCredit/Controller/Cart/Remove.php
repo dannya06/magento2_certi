@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    StoreCredit
+ * @version    1.1.7
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\StoreCredit\Controller\Cart;
 
 use Magento\Framework\App\RequestInterface;
@@ -67,7 +77,7 @@ class Remove extends Action
     {
         $quote = $this->checkoutSession->getQuote();
         if ($quote->getAwUseStoreCredit()) {
-            $this->messageManager->addSuccess(__('Store Credit were successfully removed.'));
+            $this->messageManager->addSuccess(__('Store Credit was successfully removed.'));
             $quote->setAwUseStoreCredit(false)->collectTotals()->save();
         } else {
             $this->messageManager->addError(__('You are not using Store Credit in your shopping cart.'));
