@@ -96,11 +96,20 @@
                 <buttons__font____color>#FFFFFF</buttons__font____color>
                 <buttons__bg____color>#000000</buttons__bg____color>
                 <buttons__border____color>#000000</buttons__border____color>
+                <buttons__hover__font____color>#FFFFFF</buttons__hover__font____color>
+                <buttons__hover__bg____color>#000000</buttons__hover__bg____color>
+                <buttons__hover__border____color>#000000</buttons__hover__border____color>
             </button>
             <email_comment>
                 <email_comment__font____color>#000000</email_comment__font____color>
                 <email_comment__bg____color>#FAFAFA</email_comment__bg____color>
             </email_comment>
+            <products_grid>
+                <enable>0</enable>
+                <title>You may also like</title>
+                <products_type>related</products_type>
+                <number_of_products>10</number_of_products>
+            </products_grid>
         </weltpixel_enhancedemail>
     </default>
 </config>

@@ -1,9 +1,9 @@
-<!--@subject {{trans "Update to your %store_name shipment" store_name=$store.getFrontendName()}} @-->
+<!--@subject {{trans "Update to your %store_name shipment" store_name=$store.frontend_name}} @-->
 <!--@vars {
-"var billing.getName()":"Guest Customer Name",
+"var billing.name":"Guest Customer Name",
 "var comment":"Order Comment",
 "var order.increment_id":"Order Id",
-"var order.getStatusLabel()":"Order Status",
+"var order_data.frontend_status_label":"Order Status",
 "var shipment.increment_id":"Shipment Id"
 } @-->
 {{template config_path="design/email/header_template"}}
@@ -13,14 +13,14 @@
     <tr>
         <td class="dark"  style="padding-bottom:8px; padding-top:5px; background-color:#000">
             <h3 style="text-align: center;">
-                {{trans "Hi %name," name=$billing.getName()}}
+                {{trans "Hi %name," name=$billing.name}}
             </h3>
         </td>
     </tr>
     <tr>
         <td class="dark" align="center" style="padding-bottom:0px; background-color:#000">
             <h1 style="text-align: center; margin: 0 !important">
-                {{trans "ORDER %order_status" order_status=$order.getStatusLabel()}}
+                {{trans "ORDER %order_status" order_status=$order_data.frontend_status_label}}
             </h1>
         </td>
     </tr>

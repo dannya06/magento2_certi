@@ -1,7 +1,7 @@
-<!--@subject {{trans "Your %store_name order has shipped" store_name=$store.getFrontendName()}} @-->
+<!--@subject {{trans "Your %store_name order has shipped" store_name=$store.frontend_name}} @-->
 <!--@vars {
 "var formattedBillingAddress|raw":"Billing Address",
-"var billing.getName()":"Guest Customer Name",
+"var billing.name":"Guest Customer Name",
 "var order.increment_id":"Order Id",
 "var payment_html|raw":"Payment Details",
 "var comment":"Shipment Comment",
@@ -9,8 +9,7 @@
 "layout handle=\"sales_email_order_shipment_items\" shipment=$shipment order=$order":"Shipment Items Grid",
 "block class='Magento\\\\Framework\\\\View\\\\Element\\\\Template' area='frontend' template='Magento_Sales::email\/shipment\/track.phtml' shipment=$shipment order=$order":"Shipment Track Details",
 "var formattedShippingAddress|raw":"Shipping Address",
-"var order.shipping_description":"Shipping Description",
-"var order.getShippingDescription()":"Shipping Description"
+"var order.shipping_description":"Shipping Description"
 } @-->
 {{template config_path="design/email/header_template"}}
 
@@ -79,7 +78,7 @@
                         <h3 style="color: #555656;">{{trans "BILLING ADDRESS"}}</h3>
                         <p style="color: #555656;">{{var formattedBillingAddress|raw}}</p>
                     </td>
-                    {{depend order.getIsNotVirtual()}}
+                    {{depend order_data.is_not_virtual}}
                     <td class="address-details" style="padding-top: 60px !important">
                         <h3 style="color: #555656;">{{trans "SHIPPING ADDRESS"}}</h3>
                         <p style="color: #555656;">{{var formattedShippingAddress|raw}}</p>
@@ -91,10 +90,11 @@
                         <h3 style="color: #555656;">{{trans "PAYMENT METHOD"}}</h3>
                         {{var payment_html|raw}}
                     </td>
-                    {{depend order.getIsNotVirtual()}}
+                    </td>
+                    {{depend order_data.is_not_virtual}}
                     <td class="method-info" style="padding-bottom: 60px !important">
                         <h3 style="color: #555656;">{{trans "SHIPPING METHOD"}}</h3>
-                        <p style="color: #555656;">{{var order.getShippingDescription()}}</p>
+                        <p style="color: #555656;">{{var order.shipping_description}}</p>
                         {{if shipping_msg}}
                         <p style="color: #555656;">{{var shipping_msg}}</p>
                         {{/if}}

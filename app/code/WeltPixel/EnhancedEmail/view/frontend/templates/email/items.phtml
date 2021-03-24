@@ -5,7 +5,8 @@
  */
 
 // @codingStandardsIgnoreFile
-
+/** @var \WeltPixel\EnhancedEmail\Helper\Data  $wpHelper */
+$wpHelper = $this->helper('WeltPixel\EnhancedEmail\Helper\Data');
 ?>
 <?php $_order = $block->getOrder() ?>
 <?php if ($_order): ?>
@@ -13,7 +14,7 @@
     <table class="email-items">
         <thead>
             <tr>
-                <?php if ($block->canShowProductImage()) :?>
+                <?php if ($wpHelper->canShowProductImage()) :?>
                     <th class="item-info">
                         <?= /* @escapeNotVerified */  __('Images') ?>
                     </th>

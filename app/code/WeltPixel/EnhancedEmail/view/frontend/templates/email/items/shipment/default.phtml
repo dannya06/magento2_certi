@@ -28,6 +28,7 @@ $prodImg = $block->getImage($block->getProductForThumbnail(), 'cart_page_product
             <?= $addInfoBlock->setItem($_item->getOrderItem())->toHtml() ?>
         <?php endif; ?>
         <?= $block->escapeHtml($_item->getDescription()) ?>
+        <p style="color: #aaaaaa"> &nbsp; </p>
     </td>
     <td class="item-qty"><?= /* @escapeNotVerified */  $_item->getQty() * 1 ?></td>
 </tr>

@@ -1,14 +1,13 @@
-<!--@subject {{trans "Your %store_name order confirmation" store_name=$store.getFrontendName()}} @-->
+<!--@subject {{trans "Your %store_name order confirmation" store_name=$store.frontend_name}} @-->
 <!--@vars {
 "var formattedBillingAddress|raw":"Billing Address",
-"var order.getEmailCustomerNote()":"Email Order Note",
-"var order.getBillingAddress().getName()":"Guest Customer Name",
-"var order.getCreatedAtFormatted(1)":"Order Created At (datetime)",
+"var order_data.email_customer_note":"Email Order Note",
+"var created_at_formatted":"Order Created At (datetime)",
 "var order.increment_id":"Order Id",
 "layout handle=\"sales_email_order_items\" order=$order":"Order Items Grid",
 "var payment_html|raw":"Payment Details",
 "var formattedShippingAddress|raw":"Shipping Address",
-"var order.getShippingDescription()":"Shipping Description",
+"var order.shipping_description":"Shipping Description",
 "var shipping_msg":"Shipping message"
 } @-->
 {{template config_path="design/email/header_template"}}
@@ -67,11 +66,11 @@
 <table style="width: 660px">
     <tr class="email-information">
         <td>
-            {{depend order.getEmailCustomerNote()}}
+            {{depend order_data.email_customer_note}}
             <table class="message-info">
                 <tr>
                     <td>
-                        {{var order.getEmailCustomerNote()|escape|nl2br}}
+                        {{var order_data.email_customer_note|escape|nl2br}}
                     </td>
                 </tr>
             </table>
@@ -85,7 +84,7 @@
                         <h3 style="color: #555656;">{{trans "BILLING ADDRESS"}}</h3>
                         <p style="color: #555656;">{{var formattedBillingAddress|raw}}</p>
                     </td>
-                    {{depend order.getIsNotVirtual()}}
+                    {{depend order_data.is_not_virtual}}
                     <td class="address-details" style="padding-top: 60px !important">
                         <h3 style="color: #555656;">{{trans "SHIPPING ADDRESS"}}</h3>
                         <p style="color: #555656;">{{var formattedShippingAddress|raw}}</p>
@@ -97,10 +96,10 @@
                         <h3 style="color: #555656;">{{trans "PAYMENT METHOD"}}</h3>
                         {{var payment_html|raw}}
                     </td>
-                    {{depend order.getIsNotVirtual()}}
+                    {{depend order_data.is_not_virtual}}
                     <td class="method-info" style="padding-bottom: 60px !important">
                         <h3 style="color: #555656;">{{trans "SHIPPING METHOD"}}</h3>
-                        <p style="color: #555656;">{{var order.getShippingDescription()}}</p>
+                        <p style="color: #555656;">{{var order.shipping_description}}</p>
                         {{if shipping_msg}}
                         <p style="color: #555656;">{{var shipping_msg}}</p>
                         {{/if}}

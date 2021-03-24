@@ -4,7 +4,7 @@
 "Inherit (from its parent)","Inherit (from its parent)"
 sans-serif,sans-serif
 serif,serif
-"Email First Lineee","Email First Lineee"
+"Email First Line","Email First Line"
 %1,%1
 "Template Variables","Template Variables"
 "Send Test Email To: ","Send Test Email To: "
@@ -78,7 +78,6 @@ Password:,Password:
 "RESET IT","RESET IT"
 "Your %store_name password has been changed","Your %store_name password has been changed"
 "We have received a request to change the following information associated with your account at %store_name: password.","We have received a request to change the following information associated with your account at %store_name: password."
-"or call us at <a href=""tel:%store_phone"">%store_phone</a>","or call us at <a href=""tel:%store_phone"">%store_phone</a>"
 "Thanks,<br>%store_name","Thanks,<br>%store_name"
 Footer,Footer
 CONTACT,CONTACT
@@ -93,9 +92,7 @@ Header,Header
 "We just credited your order!","We just credited your order!"
 "Your Credit Memo #%creditmemo_id","Your Credit Memo #%creditmemo_id"
 "BILLING ADDRESS","BILLING ADDRESS"
-"SHIPPING ADDRESS","SHIPPING ADDRESS"
 "PAYMENT METHOD","PAYMENT METHOD"
-"SHIPPING METHOD","SHIPPING METHOD"
 "You can view the entire status of your order by checking <a href=""%account_url"">your account</a>.","You can view the entire status of your order by checking <a href=""%account_url"">your account</a>."
 "Invoice for your %store_name order","Invoice for your %store_name order"
 "Here\’s your Invoice :)","Here\’s your Invoice :)"
@@ -124,7 +121,6 @@ Header,Header
 "with somebody special like you!","with somebody special like you!"
 "To begin see what %customer_name found and wants to share with you click on the button below :)","To begin see what %customer_name found and wants to share with you click on the button below :)"
 "View all items","View all items"
-"Message from %customer_name:","Message from %customer_name:"
 "Email Template Editor","Email Template Editor"
 "General Settings","General Settings"
 "Enable Extension","Enable Extension"
@@ -175,6 +171,15 @@ Buttons,Buttons
 "Buttons Text Color","Buttons Text Color"
 "Buttons Background Color","Buttons Background Color"
 "Buttons Border Color","Buttons Border Color"
+"Buttons Hover Text Color","Buttons Hover Text Color"
+"Buttons Hover Background Color","Buttons Hover Background Color"
+"Buttons Hover Border Color","Buttons Hover Border Color"
 "Email Body Messages (eg. order/invoice comment)","Email Body Messages (eg. order/invoice comment)"
 "Comment Section Text Color","Comment Section Text Color"
 "Comment Section Background Color","Comment Section Background Color"
+"Products Grid","Products Grid"
+"Enable Products Grid","Enable Products Grid"
+"Grid Title","Grid Title"
+"Products Type","Products Type"
+"Number of products","Number of products"
+"Leave 0 to list all products.","Leave 0 to list all products."

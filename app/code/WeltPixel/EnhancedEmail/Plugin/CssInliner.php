@@ -142,6 +142,9 @@ class CssInliner
         $buttonFontColor = $this->_helper->getButtonFontColor($storeId);
         $buttonBgColor = $this->_helper->getButtonBgColor($storeId);
         $buttonBorderColor = $this->_helper->getButtonBorderColor($storeId);
+        $buttonHoverFontColor = $this->_helper->getButtonHoverFontColor($storeId);
+        $buttonHoverBgColor = $this->_helper->getButtonHoverBgColor($storeId);
+        $buttonHoverBorderColor = $this->_helper->getButtonHoverBorderColor($storeId);
 
         $commentFontColor = $this->_helper->getCommentFontColor($storeId);
         $commentBgColor = $this->_helper->getCommentBgColor($storeId);
@@ -149,7 +152,7 @@ class CssInliner
 
 
         //Generate Css
-        $content .= "        
+        $content .= "
 td.wrapper-inner {
     background-color: $bodyWrapperBgColor !important;
 }
@@ -181,20 +184,20 @@ a:visited {
     text-decoration: none;
     cursor: pointer;
 }
-nav.navigation a{
+nav.navigation a, nav.navigation a h3{
     color: $topmenuFontColor;
 }
-nav.navigation a:visited{
+nav.navigation a:visited, nav.navigation a:visited h3{
     color: $topmenuFontColor !important;
 }
 nav.navigation ul {
-    text-align: center; 
-    padding: $topmenuPaddingTopBottom  0; 
-    margin: 0 !important; 
+    text-align: center;
+    padding: $topmenuPaddingTopBottom  0;
+    margin: 0 !important;
     background: $topmenuBgColor;
 }
 nav.navigation ul li {
-    display: inline; 
+    display: inline;
     padding: 0  $topmenuPadding;
     line-height: 2.2;
 }
@@ -256,13 +259,22 @@ button {
     cursor: pointer;
 }
 .button .inner-wrapper td {
-        background-color: $buttonBgColor !important;
-    }
-    .button .inner-wrapper td a {
-        border: 1px solid $buttonBorderColor !important;
-        color: $buttonFontColor !important;
-    }
-    
+    background-color: $buttonBgColor !important;
+}
+.button .inner-wrapper td a {
+    border: 1px solid $buttonBorderColor !important;
+    color: $buttonFontColor !important;
+}
+
+.button .inner-wrapper td:hover {
+    background-color: $buttonHoverBgColor !important;
+}
+
+.button .inner-wrapper td:hover a {
+    border: 1px solid $buttonHoverBorderColor !important;
+    color: $buttonHoverFontColor !important;
+}
+
 .wp-method-info .payment-method .title {
     color: #555656;
     font-family: $paragraphFontFamily;
@@ -271,7 +283,7 @@ button {
     font-style: $pFontStyle;
     line-height: $pFontHeight;
     letter-spacing: $pLatterSpacing;
-}    
+}
 
 table.message-info td{
     color: $commentFontColor;
@@ -282,16 +294,16 @@ table.message-info td{
     font-style: $pFontStyle;
     line-height: $pFontHeight;
     letter-spacing: $pLatterSpacing;
-    
+
 }
 
 table.shipment-track th {
-    text-transform: uppercase;  
+    text-transform: uppercase;
 }
 
-table.shipment-track th, 
+table.shipment-track th,
 table.shipment-track td {
-    background-color: #fff !important;   
+    background-color: #fff !important;
 }
 table.order-details td {
     width: 40% !important;
@@ -306,6 +318,10 @@ table.order-details td {
   }
 
 }
+
+.wp-products-grid .price-box .price-label {display:none;}
+.wp-products-grid .price-box .old-price .price {text-decoration: line-through;}
+.wp-products-grid .price-box span {font-size: 14px;}
 ";
         return $content;
     }

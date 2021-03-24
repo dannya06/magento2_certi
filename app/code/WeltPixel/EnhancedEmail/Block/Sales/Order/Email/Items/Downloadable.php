@@ -184,9 +184,9 @@ class Downloadable extends \Magento\Sales\Block\Order\Email\Items\DefaultItems
         $catalogProductMediaUrl = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
         if ($product->getThumbnail() && $product->getThumbnail() != 'no_selection') {
-            return $catalogProductMediaUrl . $product->getThumbnail();
+            return $catalogProductMediaUrl . DIRECTORY_SEPARATOR . ltrim( $product->getThumbnail(), DIRECTORY_SEPARATOR);
         } elseif ($product->getSmallImage() && $product->getSmallImage() != 'no_selection') {
-            return $catalogProductMediaUrl . $product->getSmallImage();
+            return $catalogProductMediaUrl .  DIRECTORY_SEPARATOR . ltrim($product->getSmallImage(), DIRECTORY_SEPARATOR);
         } else {
 
             $plHolder = $this->_imageHelper->getDefaultPlaceholderUrl('thumbnail');

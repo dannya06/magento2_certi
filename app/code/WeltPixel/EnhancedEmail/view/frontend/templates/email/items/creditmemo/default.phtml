@@ -28,9 +28,10 @@ $_item = $block->getItem() ?>
             <?= $addInfoBlock->setItem($_item->getOrderItem())->toHtml() ?>
         <?php endif; ?>
         <?= $block->escapeHtml($_item->getDescription()) ?>
+        <p style="color: #aaaaaa"> &nbsp; </p>
     </td>
     <td class="item-qty"><?= /* @escapeNotVerified */  $_item->getQty() * 1 ?></td>
     <td class="item-price">
-        <?= /* @escapeNotVerified */  $block->getItemPrice($_item->getOrderItem()) ?>
+        <?= /* @noEscape */  $block->getItemPrice($_item) ?>
     </td>
 </tr>

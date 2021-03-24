@@ -11,7 +11,7 @@
     <update handle="sales_email_order_invoice_renderers"/>
     <update handle="sales_email_item_price"/>
     <body>
-        <block class="WeltPixel\EnhancedEmail\Block\Items\AbstractItems" name="items"
+        <block class="Magento\Sales\Block\Order\Email\Invoice\Items" name="items"
                template="WeltPixel_EnhancedEmail::email/invoice/items.phtml">
             <block class="Magento\Framework\View\Element\RendererList" name="sales.email.order.invoice.renderers"
                    as="renderer.list"/>

@@ -626,13 +626,30 @@
                     <validate>color {required:false, hash:true}</validate>
                     <comment>Set the background color for Buttons. Example: #303030</comment>
                 </field>
-                <field id="buttons__border____color" translate="label" type="text" sortOrder="20" showInDefault="1"
+                <field id="buttons__border____color" translate="label" type="text" sortOrder="30" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Buttons Border Color</label>
                     <validate>color {required:false, hash:true}</validate>
                     <comment>Set the border color for Buttons. Example: #303030</comment>
                 </field>
-
+                <field id="buttons__hover__font____color" translate="label" type="text" sortOrder="40" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Buttons Hover Text Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set the text color for Buttons. Example: #303030</comment>
+                </field>
+                <field id="buttons__hover__bg____color" translate="label" type="text" sortOrder="50" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Buttons Hover Background Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set the background color for Buttons. Example: #303030</comment>
+                </field>
+                <field id="buttons__hover__border____color" translate="label" type="text" sortOrder="60" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Buttons Hover Border Color</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set the border color for Buttons. Example: #303030</comment>
+                </field>
             </group>
 
             <group id="email_comment" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="110"
@@ -656,6 +673,43 @@
                 </field>
             </group>
 
+            <group id="products_grid" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="120"
+                   translate="label">
+                <label>Products Grid</label>
+                <field id="enable" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10"
+                       translate="label"
+                       type="select">
+                    <label>Enable Products Grid</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="title" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20"
+                       translate="label"
+                       type="text">
+                    <label>Grid Title</label>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="products_type" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="30"
+                       translate="label"
+                       type="select">
+                    <label>Products Type</label>
+                    <source_model>WeltPixel\EnhancedEmail\Model\Config\Source\GridProductsType</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="number_of_products" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="40"
+                       translate="label comment"
+                       type="text">
+                    <label>Number of products</label>
+                    <comment>Leave 0 to list all products.</comment>
+                    <validate>required-entry validate-number</validate>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+            </group>
         </section>
     </system>
 </config>

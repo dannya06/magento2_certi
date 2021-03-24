@@ -11,6 +11,10 @@
             <argument name="label_properties" xsi:type="string">colspan="3"</argument>
         </arguments>
     </type>
+    <type name="Magento\Email\Model\Template\Config">
+        <plugin name="weltpixel_enhancedemail_email_template_config"
+                type="WeltPixel\EnhancedEmail\Plugin\EmailTemplateConfig"/>
+    </type>
     <type name="Magento\Backend\App\AbstractAction">
         <plugin name="weltpixel-enhancedemail-utility" type="WeltPixel\EnhancedEmail\Plugin\Utility" sortOrder="1000" />
     </type>
