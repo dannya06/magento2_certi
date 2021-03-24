@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Ui\DataProvider;
 
 use Aheadworks\AdvancedReports\Model\Filter\FilterPool;
@@ -14,6 +24,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Api\Search\SearchResultInterface;
 use Magento\Framework\Locale\FormatInterface;
 use Magento\Framework\Api\Search\ReportingInterface;
+use Aheadworks\AdvancedReports\Model\Url\Base64Coder;
 
 /**
  * Class DataProvider
@@ -169,6 +180,18 @@ class DataProvider extends \Magento\Framework\View\Element\UiComponent\DataProvi
     }
 
     /**
+     * Get currency code
+     *
+     * @return string
+     */
+    public function getCurrencyCode()
+    {
+        $storeFilter = $this->getDefaultFilterPool()->getFilter('store');
+
+        return $this->scopeCurrency->getCurrencyCode($storeFilter->getStoreIds());
+    }
+
+    /**
      * {@inheritdoc}
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -218,7 +241,7 @@ class DataProvider extends \Magento\Framework\View\Element\UiComponent\DataProvi
                         }
                     }
                     if ($decode) {
-                        $paramValue = base64_decode($paramValue);
+                        $paramValue = Base64Coder::decode($paramValue);
                     }
                     $this->addFilter(
                         $this->filterBuilder
@@ -243,6 +266,10 @@ class DataProvider extends \Magento\Framework\View\Element\UiComponent\DataProvi
         $this->cachedSearchResult($searchResult);
         $arrItems['totals'][] = $searchResult->getTotals();
         $arrItems['priceFormat'] = $this->localeFormat->getPriceFormat(null, $this->getCurrencyCode());
+        $arrItems['basePriceFormat'] = $this->localeFormat->getPriceFormat(
+            null,
+            $this->scopeCurrency->getCurrencyCode(null)
+        );
         $arrItems['exportParams'] = $this->exportParams;
         $this->attachFilterData($arrItems);
 
@@ -325,17 +352,5 @@ class DataProvider extends \Magento\Framework\View\Element\UiComponent\DataProvi
         $arrItems['compare_totals'][] = $compareSearchResult->getTotals();
 
         return $this;
-    }
-
-    /**
-     * Get currency code
-     *
-     * @return string
-     */
-    private function getCurrencyCode()
-    {
-        $storeFilter = $this->getDefaultFilterPool()->getFilter('store');
-
-        return $this->scopeCurrency->getCurrencyCode($storeFilter->getStoreIds());
     }
 }

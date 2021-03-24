@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
 /**
@@ -73,6 +83,7 @@ class SalesOverview extends AbstractResource
             'total' => 'SUM(COALESCE(main_table.base_subtotal, 0.0) 
                         + COALESCE(main_table.base_discount_amount, 0.0) 
                         + COALESCE(main_table.base_tax_amount, 0.0) 
+                        + COALESCE(main_table.base_discount_tax_compensation_amount, 0.0) 
                         + COALESCE(main_table.base_shipping_amount, 0.0))',
             'invoiced' => 'SUM(COALESCE(main_table.base_total_invoiced, 0.0))',
             'refunded' => 'SUM(COALESCE(main_table.base_total_refunded, 0.0))',

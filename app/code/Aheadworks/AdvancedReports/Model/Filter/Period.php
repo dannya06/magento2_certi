@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\Filter;
 
 use Aheadworks\AdvancedReports\Model\Source\Period as PeriodSource;
@@ -62,21 +72,29 @@ class Period implements FilterInterface
     private $comparePeriodCache;
 
     /**
+     * @var bool
+     */
+    private $isCacheUsed;
+
+    /**
      * @param RequestInterface $request
      * @param PeriodRangeResolver $periodRangeResolver
      * @param SessionManagerInterface $session
      * @param TimezoneInterface $localeDate
+     * @param bool $isCacheUsed
      */
     public function __construct(
         RequestInterface $request,
         PeriodRangeResolver $periodRangeResolver,
         SessionManagerInterface $session,
-        TimezoneInterface $localeDate
+        TimezoneInterface $localeDate,
+        $isCacheUsed = false
     ) {
         $this->request = $request;
         $this->periodRangeResolver = $periodRangeResolver;
         $this->session = $session;
         $this->localeDate = $localeDate;
+        $this->isCacheUsed = $isCacheUsed;
     }
 
     /**
@@ -315,6 +333,9 @@ class Period implements FilterInterface
      */
     protected function getPeriod()
     {
+        if (!$this->isCacheUsed) {
+            $this->periodCache = null;
+        }
         if (null !== $this->periodCache) {
             return $this->periodCache;
         }

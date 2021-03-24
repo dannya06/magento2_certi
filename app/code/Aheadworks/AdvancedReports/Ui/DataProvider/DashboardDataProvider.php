@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Ui\DataProvider;
 
 use Aheadworks\AdvancedReports\Model\Filter\FilterPool;
@@ -176,6 +186,7 @@ class DashboardDataProvider implements DataProviderInterface
 
     /**
      * {@inheritdoc}
+     * phpcs:disable Magento2.CodeAnalysis.EmptyBlock
      */
     public function addFilter(\Magento\Framework\Api\Filter $filter)
     {
@@ -207,6 +218,7 @@ class DashboardDataProvider implements DataProviderInterface
      * @param string $field
      * @param string $direction
      * @return void
+     * phpcs:disable Magento2.CodeAnalysis.EmptyBlock
      */
     public function addOrder($field, $direction)
     {
@@ -218,6 +230,7 @@ class DashboardDataProvider implements DataProviderInterface
      * @param int $offset
      * @param int $size
      * @return void
+     * phpcs:disable Magento2.CodeAnalysis.EmptyBlock
      */
     public function setLimit($offset, $size)
     {

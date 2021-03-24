@@ -1,90 +1,73 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Ui\Component\Listing;
 
-use Magento\Ui\Component\Listing\Columns;
-use Magento\Framework\View\Element\UiComponentInterface;
+use Magento\Ui\Component\Listing as ListingComponent;
+use Aheadworks\AdvancedReports\Ui\DataProvider\Listing\DataModifierComposite;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
 
 /**
  * Class Listing
  *
  * @package Aheadworks\AdvancedReports\Ui\Component\Listing
  */
-class Listing extends \Magento\Ui\Component\Listing
+class Listing extends ListingComponent
 {
     /**
-     * {@inheritdoc}
+     * @var DataModifierComposite
+     */
+    protected $dataModifier;
+
+    /**
+     * @param ContextInterface $context
+     * @param DataModifierComposite $dataModifier
+     * @param array $components
+     * @param array $data
+     */
+    public function __construct(
+        ContextInterface $context,
+        DataModifierComposite $dataModifier,
+        array $components = [],
+        array $data = []
+    ) {
+        parent::__construct($context, $components, $data);
+        $this->dataModifier = $dataModifier;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @throws /Exception
      */
     public function getDataSourceData()
     {
-        $data = array_merge(
-            $this->getContext()->getDataProvider()->getData(),
-            ['number_columns' => $this->getNumberColumns()]
-        );
+        $data = $this->getContext()->getDataProvider()->getData();
+        $data = $this->dataModifier->prepareSourceData($data, $this);
         return ['data' => $data];
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     *
+     * @throws /Exception
      */
     public function prepare()
     {
         parent::prepare();
-        $this->disableDisplayCompareValueInColumns();
-    }
-
-    /**
-     * Disable display compare value in columns
-     *
-     * @return void
-     * @throws \Exception
-     */
-    protected function disableDisplayCompareValueInColumns()
-    {
-        foreach ($this->getColumnsComponent()->getChildComponents() as $column) {
-            $config = $column->getData('config');
-
-            $config['displayCompareValue'] = false;
-
-            $column->setData('config', $config);
-        }
-    }
-
-    /**
-     * Returns columns list
-     *
-     * @return UiComponentInterface[]
-     * @throws \Exception
-     */
-    protected function getNumberColumns()
-    {
-        $numberColumns = [];
-        foreach ($this->getColumnsComponent()->getChildComponents() as $column) {
-            if ($column->getData('config/dataType') == 'number') {
-                $numberColumns[] = $column->getName();
-            }
-        }
-
-        return $numberColumns;
-    }
-
-    /**
-     * Returns Columns component
-     *
-     * @return UiComponentInterface
-     * @throws \Exception
-     */
-    private function getColumnsComponent()
-    {
-        foreach ($this->getChildComponents() as $childComponent) {
-            if ($childComponent instanceof Columns) {
-                return $childComponent;
-            }
-        }
-        throw new \Exception('No columns found');
+        $this->dataModifier->prepareComponentData($this);
     }
 }

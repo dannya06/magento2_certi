@@ -1,11 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Ui\Model\Export\MetadataProvider">
         <arguments>
@@ -106,7 +99,7 @@
                 <item name="readme" xsi:type="array">
                     <item name="label" xsi:type="string">Readme</item>
                     <item name="link_attributes" xsi:type="array">
-                        <item name="href" xsi:type="string">http://confluence.aheadworks.com/display/EUDOC/Advanced+Reports+-+Magento+2</item>
+                        <item name="href" xsi:type="string">https://aheadworks.atlassian.net/wiki/spaces/EUDOC/pages/1224146951/Advanced+Reports+-+Magento+2</item>
                         <item name="target" xsi:type="string">_blank</item>
                     </item>
                     <item name="additional_classes" xsi:type="array">
@@ -121,6 +114,21 @@
                     </item>
                 </item>
             </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\AdvancedReports\Model\Filter\GroupBy">
+        <arguments>
+            <argument name="isCacheUsed" xsi:type="string">true</argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\AdvancedReports\Model\Filter\Period">
+        <arguments>
+            <argument name="isCacheUsed" xsi:type="string">true</argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\AdvancedReports\Model\Filter\Range">
+        <arguments>
+            <argument name="isCacheUsed" xsi:type="string">true</argument>
         </arguments>
     </type>
 </config>

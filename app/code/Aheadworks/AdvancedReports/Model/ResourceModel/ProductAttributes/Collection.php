@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\ProductAttributes;
 
 use Aheadworks\AdvancedReports\Model\ResourceModel\AbstractPeriodBasedCollection;
@@ -118,7 +128,7 @@ class Collection extends AbstractPeriodBasedCollection
         $this->getSelect()
             ->joinLeft(
                 ['e' => 'catalog_product_entity'],
-                'main_table.product_id = e.' . $this->getCatalogLinkField(),
+                'main_table.product_id = e.entity_id',
                 []
             );
 

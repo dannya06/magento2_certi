@@ -1,24 +1,41 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\Config\Backend;
 
 use Aheadworks\AdvancedReports\Model\ResourceModel\CustomerSales\Range as CustomerSalesRangeResource;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Request\DataPersistor;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use Magento\Framework\App\Config\Value as ConfigValue;
+use Magento\Framework\Model\Context as ModelContext;
+use Magento\Framework\Registry;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Data\Collection\AbstractDb;
 
 /**
  * Class Range
- * @package Magento\CatalogInventory\Model\System\Config\Backend
+ *
+ * @package Aheadworks\AdvancedReports\Model\Config\Backend
  */
-class Range extends \Magento\Framework\App\Config\Value
+class Range extends ConfigValue
 {
-    /**
-     * Config range key
-     */
     const CONFIG_RANGE_KEY = 'aw_arep_config_range';
 
     /**
@@ -37,32 +54,40 @@ class Range extends \Magento\Framework\App\Config\Value
     private $dataPersistor;
 
     /**
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
-     * @param \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList
+     * @var JsonSerializer
+     */
+    private $serializer;
+
+    /**
+     * @param ModelContext $context
+     * @param Registry $registry
+     * @param ScopeConfigInterface $config
+     * @param TypeListInterface $cacheTypeList
      * @param CustomerSalesRangeResource $customerSalesRangeResource
      * @param RequestInterface $request
      * @param DataPersistor $dataPersistor
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
+     * @param JsonSerializer $serializer
+     * @param AbstractResource|null $resource
+     * @param AbstractDb|null $resourceCollection
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $config,
-        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
+        ModelContext $context,
+        Registry $registry,
+        ScopeConfigInterface $config,
+        TypeListInterface $cacheTypeList,
         CustomerSalesRangeResource $customerSalesRangeResource,
         RequestInterface $request,
         DataPersistor $dataPersistor,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        JsonSerializer $serializer,
+        AbstractResource $resource = null,
+        AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->customerSalesRangeResource = $customerSalesRangeResource;
         $this->request = $request;
         $this->dataPersistor = $dataPersistor;
+        $this->serializer = $serializer;
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
 
@@ -85,18 +110,18 @@ class Range extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function beforeSave()
     {
         $value = $this->getValue();
         $value = $this->prepareForSave($value);
         $this->setRangeValue($value);
-        $this->setValue(serialize($value));
+        $this->setValue($this->serializer->serialize($value));
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function afterSave()
     {
@@ -107,7 +132,7 @@ class Range extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function afterDelete()
     {
@@ -119,8 +144,9 @@ class Range extends \Magento\Framework\App\Config\Value
     /**
      * Prepare config value for save
      *
-     * @param [] $value
-     * @return []
+     * @param array $value
+     * @return array
+     * @throws LocalizedException
      */
     private function prepareForSave($value)
     {
@@ -135,8 +161,8 @@ class Range extends \Magento\Framework\App\Config\Value
     /**
      * Remove duplicates
      *
-     * @param [] $value
-     * @return []
+     * @param array $value
+     * @return array
      */
     private function removeDuplicates($value)
     {
@@ -152,15 +178,15 @@ class Range extends \Magento\Framework\App\Config\Value
     /**
      * Validate config value before save
      *
-     * @param [] $value
-     * @throws \Exception
+     * @param array $value
+     * @throws LocalizedException
      * @return $this
      */
     private function validate($value)
     {
-        $this-->$this->validateFrom($value);
-        $this-->$this->validateTo($value);
-        $this-->$this->validateRanges($value);
+        $this->validateFrom($value);
+        $this->validateTo($value);
+        $this->validateRanges($value);
 
         return $this;
     }
@@ -168,8 +194,8 @@ class Range extends \Magento\Framework\App\Config\Value
     /**
      * Validate Range From
      *
-     * @param [] $value
-     * @throws \Exception
+     * @param array $value
+     * @throws LocalizedException
      * @return $this
      */
     private function validateFrom($value)
@@ -181,7 +207,7 @@ class Range extends \Magento\Framework\App\Config\Value
             }
         }
         if ($zeroCount > 1) {
-            throw new \Exception(__("Only one zero From value is possible"));
+            throw new LocalizedException(__("Only one zero From value is possible"));
         }
         return $this;
     }
@@ -189,8 +215,8 @@ class Range extends \Magento\Framework\App\Config\Value
     /**
      * Validate Range To
      *
-     * @param [] $value
-     * @throws \Exception
+     * @param array $value
+     * @throws LocalizedException
      * @return $this
      */
     private function validateTo($value)
@@ -202,7 +228,7 @@ class Range extends \Magento\Framework\App\Config\Value
             }
         }
         if ($infinityCount > 1) {
-            throw new \Exception(__("Only one empty To value is possible"));
+            throw new LocalizedException(__("Only one empty To value is possible"));
         }
         return $this;
     }
@@ -210,15 +236,15 @@ class Range extends \Magento\Framework\App\Config\Value
     /**
      * Validate Ranges
      *
-     * @param [] $value
-     * @throws \Exception
+     * @param array $value
+     * @throws LocalizedException
      * @return $this
      */
     private function validateRanges($value)
     {
         foreach ($value as $valueRow) {
             if ($valueRow['range_to'] != '' && $valueRow['range_from'] >= $valueRow['range_to']) {
-                throw new \Exception(__("From value should be less than To value"));
+                throw new LocalizedException(__("From value should be less than To value"));
             }
         }
 
@@ -252,7 +278,7 @@ class Range extends \Magento\Framework\App\Config\Value
                             && $valueRow['range_to'] <= $checkRow['range_to']
                         )
                     ) {
-                        throw new \Exception(__("Ranges can not be overlapped"));
+                        throw new LocalizedException(__("Ranges can not be overlapped"));
                     }
                 }
             }

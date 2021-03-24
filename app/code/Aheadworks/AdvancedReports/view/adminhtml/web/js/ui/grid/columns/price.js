@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'Magento_Catalog/js/price-utils',
     'Aheadworks_AdvancedReports/js/ui/grid/columns/number'
@@ -12,8 +7,10 @@ define([
     return Column.extend({
         defaults: {
             imports: {
-                priceFormat: '${ $.provider }:data.priceFormat'
-            }
+                priceFormat: '${ $.provider }:data.priceFormat',
+                basePriceFormat: '${ $.provider }:data.basePriceFormat'
+            },
+            basePrice: false
         },
 
         /**
@@ -38,9 +35,11 @@ define([
          * @returns {String}
          */
         getLabel: function (row, index) {
-            var price = this._super(row, index);
+            var price = this._super(row, index),
+                priceFormat = this.basePrice ? this.basePriceFormat : this.priceFormat;
 
-            return priceUtils.formatPrice(price, this.priceFormat);
+
+            return priceUtils.formatPrice(price, priceFormat);
         }
     });
 });

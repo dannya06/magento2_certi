@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'jquery',
     'underscore',
@@ -12,8 +7,10 @@ define([
     'Aheadworks_AdvancedReports/js/url',
     'Aheadworks_AdvancedReports/js/url/updater',
     'uiElement',
+    'Magento_Ui/js/modal/alert',
+    'uiRegistry',
     'awArepTimeframe'
-], function ($, _, utils, async, $t, url, urlUpdater, Element) {
+], function ($, _, utils, async, $t, url, urlUpdater, Element, alert, registry) {
     'use strict';
 
     /**
@@ -100,10 +97,21 @@ define([
          * @returns {PeriodRange} Chainable
          */
         apply: function () {
-            var params, periodParams = this._getPeriodParams();
+            var params, periodParams;
 
-            params = utils.extend({}, this.gridParams, periodParams);
-            this.set('applied', removeEmpty(params));
+            if (this.isValid()) {
+                periodParams = this._getPeriodParams();
+
+                params = utils.extend({}, this.gridParams, periodParams);
+                if (params.period_from !== undefined) {
+                    this._setDateNotify(params.period_from);
+                }
+                this.set('applied', removeEmpty(params));
+            } else {
+                alert({
+                    content: $t('Invalid period values.')
+                });
+            }
 
             return this;
         },
@@ -476,6 +484,44 @@ define([
             if (this.compareAvailable && this.compareEnabled() && this.compareDateRange() == 'custom') {
                 this.datePicker.selectCompareStartDate = true;
             }
+        },
+
+        /**
+         * Check is valid fields
+         *
+         * @return {boolean}
+         */
+        isValid: function () {
+            var dateFromDate = new Date(this.dateFrom()),
+                dateToDate = new Date(this.dateTo()),
+                compareFromDate,
+                compareToDate;
+
+            if (isNaN(dateFromDate) || isNaN(dateToDate) || dateFromDate > dateToDate) {
+                return false;
+            }
+
+            if (this.compareAvailable && this.compareEnabled()) {
+                compareFromDate = new Date(this.compareDateFrom());
+                compareToDate = new Date(this.compareDateTo());
+
+                if (isNaN(compareFromDate) || isNaN(compareToDate) || compareFromDate > compareToDate) {
+                    return false;
+                }
+            }
+
+            return true;
+        },
+
+        /**
+         * Set date for date-notify message
+         *
+         * @private
+         */
+        _setDateNotify: function (date) {
+            registry.get('dateNotify', function (dateNotify) {
+                dateNotify.setDate(date);
+            });
         }
     });
 });

@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Aheadworks\AdvancedReports\Ui\DataProvider\MetadataInterface" type="Aheadworks\AdvancedReports\Ui\DataProvider\Metadata" />
     <preference for="Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Module\ExpressionInterface" type="Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Module\Expression"/>
+    <preference for="Aheadworks\AdvancedReports\Api\ScheduledEmailManagementInterface" type="Aheadworks\AdvancedReports\Model\Service\ScheduledEmailService" />
+    <preference for="Aheadworks\AdvancedReports\Model\Email\Report\ConfigInterface" type="Aheadworks\AdvancedReports\Model\Email\Report\Config" />
+    <preference for="Aheadworks\AdvancedReports\Model\Email\EmailMetadataInterface" type="Aheadworks\AdvancedReports\Model\Email\EmailMetadata" />
+    <preference for="Aheadworks\AdvancedReports\Model\Email\AttachmentInterface" type="Aheadworks\AdvancedReports\Model\Email\Attachment" />
+    <preference for="Aheadworks\AdvancedReports\Model\ReportConfiguration\ConfigInterface" type="Aheadworks\AdvancedReports\Model\ReportConfiguration\Config" />
+    <preference for="Aheadworks\AdvancedReports\Model\ReportConfiguration\Config\ColumnCustomizationInterface" type="Aheadworks\AdvancedReports\Model\ReportConfiguration\Config\ColumnCustomization" />
     <type name="Magento\Framework\Mview\View\StateInterface">
         <plugin name="aw_arep_disable_change_mode" type="Aheadworks\AdvancedReports\Model\Plugin\IndexerMode" />
     </type>
@@ -552,6 +551,23 @@
                 <item name="totals" xsi:type="string">Aheadworks\AdvancedReports\Ui\DataProvider\Compare\Merger\Processor\Totals</item>
                 <item name="field" xsi:type="string">Aheadworks\AdvancedReports\Ui\DataProvider\Compare\Merger\Processor\Field</item>
                 <item name="customerSalesCustomer" xsi:type="string">Aheadworks\AdvancedReports\Ui\DataProvider\Compare\Merger\Processor\CustomerSalesCustomer</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\AdvancedReports\Model\Email\Report\Processor\Variable\Composite">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="date" xsi:type="object">Aheadworks\AdvancedReports\Model\Email\Report\Processor\Variable\Date</item>
+                <item name="store" xsi:type="object">Aheadworks\AdvancedReports\Model\Email\Report\Processor\Variable\Store</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\AdvancedReports\Ui\DataProvider\Listing\DataModifierComposite">
+        <arguments>
+            <argument name="dataModifiers" xsi:type="array">
+                <item name="numberColumns" xsi:type="object">Aheadworks\AdvancedReports\Ui\DataProvider\Listing\DataModifier\NumberColumns</item>
+                <item name="columnsCustomization" xsi:type="object">Aheadworks\AdvancedReports\Ui\DataProvider\Listing\DataModifier\ColumnsCustomization</item>
+                <item name="columnsDisplayCompareValue" xsi:type="object">Aheadworks\AdvancedReports\Ui\DataProvider\Listing\DataModifier\ColumnsDisplayCompareValue</item>
             </argument>
         </arguments>
     </type>

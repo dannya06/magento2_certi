@@ -1,11 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
         <add id="Aheadworks_AdvancedReports::main" title="Advanced Reports by Aheadworks" module="Aheadworks_AdvancedReports" sortOrder="999" dependsOnModule="Aheadworks_AdvancedReports" parent="Magento_Reports::report" resource="Aheadworks_AdvancedReports::main"/>

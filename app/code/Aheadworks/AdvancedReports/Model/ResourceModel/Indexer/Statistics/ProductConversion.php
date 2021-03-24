@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
 use Aheadworks\AdvancedReports\Model\ResourceModel\Conversion as ResourceConversion;
@@ -122,9 +132,14 @@ class ProductConversion extends AbstractResource
         $select = $this->getConnection()->select()
             ->from(['main_table' => $this->getTable('aw_arep_log_product_view')], [])
             ->joinLeft(
+                ['product_entity' => $this->getTable('catalog_product_entity')],
+                'product_entity.entity_id = main_table.product_id',
+                []
+            )
+            ->joinLeft(
                 ['catalog_product' => $this->getTable('catalog_product_entity_varchar')],
-                'catalog_product.' . $this->getCatalogLinkField() .
-                ' = main_table.product_id AND catalog_product.attribute_id = ' .
+                'catalog_product.' . $this->getCatalogLinkField() . ' = product_entity.'
+                . $this->getCatalogLinkField() . ' AND catalog_product.attribute_id = ' .
                 $attribute->getId() . ' AND catalog_product.store_id = 0',
                 []
             )

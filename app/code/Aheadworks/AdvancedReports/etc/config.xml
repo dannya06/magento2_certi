@@ -1,11 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <aw_advancedreports>
@@ -13,6 +6,10 @@
                 <order_status>complete</order_status>
                 <manufacturer_attribute>manufacturer</manufacturer_attribute>
             </general>
+            <email>
+                <sender>general</sender>
+                <scheduled_email_template>aw_advancedreports_email_scheduled_email_template</scheduled_email_template>
+            </email>
         </aw_advancedreports>
         <dev>
             <js>

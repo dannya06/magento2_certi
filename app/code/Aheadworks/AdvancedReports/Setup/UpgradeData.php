@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Setup;
 
 use Aheadworks\AdvancedReports\Model\Indexer\Statistics\Processor as StatisticsProcessor;
@@ -18,6 +28,8 @@ use Magento\Framework\DB\Select;
 use Magento\Reports\Model\Event;
 use Magento\Framework\App\Config\ConfigResource\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 
 /**
  * Class UpgradeData
@@ -32,7 +44,7 @@ class UpgradeData implements UpgradeDataInterface
     const RECORDS_COUNT_PER_RUN = 1000;
 
     /**
-     * @var \Magento\Framework\Indexer\IndexerRegistry
+     * @var IndexerRegistry
      */
     private $indexerRegistry;
 
@@ -52,25 +64,33 @@ class UpgradeData implements UpgradeDataInterface
     private $coreConfig;
 
     /**
+     * @var JsonSerializer
+     */
+    private $serializer;
+
+    /**
      * @param IndexerRegistry $indexerRegistry
      * @param RangeFactory $rangeFactory
      * @param RangeResource $rangeResource
      * @param ConfigInterface $coreConfig
+     * @param JsonSerializer $serializer
      */
     public function __construct(
         IndexerRegistry $indexerRegistry,
         RangeFactory $rangeFactory,
         RangeResource $rangeResource,
-        ConfigInterface $coreConfig
+        ConfigInterface $coreConfig,
+        JsonSerializer $serializer
     ) {
         $this->indexerRegistry = $indexerRegistry;
         $this->rangeFactory = $rangeFactory;
         $this->rangeResource = $rangeResource;
         $this->coreConfig = $coreConfig;
+        $this->serializer = $serializer;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
@@ -223,6 +243,7 @@ class UpgradeData implements UpgradeDataInterface
      * Add default ranges
      *
      * @return void
+     * @throws AlreadyExistsException
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     private function addDefaultRanges()
@@ -246,7 +267,7 @@ class UpgradeData implements UpgradeDataInterface
 
         $this->coreConfig->saveConfig(
             'aw_advancedreports/general/ranges',
-            serialize($rangesData),
+            $this->serializer->serialize($rangesData),
             ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             0
         );

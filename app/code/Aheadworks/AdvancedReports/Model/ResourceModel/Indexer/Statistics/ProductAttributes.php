@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
 /**
@@ -40,12 +50,30 @@ class ProductAttributes extends AbstractResource
             'tax' => 'SUM(COALESCE(configurable.base_tax_amount, main_table.base_tax_amount, 0.0))',
             'total' => '(SUM(COALESCE(configurable.base_row_total, main_table.base_row_total, 0.0))
                 + SUM(COALESCE(configurable.base_tax_amount, main_table.base_tax_amount, 0.0))
+                + SUM(COALESCE(
+                        configurable.base_discount_tax_compensation_amount, 
+                        main_table.base_discount_tax_compensation_amount, 
+                        0.0
+                      )
+                  )
                 - SUM(COALESCE(configurable.base_discount_amount, main_table.base_discount_amount, 0.0)))',
             'invoiced' => '(SUM(COALESCE(configurable.base_row_invoiced, main_table.base_row_invoiced, 0.0))
                 + SUM(COALESCE(configurable.base_tax_invoiced, main_table.base_tax_invoiced, 0.0))
+                + SUM(COALESCE(
+                        configurable.base_discount_tax_compensation_invoiced, 
+                        main_table.base_discount_tax_compensation_invoiced, 
+                        0.0
+                      )
+                  )
                 - SUM(COALESCE(configurable.base_discount_invoiced, main_table.base_discount_invoiced, 0.0)))',
             'refunded' => '(SUM(COALESCE(configurable.base_amount_refunded, main_table.base_amount_refunded, 0.0)) '
                 . ' + SUM(COALESCE(configurable.base_tax_refunded, main_table.base_tax_refunded, 0.0)) '
+                . ' + SUM(COALESCE(
+                        configurable.base_discount_tax_compensation_refunded, 
+                        main_table.base_discount_tax_compensation_refunded, 
+                        0.0
+                      )
+                  )'
                 . ' - SUM(COALESCE(configurable.base_discount_refunded, main_table.base_discount_refunded, 0.0)))',
             'to_global_rate' => 'order.base_to_global_rate'
         ];

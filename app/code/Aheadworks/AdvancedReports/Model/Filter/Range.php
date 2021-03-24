@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\Filter;
 
 use Magento\Framework\App\RequestInterface;
@@ -42,15 +52,23 @@ class Range implements FilterInterface
     private $session;
 
     /**
+     * @var bool
+     */
+    private $isCacheUsed;
+
+    /**
      * @param RequestInterface $request
      * @param SessionManagerInterface $session
+     * @param bool $isCacheUsed
      */
     public function __construct(
         RequestInterface $request,
-        SessionManagerInterface $session
+        SessionManagerInterface $session,
+        $isCacheUsed = false
     ) {
         $this->request = $request;
         $this->session = $session;
+        $this->isCacheUsed = $isCacheUsed;
     }
 
     /**
@@ -58,6 +76,9 @@ class Range implements FilterInterface
      */
     public function getValue()
     {
+        if (!$this->isCacheUsed) {
+            $this->rangeCache = null;
+        }
         if (null == $this->rangeCache) {
             $from = $this->request->getParam('range_from');
             $to = $this->request->getParam('range_to');

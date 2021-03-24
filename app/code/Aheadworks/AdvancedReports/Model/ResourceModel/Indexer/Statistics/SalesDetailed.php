@@ -1,12 +1,24 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
 use Magento\Customer\Model\Group as CustomerGroup;
+use Magento\Framework\DB\Select;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute as EavAttribute;
 
 /**
  * Class SalesDetailed
@@ -26,14 +38,16 @@ class SalesDetailed extends AbstractResource
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     * @throws \Exception
      */
     protected function process()
     {
         $columns = $this->getColumns();
 
         $orderItemTable = $this->getTable('sales_order_item');
+        $orderTaxItemTable = $this->getTable('sales_order_tax_item');
         $salesOrderAddress = $this->getTable('sales_order_address');
         $select = $this->getConnection()->select()
             ->from(['main_table' => $this->getTable('sales_order')], [])
@@ -68,10 +82,14 @@ class SalesDetailed extends AbstractResource
                 ['billing_address' => $salesOrderAddress],
                 'billing_address.parent_id = main_table.entity_id AND billing_address.address_type = "billing"',
                 []
-            )->columns($columns)
+            )
+            ->joinLeft(['tax_item' => $orderTaxItemTable], 'tax_item.item_id = item.item_id', [])
+            ->joinLeft(['tax_item2' => $orderTaxItemTable], 'tax_item2.item_id = item2.item_id', [])
+            ->columns($columns)
             ->group('item.item_id');
 
         $select = $this->addManufacturer($select);
+        $select = $this->addProductTaxClass($select);
 
         $select = $this->addFilterByCreatedAt($select, 'main_table');
 
@@ -106,9 +124,9 @@ class SalesDetailed extends AbstractResource
             'customer_group_id' => 'main_table.customer_group_id',
             'customer_group' => 'c_group.customer_group_code',
             'country' => 'COALESCE(shipping_address.country_id, billing_address.country_id, "")',
-            'region' => 'COALESCE(shipping_address.region, billing_address.region, "")',
-            'city' => 'COALESCE(shipping_address.city, billing_address.city, "")',
-            'zip_code' => 'COALESCE(shipping_address.postcode, billing_address.postcode, "")',
+            'shipping_region' => 'COALESCE(shipping_address.region, "")',
+            'shipping_city' => 'COALESCE(shipping_address.city, "")',
+            'shipping_zip_code' => 'COALESCE(shipping_address.postcode, "")',
             'address' => 'COALESCE(shipping_address.street, billing_address.street, "")',
             'phone' => 'COALESCE(shipping_address.telephone, billing_address.telephone, "")',
             'coupon_code' => 'main_table.coupon_code',
@@ -164,6 +182,8 @@ class SalesDetailed extends AbstractResource
             'refunded' => 'COALESCE(((IF((IFNULL(item.qty_refunded, item2.qty_refunded) > 0), 1, 0) '
                 . '* ((IFNULL(item.qty_refunded, item2.qty_refunded) / IFNULL(item.qty_invoiced, item2.qty_invoiced)) '
                 . '* (IFNULL(item.qty_invoiced, item2.qty_invoiced) * IFNULL(item.base_price, item2.base_price) '
+                . '+ IFNULL(COALESCE(item.base_discount_tax_compensation_refunded, 0), '
+                . 'COALESCE(item2.base_discount_tax_compensation_refunded, 0)) '
                 . '- ABS(COALESCE(IF(item.base_discount_amount = 0, SUM(item2.base_discount_amount), '
                 . 'item.base_discount_amount), 0)))))), 0)',
             'tax_refunded' => 'COALESCE(IF((IFNULL(item.qty_refunded, item2.qty_refunded) > 0), '
@@ -175,10 +195,28 @@ class SalesDetailed extends AbstractResource
                 . '* IFNULL(item.base_price, item2.base_price) - ABS(COALESCE(IF(item.base_discount_amount = 0, '
                 . 'SUM(item2.base_discount_amount), item.base_discount_amount), 0))) '
                 . '/ IFNULL(item.qty_invoiced, item2.qty_invoiced)) '
+                . '+ IFNULL(COALESCE(item.base_discount_tax_compensation_refunded, 0), '
+                . 'COALESCE(item2.base_discount_tax_compensation_refunded, 0)) '
                 . '+ IF((IFNULL(item.qty_refunded, item2.qty_refunded) > 0), '
                 . '(IFNULL(item.qty_refunded, item2.qty_refunded) / IFNULL(item.qty_invoiced, item2.qty_invoiced) '
                 . '* IFNULL(item.base_tax_invoiced, item2.base_tax_invoiced)), 0)))), 0)',
-            'to_global_rate' => 'main_table.base_to_global_rate'
+            'to_global_rate' => 'main_table.base_to_global_rate',
+            'base_grand_total' => 'COALESCE(main_table.base_grand_total, 0)',
+            'shipping_information' => 'COALESCE(main_table.shipping_description, "")',
+            'shipping_amount' => 'COALESCE(main_table.base_shipping_amount, 0)',
+            'order_modified_date' => 'main_table.updated_at',
+            'tax_code' => $this->getTaxClassAttribute() ?
+                'IFNULL(tax_class_value_table.class_name, "Not Set")' :
+                'COALESCE("Not Set")',
+            'tax_percent' => 'COALESCE(IFNULL(item.tax_percent, item2.tax_percent), 0)',
+            'base_tax_real_amount' => 'COALESCE(IFNULL(tax_item.real_base_amount, tax_item2.real_base_amount), 0)',
+            'billing_region' => 'COALESCE(billing_address.region, "")',
+            'billing_city' => 'COALESCE(billing_address.city, "")',
+            'billing_zip_code' => 'COALESCE(billing_address.postcode, "")',
+            'customer_balance_refunded' => $this->getConnection()->tableColumnExists(
+                $this->getTable('sales_order'),
+                'bs_customer_bal_total_refunded'
+            ) ? 'COALESCE(main_table.bs_customer_bal_total_refunded, 0)' : 'COALESCE(0)'
         ];
 
         return $columns;
@@ -187,25 +225,60 @@ class SalesDetailed extends AbstractResource
     /**
      * Add manufacturer
      *
-     * @param \Magento\Framework\DB\Select $select
-     * @return \Magento\Framework\DB\Select
+     * @param Select $select
+     * @return Select
+     * @throws \Exception
      */
     private function addManufacturer($select)
     {
-        /* @var $manufacturerAttr \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
+        /* @var $manufacturerAttr EavAttribute */
         $manufacturerAttr = $this->getManufacturerAttribute();
         if ($manufacturerAttr) {
             $manufacturerTable = $manufacturerAttr->getBackendTable();
             $select
                 ->joinLeft(
+                    ['product_entity' => $this->getTable('catalog_product_entity')],
+                    'product_entity.entity_id = item.product_id',
+                    []
+                )->joinLeft(
                     ['item_manufacturer' => $manufacturerTable],
-                    'item_manufacturer.' . $this->getCatalogLinkField() . ' = item.product_id '
-                    . 'AND item_manufacturer.attribute_id = ' . $manufacturerAttr->getId(),
+                    'item_manufacturer.' . $this->getCatalogLinkField() . ' = product_entity.'
+                    . $this->getCatalogLinkField() . ' AND item_manufacturer.attribute_id = '
+                    . $manufacturerAttr->getId(),
+                    []
+                )->joinLeft(
+                    ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],
+                    'item_manufacturer.value = manufacturer_value.option_id AND manufacturer_value.store_id = 0',
+                    []
+                );
+        }
+
+        return $select;
+    }
+
+    /**
+     * Add product tax class
+     *
+     * @param Select $select
+     * @return Select
+     * @throws \Exception
+     */
+    private function addProductTaxClass($select)
+    {
+        /* @var $taxClassAttribute EavAttribute */
+        $taxClassAttribute = $this->getTaxClassAttribute();
+        if ($taxClassAttribute) {
+            $taxClassTable = $taxClassAttribute->getBackendTable();
+            $select
+                ->joinLeft(
+                    ['tax_class_attr_tbl' => $taxClassTable],
+                    'tax_class_attr_tbl.' . $this->getCatalogLinkField() . ' = item.product_id '
+                    . 'AND tax_class_attr_tbl.attribute_id = ' . $taxClassAttribute->getId(),
                     []
                 )
                 ->joinLeft(
-                    ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],
-                    'item_manufacturer.value = manufacturer_value.option_id AND manufacturer_value.store_id = 0',
+                    ['tax_class_value_table' => $this->getTable('tax_class')],
+                    'tax_class_attr_tbl.value = tax_class_value_table.class_id AND tax_class_attr_tbl.store_id = 0',
                     []
                 );
         }

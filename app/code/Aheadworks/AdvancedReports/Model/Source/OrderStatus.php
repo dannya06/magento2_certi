@@ -1,39 +1,45 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\Source;
+
+use Magento\Sales\Model\Order\Config as OrderConfig;
+use Magento\Framework\Data\OptionSourceInterface;
 
 /**
  * Class OrderStatus
  *
  * @package Aheadworks\AdvancedReports\Model\Source
  */
-class OrderStatus implements \Magento\Framework\Data\OptionSourceInterface
+class OrderStatus implements OptionSourceInterface
 {
     /**
-     * @var string[]
+     * @var array
      */
-    private $stateStatuses = [
-        \Magento\Sales\Model\Order::STATE_NEW,
-        \Magento\Sales\Model\Order::STATE_PROCESSING,
-        \Magento\Sales\Model\Order::STATE_COMPLETE,
-        \Magento\Sales\Model\Order::STATE_CLOSED,
-        \Magento\Sales\Model\Order::STATE_CANCELED,
-        \Magento\Sales\Model\Order::STATE_HOLDED,
-    ];
+    private $options;
 
     /**
-     * @var \Magento\Sales\Model\Order\Config
+     * @var OrderConfig
      */
     private $orderConfig;
 
     /**
-     * @param \Magento\Sales\Model\Order\Config $orderConfig
+     * @param OrderConfig $orderConfig
      */
-    public function __construct(\Magento\Sales\Model\Order\Config $orderConfig)
+    public function __construct(OrderConfig $orderConfig)
     {
         $this->orderConfig = $orderConfig;
     }
@@ -41,24 +47,27 @@ class OrderStatus implements \Magento\Framework\Data\OptionSourceInterface
     /**
      * Get options
      *
-     * @return []
+     * @return array
      */
     public function toOptionArray()
     {
-        $statuses = $this->stateStatuses
-            ? $this->orderConfig->getStateStatuses($this->stateStatuses)
-            : $this->orderConfig->getStatuses();
+        if ($this->options === null) {
+            $statuses = $this->orderConfig->getStatuses();
+            $options = [];
 
-        foreach ($statuses as $code => $label) {
-            $options[] = ['value' => $code, 'label' => $label];
+            foreach ($statuses as $code => $label) {
+                $options[] = ['value' => $code, 'label' => $label];
+            }
+            $this->options = $options;
         }
-        return $options;
+
+        return $this->options;
     }
 
     /**
      * Get options
      *
-     * @return []
+     * @return array
      */
     public function getOptions()
     {

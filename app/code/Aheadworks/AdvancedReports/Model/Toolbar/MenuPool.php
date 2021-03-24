@@ -1,14 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\Toolbar;
 
 use Aheadworks\AdvancedReports\Model\Toolbar\Menu\ItemInterface;
 use Aheadworks\AdvancedReports\Model\Toolbar\Menu\ItemFactory;
 use Magento\Framework\AuthorizationInterface;
+use Magento\Framework\Exception\NotFoundException;
 
 /**
  * Class MenuPool
@@ -45,7 +56,7 @@ class MenuPool
     public function __construct(
         ItemFactory $menuItemFactory,
         AuthorizationInterface $authorization,
-        array $menuItems
+        array $menuItems = []
     ) {
         $this->menuItemFactory = $menuItemFactory;
         $this->authorization = $authorization;
@@ -56,7 +67,7 @@ class MenuPool
      * Retrieve menu items
      *
      * @return ItemInterface[]
-     * @throws \Exception
+     * @throws NotFoundException
      */
     public function getMenuItems()
     {
@@ -78,18 +89,18 @@ class MenuPool
      *
      * @param string $menuItem
      * @return ItemInterface
-     * @throws \Exception
+     * @throws NotFoundException
      */
     public function getMenuItem($menuItem)
     {
         if (!isset($this->menuItemsInstances[$menuItem])) {
             if (!isset($this->menuItems[$menuItem])) {
-                throw new \Exception(sprintf('Unknown menu item: %s requested', $menuItem));
+                throw new NotFoundException(__('Unknown menu item: %s requested', $menuItem));
             }
             $menuItemInstance = $this->menuItemFactory->create(['data' => $this->menuItems[$menuItem]]);
             if (!$menuItemInstance instanceof ItemInterface) {
-                throw new \Exception(
-                    sprintf('Configuration instance %s does not implement required interface.', $menuItem)
+                throw new NotFoundException(
+                    __('Configuration instance %s does not implement required interface.', $menuItem)
                 );
             }
             $this->menuItemsInstances[$menuItem] = $menuItemInstance;

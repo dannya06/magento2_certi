@@ -1,12 +1,22 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\Config\Initial;
 
-use Aheadworks\AdvancedReports\Model\Serializer;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\App\Config\Initial\Converter;
 use Magento\Framework\Config\Dom;
@@ -23,12 +33,12 @@ use Magento\Framework\Exception\LocalizedException;
 class Exploder
 {
     /**
-     * Cache Id prefix
+     * Cache ID prefix value
      */
     const CACHE_ID_PREFIX = 'aw_arep_initial_config_exploder';
 
     /**
-     * File name
+     * XML config file name
      */
     const FILE_NAME = 'config.xml';
 
@@ -53,7 +63,7 @@ class Exploder
     private $validationState;
 
     /**
-     * @var Serializer
+     * @var JsonSerializer
      */
     private $serializer;
 
@@ -62,14 +72,14 @@ class Exploder
      * @param FileResolverInterface $fileListResolver
      * @param Converter $converter
      * @param ValidationStateInterface $validationState
-     * @param Serializer $serializer
+     * @param JsonSerializer $serializer
      */
     public function __construct(
         CacheInterface $cache,
         FileResolverInterface $fileListResolver,
         Converter $converter,
         ValidationStateInterface $validationState,
-        Serializer $serializer
+        JsonSerializer $serializer
     ) {
         $this->cache = $cache;
         $this->fileListResolver = $fileListResolver;
