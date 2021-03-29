@@ -3984,15 +3984,16 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "cd70276586f253c44886e5e07b78d3dc3353157f"
+                "reference": "769de26cc383aa8da11469b0d17fcfe7c32a73d2"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
                 "icubeus/module-oscoverridecheckout": "self.version",
+                "icubeus/module-paymentinformation": "self.version",
                 "icubeus/module-pwa-checkout": "self.version",
                 "icubeus/module-shipmentpg": "self.version"
             },
@@ -4002,13 +4003,15 @@
                     "src/module-checkoutpg/registration.php",
                     "src/module-oscoverridecheckout/registration.php",
                     "src/module-pwa-checkout/registration.php",
-                    "src/module-shipmentpg/registration.php"
+                    "src/module-shipmentpg/registration.php",
+                    "src/module-paymentinformation/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\Oscoverridecheckout\\": "src/module-oscoverridecheckout",
                     "Icube\\Checkoutpg\\": "src/module-checkoutpg",
                     "Icube\\PwaCheckout\\": "src/module-pwa-checkout",
-                    "Icube\\Shipmentpg\\": "src/module-shipmentpg"
+                    "Icube\\Shipmentpg\\": "src/module-shipmentpg",
+                    "Icube\\PaymentInformation\\": "src/module-paymentinformation"
                 }
             },
             "license": [
@@ -4026,15 +4029,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-12-16T10:11:44+00:00"
+            "time": "2021-03-25T07:11:46+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "c93a00111dc65939d47aa35ca1188cacc5daf677"
+                "reference": "608d2b08d94220decfc216e441f691f6ae32c0dc"
             },
             "type": "magento2-module",
             "autoload": {
@@ -4055,7 +4058,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2021-03-03T09:37:46+00:00"
+            "time": "2021-03-26T08:46:54+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -4288,11 +4291,11 @@
         },
         {
             "name": "icubeus/magento2-notification",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "8e7bcfdd8425b57cdc5dd93b899317e8433b1598"
+                "reference": "0ff5a47dab04cd9820a6f5c92e27dbac37d85370"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "^4.1"
@@ -4331,15 +4334,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-12-09T11:44:06+00:00"
+            "time": "2021-03-23T06:15:16+00:00"
         },
         {
             "name": "icubeus/magento2-payment",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-payment.git",
-                "reference": "212e0983e732f9738ddbe836bb7a151af5af3e39"
+                "reference": "a52f068deccf099c5f0344ab7d68d011766dbecc"
             },
             "replace": {
                 "icubeus/module-ipay88": "self.version"
@@ -4379,7 +4382,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-02-05T07:39:59+00:00"
+            "time": "2021-03-24T02:45:36+00:00"
         },
         {
             "name": "icubeus/magento2-queues",
@@ -4736,11 +4739,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "320d8dd916487894c5373866e23875df48a759d8"
+                "reference": "19bc90e10f2dc4771e5f516ad4ca496d09e2061b"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -4789,7 +4792,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-02-11T08:12:22+00:00"
+            "time": "2021-03-29T04:16:20+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
