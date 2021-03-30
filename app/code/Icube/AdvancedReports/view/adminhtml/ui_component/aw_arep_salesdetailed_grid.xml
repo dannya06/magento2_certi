@@ -372,13 +372,15 @@
             </argument>
         </column>
         <column name="order_date" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date">
-            <settings>
-                <filter>dateRange</filter>
-                <dataType>date</dataType>
-                <dateFormat>MMM dd, YYYY, hh:mm:ss A</dateFormat>
-                <label translate="true">Order Date</label>
-                <timezone>false</timezone>
-            </settings>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">date</item>
+                    <item name="dataExportType" xsi:type="string">date</item>
+                    <item name="filter" xsi:type="string">dateRange</item>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
+                    <item name="label" xsi:type="string" translate="true">Order Date</item>
+                </item>
+            </argument>
         </column>
         <column name="product_name" class="Aheadworks\AdvancedReports\Ui\Component\Listing\Column\ViewAction">
             <argument name="data" xsi:type="array">
