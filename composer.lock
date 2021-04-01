@@ -3956,11 +3956,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "205b31ab18e3d0616534eb379db1b0e6df8349a4"
+                "reference": "cca5f0d1306eff06d62f5df941896201725196f2"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3980,7 +3980,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2020-12-09T08:51:00+00:00"
+            "time": "2021-03-31T12:31:56+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
@@ -4062,11 +4062,11 @@
         },
         {
             "name": "icubeus/magento2-confirmpayment",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-confirmpayment.git",
-                "reference": "68a6e5888bbd95498afdfa46eec4fe2419d9bb33"
+                "reference": "4364395f45181e90049769c1ad0f739c917b6d56"
             },
             "type": "magento2-module",
             "autoload": {
@@ -4087,15 +4087,15 @@
                 "magento 2",
                 "payment"
             ],
-            "time": "2020-12-14T02:35:16+00:00"
+            "time": "2021-04-01T03:08:59+00:00"
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.2",
+            "version": "4.1.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "a8c13756c30a981952b167616ab6b7ccff9ba58f"
+                "reference": "e5e360920d271e5abd169c64633c4c8cf9086df3"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -4214,7 +4214,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-02-09T09:42:19+00:00"
+            "time": "2021-03-31T12:18:11+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -4244,11 +4244,11 @@
         },
         {
             "name": "icubeus/magento2-instantdelivery",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "aed9d87da3fff12876df08d5309271c9febb4d97"
+                "reference": "bba509d7c7fca0a2d7071dec8a3d883ee12b1441"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -4287,7 +4287,7 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2020-12-09T11:52:46+00:00"
+            "time": "2021-03-31T11:50:18+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
@@ -4509,11 +4509,11 @@
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "14b4b25dfb2d129344d3f0d9e19e2c635b0f8b95"
+                "reference": "63f78ed92cd124db7b642ff5efa0d568fed04dc6"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -4546,7 +4546,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2020-12-14T02:14:08+00:00"
+            "time": "2021-03-31T10:51:45+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -4644,11 +4644,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "b3fe343fff53d02c2e50526fe7a7c28ce735a12b"
+                "reference": "23196ecaf968496e1ec095b74f4822340eb74be2"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -4707,7 +4707,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2021-02-22T01:39:27+00:00"
+            "time": "2021-03-31T12:11:48+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
