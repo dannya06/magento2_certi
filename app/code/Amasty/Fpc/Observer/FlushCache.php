@@ -1,86 +1,43 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
 
 namespace Amasty\Fpc\Observer;
 
-use Amasty\Fpc\Model\Config;
 use Amasty\Fpc\Model\Queue;
-use Magento\Framework\App\Area;
-use Magento\Framework\App\State;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\Exception\LocalizedException;
+use Psr\Log\LoggerInterface;
 
 class FlushCache implements ObserverInterface
 {
     /**
-     * @var Config
+     * @var LoggerInterface
      */
-    private $config;
+    private $logger;
 
     /**
-     * @var Queue
+     * @var Queue\RegenerateHandler
      */
-    private $queue;
-
-    /**
-     * @var State
-     */
-    private $appState;
+    private $regenerateHandler;
 
     public function __construct(
-        Config $config,
-        Queue $queue,
-        State $appState
+        LoggerInterface $logger,
+        Queue\RegenerateHandler $regenerateHandler
     ) {
-        $this->config = $config;
-        $this->queue = $queue;
-        $this->appState = $appState;
+        $this->logger = $logger;
+        $this->regenerateHandler = $regenerateHandler;
     }
 
-    /**
-     * Execute
-     *
-     * @param \Magento\Framework\Event\Observer $observer
-     */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        if (!$this->config->getQueueAfterGenerate()
-            || !$this->config->isModuleEnabled()
-            || $this->isFrontendArea()
-        ) {
-            return;
-        }
-
         try {
-            $this->appState->setAreaCode(Area::AREA_GLOBAL);
+            $this->regenerateHandler->execute();
         } catch (\Exception $e) {
-            null;
-            //launched from admin
-            //(emulateArea not working due the area emulation in \Amasty\Fpc\Model\Source\PageType\Emulated)
+            $this->logger->critical(__('Unable to regenerate queue: %1', $e->getMessage()));
         }
-
-        $this->queue->forceUnlock();
-        $this->queue->generate();
-    }
-
-    /**
-     * @return bool
-     */
-    private function isFrontendArea()
-    {
-        $isFrontend = true;
-
-        try {
-            $isFrontend = $this->appState->getAreaCode() == Area::AREA_FRONTEND;
-        } catch (LocalizedException $e) {
-            null;
-        }
-
-        return $isFrontend;
     }
 }

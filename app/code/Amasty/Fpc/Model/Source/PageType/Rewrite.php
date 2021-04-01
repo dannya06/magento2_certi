@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -11,7 +11,7 @@ namespace Amasty\Fpc\Model\Source\PageType;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\UrlRewrite\Model\ResourceModel\UrlRewriteCollectionFactory;
 use Magento\Framework\App\State;
-use Magento\Framework\UrlInterface;
+use Magento\Framework\Url as FrontendUrlBuilder;
 use Magento\Store\Model\App\Emulation;
 use Magento\UrlRewrite\Model\ResourceModel\UrlRewriteCollection;
 
@@ -26,7 +26,7 @@ abstract class Rewrite extends Emulated
 
     public function __construct(
         UrlRewriteCollectionFactory $rewriteCollectionFactory,
-        UrlInterface $urlBuilder,
+        FrontendUrlBuilder $urlBuilder,
         Emulation $appEmulation,
         State $appState,
         StoreManagerInterface $storeManager,
@@ -56,7 +56,8 @@ abstract class Rewrite extends Emulated
         /** @var UrlRewriteCollection $rewriteCollection */
         $rewriteCollection = $this->rewriteCollectionFactory->create()
             ->addFieldToFilter('redirect_type', 0)
-            ->addFieldToFilter('entity_type', $this->rewriteType);
+            ->addFieldToFilter('entity_type', $this->rewriteType)
+            ->addFilterToMap('store_id', 'main_table.store_id');
 
         if ($storeId) {
             $rewriteCollection->addStoreFilter($storeId);

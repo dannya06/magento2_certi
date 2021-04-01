@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -12,10 +12,8 @@ use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Model\AbstractModel;
 use Amasty\Fpc\Api\Data\ActivityInterface;
 
-class Activity extends AbstractModel implements ActivityInterface, IdentityInterface
+class Activity extends AbstractModel implements ActivityInterface
 {
-    const CACHE_TAG = 'amasty_fpc_activity';
-
     public function _construct()
     {
         $this->_init(ResourceModel\Activity::class);
@@ -147,29 +145,5 @@ class Activity extends AbstractModel implements ActivityInterface, IdentityInter
     public function setDate($date)
     {
         return $this->setData(ActivityInterface::DATE, $date);
-    }
-
-    /**
-     * Get identities
-     *
-     * @return array
-     */
-    public function getIdentities()
-    {
-        return [self::CACHE_TAG];
-    }
-
-    /**
-     * Get list of cache tags applied to model object.
-     *
-     * @return array
-     */
-    public function getCacheTags()
-    {
-        $tags = parent::getCacheTags();
-        if (!$tags) {
-            $tags = [];
-        }
-        return $tags + $this->getIdentities();
     }
 }

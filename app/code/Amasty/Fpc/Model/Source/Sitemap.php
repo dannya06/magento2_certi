@@ -1,17 +1,20 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
 
 namespace Amasty\Fpc\Model\Source;
 
+use Amasty\Fpc\Model\Config;
+use Amasty\Fpc\Model\Simplexml\ConfigFactory as SimpleXmlConfigFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
+use Magento\Framework\Simplexml\Element;
 use Psr\Log\LoggerInterface;
-use Amasty\Fpc\Model\Config;
+use Zend\Uri\Http as UriHandler;
 
 class Sitemap implements SourceInterface
 {
@@ -30,14 +33,28 @@ class Sitemap implements SourceInterface
      */
     private $config;
 
+    /**
+     * @var SimpleXmlConfigFactory
+     */
+    private $simpleXmlConfigFactory;
+
+    /**
+     * @var UriHandler
+     */
+    private $uriHandler;
+
     public function __construct(
         Filesystem $filesystem,
         LoggerInterface $logger,
-        Config $config
+        Config $config,
+        SimpleXmlConfigFactory $simpleXmlConfigFactory,
+        UriHandler $uriHandler
     ) {
         $this->filesystem = $filesystem;
         $this->logger = $logger;
         $this->config = $config;
+        $this->simpleXmlConfigFactory = $simpleXmlConfigFactory;
+        $this->uriHandler = $uriHandler;
     }
 
     /**
@@ -63,33 +80,54 @@ class Sitemap implements SourceInterface
             $directoryRead = $this->filesystem->getDirectoryRead(DirectoryList::ROOT);
 
             if (!$directoryRead->isExist($filePath)) {
-                $this->logger->warning($eMessage . __('but the Sitemap XML file does not exist with specified path: %1', $filePath));
+                $this->logger->warning(
+                    $eMessage . __('but the Sitemap XML file does not exist with specified path: %1', $filePath)
+                );
                 continue;
             }
 
-            $xml = simplexml_load_file($directoryRead->getAbsolutePath($filePath));
+            $xml = $this->loadXmlFromFile($directoryRead->getAbsolutePath($filePath));
 
             if (false === $xml) {
-                $this->logger->warning($eMessage . __('but Amasty Crawler could not parse the Sitemap XML file: %1', $filePath));
+                $this->logger->warning(
+                    $eMessage . __('but Amasty Crawler could not parse the Sitemap XML file: %1', $filePath)
+                );
                 continue;
             }
 
             $sitemapParts = [];
             if ('sitemapindex' == $xml->getName()) {
                 foreach ($xml->sitemap as $sitemap) {
-                    $sitemapPartPath = parse_url(trim($sitemap->loc), PHP_URL_PATH);
+                    $sitemapPartPath = $this->uriHandler->parse(trim($sitemap->loc))->getPath();
+
                     if (false === $sitemapPartPath) {
-                        $this->logger->warning($eMessage . __('Amasty Crawler could not parse the following URL from the Sitemap XML file: %1', trim($sitemap->loc)));
+                        $this->logger->warning(
+                            $eMessage .
+                            __(
+                                'Amasty Crawler could not parse the following URL from the Sitemap XML file: %1',
+                                trim($sitemap->loc)
+                            )
+                        );
                         continue;
                     }
 
                     if (!$directoryRead->isExist($sitemapPartPath)) {
-                        $this->logger->warning($eMessage . __('The following file from the Sitemap XML file does not exist: %1', $sitemapPartPath));
+                        $this->logger->warning(
+                            $eMessage .
+                            __('The following file from the Sitemap XML file does not exist: %1', $sitemapPartPath)
+                        );
                     }
 
-                    $sitemapPart = simplexml_load_file($directoryRead->getAbsolutePath($sitemapPartPath));
+                    $sitemapPart = $this->loadXmlFromFile($directoryRead->getAbsolutePath($sitemapPartPath));
+
                     if (false === $sitemapPart) {
-                        $this->logger->warning($eMessage . __('Amasty Crawler could not parse the following file from the Sitemap XML file: %1', $sitemapPartPath));
+                        $this->logger->warning(
+                            $eMessage .
+                            __(
+                                'Amasty Crawler could not parse the following file from the Sitemap XML file: %1',
+                                $sitemapPartPath
+                            )
+                        );
                         continue;
                     }
 
@@ -97,7 +135,10 @@ class Sitemap implements SourceInterface
                 }
 
                 if (empty($sitemapParts)) {
-                    $this->logger->warning($eMessage . __('but Amasty Crawler could not extract any URL from the Sitemap XML file: %1', $filePath));
+                    $this->logger->warning(
+                        $eMessage .
+                        __('but Amasty Crawler could not extract any URL from the Sitemap XML file: %1', $filePath)
+                    );
                     continue;
                 }
             } else {
@@ -126,5 +167,13 @@ class Sitemap implements SourceInterface
         }
 
         return $result;
+    }
+
+    protected function loadXmlFromFile(string $filePath): Element
+    {
+        $simplexmlConfig = $this->simpleXmlConfigFactory->create();
+        $simplexmlConfig->loadFile($filePath);
+
+        return $simplexmlConfig->getNode();
     }
 }

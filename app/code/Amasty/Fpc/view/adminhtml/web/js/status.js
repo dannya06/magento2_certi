@@ -7,8 +7,6 @@ define([
 ], function(Component, $, ko) {
 
     return Component.extend({
-
-
         initialize: function () {
             this._super();
             var data = this.data;
@@ -72,15 +70,19 @@ define([
                 chart.data = data;
 
                 // Set inner radius
-                chart.innerRadius = am4core.percent(50);
+                chart.innerRadius = am4core.percent(30);
 
                 // Add and configure Series
                 var pieSeries = chart.series.push(new am4charts.PieSeries());
                 pieSeries.dataFields.value = "percent";
                 pieSeries.dataFields.category = "status";
+
+                pieSeries.labels.template.text = "{code}: {value.percent.formatNumber('#.0')}%";
+                pieSeries.labels.template.padding(0,0,0,0);
                 pieSeries.slices.template.stroke = am4core.color("#fff");
                 pieSeries.slices.template.strokeWidth = 2;
                 pieSeries.slices.template.strokeOpacity = 1;
+                pieSeries.slices.template.tooltipText = "[fill:#fff]{category}: [fill:#fff]{value.percent.formatNumber('#.#')}%";
 
                 // This creates initial animation
                 pieSeries.hiddenState.properties.opacity = 1;

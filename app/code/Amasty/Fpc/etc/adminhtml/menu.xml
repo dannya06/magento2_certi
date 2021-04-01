@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 -->
@@ -12,6 +12,7 @@
         <add id="Amasty_Fpc::queue" title="Warmer Queue" module="Amasty_Fpc" sortOrder="10" parent="Amasty_Fpc::fpc" action="amasty_fpc/queue" resource="Amasty_Fpc::queue"/>
         <add id="Amasty_Fpc::log" title="Warmer Log" module="Amasty_Fpc" sortOrder="20" parent="Amasty_Fpc::fpc" action="amasty_fpc/log" resource="Amasty_Fpc::log"/>
         <add id="Amasty_Fpc::reports" title="Performance Reports" module="Amasty_Fpc" sortOrder="30" parent="Amasty_Fpc::fpc" action="amasty_fpc/report" resource="Amasty_Fpc::reports"/>
+        <add id="Amasty_Fpc::flushes_log" title="Cache Flushes Log" module="Amasty_Fpc" sortOrder="35" parent="Amasty_Fpc::fpc" action="amasty_fpc/flushes" resource="Amasty_Fpc::flushes_log"/>
         <add id="Amasty_Fpc::activity" title="Activity Log" module="Amasty_Fpc" sortOrder="40" parent="Amasty_Fpc::fpc" action="amasty_fpc/activity" resource="Amasty_Fpc::activity"/>
     </menu>
 </config>

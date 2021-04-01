@@ -1,26 +1,32 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
 
-namespace Amasty\Fpc\Model;
+declare(strict_types=1);
+
+namespace Amasty\Fpc\Cron;
 
 use Amasty\Fpc\Exception\LockException;
+use Amasty\Fpc\Model\Config;
+use Amasty\Fpc\Model\Queue;
 use Psr\Log\LoggerInterface;
 
-class Cron
+class ProcessPageQueue
 {
     /**
      * @var Queue
      */
     private $queue;
+
     /**
-     * @var \Amasty\Fpc\Model\Config
+     * @var Config
      */
     private $config;
+
     /**
      * @var LoggerInterface
      */
@@ -36,20 +42,7 @@ class Cron
         $this->logger = $logger;
     }
 
-    public function generate()
-    {
-        if (!$this->config->isModuleEnabled()) {
-            return;
-        }
-
-        try {
-            $this->queue->generate();
-        } catch (LockException $e) {
-            $this->logger->info(__('Can\'t get a file lock for queue generation process $1', $e->getMessage()));
-        }
-    }
-
-    public function process()
+    public function execute()
     {
         if (!$this->config->isModuleEnabled()) {
             return;

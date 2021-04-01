@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -32,14 +32,28 @@ class UpgradeSchema implements UpgradeSchemaInterface
      */
     private $createReportsTable;
 
+    /**
+     * @var Operation\UpgradeTo220
+     */
+    private $upgradeTo220;
+
+    /**
+     * @var Operation\CreateJobQueueTable
+     */
+    private $createJobQueueTable;
+
     public function __construct(
         Operation\CreateFlushPagesTable $createFlushPagesTable,
         Operation\CreateActivityTable $createActivityTable,
-        Operation\CreateReportsTable $createReportsTable
+        Operation\CreateReportsTable $createReportsTable,
+        Operation\UpgradeTo220 $upgradeTo220,
+        Operation\CreateJobQueueTable $createJobQueueTable
     ) {
         $this->createFlushPagesTable = $createFlushPagesTable;
         $this->createActivityTable = $createActivityTable;
         $this->createReportsTable = $createReportsTable;
+        $this->upgradeTo220 = $upgradeTo220;
+        $this->createJobQueueTable = $createJobQueueTable;
     }
 
     /**
@@ -65,6 +79,14 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         if (!$context->getVersion() || version_compare($context->getVersion(), '2.1.2', '<')) {
             $this->addActivityIndexes($setup);
+        }
+
+        if (!$context->getVersion() || version_compare($context->getVersion(), '2.2.0', '<')) {
+            $this->upgradeTo220->execute($setup);
+        }
+
+        if (!$context->getVersion() || version_compare($context->getVersion(), '2.3.0', '<')) {
+            $this->createJobQueueTable->execute($setup);
         }
 
         $setup->endSetup();

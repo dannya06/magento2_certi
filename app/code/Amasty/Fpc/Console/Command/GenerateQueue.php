@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -18,9 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateQueue extends AbstractSetupCommand
 {
     /**
-     * @var Queue
+     * @var Queue\RegenerateHandler
      */
-    private $queue;
+    private $regenerateHandler;
 
     /**
      * @var State
@@ -28,13 +28,12 @@ class GenerateQueue extends AbstractSetupCommand
     private $state;
 
     public function __construct(
-        Queue $queue,
+        Queue\RegenerateHandler $regenerateHandler,
         State $state,
         $name = null
     ) {
         parent::__construct($name);
-
-        $this->queue = $queue;
+        $this->regenerateHandler = $regenerateHandler;
         $this->state = $state;
     }
 
@@ -62,7 +61,7 @@ class GenerateQueue extends AbstractSetupCommand
     {
         try {
             $output->writeln('<info>Starting generation of warmer queue...</info>');
-            list($result, $items) = $this->queue->generate();
+            list($result, $items) = $this->regenerateHandler->execute(true);
             $output->writeln('');
             $output->writeln("<info>Warmer queue has been successfully generated for $items URLs.</info>");
 

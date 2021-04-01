@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 -->
@@ -25,6 +25,9 @@
                         </resource>
                         <resource id="Amasty_Fpc::queue" title="Warmer Queue"/>
                         <resource id="Amasty_Fpc::reports" title="Performance Reports"/>
+                        <resource id="Amasty_Fpc::flushes_log" title="Cache Flushes Log">
+                            <resource id="Amasty_Fpc::clear_flushes_log" title="Clear Cache Flushes Log"/>
+                        </resource>
                         <resource id="Amasty_Fpc::activity" title="Warmer Activity Log">
                             <resource id="Amasty_Fpc::clear_activity_log" title="Clear Activity Log"/>
                         </resource>

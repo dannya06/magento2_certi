@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -26,6 +26,12 @@ class Config extends DataObject
     const AUTO_UPDATE = 'general/auto_update';
 
     const QUEUE_REGENERATE = 'general/queue_regenerate';
+
+    const QUEUE_REGENERATE_BACKGROUND = 'general/background_queue_regenerate';
+
+    const FLUSHES_LOG = 'general/enable_flushes_log';
+
+    const IGNORE_CLASSES = 'general/ignore_classes';
 
     const CUSTOMER_ACTIVITY = 'general/customer_activity';
 
@@ -230,6 +236,19 @@ class Config extends DataObject
         return $this->getValue(self::QUEUE_REGENERATE);
     }
 
+    public function isRegenerateQueueInBackground(): bool
+    {
+        return $this->isSetFlag(self::QUEUE_REGENERATE_BACKGROUND);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnableFlushesLog()
+    {
+        return $this->isSetFlag(self::FLUSHES_LOG);
+    }
+
     /**
      * @return bool
      */
@@ -284,6 +303,14 @@ class Config extends DataObject
     public function getExcludePages()
     {
         return $this->serializer->unserialize($this->getValue(self::EXCLUDE_PAGES));
+    }
+
+    /**
+     * @return array
+     */
+    public function getIgnoreClasses()
+    {
+        return $this->serializer->unserialize($this->getValue(self::IGNORE_CLASSES));
     }
 
     /**

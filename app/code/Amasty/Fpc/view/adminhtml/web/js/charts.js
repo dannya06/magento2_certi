@@ -36,7 +36,7 @@ define([
                 return (target.dataItem.index >= 0) ? chart.colors.getIndex(target.dataItem.index) : fill;
             });
             categoryAxis.renderer.labels.template.adapter.add("text", function() {
-                return "{category} {categoryLabel}";
+                return "[fill:#fff]{category} [fill:#fff]{categoryLabel}";
             });
             categoryAxis.renderer.minGridDistance = 10;
 
@@ -64,7 +64,7 @@ define([
             series2.clustered = false;
             series2.columns.template.strokeWidth = 0;
             series2.columns.template.hoverable = true;
-            series2.columns.template.tooltipText = "{category} {categoryLabel}: [bold]{value}[/]";
+            series2.columns.template.tooltipText = "[fill:#fff]{category} [fill:#fff]{categoryLabel}: [bold;fill:#fff]{value}[/]";
             series2.columns.template.radarColumn.cornerRadius = 20;
             series2.columns.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
             series2.columns.template.events.on("hit", function(event) {

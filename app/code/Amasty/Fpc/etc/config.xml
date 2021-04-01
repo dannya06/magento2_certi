@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 -->
@@ -12,9 +12,12 @@
         <amasty_fpc>
             <general>
                 <customer_activity>1</customer_activity>
+                <enable_flushes_log>0</enable_flushes_log>
+                <ignore_classes>{"_1586184542667_667":{"class_name":"SendResponseBefore"}}</ignore_classes>
             </general>
             <source_and_priority>
                 <sitemap_path>sitemaps/sitemap.xml</sitemap_path>
+                <source>0</source>
                 <page_types>
                     <index>
                         <enabled>1</enabled>

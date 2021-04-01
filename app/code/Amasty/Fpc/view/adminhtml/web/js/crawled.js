@@ -68,8 +68,9 @@ define([
             categoryAxis.renderer.minGridDistance = 20;
             categoryAxis.renderer.cellStartLocation = 0.1;
             categoryAxis.renderer.cellEndLocation = 0.9;
+            categoryAxis.renderer.labels.template.rotation = 270;
 
-            var  valueAxis = this.chart.yAxes.push(new am4charts.ValueAxis());
+            var valueAxis = this.chart.yAxes.push(new am4charts.ValueAxis());
             valueAxis.min = 0;
 
             this.createSeries("hits", $.mage.__('Hit'), false);
@@ -85,7 +86,7 @@ define([
             series.dataFields.valueY = field;
             series.dataFields.categoryX = "visited_at";
             series.name = name;
-            series.columns.template.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.columns.template.tooltipText = "[fill:#fff]{name}: [bold;fill:#fff]{valueY}[/]";
             series.stacked = stacked;
             series.columns.template.width = am4core.percent(95);
         }
