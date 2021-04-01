@@ -1,7 +1,6 @@
 <!--@subject {{trans "Newsletter subscription confirmation"}} @-->
 <!--@vars {
-"var customer.name":"Customer Name",
-"var subscriber.getConfirmationLink()":"Subscriber Confirmation URL"
+"var subscriber_data.confirmation_link":"Subscriber Confirmation URL"
 } @-->
 
 {{template config_path="design/email/header_template"}}
@@ -40,7 +39,7 @@
             <table class="inner-wrapper" border="0" cellspacing="0" cellpadding="0" align="center" width="100%">
                 <tr>
                     <td align="center" style="padding: 8px 0 !important">
-                        <a href="{{var subscriber.getConfirmationLink()}}" style="font-weight: bold" target="_blank">{{trans 'Yes, I do!'}}</a>
+                        <a href="{{var subscriber_data.confirmation_link}}" style="font-weight: bold" target="_blank">{{trans 'Yes, I do!'}}</a>
                     </td>
                 </tr>
             </table>

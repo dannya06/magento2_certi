@@ -21,11 +21,6 @@
                 type="WeltPixel\EnhancedEmail\Plugin\CssInliner"/>
     </type>
 
-    <type name="Magento\Email\Model\Template\Filter">
-        <plugin name="weltpixel_enhancedemail_css_file_content"
-                type="WeltPixel\EnhancedEmail\Plugin\CssFileContent"/>
-    </type>
-
     <type name="Magento\Framework\Mail\Template\TransportBuilder">
         <plugin name="weltpixel_enhancedemail_email_transportbuilder"
                 type="WeltPixel\EnhancedEmail\Plugin\TransportBuilder"/>
@@ -60,8 +55,5 @@
 
     <preference for="Magento\Sales\Block\Order\Creditmemo\Totals"
                 type="WeltPixel\EnhancedEmail\Block\Order\Creditmemo\Totals" />
-
-    <preference for="Magento\Sales\Block\Items\AbstractItems"
-                type="WeltPixel\EnhancedEmail\Block\Items\AbstractItems" />
 
 </config>

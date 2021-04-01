@@ -70,5 +70,31 @@ class CssDirective
         return $result;
     }
 
+    /**
+     * Fix for magento instances that have theme(s), wich does not extend
+     * a magento default theme (blank or luma)
+     *
+     * @param \Magento\Framework\Css\PreProcessor\Adapter\CssInliner $subject
+     * @param $css
+     * @return array
+     */
+    public function aroundGetCssFilesContent(\Magento\Email\Model\Template\Filter $subject, \Closure $proceed, $files)
+    {
+        $originalCss = $proceed($files);
+        if(!$this->_helper->isEnabled($this->_storeManager->getStore()->getId())) {
+            return $originalCss;
+        }
+
+        $css = '';
+        if(!$originalCss) {
+            $css = 'tfoot.order-totals th, tfoot.order-totals td {text-align: right}
+            table.order-details{width: 100%}
+            table.button table.inner-wrapper td{border-radius: 3px}
+            table.button table.inner-wrapper td a{display: inline-block; text-decoration: none; padding: 7px 15px}';
+        }
+        $result = $originalCss . $css;
+        return $result;
+    }
+
 
 }

@@ -62,8 +62,7 @@ class TemplateVariablesPlugin
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\App\Request\Http $request,
         \WeltPixel\EnhancedEmail\Helper\Data $helper
-    )
-    {
+    ) {
         $this->_storeManager = $storeManager;
         $this->request = $request;
         $this->_scopeConfig = $scopeConfig;
@@ -100,6 +99,9 @@ class TemplateVariablesPlugin
             ],
             [
                 'value' => '{{layout handle="dark_logo" area="frontend"}}', 'label' => __('%1', 'WeltPixel DARK Logo')
+            ],
+            [
+                'value' => '{{layout handle="weltpixel_products_grid" order=$order area="frontend"}}', 'label' => __('%1', 'WeltPixel Products Grid')
             ]
         ];
 
@@ -110,39 +112,38 @@ class TemplateVariablesPlugin
         foreach ($templateTypes as $searchStr => $tplData) {
             if ($this->_helper->getTemplateType($searchStr, $templateCode)) {
                 $markup = ($tplData['path']) ? $this->_scopeConfig->getValue($tplData['path'], \Magento\Store\Model\ScopeInterface::SCOPE_STORE) : '';
-                if($markup) {
+                if ($markup) {
                     $optionData = [
                         'value' => '{{' . $markup . '}}', 'label' => __('%1', $tplData['label'])
                     ];
                     array_push($optionArray, $optionData);
                 }
 
-                if($searchStr == 'order') {
+                if ($searchStr == 'order') {
                     $optionData = [
                         'value' => '{{layout handle="weltpixel_sales_email_order_items" order=$order}}', 'label' => __('%1', 'WeltPixel Order Item Grid')
                     ];
                     array_push($optionArray, $optionData);
                 }
 
-                if($searchStr == 'invoice') {
+                if ($searchStr == 'invoice') {
                     $optionData = [
                         'value' => '{{layout handle="weltpixel_sales_email_order_invoice_items" incoice=$invoice order=$order}}', 'label' => __('%1', 'WeltPixel Order Invoice Item Grid')
                     ];
                     array_push($optionArray, $optionData);
                 }
 
-                if($searchStr == 'creditmemo') {
+                if ($searchStr == 'creditmemo') {
                     $optionData = [
                         'value' => '{{layout handle="weltpixel_sales_email_order_creditmemo_items" creditmemo=$creditmemo order=$order}}', 'label' => __('%1', 'WeltPixel Order Creditmemo Item Grid')
                     ];
                     array_push($optionArray, $optionData);
                 }
-
             }
         }
 
         foreach ($optionArray as $newOption) {
-            if(isset($result[0])) {
+            if (isset($result[0])) {
                 if (isset($result[0]['value'])) {
                     array_unshift($result[0]['value'], $newOption);
                 } else {
@@ -160,15 +161,9 @@ class TemplateVariablesPlugin
                     }
                     $result['value'][0] = $newOption;
                 }
-                $newVars = [];
-                $newVars[] = $result;
-                $result = $newVars;
             }
-
         }
 
         return $result;
     }
-
-
 }

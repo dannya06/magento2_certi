@@ -1046,6 +1046,33 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param null $storeId
      * @return mixed
      */
+    public function getButtonHoverFontColor($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_enhancedemail/button/buttons__hover__font____color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function getButtonHoverBgColor($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_enhancedemail/button/buttons__hover__bg____color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function getButtonHoverBorderColor($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_enhancedemail/button/buttons__hover__border____color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
     public function getTopmenuBgColor($storeId = null)
     {
         return $this->scopeConfig->getValue('weltpixel_enhancedemail/email_topmenu/topmenu__bg____color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
@@ -1119,15 +1146,63 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $catalogProductMediaUrl = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
         if ($product->getThumbnail() && $product->getThumbnail() != 'no_selection') {
-            return $catalogProductMediaUrl . $product->getThumbnail();
+            return $catalogProductMediaUrl . DIRECTORY_SEPARATOR . ltrim( $product->getThumbnail(), DIRECTORY_SEPARATOR);
         } elseif ($product->getSmallImage() && $product->getSmallImage() != 'no_selection') {
-            return $catalogProductMediaUrl . $product->getSmallImage();
+            return $catalogProductMediaUrl .  DIRECTORY_SEPARATOR . ltrim($product->getSmallImage(), DIRECTORY_SEPARATOR);
         } else {
             $plHolder = $this->imageHelper->getDefaultPlaceholderUrl('thumbnail');
             return $plHolder;
         }
     }
 
+    /**
+     * @param null $storeId
+     * @return bool
+     */
+    public function displaySalesPricesExclTax($storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            'tax/sales_display/price',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $storeId
+        ) == 1;
+    }
+
+    /**
+     * @param null $storeId
+     * @return bool
+     */
+    public function isProductsGridEnabled($storeId = null)
+    {
+        return (bool) $this->scopeConfig->getValue('weltpixel_enhancedemail/products_grid/enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return string
+     */
+    public function getProductsGridTitle($storeId = null)
+    {
+        return  trim($this->scopeConfig->getValue('weltpixel_enhancedemail/products_grid/title', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId));
+    }
+
+    /**
+     * @param null $storeId
+     * @return string
+     */
+    public function getProductsGridProductsType($storeId = null)
+    {
+        return  $this->scopeConfig->getValue('weltpixel_enhancedemail/products_grid/products_type', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return int
+     */
+    public function getProductsGridNumberOfProducts($storeId = null)
+    {
+        return  (int)$this->scopeConfig->getValue('weltpixel_enhancedemail/products_grid/number_of_products', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
 
 
 }

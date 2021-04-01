@@ -6,6 +6,13 @@
 $_item = $block->getItem();
 $_order = $_item->getOrder();
 $prodImg = $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail');
+/** @var  $wpHelper \WeltPixel\EnhancedEmail\Helper\Data */
+$wpHelper = $this->helper('WeltPixel\EnhancedEmail\Helper\Data');
+if ($wpHelper->displaySalesPricesExclTax()) {
+    $itemPrice = $_item->getPrice();
+} else {
+    $itemPrice = $_item->getPriceInclTax();
+}
 ?>
 <tr>
     <?php if($prodImg) :?>
@@ -30,9 +37,10 @@ $prodImg = $block->getImage($block->getProductForThumbnail(), 'cart_page_product
                 <?= $addInfoBlock->setItem($_item)->toHtml() ?>
             <?php endif; ?>
             <?= $block->escapeHtml($_item->getDescription()) ?>
+            <p style="color: #aaaaaa"> &nbsp; </p>
         </div>
         <div class="item-price" style="position: absolute !important; bottom: 15px; text-align: left !important; margin-bottom: 25px !important">
-            <p style="font-size: 14px; font-family: arial, helvetica, sans-serif, serif;"><?= /* @escapeNotVerified */ $_order->formatPrice($_item->getPrice()) ?> x <?= /* @escapeNotVerified */  $_item->getQtyOrdered() * 1 ?></p>
+            <p style="font-size: 14px; font-family: arial, helvetica, sans-serif, serif;"><?= /* @escapeNotVerified */ $_order->formatPrice($itemPrice) ?> x <?= /* @escapeNotVerified */  $_item->getQtyOrdered() * 1 ?></p>
         </div>
 
     </td>

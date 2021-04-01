@@ -50,7 +50,7 @@ class Save extends \Magento\Email\Controller\Adminhtml\Email\Template\Save
                 $request->getParam('orig_template_variables')
             )->setTemplatePreheader(
                 $request->getParam('template_preheader')
-            );
+            )->setIsLegacy(1);
 
             if (!$template->getId()) {
                 $template->setTemplateType(TemplateTypesInterface::TYPE_HTML);

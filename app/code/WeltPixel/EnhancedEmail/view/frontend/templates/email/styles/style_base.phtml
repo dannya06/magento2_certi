@@ -89,3 +89,12 @@
         color: <?= /* @escapeNotVerified */ $this->getButtonFontColor() ?> !important;
     }
 
+    .button .inner-wrapper td:hover {
+        background-color: <?= /* @escapeNotVerified */ $this->getButtonHoverBgColor() ?> !important;
+    }
+
+    .button .inner-wrapper td:hover a {
+        border: 1px solid <?= /* @escapeNotVerified */ $this->getButtonHoverBorderColor() ?> !important;
+        color: <?= /* @escapeNotVerified */ $this->getButtonHoverFontColor() ?> !important;
+    }
+

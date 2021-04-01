@@ -129,7 +129,7 @@ class Send extends \Magento\Backend\App\Action
                 $originalTemplateCode
             )->setOrigTemplateVariables(
                 $request->getParam('send_orig_template_variables')
-            );
+            )->setIsLegacy(1);
 
             if (!$template->getId()) {
                 $template->setTemplateType(TemplateTypesInterface::TYPE_HTML);

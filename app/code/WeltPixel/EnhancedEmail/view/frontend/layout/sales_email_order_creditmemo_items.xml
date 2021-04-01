@@ -11,7 +11,7 @@
     <update handle="sales_email_order_creditmemo_renderers"/>
     <update handle="sales_email_item_price"/>
     <body>
-        <block class="WeltPixel\EnhancedEmail\Block\Items\AbstractItems" name="items"
+        <block class="Magento\Sales\Block\Order\Email\Creditmemo\Items" name="items"
                template="WeltPixel_EnhancedEmail::email/creditmemo/items.phtml">
             <block class="Magento\Framework\View\Element\RendererList" name="sales.email.order.creditmemo.renderers"
                    as="renderer.list"/>

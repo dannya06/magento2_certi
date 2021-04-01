@@ -1,10 +1,10 @@
-<!--@subject {{trans "Update to your %store_name order" store_name=$store.getFrontendName()}} @-->
+<!--@subject {{trans "Update to your %store_name order" store_name=$store.frontend_name}} @-->
 <!--@vars {
 "var this.getUrl($store, 'customer/account/')":"Customer Account URL",
-"var order.getCustomerName()":"Customer Name",
+"var order_data.customer_name":"Customer Name",
 "var comment":"Order Comment",
 "var order.increment_id":"Order Id",
-"var order.getStatusLabel()":"Order Status"
+"var order_data.frontend_status_label":"Order Status"
 } @-->
 {{template config_path="design/email/header_template"}}
 {{layout handle="order_markup" order=$order area="frontend"}}
@@ -13,14 +13,14 @@
     <tr>
         <td class="dark"  style="padding-bottom:8px; padding-top:5px; background-color:#000">
             <h3 style="text-align: center;">
-                {{trans "Hi %name," name=$order.getCustomerName()}}
+                {{trans "Hi %name," name=$order_data.customer_name}}
             </h3>
         </td>
     </tr>
     <tr>
         <td class="dark" align="center" style="padding-bottom:0px; background-color:#000">
             <h1 style="text-align: center; margin: 0 !important">
-                {{trans "ORDER %order_status" order_status=$order.getStatusLabel()}}
+                {{trans "ORDER %order_status" order_status=$order_data.frontend_status_label}}
             </h1>
         </td>
     </tr>

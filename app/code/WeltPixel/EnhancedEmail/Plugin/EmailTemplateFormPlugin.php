@@ -63,7 +63,7 @@ class EmailTemplateFormPlugin
                 'textarea',
                 [
                     'name' => 'template_preheader',
-                    'label' => __('Email First Lineee'),
+                    'label' => __('Email First Line'),
                     'id' => 'template_preheader',
                     'required' => false,
                     'onkeyup' => 'templateControl.updateTemplateContent(this);',
