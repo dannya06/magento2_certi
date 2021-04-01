@@ -22,7 +22,13 @@ Description,Description
 "Open Images in new Tab","Open Images in new Tab"
 "Images Per Row","Images Per Row"
 "Images Should Have Padding","Images Should Have Padding"
+"Add ALT text for image","Add ALT text for image"
+"Custom ALT tag","Custom ALT tag"
 "Optimize Image Layout","Optimize Image Layout"
+"Enable Lazy Image Load","Enable Lazy Image Load"
+" You must have the <a target=""_blank"" href=""https://www.weltpixel.com/magento-2-lazy-load-product-extension.html"">LAZY LOAD PRODUCTS AND IMAGES</a> module for this functionality."," You must have the <a target=""_blank"" href=""https://www.weltpixel.com/magento-2-lazy-load-product-extension.html"">LAZY LOAD PRODUCTS AND IMAGES</a> module for this functionality."
+"Content Cache Time","Content Cache Time"
+" The time (in minutes) the content it will be cached in your browser. (Default is 60) "," The time (in minutes) the content it will be cached in your browser. (Default is 60) "
 "Number of images","Number of images"
 "Number of images to be pulled from Instagram and displayed. Insert number between 1-12. Default: 6","Number of images to be pulled from Instagram and displayed. Insert number between 1-12. Default: 6"
 SortBy,SortBy
