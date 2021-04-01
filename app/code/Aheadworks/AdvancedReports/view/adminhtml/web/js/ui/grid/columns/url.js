@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'underscore',
     'Aheadworks_AdvancedReports/js/ui/grid/columns/column'

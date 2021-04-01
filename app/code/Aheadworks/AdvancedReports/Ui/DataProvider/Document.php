@@ -1,13 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Ui\DataProvider;
 
 use Aheadworks\AdvancedReports\Model\Period as PeriodModel;
-use Aheadworks\AdvancedReports\Model\Serializer;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use Magento\Framework\Api\AttributeValueFactory;
 use Aheadworks\AdvancedReports\Model\Filter\FilterPool;
 
@@ -24,7 +34,7 @@ class Document extends \Magento\Framework\View\Element\UiComponent\DataProvider\
     private $periodModel;
 
     /**
-     * @var Serializer;
+     * @var JsonSerializer;
      */
     private $serializer;
 
@@ -36,13 +46,13 @@ class Document extends \Magento\Framework\View\Element\UiComponent\DataProvider\
     /**
      * @param AttributeValueFactory $attributeValueFactory
      * @param PeriodModel $periodModel
-     * @param Serializer $serializer
+     * @param JsonSerializer $serializer
      * @param FilterPool $filterPool
      */
     public function __construct(
         AttributeValueFactory $attributeValueFactory,
         PeriodModel $periodModel,
-        Serializer $serializer,
+        JsonSerializer $serializer,
         FilterPool $filterPool
     ) {
         parent::__construct($attributeValueFactory);

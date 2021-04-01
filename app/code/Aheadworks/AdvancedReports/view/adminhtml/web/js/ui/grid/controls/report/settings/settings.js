@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'underscore',
     'mageUtils',
@@ -110,6 +105,7 @@ define([
         prepareSettingsData: function() {
             var data = {};
 
+            data['updated_at_timestamp'] = + new Date;
             _.each(this.elems(), function (elem) {
                 if (elem.hasService() && elem.isUseDefault()) {
                     return;

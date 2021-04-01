@@ -1,13 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Ui\Component\Listing\Column\PaymentType;
 
 use Aheadworks\AdvancedReports\Model\Url as UrlModel;
-use Aheadworks\AdvancedReports\Model\Serializer;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 
@@ -24,7 +34,7 @@ class Method extends \Magento\Ui\Component\Listing\Columns\Column
     private $urlModel;
 
     /**
-     * @var Serializer;
+     * @var JsonSerializer;
      */
     private $serializer;
 
@@ -32,7 +42,7 @@ class Method extends \Magento\Ui\Component\Listing\Columns\Column
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param UrlModel $urlModel
-     * @param Serializer $serializer
+     * @param JsonSerializer $serializer
      * @param array $components
      * @param array $data
      */
@@ -40,7 +50,7 @@ class Method extends \Magento\Ui\Component\Listing\Columns\Column
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         UrlModel $urlModel,
-        Serializer $serializer,
+        JsonSerializer $serializer,
         array $components = [],
         array $data = []
     ) {

@@ -1,14 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Ui\Component\Toolbar;
 
 use Aheadworks\AdvancedReports\Model\Toolbar\Menu\Item\Modifier as MenuItemModifier;
 use Aheadworks\AdvancedReports\Model\Toolbar\MenuPool;
 use Aheadworks\AdvancedReports\Ui\Component\OptionsContainer;
+use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 
@@ -62,7 +73,6 @@ class Menu extends OptionsContainer
      * Prepare config
      *
      * @return $this
-     * @throws \Exception
      */
     private function prepareConfig()
     {
@@ -79,13 +89,16 @@ class Menu extends OptionsContainer
      * Retrieve menu options
      *
      * @return array
-     * @throws \Exception
      */
     private function getMenuOptions()
     {
         $options = [];
-        foreach ($this->menuPool->getMenuItems() as $menuItem) {
-            $options[] = $this->menuItemModifier->modify($menuItem);
+        try {
+            foreach ($this->menuPool->getMenuItems() as $menuItem) {
+                $options[] = $this->menuItemModifier->modify($menuItem);
+            }
+        } catch (NotFoundException $e) {
+            $options = [];
         }
 
         return $options;

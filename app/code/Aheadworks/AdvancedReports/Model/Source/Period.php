@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\Source;
 
 use Magento\Framework\Locale\ListsInterface;
@@ -28,6 +38,7 @@ class Period implements OptionSourceInterface
     const TYPE_WEEK_TO_DATE = 'week_to_date';
     const TYPE_MONTH_TO_DATE = 'month_to_date';
     const TYPE_LAST_MONTH = 'last_month';
+    const TYPE_LAST_QUARTER = 'last_quarter';
     const PERIOD_TYPE_CUSTOM = 'custom';
     /**#@-*/
 
@@ -87,6 +98,7 @@ class Period implements OptionSourceInterface
                 ],
                 ['value' => self::TYPE_MONTH_TO_DATE, 'label' => __('Month to Date')],
                 ['value' => self::TYPE_LAST_MONTH, 'label' => __('Last Month')],
+                ['value' => self::TYPE_LAST_QUARTER, 'label' => __('Last Quarter')],
             ];
         }
 

@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'ko',
     'underscore',
@@ -192,6 +187,15 @@ define([
             }, this);
 
             return this;
+        },
+
+        /**
+         * Check attribute available
+         *
+         * @returns boolean
+         */
+        isAttributesAvailable: function () {
+            return Boolean(this.attributesCount);
         }
     });
 });

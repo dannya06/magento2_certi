@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
 /**
@@ -40,9 +50,15 @@ class ProductPerformanceByManufacturer extends ProductPerformance
                 $this->joinChildrenItems()
                     ->columns($columns)
                     ->joinLeft(
+                        ['product_entity' => $this->getTable('catalog_product_entity')],
+                        'product_entity.entity_id = main_table.product_id',
+                        []
+                    )
+                    ->joinLeft(
                         ['item_manufacturer' => $manufacturerTable],
-                        'item_manufacturer. ' . $this->getCatalogLinkField() . ' = main_table.product_id AND 
-                item_manufacturer.attribute_id = ' . $manufacturerAttr->getId(),
+                        'item_manufacturer.' . $this->getCatalogLinkField() . ' = product_entity.'
+                        . $this->getCatalogLinkField() . ' AND item_manufacturer.attribute_id = '
+                        . $manufacturerAttr->getId(),
                         []
                     )->joinLeft(
                         ['manufacturer_value' => $this->getTable('eav_attribute_option_value')],

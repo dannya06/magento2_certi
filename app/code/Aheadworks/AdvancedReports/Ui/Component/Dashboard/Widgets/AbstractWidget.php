@@ -1,12 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Ui\Component\Dashboard\Widgets;
 
 use Aheadworks\AdvancedReports\Ui\Component\OptionsContainer;
+use Aheadworks\AdvancedReports\Model\ReportConfiguration\Config\ColumnCustomizationInterface;
 
 /**
  * Class AbstractWidget
@@ -16,10 +27,16 @@ use Aheadworks\AdvancedReports\Ui\Component\OptionsContainer;
 abstract class AbstractWidget extends OptionsContainer
 {
     /**
+     * @var array
+     */
+    protected $reportCustomizedColumns;
+
+    /**
      * {@inheritdoc}
      */
     public function prepare()
     {
+        $this->prepareReportCustomizedColumns();
         $this->addOptions();
 
         parent::prepare();
@@ -65,40 +82,40 @@ abstract class AbstractWidget extends OptionsContainer
             ],
             [
                 'value' => 'sales.total',
-                'label' => __('Total'),
+                'label' => $this->getColumnLabel('sales', 'total', 'Total'),
                 'columnType' => 'price'
             ],
             [
                 'value' => 'sales.orders_count',
-                'label' => __('Number of Orders')
+                'label' => $this->getColumnLabel('sales', 'orders_count', 'Number of Orders'),
             ],
             [
                 'value' => 'sales.discount',
-                'label' => __('Discounts'),
+                'label' => $this->getColumnLabel('sales', 'discount', 'Discounts'),
                 'columnType' => 'price'
             ],
             [
                 'value' => 'sales.invoiced',
-                'label' => __('Invoiced'),
+                'label' => $this->getColumnLabel('sales', 'invoiced', 'Invoiced'),
                 'columnType' => 'price'
             ],
             [
                 'value' => 'sales.refunded',
-                'label' => __('Refunded'),
+                'label' => $this->getColumnLabel('sales', 'refunded', 'Refunded'),
                 'columnType' => 'price'
             ],
             [
                 'value' => 'sales.order_items_count',
-                'label' => __('Items Ordered')
+                'label' => $this->getColumnLabel('sales', 'order_items_count', 'Items Ordered'),
             ],
             [
                 'value' => 'sales.avg_order_amount',
-                'label' => __('Avg. Order Value'),
+                'label' => $this->getColumnLabel('sales', 'avg_order_amount', 'Avg. Order Value'),
                 'columnType' => 'price'
             ],
             [
                 'value' => 'sales.tax',
-                'label' => __('Tax'),
+                'label' => $this->getColumnLabel('sales', 'tax', 'Tax'),
                 'columnType' => 'price'
             ]
         ];
@@ -148,11 +165,11 @@ abstract class AbstractWidget extends OptionsContainer
             ],
             [
                 'value' => 'traffic_and_conversions.views_count',
-                'label' => __('Unique Visitors')
+                'label' => $this->getColumnLabel('traffic_and_conversions', 'views_count', 'Unique Visitors'),
             ],
             [
                 'value' => 'traffic_and_conversions.conversion_rate',
-                'label' => __('Conversion Rate, %'),
+                'label' => $this->getColumnLabel('traffic_and_conversions', 'conversion_rate', 'Conversion Rate, %'),
                 'columnType' => 'percent'
             ]
         ];
@@ -177,16 +194,16 @@ abstract class AbstractWidget extends OptionsContainer
             ],
             [
                 'value' => 'abandoned_carts.abandoned_carts',
-                'label' => __('Abandoned Carts')
+                'label' => $this->getColumnLabel('abandoned_carts', 'abandoned_carts', 'Abandoned Carts'),
             ],
             [
                 'value' => 'abandoned_carts.abandoned_carts_total',
-                'label' => __('Abandoned Carts Total'),
+                'label' => $this->getColumnLabel('abandoned_carts', 'abandoned_carts_total', 'Abandoned Carts Total'),
                 'columnType' => 'price'
             ],
             [
                 'value' => 'abandoned_carts.abandonment_rate',
-                'label' => __('Abandonment Rate'),
+                'label' => $this->getColumnLabel('abandoned_carts', 'abandonment_rate', 'Abandonment Rate'),
                 'columnType' => 'percent'
             ]
         ];
@@ -216,5 +233,42 @@ abstract class AbstractWidget extends OptionsContainer
         $url = $this->getContext()->getUrl('advancedreports/' . $reportName . '/index', $params);
 
         return $url;
+    }
+
+    /**
+     * Prepare customized columns
+     */
+    protected function prepareReportCustomizedColumns()
+    {
+        $data = $this->context->getDataProvider()->getData();
+        $reports = $data['reports'] ?? [];
+        foreach ($reports as $reportName => $report) {
+            $columnsCustomization = $report['report_configuration']['columns_customization'];
+            foreach ($columnsCustomization as $customizedColumn) {
+                $this->reportCustomizedColumns[$reportName][$customizedColumn['column_name']] = $customizedColumn;
+            }
+        }
+    }
+
+    /**
+     * Prepare column name
+     *
+     * @param string $report
+     * @param string $columnName
+     * @param string $defaultName
+     * @return string
+     */
+    protected function getColumnLabel($report, $columnName, $defaultName)
+    {
+        $columnsList = $this->reportCustomizedColumns[$report] ?? null;
+        $result = $defaultName;
+        if ($columnsList) {
+            $result = isset($columnsList[$columnName])
+                && $columnsList[$columnName][ColumnCustomizationInterface::CUSTOM_LABEL]
+                ? $columnsList[$columnName][ColumnCustomizationInterface::CUSTOM_LABEL]
+                : $defaultName;
+        }
+
+        return __($result);
     }
 }

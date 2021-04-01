@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\SalesDetailed;
 
 use Magento\Framework\DataObject;
@@ -80,7 +90,7 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
      * Retrieve counter columns
      *
      * @param boolean $addRate
-     * @return []
+     * @return array
      */
     private function getCounterColumns($addRate)
     {
@@ -102,14 +112,19 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             'invoiced_incl_tax' => 'COALESCE(main_table.invoiced_incl_tax' . $rateField . ', 0)',
             'refunded' => 'COALESCE(main_table.refunded' . $rateField . ', 0)',
             'tax_refunded' => 'COALESCE(main_table.tax_refunded' . $rateField . ', 0)',
-            'refunded_incl_tax' => 'COALESCE(main_table.refunded_incl_tax' . $rateField . ', 0)'
+            'refunded_incl_tax' => 'COALESCE(main_table.refunded_incl_tax' . $rateField . ', 0)',
+            'base_grand_total' => 'COALESCE(main_table.base_grand_total, 0)',
+            'shipping_amount' => 'COALESCE(main_table.shipping_amount' . $rateField . ', 0)',
+            'base_tax' => 'COALESCE(main_table.tax, 0)',
+            'base_tax_real_amount' => 'COALESCE(main_table.base_tax_real_amount, 0)',
+            'customer_balance_refunded' => 'COALESCE(main_table.customer_balance_refunded' . $rateField . ', 0)',
         ];
     }
 
     /**
      * Retrieve other type columns
      *
-     * @return []
+     * @return array
      */
     private function getOtherTypeColumns()
     {
@@ -127,12 +142,19 @@ class Collection extends \Aheadworks\AdvancedReports\Model\ResourceModel\Abstrac
             'customer_name',
             'customer_group',
             'country',
-            'region',
-            'city',
-            'zip_code',
+            'shipping_region',
+            'shipping_city',
+            'shipping_zip_code',
             'address',
             'phone',
-            'coupon_code'
+            'coupon_code',
+            'shipping_information',
+            'order_modified_date',
+            'tax_percent',
+            'tax_code',
+            'billing_region',
+            'billing_city',
+            'billing_zip_code'
         ];
     }
 }

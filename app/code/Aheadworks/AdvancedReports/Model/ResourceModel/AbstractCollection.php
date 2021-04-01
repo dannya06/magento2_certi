@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection as DbAbstractCollection;
@@ -379,7 +389,9 @@ abstract class AbstractCollection extends DbAbstractCollection
                 $this->getCustomFilterValue(self::COMPARE_PERIOD_FROM_FILTER_KEY)->format('Y-m-d'),
                 $this->getCustomFilterValue(self::COMPARE_PERIOD_TO_FILTER_KEY)->format('Y-m-d')
             );
-        } else if (!empty($this->getCustomFilterValue(self::PERIOD_FROM_FILTER_KEY)) &&
+        }
+
+        if (!empty($this->getCustomFilterValue(self::PERIOD_FROM_FILTER_KEY)) &&
             !empty($this->getCustomFilterValue(self::PERIOD_TO_FILTER_KEY))
         ) {
             $this->renderPeriodFilterValues(

@@ -1,11 +1,22 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Controller\Adminhtml\Location\Region;
 
+use Aheadworks\AdvancedReports\Model\Url\Base64Coder;
 use Aheadworks\AdvancedReports\Ui\Component\Listing\Breadcrumbs;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
@@ -52,7 +63,7 @@ class Index extends \Magento\Backend\App\Action
         $countryId = $this->_request->getParam('country_id');
         $countryName = $this->_request->getParam('country_name');
         if ($countryId && $countryName) {
-            $title = __('Sales by State/Region (%1)', base64_decode($countryName));
+            $title = __('Sales by State/Region (%1)', Base64Coder::decode($countryName));
         } else {
             return $redirectResult->setPath('*/location/index');
         }

@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
 use Magento\Customer\Model\Group as CustomerGroup;
@@ -53,7 +63,8 @@ class CustomerSales extends AbstractResource
             'phone' => 'COALESCE(customer_address.telephone, billing_address.telephone, "")',
             'created_in' => 'customer.created_in',
             'last_login_at' => 'customer_log.last_login_at',
-            'last_order_at' => 'order_created.last_order_date',
+            'last_order_at' => 'COALESCE(order_created_registered.last_order_date, ' .
+                'order_created_guest.last_order_date)',
             'orders_count' => 'COUNT(main_table.entity_id)',
             'qty_ordered' => 'SUM(order_items.qty_ordered)',
             'qty_refunded' => 'SUM(order_items.qty_refunded)',
@@ -99,16 +110,21 @@ class CustomerSales extends AbstractResource
                 'customer_address.entity_id = customer.default_billing',
                 []
             )->joinLeft(
-                ['order_created' => new \Zend_Db_Expr(
+                ['order_created_guest' => new \Zend_Db_Expr(
                     '(SELECT customer_id, customer_email, store_id, MAX(created_at) AS last_order_date ' .
                     'FROM ' . $this->getTable('sales_order') . ' GROUP BY customer_id, customer_email, store_id)'
                 )],
-                'IF(main_table.customer_id IS NULL, 
-                order_created.customer_email = main_table.customer_email AND 
-                order_created.store_id = main_table.store_id AND order_created.customer_id IS NULL, 
-                order_created.customer_id = main_table.customer_id AND
-                order_created.customer_email = main_table.customer_email AND 
-                order_created.store_id = main_table.store_id)',
+                'order_created_guest.customer_email = main_table.customer_email AND 
+                order_created_guest.store_id = main_table.store_id AND order_created_guest.customer_id IS NULL',
+                []
+            )->joinLeft(
+                ['order_created_registered' => new \Zend_Db_Expr(
+                    '(SELECT customer_id, customer_email, store_id, MAX(created_at) AS last_order_date ' .
+                    'FROM ' . $this->getTable('sales_order') . ' GROUP BY customer_id, customer_email, store_id)'
+                )],
+                'order_created_registered.customer_id = main_table.customer_id AND
+                order_created_registered.customer_email = main_table.customer_email AND 
+                order_created_registered.store_id = main_table.store_id',
                 []
             )
             ->columns($columns)

@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Model\ResourceModel\Indexer\Statistics;
 
 use Aheadworks\AdvancedReports\Model\Flag;
@@ -305,6 +315,23 @@ abstract class AbstractResource extends \Magento\Indexer\Model\ResourceModel\Abs
         }
 
         return $manufacturerAttr;
+    }
+
+    /**
+     * Get manufacturer attribute
+     *
+     * @return \Magento\Catalog\Model\ResourceModel\Eav\Attribute|null
+     */
+    protected function getTaxClassAttribute()
+    {
+        try {
+            /* @var $taxClassAttribute \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
+            $taxClassAttribute = $this->attributeRepository->get('catalog_product', 'tax_class_id');
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $taxClassAttribute;
     }
 
     /**

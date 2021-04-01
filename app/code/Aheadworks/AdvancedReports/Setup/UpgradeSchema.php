@@ -1,14 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    AdvancedReports
+ * @version    2.8.5
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\AdvancedReports\Setup;
 
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\DB\Ddl\Table;
 
 /**
  * Class UpgradeSchema
@@ -51,6 +62,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         if (version_compare($context->getVersion(), '2.7.0', '<')) {
             $this->addPointsCreditColumn($setup);
+        }
+
+        if (version_compare($context->getVersion(), '2.8.0', '<')) {
+            $this->addReportConfigurationTable($setup);
+            $this->addExtraColumnsToSalesDetailedIndexTable($setup);
         }
     }
 
@@ -4361,6 +4377,256 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'after'     => 'discount',
                     'comment'   => 'Other Discounts'
                 ]
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add report configuration table
+     *
+     * @param SchemaSetupInterface $installer
+     * @return $this
+     * @throws \Zend_Db_Exception
+     */
+    private function addReportConfigurationTable(SchemaSetupInterface $installer)
+    {
+        /**
+         * Create table 'aw_arep_report_configuration'
+         */
+        $table = $installer->getConnection()
+            ->newTable($installer->getTable('aw_arep_report_configuration'))
+            ->addColumn(
+                'id',
+                Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                'ID'
+            )->addColumn(
+                'report_name',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => false],
+                'Report Name'
+            )->addColumn(
+                'configuration',
+                Table::TYPE_TEXT,
+                Table::MAX_TEXT_SIZE,
+                ['nullable' => true],
+                'Report Configuration'
+            )->setComment('Report Configuration table');
+        $installer->getConnection()->createTable($table);
+
+        return $this;
+    }
+
+    /**
+     * Update columns in sales details index table
+     *
+     * @param SchemaSetupInterface $setup
+     * @return $this
+     */
+    private function addExtraColumnsToSalesDetailedIndexTable($setup)
+    {
+        $tableNames = ['aw_arep_sales_detailed', 'aw_arep_sales_detailed_idx'];
+        foreach ($tableNames as $tableName) {
+            $this->addColumnsToTable(
+                $setup,
+                [
+                    [
+                        'fieldName' => 'base_grand_total',
+                        'config' => [
+                            'type' => Table::TYPE_DECIMAL,
+                            'length' => '12,4',
+                            'nullable' => false,
+                            'comment' => 'Grand Total (Base)'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'shipping_information',
+                        'config' => [
+                            'type' => Table::TYPE_TEXT,
+                            'length' => '255',
+                            'nullable' => false,
+                            'comment' => 'Shipping Information'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'shipping_amount',
+                        'config' => [
+                            'type' => Table::TYPE_DECIMAL,
+                            'length' => '12,4',
+                            'nullable' => false,
+                            'comment' => 'Shipping Amount'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'order_modified_date',
+                        'config' => [
+                            'type' => Table::TYPE_TIMESTAMP,
+                            'length' => null,
+                            'nullable' => false,
+                            'comment' => 'Order Modified Date'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'tax_code',
+                        'config' => [
+                            'type' => Table::TYPE_TEXT,
+                            'length' => '100',
+                            'nullable' => false,
+                            'comment' => 'Tax code'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'tax_percent',
+                        'config' => [
+                            'type' => Table::TYPE_DECIMAL,
+                            'length' => '12,4',
+                            'nullable' => false,
+                            'comment' => 'Tax Percent'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'base_tax_real_amount',
+                        'config' => [
+                            'type' => Table::TYPE_DECIMAL,
+                            'length' => '12,4',
+                            'nullable' => false,
+                            'comment' => 'Tax Real Amount (Base)'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'billing_region',
+                        'config' => [
+                            'type' => Table::TYPE_TEXT,
+                            'length' => '255',
+                            'nullable' => false,
+                            'comment' => 'Billing Region'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'billing_zip_code',
+                        'config' => [
+                            'type' => Table::TYPE_TEXT,
+                            'length' => '255',
+                            'nullable' => false,
+                            'comment' => 'Billing Postcode'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'billing_city',
+                        'config' => [
+                            'type' => Table::TYPE_TEXT,
+                            'length' => '255',
+                            'nullable' => false,
+                            'comment' => 'Billing City'
+                        ]
+                    ],
+                    [
+                        'fieldName' => 'customer_balance_refunded',
+                        'config' => [
+                            'type' => Table::TYPE_DECIMAL,
+                            'length' => '12,4',
+                            'nullable' => false,
+                            'comment' => 'Customer Balance Refunded'
+                        ]
+                    ]
+                ],
+                $tableName
+            );
+
+            $this->renameColumnsInTable(
+                $setup,
+                [
+                    [
+                        'oldFieldName' => 'region',
+                        'newFieldName' => 'shipping_region',
+                        'config' => [
+                            'type' => Table::TYPE_TEXT,
+                            'length' => '255',
+                            'nullable' => false,
+                            'comment' => 'Shipping Region'
+                        ]
+                    ],
+                    [
+                        'oldFieldName' => 'zip_code',
+                        'newFieldName' => 'shipping_zip_code',
+                        'config' => [
+                            'type' => Table::TYPE_TEXT,
+                            'length' => '255',
+                            'nullable' => false,
+                            'comment' => 'Shipping Postcode'
+                        ]
+                    ],
+                    [
+                        'oldFieldName' => 'city',
+                        'newFieldName' => 'shipping_city',
+                        'config' => [
+                            'type' => Table::TYPE_TEXT,
+                            'length' => '255',
+                            'nullable' => false,
+                            'comment' => 'Shipping City'
+                        ]
+                    ],
+                ],
+                $tableName
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add columns to table
+     *
+     * @param SchemaSetupInterface $setup
+     * @param array $columnsConfig
+     * @param string $tableName
+     * @return $this
+     */
+    private function addColumnsToTable($setup, $columnsConfig, $tableName)
+    {
+        $connection = $setup->getConnection();
+        $tableName = $setup->getTable($tableName);
+        foreach ($columnsConfig as $fieldConfig) {
+            $fieldName = $fieldConfig['fieldName'];
+            if ($connection->tableColumnExists($tableName, $fieldName)) {
+                continue;
+            }
+            $connection->addColumn(
+                $tableName,
+                $fieldName,
+                $fieldConfig['config']
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Rename columns in table
+     *
+     * @param SchemaSetupInterface $setup
+     * @param array $columnsConfig
+     * @param string $tableName
+     * @return $this
+     */
+    private function renameColumnsInTable($setup, $columnsConfig, $tableName)
+    {
+        $connection = $setup->getConnection();
+        $tableName = $setup->getTable($tableName);
+        foreach ($columnsConfig as $fieldConfig) {
+            $oldFieldName = $fieldConfig['oldFieldName'];
+            if (!$connection->tableColumnExists($tableName, $oldFieldName)) {
+                continue;
+            }
+            $connection->changeColumn(
+                $tableName,
+                $oldFieldName,
+                $fieldConfig['newFieldName'],
+                $fieldConfig['config']
             );
         }
 
