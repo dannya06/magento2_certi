@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 -->
@@ -34,6 +34,27 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Set to yes to automatically generate warmer queue after cache flushing</comment>
                 </field>
+                <field id="background_queue_regenerate" translate="label comment" type="select" sortOrder="32" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Auto-generate Queue in Background</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="queue_regenerate">1</field>
+                    </depends>
+                    <comment>If enabled, warmer queue will be regenerated in background via cron and will not affect admin side performance.</comment>
+                </field>
+                <field id="enable_flushes_log" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Cache Flushes Logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="ignore_classes" translate="label comment" type="textarea" sortOrder="37" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Exclude Classes from Log</label>
+                    <comment>Please specify classes that are not expected to be logged in cache flushes log.</comment>
+                    <frontend_model>Amasty\Fpc\Block\Adminhtml\Form\Field\ExcludeClasses</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                    <depends>
+                        <field id="enable_flushes_log">1</field>
+                    </depends>
+                </field>
                 <field id="customer_activity" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enable Customers' Activity Log</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -57,23 +78,14 @@
                     <strong>Sitemap XML and Text File Together</strong> - sometimes it's not enough to warm up URLs from a Sitemap XML only.
                     By using the option you can add a text file with URLs to be warmed up together with the ones from the Sitemap. <br/>
                     <strong>Customers Activity Source</strong> - a list of URLs for warming up will be created according to the Customers Activity Log.
-                    It means that the most popular URLs will be at the top of the queue. While the least will be at the bottom.]]>
+                    It means that the most popular URLs will be at the top of the queue. While the least will be at the bottom. <br/>
+                    <strong>Page Types and Text File Together</strong> - by using the option you can create a file with the most valuable pages to warm first and then warm other pages according to their type and priority.]]>
                     </tooltip>
-                </field>
-                <field id="page_types" translate="label tooltip" type="Amasty\Fpc\Block\Adminhtml\Form\Field\PageType" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Pages and Priority</label>
-                    <tooltip>You can remove a page type from warming up queue by removing the tick from a checkbox.
-                        Set page types to be warmed up first by drag and'dropping it to the top of the list.
-                    </tooltip>
-                    <backend_model>Amasty\Fpc\Model\System\Config\Backend\PageType</backend_model>
-                    <depends>
-                        <field id="source">0</field>
-                    </depends>
                 </field>
                 <field id="file_path" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Queue Links File Path</label>
                     <depends>
-                        <field id="source" separator=",">2,3</field>
+                        <field id="source" separator=",">2,3,5</field>
                     </depends>
                     <comment><![CDATA[Please, set the relative path to the file on your server. <br/>Example: var/tmp/queue_links.txt]]></comment>
                 </field>
@@ -83,6 +95,16 @@
                         <field id="source" separator=",">1,3</field>
                     </depends>
                     <comment><![CDATA[Please, set the relative path to the Sitemap XML file on your server. <br/>Example: sitemaps/sitemap.xml]]></comment>
+                </field>
+                <field id="page_types" translate="label tooltip" type="Amasty\Fpc\Block\Adminhtml\Form\Field\PageType" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Pages and Priority</label>
+                    <tooltip>You can remove a page type from warming up queue by removing the tick from a checkbox.
+                        Set page types to be warmed up first by drag and'dropping it to the top of the list.
+                    </tooltip>
+                    <backend_model>Amasty\Fpc\Model\System\Config\Backend\PageType</backend_model>
+                    <depends>
+                        <field id="source" separator=",">0,5</field>
+                    </depends>
                 </field>
             </group>
             <group id="performance_settings" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -269,6 +291,18 @@
                         <field id="show_status">1</field>
                     </depends>
                     <comment>Enter IP addresses comma separated</comment>
+                </field>
+            </group>
+            <group id="optimizer" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Lazy Load Compatibility Settings</label>
+                <field id="info" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Amasty\Fpc\Block\Adminhtml\Form\Field\LazyLoadCompatInfo</frontend_model>
+                </field>
+                <field id="webp_support" translate="label" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>User Agents</label>
+                </field>
+                <field id="devices" translate="label" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Images Resolution</label>
                 </field>
             </group>
         </section>

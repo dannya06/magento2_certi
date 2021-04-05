@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -102,7 +102,7 @@ class Collection extends AbstractCollection
         $this->getSelect()->columns(
             [
                 'rate' => new \Zend_Db_Expr(
-                'SUM(case when `status` like "%hit%" then 1 else null end) / COUNT(status)'
+                    'SUM(case when `status` like "%hit%" then 1 else null end) / COUNT(status)'
                 )
             ]
         );
@@ -139,15 +139,15 @@ class Collection extends AbstractCollection
         );
         $joinType == 'left'
             ? $select->joinLeft(
-            ['sub' => $subselect],
-            $this->prepareDateColumn($type, 'date') . ' = sub.warmed_at',
-            []
-        )
+                ['sub' => $subselect],
+                $this->prepareDateColumn($type, 'date') . ' = sub.warmed_at',
+                []
+            )
             : $select->joinRight(
-            ['sub' => $subselect],
-            $this->prepareDateColumn($type, 'date') . ' = sub.warmed_at',
-            []
-        );
+                ['sub' => $subselect],
+                $this->prepareDateColumn($type, 'date') . ' = sub.warmed_at',
+                []
+            );
         $select->group($this->prepareDateColumn($type, 'date'));
         $this->addWhereCondition($type, $select, 'date');
 
@@ -161,16 +161,17 @@ class Collection extends AbstractCollection
      */
     private function prepareDateColumn($type, $field)
     {
+        $field = $this->getConnection()->quoteIdentifier($field);
         $expression = 'date';
 
         switch ($type) {
             case self::DATE_TYPE_DAY:
-                $expression = "DATE_FORMAT(`$field`, '%b %D / %k:00')";
+                $expression = "DATE_FORMAT($field, '%b %D / %k:00')";
                 break;
             case self::DATE_TYPE_WEEK:
             case self::DATE_TYPE_MONTH:
             case self::DATE_TYPE_ALL:
-                $expression = "DATE_FORMAT(`$field`, '%b %D %Y')";
+                $expression = "DATE_FORMAT($field, '%b %D %Y')";
                 break;
         }
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -79,6 +79,11 @@ class SendResponseBefore implements ObserverInterface
      */
     private $httpHelper;
 
+    /**
+     * @var Queue\ProcessMetaInfo
+     */
+    private $processMetaInfo;
+
     public function __construct(
         Config $config,
         BlockFactory $blockFactory,
@@ -89,7 +94,8 @@ class SendResponseBefore implements ObserverInterface
         SessionManager $sessionManager,
         Queue $queue,
         ContextHelper $contextHelper,
-        HttpHelper $httpHelper
+        HttpHelper $httpHelper,
+        Queue\ProcessMetaInfo $processMetaInfo
     ) {
         $this->config = $config;
         $this->blockFactory = $blockFactory;
@@ -102,6 +108,7 @@ class SendResponseBefore implements ObserverInterface
         $this->queue = $queue;
         $this->contextHelper = $contextHelper;
         $this->httpHelper = $httpHelper;
+        $this->processMetaInfo = $processMetaInfo;
     }
 
     public function execute(Observer $observer)
@@ -131,7 +138,7 @@ class SendResponseBefore implements ObserverInterface
                 $this->activityRepository->save($activity);
             }
         } catch (CouldNotSaveException $e) {
-            if ($this->queue->getFlag(Queue::PROCESSING_FLAG)) {
+            if ($this->processMetaInfo->isQueueLocked()) {
                 $this->logger->info(__('Can not save activity due the generation of queue by Warmer "
                 . "because the Customers Activity selected as source.'));
             } else {
@@ -140,6 +147,9 @@ class SendResponseBefore implements ObserverInterface
         }
         $status = $this->pageStatus->getStatus();
         $this->sessionManager->setPageStatus($status);
+        if ($this->config->isVarnishEnabled()) {
+            $this->sessionManager->setIsVarnishHit(false);
+        }
 
         if (!$this->config->canDisplayStatus()) {
             return;

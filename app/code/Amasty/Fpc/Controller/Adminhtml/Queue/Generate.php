@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -14,22 +14,22 @@ use Magento\Backend\App\Action\Context;
 class Generate extends \Amasty\Fpc\Controller\Adminhtml\Queue
 {
     /**
-     * @var Queue
+     * @var Queue\RegenerateHandler
      */
-    private $queue;
+    private $regenerateHandler;
 
     public function __construct(
         Context $context,
-        Queue $queue
+        Queue\RegenerateHandler $regenerateHandler
     ) {
         parent::__construct($context);
-        $this->queue = $queue;
+        $this->regenerateHandler = $regenerateHandler;
     }
 
     public function execute()
     {
         try {
-            list($result, $processedItems) = $this->queue->generate();
+            list($result, $processedItems) = $this->regenerateHandler->execute(true);
 
             if ($result) {
                 $this->messageManager->addSuccessMessage(

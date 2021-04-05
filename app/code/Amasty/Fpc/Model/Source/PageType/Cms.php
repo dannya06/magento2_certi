@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -11,7 +11,7 @@ namespace Amasty\Fpc\Model\Source\PageType;
 use Magento\Cms\Model\ResourceModel\Page\Collection as PageCollection;
 use Magento\Cms\Model\ResourceModel\Page\CollectionFactory as PageCollectionFactory;
 use Magento\Framework\App\State;
-use Magento\Framework\UrlInterface;
+use Magento\Framework\Url as FrontendUrlBuilder;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
@@ -25,7 +25,7 @@ class Cms extends Emulated
 
     public function __construct(
         PageCollectionFactory $pageCollectionFactory,
-        UrlInterface $urlBuilder,
+        FrontendUrlBuilder $urlBuilder,
         Emulation $appEmulation,
         State $appState,
         StoreManagerInterface $storeManager,

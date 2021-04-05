@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 -->
@@ -33,5 +33,8 @@
     </type>
     <type name="Magento\Framework\App\PageCache\Kernel">
         <plugin name="amasty_fpc_holepunch_blockinfo" type="Amasty\Fpc\Plugin\Holepunch\BlockInfo" />
+    </type>
+    <type name="Magento\Framework\App\Http\Context">
+        <plugin name="amastyFpcContext" type="Amasty\Fpc\Plugin\App\Http\ContextPlugin"/>
     </type>
 </config>

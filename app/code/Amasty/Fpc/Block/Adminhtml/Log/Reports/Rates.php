@@ -1,20 +1,16 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
 
 namespace Amasty\Fpc\Block\Adminhtml\Log\Reports;
 
+use Amasty\Fpc\Model\Queue\ProcessMetaInfo;
 use Magento\Backend\Block\Template;
 
-/**
- * Class Rates
- *
- * @package Amasty\Fpc\Block\Adminhtml\Log\Reports
- */
 class Rates extends Template
 {
     const LOG_PAGES = 'log_pages';
@@ -22,38 +18,24 @@ class Rates extends Template
     protected $_template = 'Amasty_Fpc::log/rates.phtml';
 
     /**
-     * @var \Amasty\Fpc\Model\ResourceModel\Page\CollectionFactory
-     */
-    private $queueCollectionFactory;
-
-    /**
-     * @var \Amasty\Fpc\Model\Config
-     */
-    private $fpcConfig;
-
-    /**
-     * @var \Amasty\Fpc\Model\ResourceModel\Log\CollectionFactory
-     */
-    private $logCollectionFactory;
-
-    /**
      * @var \Amasty\Fpc\Mpdel\ResourceModel\Reports\CollectionFactory
      */
     private $reportsCollectionFactory;
 
+    /**
+     * @var \Amasty\Fpc\Model\Queue\ProcessMetaInfo
+     */
+    private $processStats;
+
     public function __construct(
         Template\Context $context,
-        \Amasty\Fpc\Model\Config $fpcConfig,
-        \Amasty\Fpc\Model\ResourceModel\Queue\Page\CollectionFactory $queueCollectionFactory,
-        \Amasty\Fpc\Model\ResourceModel\Log\CollectionFactory $logCollectionFactory,
         \Amasty\Fpc\Model\ResourceModel\Reports\CollectionFactory $reportsCollectionFactory,
+        \Amasty\Fpc\Model\Queue\ProcessMetaInfo $processStats,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->queueCollectionFactory = $queueCollectionFactory;
-        $this->fpcConfig = $fpcConfig;
-        $this->logCollectionFactory = $logCollectionFactory;
         $this->reportsCollectionFactory = $reportsCollectionFactory;
+        $this->processStats = $processStats;
     }
 
     /**
@@ -72,12 +54,17 @@ class Rates extends Template
      */
     public function getCachedValue()
     {
-        $warmBatch = $this->fpcConfig->getQueueLimit();
-        $log = $this->getLogCount();
+        $totalPagesQueued = $this->processStats->getTotalPagesQueued();
 
-        $inCacheValue = $this->checkQueueNotEmpty() ? $log / $warmBatch * 100 : 0;
+        //to prevent divide by zero
+        if ($totalPagesQueued !== 0) {
+            $totalPagesCrawled = $this->processStats->getTotalPagesCrawled();
+            $inCacheValue = $totalPagesCrawled / $totalPagesQueued * 100;
 
-        return $inCacheValue;
+            return round($inCacheValue, 1);
+        }
+
+        return 0;
     }
 
     /**
@@ -87,7 +74,7 @@ class Rates extends Template
     {
         $pendingValue = 100 - $this->getCachedValue();
 
-        return $pendingValue;
+        return round($pendingValue, 1);
     }
 
     /**
@@ -100,10 +87,8 @@ class Rates extends Template
         switch ($cacheType) {
             case \Magento\PageCache\Model\Config::BUILT_IN:
                 return __('Built-in');
-                break;
             case \Magento\PageCache\Model\Config::VARNISH:
                 return __('Varnish');
-                break;
             default:
                 return __('Unknown');
         }
@@ -117,25 +102,5 @@ class Rates extends Template
         $cacheTTL = (int)$this->_scopeConfig->getValue('system/full_page_cache/ttl')  / 3600;
 
         return $cacheTTL . 'h';
-    }
-
-    /**
-     * @return bool
-     */
-    private function checkQueueNotEmpty()
-    {
-        return (bool)$this->queueCollectionFactory->create()->count();
-    }
-
-    /**
-     * @return int
-     */
-    private function getLogCount()
-    {
-        if (!$this->getData(self::LOG_PAGES)) {
-            $this->setData(self::LOG_PAGES, $this->logCollectionFactory->create()->count());
-        }
-
-        return $this->getData(self::LOG_PAGES);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -37,18 +37,25 @@ class Refresher
      */
     private $pageResource;
 
+    /**
+     * @var Queue\ProcessMetaInfo
+     */
+    private $processStats;
+
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         \Magento\Config\Model\ResourceModel\Config\Data\CollectionFactory $configCollectionFactory,
         \Amasty\Fpc\Model\QueuePageRepository $pageRepository,
         \Amasty\Fpc\Model\Source\PageType\Factory $pageTypeFactory,
-        \Amasty\Fpc\Model\ResourceModel\Queue\Page $pageResource
+        \Amasty\Fpc\Model\ResourceModel\Queue\Page $pageResource,
+        \Amasty\Fpc\Model\Queue\ProcessMetaInfo $processStats
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->configCollectionFactory = $configCollectionFactory;
         $this->pageRepository = $pageRepository;
         $this->pageTypeFactory = $pageTypeFactory;
         $this->pageResource = $pageResource;
+        $this->processStats = $processStats;
     }
 
     public function queueIndexPage()
@@ -59,7 +66,7 @@ class Refresher
 
     public function queueCmsPage($identifier)
     {
-        $filter = function(PageCollection $collection) use ($identifier) {
+        $filter = function (PageCollection $collection) use ($identifier) {
             $collection->addFieldToFilter('identifier', $identifier);
         };
 
@@ -72,8 +79,8 @@ class Refresher
 
     public function queueProductPage($id)
     {
-        $filter = function(UrlRewriteCollection $collection) use ($id) {
-            $collection->addFieldToFilter('entity_id', $id);
+        $filter = function (UrlRewriteCollection $collection) use ($id) {
+            $collection->addFieldToFilter('product_entity.entity_id', $id);
         };
 
         $type = $this->pageTypeFactory->create(PageType::TYPE_PRODUCT, [
@@ -85,7 +92,7 @@ class Refresher
 
     public function queueCategoryPage($id)
     {
-        $filter = function(UrlRewriteCollection $collection) use ($id) {
+        $filter = function (UrlRewriteCollection $collection) use ($id) {
             $collection->addFieldToFilter('entity_id', $id);
         };
 
@@ -121,6 +128,8 @@ class Refresher
             $page['rate'] = $rate;
             $this->pageRepository->addPage($page);
         }
+
+        $this->processStats->addToTotalPagesQueued(count($pages));
     }
 
     protected function getMaxRate()

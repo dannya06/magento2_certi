@@ -125,7 +125,7 @@ define([
 
                 self.chart = am4core.create("chart-efficiency", am4charts.XYChart);
                 self.chart.data = data;
-                self.createAxys('visited_at');
+                self.createAxys('visited_at', data);
 
                 var valueAxis = self.chart.yAxes.push(new am4charts.ValueAxis());
                 valueAxis.min = 0;
@@ -155,7 +155,7 @@ define([
             return percentValueAxis;
         },
 
-        createAxys: function (category) {
+        createAxys: function (category, data) {
             var categoryAxis = this.chart.xAxes.push(new am4charts.CategoryAxis());
 
             categoryAxis.dataFields.category = category;
@@ -163,6 +163,7 @@ define([
             categoryAxis.renderer.minGridDistance = 70;
             categoryAxis.renderer.cellStartLocation = 0.1;
             categoryAxis.renderer.cellEndLocation = 0.9;
+            categoryAxis.renderer.labels.template.rotation = 270;
 
             return categoryAxis;
         },
@@ -173,7 +174,7 @@ define([
             percentSeries.dataFields.valueY = field;
             percentSeries.dataFields.categoryX = "visited_at";
             percentSeries.name = name;
-            percentSeries.columns.template.tooltipText = "{name}: {valueY.formatNumber('#.0')}%[/]";
+            percentSeries.columns.template.tooltipText = "[fill:#fff]{name}: [fill:#fff]{valueY.formatNumber('#.0')}%[/]";
             percentSeries.yAxis = axis;
             percentSeries.stroke = new am4core.InterfaceColorSet().getFor("alternativeBackground");
             percentSeries.hidden = isHide;
@@ -185,7 +186,7 @@ define([
             series.dataFields.valueY = field;
             series.dataFields.categoryX = "visited_at";
             series.name = name;
-            series.columns.template.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.columns.template.tooltipText = "[fill:#fff]{name}: [bold;fill:#fff]{valueY}[/]";
             series.stacked = stacked;
             series.columns.template.width = am4core.percent(95);
         }

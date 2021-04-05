@@ -35,10 +35,10 @@ define([
             pieSeries.slices.template.stroke = am4core.color("#fff");
             pieSeries.slices.template.strokeWidth = 2;
             pieSeries.slices.template.strokeOpacity = 1;
-            pieSeries.labels.template.text = "{category}s";
+            pieSeries.labels.template.text = "[fill:#fff]{category}s";
             pieSeries.labels.template.disabled = true;
             pieSeries.ticks.template.disabled = true;
-            pieSeries.slices.template.tooltipText = "{category}s : {value.formatNumber('#.0')}%[/]";
+            pieSeries.slices.template.tooltipText = "[fill:#fff]{category}s : [fill:#fff]{value.formatNumber('#.0')}%[/]";
 
             // This creates initial animation
             pieSeries.hiddenState.properties.opacity = 1;

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -10,11 +10,6 @@ namespace Amasty\Fpc\Block\Adminhtml\Log\Reports;
 
 use Magento\Backend\Block\Template;
 
-/**
- * Class Charts
- *
- * @package Amasty\Fpc\Block\Adminhtml\Log\Reports
- */
 class Charts extends Template
 {
     protected $_template = 'Amasty_Fpc::log/charts.phtml';
@@ -51,11 +46,12 @@ class Charts extends Template
         $collection = $this->logCollectionFactory->create();
         $totalRecords = $collection->count();
 
+        $quotedType = $collection->getConnection()->quoteIdentifier($type);
         $collection->getSelect()->reset(\Magento\Framework\DB\Select::COLUMNS)
             ->columns(
                 [
                     $type,
-                    'num' => new \Zend_Db_Expr("COUNT($type)")
+                    'num' => new \Zend_Db_Expr("COUNT($quotedType)")
                 ]
             )->group($type);
 

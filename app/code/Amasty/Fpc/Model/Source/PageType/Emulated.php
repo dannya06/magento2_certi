@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Fpc
  */
 
@@ -11,14 +11,14 @@ namespace Amasty\Fpc\Model\Source\PageType;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\UrlInterface;
+use Magento\Framework\Url as FrontendUrlBuilder;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\StoreManagerInterface;
 
 abstract class Emulated extends AbstractPage
 {
     /**
-     * @var UrlInterface
+     * @var FrontendUrlBuilder
      */
     private $urlBuilder;
 
@@ -43,7 +43,7 @@ abstract class Emulated extends AbstractPage
     private $storeManager;
 
     public function __construct(
-        UrlInterface $urlBuilder,
+        FrontendUrlBuilder $urlBuilder,
         Emulation $appEmulation,
         State $appState,
         StoreManagerInterface $storeManager,

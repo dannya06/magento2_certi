@@ -1,7 +1,8 @@
 "Are you sure you want to do this?","Are you sure you want to do this?"
 "Force Unlock","Force Unlock"
-Expression,Expression
+Class,Class
 Add,Add
+Expression,Expression
 Template,Template
 "Block class","Block class"
 "Cms block ID","Cms block ID"
@@ -21,6 +22,9 @@ Ignored,Ignored
 "Activity log has been successfully cleared.","Activity log has been successfully cleared."
 System,System
 "Warmer Activity Log","Warmer Activity Log"
+"Cache flushes log has been successfully cleared.","Cache flushes log has been successfully cleared."
+"Cache Flushes Log","Cache Flushes Log"
+"Logs was successfully removed.","Logs was successfully removed."
 "Warmer log has been successfully cleared.","Warmer log has been successfully cleared."
 "Page has been flushed","Page has been flushed"
 "An error has occurred","An error has occurred"
@@ -33,7 +37,12 @@ System,System
 "First batch of warmer queue has been successfully processed.","First batch of warmer queue has been successfully processed."
 "Unlocked successfully!","Unlocked successfully!"
 Reports,Reports
+"Can't get a file lock for queue generation process $1","Can't get a file lock for queue generation process $1"
+"Can't get a file lock for queue processing process $1","Can't get a file lock for queue processing process $1"
 "Unknown status code","Unknown status code"
+"Unable to save job. Error: %1","Unable to save job. Error: %1"
+"Job with specified ID ""%1"" not found.","Job with specified ID ""%1"" not found."
+"Unable to delete job. Error: %1","Unable to delete job. Error: %1"
 "NOT LOGGED IN","NOT LOGGED IN"
 "Home Page","Home Page"
 "CMS pages","CMS pages"
@@ -44,20 +53,20 @@ Reports,Reports
 "Sitemap XML","Sitemap XML"
 "Sitemap XML and Text File together","Sitemap XML and Text File together"
 "Customers Activity Source","Customers Activity Source"
+"Page Types and Text File Together","Page Types and Text File Together"
 "Already cached","Already cached"
-"Can't get a file lock for queue generation process $1","Can't get a file lock for queue generation process $1"
-"Can't get a file lock for queue processing process $1","Can't get a file lock for queue processing process $1"
+"Command Line","Command Line"
+"Magento Admin","Magento Admin"
+"No Tags","No Tags"
 "Another lock detected (the Warmer queue is in a progress).","Another lock detected (the Warmer queue is in a progress)."
-"Combine is selected as source: ","Combine is selected as source: "
-"File is selected as source: ","File is selected as source: "
-"Sitemap XML is selected as source: ","Sitemap XML is selected as source: "
-"Activity is selected as source: ","Activity is selected as source: "
-"but source is empty","but source is empty"
 "Unable to save activity with ID %1. Error: %2","Unable to save activity with ID %1. Error: %2"
 "Unable to save new activity. Error: %1","Unable to save new activity. Error: %1"
 "Activity with specified ID ""%1"" not found.","Activity with specified ID ""%1"" not found."
 "Unable to remove activity with ID %1. Error: %2","Unable to remove activity with ID %1. Error: %2"
 "Unable to remove activity. Error: %1","Unable to remove activity. Error: %1"
+"Unable to save log with ID %1. Error: %2","Unable to save log with ID %1. Error: %2"
+"Unable to remove log with ID %1. Error: %2","Unable to remove log with ID %1. Error: %2"
+"Unable to remove log. Error: %1","Unable to remove log. Error: %1"
 "but file does not exist with specified path: %1","but file does not exist with specified path: %1"
 "but Amasty Crawler could not parse this file: %1","but Amasty Crawler could not parse this file: %1"
 "but this file is empty: %1","but this file is empty: %1"
@@ -67,10 +76,12 @@ Reports,Reports
 "The following file from the Sitemap XML file does not exist: %1","The following file from the Sitemap XML file does not exist: %1"
 "Amasty Crawler could not parse the following file from the Sitemap XML file: %1","Amasty Crawler could not parse the following file from the Sitemap XML file: %1"
 "but Amasty Crawler could not extract any URL from the Sitemap XML file: %1","but Amasty Crawler could not extract any URL from the Sitemap XML file: %1"
+"Unable to regenerate queue: %1","Unable to regenerate queue: %1"
 "Can not save activity due the generation of queue by Warmer ""
                 . ""because the Customers Activity selected as source.","Can not save activity due the generation of queue by Warmer ""
                 . ""because the Customers Activity selected as source."
 [Default],[Default]
+"Please, install Lazy Load or Google Page Speed Optimizer to warm pages according to user agents with or without webp support.","Please, install Lazy Load or Google Page Speed Optimizer to warm pages according to user agents with or without webp support."
 Enabled,Enabled
 "Page Type","Page Type"
 "Sort Option","Sort Option"
@@ -87,6 +98,7 @@ Week,Week
 Month,Month
 Reload,Reload
 "Not cacheable blocks","Not cacheable blocks"
+"Show Backtrace","Show Backtrace"
 Hit,Hit
 Miss,Miss
 Warmed,Warmed
@@ -103,6 +115,11 @@ General,General
 "Adds product pages urls to the Warmer Queue upon the product edit","Adds product pages urls to the Warmer Queue upon the product edit"
 "Auto-generate Queue after Cache Flush","Auto-generate Queue after Cache Flush"
 "Set to yes to automatically generate warmer queue after cache flushing","Set to yes to automatically generate warmer queue after cache flushing"
+"Auto-generate Queue in Background","Auto-generate Queue in Background"
+"If enabled, warmer queue will be regenerated in background via cron and will not affect admin side performance.","If enabled, warmer queue will be regenerated in background via cron and will not affect admin side performance."
+"Enable Cache Flushes Logging","Enable Cache Flushes Logging"
+"Exclude Classes from Log","Exclude Classes from Log"
+"Please specify classes that are not expected to be logged in cache flushes log.","Please specify classes that are not expected to be logged in cache flushes log."
 "Enable Customers' Activity Log","Enable Customers' Activity Log"
 "Source and Priority","Source and Priority"
 "Queue Generation Source","Queue Generation Source"
@@ -115,7 +132,8 @@ General,General
                     <strong>Sitemap XML and Text File Together</strong> - sometimes it's not enough to warm up URLs from a Sitemap XML only.
                     By using the option you can add a text file with URLs to be warmed up together with the ones from the Sitemap. <br/>
                     <strong>Customers Activity Source</strong> - a list of URLs for warming up will be created according to the Customers Activity Log.
-                    It means that the most popular URLs will be at the top of the queue. While the least will be at the bottom.","<strong>Pages and Priority</strong> - you can choose which pages should be warmed by their types.
+                    It means that the most popular URLs will be at the top of the queue. While the least will be at the bottom. <br/>
+                    <strong>Page Types and Text File Together</strong> - by using the option you can create a file with the most valuable pages to warm first and then warm other pages according to their type and priority.","<strong>Pages and Priority</strong> - you can choose which pages should be warmed by their types.
                      Drag and drop pages to prioritize pages for the warming queue depending on their importance.<br/>
                     <strong>Text file with one link per line</strong> - you can use a custom text file with a list of links to be crawled (one link per line).<br/>
                     <strong>Sitemap XML</strong> - only URLs represented in the sitemap will be warmed up. The option requires a valid XML sitemap located in your
@@ -123,15 +141,16 @@ General,General
                     <strong>Sitemap XML and Text File Together</strong> - sometimes it's not enough to warm up URLs from a Sitemap XML only.
                     By using the option you can add a text file with URLs to be warmed up together with the ones from the Sitemap. <br/>
                     <strong>Customers Activity Source</strong> - a list of URLs for warming up will be created according to the Customers Activity Log.
-                    It means that the most popular URLs will be at the top of the queue. While the least will be at the bottom."
-"Pages and Priority","Pages and Priority"
-"You can remove a page type from warming up queue by removing the tick from a checkbox.
-                        Set page types to be warmed up first by drag and'dropping it to the top of the list.","You can remove a page type from warming up queue by removing the tick from a checkbox.
-                        Set page types to be warmed up first by drag and'dropping it to the top of the list."
+                    It means that the most popular URLs will be at the top of the queue. While the least will be at the bottom. <br/>
+                    <strong>Page Types and Text File Together</strong> - by using the option you can create a file with the most valuable pages to warm first and then warm other pages according to their type and priority."
 "Queue Links File Path","Queue Links File Path"
 "Please, set the relative path to the file on your server. <br/>Example: var/tmp/queue_links.txt","Please, set the relative path to the file on your server. <br/>Example: var/tmp/queue_links.txt"
 "Sitemap XML File Path","Sitemap XML File Path"
 "Please, set the relative path to the Sitemap XML file on your server. <br/>Example: sitemaps/sitemap.xml","Please, set the relative path to the Sitemap XML file on your server. <br/>Example: sitemaps/sitemap.xml"
+"Pages and Priority","Pages and Priority"
+"You can remove a page type from warming up queue by removing the tick from a checkbox.
+                        Set page types to be warmed up first by drag and'dropping it to the top of the list.","You can remove a page type from warming up queue by removing the tick from a checkbox.
+                        Set page types to be warmed up first by drag and'dropping it to the top of the list."
 "Performance Settings","Performance Settings"
 "Enable Multi-Process Warming","Enable Multi-Process Warming"
 "Number of Parallel Processes","Number of Parallel Processes"
@@ -222,13 +241,23 @@ Debug,Debug
 "Show Cache Status","Show Cache Status"
 "Show Cache Status Only For","Show Cache Status Only For"
 "Enter IP addresses comma separated","Enter IP addresses comma separated"
+"Lazy Load Compatibility Settings","Lazy Load Compatibility Settings"
+"Images Resolution","Images Resolution"
 Url,Url
 "Number of Visits","Number of Visits"
 "Store View","Store View"
 Status,Status
 Mobile,Mobile
-"Flush Cache","Flush Cache"
+Delete,Delete
+"Delete Log","Delete Log"
+"Are you sure you want to delete selected log items?","Are you sure you want to delete selected log items?"
+ID,ID
+Details,Details
 Date,Date
+Backtrace,Backtrace
+"Cache Clean Backtrace","Cache Clean Backtrace"
+Close,Close
+"Flush Cache","Flush Cache"
 Currency,Currency
 "Customer Group","Customer Group"
 Rate,Rate
