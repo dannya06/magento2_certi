@@ -1,4 +1,4 @@
-define(['jquery', 'domReady!'], function ($) {
+define(['jquery', 'Magento_Customer/js/customer-data', 'domReady!'], function ($, customerData) {
     stickyHeader = {
         stickyHeader: function () {
             var config = {
@@ -17,7 +17,9 @@ define(['jquery', 'domReady!'], function ($) {
                 headerPlaceholder:  '<div class="header-placeholder"></div>',
                 stickyMobile:       window.stickyMobileEnabled,
                 design:             $('.section-items .section-item-title').first().css('display') == 'none' ? 'desktop' : 'mobile',
-                headerElHeight:     0
+                headerElHeight:     0,
+                triggerEvent:       'scroll',
+                stickyHeaderScrollUp : window.stickyHeaderScrollUpEnabled
             };
 
             /** abort if header-content or nav-sections was not found */
@@ -65,6 +67,10 @@ define(['jquery', 'domReady!'], function ($) {
 
             $(window).on('scroll resize', function (e) {
                 /** if design has changed force reset settings */
+                if ($('body').hasClass('checkout-cart-index') && (e.type == 'resize')) {
+                    return;
+                }
+                config.triggerEvent = e.type;
                 var oldDesign = config.design;
                 config.design = $('.section-items .section-item-title').first().css('display') == 'none' ? 'desktop' : 'mobile';
                 if (oldDesign != config.design) {
@@ -151,20 +157,20 @@ define(['jquery', 'domReady!'], function ($) {
                                     config.navSection.addClass('sticky-header');
                                     that.showHideElements('hide', [
                                         config.globalPromo,
-                                        config.greetWelcome,
                                         config.switcherMultiStore,
                                         config.headerMultiStore
                                     ]);
+                                    config.greetWelcome.css('visibility', 'hidden');
                                 }
                             } else {
                                 that.moveElementsOnSticky(config.headerSection, config.navSection, 'in', config);
                                 config.navSection.removeClass('sticky-header');
                                 that.showHideElements('show', [
                                     config.globalPromo,
-                                    config.greetWelcome,
                                     config.switcherMultiStore,
                                     config.headerMultiStore
                                 ]);
+                                config.greetWelcome.css('visibility', 'visible');
                             }
                             break;
                         default:
@@ -259,27 +265,24 @@ define(['jquery', 'domReady!'], function ($) {
             return !config.headerSection.hasClass('sticky-header');
         },
         doSticky: function (that, config) {
-            var isFullPageScroll = $('.fullpagescroll').length;
-            if (isFullPageScroll) {
-                if (window.onLeaveIndex || window.onLeaveDirection) {
-                    if (window.onLeaveDirection == 'down') {
-                        return true;
-                    } else {
-                        if (window.onLeaveIndex == '2') {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    }
-                }
 
-                return false;
-            } else {
-                if (that.getHeaderVersion(config.headerSection) == 'v4') {
-                    var panelWrapperHeight = parseInt($('.panel.wrapper').height());
-                    return $(window).scrollTop() > $('.panel.wrapper').position().top;
+            if (config.stickyHeaderScrollUp === '1') {
+                let position = $(window).scrollTop(),
+                    sticky = false;
+
+                if (position < this.lastScrollPosition && position !== 0) {
+                    sticky = true;
                 }
-                return $(window).scrollTop() > config.headerContent.position().top;
+                this.lastScrollPosition = position;
+                return sticky;
+            } else {
+                let position = $(window).scrollTop(),
+                    sticky = false;
+                if (position !== 0) {
+                    sticky = true;
+                }
+                this.lastScrollPosition = position;
+                return sticky;
             }
         },
         moveElementsOnSticky: function (a, b, direction, config) {
@@ -301,6 +304,13 @@ define(['jquery', 'domReady!'], function ($) {
                     b.appendTo(config.headerPlaceholder);
                     b.removeClass('sticky-header-nav');
                 }
+            }
+            if (config.triggerEvent == "scroll" && $('.minicart-wrapper .actions .paypal-logo').length > 0) {
+                $('.minicart-wrapper .extra-actions').css('height', $('.minicart-wrapper .extra-actions').height() + 'px');
+                $('.minicart-wrapper .actions .paypal-logo').hide();
+                customerData.reload(['cart'], false).done(function () {
+                    $('.minicart-wrapper .actions .paypal-logo').show();
+                });
             }
         },
         showHideElements: function (action, els) {
@@ -395,7 +405,8 @@ define(['jquery', 'domReady!'], function ($) {
             }
 
 
-        }
+        },
+        lastScrollPosition: 0
     };
 
     return stickyHeader;

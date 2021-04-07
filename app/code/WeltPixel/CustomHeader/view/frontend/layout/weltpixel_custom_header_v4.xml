@@ -18,7 +18,11 @@
 		<referenceContainer name="header.container">
 			<referenceContainer name="header-wrapper">
 				<container name="header.right" as="header_right" label="Page Header Right" htmlTag="div" htmlClass="header_right" after="logo">
-					<block class="Magento\Framework\View\Element\Template" name="top.search" as="topSearch" after="-" template="Magento_Search::form.mini.phtml"/>
+					<block class="Magento\Framework\View\Element\Template" name="top.search" as="topSearch" after="-" template="Magento_Search::form.mini.phtml">
+                        <arguments>
+                            <argument name="configProvider" xsi:type="object">WeltPixel\CustomHeader\ViewModel\ConfigProvider</argument>
+                        </arguments>
+                    </block>
 				</container>
 			</referenceContainer>
 		</referenceContainer>
@@ -32,10 +36,10 @@
 			<action ifconfig="weltpixel_custom_header/search_options/version" method="setTemplate">
 				<argument  name="template" xsi:type="string">WeltPixel_CustomHeader::form.mini.phtml</argument>
 			</action>
+            <arguments>
+                <argument name="configProvider" xsi:type="object">WeltPixel\CustomHeader\ViewModel\ConfigProvider</argument>
+            </arguments>
 		</referenceBlock>
 
-		<referenceContainer name="before.body.end">
-			<!--<block class="Magento\Framework\View\Element\Template" name="welpixel.customheader.init-v4" template="WeltPixel_CustomHeader::init-v4.phtml" />-->
-		</referenceContainer>
 	</body>
 </page>

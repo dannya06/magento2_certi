@@ -2,6 +2,8 @@
 
 namespace WeltPixel\CustomHeader\Helper;
 
+use Magento\Store\Model\ScopeInterface;
+
 /**
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -112,8 +114,48 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int $storeId
      * @return mixed
      */
+    public function customLogoSizeOnStickyHeaderEnabled($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/sticky_header/custom_logo_size_on_sticky', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function stickyHeaderLogoWidth($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/sticky_header/sticky_logo_width', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function stickyHeaderLogoHeight($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/sticky_header/sticky_logo_height', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function stickyHeaderLogoTopPosition($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/sticky_header/sticky_logo_top_position', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
     public function stickyHeaderMobileIsEnabled($storeId = null) {
         return $this->scopeConfig->getValue('weltpixel_custom_header/sticky_header/enable_mobile', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function stickyHeaderWhenScrollUpIsEnabled($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/sticky_header/enable_sticky_scroll_up', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     /**
@@ -427,5 +469,38 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getGlobalPromoBackgroundColor($storeId = null) {
         return $this->scopeConfig->getValue('weltpixel_custom_header/global_promo/background_color', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return boolean
+     */
+    public function isEnabledMobileLogo($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/mobile_header_logo/enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getCustomCMSStaticBlock($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/global_promo/custom_block_global_promo_message', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getGlobalPromoMessageDisplayOptions($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/global_promo/global_promo_message_display_options', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getSearchIconLineHeight($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_custom_header/search_options/search_icon_line_height', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 }
