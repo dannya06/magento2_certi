@@ -46,6 +46,35 @@
                         <field id="enable">1</field>
                     </depends>
                 </field>
+                <field id="glb_message_position" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Global Promo Position</label>
+                    <source_model>WeltPixel\CustomHeader\Model\Config\Source\GlobalMessagePosition</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="global_promo_message_display_options" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Global Promo Message</label>
+                    <source_model>WeltPixel\CustomHeader\Model\Config\Source\GlobalPromoMessageDisplayOptions</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>
+                        <![CDATA[If set to 'Always', the Global Promo Message will reload upon page refresh or change even if the user has closed it. This option also boosts Global Promo Message load speed. </br>
+                         If set to 'Cookie-based', when a user closes the Global Promo Message, it will not display again until the user's cookies expire.]]>
+                    </comment>
+                </field>
+
+                <field id="custom_block_global_promo_message" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Pick Custom CMS Block</label>
+                    <source_model>WeltPixel\CustomHeader\Model\Config\Source\CustomBlockList</source_model>
+                    <comment>
+                        Choose CMS Block that you want to be displayed on Global Promo Message
+                    </comment>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
             </group>
             <group id="top_header" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Top Header</label>
@@ -134,7 +163,7 @@
             </group>
             <group id="sticky_header" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Sticky Header Options</label>
-                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Sticky Header</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[
@@ -156,6 +185,38 @@
                         }
 					});</script>]]></comment>
                 </field>
+                <field id="custom_logo_size_on_sticky" translate="label" type="select" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Logo Size when Sticky</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="sticky_logo_width" translate="label comment" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Logo Width</label>
+                    <comment>Set width for Logo when is Sticky. Example: 77px</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="custom_logo_size_on_sticky">1</field>
+                    </depends>
+                </field>
+                <field id="sticky_logo_height" translate="label comment" type="text" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Logo Height</label>
+                    <comment>Set height for Logo when is Sticky. Example: 30px</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="custom_logo_size_on_sticky">1</field>
+                    </depends>
+                </field>
+                <field id="sticky_logo_top_position" translate="label comment" type="text" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Top Position</label>
+                    <comment>Set Top Position (in Percentage) for Logo when is Sticky. Example: 48</comment>
+                    <validate>number</validate>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="custom_logo_size_on_sticky">1</field>
+                    </depends>
+                </field>
                 <field id="enable_mobile" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Sticky Header also on mobile</label>
                     <comment>Set Yes to enable Sticky Header also on mobile view. If set to No, Sticky Header is enabled only on desktop view.</comment>
@@ -164,7 +225,15 @@
                         <field id="enable">1</field>
                     </depends>
                 </field>
-                <field id="advanced_colors" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable_sticky_scroll_up" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Sticky Header when scroll up.</label>
+                    <comment>Enable sticky header only when you scroll the page up.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="advanced_colors" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Use Advanced Color Control</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>If "Yes" you will be able to control the background and elements color on sticky header.
@@ -174,7 +243,7 @@
                         <field id="enable">1</field>
                     </depends>
                 </field>
-                <field id="sticky_background_color" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sticky_background_color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sticky Header Background Color</label>
                     <comment>Select background color for Header, when is sticky.</comment>
                     <validate>color {required:false, hash:true}</validate>
@@ -182,7 +251,7 @@
                         <field id="advanced_colors">1</field>
                     </depends>
                 </field>
-                <field id="sticky_elements_color" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sticky_elements_color" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sticky Header Link Color</label>
                     <comment>Set link color in Sticky Header Navigation, only applies for level 0 categories.Example: #000000</comment>
                     <validate>color {required:false, hash:true}</validate>
@@ -190,7 +259,7 @@
                         <field id="advanced_colors">1</field>
                     </depends>
                 </field>
-                <field id="sticky_elements_hover_color" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sticky_elements_hover_color" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sticky Header Link Color on Hover</label>
                     <comment>Set link color on hover, for Sticky Header Level 0 Navigation and all subcategories from dropdown menu . Example: #CCCCCC</comment>
                     <validate>color {required:false, hash:true}</validate>
@@ -216,6 +285,13 @@
                 <field id="height" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Field Height</label>
                     <comment>Set height for Search field. Example: 30px</comment>
+                    <depends>
+                        <field id="version">0</field>
+                    </depends>
+                </field>
+                <field id="search_icon_line_height" translate="label" type="text" sortOrder="205" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Search Icon Line Height</label>
+                    <comment>Set line height for Search icon. Example: 36px</comment>
                     <depends>
                         <field id="version">0</field>
                     </depends>
@@ -381,6 +457,14 @@
                     <label>Icon Hover Color</label>
                     <comment>Set hover color of icons from Header. Example: #CCCCCC</comment>
                     <validate>color {required:false, hash:true}</validate>
+                </field>
+            </group>
+            <group id="mobile_header_logo" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Mobile Logo</label>
+                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable/disable mobile logo usage. To upload the mobile logo, go to Content -> Design Configuration > [your store] > WeltPixel Header - Mobile logo</comment>
                 </field>
             </group>
         </section>

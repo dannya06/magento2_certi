@@ -1,12 +1,24 @@
 <?php
 // @codingStandardsIgnoreFile
 ?>
-<?php $_helper = $this->helper('WeltPixel\CustomHeader\Helper\Data'); ?>
-<?php if ($_helper->isGlobalPromoEnabled() ) : ?>
-    <div class="global-notification-wrapper" data-mage-init='{"WeltPixel_CustomHeader/js/globalPromo": {}}'>
-        <div class="notice-inner">
-            <?php echo $this->getChildHtml('global_promo_message_content'); ?>
-        </div>
-        <a href="javascript: void(0)" class="close-global-notification icon-line-cross"></a>
+<?php
+$_helper = $this->helper('WeltPixel\CustomHeader\Helper\Data');
+$customCMSBlock = $_helper->getCustomCMSStaticBlock();
+$globalPromoDisplay = $_helper->getGlobalPromoMessageDisplayOptions();
+?>
+<?php if ($_helper->isGlobalPromoEnabled()) : ?>
+<?php $globalPromoWrapperClass = ($globalPromoDisplay) ? 'display-always' : 'display-cookies'; ?>
+<div class="global-notification-wrapper <?=$globalPromoWrapperClass?>" data-mage-init='{"WeltPixel_CustomHeader/js/globalPromo": {}}'>
+    <div class="notice-inner">
+        <?php
+        echo $this->getLayout()
+            ->createBlock('Magento\Cms\Block\Block')
+            ->setBlockId($customCMSBlock)
+            ->toHtml();
+        ?>
     </div>
+    <?php if (!$globalPromoDisplay) : ?>
+    <a href="javascript: void(0)" class="close-global-notification icon-line-cross"></a>
+    <?php endif; ?>
+</div>
 <?php endif; ?>

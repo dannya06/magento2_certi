@@ -5,6 +5,8 @@
 /** @var $block \Magento\Framework\View\Element\Template */
 /** @var $helper \Magento\Search\Helper\Data */
 $helper = $this->helper('Magento\Search\Helper\Data');
+/** @var $configProvider \WeltPixel\CustomHeader\ViewModel\ConfigProvider */
+$configProvider = $block->getData('configProvider');
 $customHeaderHelper = $this->helper('WeltPixel\CustomHeader\Helper\Data');
 $magnifierIconIsEnabled = $customHeaderHelper->magnifierIconIsEnabled();
 $placeholderText = $customHeaderHelper->getPlaceholderText();
@@ -28,11 +30,14 @@ $serachOptionsVersionClass = !$serachOptionsVersion ? 'version-1' : 'version-2';
                             </label>
                             <div class="control">
                                 <input id="search"
-                                       data-mage-init='{"quickSearch":{
-                                        "formSelector":"#search_mini_form",
-                                        "url":"<?= /* @escapeNotVerified */ $block->getUrl('search/ajax/suggest', ['_secure' => $block->getRequest()->isSecure()]) ?>",
-                                        "destinationSelector":"#search_autocomplete"}
-                                   }'
+                                    <?php if ($configProvider->isSuggestionsAllowed()):?>
+                                        data-mage-init='{"quickSearch":{
+                                    "formSelector":"#search_mini_form",
+                                    "url":"<?= $block->escapeUrl($helper->getSuggestUrl())?>",
+                                    "destinationSelector":"#search_autocomplete",
+                                    "minSearchLength":"<?= $block->escapeHtml($helper->getMinQueryLength()) ?>"}
+                               }'
+                                    <?php endif;?>
                                        type="text"
                                        name="<?= /* @escapeNotVerified */ $helper->getQueryParamName() ?>"
                                        value="<?= /* @escapeNotVerified */ $helper->getEscapedQueryText() ?>"

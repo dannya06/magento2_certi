@@ -9,6 +9,8 @@
                 <enable>0</enable>
                 <text_color>#b05d5d</text_color>
                 <background_color>#ffe8e8</background_color>
+                <glb_message_position>above_menu</glb_message_position>
+                <custom_block_global_promo_message>weltpixel_global_promo_message</custom_block_global_promo_message>
             </global_promo>
             <top_header>
                 <active_link_color>#FFFFFF</active_link_color>
@@ -56,6 +58,7 @@
             </bottom_header>
             <sticky_header>
                 <enable>1</enable>
+                <custom_logo_size_on_sticky>0</custom_logo_size_on_sticky>
                 <enable_mobile>0</enable_mobile>
                 <sticky_background_color>#FFFFFF</sticky_background_color>
             </sticky_header>
@@ -64,6 +67,9 @@
 		        <icon_color>#000000</icon_color>
 		        <icon_color_hover>#CCCCCC</icon_color_hover>
 	        </icons>
+            <special_header_logo>
+                <enable>0</enable>
+            </special_header_logo>
         </weltpixel_custom_header>
     </default>
 </config>

@@ -6,6 +6,7 @@
         <move element="top.links" destination="customer"/>
         <move element="authorization-link" destination="top.links" after="-"/>
         <move element="minicart" destination="header.right" after="-"/>
+        <move element="top.search" destination="header.right" after="-"/>
 
         <referenceBlock name="advanced-search-link" remove="true"/>
 
@@ -25,6 +26,9 @@
             <action ifconfig="weltpixel_custom_header/search_options/version" method="setTemplate">
                 <argument  name="template" xsi:type="string">WeltPixel_CustomHeader::form.mini.phtml</argument>
             </action>
+            <arguments>
+                <argument name="configProvider" xsi:type="object">WeltPixel\CustomHeader\ViewModel\ConfigProvider</argument>
+            </arguments>
         </referenceBlock>
         <referenceBlock name="navigation.sections">
             <arguments>

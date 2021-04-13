@@ -16,6 +16,7 @@ class AddHeaderHandlesObserver implements ObserverInterface
     protected $utilityHelper;
 
     const XML_PATH_CUSTOMHEADER_STYLE = 'weltpixel_custom_header/general/header_style';
+    const XML_PATH_CUSTOMHEADER_GLOBALPROMOPOSITION = 'weltpixel_custom_header/global_promo/glb_message_position';
 
     /**
      * AddHeaderHandlesObserver constructor.
@@ -65,6 +66,18 @@ class AddHeaderHandlesObserver implements ObserverInterface
                 break;
             case 'v4':
                 $layout->getUpdate()->addHandle('weltpixel_custom_header_v4');
+                break;
+            default :
+                break;
+        }
+
+        $globalPromoPosition = $this->scopeConfig->getValue(self::XML_PATH_CUSTOMHEADER_GLOBALPROMOPOSITION, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        switch ($globalPromoPosition) {
+            case 'above_menu':
+                $layout->getUpdate()->addHandle('weltpixel_custom_header_globalpromo_abovemenu');
+                break;
+            case 'below_menu':
+                $layout->getUpdate()->addHandle('weltpixel_custom_header_globalpromo_belowmenu');
                 break;
             default :
                 break;
