@@ -1,28 +1,19 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 ?>
-<script>
-    require([
-        'Amasty_Extrafee/js/order/create/extrafee',
-        "prototype",
-        "Magento_Sales/order/create/form",
-        "Magento_Catalog/catalog/product/composite/configure",
-        "domReady!"
-    ], function (amExtraFee) {
-        window.amExtraFee = amExtraFee.initFeeOrderCreate();
+<?php /** @var \Magento\Backend\Block\Template $block */ ?>
 
-        order.sidebarHide();
-        if (window.productConfigure) {
-            productConfigure.addListType('product_to_add', {
-                urlFetch: '<?= /* @escapeNotVerified */ $block->getUrl('sales/order_create/configureProductToAdd') ?>'
-            });
-            productConfigure.addListType('quote_items', {
-                urlFetch: '<?= /* @escapeNotVerified */ $block->getUrl('sales/order_create/configureQuoteItems') ?>'
-            });
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Amasty_Extrafee/js/order/order-form-extend": {
+                "configureProductToAdd": "<?= $block->escapeJs($block->escapeUrl($block->getUrl('sales/order_create/configureProductToAdd'))) ?>",
+                "configureQuoteItems":  "<?= $block->escapeJs($block->escapeUrl($block->getUrl('sales/order_create/configureQuoteItems'))) ?>"
+            }
         }
-    });
+    }
 </script>

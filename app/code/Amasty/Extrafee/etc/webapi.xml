@@ -2,20 +2,13 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
-<!--
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
--->
-<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
 
-    <!-- Managing totals information -->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <!-- Managing totals information (create empty quote fee) -->
     <route url="/V1/amasty_extrafee/carts/:cartId/totals-information" method="POST">
         <service class="Amasty\Extrafee\Api\TotalsInformationManagementInterface" method="calculate"/>
         <resources>
@@ -23,7 +16,7 @@
         </resources>
     </route>
 
-    <!-- Managing guest totals information -->
+    <!-- Managing guest totals information (create empty quote fee) -->
     <route url="/V1/amasty_extrafee/guest-carts/:cartId/totals-information" method="POST">
         <service class="Amasty\Extrafee\Api\GuestTotalsInformationManagementInterface" method="calculate"/>
         <resources>
@@ -31,7 +24,7 @@
         </resources>
     </route>
 
-    <!-- Managing My totals information -->
+    <!-- Managing My totals information (create empty quote fee) -->
     <route url="/V1/amasty_extrafee/carts/mine/totals-information" method="POST">
         <service class="Amasty\Extrafee\Api\TotalsInformationManagementInterface" method="calculate"/>
         <resources>
@@ -42,7 +35,7 @@
         </data>
     </route>
 
-    <!-- Managing fees information -->
+    <!-- Managing fees information (load all fees and choice default or quote fees) -->
     <route url="/V1/amasty_extrafee/carts/:cartId/fees-information" method="POST">
         <service class="Amasty\Extrafee\Api\FeesInformationManagementInterface" method="collect"/>
         <resources>
@@ -50,7 +43,7 @@
         </resources>
     </route>
 
-    <!-- Managing guest fees information -->
+    <!-- Managing guest fees information (load all fees and choice default or quote fees) -->
     <route url="/V1/amasty_extrafee/guest-carts/:cartId/fees-information" method="POST">
         <service class="Amasty\Extrafee\Api\GuestFeesInformationManagementInterface" method="collect"/>
         <resources>
@@ -58,7 +51,7 @@
         </resources>
     </route>
 
-    <!-- Managing My totals information -->
+    <!-- Managing fees information (load all fees and choice default or quote fees) -->
     <route url="/V1/amasty_extrafee/carts/mine/fees-information" method="POST">
         <service class="Amasty\Extrafee\Api\FeesInformationManagementInterface" method="collect"/>
         <resources>
@@ -94,7 +87,7 @@
         </resources>
     </route>
     <route url="/V1/amasty_extrafee/fee/all" method="GET">
-        <service class="Amasty\Extrafee\Api\FeeRepositoryInterface" method="getListItems"/>
+        <service class="Amasty\Extrafee\Api\FeeRepositoryInterface" method="getList"/>
         <resources>
             <resource ref="Amasty_Extrafee::manage" />
         </resources>

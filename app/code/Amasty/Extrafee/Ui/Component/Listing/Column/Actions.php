@@ -1,17 +1,12 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
-namespace Amasty\Extrafee\Ui\Component\Listing\Column;
 
-/**
- * Class Actions
- *
- * @author Artem Brunevski
- */
+namespace Amasty\Extrafee\Ui\Component\Listing\Column;
 
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
@@ -21,15 +16,8 @@ use Magento\Ui\Component\Listing\Columns\Column;
 class Actions extends Column
 {
     /** @var UrlInterface  */
-    protected $_urlBuilder;
+    protected $urlBuilder;
 
-    /**
-     * @param ContextInterface $context
-     * @param UiComponentFactory $uiComponentFactory
-     * @param UrlInterface $urlBuilder
-     * @param array $components
-     * @param array $data
-     */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
@@ -37,10 +25,9 @@ class Actions extends Column
         array $components = [],
         array $data = []
     ) {
-        $this->_urlBuilder = $urlBuilder;
+        $this->urlBuilder = $urlBuilder;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
-
 
     /**
      * @param array $dSource
@@ -55,7 +42,7 @@ class Actions extends Column
                 $item[$this->getData('name')]['edit'] = [
                     'hidden' => false,
                     'label' => __('Edit'),
-                    'href' => $this->_urlBuilder->getUrl(
+                    'href' => $this->urlBuilder->getUrl(
                         'amasty_extrafee/*/edit',
                         [
                             'id' => $item['entity_id'],
@@ -68,5 +55,4 @@ class Actions extends Column
 
         return $dSource;
     }
-
 }

@@ -1,29 +1,26 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Model\Fee;
 
-/**
- * Class DataProvider
- *
- * @author Artem Brunevski
- */
-
 use Amasty\Base\Model\Serializer;
-use Magento\Ui\DataProvider\AbstractDataProvider;
+use Amasty\Extrafee\Model\Fee;
+use Amasty\Extrafee\Model\ResourceModel\Fee\Collection;
 use Amasty\Extrafee\Model\ResourceModel\Fee\CollectionFactory;
+use Amasty\Extrafee\Model\StoresSorter;
 use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\Store;
-use Magento\Ui\Component\DynamicRows;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Ui\DataProvider\AbstractDataProvider;
 
 class DataProvider extends AbstractDataProvider
 {
-    /** @var \Amasty\Extrafee\Model\ResourceModel\Fee\Collection */
+    /** @var Collection */
     protected $collection;
 
     /**
@@ -46,6 +43,11 @@ class DataProvider extends AbstractDataProvider
      */
     private $serializerBase;
 
+    /**
+     * @var StoresSorter
+     */
+    private $storesSorter;
+
     public function __construct(
         $name,
         $primaryFieldName,
@@ -54,12 +56,14 @@ class DataProvider extends AbstractDataProvider
         DataPersistorInterface $dataPersistor,
         StoreManagerInterface $storeManager,
         Serializer $serializerBase,
+        StoresSorter $storesSorter,
         array $meta = [],
         array $data = []
     ) {
         $this->collection = $feeCollectionFactory->create();
         $this->dataPersistor = $dataPersistor;
         $this->storeManager = $storeManager;
+        $this->storesSorter = $storesSorter;
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->meta = $this->prepareMeta($this->meta);
         $this->serializerBase = $serializerBase;
@@ -77,20 +81,11 @@ class DataProvider extends AbstractDataProvider
     }
 
     /**
-     * @return array|mixed
+     * @return array
      */
     public function getStoresSortedBySortOrder()
     {
-        $stores = $this->getStores();
-        if (is_array($stores)) {
-            usort($stores, function ($storeA, $storeB) {
-                if ($storeA->getSortOrder() == $storeB->getSortOrder()) {
-                    return $storeA->getId() < $storeB->getId() ? -1 : 1;
-                }
-                return ($storeA->getSortOrder() < $storeB->getSortOrder()) ? -1 : 1;
-            });
-        }
-        return $stores;
+        return $this->storesSorter->getStoresSortedBySortOrder($this->getStores());
     }
 
     /**
@@ -155,7 +150,7 @@ class DataProvider extends AbstractDataProvider
             return $this->loadedData;
         }
         $items = $this->collection->getItems();
-        /** @var $page \Amasty\Extrafee\Model\Fee */
+        /** @var Fee $fee*/
         foreach ($items as $fee) {
             $data = $fee->getData();
 

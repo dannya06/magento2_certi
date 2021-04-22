@@ -1,0 +1,12 @@
+<div class="amexfee-block-content -cart block"
+     visible="visible()"
+     data-bind="mageInit: {'collapsible':{'active': '1', 'openedState': 'active'}}, blockLoader: isLoading">
+    <div class="title amexfee-title" data-role="title" role="heading" translate="'Additional Fees'"></div>
+    <div class="content" data-role="content">
+        <form method="post" class="amexfee-form-container" id="amexfee-form">
+            <fieldset class="fieldset amexfee-fieldset"
+                      each="getRegion('amasty-extrafee-fieldsets')"
+                      render="" ></fieldset>
+        </form>
+    </div>
+</div>

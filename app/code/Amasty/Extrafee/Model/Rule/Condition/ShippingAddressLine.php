@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -9,8 +9,9 @@
 namespace Amasty\Extrafee\Model\Rule\Condition;
 
 use Magento\Framework\Model\AbstractModel;
+use Magento\Rule\Model\Condition\AbstractCondition;
 
-class ShippingAddressLine extends \Magento\Rule\Model\Condition\AbstractCondition
+class ShippingAddressLine extends AbstractCondition
 {
 
     /**
@@ -34,14 +35,12 @@ class ShippingAddressLine extends \Magento\Rule\Model\Condition\AbstractConditio
      */
     public function asHtml()
     {
-        $value = '';
         try {
             $value = $this->getValueElementHtml();
         } catch (\Exception $e) {
-            /**
-             * if exception catch, than skip element
-             */
+            $value = '';
         }
+
         return $this->getTypeElementHtml()
             . __(sprintf(__('Shipping Address Line') . ' %s %s', $this->getOperatorElementHtml(), $value))
             . $this->getRemoveLinkHtml();
@@ -50,9 +49,8 @@ class ShippingAddressLine extends \Magento\Rule\Model\Condition\AbstractConditio
     /**
      * @param AbstractModel $model
      * @return bool
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function validate(\Magento\Framework\Model\AbstractModel $model)
+    public function validate(AbstractModel $model)
     {
         $model->setData('dest_street', $model->getStreetFull());
         $this->setAttribute('dest_street');
@@ -62,7 +60,6 @@ class ShippingAddressLine extends \Magento\Rule\Model\Condition\AbstractConditio
 
     /**
      * @return array
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getOperatorSelectOptions()
     {
@@ -70,9 +67,11 @@ class ShippingAddressLine extends \Magento\Rule\Model\Condition\AbstractConditio
             '{}' => __('contains'),
             '!{}' => __('does not contain'),
         ];
+
         $type = $this->getInputType();
         $result = [];
         $operatorByType = $this->getOperatorByInputType();
+
         foreach ($operators as $operatorKey => $operatorValue) {
             if (!$operatorByType || in_array($operatorKey, $operatorByType[$type])) {
                 $result[] = ['value' => $operatorKey, 'label' => $operatorValue];

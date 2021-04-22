@@ -1,16 +1,17 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Block\Adminhtml\System\Config;
 
+use Magento\Config\Block\System\Config\Form\Fieldset;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-class Information extends \Magento\Config\Block\System\Config\Form\Fieldset
+class Information extends Fieldset
 {
     /**
      * @var string

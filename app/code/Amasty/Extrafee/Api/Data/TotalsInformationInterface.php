@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -19,12 +19,14 @@ interface TotalsInformationInterface
     public function getOptionsIds();
 
     /**
-     * @param mixed $feeOptionId
+     * @param array $optionIds
      * @return mixed
      */
     public function setOptionsIds($optionIds);
 
-    /** @return int */
+    /**
+     * @return int
+     */
     public function getFeeId();
 
     /**

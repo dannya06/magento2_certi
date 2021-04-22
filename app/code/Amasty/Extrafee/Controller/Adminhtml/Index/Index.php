@@ -1,33 +1,33 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Controller\Adminhtml\Index;
 
-/**
- * Class Index
- *
- * @author Artem Brunevski
- */
+use Magento\Backend\Model\View\Result\Forward;
+use Magento\Backend\Model\View\Result\Page;
+use Magento\Framework\Controller\ResultFactory;
 
 class Index extends \Amasty\Extrafee\Controller\Adminhtml\Index
 {
     /**
-     * @return \Magento\Backend\Model\View\Result\Page|\Magento\Backend\Model\View\Result\Forward
+     * @return Page|Forward
      */
     public function execute()
     {
         if ($this->getRequest()->getQuery('ajax')) {
-            $resultForward = $this->_resultForwardFactory->create();
+            $resultForward = $this->resultFactory->create(ResultFactory::TYPE_FORWARD);
             $resultForward->forward('grid');
+
             return $resultForward;
         }
 
-        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
-        $resultPage = $this->_resultPageFactory->create();
+        /** @var Page $resultPage */
+        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
 
         /**
          * Set active menu item

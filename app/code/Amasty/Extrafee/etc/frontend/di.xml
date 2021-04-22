@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
@@ -14,6 +14,7 @@
             </argument>
         </arguments>
     </type>
+
     <type name="Amasty\Extrafee\Block\Cart\Fee\Options">
         <arguments>
             <argument name="layoutProcessors" xsi:type="array">

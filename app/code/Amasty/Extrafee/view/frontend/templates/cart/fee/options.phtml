@@ -1,22 +1,20 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 ?>
-<?php /** @var $block \Amasty\Extrafee\Block\Cart\Fee\Options */ ?>
+<?php /** @var \Amasty\Extrafee\Block\Cart\Fee\Options $block */ ?>
 
-<div id="block-amasty-extrafee-options">
-
-    <div id="block-amasty-extrafee-summary" data-bind="scope:'block-amasty-extrafee-summary'" class="content">
-        <!-- ko template: getTemplate() --><!-- /ko -->
-        <script type="text/x-magento-init">
-            {
-                "#block-amasty-extrafee-summary": {
-                    "Magento_Ui/js/core/app": <?php /* @escapeNotVerified */ echo $block->getJsLayout();?>
-                }
+<div data-amexfee-js="cart"
+     data-bind="scope:'block-amasty-extrafee-summary'">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+    <script type="text/x-magento-init">
+        {
+            "[data-amexfee-js='cart']": {
+                "Magento_Ui/js/core/app": <?= /* @noEscape */ $block->getJsLayout(); ?>
             }
-        </script>
-    </div>
+        }
+    </script>
 </div>

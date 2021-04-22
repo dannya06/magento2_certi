@@ -1,114 +1,151 @@
 define([
-        'ko',
-        'jquery',
-        'Magento_Ui/js/form/element/abstract',
-        'Magento_Catalog/js/price-utils',
-        'Magento_Checkout/js/model/quote',
-        'Amasty_Extrafee/js/action/select-fee',
-    ], function(
-        ko,
-        $,
-        AbstractField,
-        priceUtils,
-        quote,
-        selectFeeAction
-    ) {
-        'use strict';
+    'jquery',
+    'Magento_Ui/js/form/element/abstract',
+    'Magento_Catalog/js/price-utils',
+    'Magento_Checkout/js/model/quote',
+    'Amasty_Extrafee/js/action/select-fee',
+    'Magento_Ui/js/lib/validation/validator',
+    'Amasty_Extrafee/js/model/tax-utils'
+], function ($, AbstractField, priceUtils, quote, selectFeeAction, validator, taxUtils) {
+    'use strict';
 
-        return AbstractField.extend({
-            defaults: {
-                template: 'Amasty_Extrafee/fee/item',
-                templates: {
-                    radio: 'Amasty_Extrafee/fee/item/radio',
-                    checkbox: 'Amasty_Extrafee/fee/item/checkbox',
-                    dropdown: 'Amasty_Extrafee/fee/item/dropdown'
-                },
-                frontendType: 'dropdown',
-                feeId: null,
-                options: [],
-                currentValue: []
+    return AbstractField.extend({
+        defaults: {
+            template: 'Amasty_Extrafee/fee/item',
+            templatesChildComponents: {
+                radio: 'Amasty_Extrafee/fee/item/radio',
+                checkbox: 'Amasty_Extrafee/fee/item/checkbox',
+                dropdown: 'Amasty_Extrafee/fee/item/dropdown'
             },
-            /**
-             * @returns {exports.initObservable}
-             */
-            initObservable: function () {
-                this._super()
-                    .observe([
-                        'currentValue',
-                        'options'
-                    ]);
+            listens: {
+                value: 'setFee'
+            },
+            frontendType: 'dropdown',
+            feeId: null,
+            options: [],
+            value: []
+        },
+        translation: {
+            error: $.mage.__('Please select at least one option for %1.')
+        },
+        taxUtils: taxUtils,
 
-                return this;
-            },
-            /**
-             * @returns {exports.initialize}
-             */
-            initialize: function(){
-                this._super();
-                this.currentValue.subscribe(this.setFee.bind(this));
-                return this;
-            },
-            /**
-             * apply fee to totals
-             * @param optionId
-             */
-            setFee: function(optionId){
-                var optionsIds = typeof(optionId) === 'object' ? optionId : [optionId];
-                selectFeeAction(this.feeId, optionsIds);
-            },
-            /**
-             *
-             * @param config
-             * @returns {exports.initConfig}
-             */
-            initConfig: function (config) {
-                this._super();
+        /**
+         * @returns {Item} Chainable.
+         */
+        initObservable: function () {
+            this._super()
+                .observe([
+                    'options'
+                ]);
 
-                if (this.frontendType === 'dropdown') {
-                    this.elementTmpl = this.templates.dropdown;
-                } else if (this.frontendType === 'checkbox') {
-                    this.elementTmpl = this.templates.checkbox;
-                } else if (this.frontendType === 'radio') {
-                    this.elementTmpl = this.templates.radio;
-                }
-                return this;
-            },
-            /**
-             *
-             * @returns {Array}
-             */
-            getOptions: function() {
-                //Magento 2.1.9 <= value type
-                if ($.type(this.options()[0]) !== undefined &&  $.type(this.options()[0] === 'string')) {
-                    var self = this;
+            return this;
+        },
 
-                    $.map(this.options(), function( val, i ) {
-                        if ($.type(val) === 'string') {
-                            self.options()[i] = JSON.parse(val);
-                        }
-                    });
-                }
+        /**
+         * @returns {Object} Validate information.
+         */
+        validate: function () {
+            var value = this.value(),
+                result = validator(this.validation, value, this.validationParams),
+                message = '',
+                isValid = this.disabled() || !this.visible() || result.passed;
 
-                return this.options;
-            },
-            optionsText: function(item) {
-                return item.label + ' ' + this.getFormattedPrice(item.price);
-            },
-            /**
-             *
-             * @param item
-             * @returns {*}
-             */
-            optionsValue: function(item) {
-                return item.index + '';
-            },
-            /**
-             * Format shipping price.
-             * @returns {String}
-             */
-            getFormattedPrice: function (price) {
-                return priceUtils.formatPrice(price, quote.getPriceFormat());
+            if (this.required() && !value) {
+                isValid = false;
             }
-        });
-    }
-);
+
+            if (!isValid) {
+                message = this.translation.error.replace('%1', this.label);
+            }
+
+            this.error(message);
+            this.error.valueHasMutated();
+            this.bubble('error', message);
+
+            if (this.source && !isValid) {
+                this.source.set('params.invalid', true);
+            }
+
+            return {
+                valid: isValid,
+                target: this
+            };
+        },
+
+        /**
+         * @param {String|Array} optionId
+         * @returns {void}
+         */
+        setFee: function (optionId) {
+            var optionsIds = Array.isArray(optionId) ? optionId : [ optionId ];
+
+            selectFeeAction.selectFee(this.feeId, optionsIds);
+        },
+
+        /**
+         * @returns {Item} Chainable.
+         */
+        initConfig: function () {
+            this._super();
+
+            if (Object.keys(this.templatesChildComponents).indexOf(this.frontendType) !== -1) {
+                this.elementTmpl = this.templatesChildComponents[this.frontendType];
+            }
+
+            return this;
+        },
+
+        /**
+         * @param {Object} item
+         * @returns {string}
+         */
+        optionsText: function (item) {
+            return item.label + ' ' + taxUtils.getPrice(item);
+        },
+
+        /**
+         * @param {Object} item
+         * @returns {String}
+         */
+        optionsValue: function (item) {
+            return item.index + '';
+        },
+
+        /**
+         * @param {Number} price
+         * @returns {String}
+         */
+        getFormattedPrice: function (price) {
+            return priceUtils.formatPrice(price, quote.getPriceFormat());
+        },
+
+        /**
+         * @returns {void}
+         */
+        onUpdate: function () {
+            this.bubble('update', this.hasChanged());
+
+            if (this.error()) {
+                this.validate();
+            }
+        },
+
+        /**
+         * @returns {Array}
+         */
+        getOptions: function () {
+            var self = this;
+
+            if (typeof self.options.first() !== 'undefined' && typeof self.options.first() === 'string') {
+                self.options.each(function (value, i) {
+                    if (typeof self.options()[i] === 'string') {
+                        self.options()[i] = JSON.parse(value);
+                    }
+                });
+            }
+
+            return this.options;
+        }
+    });
+});

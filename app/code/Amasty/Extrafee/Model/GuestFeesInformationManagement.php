@@ -1,20 +1,17 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
-namespace Amasty\Extrafee\Model;
 
-/**
- * Class GuestFeesInformationManagement
- *
- * @author Artem Brunevski
- */
+namespace Amasty\Extrafee\Model;
 
 use Amasty\Extrafee\Api\GuestFeesInformationManagementInterface;
 use Amasty\Extrafee\Api\FeesInformationManagementInterface;
+use Magento\Checkout\Api\Data\TotalsInformationInterface;
+use Magento\Quote\Model\QuoteIdMask;
 use Magento\Quote\Model\QuoteIdMaskFactory;
 
 class GuestFeesInformationManagement implements GuestFeesInformationManagementInterface
@@ -25,10 +22,6 @@ class GuestFeesInformationManagement implements GuestFeesInformationManagementIn
     /** @var  FeesInformationManagementInterface */
     protected $feesInformationManagement;
 
-    /**
-     * @param QuoteIdMaskFactory $quoteIdMaskFactory
-     * @param FeesInformationManagementInterface $feesInformationManagement
-     */
     public function __construct(
         QuoteIdMaskFactory $quoteIdMaskFactory,
         FeesInformationManagementInterface $feesInformationManagement
@@ -39,16 +32,15 @@ class GuestFeesInformationManagement implements GuestFeesInformationManagementIn
 
     /**
      * @param string $cartId
-     * @param \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
+     * @param TotalsInformationInterface $addressInformation
      *
      * @return \Amasty\Extrafee\Api\Data\FeesManagerInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function collect(
         $cartId,
-        \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
+        TotalsInformationInterface $addressInformation
     ) {
-        /** @var $quoteIdMask \Magento\Quote\Model\QuoteIdMask */
+        /** @var QuoteIdMask $quoteIdMask */
         $quoteIdMask = $this->quoteIdMaskFactory->create()->load($cartId, 'masked_id');
         return $this->feesInformationManagement->collect(
             $quoteIdMask->getQuoteId(),

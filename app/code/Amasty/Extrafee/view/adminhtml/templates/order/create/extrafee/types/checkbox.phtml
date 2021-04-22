@@ -1,0 +1,27 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+ * @package Amasty_Extrafee
+ */
+?>
+<?php
+/** @var $block \Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee\Form */
+
+$fee = $block->getFee();
+?>
+
+<?php foreach ($fee->getBaseOptions() as $option): ?>
+    <div class="admin__field-option">
+        <input type="checkbox"
+               class="admin__control-checkbox"
+               id="amexfee-option-<?= $block->escapeHtmlAttr($option['index']) ?>"
+                <?= in_array($option['index'], $fee->getCurrentValue()) ? 'checked' : '' ?>
+               value="<?= $block->escapeHtmlAttr($option['index']) ?>"
+               name="<?= $block->escapeHtmlAttr($fee->getName() . '.extrafee.') ?>" >
+        <label class="admin__field-label"
+               for="amexfee-option-<?= $block->escapeHtmlAttr($option['index']) ?>">
+            <?= $block->escapeHtml($option['label'] . ' ' . $block->getFormattedPrice($option['price'])) ?>
+        </label>
+    </div>
+<?php endforeach; ?>

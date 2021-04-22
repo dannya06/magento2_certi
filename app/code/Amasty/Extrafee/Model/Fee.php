@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -9,15 +9,14 @@
 namespace Amasty\Extrafee\Model;
 
 use Amasty\Extrafee\Api\Data\FeeInterface;
-use Amasty\Extrafee\Helper\Data as ExtrafeeHelper;
-use Magento\Framework\Data\Collection\AbstractDb;
+use Amasty\Extrafee\Model\Config\Source\Excludeinclude;
+use Amasty\Extrafee\Model\ResourceModel\Fee as FeeResource;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Registry;
 
+/**
+ * Fee main model
+ */
 class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 {
     /**
@@ -38,36 +37,6 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
      */
     const CACHE_TAG = 'amasty_extrafee_fee';
 
-    /** @var ExtrafeeHelper  */
-    protected $extrafeeHelper;
-
-    /**
-     * @var Tax
-     */
-    private $tax;
-
-    /**
-     * @var PriceCurrencyInterface
-     */
-    private $priceCurrency;
-
-    public function __construct(
-        Context $context,
-        Registry $registry,
-        ExtrafeeHelper $extrafeeHelper,
-        Tax $tax,
-        PriceCurrencyInterface $priceCurrency,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
-        array $data = []
-    ) {
-        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-
-        $this->extrafeeHelper = $extrafeeHelper;
-        $this->tax = $tax;
-        $this->priceCurrency = $priceCurrency;
-    }
-
     /**
      * Initialize resource model
      *
@@ -75,7 +44,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
      */
     protected function _construct()
     {
-        $this->_init(\Amasty\Extrafee\Model\ResourceModel\Fee::class);
+        $this->_init(FeeResource::class);
     }
 
     /**
@@ -86,6 +55,60 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     public function getIdentities()
     {
         return [self::CACHE_TAG . '_' . $this->getId()];
+    }
+
+    /**
+     * @return int
+     */
+    public function getDiscountInSubtotal()
+    {
+        return parent::getData(self::DISCOUNT_IN_SUBTOTAL);
+    }
+
+    /**
+     * @return int
+     */
+    public function getTaxInSubtotal()
+    {
+        return parent::getData(self::TAX_IN_SUBTOTAL);
+    }
+
+    /**
+     * @return int
+     */
+    public function getShippingInSubtotal()
+    {
+        return parent::getData(self::SHIPPING_IN_SUBTOTAL);
+    }
+
+    /**
+     * @param $optionId
+     * @return array
+     */
+    public function getOption($optionId)
+    {
+        $ret = [];
+        foreach ($this->getOptions() as $item) {
+            if ($item['entity_id'] === $optionId) {
+                $ret = $item;
+                break;
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptionsIds()
+    {
+        $ids = [];
+        foreach ($this->getOptions() as $item) {
+            $ids[] = $item['entity_id'];
+        }
+
+        return $ids;
     }
 
     /**
@@ -128,7 +151,17 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     }
 
     /**
-     * @return mixed
+     * Get fees options
+     * @return array Format: array(array(
+     *  'entity_id' => 0,
+     *  'fee_id' => 0,
+     *  'price' => 0,
+     *  'order' => 0,
+     *  'price_type' => 'fixed',
+     *  'default' => 0,
+     *  'admin' => '',
+     *  'options' => array()
+     * ))
      */
     public function getOptions()
     {
@@ -151,54 +184,6 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     public function getCurrentValue()
     {
         return parent::getData(self::CURRENT_VALUE);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDiscountInSubtotal()
-    {
-        $value = parent::getData(self::DISCOUNT_IN_SUBTOTAL);
-
-        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT) {
-            $value = $this->extrafeeHelper->getScopeValue(
-                'calculation/discount_in_subtotal'
-            );
-        }
-
-        return $value;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTaxInSubtotal()
-    {
-        $value = parent::getData(self::TAX_IN_SUBTOTAL);
-
-        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT) {
-            $value = $this->extrafeeHelper->getScopeValue(
-                'calculation/tax_in_subtotal'
-            );
-        }
-
-        return $value;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getShippingInSubtotal()
-    {
-        $value = parent::getData(self::SHIPPING_IN_SUBTOTAL);
-
-        if ($value === \Amasty\Extrafee\Model\Config\Source\Excludeinclude::VAR_DEFAULT) {
-            $value = $this->extrafeeHelper->getScopeValue(
-                'calculation/shipping_in_subtotal'
-            );
-        }
-
-        return $value;
     }
 
     /**
@@ -242,6 +227,30 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isRequired()
+    {
+        return (bool)$this->getData(self::IS_REQUIRED);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPerProduct(): bool
+    {
+        return (bool)$this->getData(self::IS_PER_PRODUCT);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getProductConditionsSerialized(): ?string
+    {
+        return parent::getData(self::PRODUCT_CONDITIONS_SERIALIZED);
+    }
+
+    /**
      * @param $enabled
      * @return $this
      */
@@ -252,7 +261,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param string $description
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setDescription($description)
     {
@@ -261,7 +270,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param string $name
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setName($name)
     {
@@ -270,7 +279,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param array $options
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setOptions($options)
     {
@@ -279,7 +288,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param array $options
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setBaseOptions($options)
     {
@@ -288,7 +297,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param string $frontendType
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setFrontendType($frontendType)
     {
@@ -297,7 +306,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param mixed $currentValue
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setCurrentValue($currentValue)
     {
@@ -306,7 +315,7 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param mixed $discountInSubtotal
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setDiscountInSubtotal($discountInSubtotal)
     {
@@ -315,16 +324,16 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
 
     /**
      * @param mixed $taxInSubtotal
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
-    public function setTaxInSubtotal($taxInSubtotal)
+    public function setTaxInSubtotal($taxInSubtotal = Excludeinclude::VAR_DEFAULT)
     {
         return $this->setData(self::TAX_IN_SUBTOTAL, $taxInSubtotal);
     }
 
     /**
      * @param mixed $shippingInSubtotal
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setShippingInSubtotal($shippingInSubtotal)
     {
@@ -377,192 +386,38 @@ class Fee extends AbstractModel implements FeeInterface, IdentityInterface
     }
 
     /**
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @param bool $flag
+     * @return FeeInterface|Fee
      */
-    public function loadOptions()
+    public function setIsRequired($flag)
     {
-        return $this->getResource()->loadOptions($this);
+        return $this->setData(self::IS_REQUIRED, $flag);
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return int|float
+     * @param bool $flag
+     * @return FeeInterface|Fee
      */
-    protected function getBaseQuoteTotal(\Magento\Quote\Model\Quote $quote)
+    public function setIsEligibleForRefund($flag)
     {
-        $baseQuoteTotals = 0;
-        /** @var \Magento\Quote\Model\Quote\Item[] $items */
-        $items = $quote->getAllItems();
-
-        if (empty($items)) {
-            return $baseQuoteTotals;
-        }
-
-        foreach ($items as $item) {
-            $baseQuoteTotals += $item->getBasePrice();
-            $baseQuoteTotals *= $item->getQty();
-
-            if ($this->getTaxInSubtotal()) {
-                $baseQuoteTotals += $item->getBaseTaxAmount() - $item->getBaseDiscountTaxCompensation();
-            }
-
-            if ($this->getDiscountInSubtotal()) {
-                $baseQuoteTotals -= $item->getBaseDiscountAmount();
-            }
-        }
-
-        if ($this->getShippingInSubtotal() && !$quote->isVirtual()) {
-            $baseQuoteTotals += $quote->getShippingAddress()->getBaseShippingAmount();
-        }
-
-        return $baseQuoteTotals;
+        return $this->setData(self::IS_ELIGIBLE_REFUND, $flag);
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return array
+     * @param bool $flag
+     * @return FeeInterface|Fee
      */
-    public function fetchBaseOptions(
-        \Magento\Quote\Model\Quote $quote
-    ) {
-        $options = [];
-        $storeId = $quote->getStoreId();
-        $baseQuoteTotals = null;
-        $rate = $quote->getBaseToQuoteRate();
-        $taxRate = $this->tax->getTaxRate($quote);
-
-        foreach ($this->getOptions() as $item) {
-            $basePrice = $this->priceToFloat($item['price']);
-            if ($item['price_type'] === self::PRICE_TYPE_PERCENT) {
-                if ($baseQuoteTotals === null) {
-                    $baseQuoteTotals = $this->getBaseQuoteTotal($quote);
-                }
-                $basePrice *= $baseQuoteTotals / 100;
-            }
-            $price = $this->priceCurrency->convertAndRound($basePrice);
-
-             /**
-             * icube custom
-             */
-            // $logger->info($this->getName());
-            if($this->getName() == 'Unique Code Bank Transfer') {
-                $unicode = mt_rand(1,500);    
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                $resource = $objectManager->create('Magento\Framework\App\ResourceConnection');
-                $connection = $resource->getConnection();
-                $sql = "Select * FROM amasty_extrafee_quote where quote_id = ".$quote->getId()." and option_id = ".$item['entity_id'];
-                $result = $connection->fetchRow($sql);
-                $feeId = null;
-                $feeAmount = null;
-                if (!empty($result)) {
-                    $feeId = !empty($result['fee_id']) ? (int) $result['fee_id'] : false;
-                    $feeAmount = !empty($result['fee_amount']) ? (int) $result['fee_amount'] : false;
-                }
-
-                if ($feeId && $feeAmount>0) {
-                    $basePrice = $feeAmount;
-                }else{
-                    $basePrice = $unicode;  
-                }
-                $price = $basePrice * $rate;
-            }
-            /**
-             * end icube custom
-             */
-            
-            /**
-             * apply tax class from module settings
-             */
-            $tax = 0;
-            $baseTax = 0;
-            if ($taxRate) {
-                $tax += $price * $taxRate / 100;
-                $baseTax += $basePrice * $taxRate / 100;
-            }
-
-            $options[] = [
-                'index' => $item['entity_id'],
-                'price' => $price,
-                'base_price' => $basePrice,
-                'tax' => $tax,
-                'base_tax' => $baseTax,
-                'default' => $item['default'],
-                'label' => $this->getOptionLabel($storeId, $item['options'])
-            ];
-        }
-
-        return $options;
+    public function setIsPerProduct(bool $flag)
+    {
+        return $this->setData(self::IS_PER_PRODUCT, $flag);
     }
 
     /**
-     * @param $storeId
-     * @param array $values
-     * @return string
+     * @param string|null $conditions
+     * @return $this|FeeInterface
      */
-    protected function getOptionLabel($storeId, array $values)
+    public function setProductConditionsSerialized(?string $conditions)
     {
-        $defaultLabel = array_key_exists(0, $values) ? $values[0] : '';
-
-        return array_key_exists($storeId, $values) && $values[$storeId] !== '' ?
-            $values[$storeId] :
-            $defaultLabel;
-    }
-
-    /**
-     * @param $storeId
-     * @param $optionId
-     * @return string
-     */
-    public function getStoreOptionLabel($storeId, $optionId)
-    {
-        $item = $this->getOption($optionId);
-
-        return array_key_exists('options', $item) ?
-            $this->getOptionLabel($storeId, $item['options']) :
-            '';
-    }
-
-    /**
-     * @param $price
-     * @return float
-     */
-    protected function priceToFloat($price)
-    {
-        // convert "," to "."
-        $price = str_replace(',', '.', $price);
-        // remove everything except numbers and dot "."
-        $price = preg_replace("/[^0-9\.]/", "", $price);
-        // remove all seperators from first part and keep the end
-        $price = str_replace('.', '', substr($price, 0, -3)) . substr($price, -3);
-        // return float
-        return (float) $price;
-    }
-
-    /**
-     * @param $optionId
-     * @return array
-     */
-    public function getOption($optionId)
-    {
-        $ret = [];
-        foreach ($this->getOptions() as $idx => $item) {
-            if ($item['entity_id'] === $optionId) {
-                $ret = $item;
-                break;
-            }
-        }
-        return $ret;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptionsIds()
-    {
-        $ids = [];
-        foreach ($this->getOptions() as $idx => $item) {
-            $ids[] = $item['entity_id'];
-        }
-        return $ids;
+        return $this->setData(self::PRODUCT_CONDITIONS_SERIALIZED, $conditions);
     }
 }

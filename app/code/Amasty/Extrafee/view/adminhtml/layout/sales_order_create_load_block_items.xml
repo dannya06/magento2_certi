@@ -2,16 +2,10 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <body>
-        <referenceBlock name="items_grid">
-            <block class="Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee" before="-" template="Magento_Sales::order/create/abstract.phtml" name="order_create_amasty_extrafee">
-                <block class="Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee\Form" template="order/create/extrafee/form.phtml" name="order_create_amasty_extrafee_form" as="form"/>
-            </block>
-        </referenceBlock>
-    </body>
+    <update handle="amasty_extrafee_types_options"/>
 </page>

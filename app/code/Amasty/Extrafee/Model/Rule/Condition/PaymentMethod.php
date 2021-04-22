@@ -1,24 +1,29 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Model\Rule\Condition;
 
-class PaymentMethod extends \Magento\Rule\Model\Condition\AbstractCondition
+use Magento\Framework\Model\AbstractModel;
+use Magento\Payment\Model\Config\Source\Allmethods;
+use Magento\Rule\Model\Condition\AbstractCondition;
+use Magento\Rule\Model\Condition\Context;
+
+class PaymentMethod extends AbstractCondition
 {
 
     /**
-     * @var \Magento\Payment\Model\Config\Source\Allmethods
+     * @var Allmethods
      */
     private $allMethods;
 
     public function __construct(
-        \Magento\Rule\Model\Condition\Context $context,
-        \Magento\Payment\Model\Config\Source\Allmethods $allMethods,
+        Context $context,
+        Allmethods $allMethods,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -46,25 +51,22 @@ class PaymentMethod extends \Magento\Rule\Model\Condition\AbstractCondition
      */
     public function asHtml()
     {
-        $value = '';
         try {
             $value = $this->getValueElementHtml();
         } catch (\Exception $e) {
-            /**
-             * if exception catch, than skip element
-             */
+            $value = '';
         }
+
         return $this->getTypeElementHtml()
             . __(sprintf(__('Payment Method') . ' %s %s', $this->getOperatorElementHtml(), $value))
             . $this->getRemoveLinkHtml();
     }
 
     /**
-     * @param \Magento\Framework\Model\AbstractModel $model
+     * @param AbstractModel $model
      * @return bool
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function validate(\Magento\Framework\Model\AbstractModel $model)
+    public function validate(AbstractModel $model)
     {
         $this->setAttribute('payment_method');
 

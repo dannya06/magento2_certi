@@ -1,39 +1,40 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Observer\Payment\Model\Cart;
 
-/**
- * Class CollectTotalsAndAmounts
- *
- * @author Artem Brunevski
- */
-
+use Amasty\Extrafee\Model\ResourceModel\ExtrafeeQuote\CollectionFactory as FeeQuoteCollectionFactory;
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Event\ObserverInterface;
-use Amasty\Extrafee\Model\ResourceModel\Quote\CollectionFactory as FeeQuoteCollectionFactory;
+use Magento\Paypal\Model\Cart;
 
 class CollectTotalsAndAmounts implements ObserverInterface
 {
     /**
-     * @param FeeQuoteCollectionFactory $feeQuoteCollectionFactory
+     * @var FeeQuoteCollectionFactory
      */
-    public function __construct(
-        FeeQuoteCollectionFactory $feeQuoteCollectionFactory
-    ){
+    private $feeQuoteCollectionFactory;
+
+    public function __construct(FeeQuoteCollectionFactory $feeQuoteCollectionFactory)
+    {
         $this->feeQuoteCollectionFactory = $feeQuoteCollectionFactory;
     }
 
+    /**
+     * @param EventObserver $observer
+     */
     public function execute(EventObserver $observer)
     {
-        /** @var \Magento\Paypal\Model\Cart $cart */
+        /** @var Cart $cart */
         $cart = $observer->getCart();
         $id = $cart->getSalesModel()->getDataUsingMethod('entity_id');
-        if (!$id){
+
+        if (!$id) {
             $id = $cart->getSalesModel()->getDataUsingMethod('quote_id');
         }
         
@@ -44,15 +45,11 @@ class CollectTotalsAndAmounts implements ObserverInterface
         $labels = [];
         $baseFeeAmount = 0;
 
-        foreach($feesQuoteCollection as $feeOption) {
+        foreach ($feesQuoteCollection as $feeOption) {
             $baseFeeAmount += $feeOption->getBaseFeeAmount();
             $labels[] = $feeOption->getLabel();
         }
 
-        $cart->addCustomItem(
-            implode(', ', $labels),
-            1,
-            $baseFeeAmount
-        );
+        $cart->addCustomItem(implode(', ', $labels), 1, $baseFeeAmount);
     }
 }

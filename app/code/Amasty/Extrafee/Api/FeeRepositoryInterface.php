@@ -1,39 +1,43 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Api;
 
+use Amasty\Extrafee\Api\Data\FeeInterface;
+use Amasty\Extrafee\Api\Data\FeeSearchResultsInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
+
 interface FeeRepositoryInterface
 {
     /**
      * Save
      *
-     * @param \Amasty\Extrafee\Api\Data\FeeInterface $fee
+     * @param FeeInterface $fee
      * @param string[] $options
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
-    public function save(\Amasty\Extrafee\Api\Data\FeeInterface $fee, $options);
+    public function save(FeeInterface $fee, $options);
 
     /**
      * Get by id
      *
      * @param int $feeId
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function getById($feeId);
 
     /**
      * Delete
      *
-     * @param \Amasty\Extrafee\Api\Data\FeeInterface $fee
+     * @param FeeInterface $fee
      * @return bool true on success
      */
-    public function delete(\Amasty\Extrafee\Api\Data\FeeInterface $fee);
+    public function delete(FeeInterface $fee);
 
     /**
      * Delete by id
@@ -44,28 +48,19 @@ interface FeeRepositoryInterface
     public function deleteById($feeId);
 
     /**
-     * Lists by quote
-     *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @param \Magento\Quote\Api\Data\CartInterface $quote
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface[]
+     * @param SearchCriteriaInterface $searchCriteria
+     * @return FeeSearchResultsInterface
      */
-    public function getList(
-        \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria,
-        \Magento\Quote\Api\Data\CartInterface $quote
-    );
+    public function getList(SearchCriteriaInterface $searchCriteria = null);
 
     /**
-     * Lists
-     *
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface[] Array of items.
-     * @throws \Magento\Framework\Exception\NoSuchEntityException The specified cart does not exist.
-     */
-    public function getListItems();
-
-    /**
-     * @param $optionId
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @param int $optionId
+     * @return FeeInterface
      */
     public function getByOptionId($optionId);
+
+    /**
+     * @return FeeInterface
+     */
+    public function create();
 }

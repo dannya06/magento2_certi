@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+ * @package Amasty_Extrafee
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="items_grid">
+            <block class="Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee" before="-" template="Magento_Sales::order/create/abstract.phtml" name="order_create_amasty_extrafee">
+                <block class="Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee\Form" template="order/create/extrafee/form.phtml" name="order_create_amasty_extrafee_form" as="form">
+                    <block class="Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee\Form" name="order_create_amasty_extrafee_form_checkbox" as="type_checkbox" template="Amasty_Extrafee::order/create/extrafee/types/checkbox.phtml"/>
+                    <block class="Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee\Form" name="order_create_amasty_extrafee_form_radio" as="type_radio" template="Amasty_Extrafee::order/create/extrafee/types/radio.phtml"/>
+                    <block class="Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee\Form" name="order_create_amasty_extrafee_form_dropdown" as="type_dropdown" template="Amasty_Extrafee::order/create/extrafee/types/dropdown.phtml"/>
+                </block>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

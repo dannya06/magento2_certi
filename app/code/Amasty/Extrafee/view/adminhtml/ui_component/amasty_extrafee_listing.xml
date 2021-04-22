@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
@@ -88,7 +88,7 @@
         <filters name="listing_filters">
             <filterSelect name="store_id">
                 <argument name="optionsProvider" xsi:type="configurableObject">
-                    <argument name="class" xsi:type="string">Amasty\Extrafee\Ui\Component\Listing\Column\Store\Options</argument>
+                    <argument name="class" xsi:type="string">Amasty\Base\Ui\Component\Listing\Column\StoreOptions</argument>
                 </argument>
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">

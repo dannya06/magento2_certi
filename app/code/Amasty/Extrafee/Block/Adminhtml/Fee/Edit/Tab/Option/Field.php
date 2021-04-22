@@ -1,24 +1,21 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Block\Adminhtml\Fee\Edit\Tab\Option;
 
-/**
- * Class Field
- *
- * @author Artem Brunevski
- */
-use Magento\Framework\Data\Form\Element\Renderer\RendererInterface;
-use Magento\Backend\Block\Widget;
-use Amasty\Extrafee\Controller\RegistryConstants;
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Registry;
+use Amasty\Extrafee\Api\FeeRepositoryInterface;
 use Amasty\Extrafee\Model\Fee;
 use Amasty\Extrafee\Model\Fee\Source\PriceType;
+use Amasty\Extrafee\Model\StoresSorter;
+use Magento\Backend\Block\Template\Context;
+use Magento\Backend\Block\Widget;
+use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Framework\Data\Form\Element\Renderer\RendererInterface;
 
 class Field extends Widget implements RendererInterface
 {
@@ -27,54 +24,48 @@ class Field extends Widget implements RendererInterface
      */
     protected $_template = 'fee/options.phtml';
 
-    /** @var Registry  */
-    protected $_registry;
-
     /** @var PriceType  */
-    protected $_priceType;
+    protected $priceType;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param PriceType $priceType
-     * @param array $data
+     * @var FeeRepositoryInterface
      */
+    private $feeRepository;
+
+    /**
+     * @var StoresSorter
+     */
+    private $storesSorter;
+
     public function __construct(
         Context $context,
-        Registry $registry,
         PriceType $priceType,
+        FeeRepositoryInterface $feeRepository,
+        StoresSorter $storesSorter,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->_registry = $registry;
-        $this->_priceType = $priceType;
+        $this->priceType = $priceType;
+        $this->feeRepository = $feeRepository;
+        $this->storesSorter = $storesSorter;
     }
 
     /**
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      * @return string
      */
-    public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    public function render(AbstractElement $element)
     {
         $this->setElement($element);
         return $this->toHtml();
     }
 
     /**
-     * @return array|mixed
+     * @return array
      */
     public function getStoresSortedBySortOrder()
     {
-        $stores = $this->getStores();
-        if (is_array($stores)) {
-            usort($stores, function ($storeA, $storeB) {
-                if ($storeA->getSortOrder() == $storeB->getSortOrder()) {
-                    return $storeA->getId() < $storeB->getId() ? -1 : 1;
-                }
-                return ($storeA->getSortOrder() < $storeB->getSortOrder()) ? -1 : 1;
-            });
-        }
-        return $stores;
+        return $this->storesSorter->getStoresSortedBySortOrder($this->getStores());
     }
 
     /**
@@ -89,45 +80,38 @@ class Field extends Widget implements RendererInterface
     }
 
     /**
-     * @return array|mixed
+     * @return array
      */
     public function getOptionValues()
     {
-        $values = $this->_getData('option_values');
-        if ($values === null) {
-            /** @var \Amasty\Extrafee\Model\Fee $model */
-            $model = $this->_registry->registry(RegistryConstants::FEE);
-            $values = [];
-
-            $options = $model->getOptions();
-
-            if (is_array($options)) {
-                foreach ($model->getOptions() as $order => $option) {
-
-                    $storesData = [];
-
-                    foreach ($this->getStores() as $store) {
-                        $storesData['store' . $store->getId()] = array_key_exists('options', $option) &&
-                        array_key_exists($store->getId(), $option['options']) ?
-                            $option['options'][$store->getId()] :
-                            '';
-                    }
-
-                    $storesData = array_merge($storesData, [
-                        'checked' => array_key_exists('default', $option) && $option['default'] ? 'checked="checked"' : '',
-                        'price' => array_key_exists('price', $option) && $option['price'] ? $option['price'] : '',
-                        'price_type' => array_key_exists('price_type', $option) && $option['price_type'] ? $option['price_type'] : Fee::PRICE_TYPE_FIXED,
-                        'intype' => 'radio',
-                        'id' => $option['entity_id'],
-                        'sort_order' => $option['order']
-                    ]);
-
-                    $values[] = $storesData;
+        $values = [];
+        if ($feeId = $this->getRequest()->getParam('id')) {
+            $model = $this->feeRepository->getById($feeId);
+            foreach ($model->getOptions() as $option) {
+                $storesData = [];
+                foreach ($this->getStores() as $store) {
+                    $storesData['store' . $store->getId()] = array_key_exists('options', $option)
+                    && array_key_exists($store->getId(), $option['options'])
+                        ? $option['options'][$store->getId()]
+                        : '';
                 }
-            }
 
-            $this->setData('option_values', $values);
+                $storesData = array_merge_recursive($storesData, [
+                    'checked' =>
+                        array_key_exists('default', $option) && $option['default'] ? 'checked="checked"' : '',
+                    'price' => array_key_exists('price', $option) && $option['price'] ? $option['price'] : '',
+                    'price_type' => array_key_exists('price_type', $option) && $option['price_type']
+                        ? $option['price_type']
+                        : Fee::PRICE_TYPE_FIXED,
+                    'intype' => 'radio',
+                    'id' => $option['entity_id'],
+                    'sort_order' => $option['order']
+                ]);
+
+                $values[] = $storesData;
+            }
         }
+
         return $values;
     }
 
@@ -136,6 +120,6 @@ class Field extends Widget implements RendererInterface
      */
     public function getPriceTypes()
     {
-        return $this->_priceType->toOptionArray();
+        return $this->priceType->toOptionArray();
     }
 }

@@ -1,14 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Plugin\Order;
 
-use Amasty\Extrafee\Model\ResourceModel\Quote\CollectionFactory;
+use Amasty\Extrafee\Model\ResourceModel\ExtrafeeQuote\CollectionFactory;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderSearchResultInterface;
@@ -35,8 +35,8 @@ class OrderRepository
     }
 
     /**
-     * @param MagentoOrderRepository   $subject
-     * @param OrderInterface    $order
+     * @param MagentoOrderRepository $subject
+     * @param OrderInterface $order
      *
      * @return OrderInterface
      */
@@ -48,8 +48,8 @@ class OrderRepository
     }
 
     /**
-     * @param MagentoOrderRepository               $subject
-     * @param OrderSearchResultInterface    $orderCollection
+     * @param MagentoOrderRepository $subject
+     * @param OrderSearchResultInterface $orderCollection
      *
      * @return OrderSearchResultInterface
      */

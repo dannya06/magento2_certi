@@ -1,133 +1,140 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Controller\Adminhtml\Index;
 
-/**
- * Class Save
- *
- * @author Artem Brunevski
- */
-
-use Magento\Framework\Message\Error;
+use Amasty\Extrafee\Api\Data\FeeInterface;
+use Amasty\Extrafee\Model\Config\Source\ApplyFeeFor;
+use Amasty\Extrafee\Model\FeeRepository;
+use Amasty\Extrafee\Model\Rule\FeeConditionProcessorFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\Model\View\Result\ForwardFactory;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Serialize\Serializer\FormData;
 
 class Save extends Index
 {
     /**
-     * @param array $data
+     * @var FeeRepository
      */
-    protected function _prepareData(array &$data)
-    {
-        if (array_key_exists('rule', $data) && array_key_exists('conditions', $data['rule'])) {
-            $data['conditions'] = $data['rule']['conditions'];
+    private $feeRepository;
 
-            unset($data['rule']);
-
-            $salesRule = $this->_objectManager->create('Magento\SalesRule\Model\Rule');
-            $salesRule->loadPost($data);
-
-            $data['conditions_serialized'] = $this->serializer->serialize($salesRule->getConditions()->asArray());
-            unset($data['conditions']);
-            unset($data['option']);
-        }
-    }
     /**
-     * @return \Magento\Framework\Controller\Result\Redirect
-     * @throws \Amasty\Extrafee\Model\CouldNotSaveException
-     * @throws \Amasty\Extrafee\Model\NoSuchEntityException
+     * @var FeeConditionProcessorFactory
+     */
+    private $ruleFactory;
+
+    /**
+     * @var FormData
+     */
+    private $formDataSerializer;
+
+    public function __construct(
+        Action\Context $context,
+        FeeRepository $feeRepository,
+        FeeConditionProcessorFactory $ruleFactory,
+        FormData $formDataSerializer
+    ) {
+        $this->feeRepository = $feeRepository;
+        $this->ruleFactory = $ruleFactory;
+        $this->formDataSerializer = $formDataSerializer;
+
+        return parent::__construct($context);
+    }
+
+    /**
+     * @return Redirect
      */
     public function execute()
     {
         $data = $this->getRequest()->getPostValue();
         $feeId = null;
-        $fee = $this->_feeRepository->create();
+        $fee = $this->feeRepository->create();
+        unset($data['entity_id']);
 
-        if (array_key_exists('entity_id', $data)) {
-
-            $feeId = $data['entity_id'];
-            unset($data['entity_id']);
+        if (array_key_exists('fee_id', $data)) {
+            $feeId = $data['fee_id'];
+            unset($data['fee_id']);
 
             if ($feeId) {
-                $fee = $this->_feeRepository->getById($feeId);
+                $fee = $this->feeRepository->getById($feeId);
             }
         }
 
         try {
             $options = [];
-            if (class_exists('Magento\Framework\Serialize\Serializer\FormData')) {
-                $formDataSerializer = $this->_objectManager
-                    ->get(\Magento\Framework\Serialize\Serializer\FormData::class);
-                $unserializedOptions =
-                    $formDataSerializer->unserialize($this->getRequest()->getParam('serialized_options', '[]'));
-                $data = array_merge($data, $unserializedOptions);
-            }
+
+            $unserializedOptions = $this->formDataSerializer->unserialize($data['serialized_options']);
+            $data = array_merge($data, $unserializedOptions);
 
             if (isset($data['option'])) {
                 $options = $data['option'];
                 foreach ($options['value'] as $labels) {
                     if (empty($labels[0])) {
-                        throw new \Magento\Framework\Validator\Exception(__('The value of Admin scope can\'t be empty.'));
+                        throw new LocalizedException(__('The value of Admin scope can\'t be empty.'));
                     }
                 }
             }
-            $this->_prepareData($data);
+
+            $this->prepareData($data);
             $fee->addData($data);
-            $this->_feeRepository->save($fee, $options);
+            $this->feeRepository->save($fee, $options);
             $feeId = $fee->getId();
             $returnToEdit = (bool)$this->getRequest()->getParam('back', false);
-        } catch (\Magento\Framework\Validator\Exception $exception) {
-            $messages = $exception->getMessages();
-            if (empty($messages)) {
-                $messages = $exception->getMessage();
-            }
-            $this->_addSessionErrorMessages($messages);
+
+            $this->messageManager->addSuccessMessage(__('Extra fee was successfully saved'));
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
             $returnToEdit = true;
-        } catch (LocalizedException $exception) {
-            $this->_addSessionErrorMessages($exception->getMessage());
-            $returnToEdit = true;
-        } catch (\Exception $exception) {
-            $this->_addSessionErrorMessages(__('Something went wrong while saving the data.'));
+        } catch (\Exception $e) {
+            $this->messageManager->addExceptionMessage($e, __('Something went wrong while saving the data.'));
             $returnToEdit = true;
         }
 
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($returnToEdit) {
             if ($feeId) {
-                $resultRedirect->setPath(
-                    'amasty_extrafee/*/edit',
-                    ['id' => $feeId, '_current' => true]
-                );
+                $resultRedirect->setPath('amasty_extrafee/*/edit', ['id' => $feeId, '_current' => true]);
             } else {
-                $resultRedirect->setPath(
-                    'amasty_extrafee/*/new',
-                    ['_current' => true]
-                );
+                $resultRedirect->setPath('amasty_extrafee/*/new', ['_current' => true]);
             }
         } else {
             $resultRedirect->setPath('amasty_extrafee/index');
         }
+
         return $resultRedirect;
     }
 
     /**
-     * @param $messages
+     * @param array $data
      */
-    protected function _addSessionErrorMessages($messages)
+    protected function prepareData(array &$data): void
     {
-        $messages = (array)$messages;
-        $session = $this->_getSession();
-
-        $callback = function ($error) use ($session) {
-            if (!$error instanceof Error) {
-                $error = new Error($error);
+        if (array_key_exists('rule', $data)) {
+            if (array_key_exists('conditions', $data['rule'])) {
+                $data['conditions'] = $data['rule']['conditions'];
             }
-            $this->messageManager->addMessage($error);
-        };
-        array_walk_recursive($messages, $callback);
+            if (array_key_exists('actions', $data['rule'])) {
+                $data['actions'] = $data['rule']['actions'];
+            }
+
+            unset($data['rule']);
+
+            $rule = $this->ruleFactory->create();
+            $rule->loadPost($data);
+
+            $data[FeeInterface::CONDITIONS_SERIALIZED] = $rule->getConditionsSerialized();
+            $data[FeeInterface::PRODUCT_CONDITIONS_SERIALIZED] = $rule->getActionsSerialized();
+            unset($data['conditions'], $data['actions'], $data['option']);
+            if ((int)$data[FeeInterface::IS_PER_PRODUCT] === ApplyFeeFor::FOR_CART) {
+                $data[FeeInterface::PRODUCT_CONDITIONS_SERIALIZED] = null;
+            }
+        }
     }
 }

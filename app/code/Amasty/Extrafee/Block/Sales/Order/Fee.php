@@ -1,45 +1,37 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
+declare(strict_types=1);
+
 namespace Amasty\Extrafee\Block\Sales\Order;
 
-/**
- * Class Fee
- *
- * @author Artem Brunevski
- */
+use Amasty\Extrafee\Api\Data\ExtrafeeOrderInterface;
+use Amasty\Extrafee\Block\Sales\Fees;
+use Amasty\Extrafee\Model\ConfigProvider;
+use Amasty\Extrafee\Model\ResourceModel\ExtrafeeOrder\CollectionFactory as FeeOrderCollectionFactory;
+use Magento\Framework\View\Element\Template;
+use Magento\Sales\Api\Data\OrderInterface;
 
-use Amasty\Extrafee\Model\ResourceModel\Quote\CollectionFactory as FeeQuoteCollectionFactory;
-use Magento\Framework\View\Element\Template\Context;
-
-class Fee extends \Magento\Framework\View\Element\Template
+class Fee extends Fees
 {
-    /** @var \Magento\Sales\Model\Order  */
-    protected $order;
-
-    protected $source;
-
     /**
-     * @var FeeQuoteCollectionFactory
+     * @var FeeOrderCollectionFactory
      */
-    protected $feeQuoteCollectionFactory;
+    private $feeOrderCollectionFactory;
 
-    /**
-     * @param Context $context
-     * @param FeeQuoteCollectionFactory $feeQuoteCollectionFactory
-     * @param array $data
-     */
     public function __construct(
-        Context $context,
-        FeeQuoteCollectionFactory $feeQuoteCollectionFactory,
+        Template\Context $context,
+        ConfigProvider $configProvider,
+        FeeOrderCollectionFactory $feeOrderCollectionFactory,
         array $data = []
     ) {
-        $this->feeQuoteCollectionFactory = $feeQuoteCollectionFactory;
-        return parent::__construct($context, $data);
+        parent::__construct($context, $configProvider, $data);
+        $this->feeOrderCollectionFactory = $feeOrderCollectionFactory;
     }
 
     /**
@@ -48,43 +40,21 @@ class Fee extends \Magento\Framework\View\Element\Template
     public function initTotals()
     {
         $parent = $this->getParentBlock();
+
         if (!$parent || !method_exists($parent, 'getOrder')) {
             return $this;
         }
+        $order = $parent->getOrder();
 
-        $this->order = $parent->getOrder();
-
-        if (!($this->order instanceof \Magento\Sales\Api\Data\OrderInterface)) {
+        if (!($order instanceof OrderInterface)) {
             return $this;
         }
 
-        $feesQuoteCollection = $this->feeQuoteCollectionFactory->create()
-            ->addFieldToFilter('option_id', ['neq' => '0'])
-            ->addFieldToFilter('quote_id', $this->order->getQuoteId());
+        $feeOrderCollection = $this->feeOrderCollectionFactory->create()
+            ->addFieldToFilter(ExtrafeeOrderInterface::ORDER_ID, $order->getId());
 
-        $feeAmount = 0;
-        $baseFeeAmount = 0;
-        $labels = [];
-
-        foreach ($feesQuoteCollection as $feeOption) {
-            $feeAmount += $feeOption->getFeeAmount();
-            $baseFeeAmount += $feeOption->getBaseFeeAmount();
-
-            $labels[] = $feeOption->getLabel();
-        }
-
-        if ($feeAmount > 0) {
-            $fee = new \Magento\Framework\DataObject(
-                [
-                    'code' => 'amasty_extrafee',
-                    'strong' => false,
-                    'value' => $feeAmount,
-                    'base_value' => $baseFeeAmount,
-                    'label' => __('Extra Fee: %1', implode(', ', $labels)),
-                ]
-            );
-
-            $parent->addTotal($fee, 'amasty_extrafee');
+        foreach ($feeOrderCollection->getItems() as $feeOrder) {
+            $this->getFees($parent, $feeOrder);
         }
 
         return $this;

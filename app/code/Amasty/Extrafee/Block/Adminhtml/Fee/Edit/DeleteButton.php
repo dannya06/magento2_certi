@@ -1,15 +1,10 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
-/**
- * Class DeleteButton
- *
- * @author Artem Brunevski
- */
 
 namespace Amasty\Extrafee\Block\Adminhtml\Fee\Edit;
 
@@ -27,9 +22,9 @@ class DeleteButton extends GenericButton implements ButtonProviderInterface
             $data = [
                 'label' => __('Delete Page'),
                 'class' => 'delete',
-                'on_click' => 'deleteConfirm(\'' . __(
-                        'Are you sure you want to do this?'
-                    ) . '\', \'' . $this->getDeleteUrl() . '\')',
+                'on_click' => 'deleteConfirm(\''
+                    . __('Are you sure you want to do this?')
+                    . '\', \'' . $this->getDeleteUrl() . '\')',
                 'sort_order' => 20,
             ];
         }

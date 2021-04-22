@@ -20,7 +20,7 @@ class FeedContentProvider
     /**
      * Path to NEWS
      */
-    const URN_NEWS = 'cdn.amasty.com/feed-news-segments.xml';//do not use https:// or http
+    const URN_NEWS = 'amasty.com/feed-news-segments.xml';//do not use https:// or http
 
     /**
      * Path to ADS
@@ -60,7 +60,7 @@ class FeedContentProvider
      *
      * @return false|string
      */
-    public function getFeedContent(string $url)
+    public function getFeedContent($url)
     {
         /** @var Curl $curlObject */
         $curlObject = $this->curlFactory->create();
@@ -70,7 +70,7 @@ class FeedContentProvider
                 'useragent' => 'Amasty Base Feed'
             ]
         );
-        $curlObject->write(\Zend_Http_Client::GET, $url);
+        $curlObject->write(\Zend_Http_Client::GET, $url, '1.0');
         $result = $curlObject->read();
 
         if ($result === false || $result === '') {
@@ -88,9 +88,35 @@ class FeedContentProvider
         return $result;
     }
 
-    public function getFeedUrl(string $urn): string
+    /**
+     * @param string $urn
+     * @param bool $needFollowLocation
+     *
+     * @return string
+     */
+    public function getFeedUrl($urn, $needFollowLocation = false)
     {
-        return 'https://' . $urn;
+        if ($needFollowLocation) {
+            return 'https://' . $urn;
+        }
+
+        $scheme = $this->getCurrentScheme();
+        $protocol = $scheme ?: 'http://';
+
+        return $protocol . $urn;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentScheme()
+    {
+        $scheme = $this->getBaseUrlObject()->getScheme();
+        if ($scheme) {
+            return $scheme . '://';
+        }
+
+        return '';
     }
 
     /**
