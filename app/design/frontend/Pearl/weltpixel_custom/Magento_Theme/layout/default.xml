@@ -11,14 +11,5 @@
             <!-- Global JS -->
             <block class="Magento\Theme\Block\Html\Topmenu" name="icube.js" template="page/js/jquery.main.phtml" />
         </referenceContainer>
-
-        <referenceContainer name="before.body.end">
-            <block name="scripts" template="Magento_Theme::html/scripts.phtml" after="-">
-                <arguments>
-                    <argument name="bundle_name" xsi:type="string">cms</argument>
-                </arguments>
-            </block>
-            <block name="defer" template="Magento_Theme::html/defer.phtml" after="-"/>
-        </referenceContainer>
     </body>
 </page>
