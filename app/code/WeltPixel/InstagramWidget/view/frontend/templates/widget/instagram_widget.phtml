@@ -8,6 +8,20 @@ $instagramAccessToken = $this->getData('instagram_access_token');
 $imagesPerRow = $this->getData('images_per_row');
 $openImagesInNewTab = ($this->getData('images_in_new_tab'))  ? 'target="_blank"' : '';
 $imagesHavePadding = ($this->getData('images_have_padding'))  ? 'use-padding' : '';
+$imagesAltTag = $this->getData('images_alt_text');
+$imagesAltLabel = '';
+switch ($imagesAltTag) {
+    case '2':
+        $imagesAltLabel = ' alt="' .  $block->escapeHtml(trim($this->getData('custom_alt_text')))  . '" ';
+        break;
+    case '1':
+        $imagesAltLabel = ' alt="{{caption}}" ';
+        break;
+    case '0':
+    default:
+    $imagesAltLabel = '';
+    break;
+}
 $useImageShuffle = ($this->getData('optimize_image_layout'))  ? true : false;
 $description = trim($this->getData('description'));
 $backgroundColor = trim($this->getData('background_color'));
@@ -19,7 +33,7 @@ $feedType = $this->getData('feed_type');
 $userId = $this->getData('user_id');
 $tagName = $this->getData('tag_name');
 $locationId = $this->getData('location_id');
-$imagesTemplate = '<a '. $openImagesInNewTab . ' href="{{link}}"><img class="' . $imagesHavePadding . '"'  .  ' src="{{image}}" /></a>';
+$imagesTemplate = '<a '. $openImagesInNewTab . ' href="{{link}}"><img class="' . $imagesHavePadding . '"'  .  $imagesAltLabel . ' src="{{image}}" /></a>';
 ?>
 <div class="instagram-widget-container " <?php if ($backgroundColor) : ?> style="background-color: <?php echo $backgroundColor; ?>" <?php endif; ?>>
     <div class="instagram-heading-title center">

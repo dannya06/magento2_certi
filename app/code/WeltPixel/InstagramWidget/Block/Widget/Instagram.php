@@ -21,4 +21,23 @@ class Instagram extends \Magento\Framework\View\Element\Template implements \Mag
         $this->setTemplate($template);
         return parent::getTemplate();
     }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
+    public function isLazyLoadEnabled() {
+        return $this->_scopeConfig->getValue('weltpixel_lazy_loading/general/enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed|string
+     */
+    public function getLazyLoadPlaceholderWidth() {
+        $imgWidth = null;
+        $imgWidth = (int) $this->_scopeConfig->getValue('weltpixel_lazy_loading/advanced/placeholder_width', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+        return $imgWidth && is_integer($imgWidth) ? $imgWidth . 'px' : 'auto';
+    }
 }

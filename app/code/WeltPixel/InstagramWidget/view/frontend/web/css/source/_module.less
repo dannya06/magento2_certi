@@ -29,6 +29,31 @@
         padding: 5px;
       }
     }
+    a[data-caption] {
+        position: relative;
+    }
+    a[data-caption] {
+        &:hover::after {
+            content: attr(data-caption);
+            text-align: center;
+            font-size: 1.3rem;
+            color: black;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 2% 0;
+            margin: 5px;
+            max-height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background-color: hsla(0, 100%, 100%, 0.8);
+        }
+        &.shuffle-item:hover::after {
+            width: calc(~"(98% - 10px)");
+        }
+    }
+
   }
 
   .instagram-widget-container {
