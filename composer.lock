@@ -2189,11 +2189,11 @@
         },
         {
             "name": "icubeus/magento2-notification",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "0ff5a47dab04cd9820a6f5c92e27dbac37d85370"
+                "reference": "9f5ca3c0673b666dbd165776be83ec9e39f7a235"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "^4.1"
@@ -2232,7 +2232,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-03-23T06:15:16+00:00"
+            "time": "2021-04-30T10:27:06+00:00"
         },
         {
             "name": "icubeus/magento2-payment",
