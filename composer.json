@@ -2,13 +2,13 @@
     "name": "magento/project-community-edition",
     "description": "eCommerce Platform for Growth (Community Edition)",
     "type": "project",
-    "version": "2.0.9",
+    "version": "2.4.2",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
     ],
     "require": {
-        "magento/product-community-edition": "2.4.1",
+        "magento/product-community-edition": "2.4.2",
         "composer/composer": "@alpha",
         "icubeus/magento2-advancerate": "^4.1",
         "icubeus/magento2-trackorder": "^4.1",
