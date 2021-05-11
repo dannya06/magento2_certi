@@ -156,4 +156,88 @@ class OptionManager extends \Amasty\Extrafee\Model\OptionManager
 
         return (float)$price;
     }
+
+    private function getBaseQuoteTotalAndBaseTax(Quote $quote, FeeInterface $fee)
+    {
+        $baseTotal = $baseTax = 0.0;
+        $items = $this->getValidItems($quote, $fee);
+
+        if (empty($items)) {
+            return [$baseTotal, $baseTax];
+        }
+
+        foreach ($items as $item) {
+            $itemQty = $item->getQty();
+
+            if ($item->getProductType() !== Type::TYPE_BUNDLE) {
+                $parent = $item->getParentItem();
+                if ($parent) {
+                    $itemQty = $parent->getQty();
+                    if ($parent->getProductType() === Type::TYPE_BUNDLE) {
+                        $itemQty *= $item->getQty();
+                    }
+                }
+                $baseTotal += $item->getBasePrice() * $itemQty;
+                $baseTax += $item->getBaseTaxAmount() - $item->getBaseDiscountTaxCompensation();
+            }
+
+            if ($this->getDiscountInSubtotal($fee)) {
+                $baseTotal -= $item->getBaseDiscountAmount();
+            }
+        }
+
+        if ($this->getShippingInSubtotal($fee) && !$quote->isVirtual()) {
+            $baseTotal += $quote->getShippingAddress()->getBaseShippingAmount();
+            $baseTax += $quote->getShippingAddress()->getBaseShippingTaxAmount();
+        }
+
+        return [$baseTotal, $baseTax];
+    }
+
+    private function getValidItems(Quote $quote, FeeInterface $fee)
+    {
+        /** @var Item[] $items */
+        if (!$fee->isPerProduct()) {
+            return $quote->getAllItems();
+        }
+
+        $rule = $this->ruleRepository->getByFee($fee);
+
+        return $rule->getValidItems($quote);
+    }
+
+    private function getValidQty(Quote $quote, FeeInterface $fee)
+    {
+        $items = $this->getValidItems($quote, $fee);
+        $qty = 0;
+        foreach ($items as $item) {
+            if (!$item->getParentItem()) {
+                $qty += $item->getQty();
+            }
+        }
+
+        return $qty;
+    }
+
+    private function getDiscountInSubtotal(FeeInterface $fee)
+    {
+        $value = $fee->getDiscountInSubtotal();
+
+        if ($value === Excludeinclude::VAR_DEFAULT) {
+            $value = $this->configProvider->getDiscountInSubtotal();
+        }
+
+        return $value;
+    }
+
+    private function getShippingInSubtotal(FeeInterface $fee)
+    {
+        $value = $fee->getShippingInSubtotal();
+
+        if ($value === Excludeinclude::VAR_DEFAULT) {
+            $value = $this->configProvider->getShippingInSubtotal();
+        }
+
+        return $value;
+    }
 }
