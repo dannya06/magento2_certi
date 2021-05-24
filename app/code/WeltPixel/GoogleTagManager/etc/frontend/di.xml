@@ -11,4 +11,7 @@
     <type name="Magento\Framework\App\FrontController">
         <plugin name="weltpixel-googletagmanager-cookieset" type="WeltPixel\GoogleTagManager\Plugin\CookieManagement" sortOrder="20"/>
     </type>
+    <type name="Magento\Framework\App\Response\Http">
+        <plugin name="weltpixel-googletagmanager-js-head-snippet" type="WeltPixel\GoogleTagManager\Plugin\ResponseHttp" sortOrder="1000"/>
+    </type>
 </config>

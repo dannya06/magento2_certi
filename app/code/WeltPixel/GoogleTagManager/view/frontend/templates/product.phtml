@@ -5,10 +5,10 @@
     <?php $helper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data'); ?>
     <?php $product = $this->getCurrentProduct(); ?>
     <?php if (isset($product)) : ?>
-        <?php $productDetails = array(); ?>
+        <?php $productDetails = []; ?>
         <?php
 
-        $productDetail = array();
+        $productDetail = [];
         $productDetail['name'] = html_entity_decode($product->getName());
         $productDetail['id'] = $helper->getGtmProductId($product);
         $productDetail['price'] = number_format($product->getPriceInfo()->getPrice('final_price')->getValue(), 2, '.', '');
@@ -23,10 +23,12 @@
             $productDetail[$name] = $value;
         endforeach;
 
-
         $productDetails['products'][] = $productDetail;
         ?>
-        <?php $this->setEcommerceData('detail', $productDetails); ?>
+        <?php
+        $this->setEcommerceData('detail', $productDetails);
+        $this->setEcommerceData('currencyCode', $this->getCurrencyCode());
+        ?>
 
         <?php
 
@@ -38,7 +40,7 @@
         if (count($relatedProductsCollection)) :
             $i = 1;
             foreach ($relatedProductsCollection as $_product) :
-                $relatedProduct = array();
+                $relatedProduct = [];
                 $relatedProduct['name'] = html_entity_decode($_product->getName());
                 $relatedProduct['id'] = $helper->getGtmProductId($_product);
                 $relatedProduct['price'] = number_format($_product->getPriceInfo()->getPrice('final_price')->getValue(), 2, '.', '');
@@ -53,11 +55,10 @@
             endforeach;
         endif;
 
-
         if (count($upsellProductsCollection)) :
             $i = 1;
             foreach ($upsellProductsCollection as $_product) :
-                $upsellProduct = array();
+                $upsellProduct = [];
                 $upsellProduct['name'] = html_entity_decode($_product->getName());
                 $upsellProduct['id'] = $helper->getGtmProductId($_product);
                 $upsellProduct['price'] = number_format($_product->getPriceInfo()->getPrice('final_price')->getValue(), 2, '.', '');
@@ -73,12 +74,11 @@
         endif;
 
         if (count($productImpressions)) :
-            $this->setEcommerceData('currencyCode', $this->getCurrencyCode());
             $this->setEcommerceData('impressions', $productImpressions);
             $this->setDataLayerOption('event', 'impression');
             $this->setDataLayerOption('eventCategory', 'Ecommerce');
             $this->setDataLayerOption('eventAction', 'Impression');
-            $this->setDataLayerOption('eventLabel',  \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_PRODUCT . ' ' . html_entity_decode($_product->getName()));
+            $this->setDataLayerOption('eventLabel', \WeltPixel\GoogleTagManager\Model\Api\Remarketing::ECOMM_PAGETYPE_PRODUCT . ' ' . html_entity_decode($_product->getName()));
         endif;
 
         if ($helper->isAdWordsRemarketingEnabled()):

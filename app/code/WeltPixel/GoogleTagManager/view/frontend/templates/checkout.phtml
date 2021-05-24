@@ -15,6 +15,7 @@
     $checkoutData['currencyCode'] = $this->getCurrencyCode();
 
     $this->setDataLayerOption('event', 'checkout');
+    $this->setDataLayerOption('eventLabel', 'Checkout');
     $this->setEcommerceData('checkout', $checkoutData);
     ?>
 <?php endif; ?>

@@ -19,6 +19,7 @@
                 <parent_vs_child>parent</parent_vs_child>
                 <secure_cookies>0</secure_cookies>
                 <exclude_shipping_from_transaction>0</exclude_shipping_from_transaction>
+                <exclude_shipping_from_transaction_including_tax>0</exclude_shipping_from_transaction_including_tax>
                 <exclude_free_purchase>0</exclude_free_purchase>
                 <custom_dimension_customerid>1</custom_dimension_customerid>
                 <custom_dimension_customerid_indexnumber>1</custom_dimension_customerid_indexnumber>

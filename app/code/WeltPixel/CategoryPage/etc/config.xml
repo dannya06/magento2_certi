@@ -11,6 +11,7 @@
                 <display_wishlist>2</display_wishlist>
                 <products_per_line>3</products_per_line>
                 <remove_breadcrumbs>0</remove_breadcrumbs>
+                <hover_products_animation>0</hover_products_animation>
             </general>
             <image>
                 <enable_hover_image>0</enable_hover_image>
@@ -110,7 +111,14 @@
                 <select_option_background_hover_color></select_option_background_hover_color>
                 <select_option_font_color>#454545</select_option_font_color>
             </toolbar>
-        </weltpixel_category_page>      
+            <layered_navigation_options>
+                <layered_nav_bullet_options>1</layered_nav_bullet_options>
+                <layered_nav_bullet_width>10px</layered_nav_bullet_width>
+                <layered_nav_bullet_height>10px</layered_nav_bullet_height>
+                <layered_nav_bullet_border>1px solid #999</layered_nav_bullet_border>
+                <layered_nav_bullet_border_radius>15px</layered_nav_bullet_border_radius>
+            </layered_navigation_options>
+        </weltpixel_category_page>
     </default>
 </config>
 

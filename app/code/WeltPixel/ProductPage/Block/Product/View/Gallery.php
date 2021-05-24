@@ -1,12 +1,4 @@
 <?php
-/**
- * @category    WeltPixel
- * @package     WeltPixel_{Module}
- * @copyright   Copyright (c) 2018 Weltpixel
- * @author      Nagy Attila @ Weltpixel TEAM
- */
-
-
 namespace WeltPixel\ProductPage\Block\Product\View;
 
 use Magento\Framework\Json\EncoderInterface;

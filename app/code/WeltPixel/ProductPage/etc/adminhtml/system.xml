@@ -66,7 +66,8 @@
 				<field id="remove_email" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Remove email</label>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-					<comment>Select Yes to remove email button from the product page.</comment>
+					<comment><![CDATA[Select Yes to remove email button from the product page. <br />
+					Check the Stores > Settings > Configuration > Catalog > Email to a Friend > Enabled to be <b> Yes </b>, in case you wish the Email icon to be displayed.]]></comment>
 				</field>
 				<field id="remove_qty_box" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Remove qty box</label>
@@ -95,13 +96,31 @@
 				</field>
 				<field id="tabs_version" translate="label" type="select" sortOrder="124" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Tabs Version</label>
-					<comment>Select tabs version. Also you can control tab padding from product page CSS options: Product Page -> Other CSS Options -> Tab Container Padding.</comment>
+					<comment>Tab Version - Select Tab Version. You can also control Tab Padding from the Product Page CSS Options</comment>
 					<source_model>WeltPixel\ProductPage\Model\Config\Source\TabsVersion</source_model>
 					<depends>
 						<field id="tabs_layout">tab</field>
 					</depends>
 				</field>
-				<field id="accordion_version" translate="label" type="select" sortOrder="125" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="tabs_alignment" translate="label" type="select" sortOrder="125" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Tab Alignment</label>
+                    <comment>Align Tabs Left or Center</comment>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\TabsAlignment</source_model>
+                    <depends>
+                        <field id="tabs_layout">tab</field>
+                        <field id="tabs_version">2</field>
+                    </depends>
+                </field>
+                <field id="tabs_bar_background_color" translate="label" type="text" sortOrder="126" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sticky Tab Background Color</label>
+                    <comment>Select the background color for the Sticky Tab bar.</comment>
+                    <depends>
+                        <field id="tabs_layout">tab</field>
+                        <field id="tabs_version">2</field>
+                    </depends>
+                    <validate>color {required:false, hash:true}</validate>
+                </field>
+				<field id="accordion_version" translate="label" type="select" sortOrder="127" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Accordion Version</label>
 					<comment>Select accordion version.</comment>
 					<source_model>WeltPixel\ProductPage\Model\Config\Source\AccordionVersion</source_model>
@@ -109,7 +128,7 @@
 						<field id="tabs_layout">accordion</field>
 					</depends>
 				</field>
-				<field id="accordion_collapsible" translate="label" type="select" sortOrder="127" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="accordion_collapsible" translate="label" type="select" sortOrder="128" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Accordion Collapsible</label>
 					<comment>Select accordion collapsible to be able to close all panels.</comment>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -118,12 +137,41 @@
 						<field id="accordion_version">0</field>
 					</depends>
 				</field>
-				<field id="qty_type" translate="label" type="select" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="view_more_less_list" translate="label" type="select" sortOrder="129" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show More/Less</label>
+                    <comment>Enable View more/less.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="tabs_layout">list</field>
+                    </depends>
+                </field>
+                <field id="view_more_less_height" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>More/Less section height</label>
+                    <comment>Set the height of the View More/Less section of information list. Example: 150px.</comment>
+                    <depends>
+                        <field id="tabs_layout">list</field>
+                        <field id="view_more_less_list">1</field>
+
+                    </depends>
+                </field>
+				<field id="qty_type" translate="label" type="select" sortOrder="131" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Quantity Input Type</label>
 					<comment>Select Input type for quantity field.</comment>
 					<source_model>WeltPixel\ProductPage\Model\Config\Source\QtyType</source_model>
 				</field>
-				<field id="qty_select_maxvalue" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="qty_plus_minus_border_radius" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Border Radius for Plus Minus Selector</label>
+                    <comment>Set border radius for quantity plus minus selector. Example: 1px.</comment>
+                    <depends>
+                        <field id="qty_type">plusminus</field>
+                    </depends>
+                </field>
+                <field id="qty_add_to_cart_position" translate="label" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Add To Cart Button Position</label>
+                    <comment>Select the position of "Add to Cart" button in relation to QTY selector.</comment>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\AddToCartPosition</source_model>
+                </field>
+				<field id="qty_select_maxvalue" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Quantity Dropdown Max Value</label>
 					<comment>Insert max value for quantity field when is set in dropdown. Example: 10</comment>
 					<validate>number</validate>
@@ -131,7 +179,7 @@
 						<field id="qty_type">select</field>
 					</depends>
 				</field>
-				<field id="display_swatch_tooltip" translate="label" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="display_swatch_tooltip" translate="label" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Display Swatch Tooltip</label>
 					<comment>Select Yes to display the tooltip on hover over swatches on product page.
 						For tooltip to be displayed make sure to have the Display Swatch Tooltip enabled on Category Page settings also.</comment>
@@ -467,6 +515,11 @@
 					<comment>Set Font Size of text on swatches on product page. Example: 10px</comment>
 					<validate>required</validate>
 				</field>
+                <field id="auto_select" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Auto select swatches</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\SwatchSelect</source_model>
+                    <validate>required</validate>
+                </field>
 			</group>
 			<group id="css" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
 				<label>Other CSS Options</label>
@@ -527,7 +580,170 @@
 					</depends>
 					<validate>color {required:false, hash:true}</validate>
 				</field>
+                <field id="name_type" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Name Text Case</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\TextType</source_model>
+                    <comment>Select text case of product names on the product page.</comment>
+                </field>
 			</group>
+            <group id="size_chart" translate="label" type="text" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Size Chart/Custom Block</label>
+                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Size Chart/Custom Block</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="size_chart_custom_label" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Size Chart Custom Label</label>
+                    <comment>Fill in the label that you want to be displayed instead of "Size Chart".</comment>
+                    <depends>
+                        <field id="weltpixel_product_page/size_chart/enable">1</field>
+                    </depends>
+                </field>
+                <field id="size_chart_custom_cms" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Select Size Chart Custom Block</label>
+                    <comment>Select the WeltPixel Size Chart CMS block and edit it with your own content.</comment>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\CustomBlockList</source_model>
+                    <depends>
+                        <field id="weltpixel_product_page/size_chart/enable">1</field>
+                    </depends>
+                </field>
+                <field id="size_chart_conditions" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Conditions</label>
+                    <frontend_model>WeltPixel\ProductPage\Block\Adminhtml\Config\Form\Field\Conditions</frontend_model>
+                    <depends>
+                        <field id="weltpixel_product_page/size_chart/enable">1</field>
+                    </depends>
+                    <comment>Don't add conditions if rule is applied to all products</comment>
+                </field>
+            </group>
+            <group id="visitor_counter" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Visitor Counter</label>
+                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Visitor Counter</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="session_identifier" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Vistor conter based on</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\VisitorCounterSessionIdentifier</source_model>
+                    <depends>
+                        <field id="weltpixel_product_page/visitor_counter/enable">1</field>
+                    </depends>
+                </field>
+                <field id="update_frequency" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Update frequency</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\VisitorCounterUpdateFrequency</source_model>
+                    <depends>
+                        <field id="weltpixel_product_page/visitor_counter/enable">1</field>
+                    </depends>
+                </field>
+                <field id="realtime_update_frequency" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Realtime Live update frequency</label>
+                    <depends>
+                        <field id="weltpixel_product_page/visitor_counter/enable">1</field>
+                        <field id="weltpixel_product_page/visitor_counter/update_frequency">realtime</field>
+                    </depends>
+                    <comment>Specify in seconds.</comment>
+                    <validate>number</validate>
+                </field>
+                <field id="refresh_delay" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Time Delay</label>
+                    <depends>
+                        <field id="weltpixel_product_page/visitor_counter/enable">1</field>
+                        <field id="weltpixel_product_page/visitor_counter/update_frequency">pagerefresh</field>
+                    </depends>
+                    <comment>Specify in seconds.</comment>
+                    <validate>number</validate>
+                </field>
+                <field id="display_text" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Text</label>
+                    <depends>
+                        <field id="weltpixel_product_page/visitor_counter/enable">1</field>
+                    </depends>
+                    <comment>{visitor_counter} custom variable can be used in the text.</comment>
+                </field>
+                <field id="display_limit" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Limiter</label>
+                    <depends>
+                        <field id="weltpixel_product_page/visitor_counter/enable">1</field>
+                    </depends>
+                    <comment>Show only if the number of visitors is above the value specified. Leave empty or add 0 if it should be displayed all the time.</comment>
+                </field>
+            </group>
+            <group id="prevnext" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Previous / Next products</label>
+                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Next/Prev buttons will only display on products when they are navigated to from the Category Page. Accessing them directly via link, for example, will not trigger the buttons.</comment>
+                </field>
+                <field id="productname" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Name for Prev / Next product</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\PrevNextProductName</source_model>
+                    <depends>
+                        <field id="weltpixel_product_page/prevnext/enable">1</field>
+                    </depends>
+                    <comment>This option applies to desktop only.</comment>
+                </field>
+            </group>
+            <group id="sale_message" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Sale Message</label>
+                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Sale Message</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="content" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Message Content</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\PrevNextProductName</source_model>
+                    <depends>
+                        <field id="weltpixel_product_page/sale_message/enable">1</field>
+                    </depends>
+                    <comment>You can show a custom message when the Special price is used.  You can use variables: {discount_percent} and {discount_value}. Example: You Save {discount_percent} ({discount_value}).</comment>
+                </field>
+            </group>
+            <group id="sticky_addtocart" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Sticky Add To Cart</label>
+                <depends>
+                    <field id="weltpixel_product_page/general/tabs_version" negative="1">2</field>
+                </depends>
+                <field id="enable_desktop" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable On Desktop</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sticky_cart_mode" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sticky Cart Mode</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\StickyCartDisplayMode</source_model>
+                    <depends>
+                        <field id="enable_desktop">1</field>
+                    </depends>
+                </field>
+                <field id="display_on_desktop" translate="label" type="multiselect" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Display On Desktop</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\DisplayOn</source_model>
+                    <depends>
+                        <field id="enable_desktop">1</field>
+                    </depends>
+                </field>
+                <field id="enable_mobile" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable On Mobile</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="display_on_mobile" translate="label" type="multiselect" sortOrder="60" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Display On Mobile</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\DisplayOnMobile</source_model>
+                    <depends>
+                        <field id="enable_mobile">1</field>
+                    </depends>
+                </field>
+                <field id="sticky_cart_mode_mobile" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sticky Cart Mode Mobile</label>
+                    <source_model>WeltPixel\ProductPage\Model\Config\Source\StickyCartDisplayModeMobile</source_model>
+                    <depends>
+                        <field id="enable_mobile">1</field>
+                    </depends>
+                </field>
+            </group>
 		</section>
 	</system>
 </config>

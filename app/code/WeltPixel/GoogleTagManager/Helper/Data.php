@@ -15,6 +15,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_gtmOptions;
 
     /**
+     * @var array
+     */
+    protected $_brandOptions;
+
+    /**
      * @var \Magento\Framework\View\Element\BlockFactory
      */
     protected $blockFactory;
@@ -103,6 +108,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @var  \Magento\Framework\App\Cache\StateInterface
      */
     protected $cacheState;
+
+    protected const XML_PATH_DEV_MOVE_JS_TO_BOTTOM = 'dev/js/move_script_to_bottom';
 
     /**
      * Data constructor.
@@ -193,7 +200,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $categories = $this->categoryCollectionFactory->create()
             ->setStoreId($storeId)
-            ->addAttributeToFilter('path', ['like' => "1/{$rootCategoryId}/%"])
+            ->addAttributeToFilter('path', ['like' => "1/{$rootCategoryId}%"])
             ->addAttributeToSelect('name');
 
         foreach ($categories as $categ) {
@@ -222,7 +229,24 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function isProductClickTrackingEnabled()
     {
-        return !$this->cookieHelper->isUserNotAllowSaveCookie() && $this->_gtmOptions['general']['product_click_tracking'];
+        return ($this->isProductClickTrackingOnlyForGtmEnabled()) ||
+            (!$this->cookieHelper->isUserNotAllowSaveCookie() && $this->scopeConfig->getValue('weltpixel_ga4/general/product_click_tracking', \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isProductClickTrackingOnlyForGtmEnabled()
+    {
+        return (!$this->cookieHelper->isUserNotAllowSaveCookie() && $this->_gtmOptions['general']['product_click_tracking']);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCookieRestrictionModeEnabled()
+    {
+        return $this->scopeConfig->getValue(\Magento\Cookie\Helper\Cookie::XML_PATH_COOKIE_RESTRICTION, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -263,6 +287,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function excludeShippingFromTransaction()
     {
         return $this->_gtmOptions['general']['exclude_shipping_from_transaction'];
+    }
+
+    /**
+     * @return boolean
+     */
+    public function excludeShippingFromTransactionIncludingTax()
+    {
+        return $this->_gtmOptions['general']['exclude_shipping_from_transaction_including_tax'];
     }
 
     /**
@@ -888,18 +920,41 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $gtmBrand = '';
         if ($this->isBrandEnabled()) {
             $brandAttribute = $this->_gtmOptions['general']['brand_attribute'];
-            try {
-                $frontendValue = $product->getAttributeText($brandAttribute);
-                if (is_array($frontendValue)) {
-                    $gtmBrand = implode(',', $product->getAttributeText($brandAttribute));
-                } else {
-                    $gtmBrand = trim($product->getAttributeText($brandAttribute));
+            $brandOptions = $this->getBrandOptions($product, $brandAttribute);
+
+            $frontendValue =  $product->getData($brandAttribute);
+            if (is_array($frontendValue)) {
+                $result = [];
+                foreach ($frontendValue as $value) {
+                    $result[] = ($brandOptions[$value]) ? $brandOptions[$value] : null;
                 }
-            } catch (\Exception $e) {
+                $gtmBrand = implode(',', array_filter($result));
+            } elseif (isset($brandOptions[$frontendValue])) {
+                $gtmBrand = $brandOptions[$frontendValue];
             }
         }
 
         return $gtmBrand;
+    }
+
+    /**
+     * @param  \Magento\Catalog\Model\Product $product
+     * @param string $brand
+     * @return array
+     */
+    protected function getBrandOptions($product, $brand)
+    {
+        if (empty($this->_brandOptions)) {
+            try {
+                $options = $product->getResource()->getAttribute($brand)->getSource()->getAllOptions();
+                foreach ($options as $option) {
+                    $this->_brandOptions[$option['value']] = $option['label'];
+                }
+            } catch (Exception $ex) {
+            }
+        }
+
+        return $this->_brandOptions;
     }
 
     /**
@@ -941,8 +996,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     private function _buildCategoryPath($categoryPath)
     {
-        /* first 2 categories can be ignored */
-        $categoriIds = array_slice(explode('/', $categoryPath), 2);
+        $categIds = explode('/', $categoryPath);
+        $ignoreCategories = 2;
+        if (count($categIds) < 3) {
+            $ignoreCategories = 1;
+        }
+        /* first 2 categories can be ignored, or 1st if root category */
+        $categoriIds = array_slice($categIds, $ignoreCategories);
         $categoriesWithNames = [];
 
         foreach ($categoriIds as $categoriId) {
@@ -1080,6 +1140,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $checkoutStepResult = [];
 
         $checkoutStepResult['event'] = 'checkout';
+        $checkoutStepResult['eventLabel'] = 'Checkout';
         $checkoutStepResult['ecommerce'] = [];
         $checkoutStepResult['ecommerce']['currencyCode'] = $this->getCurrencyCode();
         $checkoutStepResult['ecommerce']['checkout']['actionField'] =  [
@@ -1099,6 +1160,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $checkoutStepResult['ecommerce']['checkout']['products'] = $products;
 
         $checkoutOptionResult['event'] = 'checkoutOption';
+        $checkoutOptionResult['eventLabel'] = 'Checkout Steps';
         $checkoutOptionResult['ecommerce'] = [];
         $checkoutOptionResult['ecommerce']['currencyCode'] = $this->getCurrencyCode();
         $checkoutOptionResult['ecommerce']['checkout_option'] = [];
@@ -1228,48 +1290,66 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param \Magento\Catalog\Model\Product $product
+     * @param int $index
+     * @param string $list
+     * @param string $listId
      * @return string
      */
-    public function addProductClick($product, $index = 0, $list = '')
+    public function addProductClick($product, $index = 0, $list = '', $listId = '')
     {
         $productClickBlock = $this->createBlock('Core', 'product_click.phtml');
         $html = '';
 
-        if ($productClickBlock) {
-            $productClickBlock->setProduct($product);
-            $productClickBlock->setIndex($index);
+        if ($this->isProductClickTrackingOnlyForGtmEnabled()) {
+            if ($productClickBlock) {
+                $productClickBlock->setProduct($product);
+                $productClickBlock->setIndex($index);
 
-            /**
-             * If a list value is set use that one, if nothing add one
-             */
-            if (!$list) {
-                $currentCategory = $this->getCurrentCategory();
-                if (!empty($currentCategory)) {
-                    $list = $this->getGtmCategory($currentCategory);
-                } else {
-                    /* Check if it is from a listing from search or advanced search*/
-                    $requestPath = $this->_request->getModuleName() .
-                        DIRECTORY_SEPARATOR . $this->_request->getControllerName() .
-                        DIRECTORY_SEPARATOR . $this->_request->getActionName();
-                    switch ($requestPath) {
-                        case 'catalogsearch/advanced/result':
-                            $list = __('Advanced Search Result');
-                            break;
-                        case 'catalogsearch/result/index':
-                            $list = __('Search Result');
-                            break;
+                /**
+                 * If a list value is set use that one, if nothing add one
+                 */
+                if (!$list) {
+                    $currentCategory = $this->getCurrentCategory();
+                    if (!empty($currentCategory)) {
+                        $list = $this->getGtmCategory($currentCategory);
+                    } else {
+                        /* Check if it is from a listing from search or advanced search*/
+                        $requestPath = $this->_request->getModuleName() .
+                            DIRECTORY_SEPARATOR . $this->_request->getControllerName() .
+                            DIRECTORY_SEPARATOR . $this->_request->getActionName();
+                        switch ($requestPath) {
+                            case 'catalogsearch/advanced/result':
+                                $list = __('Advanced Search Result');
+                                break;
+                            case 'catalogsearch/result/index':
+                                $list = __('Search Result');
+                                break;
+                        }
                     }
                 }
+                $productClickBlock->setList($list);
+                $html = trim($productClickBlock->toHtml());
             }
-            $productClickBlock->setList($list);
-            $html = trim($productClickBlock->toHtml());
+
+            if (!empty($html)) {
+                $eventCallBack = ", 'eventCallback': function() { document.location = '" .
+                    $this->escaper->escapeHtml($product->getUrlModel()->getUrl($product)) . "';return false; }});";
+                $html = substr(rtrim($html, ");"), 0, -1);
+                $html .= $eventCallBack;
+            }
         }
 
+        $htmlObject = new \Magento\Framework\DataObject(['html' => $html]);
+        $this->_eventManager->dispatch('weltpixel_googletagmanager_afterproductclick', [
+            'html' => $htmlObject,
+            'product' => $product,
+            'index' => $index,
+            'list' => $list,
+            'listId' => $listId,
+        ]);
+        $html = $htmlObject->getHtml();
+
         if (!empty($html)) {
-            $eventCallBack = ", 'eventCallback': function() { document.location = '" .
-                $this->escaper->escapeHtml($product->getUrlModel()->getUrl($product)) . "' }});";
-            $html = substr(rtrim($html, ");"), 0, -1);
-            $html .= $eventCallBack;
             $html = 'onclick="' . $html . '"';
         }
 
@@ -1367,5 +1447,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         return $attributeValue;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDevMoveJsBottomEnabled()
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_DEV_MOVE_JS_TO_BOTTOM, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

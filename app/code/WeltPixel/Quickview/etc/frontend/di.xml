@@ -13,9 +13,17 @@
                 type="WeltPixel\Quickview\Plugin\BlockProductList"
                 sortOrder="10"/>
     </type>
+    <virtualType name="Magento\CatalogSearch\Block\SearchResult\ListProduct">
+        <plugin name="weltpixel-quickview-block-product-list"
+                type="WeltPixel\Quickview\Plugin\BlockProductList"  sortOrder="10" />
+    </virtualType>
     <type name="Magento\Catalog\Block\Product\View\Gallery">
         <plugin name="weltpixel-quickview-block-product-view-gallery-magnifier"
                 type="WeltPixel\Quickview\Plugin\BlockProductViewGalleryMagnifier" sortOrder="15"/>
+    </type>
+    <type name="Magento\Catalog\Block\Product\View\GalleryOptions">
+        <plugin name="weltpixel-quickview-block-product-view-gallery-options"
+                type="WeltPixel\Quickview\Plugin\BlockProductViewGalleryOptions" sortOrder="15"/>
     </type>
     <type name="Magento\Catalog\Block\Product\AbstractProduct">
         <plugin name="weltpixel-quickview-scopeconfig"

@@ -26,7 +26,7 @@
                     </div>
                 </div>
             <?php endif; ?>
-            <div class="actions">
+            <div class="<?php echo $_helper->getAddToCartBtnPosition() ;?>">
                 <button type="submit"
                         title="<?php /* @escapeNotVerified */ echo $buttonTitle ?>"
                         class="action primary tocart"

@@ -76,21 +76,6 @@
 		margin: 0 auto;
 	}
 
-	.swatch-option-tooltip {
-		-webkit-animation-name: fadeInUp;
-		animation-name: fadeInUp;
-		-webkit-animation-duration: .3s;
-		animation-duration: .3s;
-		-webkit-animation-fill-mode: both;
-		animation-fill-mode: both;
-		animation-delay: .1s;
-		.corner{
-			&:after{
-				left: -16px
-			}
-		}
-	}
-
 	.product-info-main {
 		.actions {
 			button {
@@ -135,6 +120,7 @@
 					.product.data.items{
 						.item.content{
 							display: none;
+                            margin-bottom: 6px;
 							&:nth-child(2){
 								display: block;
 							}
@@ -642,6 +628,20 @@
 
 .media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
 	.theme-pearl {
+        .swatch-option-tooltip {
+            -webkit-animation-name: fadeInUp;
+            animation-name: fadeInUp;
+            -webkit-animation-duration: .3s;
+            animation-duration: .3s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            animation-delay: .1s;
+            .corner{
+                &:after{
+                    left: -16px
+                }
+            }
+        }
 		.product-social-links {
 			.product-addto-links {
 				&.full-width-add-to {
@@ -957,7 +957,7 @@
 				.switch{
 					border: 0 none;
 					padding: 0 !important;
-					font-weight: bold !important;
+					font-weight: bold;
 					font-size: 16px !important;
 				}
 			}

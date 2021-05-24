@@ -20,20 +20,20 @@
                 <label translate="true">Add no follow</label>
                 <description>rel="nofollow" will be added to the hotspot link</description>
             </parameter>
-            <parameter name="position_top" xsi:type="text" visible="true" required="false" sort_order="30" >
+            <parameter name="position_top" xsi:type="text" visible="true" required="true" sort_order="30" >
                 <label translate="true">Top position</label>
                 <description>Sets the top edge position in % of containing element. Specify a number. For 10% from top, just enter 10 in the field.</description>
             </parameter>
-            <parameter name="position_left" xsi:type="text" visible="true" required="false" sort_order="40" >
+            <parameter name="position_left" xsi:type="text" visible="true" required="true" sort_order="40" >
                 <label translate="true">Left position</label>
                 <description>Sets the left edge position in % of containing element. Specify a number. For 10% from left, just enter 10 in the field.</description>
             </parameter>
-            <parameter name="color" xsi:type="block"  visible="true" sort_order="50" >
+            <parameter name="color" xsi:type="block" required="true" visible="true" sort_order="50" >
                 <label translate="true">Color</label>
                 <description>Hotspot color</description>
                 <block class="WeltPixel\Quickview\Block\Adminhtml\Widget\ColorPicker"/>
             </parameter>
-            <parameter name="bg_color" xsi:type="block"  visible="true" sort_order="60" >
+            <parameter name="bg_color" xsi:type="block"  visible="true" required="true" sort_order="60" >
                 <label translate="true">Background Color</label>
                 <description>Hotspot background</description>
                 <block class="WeltPixel\Quickview\Block\Adminhtml\Widget\ColorPicker"/>

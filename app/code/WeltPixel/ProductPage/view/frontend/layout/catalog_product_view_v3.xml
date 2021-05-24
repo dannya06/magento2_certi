@@ -9,6 +9,7 @@
 
 		<move element="product.info.main" destination="product.top.main" after="product.info.media"/>
 		<move element="product.info.media" destination="product.top.main" before="-"/>
+        <move element="wp.productpage.prev.next" destination="content" before="-"/>
 
 	</body>
 </page>

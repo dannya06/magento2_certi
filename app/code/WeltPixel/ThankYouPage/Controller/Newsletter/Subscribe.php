@@ -5,10 +5,11 @@ use Magento\Customer\Api\AccountManagementInterface as CustomerAccountManagement
 use Magento\Customer\Model\Session;
 use Magento\Customer\Model\Url as CustomerUrl;
 use Magento\Framework\App\Action\Context;
-use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Validator\EmailAddress as EmailValidator;
 use Magento\Newsletter\Model\SubscriberFactory;
-use \Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Newsletter\Model\SubscriptionManagerInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -24,23 +25,24 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
      * @var JsonFactory
      */
     protected $resultJsonFactory;
-    
+
     /**
      * @var SubscriptionManagerInterface
      */
-    private $subscriptionManager;
+    protected $subscriptionManager;
 
     /**
-     * Initialize dependencies.
-     *
+     * Subscribe constructor.
      * @param Context $context
      * @param SubscriberFactory $subscriberFactory
      * @param Session $customerSession
      * @param StoreManagerInterface $storeManager
      * @param CustomerUrl $customerUrl
      * @param CustomerAccountManagement $customerAccountManagement
+     * @param SubscriptionManagerInterface $subscriptionManager
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param JsonFactory $resultJsonFactory
+     * @param EmailValidator|null $emailValidator
      */
     public function __construct(
         Context $context,
@@ -51,10 +53,12 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
         CustomerAccountManagement $customerAccountManagement,
         SubscriptionManagerInterface $subscriptionManager,
         \Magento\Checkout\Model\Session $checkoutSession,
-        JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory,
+        EmailValidator $emailValidator = null
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->resultJsonFactory = $resultJsonFactory;
+        $this->subscriptionManager = $subscriptionManager;
         parent::__construct(
             $context,
             $subscriberFactory,
@@ -62,10 +66,10 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
             $storeManager,
             $customerUrl,
             $customerAccountManagement,
-            $subscriptionManager
+            $subscriptionManager,
+            $emailValidator
         );
     }
-
 
     /**
      * @param string $email
@@ -95,23 +99,21 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
     public function execute()
     {
         if (!$this->getRequest()->isAjax()) {
-           return parent::execute();
+            return parent::execute();
         }
 
-
         if ($this->getRequest()->isPost() && $this->getRequest()->getPost('email')) {
-
             $email = (string)$this->getRequest()->getPost('email');
             $sucessMessage = '';
-
             try {
                 $this->validateEmailFormat($email);
                 $this->validateGuestSubscription();
                 $this->validateEmailAvailable($email);
 
-                $subscriber = $this->_subscriberFactory->create()->loadByEmail($email);
+                $websiteId = (int)$this->_storeManager->getStore()->getWebsiteId();
+                $subscriber = $this->_subscriberFactory->create()->loadBySubscriberEmail($email, $websiteId);
                 if ($subscriber->getId()
-                    && $subscriber->getSubscriberStatus() == \Magento\Newsletter\Model\Subscriber::STATUS_SUBSCRIBED
+                    && (int)$subscriber->getSubscriberStatus() == \Magento\Newsletter\Model\Subscriber::STATUS_SUBSCRIBED
                 ) {
                     return $this->resultJsonFactory->create()->setData(
                         [
@@ -121,7 +123,12 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
                     );
                 }
 
-                $status = $this->_subscriberFactory->create()->subscribe($email);
+                $storeId = (int)$this->_storeManager->getStore()->getId();
+                $currentCustomerId = $this->getSessionCustomerId($email);
+                $subscriber = $currentCustomerId
+                    ? $this->subscriptionManager->subscribeCustomer($currentCustomerId, $storeId)
+                    : $this->subscriptionManager->subscribe($email, $storeId);
+                $status = (int)$subscriber->getSubscriberStatus();
                 if ($status == \Magento\Newsletter\Model\Subscriber::STATUS_NOT_ACTIVE) {
                     $sucessMessage = __('The confirmation request has been sent.');
                 } else {
@@ -150,7 +157,25 @@ class Subscribe extends \Magento\Newsletter\Controller\Subscriber\NewAction
                 ]
             );
         }
-
     }
 
+    /**
+     * Get customer id from session if he is owner of the email
+     *
+     * @param string $email
+     * @return int|null
+     */
+    private function getSessionCustomerId(string $email)
+    {
+        if (!$this->_customerSession->isLoggedIn()) {
+            return null;
+        }
+
+        $customer = $this->_customerSession->getCustomerDataObject();
+        if ($customer->getEmail() !== $email) {
+            return null;
+        }
+
+        return (int)$this->_customerSession->getId();
+    }
 }

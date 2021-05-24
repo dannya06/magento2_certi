@@ -18,6 +18,7 @@ class Category extends \WeltPixel\GoogleTagManager\Block\Core
             return [];
         }
 
+        $categoryProductListBlock->toHtml();
         // Fetch the current collection from the block and set pagination
         $collection = $categoryProductListBlock->getLoadedProductCollection();
         $collection->setCurPage($this->getCurrentPage())->setPageSize($this->getLimit());

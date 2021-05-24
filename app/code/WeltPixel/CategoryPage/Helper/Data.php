@@ -177,6 +177,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getRelatedProductListItemsTemplate()
     {
         $template = 'Magento_Catalog::product/list/items.phtml';
+        if ($this->scopeConfig->getValue('weltpixel_productlabels/general/enable_related_products', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
+            $template = 'WeltPixel_ProductLabels::product/list/items.phtml';
+        }
+        if ($this->scopeConfig->getValue('weltpixel_ga4/general/product_click_tracking', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
+            $template = 'WeltPixel_GA4::product/list/items.phtml';
+        }
         if ($this->scopeConfig->getValue('weltpixel_googletagmanager/general/product_click_tracking', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
             $template = 'WeltPixel_GoogleTagManager::product/list/items.phtml';
         }
@@ -193,6 +199,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getCrossellProductListItemsTemplate()
     {
         $template = 'Magento_Catalog::product/list/items.phtml';
+        if ($this->scopeConfig->getValue('weltpixel_productlabels/general/enable_crossell_products', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
+            $template = 'WeltPixel_ProductLabels::product/list/items.phtml';
+        }
+        if ($this->scopeConfig->getValue('weltpixel_ga4/general/product_click_tracking', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
+            $template = 'WeltPixel_GA4::product/list/items.phtml';
+        }
         if ($this->scopeConfig->getValue('weltpixel_googletagmanager/general/product_click_tracking', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
             $template = 'WeltPixel_GoogleTagManager::product/list/items.phtml';
         }
@@ -208,6 +220,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getUpsellProductListItemsTemplate()
     {
         $template = 'Magento_Catalog::product/list/items.phtml';
+        if ($this->scopeConfig->getValue('weltpixel_productlabels/general/enable_upsell_products', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
+            $template = 'WeltPixel_ProductLabels::product/list/items.phtml';
+        }
+        if ($this->scopeConfig->getValue('weltpixel_ga4/general/product_click_tracking', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
+            $template = 'WeltPixel_GA4::product/list/items.phtml';
+        }
         if ($this->scopeConfig->getValue('weltpixel_googletagmanager/general/product_click_tracking')) {
             $template = 'WeltPixel_GoogleTagManager::product/list/items.phtml';
         }
@@ -215,5 +233,23 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $template = 'WeltPixel_OwlCarouselSlider::product/list/items.phtml';
         }
         return $template;
+    }
+
+    /**
+     * @param int $storeId
+     * @return array
+     */
+    public function getLayeredNavigationBulletOptions($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_category_page/layered_navigation_options', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return array
+     */
+    public function getCategoryPageProductsHoverAnimation($storeId = null)
+    {
+        return $this->scopeConfig->getValue('weltpixel_category_page/general/hover_products_animation', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

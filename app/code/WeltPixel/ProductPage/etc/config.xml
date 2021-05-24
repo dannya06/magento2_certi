@@ -10,6 +10,8 @@
                 <product_info_area_width>35%</product_info_area_width>
                 <qty_select_maxvalue>10</qty_select_maxvalue>
                 <qty_type>select</qty_type>
+                <qty_plus_minus_border_radius>1px</qty_plus_minus_border_radius>
+                <qty_add_to_cart_position>actions</qty_add_to_cart_position>
                 <remove_breadcrumbs>0</remove_breadcrumbs>
                 <remove_compare>1</remove_compare>
                 <remove_email>0</remove_email>
@@ -22,6 +24,7 @@
                 <remove_wishlist>1</remove_wishlist>
                 <tabs_layout>tab</tabs_layout>
                 <accordion_version>0</accordion_version>
+                <tabs_bar_background_color>#FFFFFF</tabs_bar_background_color>
             </general>
             <gallery>
                 <arrows>true</arrows>
@@ -53,6 +56,7 @@
                 <line_height>24px</line_height>
                 <radius>25px</radius>
                 <width>25px</width>
+                <auto_select>0</auto_select>
             </swatch>
             <css>
                 <tab_active_background>#FFFFFF</tab_active_background>
@@ -71,6 +75,36 @@
                 <thumb_image_height></thumb_image_height>
                 <thumb_image_width></thumb_image_width>
             </images>
+            <size_chart>
+                <enable>0</enable>
+                <size_chart_custom_cms>weltpixel_size_chart</size_chart_custom_cms>
+                <size_chart_custom_label>Size Chart</size_chart_custom_label>
+            </size_chart>
+            <visitor_counter>
+                <enable>0</enable>
+                <session_identifier>session</session_identifier>
+                <update_frequency>pagerefresh</update_frequency>
+                <realtime_update_frequency>5</realtime_update_frequency>
+                <refresh_delay>40</refresh_delay>
+                <display_text>Currently, {visitor_counter} people are looking at this product</display_text>
+                <display_limit>0</display_limit>
+            </visitor_counter>
+            <prevnext>
+                <enable>0</enable>
+                <productname>inline</productname>
+            </prevnext>
+            <sale_message>
+                <enable>0</enable>
+                <content><![CDATA[You Save {discount_percent} ({discount_value})]]></content>
+            </sale_message>
+            <sticky_addtocart>
+                <enable_desktop>0</enable_desktop>
+                <display_on_desktop>product_image,product_name,product_review,product_price,addtocart_button,addto_wishlist</display_on_desktop>
+                <enable_mobile>0</enable_mobile>
+                <display_on_mobile>product_name,product_price,addtocart_button</display_on_mobile>
+                <sticky_cart_mode>replace</sticky_cart_mode>
+                <sticky_cart_mode_mobile>default</sticky_cart_mode_mobile>
+            </sticky_addtocart>
         </weltpixel_product_page>
     </default>
 </config>

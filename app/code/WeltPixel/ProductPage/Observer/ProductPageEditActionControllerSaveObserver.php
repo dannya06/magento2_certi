@@ -2,13 +2,18 @@
 
 namespace WeltPixel\ProductPage\Observer;
 
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * ProductPageEditActionControllerSaveObserver observer
  */
 class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 {
+
+    const PATH_SIZE_CHART = "weltpixel_product_page/size_chart/size_chart_conditions";
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -58,7 +63,6 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
      */
     protected $_mobileBreakPointUnder;
 
-
     /**
      * @var \WeltPixel\ProductPage\Model\ProductPageFactory
      */
@@ -80,10 +84,24 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
     protected $_urlBuilder;
 
     /**
-     * @var \Magento\Backend\Model\Session\Proxy
+     * @var \Magento\Backend\Model\Session
      */
     protected $_session;
 
+    /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    protected $serializer;
+
+    /**
+     * @var WriterInterface
+     */
+    protected $configWriter;
 
     /**
      * ProductPageEditActionControllerSaveObserver constructor.
@@ -97,7 +115,10 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
      * @param \WeltPixel\ProductPage\Model\ProductPageFactory $productPageFactory
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Magento\Framework\UrlInterface $urlBuilder
-     * @param \Magento\Backend\Model\Session\Proxy $session
+     * @param \Magento\Backend\Model\Session $session
+     * @param RequestInterface $request
+     * @param \Magento\Framework\Serialize\Serializer\Json $serializer
+     * @param WriterInterface $configWriter
      */
     public function __construct(
         \WeltPixel\ProductPage\Helper\Data $helper,
@@ -110,9 +131,11 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\UrlInterface $urlBuilder,
-        \Magento\Backend\Model\Session\Proxy $session
-    )
-    {
+        \Magento\Backend\Model\Session $session,
+        RequestInterface $request,
+        \Magento\Framework\Serialize\Serializer\Json $serializer,
+        WriterInterface $configWriter
+    ) {
         $this->_helper = $helper;
         $this->_frontendHelper = $frontendHelper;
         $this->_scopeConfig = $scopeConfig;
@@ -124,6 +147,9 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         $this->_messageManager = $messageManager;
         $this->_urlBuilder = $urlBuilder;
         $this->_session = $session;
+        $this->request = $request;
+        $this->serializer = $serializer;
+        $this->configWriter = $configWriter;
     }
 
     /**
@@ -136,10 +162,18 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
+        $scopeData = $this->getScopeData($observer);
+        $conditionsParams = $this->request->getParam('parameters');
+        if (isset($conditionsParams['conditions'])) {
+            try {
+                $this->configWriter->save(self::PATH_SIZE_CHART, $this->serializer->serialize($conditionsParams), $scopeData['scope'], $scopeData['scope_id']);
+            } catch (\Exception $ex) {
+            }
+        }
+
         $this->_storeCollection = $this->_storeManager->getStores();
         $directoryCode = $this->_dirReader->getModuleDir('view', 'WeltPixel_ProductPage');
         foreach ($this->_storeCollection as $store) {
-
             $this->_mobileBreakPoint = $this->_frontendHelper->getBreakpointM($store->getData('store_id'));
             $this->_mobileBreakPointUnder = ((int) $this->_frontendHelper->getBreakpointM($store->getData('store_id')) - 1) . 'px';
 
@@ -150,6 +184,12 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
             $cssOptions = $this->_helper->getCssOptions($store->getData('store_id'));
             $backgroundArrows = $this->_helper->getBackgroundArrows($store->getData('store_id'));
             $galleryThumbsNavDir = $this->_helper->getGalleryNavDir($store->getData('store_id'));
+            $qtySelectorBorderRadius = $this->_helper->getQtySelectorBorderRadius($store->getData('store_id'));
+            $stickyAddToCartMaxWidth = $this->_helper->getTopHeaderWidthForSticky($store->getData('store_id'));
+            $stickyDescriptionTabsMaxWidth = $this->_helper->getProductPageWidth($store->getData('store_id'));
+            $stickyDescriptionTabsPadding = $this->_helper->getProductPagePadding($store->getData('store_id'));
+            $viewMoreLessHeight = $this->_helper->getViewMoreLessHeight($store->getData('store_id'));
+
             $generatedCssDirectoryPath = DIRECTORY_SEPARATOR . 'frontend' .
                 DIRECTORY_SEPARATOR . 'web' .
                 DIRECTORY_SEPARATOR . 'css' .
@@ -165,11 +205,13 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                 $content .= $this->_generateVerticalNavDirFix();
             }
 
-
             if ($removeSwatchTooltip) {
                 $content .= $this->_addRemoveSwatchTooltipCss();
             }
-
+            $content .= $this->_generateBorderRadiusQtySelector($qtySelectorBorderRadius);
+            $content .= $this->_generateStickyAddToCartMaxWidth($stickyAddToCartMaxWidth);
+            $content .= $this->_generateStickyDescriptionTabs($stickyDescriptionTabsMaxWidth, $stickyDescriptionTabsPadding);
+            $content .= $this->_generateViewMoreLess($viewMoreLessHeight);
             $content .= $this->_generateCssOptions($cssOptions, $store->getData('store_id'));
 
             /** @var \Magento\Framework\Filesystem\Directory\WriteInterface|\Magento\Framework\Filesystem\Directory\Write $writer */
@@ -187,7 +229,6 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                 $file->close();
             }
         }
-
 
         /* Store view specific less generation */
         $this->_generateStoreViewSpecificLess();
@@ -274,7 +315,6 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         return $content;
     }
 
-
     /**
      * @return string;
      */
@@ -283,7 +323,6 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         $content = '.theme-pearl.catalog-product-view .swatch-option-tooltip {display: none !important;}' . PHP_EOL;
         return $content;
     }
-
 
     /**
      * @param array $swatchOptions
@@ -360,7 +399,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                         visibility: visible;
                         border: 1px solid #999999;
                     }
-		          
+
                    }
                    &:hover {
 		                position: relative;
@@ -370,6 +409,12 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 		                    border: 1px solid #999999;
 		                }
 		            }
+                    &.disabled{
+                        &:after {
+                            visibility: visible;
+                            content: '';
+                        }
+                    }
                 }
 	            &.color {
 	                &:before {
@@ -430,6 +475,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 		                    visibility: visible;
 		                    font-size: $fontSize;
 		                }
+		                &[data-option-tooltip-value='#fff'],
+		                &[data-option-tooltip-value='#ffffff'],
 		                &[option-tooltip-value='#fff'],
 		                &[option-tooltip-value='#ffffff'] {
 		                    &:after {
@@ -443,6 +490,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 		               content: '';
 		              }
 		            }
+		            &[data-option-tooltip-value='#fff'],
+		            &[data-option-tooltip-value='#ffffff'],
 		            &[option-tooltip-value='#fff'],
 		            &[option-tooltip-value='#ffffff'] {
 		                border: 1px solid #cccccc !important;
@@ -496,6 +545,12 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 		            }
 	            }
             }
+            .swatch-option[data-option-tooltip-value='#fff'],
+            .swatch-option[data-option-tooltip-value='#ffffff'],
+            .swatch-option[option-tooltip-value='#fff'],
+            .swatch-option[option-tooltip-value='#ffffff'] {
+                   border: 1px solid #cccccc !important;
+            }
             .swatch-option:not(.image):not(.color):not(.text) {
                 border: 1px solid #ddd !important;
                 &:hover{
@@ -525,9 +580,11 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         $tabTextActiveColor = $cssOptions['tab_text_active_color'];
         $tabTextColor = $cssOptions['tab_text_color'];
         $tabContainerPadding = '';
-        if($productVersion == '1' ||  $productVersion == '3'){
-            $tabContainerPadding = 'padding:'.$cssOptions['tab_container_padding'];
+        if ($productVersion == '1' ||  $productVersion == '3') {
+            $tabContainerPadding = 'padding:' . $cssOptions['tab_container_padding'];
         }
+
+        $nameType = !empty($cssOptions['name_type']) ? $cssOptions['name_type'] : 'none';
 
         $cssBG = $cssOptions['page_background_color'];
         $page_background_color = $cssBG != '' ? true : false;
@@ -556,7 +613,6 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         }
 
         $content = "
-        
         .product-page-v2 {
             &.theme-pearl.catalog-product-view #pre-div,
 	        &.theme-pearl.catalog-product-view {
@@ -577,8 +633,21 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 					}
 				}
 	        }
-        }        
-        
+        }
+        .theme-pearl.product-page-v3 {
+           .wp-productpage-prev-next {
+                &:before {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: -50%;
+					width: 200%;
+					height: 48px;
+					z-index: -1;
+					$page_background_color_top_v3
+				}
+           }
+        }
 		.theme-pearl.product-page-v3,
 		.theme-pearl.product-page-v4 {
 			.page-wrapper {
@@ -649,14 +718,14 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
 	            background-color: white;
 	        }
 		}
-        
+
         .theme-pearl.catalog-product-view {
             .fotorama__thumb-border {
                 border: 1px solid $thumbBorder;
             }
             .fotorama__nav-wrap--vertical{
                   .fotorama__nav--thumbs .fotorama__nav__frame {
-                  .fotorama__thumb {                 
+                  .fotorama__thumb {
                         border-bottom: 2px solid $cssBG;
                   }
                   &:last-of-type {
@@ -666,23 +735,23 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                   }
 			    }
             }
-          
-                        
+
+
             .product.data.items > .item.title > .switch,
             .product.data.items > .item.title > .switch:visited{
                 background-color: $tabBg !important;
                 color: $tabTextColor !important;
             }
-            
-            .product.data.items > .item.title:not(.disabled) > .switch:active, 
+
+            .product.data.items > .item.title:not(.disabled) > .switch:active,
             .product.info.detailed > .items > .item,
-            .product.data.items > .item.title.active > .switch, 
-            .product.data.items > .item.title.active > .switch:focus, 
+            .product.data.items > .item.title.active > .switch,
+            .product.data.items > .item.title.active > .switch:focus,
             .product.data.items > .item.title.active > .switch:hover {
                 background-color: $tabActiveBg !important;
                 color: $tabTextActiveColor !important;
             }
-            
+
             .product.info.detailed > .items > .item.title.active {
                 position: relative;
                 &:before {
@@ -695,7 +764,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                     left: 1px;
                 }
             }
-            
+
             .product.info.detailed > .items > .item.content {
                  input,
                  select,
@@ -713,31 +782,147 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                             margin-top:0px !important;
                          }
                         }
-                    }            
+                    }
                 }
             }
-            
-            
+
+
             .product.info.detailed.toggle-bg{
                 .data.item.content.togglec{
                     $tabContainerPadding;
-                } 
+                }
             }
-                                    
+
+            .product-info-main{
+                .page-title-wrapper{
+                    .page-title{
+                        text-transform: $nameType
+                    }
+                }
+            }
+
         }
         .theme-pearl.product-page-v4 {
 	        @media (min-width: $this->_mobileBreakPoint) {
 	            .product-info-main {
 	                min-width: 450px;
-	                right: 20px !important; 
+	                right: 20px !important;
 	            }
 	        }
         }
-        
+
+        .actions .paypal-button{
+           position: sticky;
+        }
+
         ";
 
         return $content;
     }
+
+    /**
+     * @param $qtySelectorBorderRadius
+     * @return string
+     */
+    private function _generateBorderRadiusQtySelector($qtySelectorBorderRadius)
+    {
+        $qtySelectorBorderRadius = (!empty($qtySelectorBorderRadius) ? $qtySelectorBorderRadius : '0px');
+        $content = "
+            .theme-pearl.product-page-v1,
+            .theme-pearl.product-page-v2,
+            .theme-pearl.product-page-v3,
+            .theme-pearl.product-page-v4 {
+                .box-tocart .qty-wrapper {
+                    border-radius: $qtySelectorBorderRadius;
+                    -o-border-radius: $qtySelectorBorderRadius;
+                    -ms-border-radius: $qtySelectorBorderRadius;
+                    -moz-border-radius: $qtySelectorBorderRadius;
+                    -webkit-border-radius: $qtySelectorBorderRadius;
+                }
+            }
+        ";
+
+        return $content;
+    }
+
+    /**
+     * @param $stickyAddToCartMaxWidth
+     * @return string
+     */
+    private function _generateStickyAddToCartMaxWidth($stickyAddToCartMaxWidth)
+    {
+        $stickyAddToCartMaxWidth = (!empty($stickyAddToCartMaxWidth) ? 'max-width:' . $stickyAddToCartMaxWidth . '!important' : 'max-width: 1400px !important');
+        $content = "
+            .theme-pearl.catalog-product-view {
+                .page-wrapper {
+                    .fixed-cart-container {
+                        .sticky-max-width {
+                            $stickyAddToCartMaxWidth;
+                            width: 100% !important;
+                            margin: 0 auto !important;
+                        }
+                    }
+                }
+            }
+        ";
+        return $content;
+    }
+
+    /**
+     * @param $stickyDescriptionTabsMaxWidth
+     * @return string
+     */
+    private function _generateStickyDescriptionTabs($stickyDescriptionTabsMaxWidth, $stickyDescriptionTabsPadding)
+    {
+        $stickyDescriptionTabsMaxWidth = (!empty($stickyDescriptionTabsMaxWidth) ? 'max-width:' . $stickyDescriptionTabsMaxWidth . '!important;' : 'max-width: 1400px !important;');
+        $stickyDescriptionTabsPadding = (!empty($stickyDescriptionTabsPadding) ? 'padding:' . $stickyDescriptionTabsPadding  : 'padding: 0 15px;');
+        $content = "
+            .theme-pearl.catalog-product-view {
+                .no-border {
+                    .product.data.items  {
+                        .nav-wrapper {
+                            .tabs-title-wrapper {
+                                $stickyDescriptionTabsMaxWidth
+                            }
+                        }
+                        .nav-wrapper-sticky {
+                            .tabs-title-wrapper {
+                                $stickyDescriptionTabsPadding
+                            }
+
+                        }
+                    }
+                }
+            }
+        ";
+        return $content;
+    }
+
+    /**
+     * @param $viewMoreLessHeight
+     * @return string
+     */
+    private function _generateViewMoreLess($viewMoreLessHeight)
+    {
+        $viewMoreLessHeight = (!empty($viewMoreLessHeight) ? 'max-height:' . $viewMoreLessHeight : 'max-height: 100%');
+        $content = "
+            .theme-pearl.catalog-product-view {
+                .page-main {
+                    .columns {
+                        .product.info.detailed {
+                            .product.data.items {
+                                .item.content.view-more-less-wrapper {
+                                    $viewMoreLessHeight;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ";
+        return $content;
+    }
+
 
     private function _generateBackgroundArrows($backgroundArrows)
     {
@@ -769,8 +954,9 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
     /**
      * @return string
      */
-    private function _generateVerticalNavDirFix() {
-        $content = "   
+    private function _generateVerticalNavDirFix()
+    {
+        $content = "
          	  .theme-pearl.catalog-product-view {
                     .product.media {
                         .fotorama__wrap {
@@ -778,8 +964,8 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
                                 right: 0 !important;
                             }
                         }
-         	        }         	    
-         	  }    	    
+         	        }
+         	  }
     	";
 
         return $content;
@@ -807,14 +993,12 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
             $lessValues = $this->_getLessValues($store);
             $tabsLayout = $this->_helper->getTabsLayout($store->getId());
 
-
             if ($tabsLayout == \WeltPixel\ProductPage\Model\Config\Source\TabsLayout::TAB_ACCORDION) {
                 $content .= str_replace($lessVariables, $lessValues, file_get_contents($lessTemplateAccordion));
             }
             if ($tabsLayout == \WeltPixel\ProductPage\Model\Config\Source\TabsLayout::TAB_LIST) {
                 $content .= str_replace($lessVariables, $lessValues, file_get_contents($lessTemplateList));
             }
-
         }
 
         $directoryCode = $this->_dirReader->getModuleDir('view', 'WeltPixel_ProductPage');
@@ -845,9 +1029,9 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
      */
     private function _getLessVariables()
     {
-        return array(
+        return [
             '@storeViewClass'
-        );
+        ];
     }
 
     /**
@@ -859,14 +1043,15 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
         $storeCode = $store->getData('code');
         $storeClassName = '.theme-pearl.store-view-' . preg_replace('#[^a-z0-9-_]+#', '-', strtolower($storeCode));
 
-        return array(
+        return [
             $storeClassName
-        );
+        ];
     }
+
+
 
     public function collectionData($store)
     {
-
         $scopeConfig = 'weltpixel_product_page';
         $adminOptions = $this->_scopeConfig->getValue($scopeConfig, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store);
         $version = '';
@@ -884,7 +1069,7 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
             }
         }
 
-        $options = $this->jsonHelper->jsonEncode($configs);;
+        $options = $this->jsonHelper->jsonEncode($configs);
 
         $productPage = $this->productPageFactory->create();
         $productPage->loadByVersionAndStore($version, $store);
@@ -919,7 +1104,30 @@ class ProductPageEditActionControllerSaveObserver implements ObserverInterface
             $g = hexdec(substr($hex, 2, 2));
             $b = hexdec(substr($hex, 4, 2));
         }
-        $rgb = array($r, $g, $b);
+        $rgb = [$r, $g, $b];
         return $rgb;
+    }
+
+    protected function getScopeData($observer)
+    {
+        $scopeData = [];
+
+        $scopeData['scope']    = 'default';
+        $scopeData['scope_id'] = 0;
+
+        $website = $observer->getWebsite();
+        $store   = $observer->getStore();
+
+        if ($website) {
+            $scopeData['scope']    = ScopeInterface::SCOPE_WEBSITES;
+            $scopeData['scope_id'] = $website;
+        }
+
+        if ($store) {
+            $scopeData['scope']    = ScopeInterface::SCOPE_STORES;
+            $scopeData['scope_id'] = $store;
+        }
+
+        return $scopeData;
     }
 }

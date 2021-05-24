@@ -13,6 +13,7 @@
                 <resource id="WeltPixel_Backend::WeltPixel" >
                     <resource id="WeltPixel_Quickview::Quickview_Label" sortOrder="70" title="Quickview &amp; Ajax Cart" >
                         <resource id="WeltPixel_Quickview::Quickview" sortOrder="10" title="Quickview &amp; Ajax Cart Settings" />
+                        <resource id="WeltPixel_Quickview::QuickviewMessages" sortOrder="20" title="Dynamic Quickview Custom Messages" />
                     </resource>
                 </resource>
             </resource>

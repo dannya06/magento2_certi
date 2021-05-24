@@ -32,7 +32,7 @@ class HttpContext
     public function beforeGetVaryString(
         \Magento\Framework\App\Http\Context $subject
     ) {
-        if ($this->helper->isEnabled()) {
+        if ($this->helper->isEnabled() && $this->helper->isCookieRestrictionModeEnabled()) {
             $subject->setValue(
                 self::CONTEXT_GTM,
                 'isEnabled',

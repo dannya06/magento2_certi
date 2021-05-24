@@ -17,7 +17,7 @@ class CoreLayoutRenderElementObserver implements ObserverInterface
     {
         $this->helper = $helper;
     }
-    
+
     /**
      * @param \Magento\Framework\Event\Observer $observer
      * @return self

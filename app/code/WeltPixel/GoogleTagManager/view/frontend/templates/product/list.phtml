@@ -66,7 +66,10 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
                             $_productNameStripped = $block->stripTags($_product->getName(), null, true);
                         ?>
                         <strong class="product name product-item-name">
-                            <a class="product-item-link"
+                            <a <?php if ($gtmHelper->isProductClickTrackingEnabled()) :
+                                    echo $this->helper('WeltPixel\GoogleTagManager\Helper\Data')->addProductClick($_product, $iterator-1);
+                                endif; ?>
+                                class="product-item-link"
                                href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>">
                                 <?php /* @escapeNotVerified */ echo $_helper->productAttribute($_product, $_product->getName(), 'name'); ?>
                             </a>
@@ -124,7 +127,7 @@ $gtmHelper = $this->helper('WeltPixel\GoogleTagManager\Helper\Data');
         {
             "[data-role=tocart-form], .form.map.checkout": {
                 "catalogAddToCart": {
-                    "product_sku": "<?= /* @NoEscape */ $_product->getSku() ?>"
+                    "product_sku": "<?= $block->escapeJs($_product->getSku()) ?>"
                 }
             }
         }

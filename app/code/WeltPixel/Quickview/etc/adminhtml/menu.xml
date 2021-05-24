@@ -18,5 +18,14 @@
                 parent="WeltPixel_Quickview::Quickview_Label"
                 resource="WeltPixel_Quickview::Quickview"
         />
+        <add
+            id="WeltPixel_Quickview::QuickviewMessages"
+            title="Dynamic Quickview Custom Messages"
+            module="WeltPixel_Quickview"
+            action="weltpixelquickview/custommessages"
+            sortOrder="20"
+            parent="WeltPixel_Quickview::Quickview_Label"
+            resource="WeltPixel_Quickview::QuickviewMessages"
+        />
     </menu>
 </config>

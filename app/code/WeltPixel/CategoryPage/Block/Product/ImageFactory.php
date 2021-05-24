@@ -2,17 +2,16 @@
 namespace WeltPixel\CategoryPage\Block\Product;
 
 use Magento\Catalog\Block\Product\Image as ImageBlock;
-use Magento\Catalog\Model\View\Asset\ImageFactory as AssetImageFactory;
+use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Image\ParamsBuilder;
+use Magento\Catalog\Model\View\Asset\ImageFactory as AssetImageFactory;
 use Magento\Catalog\Model\View\Asset\PlaceholderFactory;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\ConfigInterface;
-use Magento\Catalog\Helper\Image as ImageHelper;
 use WeltPixel\CategoryPage\Helper\Data as CategoryPageHelper;
 use WeltPixel\LazyLoading\Helper\Data as LazyLoadingHelper;
 use WeltPixel\OwlCarouselSlider\Helper\Custom as OwlHelperCustom;
-
 
 /**
  * Create imageBlock from product and view.xml
@@ -91,16 +90,20 @@ class ImageFactory extends \Magento\Catalog\Block\Product\ImageFactory
      * Retrieve image custom attributes for HTML element
      *
      * @param array $attributes
-     * @return string
+     * @return array
      */
-    private function getStringCustomAttributes(array $attributes): string
+    private function filterCustomAttributes(array $attributes): array
     {
-        $result = [];
-        foreach ($attributes as $name => $value) {
-            if (in_array($name, ['weltpixel_lazyLoad', 'weltpixel_owlcarousel'])) continue;
-            $result[] = $name . '="' . $value . '"';
+        if (isset($attributes['class'])) {
+            unset($attributes['class']);
         }
-        return !empty($result) ? implode(' ', $result) : '';
+        if (isset($attributes['weltpixel_lazyLoad'])) {
+            unset($attributes['weltpixel_lazyLoad']);
+        }
+        if (isset($attributes['weltpixel_owlcarousel'])) {
+            unset($attributes['weltpixel_owlcarousel']);
+        }
+        return $attributes;
     }
 
     /**
@@ -220,7 +223,7 @@ class ImageFactory extends \Magento\Catalog\Block\Product\ImageFactory
                 'height' => $imageMiscParams['image_height'],
                 'label' => $this->getLabel($product, $imageMiscParams['image_type']),
                 'ratio' => $this->getRatio($ratioWidth, $ratioHeight),
-                'custom_attributes' => $this->getStringCustomAttributes($attributes),
+                'custom_attributes' => $this->filterCustomAttributes($attributes),
                 'class' => $this->getClass($attributes),
                 'product_id' => $product->getId()
             ],
@@ -249,7 +252,6 @@ class ImageFactory extends \Magento\Catalog\Block\Product\ImageFactory
         $data['data']['template'] = 'WeltPixel_CategoryPage::product/image_with_borders.phtml';
 
         if (in_array($imageId, $hoverImageIds)) {
-
             $hoverViewImageConfig = $this->presentationConfig->getViewConfig()->getMediaAttributes(
                 'Magento_Catalog',
                 ImageHelper::MEDIA_TYPE_CONFIG_NODE,
@@ -278,7 +280,7 @@ class ImageFactory extends \Magento\Catalog\Block\Product\ImageFactory
 
             /** Do not display hover placeholder */
             if ($hoverPlaceHolderUsed) {
-                $data['data']['hover_image_url'] = NULL;
+                $data['data']['hover_image_url'] = null;
             } else {
                 $data['data']['hover_image_url'] = $hoverImageAsset->getUrl();
             }

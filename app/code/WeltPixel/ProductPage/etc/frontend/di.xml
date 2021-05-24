@@ -20,4 +20,13 @@
         <plugin name="weltpixel-productpage-swatches-media"
                 type="WeltPixel\ProductPage\Plugin\SwatchesMedia" sortOrder="20"/>
     </type>
+    <type name="Magento\Catalog\Block\Product\ListProduct">
+        <plugin name="weltpixel-productpage-block-product-list"
+                type="WeltPixel\ProductPage\Plugin\BlockProductList"
+                sortOrder="10"/>
+    </type>
+    <virtualType name="Magento\CatalogSearch\Block\SearchResult\ListProduct">
+        <plugin name="weltpixel-productpage-block-product-list"
+                type="WeltPixel\ProductPage\Plugin\BlockProductList"  sortOrder="10" />
+    </virtualType>
 </config>

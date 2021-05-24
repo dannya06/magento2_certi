@@ -20,6 +20,8 @@ class AddUpdateHandlesObserver implements ObserverInterface
     const XML_PATH_PRODUCTPAGE_MOVE_TABS = 'weltpixel_product_page/general/move_description_tabs_under_info_area';
     const XML_PATH_PRODUCTPAGE_VERSION = 'weltpixel_product_page/version/version';
     const XML_PATH_PRODUCTPAGE_ACCORDION_VERSION = 'weltpixel_product_page/general/accordion_version';
+    const XML_PATH_PRODUCTPAGE_SHOW_SALE = 'weltpixel_product_page/sale_message/enable';
+    const XML_PATH_PRODUCTPAGE_SWATCH_PRESELECT = 'weltpixel_product_page/swatch/auto_select';
 
     /**
      * AddUpdateHandlesObserver constructor.
@@ -65,9 +67,24 @@ class AddUpdateHandlesObserver implements ObserverInterface
         $moveTabseAvailability = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_MOVE_TABS, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $version = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_VERSION, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $accordionVersion = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_ACCORDION_VERSION, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $showSaleMessage = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_SHOW_SALE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $swatchPreselect = $this->scopeConfig->getValue(self::XML_PATH_PRODUCTPAGE_SWATCH_PRESELECT, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
         if ($removeAvailability) {
             $layout->getUpdate()->addHandle('weltpixel_productpage_removeavailability');
+        }
+
+        if ($showSaleMessage) {
+            $layout->getUpdate()->addHandle('weltpixel_productpage_salemessage');
+        }
+
+        switch ($swatchPreselect) {
+            case \WeltPixel\ProductPage\Model\Config\Source\SwatchSelect::SWATCH_SELECT_ONLY_ONE:
+                $layout->getUpdate()->addHandle('weltpixel_productpage_swatch_onlyone');
+                break;
+            case \WeltPixel\ProductPage\Model\Config\Source\SwatchSelect::SWATCH_SELECT_FIRST:
+                $layout->getUpdate()->addHandle('weltpixel_productpage_swatch_first');
+                break;
         }
 
         if ($removeBreadcrumbs) {

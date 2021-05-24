@@ -18,7 +18,7 @@ class GuestPaymentInformation
      * @var \Magento\Sales\Api\OrderRepositoryInterface
      */
     protected $orderRepository;
-    
+
     /**
      * @param \WeltPixel\GoogleTagManager\Helper\Data $helper
      * @param \Magento\Checkout\Model\Session $checkoutSession
@@ -49,7 +49,15 @@ class GuestPaymentInformation
 
         $orderId = $result;
 
-        $order = $this->orderRepository->get($orderId);
+        $order = $this->_checkoutSession->getLastRealOrder();
+        if (!$order->getId()) {
+            try {
+                $order = $this->orderRepository->get($orderId);
+            } catch (\Exception $ex) {
+                return $result;
+            }
+        }
+
         $additionalInformation = $order->getPayment()->getAdditionalInformation();
 
         if ($additionalInformation && isset($additionalInformation['method_title'])) {

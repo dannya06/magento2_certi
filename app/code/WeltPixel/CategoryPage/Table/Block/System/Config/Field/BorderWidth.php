@@ -112,13 +112,15 @@ class BorderWidth extends \Magento\Config\Block\System\Config\Form\Field\FieldAr
 		 */
 		if ($element->getValue() && !is_array($element->getValue())) {
 			try {
+                $serializer = \Magento\Framework\App\ObjectManager::getInstance()
+                    ->get(\Magento\Framework\Serialize\Serializer\Serialize::class);
                 $elementValue = $element->getValue();
                 $elementValueJson = json_decode($element->getValue());
                 /** magento 2.2 removed serialization  */
                 if ($elementValueJson && ( $elementValue != $elementValueJson )) {
                     $element->setValue(json_decode($element->getValue(), true));
                 } else {
-                    $element->setValue(unserialize($element->getValue()));
+                    $element->setValue($serializer->unserialize($element->getValue()));
                 }
             } catch (\Exception $ex) {}
 		}
@@ -138,5 +140,5 @@ class BorderWidth extends \Magento\Config\Block\System\Config\Form\Field\FieldAr
 		}
 		return $result;
 	}
-	
+
 }

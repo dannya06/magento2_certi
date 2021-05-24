@@ -187,6 +187,7 @@ define([
 				}
 
 				if(jQuery('body').hasClass('product-page-v2')) {
+                    jQuery('.product_v2.media').css('height', galleryHeight+"px");
 					if(scrollTopPos >= 0 && scrollTopPos <= topOffset){
 						productInfoMain.removeClass('pp-fixed').removeAttr('style');
 					} else if(scrollTopPos >= topOffset && productInfoMainBottom <= footerOffset) {
@@ -225,6 +226,7 @@ define([
 				}
 
 				if(jQuery('body').hasClass('product-page-v4')) {
+                    jQuery('.product_v4.media').css('height', galleryHeight+"px");
 					if(scrollTopPos >= 0 && scrollTopPos <= topOffset){
 						productInfoMain.removeClass('pp-fixed').addClass('pp-floating-v4').removeAttr('style').css({
 							'left': productInfoMainLeft+'px',
@@ -257,13 +259,11 @@ define([
 		},
 
 		isMobileCheck: function() {
-			var mobileClasses = ['wp-device-xxs','wp-device-xs','wp-device-s','wp-device-m'];
-			for (var index = 0; index < mobileClasses.length; ++index) {
-				if(jQuery('body').hasClass(mobileClasses[index])) {
-					return true;
-				}
-			}
-			return false;
+            var screenWidth = jQuery(window).width();
+            if(screenWidth < window.wpMobileBreakpoint){
+                return true;
+            }
+            return false;
 		},
 
 		scrollToUrlHash: function(url) {
@@ -271,7 +271,7 @@ define([
 		},
 
 		scrollTo: function(targetHash) {
-			if (targetHash !== null) {
+			if ((targetHash !== null) && (targetHash.length)) {
 				var that = this;
 				that.preLoadProductReviews(function() {
 					var selector = jQuery('a[href^="#' + targetHash + '"]');

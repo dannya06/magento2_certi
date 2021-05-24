@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
-
 // @codingStandardsIgnoreFile
 
 /** @var $block \Magento\Checkout\Block\Cart\Sidebar */
@@ -37,9 +32,9 @@
                 "parentClass":"active",
                 "buttons":[]}}'
         >
-            <div id="minicart-content-wrapper" class="quickcart-content-wrapper" data-bind="scope: 'minicart_content'">
-                <!-- ko template: getTemplate() --><!-- /ko -->
-            </div>
+                <div id="minicart-content-wrapper" class="quickcart-content-wrapper" data-bind="scope: 'minicart_content'">
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                </div>
             <?php echo $block->getChildHtml('minicart.addons'); ?>
         </div>
     <?php endif ?>
@@ -56,7 +51,7 @@
         }
     }
     </script>
-    
+
     <?php $_helper = $this->helper('WeltPixel\QuickCart\Helper\Data'); ?>
     <?php $storeId = $_helper->getStoreId(); ?>
     <style>
@@ -79,5 +74,19 @@
             background: <?php echo $_helper->getSubtotalBackground($storeId) ?>;
             color: <?php echo $_helper->getSubtotalTextColor($storeId) ?>;
         }
+        <?php if ($_helper->isQuickCartMessageEnabled($storeId)) : ?>
+        .header .quickcart-wrapper .block-quickcart .block-content-quickcart .quickcart-bottom-container .custom-msg-wrapper .custom-msg,
+        .header .quickcart-wrapper .block-quickcart .block-content-quickcart .quickcart-bottom-container .custom-msg-wrapper .custom-msg span{
+            color: <?php echo $_helper->getQuickCartMessageTextColor($storeId) ?>;
+            font-size: <?php echo $_helper->getQuickCartMessageFontSize($storeId) ?>;
+        }
+        <?php $customCss = $_helper->getQuickCartMessageCustomCss(); ?>
+        <?php if (strlen($customCss)): ?>
+        <?php echo $customCss; ?>
+        <?php endif; ?>
+        .header .quickcart-wrapper .block-quickcart .block-content-quickcart .quickcart-items-wrapper {
+            height: <?= $_helper->getQuickCartItemWrapperHeight(); ?>
+        }
+        <?php endif; ?>
     </style>
 </div>

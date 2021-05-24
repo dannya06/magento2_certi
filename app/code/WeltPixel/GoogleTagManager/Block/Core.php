@@ -78,6 +78,14 @@ class Core extends \Magento\Framework\View\Element\Template
 
 
     /**
+     * @return bool
+     */
+    public function excludeShippingFromTransactionIncludingTax()
+    {
+        return $this->helper->excludeShippingFromTransactionIncludingTax();
+    }
+
+    /**
      * @param $label
      * @param $value
      * @return $this

@@ -119,22 +119,43 @@ define(['jquery','underscore'], function (jQuery,_) {
             });
         },
 
-        itemHeight: function () {
-            var productItem = '.products-grid .product-item',
+        itemHeight: function (reset) {
+            reset = typeof reset === 'undefined' ? false : reset;
+            var productItem = '.products.wrapper.products-grid .product-item',
                 productItemHeightByCount = {}, productItemHeights = [];
             jQuery(productItem).each(function() {
+                if (reset) {
+                    jQuery(this).height('auto');
+                }
                 var height = jQuery(this).height();
                 productItemHeights.push(height);
                 if (jQuery(this).filter('[style*=height]').length) {
                     return false;
                 }
             });
-
             productItemHeightByCount = _.countBy(productItemHeights);
             var finalHeight = _.max(Object.keys(productItemHeightByCount), function (o) {
                 return productItemHeightByCount[o];
             });
             jQuery(productItem).height(finalHeight);
+        },
+
+        waitUntilExists: function (isReady, success, error, count, interval){
+            var that = this;
+
+            if (count === undefined) { count = 300; }
+            if (interval === undefined) { interval = 20; }
+            if (isReady()) { success(); return; }
+
+            setTimeout(function(){
+                if (!count) {
+                    if (error !== undefined) {
+                        error();
+                    }
+                } else {
+                    that.waitUntilExists(isReady, success, error, count -1, interval);
+                }
+            }, interval);
         },
 
         actions: function () {
@@ -147,14 +168,23 @@ define(['jquery','underscore'], function (jQuery,_) {
             this.hoverShow(actions);
             this.buttonQuickView();
 
-            setInterval(function(){
+            if (actions.displaySwatches === '1') {
+                that.waitUntilExists(function() {
+                    return jQuery('[class^="swatch-opt"]').length;
+                }, function() {
+                    setTimeout(that.itemHeight, 2000);
+                }, function() {
+                    // do nothing
+                }, 100, 100);
+            } else {
                 that.itemHeight();
-            }, 2000);
+            }
 
             jQuery(window).resize(function() {
                 that.toCartWidth(actions);
                 that.hoverShow(actions);
                 that.buttonQuickView();
+                that.itemHeight(true);
                 that.itemHover();
             });
 

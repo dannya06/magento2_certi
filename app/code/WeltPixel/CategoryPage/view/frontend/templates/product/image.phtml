@@ -15,14 +15,14 @@ $lazyLoadClass = '';
 if ($block->getLazyLoad()) {
     $pWidth = '100%';
     $lazyLoadClass = 'owl-lazy';
-} elseif ($lazyLoadHelper->startLoadingPlaceholder() && !$block->getOwlcarousel() ) {
+} elseif ($lazyLoadHelper->isEnabled() && !$block->getOwlcarousel() ) {
     $lazyLoadClass = 'lazy';
 }
 ?>
 <img class="photo image <?php echo $lazyLoadClass; ?>"
     <?php /* @escapeNotVerified */ echo $block->getCustomAttributes(); ?>
     <?php if (!$block->getLazyLoad()): ?>
-        <?php if ($lazyLoadHelper->startLoadingPlaceholder() && !$block->getOwlcarousel()) : ?>
+        <?php if ($lazyLoadHelper->isEnabled() && !$block->getOwlcarousel()) : ?>
             src="<?php /* @escapeNotVerified */ echo $lazyLodImgSrc; ?>"
             data-original="<?php /* @escapeNotVerified */ echo $lazyLoadImgDataOriginal; ?>"
             style="max-width:<?php echo $pWidth ?>"

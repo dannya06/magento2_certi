@@ -14,7 +14,7 @@ Price,Price
 "Important / Recommended:","Important / Recommended:"
 "General Settings for QuickCart","General Settings for QuickCart"
 Enable,Enable
-"Open minicart after item is added","Open minicart after item is added"
+"Open minicart after item is added or removed","Open minicart after item is added or removed"
 "Quick Cart Header","Quick Cart Header"
 Height,Height
 "Background Color","Background Color"
@@ -22,3 +22,13 @@ Height,Height
 "Quick Cart Footer","Quick Cart Footer"
 "Subtotal Background Color","Subtotal Background Color"
 "Subtotal Text Color","Subtotal Text Color"
+"Quick Cart Custom Message","Quick Cart Custom Message"
+"Free Shipping Integration","Free Shipping Integration"
+"Custom Message","Custom Message"
+"{amount_needed} custom variable can be used if the Free Shipping Integration is used. It will return the needed amount for Free Shipping.","{amount_needed} custom variable can be used if the Free Shipping Integration is used. It will return the needed amount for Free Shipping."
+"Message for Free Shipping","Message for Free Shipping"
+"Insert a custom message which is displayed whe the free shipping can be applied, based on the Minimum Order Amount value set in the Free Shipping settings.","Insert a custom message which is displayed whe the free shipping can be applied, based on the Minimum Order Amount value set in the Free Shipping settings."
+"Message Text Color","Message Text Color"
+"Message Text Font Size","Message Text Font Size"
+"Custom Css","Custom Css"
+"Shopping Cart Custom Message","Shopping Cart Custom Message"

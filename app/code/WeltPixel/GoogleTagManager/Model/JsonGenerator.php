@@ -391,7 +391,11 @@ class JsonGenerator extends \Magento\Framework\Model\AbstractModel
         $tagId = 1;
         foreach ($tagsToCreate as $tagName => &$tagOptions) {
             if (isset($tagOptions['parameter'])) {
-                foreach ($tagOptions['parameter'] as &$paramOptions) {
+                foreach ($tagOptions['parameter'] as $key => &$paramOptions) {
+                    if (empty($paramOptions)) {
+                        unset($tagOptions['parameter'][$key]);
+                        continue;
+                    }
                     if (isset($paramOptions['type'])) {
                         $paramOptions['type'] = strtoupper($paramOptions['type']);
                     }

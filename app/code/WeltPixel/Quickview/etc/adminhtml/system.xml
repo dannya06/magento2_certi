@@ -12,6 +12,18 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Enable/Disable Quick View and Ajax Cart on Category pages.</comment>
                 </field>
+                <field id="enable_product_search" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable on search result</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable/Disable Quick View and Ajax Cart on Search Result pages.</comment>
+                </field>
+                <field id="enable_on_mobile" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable on mobile view</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable_product_listing">1</field>
+                    </depends>
+                </field>
                 <field id="quickview_type" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Quickview Type</label>
                     <source_model>WeltPixel\Quickview\Model\Config\Source\QuickviewType</source_model>
@@ -80,6 +92,14 @@
                     <label>Remove sku</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Show/Hide product SKU.</comment>
+                    <depends>
+                        <field id="enable_product_listing">1</field>
+                    </depends>
+                </field>
+                <field id="remove_estimated_arrival" translate="label" type="select" sortOrder="75" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Remove Estimated Arrival</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Requires <a href="https://wesupplylabs.com/estimate-delivery-date/" target="_blank">WeSupply integration</a>.]]></comment>
                     <depends>
                         <field id="enable_product_listing">1</field>
                     </depends>
@@ -170,6 +190,115 @@
                     <depends>
                         <field id="enable_product_listing">1</field>
                         <field id="enable_zoom">true</field>
+                    </depends>
+                </field>
+                <field id="loading_overlay_bg_color" translate="label comment" type="text" sortOrder="205" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Loading Overlay Background Color</label>
+                    <comment>Set background color for Loading Overlay. Example: #0b0b0b</comment>
+                    <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="enable_product_listing">1</field>
+                    </depends>
+                </field>
+                <field id="loading_overlay_opacity" translate="label comment" type="text" sortOrder="208" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Loading Overlay Opacity</label>
+                    <comment>Set opacity for Loading Overlay. Use values between 0 and 1. Example: 0.8</comment>
+                    <depends>
+                        <field id="enable_product_listing">1</field>
+                    </depends>
+                </field>
+                <field id="loading_placeholder" translate="label comment" type="select" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Loading Placeholder</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable_product_listing">1</field>
+                    </depends>
+                    <comment><![CDATA[Enable to be able to choose your own placeholder for the loading period of the quickview. <br>
+                                Below you can upload your own file.]]></comment>
+                </field>
+                <field id="loading_icon" translate="label comment" type="image" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Loading Icon</label>
+                    <backend_model>WeltPixel\Quickview\Model\Config\Backend\Loading</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/quickview/loading</upload_dir>
+                    <base_url type="media" scope_info="1">weltpixel/quickview/loading</base_url>
+                    <comment><![CDATA[ Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.]]>
+                    </comment>
+                    <depends>
+                        <field id="enable_product_listing">1</field>
+                        <field id="loading_placeholder">1</field>
+                    </depends>
+                </field>
+                <field id="enable_prevnext_product" translate="label" type="select" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Previous / Next products</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable_product_listing">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="custom_message" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Custom Global Message</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Custom Global Message</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Insert Custom Global Message displayed above QuickView pop-up.</comment>
+                    <depends>
+                        <field id="weltpixel_quickview/general/enable_product_listing">1</field>
+                    </depends>
+                </field>
+                <field id="enable_dynamic" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Dynamic Custom Message</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment model="WeltPixel\Quickview\Block\Adminhtml\System\DynamicComment" />
+                    <depends>
+                        <field id="weltpixel_quickview/general/enable_product_listing">1</field>
+                        <field id="weltpixel_quickview/custom_message/enable">1</field>
+                    </depends>
+                </field>
+                <field id="content" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Global</label>
+                    <depends>
+                        <field id="weltpixel_quickview/general/enable_product_listing">1</field>
+                        <field id="weltpixel_quickview/custom_message/enable">1</field>
+                    </depends>
+                </field>
+                <field id="background_color" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Global Background Color</label>
+                    <comment>Set background color for custom message. Example: #B05D5D</comment>
+                    <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="weltpixel_quickview/general/enable_product_listing">1</field>
+                        <field id="weltpixel_quickview/custom_message/enable">1</field>
+                    </depends>
+                </field>
+                <field id="font_color" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Global Font Color</label>
+                    <comment>Set font color for custom message. Example: #B2B2B2</comment>
+                    <validate>color {required:false, hash:true}</validate>
+                    <depends>
+                        <field id="weltpixel_quickview/general/enable_product_listing">1</field>
+                        <field id="weltpixel_quickview/custom_message/enable">1</field>
+                    </depends>
+                </field>
+                <field id="font_size" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Global Font Size</label>
+                    <comment>Set font size for custom message. Example: 20px</comment>
+                    <depends>
+                        <field id="weltpixel_quickview/general/enable_product_listing">1</field>
+                        <field id="weltpixel_quickview/custom_message/enable">1</field>
+                    </depends>
+                </field>
+                <field id="custom_css" translate="label" type="textarea" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Css</label>
+                    <comment>
+                        <![CDATA[
+                         #quickview-custom-message { <br/> /* Custom Css Here for the custom message wrapper*/  <br/> }  <br/><br/>
+                         #quickview-dynamic-message { <br/> /* Custom Css Here for the the custom message */ <br/> }  <br/><br/>
+                        ]]>
+                    </comment>
+                    <depends>
+                        <field id="weltpixel_quickview/general/enable_product_listing">1</field>
+                        <field id="weltpixel_quickview/custom_message/enable">1</field>
                     </depends>
                 </field>
             </group>

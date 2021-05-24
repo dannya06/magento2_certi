@@ -17,6 +17,7 @@ class Search extends \WeltPixel\GoogleTagManager\Block\Category
             return [];
         }
 
+        $searchResultListBlock->toHtml();
         $collection = $searchResultListBlock->getLoadedProductCollection();
 
         $blockName = $searchResultListBlock->getToolbarBlockName();

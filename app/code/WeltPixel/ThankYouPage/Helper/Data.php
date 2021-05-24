@@ -41,6 +41,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @return string
+     */
+    public function enablePrintOrder()
+    {
+        return $this->_thankYouPageOptions['order_details']['print_order'];
+    }
+
+    /**
      * @return mixed
      */
     public function isGoogleMapEnabled()
@@ -323,7 +331,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         if ($this->isCustomBlockEnabled()) {
-            $blocksForOutput['weltpixel.checkout.block'] = $this->getCustomBlockSortOrder();
+            $blocksForOutput['weltpixel.checkout.block.content'] = $this->getCustomBlockSortOrder();
         }
 
         if ($this->isNewsletterSubscribeEnabled()) {

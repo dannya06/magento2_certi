@@ -4,6 +4,13 @@
     $items = $_order->getAllVisibleItems();
 ?>
 <div class="order-info" >
+    <?php if ($_helper->enablePrintOrder()) : ?>
+        <?php if ($block->getCanViewOrder() && $block->getCanPrintOrder()) :?>
+            <div>
+                <a class="action primary continue" href="<?= /* @escapeNotVerified */ $block->getPrintUrl() ?>"><span><?= /* @escapeNotVerified */ __('Print Order') ?></span></a>
+            </div>
+        <?php endif;?>
+    <?php endif;?>
     <?php if ($_helper->showCustomerInfo()): ?>
         <div class="customer-info">
             <h4><?= /* @escapeNotVerified */ __('Customer Information') ?></h4>

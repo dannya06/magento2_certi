@@ -2,8 +2,6 @@
     require(["jquery", 'underscore', 'Magento_Ui/js/modal/modal'], function ($, _) {
         $(document).ready(function() {
 
-            var documentPadding = 50;
-            var firstAttempt = true;
             var lastHeight = 0, curHeight = 0;
             var parentBody = window.parent.document.body;
             var intervalOption = null;
@@ -20,29 +18,30 @@
             $('.reviews-actions a').attr('target', '_parent');
             $('.product-social-links a').attr('target', '_parent');
 
-            setInterval(function(){
+            function recalculateHeight(animateDelay) {
                 var windowWidth = $(window.parent.window).width();
                 if ((windowWidth < 768) && (intervalOption != 'mobile') ) {
                     $('.mfp-wrap', parentBody).removeClass('mfp-popup-fadeInRight');
-                    if (firstAttempt) {
-                        curHeight = $('.page-wrapper').outerHeight(true) + documentPadding;
-                    } else {
-                        curHeight = $('.page-wrapper').outerHeight(true);
-                    }
+                    curHeight = $('.page-wrapper').outerHeight(true);
                     documentHeight = curHeight + "px";
                     if (curHeight != lastHeight) {
                         $('.mfp-iframe-holder .mfp-content', parentBody).animate({
                             'height': documentHeight
-                        }, 500);
+                        }, animateDelay);
                         lastHeight = curHeight;
-                        firstAttempt = false;
                     }
                     intervalOption = 'mobile';
                 } else if ((windowWidth >= 768) && (intervalOption != 'desktop')) {
                     $('.mfp-wrap', parentBody).addClass('mfp-popup-fadeInRight');
                     intervalOption = 'desktop';
                 }
-            }, 500);
+            }
+
+            recalculateHeight(0);
+
+            setInterval(function(){
+                recalculateHeight(500);
+            }, 1000);
 
             $(window).resize(_.debounce(function () {
                 var windowWidth = $(window.parent.window).width();

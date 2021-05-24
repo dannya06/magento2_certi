@@ -33,7 +33,7 @@ define([
                 tLoading: '',
                 callbacks: {
                     open: function() {
-                      $('.mfp-preloader').css('display', 'block');
+                      $('.mfp-preloader').css('display', 'block').addClass('mfp-preloader-image');
                       $('.mfp-close').css('display', 'none');
                     },
                     beforeClose: function() {

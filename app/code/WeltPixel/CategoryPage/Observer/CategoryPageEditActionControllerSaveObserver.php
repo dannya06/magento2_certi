@@ -69,9 +69,14 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
     protected $_urlBuilder;
 
     /**
-     * @var \Magento\Backend\Model\Session\Proxy
+     * @var \Magento\Backend\Model\Session
      */
     protected $_session;
+
+    /**
+     * @var \Magento\Framework\Serialize\Serializer\Serialize
+     */
+    protected $_serializer;
 
     /**
      * Constructor
@@ -84,7 +89,8 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Magento\Framework\UrlInterface $urlBuilder
-     * @param \Magento\Backend\Model\Session\Proxy $session
+     * @param \Magento\Framework\Serialize\Serializer\Serialize $serializer
+     * @param \Magento\Backend\Model\Session $session
      */
     public function __construct(
         \WeltPixel\CategoryPage\Helper\Data $helper,
@@ -95,7 +101,8 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\UrlInterface $urlBuilder,
-        \Magento\Backend\Model\Session\Proxy $session
+        \Magento\Framework\Serialize\Serializer\Serialize $serializer,
+        \Magento\Backend\Model\Session $session
     ) {
         $this->_helper = $helper;
         $this->_frontendHelper = $frontendHelper;
@@ -105,6 +112,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
         $this->_storeManager = $storeManager;
         $this->_messageManager = $messageManager;
         $this->_urlBuilder = $urlBuilder;
+        $this->_serializer = $serializer;
         $this->_session = $session;
     }
 
@@ -137,6 +145,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
             $descriptionOptions = $this->_helper->getCategoryDescriptionOptions($store->getData('store_id'));
             $defaultLineHeight = (int) $this->_helper->getDefaultLineHeight($store->getData('store_id')) ?
                 (int) $this->_helper->getDefaultLineHeight($store->getData('store_id')) : 20;
+            $bulletLayeredOptions = $this->_helper->getLayeredNavigationBulletOptions($store->getData('store_id'));
 
             $generatedCssDirectoryPath = DIRECTORY_SEPARATOR . 'frontend' .
                 DIRECTORY_SEPARATOR . 'web' .
@@ -154,6 +163,8 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
             $content .= $this->_generateSwatchCss($swatchListingOptions, $displaySwatches, '.products-list', 0);
             $content .= $this->_generateSwatchCss($swatchLayeredOptions, $displaySwatches, '.sidebar #layered-filter-block .filter-options', 1);
             $content .= $this->_generateSwatchCss($swatchLayeredOptions, $displaySwatches, '.page-layout-1column #layered-filter-block .filter-options', 0);
+            $content .= $this->_generateBulletsCss($bulletLayeredOptions, '.sidebar #layered-filter-block .filter-content .filter-options .filter-options-item .filter-options-content .items .item');
+            $content .= $this->_generateBulletsCss($bulletLayeredOptions, '.page-layout-1column #layered-filter-block .filter-content .filter-options .filter-options-item .filter-options-content .items .item');
             $content .= $this->_generateToolbarCss($toolbarOptions);
 
             /** @var \Magento\Framework\Filesystem\Directory\WriteInterface|\Magento\Framework\Filesystem\Directory\Write $writer */
@@ -288,6 +299,8 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
     .catalog-product-view .grid.products-grid .owl-item .product-item { width: 100% !important; }
     .page-products .grid.products-grid .product-items,
     .catalog-product-view .grid.products-grid .product-items { margin: 0 !important; }
+    .page-products.page-layout-1column .grid.products-grid .product-item,
+    .page-products.page-layout-2columns .grid.products-grid .product-item,
     .page-products .grid.products-grid .product-item {
         width: $width%;
         margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
@@ -321,7 +334,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
             case 4:
                 $content .= "
                  &:nth-child(3n+1) {
-            margin-left: 0;
+           margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
         }
         &:nth-child(4n+1) {
             margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
@@ -330,7 +343,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
             case 5:
                 $content .= "
                  &:nth-child(3n+1) {
-            margin-left: 0;
+            margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
         }
         &:nth-child(4n+1) {
             margin-left: calc(~\"(100% - $productsPerLine * $width%) / $productsPerLine\");
@@ -378,7 +391,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
 
         $content .= "
     }
-    
+
     .page-products .grid.products-grid .product-item { width: $width% }
     .catalog-product-view .grid.products-grid .product-item { width: $widthPV% }
     .catalog-product-view .grid.products-grid .owl-item .product-item { width: 100% !important; }
@@ -412,7 +425,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
         $showOnHover = '';
         if ($sidebar === 0 && $displaySwatches == 2) {
             $showOnHover = "
-    .product-item {       
+    .product-item {
         .product-item-info {
             .swatch-attribute {
                 visibility: hidden !important;
@@ -455,6 +468,12 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
                                 visibility: visible !important;
                             }
                         }
+                        &.disabled {
+                                &:after {
+                                visibility: visible !important;
+                                content: '';
+                            }
+                        }
                     }
                 }
             }
@@ -463,7 +482,7 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
             ";
         } elseif ($sidebar === 0 && $displaySwatches == 0) {
             $showOnHover = '
-    .product-item {       
+    .product-item {
         .product-item-info {
             .swatch-attribute-options {
                 display: none !important;
@@ -473,14 +492,14 @@ class CategoryPageEditActionControllerSaveObserver implements ObserverInterface
             ';
         } elseif ($sidebar === 0 && $displaySwatches == 1) {
             $showOnHover = "
-    .product-item {       
+    .product-item {
         .product-item-info {
             .swatch-attribute-options {
                 text-align:  $align !important; // $align
                 .swatch-option {
                     float: left !important;
                     clear: none !important;
-                    display: inline-block !important;
+                    display: inline-block;
                 }
             }
         }
@@ -500,7 +519,7 @@ $wrapperClass {
             display: inline-block !important;
             padding: 2px 0;
             > a {
-                float: none !important;
+                float: left !important;
                 display: inline-block !important;
                 &:hover {
                     background: none;
@@ -508,103 +527,122 @@ $wrapperClass {
             }
         }
     }
-    .swatch-option {
-        outline: none !important;
-        position: relative;
-        &.color,
-        &.image{
-            border: none !important;
-            &:before {
-                visibility: hidden;
-                position: absolute;
-                top: 2px;
-                left: 2px;
-                z-index: 0;
-                width: $hWidth;
-                height: $hHeight;
-                border: 3px solid transparent;
-                border-radius: $radius !important;
-                -moz-border-radius: $radius !important;
-                -webkit-border-radius: $radius !important;
-                visibility: visible;
-                content: '';
-                -webkit-box-sizing: border-box;
-			    -moz-box-sizing: border-box;
-			    box-sizing: border-box;
-            }
-            &:after {
-                visibility: hidden;
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 1;
-                width: $width;
-                height: $height;
-                line-height: $height;
-                font-family: lined-icons;
-                speak: none;
-                font-style: normal;
-                font-weight: 900;
-                font-variant: normal;
-                font-size: 12px;
-                text-transform: none;
-                text-align: center;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                content: \"$icon_content\";
-                color: #ffffff;
-                -webkit-box-sizing: border-box;
-			    -moz-box-sizing: border-box;
-			    box-sizing: border-box;
-            }
-            &:hover {
+    .product-item, .filter-options-item {
+        .swatch-attribute-options {
+            .swatch-option {
+                outline: none !important;
                 position: relative;
-                overflow: visible;
-                &:before {
-                    visibility: visible;
-                    border: 3px solid white;
-                }
-            }
-            &.selected {
-                position: relative;
-                overflow: visible;
-                &:before {
-                    visibility: visible;
-                    border: 3px solid white;
-                }
-                &:after {
-                    visibility: visible;
-                }
-                &[option-tooltip-value='#fff'],
-                &[option-tooltip-value='#ffffff'] {
+                &.color,
+                &.image{
+                    border: none !important;
+                    &:before {
+                        visibility: hidden;
+                        position: absolute;
+                        top: 2px;
+                        left: 2px;
+                        z-index: 0;
+                        width: $hWidth;
+                        height: $hHeight;
+                        border: 3px solid transparent;
+                        border-radius: $radius !important;
+                        -moz-border-radius: $radius !important;
+                        -webkit-border-radius: $radius !important;
+                        visibility: visible;
+                        content: '';
+                        -webkit-box-sizing: border-box;
+                        -moz-box-sizing: border-box;
+                        box-sizing: border-box;
+                    }
                     &:after {
-                        color: #000000;
+                        visibility: hidden;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        z-index: 1;
+                        width: $width;
+                        height: $height;
+                        line-height: $height;
+                        font-family: lined-icons;
+                        speak: none;
+                        font-style: normal;
+                        font-weight: 900;
+                        font-variant: normal;
+                        font-size: 12px;
+                        text-transform: none;
+                        text-align: center;
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                        content: \"$icon_content\";
+                        color: #ffffff;
+                        -webkit-box-sizing: border-box;
+                        -moz-box-sizing: border-box;
+                        box-sizing: border-box;
+                    }
+                    &:hover {
+                        position: relative;
+                        overflow: visible;
+                        &:before {
+                            visibility: visible;
+                            border: 3px solid white;
+                        }
+                    }
+                     &.disabled {
+                        &:after {
+                            visibility: visible !important;
+                            content: '';
+                        }
+                    }
+                    &.selected {
+                        position: relative;
+                        overflow: visible;
+                        &:before {
+                            visibility: visible;
+                            border: 3px solid white;
+                        }
+                        &:after {
+                            visibility: visible;
+                        }
+                        &[data-option-tooltip-value='#fff'],
+                        &[data-option-tooltip-value='#ffffff'],
+                        &[option-tooltip-value='#fff'],
+                        &[option-tooltip-value='#ffffff'] {
+                            &:after {
+                                color: #000000;
+                            }
+                        }
+                    }
+                    &[data-option-tooltip-value='#fff'],
+                    &[data-option-tooltip-value='#ffffff'],
+                    &[option-tooltip-value='#fff'],
+                    &[option-tooltip-value='#ffffff'] {
+                        border: 1px solid #cccccc !important;
+                        &:before {
+                            top: 1px;
+                            left: 1px;
+                        }
+                        &:after {
+                            top: 0px;
+                            left: 0px;
+                            color: #000000;
+                        }
+                        &:hover {
+                            &:before {
+                                border: 3px solid #ccc;
+                            }
+                        }
+                    }
+                }
+                &.text {
+                    position: relative;
+                    &.selected,
+                    &:hover {
+                        position: relative;
+                        overflow: visible;
+                        border: 2px solid #999999 !important;
                     }
                 }
             }
-            &[option-tooltip-value='#fff'],
-            &[option-tooltip-value='#ffffff'] {
-                border: 1px solid #cccccc !important;
-                &:before {
-                    top: 0px;
-                    left: 0px;
-                }
-                &:after {
-                    top: 0px;
-                    left: 0px;
-                }
-            }
         }
-        &.text {
-            position: relative;
-            &.selected,
-            &:hover {
-                position: relative;
-                overflow: visible;
-                border: 2px solid #999999 !important;
-            }
-        }
-       
     }
     $showOnHover
     .swatch-option {
@@ -622,7 +660,7 @@ $wrapperClass {
         font-size: $fontSize !important;
         margin: 3px !important;
     }
-    
+
     .swatch-option:not(.image):not(.color):not(.text) {
                 border: 1px solid #ddd !important;
                 &:hover{
@@ -662,10 +700,10 @@ $wrapperClass {
                 position: relative;
             }
         }
-        &:hover {	
+        &:hover {
             background: none repeat scroll 0 0 rgba(255, 255, 255, 1);
-        } 
-    }    
+        }
+    }
     &.wishlist {
 	    .product-item {
 	        .product-item-info {
@@ -691,7 +729,7 @@ $wrapperClass {
                     border-bottom: $borderWidth solid $borderColor !important;
 	            }
 	        }
-	    } 
+	    }
 	}
 }
 .products-list {
@@ -729,6 +767,7 @@ $wrapperClass {
         $nameAlign = !empty($NameOptions['name_align']) ? $NameOptions['name_align'] : 'left';
         $fontSize = !empty($NameOptions['font_size']) ? $NameOptions['font_size'] : '16px';
         $color = !empty($NameOptions['color']) ? $NameOptions['color'] : '#000000';
+        $nameType = !empty($NameOptions['name_text_type']) ? $NameOptions['name_text_type'] : 'none';
 
         $content = "
 .products-grid {
@@ -739,6 +778,7 @@ $wrapperClass {
                 text-align: $nameAlign !important;
                 font-size: $fontSize !important;
                 color: $color !important;
+                text-transform: $nameType
             }
         }
     }
@@ -751,6 +791,7 @@ $wrapperClass {
                 text-align: left !important; // $nameAlign
                 font-size: $fontSize !important;
                 color: $color !important;
+                text-transform: $nameType
             }
         }
     }
@@ -901,6 +942,54 @@ $wrapperClass {
     }
 
     /**
+     * @param array $bulletLayeredOptions
+     * @param array $wrapperClass
+     * @return string
+     */
+    private function _generateBulletsCss($bulletLayeredOptions, $wrapperClass)
+    {
+        $enable = $bulletLayeredOptions['layered_nav_bullet_options'];
+        $width = $bulletLayeredOptions['layered_nav_bullet_width'];
+        $height = $bulletLayeredOptions['layered_nav_bullet_height'];
+        $radius = $bulletLayeredOptions['layered_nav_bullet_border_radius'];
+        $border = $bulletLayeredOptions['layered_nav_bullet_border'];
+
+        if ($enable) {
+            $content = "
+$wrapperClass {
+    a {
+        display: flex;
+        padding-left: 10px;
+        align-items: center;
+    }
+    a:before {
+        width: $width;
+        height: $height;
+        border: $border;
+        border-radius: $radius;
+        -webkit-border-radius: $radius;
+        -moz-border-radius: $radius;
+        margin-right: 5px;
+        margin-top: 0px;
+        flex: 0 0 $width;
+    }
+    a > span {
+        display: flex;
+        align-items: center;
+    }
+}";
+        } else {
+            $content = "
+$wrapperClass {
+    a:before {
+        display: none;
+    }
+}";
+        }
+        return $content;
+    }
+
+    /**
      * @param $toolbarOptions
      * @return string
      */
@@ -993,7 +1082,7 @@ $wrapperClass {
                     $select_border_width = json_decode($select_border_width, true);
                     $select_border_width = $select_border_width['<%- _id %>'];
                 } else {
-                    $select_border_width = unserialize($select_border_width)['<%- _id %>'];
+                    $select_border_width = $this->_serializer->unserialize($select_border_width)['<%- _id %>'];
                 }
             } catch (\Exception $ex) {
                 $select_border_width = [];
@@ -1117,13 +1206,13 @@ $wrapperClass {
                 }
             }
         }
-        p#toolbar-amount { 
+        p#toolbar-amount {
             .label_style;
         }
         .pages {
             #paging-label {
                 .label_style;
-            } 
+            }
             ul.pages-items {
                 li {
                     &.item {
@@ -1171,7 +1260,7 @@ $wrapperClass {
                                 &:before {
                                     $pagination_next_prev_font_color
                                     $pagination_next_prev_font_size
-    
+
                                 }
                                 &:hover {
                                     $pagination_next_prev_background_hover_color
@@ -1180,15 +1269,24 @@ $wrapperClass {
                                         $pagination_next_prev_font_hover_color
                                     }
                                 }
+                                &.link {
+                                    display: inline-block;
+                                    border: none;
+                                    &:hover {
+                                        background-color: transparent;
+                                        border: none;
+                                        $pagination_font_hover_color
+                                    }
+                                }
                             }
-    
+
                         }
                     }
                 }
             }
         }
         .field.limiter {
-            label { 
+            label {
                 .label_style;
                 span {
                     .label_style;
@@ -1196,7 +1294,7 @@ $wrapperClass {
             }
             .limiter-text {
                 .label_style;
-            } 
+            }
         }
         .toolbar-sorter.sorter {
             label {

@@ -35,7 +35,7 @@
             </block>
             <block
                 ifconfig="weltpixel_thankyoupage/newsletter_subscribe/enable"
-                class="WeltPixel\ThankYouPage\Block\Newsletter"
+                class="WeltPixel\ThankYouPage\Block\Multishipping\Newsletter"
                 template="WeltPixel_ThankYouPage::newsletter.phtml"
                 name="weltpixel.checkout.newsletter"
             />

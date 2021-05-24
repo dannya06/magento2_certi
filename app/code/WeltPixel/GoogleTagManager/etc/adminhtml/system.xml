@@ -86,6 +86,15 @@
                     </depends>
                     <comment>Shipping charges will deduced from Grand Total</comment>
                 </field>
+                <field id="exclude_shipping_from_transaction_including_tax" translate="label comment" type="select" sortOrder="68" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Exclude Shipping Including Tax</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="order_total_calculation">grandtotal</field>
+                        <field id="exclude_shipping_from_transaction">1</field>
+                    </depends>
+                </field>
                 <field id="exclude_free_purchase" translate="label comment" type="select" sortOrder="68" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Exclude Orders with 0 value</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

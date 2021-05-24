@@ -7,6 +7,8 @@ $zoomType = $_helper->getZoomType();
     require(["jquery", 'underscore', 'Magento_Ui/js/modal/modal'], function ($, _, modal) {
         <?php if ($zoomType == 'hover') : ?>
         $(document).ready(function() {
+            var parentBody = window.parent.document.body;
+            $('.mfp-content', parentBody).css('overflow', 'inherit');
             $(document).on('mouseleave', '.fotorama__stage' ,function() {
                 $('.magnify-lens').addClass('magnify-hidden');
                 $('.magnifier-preview').addClass('magnify-hidden');

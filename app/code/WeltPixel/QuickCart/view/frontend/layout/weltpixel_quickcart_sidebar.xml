@@ -12,7 +12,7 @@
                             <item name="children" xsi:type="array">
                                 <item name="item.renderer" xsi:type="array">
                                     <item name="config" xsi:type="array">
-                                        <item name="template" xsi:type="string">WeltPixel_QuickCart/minicart/item/default</item>
+                                        <item name="template" xsi:type="helper" helper="WeltPixel\QuickCart\Helper\Data::getQtyTemplateForQuickCartCart"/>
                                     </item>
                                 </item>
                             </item>

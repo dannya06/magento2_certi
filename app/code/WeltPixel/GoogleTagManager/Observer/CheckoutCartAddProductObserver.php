@@ -34,7 +34,7 @@ class CheckoutCartAddProductObserver implements ObserverInterface
         $this->_objectManager = $objectManager;
         $this->_checkoutSession = $_checkoutSession;
     }
-    
+
     /**
      * @param \Magento\Framework\Event\Observer $observer
      * @return self
@@ -59,8 +59,23 @@ class CheckoutCartAddProductObserver implements ObserverInterface
             $qty = 1;
         }
 
-        /** Need to extend or use another event or plugin to send variant */
-        $this->_checkoutSession->setAddToCartData($this->helper->addToCartPushData($qty, $product));
+        if ($product->getTypeId() == \Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE) {
+            $superGroup = $params['super_group'];
+            $superGroup = is_array($superGroup) ? array_filter($superGroup, 'intval') : [];
+
+            $associatedProducts =  $product->getTypeInstance()->getAssociatedProducts($product);
+            foreach ($associatedProducts as $associatedProduct) {
+                if (isset($superGroup[$associatedProduct->getId()]) && ($superGroup[$associatedProduct->getId()] > 0) ) {
+                    $currentAddToCartData = $this->_checkoutSession->getAddToCartData();
+                    $addToCartPushData = $this->helper->addToCartPushData($superGroup[$associatedProduct->getId()], $associatedProduct);
+                    $newAddToCartPushData = $this->helper->mergeAddToCartPushData($currentAddToCartData, $addToCartPushData);
+                    $this->_checkoutSession->setAddToCartData($newAddToCartPushData);
+
+                }
+            }
+        } else {
+            $this->_checkoutSession->setAddToCartData($this->helper->addToCartPushData($qty, $product));
+        }
 
         return $this;
     }

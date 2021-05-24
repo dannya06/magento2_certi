@@ -12,6 +12,8 @@ class Wrapper extends \Magento\Framework\View\Element\Template
      */
     protected $_helper;
 
+    protected $_logger;
+
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \WeltPixel\ThankYouPage\Helper\Data $helper
@@ -25,6 +27,7 @@ class Wrapper extends \Magento\Framework\View\Element\Template
     ) {
         parent::__construct($context, $data);
         $this->_helper = $helper;
+        $this->_logger = $context->getLogger();
     }
 
     /**
@@ -52,6 +55,11 @@ class Wrapper extends \Magento\Framework\View\Element\Template
     {
         $html = '';
         foreach ($this->getBlockElements() as $blockElement) {
+            if (!$this->getLayout()->getBlock($blockElement)) {
+                $this->_logger->error(__('Exception thrown by %1 :: The element with the "%2" ID wasn\'t found.', str_replace('\\', '/', $this->getType()), $blockElement));
+                continue;
+            }
+
             $html .= $this->getBlockHtml($blockElement);
         }
 

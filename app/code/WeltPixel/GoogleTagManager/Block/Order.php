@@ -109,6 +109,9 @@ class Order extends \WeltPixel\GoogleTagManager\Block\Core
 
                 if ($this->excludeShippingFromTransaction()) {
                     $orderTotal -= $order->getShippingAmount();
+                    if ($this->excludeShippingFromTransactionIncludingTax()) {
+                        $orderTotal -= $order->getShippingTaxAmount();
+                    }
                 }
                 break;
         }

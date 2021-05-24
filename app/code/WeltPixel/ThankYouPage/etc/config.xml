@@ -11,6 +11,7 @@
                 <subtitle><![CDATA[Your order number is: %1.]]></subtitle>
                 <description><![CDATA[We'll email you an order confirmation with details and tracking info]]></description>
                 <continue_shopping>1</continue_shopping>
+                <print_order>1</print_order>
                 <sort_order>1</sort_order>
             </order_details>
             <google_map>

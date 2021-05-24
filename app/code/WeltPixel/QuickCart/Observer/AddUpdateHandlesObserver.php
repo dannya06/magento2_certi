@@ -19,7 +19,7 @@ class AddUpdateHandlesObserver implements ObserverInterface
     {
         $this->scopeConfig = $scopeConfig;
     }
-    
+
     /**
      * Add Custom QuickCart layout handle
      *
@@ -36,11 +36,11 @@ class AddUpdateHandlesObserver implements ObserverInterface
             return $this;
         }
 
-        $isEnabled = $this->scopeConfig->getValue(self::XML_PATH_QUICKCART_ENABLED,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $isEnabled = $this->scopeConfig->getValue(self::XML_PATH_QUICKCART_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($isEnabled) {
             $layout->getUpdate()->addHandle('weltpixel_quickcart_sidebar');
         }
-        
+
         return $this;
     }
 }

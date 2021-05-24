@@ -3,8 +3,18 @@
     <body>
         <!-- impressions merge with ProductPage -->
         <referenceBlock name="category.products.list" >
+            <action method="setTemplate" ifconfig="weltpixel_ga4/general/product_click_tracking">
+                <argument name='template' xsi:type='string'>WeltPixel_GA4::product/list.phtml</argument>
+            </action>
+        </referenceBlock>
+        <referenceBlock name="category.products.list" >
             <action method="setTemplate" ifconfig="weltpixel_googletagmanager/general/product_click_tracking">
                 <argument name='template' xsi:type='string'>WeltPixel_CategoryPage::product/list.phtml</argument>
+            </action>
+        </referenceBlock>
+        <referenceBlock name="search_result_list" >
+            <action method="setTemplate" ifconfig="weltpixel_ga4/general/product_click_tracking">
+                <argument name='template' xsi:type='string'>WeltPixel_GA4::product/list.phtml</argument>
             </action>
         </referenceBlock>
         <referenceBlock name="search_result_list" >

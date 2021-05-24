@@ -1,6 +1,7 @@
 <?php $_helper = $this->helper('WeltPixel\ProductPage\Helper\Data'); ?>
 <?php $_mobileHelper = $this->helper('WeltPixel\MobileDetect\Helper\Data'); ?>
 <?php $positionProductInfo = $_helper->getPositionProductInfo($_helper->getStoreId()) ?>
+<?php $mobileBreakpoint = $_helper->getMobileThreshold($_helper->getStoreId()) ?>
 <?php $isMobile = $_mobileHelper->isMobile() ?>
 <div id="swipeOff"></div>
 <script>
@@ -8,6 +9,7 @@ require(['jquery', 'productPage', 'mage/mage', 'mage/ie-class-fixer', 'mage/gall
 	function ($, productPage) {
         window.positionProductInfo = '<?php echo $positionProductInfo ?>';
         window.isMobile = '<?php echo $isMobile ?>';
+        window.wpMobileBreakpoint = '<?php echo $mobileBreakpoint ?>';
 
         var positionProductInfo = window.positionProductInfo;
         var isMobileCheck = productPage.isMobileCheck();
@@ -17,7 +19,7 @@ require(['jquery', 'productPage', 'mage/mage', 'mage/ie-class-fixer', 'mage/gall
             productPage.init();
         });
 
-        $(window).load(function () {
+        $(window).on('load',function () {
             productPage.load();
             jQuery('html, body').animate({scrollTop: 0}, 'fast');
             if (positionProductInfo == 1 && !isMobileCheck) {

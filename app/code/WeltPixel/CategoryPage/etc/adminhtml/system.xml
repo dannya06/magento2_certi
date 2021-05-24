@@ -57,6 +57,11 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Select Yes if you wish to remove the Breadcrumbs section.</comment>
                 </field>
+                <field id="hover_products_animation" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hover animation</label>
+                    <source_model>WeltPixel\CategoryPage\Model\Config\Source\AnimationType</source_model>
+                    <comment>Select the animation when hovering over items on the category page.</comment>
+                </field>
             </group>
             <group id="item" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Item options</label>
@@ -120,6 +125,11 @@
                     <label>Text Color</label>
                     <validate>color {required:false, hash:true}</validate>
                     <comment>Set text color of Product Names on the items in category page. Example: #000000</comment>
+                </field>
+                <field id="name_text_type" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Name Text Case</label>
+                    <source_model>WeltPixel\CategoryPage\Model\Config\Source\TextType</source_model>
+                    <comment>Select text case of product names on the category page.</comment>
                 </field>
             </group>
             <group id="review" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -462,6 +472,42 @@
                     <comment>Show more/less animation speed in milliseconds. Ex. 300</comment>
                     <depends>
                         <field id="enable_show_more">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="layered_navigation_options" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" >
+                <label>Layered Navigation Options</label>
+                <field id="layered_nav_bullet_options" translate="label tooltip comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter Option Bullet</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable / Disable the bullet design for Layered Navigation filters.</comment>
+                </field>
+                <field id="layered_nav_bullet_width" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bullets Width</label>
+                    <comment>Set Width of the bullets. Example: 10px.</comment>
+                    <depends>
+                        <field id="layered_nav_bullet_options">1</field>
+                    </depends>
+                </field>
+                <field id="layered_nav_bullet_height" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bullets Height</label>
+                    <comment>Set Height of the bullets. Example: 10px.</comment>
+                    <depends>
+                        <field id="layered_nav_bullet_options">1</field>
+                    </depends>
+                </field>
+                <field id="layered_nav_bullet_border" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bullets Border</label>
+                    <comment>Set Border of the bullets. Example: 1px solid #999.</comment>
+                    <depends>
+                        <field id="layered_nav_bullet_options">1</field>
+                    </depends>
+                </field>
+                <field id="layered_nav_bullet_border_radius" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bullets Border Radius</label>
+                    <comment>Set Border Radius of the bullets. Example: 15px.</comment>
+                    <depends>
+                        <field id="layered_nav_bullet_options">1</field>
                     </depends>
                 </field>
             </group>

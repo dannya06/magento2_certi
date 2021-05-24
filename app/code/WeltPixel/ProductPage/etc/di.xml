@@ -18,4 +18,18 @@
         <plugin name="weltpixel-productpage-framework-config-view"
                 type="WeltPixel\ProductPage\Plugin\FrameworkConfigView" sortOrder="10"/>
     </type>
+    <virtualType name="Magento\Catalog\Pricing\Price\Pool" type="Magento\Framework\Pricing\Price\Pool">
+        <arguments>
+            <argument name="prices" xsi:type="array">
+                <item name="final_price_sales" xsi:type="string">Magento\Catalog\Pricing\Price\FinalPrice</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Magento\Bundle\Pricing\Price\Pool" type="Magento\Framework\Pricing\Price\Pool">
+        <arguments>
+            <argument name="prices" xsi:type="array">
+                <item name="final_price_sales" xsi:type="string">Magento\Bundle\Pricing\Price\FinalPrice</item>
+            </argument>
+        </arguments>
+    </virtualType>
 </config>

@@ -1,8 +1,6 @@
 <script>
     require(["jquery", 'underscore', 'Magento_Ui/js/modal/modal'], function ($) {
         $(document).ready(function() {
-            var documentPadding = 50;
-            var firstAttempt = true;
             var lastHeight = 0, curHeight = 0;
             var parentBody = window.parent.document.body;
             $('.mfp-preloader', parentBody).css('display', 'none');
@@ -14,21 +12,22 @@
             $('.product-social-links a').attr('target', '_parent');
             $('body').css('overflow', 'hidden');
 
-            setInterval(function(){
-                if (firstAttempt) {
-                    curHeight =  $('.page-wrapper').outerHeight(true) + documentPadding;
-                } else {
-                    curHeight =  $('.page-wrapper').outerHeight(true);
-                }
+            function recalculateHeight(animateDelay) {
+                curHeight =  $('.page-wrapper').outerHeight(true);
                 documentHeight =  curHeight + "px";
                 if ( curHeight != lastHeight ) {
                     $('.mfp-iframe-holder .mfp-content', parentBody).animate({
                         'height': documentHeight
-                    }, 500);
+                    }, animateDelay);
                     lastHeight = curHeight;
-                    firstAttempt = false;
                 }
-            }, 500);
+            }
+
+            recalculateHeight(0);
+
+            setInterval(function(){
+                recalculateHeight(500);
+            }, 1000);
         });
     });
 </script>

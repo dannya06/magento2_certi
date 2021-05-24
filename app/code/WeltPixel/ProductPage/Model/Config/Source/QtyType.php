@@ -11,8 +11,9 @@ use Magento\Framework\Option\ArrayInterface;
  */
 class QtyType implements ArrayInterface
 {
-    const QTY_DEFAULT = 0;
+    const QTY_DEFAULT = 'default';
     const QTY_SELECT = 'select';
+    const QTY_PLUS_MINUS = 'plusminus';
 
     /**
      * Return list of QtyType Options
@@ -29,6 +30,10 @@ class QtyType implements ArrayInterface
             array(
                 'value' => self::QTY_SELECT,
                 'label' => __('Dropdown')
+            ),
+            array(
+                'value' => self::QTY_PLUS_MINUS,
+                'label' => __('Plus Minus')
             )
         );
     }
