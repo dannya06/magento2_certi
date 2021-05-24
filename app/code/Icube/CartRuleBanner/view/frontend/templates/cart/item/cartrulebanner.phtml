@@ -1,0 +1,7 @@
+<?php $helper = $this->helper('Icube\CartRuleBanner\Helper\Data'); ?>
+<?php if ($helper->isEnabled()) :?>
+    <?php foreach ($helper->getBlock() as $cmsBlock) :?>
+        <?php echo $cmsBlock; ?>
+    <?php endforeach; ?>
+<?php endif; ?>
+

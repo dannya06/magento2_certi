@@ -7,16 +7,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Cashback extends Command
 {
-    protected $storeCredit;
-
-
-    public function __construct(
-      \Icube\Cashback\Model\StoreCredit $storeCredit,
-      array $commands = []
-    ){
-      $this->storeCredit = $storeCredit;
-      parent::__construct();
-    }
 
    protected function configure()
    {
@@ -27,6 +17,8 @@ class Cashback extends Command
    }
    protected function execute(InputInterface $input, OutputInterface $output)
    {
-       $this->storeCredit->createTransaction();
+      $om = \Magento\Framework\App\ObjectManager::getInstance();
+      $om->get('\Icube\Cashback\Model\StoreCredit')->createTransaction();
+      //  $this->storeCredit->createTransaction();
    }
 }
