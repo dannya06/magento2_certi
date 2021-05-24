@@ -11,6 +11,21 @@
 
 <div class="block-content block-content-quickcart">
     <div class="quickcart-top">
+
+        <!-- ko if: getCartParam('summary_count') -->
+            <div class="items-total">
+                <span class="count" if="maxItemsToDisplay < getCartLineItemsCount()" text="maxItemsToDisplay"/>
+                <translate args="'of'" if="maxItemsToDisplay < getCartLineItemsCount()"/>
+                <span class="count"><!-- ko text: getCartParam('summary_count') --><!-- /ko --></span>
+                <!-- ko if: getCartParam('summary_count') == 1 -->
+                <!-- ko i18n: 'item' --><!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: getCartParam('summary_count') > 1 -->
+                <!-- ko i18n: 'items' --><!-- /ko -->
+                <!-- /ko -->
+            </div>
+        <!-- /ko -->
+
         <span class="text"><!-- ko i18n: 'My Cart' --><!-- /ko --></span>
 
         <button type="button"
@@ -69,15 +84,6 @@
                 <p class="custom-msg" id="quickcart-custom-msg" data-bind="html:  getCartParam('weltpixel_quickcart_message_content')"></p>
             </div>
             <!-- /ko -->
-            <div class="items-total">
-                <span class="count"><!-- ko text: getCartParam('summary_count') --><!-- /ko --></span>
-                <!-- ko if: getCartParam('summary_count') == 1 -->
-                <!-- ko i18n: 'item' --><!-- /ko -->
-                <!-- /ko -->
-                <!-- ko if: getCartParam('summary_count') > 1 -->
-                <!-- ko i18n: 'items' --><!-- /ko -->
-                <!-- /ko -->
-            </div>
 
             <!-- ko if: getCartParam('possible_onepage_checkout') -->
                 <!-- ko foreach: getRegion('subtotalContainer') -->
