@@ -1,5 +1,5 @@
 # ICUBE SWIFT
-This is SWIFT code base using Magento CE 2.4.1
+This is SWIFT code base using Magento CE 2.4.2
 
 
 Instalation:
@@ -7,7 +7,7 @@ Instalation:
 
     git clone https://github.com/icubeus/swift.git
 
-    git checkout master_id_2.4.1
+    git checkout master_id_2.4.2
 	
 	rm -rf composer.* app/code/*
 	
@@ -15,7 +15,7 @@ Instalation:
 	
 	composer install --prefer-dist
 
-    install site using wizard from browser or using terminal, below is the script using terminal
+    install site using terminal
 
     php bin/magento setup:install --cleanup-database --base-url=http://local.testingnow.me/ --base-url-secure=https://local.testingnow.me/ \
     --db-host=127.0.0.1 --db-name=m2webapp_db --db-user=root --db-password=password123 \
@@ -26,8 +26,6 @@ Instalation:
     git checkout app/code composer.*
 
     composer install
-    
-    sh step3.sh (for LOCAL ONLY to disable elastic)
 		
     php bin/magento setup:upgrade
 
@@ -52,7 +50,7 @@ Instalation:
     chmod -R 777 var/ pub/ generated/ 
     (*optional)
 
-How to update project that base from SWIFT to version 2.4.1
+How to update project that base from SWIFT to version 2.4.2
 =============================================================
 
     git remote add swift https://github.com/icubeus/swift.git
@@ -61,7 +59,7 @@ How to update project that base from SWIFT to version 2.4.1
     
     git checkout -b master_swift
 
-    git pull swift master_id_2.4.1
+    git pull swift master_id_2.4.2
     
     composer install
     
@@ -74,12 +72,12 @@ How to update project that base from SWIFT to version 2.4.1
     Continue will pull request
 
 
-How to update project that clone from SWIFT to version 2.4.1
+How to update project that clone from SWIFT to version 2.4.2
 =============================================================
 
     git fetch origin
 
-    git checkout master_swift -b swift/master_id_2.4.1
+    git checkout master_swift -b swift/master_id_2.4.2
     
     composer install
 
