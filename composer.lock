@@ -2019,11 +2019,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "cca5f0d1306eff06d62f5df941896201725196f2"
+                "reference": "006fb9e265e5ca68260f419ba9271e6a3322daae"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2043,7 +2043,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2021-03-31T12:31:56+00:00"
+            "time": "2021-05-31T01:37:39+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
@@ -2631,11 +2631,11 @@
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "63f78ed92cd124db7b642ff5efa0d568fed04dc6"
+                "reference": "81823274e0998832c67beb802095be2a1d85e6b4"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -2668,7 +2668,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-03-31T10:51:45+00:00"
+            "time": "2021-05-31T01:30:45+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -2861,11 +2861,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.4",
+            "version": "4.1.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "738e9de0f61fc0c0bc3153b19ae292673acffff2"
+                "reference": "ad254206f3c88a00fe538bc9aeb04b20290ce8dd"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -2914,7 +2914,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-05-27T02:09:43+00:00"
+            "time": "2021-05-28T07:16:21+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
