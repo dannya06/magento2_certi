@@ -10,23 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  
 class SyncTabelorder extends Command
 {   
-    protected $objectManager;
-    protected $cancelorder;
- 
-    public function __construct(
-        \Magento\Framework\App\ObjectManagerFactory $objectManagerFactory,
-        \Magento\Framework\App\State $state,
-        \Icube\PaymentReminder\Helper\CancelOrder $cancelorder
-    ){
-        $params = $_SERVER;
-        $params[StoreManager::PARAM_RUN_CODE] = 'admin';
-        $params[StoreManager::PARAM_RUN_TYPE] = 'store';
-        $this->objectManager = $objectManagerFactory->create($params);
-        $this->cancelorder = $cancelorder;
-        $this->state = $state;
-        parent::__construct();
-    }
- 
     protected function configure()
     {
         $this->setName('icube:paymentreminder:sync')
@@ -36,12 +19,11 @@ class SyncTabelorder extends Command
  
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
+        
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+        $om->get('\Magento\Framework\App\State')->setAreaCode('adminhtml');
         $output->writeln('<info>Getting All Pending Order</info>');
-        $registry = $this->objectManager->get('\Magento\Framework\Registry');
-        $registry->register('isSecureArea', true);
-        $this->cancelorder->migrateData();
+        $om->get('\Icube\PaymentReminder\Helper\CancelOrder')->migrateData();
         $output->writeln('<info>Finish</info>');
-        return 0;
     }
 }
