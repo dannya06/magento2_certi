@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "05131cc2774358959023fa22b1dfc0f3",
+    "content-hash": "3145a5fb9ce043dd577b1831b8dff8ee",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -46,193 +46,6 @@
                 "cbor"
             ],
             "time": "2020-10-27T07:22:41+00:00"
-        },
-        {
-            "name": "amzn/amazon-pay-and-login-magento-2-module",
-            "version": "4.2.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/amzn/amazon-pay-and-login-magento-2-module/amzn-amazon-pay-and-login-magento-2-module-4.2.0.0.zip",
-                "shasum": "1e339b78bed63a33ae7fdbf013c50872aafa8eaa"
-            },
-            "require": {
-                "amzn/amazon-pay-and-login-with-amazon-core-module": "4.2.0",
-                "amzn/amazon-pay-module": "4.2.0",
-                "amzn/login-with-amazon-module": "4.2.0"
-            },
-            "type": "metapackage",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Official Magento2 Plugin to integrate with Amazon Pay and Login with Amazon"
-        },
-        {
-            "name": "amzn/amazon-pay-and-login-with-amazon-core-module",
-            "version": "4.2.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/amzn/amazon-pay-and-login-with-amazon-core-module/amzn-amazon-pay-and-login-with-amazon-core-module-4.2.0.0.zip",
-                "shasum": "037a5f6c50810ee99d97d231e0844ac4bcc284dd"
-            },
-            "require": {
-                "amzn/amazon-pay-sdk-php": "^3.2.0",
-                "magento/framework": "*",
-                "magento/module-backend": "*",
-                "magento/module-catalog": "*",
-                "magento/module-checkout": "*",
-                "magento/module-config": "*",
-                "magento/module-customer": "*",
-                "magento/module-developer": "*",
-                "magento/module-eav": "*",
-                "magento/module-payment": "*",
-                "magento/module-paypal": "*",
-                "magento/module-quote": "*",
-                "magento/module-sales": "*",
-                "magento/module-store": "*",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Amazon\\Core\\": ""
-                }
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Shared functionality for Amazon Pay and Login with Amazon modules"
-        },
-        {
-            "name": "amzn/amazon-pay-module",
-            "version": "4.2.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/amzn/amazon-pay-module/amzn-amazon-pay-module-4.2.0.0.zip",
-                "shasum": "cdb8f04a64f3839effc41c7c05b5df843ec6820e"
-            },
-            "require": {
-                "amzn/amazon-pay-and-login-with-amazon-core-module": "^4.2.0",
-                "amzn/login-with-amazon-module": "^4.2.0",
-                "magento/framework": "*",
-                "magento/module-backend": "*",
-                "magento/module-catalog": "*",
-                "magento/module-checkout": "*",
-                "magento/module-customer": "*",
-                "magento/module-directory": "*",
-                "magento/module-eav": "*",
-                "magento/module-payment": "*",
-                "magento/module-paypal": "*",
-                "magento/module-quote": "*",
-                "magento/module-sales": "*",
-                "magento/module-store": "*",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "suggest": {
-                "magento/module-customer": "*",
-                "magento/module-scalable-checkout": "*",
-                "magento/module-scalable-oms": "*"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Amazon\\Payment\\": ""
-                }
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Amazon Pay module"
-        },
-        {
-            "name": "amzn/amazon-pay-sdk-php",
-            "version": "3.7.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/amzn/amazon-pay-sdk-php.git",
-                "reference": "37882f2df12e7789d6d4d7d3df6c0cd7e62779f2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/amzn/amazon-pay-sdk-php/zipball/37882f2df12e7789d6d4d7d3df6c0cd7e62779f2",
-                "reference": "37882f2df12e7789d6d4d7d3df6c0cd7e62779f2",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.5.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "AmazonPay\\": "AmazonPay/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Amazon Pay SDK",
-                    "email": "amazon-pay-sdk@amazon.com"
-                }
-            ],
-            "description": "Amazon Pay SDK (PHP)",
-            "homepage": "https://github.com/amzn/amazon-pay-sdk-php",
-            "keywords": [
-                "amazon",
-                "amazon pay",
-                "amazon payments",
-                "pay",
-                "pay with amazon",
-                "payment",
-                "payments"
-            ],
-            "time": "2021-03-23T06:46:08+00:00"
-        },
-        {
-            "name": "amzn/login-with-amazon-module",
-            "version": "4.2.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/amzn/login-with-amazon-module/amzn-login-with-amazon-module-4.2.0.0.zip",
-                "shasum": "3107e616e29739c7e55e0cf8014dc0d1e93e5ef8"
-            },
-            "require": {
-                "amzn/amazon-pay-and-login-with-amazon-core-module": "^4.2.0",
-                "magento/framework": "*",
-                "magento/module-checkout": "*",
-                "magento/module-checkout-agreements": "*",
-                "magento/module-customer": "*",
-                "magento/module-eav": "*",
-                "magento/module-store": "*",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "suggest": {
-                "magento/module-sales": "*"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Amazon\\Login\\": ""
-                }
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Login with Amazon module"
         },
         {
             "name": "astock/stock-api-libphp",
@@ -466,50 +279,6 @@
                 "validation"
             ],
             "time": "2021-04-18T20:11:03+00:00"
-        },
-        {
-            "name": "braintree/braintree_php",
-            "version": "5.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/braintree/braintree_php.git",
-                "reference": "6cf3447ecd0303caa6f2d4f22b653dc5c71b4589"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/braintree/braintree_php/zipball/6cf3447ecd0303caa6f2d4f22b653dc5c71b4589",
-                "reference": "6cf3447ecd0303caa6f2d4f22b653dc5c71b4589",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-dom": "*",
-                "ext-hash": "*",
-                "ext-openssl": "*",
-                "ext-xmlwriter": "*",
-                "php": ">=7.2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Braintree\\": "lib/Braintree"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Braintree",
-                    "homepage": "https://www.braintreepayments.com"
-                }
-            ],
-            "description": "Braintree PHP Client Library",
-            "time": "2020-06-15T19:02:23+00:00"
         },
         {
             "name": "christian-riesen/base32",
@@ -1225,154 +994,6 @@
             "time": "2021-03-16T16:42:25+00:00"
         },
         {
-            "name": "dotmailer/dotmailer-magento2-extension",
-            "version": "4.10.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/dotmailer/dotmailer-magento2-extension/dotmailer-dotmailer-magento2-extension-4.10.0.0.zip",
-                "shasum": "b38ca62555570448b0cde9c5f93c85d4c7962c0e"
-            },
-            "require": {
-                "magento/framework": ">=101 <104",
-                "magento/module-authorization": "100.*",
-                "magento/module-backend": ">=100 <103",
-                "magento/module-bundle": ">=100 <102",
-                "magento/module-catalog": ">=101 <105",
-                "magento/module-catalog-inventory": "100.*",
-                "magento/module-catalog-rule": ">=100 <102",
-                "magento/module-checkout": "100.*",
-                "magento/module-config": ">=100 <103",
-                "magento/module-configurable-product": "100.*",
-                "magento/module-cron": "100.*",
-                "magento/module-customer": ">=100 <104",
-                "magento/module-directory": "100.*",
-                "magento/module-eav": ">=100 <104",
-                "magento/module-email": ">=100 <102",
-                "magento/module-grouped-product": "100.*",
-                "magento/module-newsletter": "100.*",
-                "magento/module-payment": "100.*",
-                "magento/module-product-alert": "100.*",
-                "magento/module-quote": ">=100 <103",
-                "magento/module-reports": ">=100 <102",
-                "magento/module-review": ">=100 <102",
-                "magento/module-sales": ">=100 <104",
-                "magento/module-sales-rule": ">=100 <102",
-                "magento/module-send-friend": "100.*",
-                "magento/module-shipping": "100.*",
-                "magento/module-store": ">=100 <102",
-                "magento/module-theme": ">=100 <102",
-                "magento/module-ui": ">=100 <102",
-                "magento/module-url-rewrite": ">=100 <103",
-                "magento/module-user": ">=100 <102",
-                "magento/module-wishlist": ">=100 <102",
-                "php": "^7.1"
-            },
-            "suggest": {
-                "dotmailer/dotmailer-magento2-extension-chat": "Adds Engagement Cloud Chat to your Magento store"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Dotdigitalgroup\\Email\\": ""
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "dotmailer integration for magento 2"
-        },
-        {
-            "name": "dotmailer/dotmailer-magento2-extension-chat",
-            "version": "1.3.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/dotmailer/dotmailer-magento2-extension-chat/dotmailer-dotmailer-magento2-extension-chat-1.3.0.0.zip",
-                "shasum": "6d7c40b45c19003b78be6890e27948308e1b5751"
-            },
-            "require": {
-                "dotmailer/dotmailer-magento2-extension": "^4.10.0",
-                "magento/framework": ">=101 <104",
-                "magento/module-backend": ">=100 <103",
-                "magento/module-checkout": "100.*",
-                "magento/module-config": ">=100 <103",
-                "magento/module-customer": ">=100 <104",
-                "magento/module-quote": ">=100 <103",
-                "magento/module-sales": ">=100 <104",
-                "magento/module-store": ">=100 <102"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Dotdigitalgroup\\Chat\\": ""
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Engagement Cloud for Magento 2: Chat module"
-        },
-        {
-            "name": "dotmailer/dotmailer-magento2-extension-package",
-            "version": "4.10.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/dotmailer/dotmailer-magento2-extension-package/dotmailer-dotmailer-magento2-extension-package-4.10.0.0.zip",
-                "shasum": "429554389e4699ba919aea396fd810eea6751a1b"
-            },
-            "require": {
-                "dotmailer/dotmailer-magento2-extension": "4.10.0",
-                "dotmailer/dotmailer-magento2-extension-chat": "1.3.0",
-                "dotmailer/dotmailer-magento2-extension-sms": "1.0.0"
-            },
-            "type": "metapackage",
-            "license": [
-                "MIT"
-            ],
-            "description": "Dotmailer integration for Magento 2 Open Source"
-        },
-        {
-            "name": "dotmailer/dotmailer-magento2-extension-sms",
-            "version": "1.0.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/dotmailer/dotmailer-magento2-extension-sms/dotmailer-dotmailer-magento2-extension-sms-1.0.0.0.zip",
-                "shasum": "0aafa7004cd119570c9a78e6ea6983ac5ae16019"
-            },
-            "require": {
-                "dotmailer/dotmailer-magento2-extension": "^4.10.0",
-                "magento/framework": ">=101 <104",
-                "magento/module-backend": ">=100 <103",
-                "magento/module-checkout": "100.*",
-                "magento/module-config": ">=100 <103",
-                "magento/module-customer": ">=100 <104",
-                "magento/module-directory": "100.*",
-                "magento/module-quote": ">=100 <103",
-                "magento/module-sales": ">=100 <104",
-                "magento/module-shipping": "100.*",
-                "magento/module-store": ">=100 <102",
-                "magento/module-ui": ">=100 <102"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Dotdigitalgroup\\Sms\\": ""
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Engagement Cloud for Magento 2: SMS module"
-        },
-        {
             "name": "ebizmarts/mailchimp-lib",
             "version": "3.0.34",
             "source": {
@@ -2047,11 +1668,11 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "4.1.4",
+            "version": "4.1.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "6c672bd9bff617eada61b5c003da3e18207f7ae5"
+                "reference": "63a9172aa63b4a13c96581e92eb22717ea492f59"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -2092,7 +1713,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-05-24T06:06:38+00:00"
+            "time": "2021-06-11T10:19:00+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -2154,11 +1775,11 @@
         },
         {
             "name": "icubeus/magento2-firebase",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-firebase.git",
-                "reference": "26f70b1173270364b98110e09f28a89139d477c7"
+                "reference": "e7367d87b56b38b3bc6b6e5522bfbc5b493296c9"
             },
             "require": {
                 "kreait/firebase-tokens": "^1.14"
@@ -2194,15 +1815,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-04-30T12:15:35+00:00"
+            "time": "2021-06-04T10:31:54+00:00"
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.5",
+            "version": "4.1.7",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "c9bb4e7cb6297d3edb11ad64cfeaaa13e858f896"
+                "reference": "3ee9a8d46250d9db6bde45f30a5721874120177a"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2213,6 +1834,7 @@
                 "icubeus/magento2-veritranspayment": "^4.1"
             },
             "replace": {
+                "icubeus/module-am-bannerslite-graph-ql": "self.version",
                 "icubeus/module-am-extrafee-graph-ql": "self.version",
                 "icubeus/module-aw-blog-graph-ql": "self.version",
                 "icubeus/module-aw-gift-card-graph-ql": "self.version",
@@ -2229,6 +1851,7 @@
                 "icubeus/module-customer-downloadable-graph-ql": "self.version",
                 "icubeus/module-graphql": "self.version",
                 "icubeus/module-instant-delivery-graph-ql": "self.version",
+                "icubeus/module-magezon-graph-ql": "self.version",
                 "icubeus/module-newsletter-graph-ql": "self.version",
                 "icubeus/module-notification-graph-ql": "self.version",
                 "icubeus/module-order-comment-graph-ql": "self.version",
@@ -2243,14 +1866,20 @@
                 "icubeus/module-snap-graph-ql": "self.version",
                 "icubeus/module-store-locator-graph-ql": "self.version",
                 "icubeus/module-swatches-graph-ql": "self.version",
+                "icubeus/module-trackorder-graph-ql": "self.version",
                 "icubeus/module-ves-menu-graph-ql": "self.version",
+                "icubeus/module-weltpixel-newsletter-graph-ql": "self.version",
+                "icubeus/module-weltpixel-recently-viewed-bar-graph-ql": "self.version",
                 "icubeus/module-wishlist-graph-ql": "self.version",
-                "icubeus/module-wp-product-label-graph-ql": "self.version"
+                "icubeus/module-wp-cms-block-scheduler-graph-ql": "self.version",
+                "icubeus/module-wp-product-label-graph-ql": "self.version",
+                "icubeus/module-wp-smart-product-tabs-graph-ql": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
                 "files": [
                     "src/module-aw-blog-graph-ql/registration.php",
+                    "src/module-weltpixel-recently-viewed-bar-graph-ql/registration.php",
                     "src/module-aw-gift-card-graph-ql/registration.php",
                     "src/module-aw-store-credit-graph-ql/registration.php",
                     "src/module-aw-reward-points-graph-ql/registration.php",
@@ -2264,6 +1893,7 @@
                     "src/module-customer-downloadable-graph-ql/registration.php",
                     "src/module-confirm-payment-graph-ql/registration.php",
                     "src/module-review-graph-ql/registration.php",
+                    "src/module-am-bannerslite-graph-ql/registration.php",
                     "src/module-sales-graph-ql/registration.php",
                     "src/module-sms-otp-graph-ql/registration.php",
                     "src/module-graphql/registration.php",
@@ -2272,8 +1902,10 @@
                     "src/module-owl-carousel-slider-graph-ql/registration.php",
                     "src/module-snap-graph-ql/registration.php",
                     "src/module-wishlist-graph-ql/registration.php",
+                    "src/module-weltpixel-newsletter-graph-ql/registration.php",
                     "src/module-pickup-graph-ql/registration.php",
                     "src/module-ves-menu-graph-ql/registration.php",
+                    "src/module-trackorder-graph-ql/registration.php",
                     "src/module-store-locator-graph-ql/registration.php",
                     "src/module-am-extrafee-graph-ql/registration.php",
                     "src/module-swatches-graph-ql/registration.php",
@@ -2281,11 +1913,15 @@
                     "src/module-promo-graph-ql/registration.php",
                     "src/module-newsletter-graph-ql/registration.php",
                     "src/module-quote-graph-ql/registration.php",
+                    "src/module-magezon-graph-ql/registration.php",
                     "src/module-wp-product-label-graph-ql/registration.php",
-                    "src/module-cms-graph-ql/registration.php"
+                    "src/module-cms-graph-ql/registration.php",
+                    "src/module-wp-cms-block-scheduler-graph-ql/registration.php",
+                    "src/module-wp-smart-product-tabs-graph-ql/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\AwBlogGraphQl\\": "src/module-aw-blog-graph-ql",
+                    "Icube\\WeltPixelRecentlyViewedBarGraphQl\\": "src/module-weltpixel-recently-viewed-bar-graph-ql",
                     "Icube\\AwGiftCardGraphQl\\": "src/module-aw-gift-card-graph-ql",
                     "Icube\\AwStoreCreditGraphQl\\": "src/module-aw-store-credit-graph-ql",
                     "Icube\\AwRewardPointsGraphQl\\": "src/module-aw-reward-points-graph-ql",
@@ -2299,6 +1935,7 @@
                     "Icube\\CustomerDownloadableGraphQl\\": "src/module-customer-downloadable-graph-ql",
                     "Icube\\ConfirmPaymentGraphQl\\": "src/module-confirm-payment-graph-ql",
                     "Icube\\ReviewGraphQl\\": "src/module-review-graph-ql",
+                    "Icube\\AmastyBannersLiteGraphQl\\": "src/module-am-bannerslite-graph-ql",
                     "Icube\\SalesGraphQl\\": "src/module-sales-graph-ql",
                     "Icube\\SmsOtpGraphQl\\": "src/module-sms-otp-graph-ql",
                     "Icube\\Graphql\\": "src/module-graphql",
@@ -2307,8 +1944,10 @@
                     "Icube\\OwlCarouselSliderGraphQl\\": "src/module-owl-carousel-slider-graph-ql",
                     "Icube\\SnapGraphQl\\": "src/module-snap-graph-ql",
                     "Icube\\WishlistGraphQl\\": "src/module-wishlist-graph-ql",
+                    "Icube\\WeltPixelNewsletterGraphQl\\": "src/module-weltpixel-newsletter-graph-ql",
                     "Icube\\PickupGraphQl\\": "src/module-pickup-graph-ql",
                     "Icube\\VesMenuGraphQl\\": "src/module-ves-menu-graph-ql",
+                    "Icube\\TrackOrderGraphQl\\": "src/module-trackorder-graph-ql",
                     "Icube\\StoreLocatorGraphQl\\": "src/module-store-locator-graph-ql",
                     "Icube\\AmastyExtraFeeGraphQl\\": "src/module-am-extrafee-graph-ql",
                     "Icube\\SwatchesGraphQl\\": "src/module-swatches-graph-ql",
@@ -2316,8 +1955,11 @@
                     "Icube\\PromoGraphQl\\": "src/module-promo-graph-ql",
                     "Icube\\NewsletterGraphQl\\": "src/module-newsletter-graph-ql",
                     "Icube\\QuoteGraphQl\\": "src/module-quote-graph-ql",
+                    "Icube\\MagezonGraphql\\": "src/module-magezon-graph-ql",
                     "Icube\\WeltPixelLabelGraphQl\\": "src/module-wp-product-label-graph-ql",
-                    "Icube\\CmsGraphQl\\": "src/module-cms-graph-ql"
+                    "Icube\\CmsGraphQl\\": "src/module-cms-graph-ql",
+                    "Icube\\WeltPixelCmsBlockSchedulerGraphQl\\": "src/module-wp-cms-block-scheduler-graph-ql",
+                    "Icube\\WeltPixelSmartProductTabsGraphQl\\": "src/module-wp-smart-product-tabs-graph-ql"
                 }
             },
             "license": [
@@ -2336,7 +1978,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-05-11T07:07:23+00:00"
+            "time": "2021-06-28T11:39:53+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -2766,11 +2408,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.3",
+            "version": "4.1.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "1da1e38826a79d2a760d805f16d4ffb7822546f1"
+                "reference": "319bb35ff120c3126ee39134660125942c79f503"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -2829,15 +2471,15 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2021-05-24T05:59:50+00:00"
+            "time": "2021-06-30T10:43:36+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "91253340cc01e8624f18f72999a8e5ac7b70c402"
+                "reference": "306c4b0c56a07eae16730ab6ca07197ca6751da0"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2857,7 +2499,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2020-11-23T08:11:35+00:00"
+            "time": "2021-06-30T10:38:40+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -3032,347 +2674,6 @@
                 "zxing"
             ],
             "time": "2021-04-21T08:02:08+00:00"
-        },
-        {
-            "name": "klarna/m2-payments",
-            "version": "8.2.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/klarna/m2-payments/klarna-m2-payments-8.2.1.0.zip",
-                "shasum": "eb139cb7aa17c97539c01265cafa9b244b80a74f"
-            },
-            "require": {
-                "klarna/module-core": "6.1.1",
-                "klarna/module-kp": "7.2.1",
-                "klarna/module-kp-graph-ql": "0.9.1",
-                "klarna/module-onsitemessaging": "1.0.3",
-                "klarna/module-ordermanagement": "6.1.1"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "~2.16.0",
-                "jakub-onderka/php-console-highlighter": "^0.3.2",
-                "jakub-onderka/php-parallel-lint": "^0.9.2",
-                "lusitanian/oauth": "~0.8.10",
-                "magento/magento-coding-standard": "*",
-                "mikey179/vfsstream": "^1.6",
-                "pdepend/pdepend": "^2.5.2",
-                "phploc/phploc": "^6.0",
-                "phpmd/phpmd": "@stable",
-                "phpro/grumphp": "^0.19",
-                "phpunit/phpunit": "^9",
-                "sebastian/phpcpd": "~5.0.0",
-                "squizlabs/php_codesniffer": "~3.5.4"
-            },
-            "type": "metapackage",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Klarna Payments for Magento 2 (CE & EE)"
-        },
-        {
-            "name": "klarna/module-core",
-            "version": "6.1.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/klarna/module-core/klarna-module-core-6.1.1.0.zip",
-                "shasum": "33883a011ff0af73a41f630f78d267dd8156b69c"
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0",
-                "magento/framework": "^102|^103",
-                "magento/module-bundle": "^100.3||^101.0",
-                "magento/module-catalog": "^103.0|^104.0",
-                "magento/module-config": "^101.1",
-                "magento/module-customer": "^102.0|^103.0",
-                "magento/module-directory": "^100.3",
-                "magento/module-payment": "^100.3",
-                "magento/module-quote": "^101.1",
-                "magento/module-sales": "^102.0||^103.0",
-                "magento/module-store": "^101.0",
-                "magento/module-tax": "^100.3",
-                "php": "~7.3.0||~7.4.0",
-                "psr/log": "^1.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "~2.10.1",
-                "jakub-onderka/php-console-highlighter": "^0.3.2",
-                "jakub-onderka/php-parallel-lint": "^0.9.2",
-                "lusitanian/oauth": "~0.8.10",
-                "magento/magento-coding-standard": "*",
-                "mikey179/vfsstream": "^1.6",
-                "pdepend/pdepend": "^2.5",
-                "phploc/phploc": "^4.0",
-                "phpmd/phpmd": "@stable",
-                "phpro/grumphp": "^0.14",
-                "phpunit/phpunit": "~6.2.0",
-                "roave/security-advisories": "dev-master",
-                "sebastian/phpcpd": "~3.0",
-                "squizlabs/php_codesniffer": "^3.2",
-                "theseer/phpdox": "^0.10.1"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "psr-4": {
-                    "Klarna\\Core\\": "."
-                },
-                "files": [
-                    "registration.php"
-                ]
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Joe Constant",
-                    "email": "joe.constant@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dario Kassler",
-                    "email": "dario.kassler@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Kenny Gilles",
-                    "email": "kenny.gilles@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Simon",
-                    "email": "markus.simon2@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Fei Chen",
-                    "email": "fei.chen@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Jason Grim",
-                    "email": "jason.grim@klarna.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Klarna Core Magento 2 Extension"
-        },
-        {
-            "name": "klarna/module-kp",
-            "version": "7.2.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/klarna/module-kp/klarna-module-kp-7.2.1.0.zip",
-                "shasum": "947c3c67461dbaf6868f25f61354131353bcd88a"
-            },
-            "require": {
-                "klarna/module-core": "^6.0",
-                "klarna/module-ordermanagement": "^6.0",
-                "magento/framework": "^102|^103",
-                "magento/module-backend": "^101.0|^102.0",
-                "magento/module-checkout": "^100.1",
-                "magento/module-config": "^101.0",
-                "magento/module-customer": "^102.0|^103.0",
-                "magento/module-directory": "^100.1",
-                "magento/module-payment": "^100.1",
-                "magento/module-quote": "^101.0",
-                "magento/module-sales": "^102.0||^103.0",
-                "magento/module-store": "^101.0",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "psr-4": {
-                    "Klarna\\Kp\\": ""
-                },
-                "files": [
-                    "registration.php"
-                ]
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Joe Constant",
-                    "email": "joe.constant@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dario Kassler",
-                    "email": "dario.kassler@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Kenny Gilles",
-                    "email": "kenny.gilles@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Simon",
-                    "email": "markus.simon2@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Fei Chen",
-                    "email": "fei.chen@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Jason Grim",
-                    "email": "jason.grim@klarna.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Klarna Payments Magento 2 Extension"
-        },
-        {
-            "name": "klarna/module-kp-graph-ql",
-            "version": "0.9.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/klarna/module-kp-graph-ql/klarna-module-kp-graph-ql-0.9.1.0.zip",
-                "shasum": "3e240c439ef229ad4ac37c104b40848e12a59456"
-            },
-            "require": {
-                "klarna/module-kp": "^7.0.2",
-                "magento/framework": "^102|^103",
-                "magento/module-graph-ql": "^100",
-                "magento/module-payment": "^100.1",
-                "magento/module-quote-graph-ql": "^100",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Klarna\\KpGraphQl\\": ""
-                }
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Dario Kassler",
-                    "email": "dario.kassler@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Simon",
-                    "email": "markus.simon2@klarna.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Klarna KpGraphQl Magento 2 Extension"
-        },
-        {
-            "name": "klarna/module-onsitemessaging",
-            "version": "1.0.3",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/klarna/module-onsitemessaging/klarna-module-onsitemessaging-1.0.3.0.zip",
-                "shasum": "78ad96b08f6910e60696ba52c46838550ba81ae2"
-            },
-            "require": {
-                "klarna/module-core": "^6.0",
-                "klarna/module-kp": "^7.1",
-                "magento/framework": "^102|^103",
-                "magento/module-payment": "^100.3",
-                "magento/module-quote": "^101.1",
-                "magento/module-sales": "^102.0||^103.0",
-                "magento/module-store": "^101.0",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "psr-4": {
-                    "Klarna\\Onsitemessaging\\": "."
-                },
-                "files": [
-                    "registration.php"
-                ]
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Joe Constant",
-                    "email": "joe.constant@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Simon",
-                    "email": "markus.simon2@klarna.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Klarna OnSite Messaging Magento 2 Extension"
-        },
-        {
-            "name": "klarna/module-ordermanagement",
-            "version": "6.1.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/klarna/module-ordermanagement/klarna-module-ordermanagement-6.1.1.0.zip",
-                "shasum": "4f3bef31e25af08b19af9e88b39dcdb5f95cfa94"
-            },
-            "require": {
-                "klarna/module-core": "^6.0",
-                "magento/framework": "^102|^103",
-                "magento/module-payment": "^100.3",
-                "magento/module-quote": "^101.1",
-                "magento/module-sales": "^102.0||^103.0",
-                "magento/module-store": "^101.0",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "psr-4": {
-                    "Klarna\\Ordermanagement\\": "."
-                },
-                "files": [
-                    "registration.php"
-                ]
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Joe Constant",
-                    "email": "joe.constant@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dario Kassler",
-                    "email": "dario.kassler@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Kenny Gilles",
-                    "email": "kenny.gilles@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Simon",
-                    "email": "markus.simon2@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Fei Chen",
-                    "email": "fei.chen@klarna.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Jason Grim",
-                    "email": "jason.grim@klarna.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Klarna Order Management Magento 2 Extension"
         },
         {
             "name": "kreait/clock",
@@ -6206,60 +5507,6 @@
             ],
             "description": "An adapter decorator to enable meta-data caching.",
             "time": "2020-07-25T15:56:04+00:00"
-        },
-        {
-            "name": "league/iso3166",
-            "version": "2.1.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/iso3166.git",
-                "reference": "aed3b32fc293afdf2c6c6a322c2408eb5d20804a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/iso3166/zipball/aed3b32fc293afdf2c6c6a322c2408eb5d20804a",
-                "reference": "aed3b32fc293afdf2c6c6a322c2408eb5d20804a",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.12",
-                "phpunit/phpunit": "^5.7.11 || ^6.0 || ^7.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "League\\ISO3166\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Rob Bast",
-                    "email": "rob.bast@gmail.com"
-                }
-            ],
-            "description": "ISO 3166-1 PHP Library",
-            "homepage": "https://github.com/thephpleague/iso3166",
-            "keywords": [
-                "3166",
-                "3166-1",
-                "ISO 3166",
-                "countries",
-                "iso",
-                "library"
-            ],
-            "time": "2020-01-29T07:08:12+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -9755,46 +9002,6 @@
             "description": "N/A"
         },
         {
-            "name": "magento/module-dhl",
-            "version": "100.4.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/magento/module-dhl/magento-module-dhl-100.4.1.0.zip",
-                "shasum": "540cd358b0d063e5af383ecf4efde9c1445c1b48"
-            },
-            "require": {
-                "lib-libxml": "*",
-                "magento/framework": "103.0.*",
-                "magento/module-backend": "102.0.*",
-                "magento/module-catalog": "104.0.*",
-                "magento/module-catalog-inventory": "100.4.*",
-                "magento/module-config": "101.2.*",
-                "magento/module-directory": "100.4.*",
-                "magento/module-quote": "101.2.*",
-                "magento/module-sales": "103.0.*",
-                "magento/module-shipping": "100.4.*",
-                "magento/module-store": "101.1.*",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "suggest": {
-                "magento/module-checkout": "100.4.*"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Magento\\Dhl\\": ""
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "N/A"
-        },
-        {
             "name": "magento/module-directory",
             "version": "100.4.2",
             "dist": {
@@ -10203,42 +9410,6 @@
                 ],
                 "psr-4": {
                     "Magento\\EncryptionKey\\": ""
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "N/A"
-        },
-        {
-            "name": "magento/module-fedex",
-            "version": "100.4.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/magento/module-fedex/magento-module-fedex-100.4.1.0.zip",
-                "shasum": "43cfaafd20695314930c14213d26d4aa3a733faa"
-            },
-            "require": {
-                "lib-libxml": "*",
-                "magento/framework": "103.0.*",
-                "magento/module-catalog": "104.0.*",
-                "magento/module-catalog-inventory": "100.4.*",
-                "magento/module-config": "101.2.*",
-                "magento/module-directory": "100.4.*",
-                "magento/module-quote": "101.2.*",
-                "magento/module-sales": "103.0.*",
-                "magento/module-shipping": "100.4.*",
-                "magento/module-store": "101.1.*",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Magento\\Fedex\\": ""
                 }
             },
             "license": [
@@ -13317,34 +12488,6 @@
                 "OSL-3.0",
                 "AFL-3.0"
             ]
-        },
-        {
-            "name": "magento/module-marketplace",
-            "version": "100.4.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/magento/module-marketplace/magento-module-marketplace-100.4.1.0.zip",
-                "shasum": "91775c6098d155f740506f349d359f0a0a595f52"
-            },
-            "require": {
-                "magento/framework": "103.0.*",
-                "magento/module-backend": "102.0.*",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Magento\\Marketplace\\": ""
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "N/A"
         },
         {
             "name": "magento/module-media-content",
@@ -16904,43 +16047,6 @@
             "description": "N/A"
         },
         {
-            "name": "magento/module-ups",
-            "version": "100.4.2",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/magento/module-ups/magento-module-ups-100.4.2.0.zip",
-                "shasum": "c757d1a9668fccc2e7de24fad2c65ce85197dfd6"
-            },
-            "require": {
-                "magento/framework": "103.0.*",
-                "magento/module-backend": "102.0.*",
-                "magento/module-catalog-inventory": "100.4.*",
-                "magento/module-directory": "100.4.*",
-                "magento/module-quote": "101.2.*",
-                "magento/module-sales": "103.0.*",
-                "magento/module-shipping": "100.4.*",
-                "magento/module-store": "101.1.*",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "suggest": {
-                "magento/module-config": "101.2.*"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Magento\\Ups\\": ""
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "N/A"
-        },
-        {
             "name": "magento/module-url-rewrite",
             "version": "102.0.1",
             "dist": {
@@ -17031,42 +16137,6 @@
                 ],
                 "psr-4": {
                     "Magento\\User\\": ""
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "N/A"
-        },
-        {
-            "name": "magento/module-usps",
-            "version": "100.4.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/magento/module-usps/magento-module-usps-100.4.1.0.zip",
-                "shasum": "30d3a2e981d2da9c210f8c6175061093fb8e44b9"
-            },
-            "require": {
-                "lib-libxml": "*",
-                "magento/framework": "103.0.*",
-                "magento/module-catalog": "104.0.*",
-                "magento/module-catalog-inventory": "100.4.*",
-                "magento/module-config": "101.2.*",
-                "magento/module-directory": "100.4.*",
-                "magento/module-quote": "101.2.*",
-                "magento/module-sales": "103.0.*",
-                "magento/module-shipping": "100.4.*",
-                "magento/module-store": "101.1.*",
-                "php": "~7.3.0||~7.4.0"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Magento\\Usps\\": ""
                 }
             },
             "license": [
@@ -18491,85 +17561,6 @@
                 "Apache-2.0"
             ],
             "description": "Braintree Magento"
-        },
-        {
-            "name": "paypal/module-braintree-core",
-            "version": "4.2.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/paypal/module-braintree-core/paypal-module-braintree-core-4.2.1.0.zip",
-                "shasum": "a1281e964c6b7ce26824d53c80c71b778d2e3d8c"
-            },
-            "require": {
-                "braintree/braintree_php": "5.2.0",
-                "ext-json": "*",
-                "ext-simplexml": "*",
-                "league/iso3166": "^2.1",
-                "magento/module-backend": "100.2.*||101.0.*||^102.0.0",
-                "magento/module-catalog": "102.0.*||103.0.*||^104.0.0",
-                "magento/module-checkout": "100.2.*||100.3.*||^100.4.0",
-                "magento/module-config": "101.0.*||101.1.*||^101.2.0",
-                "magento/module-customer": "101.0.*||102.0.*||^103.0.0",
-                "magento/module-directory": "100.2.*||100.3.*||^100.4.0",
-                "magento/module-payment": "100.2.*||100.3.*||^100.4.0",
-                "magento/module-paypal": "100.2.*||100.3.*||^101.0.0",
-                "magento/module-quote": "101.0.*||101.1.*||^101.2.0",
-                "magento/module-sales": "101.0.*||102.0.*||^102.1.0||^103",
-                "magento/module-theme": "100.2.*||101.0.*||^101.1.0",
-                "magento/module-ui": "101.0.*||101.1.*||^101.2.0",
-                "magento/module-vault": "101.0.*||101.1.*||^101.2.0"
-            },
-            "conflict": {
-                "gene/module-braintree": "*",
-                "magento/module-braintree": "*"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "PayPal\\Braintree\\": ""
-                }
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Fork from the Magento Braintree 2.2.0 module by Gene Commerce for PayPal."
-        },
-        {
-            "name": "paypal/module-braintree-graph-ql",
-            "version": "4.1.2",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/paypal/module-braintree-graph-ql/paypal-module-braintree-graph-ql-4.1.2.0.zip",
-                "shasum": "b4b8151848a4d270b4c3a2b416ee9b1ccd48dbbe"
-            },
-            "require": {
-                "magento/framework": "^102||^103",
-                "magento/module-quote": "^101",
-                "magento/module-quote-graph-ql": "^100",
-                "magento/module-store": "^101",
-                "paypal/module-braintree-core": "^4.1",
-                "php": "~7.1.3||~7.2.0||~7.3.0||~7.4.0"
-            },
-            "suggest": {
-                "magento/module-graph-ql": "^100"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "PayPal\\BraintreeGraphQl\\": ""
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "N/A"
         },
         {
             "name": "pelago/emogrifier",
@@ -21169,53 +20160,6 @@
             "time": "2019-06-28T18:11:46+00:00"
         },
         {
-            "name": "temando/module-shipping",
-            "version": "2.0.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/temando/module-shipping/temando-module-shipping-2.0.0.0.zip",
-                "shasum": "78974a6f6a2bfb214e96882562111d35163971b1"
-            },
-            "require": {
-                "temando/module-shipping-remover": "1.0.0"
-            },
-            "type": "metapackage",
-            "license": [
-                "OSL-3.0"
-            ],
-            "description": "Temando multi-carrier shipping extension for Magento 2"
-        },
-        {
-            "name": "temando/module-shipping-remover",
-            "version": "1.0.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/temando/module-shipping-remover/temando-module-shipping-remover-1.0.0.0.zip",
-                "shasum": "fd37ccded9678386a94e104fbd37332254d7c429"
-            },
-            "require": {
-                "magento/framework": "*",
-                "magento/module-eav": "*"
-            },
-            "replace": {
-                "temando/module-shipping-m2": "*"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Temando\\ShippingRemover\\": ""
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "Removes Temando multi-carrier shipping extension from Magento 2"
-        },
-        {
             "name": "thecodingmachine/safe",
             "version": "v1.3.3",
             "source": {
@@ -21450,204 +20394,6 @@
             "time": "2018-01-15T15:26:51+00:00"
         },
         {
-            "name": "vertex/module-address-validation",
-            "version": "2.1.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/vertex/module-address-validation/vertex-module-address-validation-2.1.1.0.zip",
-                "shasum": "22763e3f1f10287206871270aa42531bc483a8d6"
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-simplexml": "*",
-                "ext-soap": "*",
-                "magento/framework": "^100|^101|^102|^103",
-                "magento/module-checkout": "^100",
-                "magento/module-config": "^101",
-                "magento/module-quote": "^100|^101",
-                "magento/module-store": "^100|^101",
-                "magento/module-tax": "^100",
-                "php": "^7.0",
-                "vertex/module-address-validation-api": "^1",
-                "vertex/module-tax": "^4"
-            },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.6.2",
-                "ext-dom": "*",
-                "magento/magento-coding-standard": "^5.0",
-                "roave/security-advisories": "dev-master"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Vertex\\AddressValidation\\": ""
-                }
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Vertex Address Validation module for Magento 2"
-        },
-        {
-            "name": "vertex/module-address-validation-api",
-            "version": "1.0.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/vertex/module-address-validation-api/vertex-module-address-validation-api-1.0.1.0.zip",
-                "shasum": "c218025e4d3f67e1e84a47ecafd36b496a244b78"
-            },
-            "require": {
-                "magento/framework": "^100|^101|^102|^103",
-                "magento/module-store": "^100|^101",
-                "php": "^7.1",
-                "vertex/sdk": "^1"
-            },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.6.2",
-                "magento/magento-coding-standard": "^5.0",
-                "roave/security-advisories": "dev-master"
-            },
-            "suggest": {
-                "magento/module-webapi": "^100"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Vertex\\AddressValidationApi\\": ""
-                }
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Vertex Address Cleansing module for Magento 2 API"
-        },
-        {
-            "name": "vertex/module-tax",
-            "version": "4.2.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/vertex/module-tax/vertex-module-tax-4.2.0.0.zip",
-                "shasum": "a054a15e89ea38dcf4a4e90bb309085d33a6406d"
-            },
-            "require": {
-                "ext-intl": "*",
-                "ext-json": "*",
-                "ext-simplexml": "*",
-                "ext-soap": "*",
-                "magento/framework": "^100|^101|^102|^103",
-                "magento/module-backend": "^100|^101|^102",
-                "magento/module-catalog": "^100|^101|^102|^103|^104",
-                "magento/module-checkout": "^100",
-                "magento/module-config": "^100|^101",
-                "magento/module-cron": "^100",
-                "magento/module-customer": "^100|^101|^102|^103",
-                "magento/module-directory": "^100",
-                "magento/module-eav": "^100|^101|^102",
-                "magento/module-quote": ">=101.1.0 <= 101.1.5 || >=101.2.0.0 < 101.2.3.0",
-                "magento/module-sales": "^100|^101|^102|^103",
-                "magento/module-shipping": "^100",
-                "magento/module-store": "^100|^101",
-                "magento/module-tax": "^100",
-                "magento/module-ui": "^100|^101",
-                "php": "^7.1",
-                "vertex/sdk": "^1.2.0"
-            },
-            "conflict": {
-                "pixafy/tax": "*",
-                "pixafy/tax-ee": "*",
-                "vertex/tax": "*",
-                "vertex/tax-ee": "*"
-            },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.6.2",
-                "ext-dom": "*",
-                "magento/magento-coding-standard": "^5",
-                "magento/module-offline-shipping": "^100.2",
-                "magento/module-usps": "^100.2"
-            },
-            "suggest": {
-                "magento/module-gift-card-account": "Vertex Tax Links for Magento 2 also supports Magento's Gift Card Account module",
-                "magento/module-gift-wrapping": "Vertex Tax Links for Magento 2 also supports Magento's Gift Wrapping module",
-                "magento/module-multishipping": "Vertex Tax Links for Magento 2 also supports Magento's Multishipping module",
-                "magento/module-reward": "Vertex Tax Links for Magento 2 also supports Magento's Reward module"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Vertex\\Tax\\": ""
-                }
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Vertex Tax Links for Magento 2"
-        },
-        {
-            "name": "vertex/product-magento-module",
-            "version": "4.2.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/vertex/product-magento-module/vertex-product-magento-module-4.2.0.0.zip",
-                "shasum": "950fffb72ac2654457e6aff83b973f33c5728c41"
-            },
-            "require": {
-                "vertex/module-address-validation": "2.1.1",
-                "vertex/module-tax": "4.2.0"
-            },
-            "type": "metapackage",
-            "license": [
-                "proprietary"
-            ],
-            "description": "Vertex Tax Links for Magento 2",
-            "homepage": "http://go.vertexsmb.com/magento_cbe",
-            "keywords": [
-                "tax",
-                "vertex"
-            ]
-        },
-        {
-            "name": "vertex/sdk",
-            "version": "1.2.7",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/vertex/sdk/vertex-sdk-1.2.7.0.zip",
-                "shasum": "821465662cc2d8ec186e2baf138a7c3075fcf3ee"
-            },
-            "require": {
-                "ext-mbstring": "*",
-                "ext-openssl": "*",
-                "ext-soap": "*",
-                "php": "^5.4|^7"
-            },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.6.2",
-                "magento/magento-coding-standard": "^5.0",
-                "php": "^7.3",
-                "phpmd/phpmd": "^2.6",
-                "phpunit/phpunit": "^9",
-                "squizlabs/php_codesniffer": "^3.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Vertex\\": "src/"
-                }
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Tools for communicating with Vertex Cloud and Vertex O-Series"
-        },
-        {
             "name": "webimpress/safe-writer",
             "version": "2.2.0",
             "source": {
@@ -21820,65 +20566,6 @@
                 "stylesheet"
             ],
             "time": "2019-11-06T18:30:11+00:00"
-        },
-        {
-            "name": "yotpo/magento2-module-yotpo-reviews",
-            "version": "3.1.3",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/yotpo/magento2-module-yotpo-reviews/yotpo-magento2-module-yotpo-reviews-3.1.3.0.zip",
-                "shasum": "41b004599bf38042eea9389c1b09660a0dcdf3cd"
-            },
-            "require": {
-                "magento/framework": "103.0.*",
-                "magento/module-analytics": "*",
-                "magento/module-backend": "102.0.*",
-                "magento/module-catalog": "104.0.*",
-                "magento/module-checkout": "100.4.*",
-                "magento/module-config": "101.2.*",
-                "magento/module-grouped-product": "100.4.*",
-                "magento/module-reports": "^100",
-                "magento/module-review": "100.4.*",
-                "magento/module-sales": "102.1.*||^103.0",
-                "magento/module-store": "101.1.*",
-                "php": "~7.1.3||~7.2.0||~7.3.0||~7.4.0"
-            },
-            "replace": {
-                "yotpo/module-review": "*",
-                "yotpo/module-yotpo": "*"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Yotpo\\Yotpo\\": ""
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "Yotpo Reviews extension for Magento2"
-        },
-        {
-            "name": "yotpo/magento2-module-yotpo-reviews-bundle",
-            "version": "3.1.3",
-            "dist": {
-                "type": "zip",
-                "url": "https://repo.magento.com/archives/yotpo/magento2-module-yotpo-reviews-bundle/yotpo-magento2-module-yotpo-reviews-bundle-3.1.3.0.zip",
-                "shasum": "dbb204e9e917ab71b89b622b1a465dc3ffada673"
-            },
-            "require": {
-                "yotpo/magento2-module-yotpo-reviews": "3.1.3"
-            },
-            "type": "metapackage",
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "Bundling metapackage for yotpo/magento2-module-yotpo-reviews: Yotpo Reviews extension for Magento2"
         }
     ],
     "packages-dev": [
@@ -22188,6 +20875,60 @@
                 }
             ],
             "time": "2020-12-17T16:34:40+00:00"
+        },
+        {
+            "name": "league/iso3166",
+            "version": "2.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/iso3166.git",
+                "reference": "aed3b32fc293afdf2c6c6a322c2408eb5d20804a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/iso3166/zipball/aed3b32fc293afdf2c6c6a322c2408eb5d20804a",
+                "reference": "aed3b32fc293afdf2c6c6a322c2408eb5d20804a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.12",
+                "phpunit/phpunit": "^5.7.11 || ^6.0 || ^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\ISO3166\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Bast",
+                    "email": "rob.bast@gmail.com"
+                }
+            ],
+            "description": "ISO 3166-1 PHP Library",
+            "homepage": "https://github.com/thephpleague/iso3166",
+            "keywords": [
+                "3166",
+                "3166-1",
+                "ISO 3166",
+                "countries",
+                "iso",
+                "library"
+            ],
+            "time": "2020-01-29T07:08:12+00:00"
         },
         {
             "name": "lusitanian/oauth",
