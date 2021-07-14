@@ -1,20 +1,15 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Model;
 
-/**
- * Class TotalsInformation
- *
- * @author Artem Brunevski
- */
-
-use Magento\Framework\Model\AbstractExtensibleModel;
 use Amasty\Extrafee\Api\Data\TotalsInformationInterface;
+use Magento\Framework\Model\AbstractExtensibleModel;
 
 class TotalsInformation extends AbstractExtensibleModel implements TotalsInformationInterface
 {
@@ -27,7 +22,7 @@ class TotalsInformation extends AbstractExtensibleModel implements TotalsInforma
     }
 
     /**
-     * @param $optionsIds
+     * @param array $optionsIds
      * @return $this
      */
     public function setOptionsIds($optionsIds)
@@ -35,7 +30,9 @@ class TotalsInformation extends AbstractExtensibleModel implements TotalsInforma
         return $this->setData(self::OPTIONS_IDS, $optionsIds);
     }
 
-    /** @return int */
+    /**
+     * @return int
+     */
     public function getFeeId()
     {
         return $this->getData(self::FEE_ID);

@@ -1,19 +1,15 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Model\Fee\Source;
 
-/**
- * Class PriceType
- *
- * @author Artem Brunevski
- */
-use Magento\Framework\Data\OptionSourceInterface;
 use Amasty\Extrafee\Model\Fee;
+use Magento\Framework\Data\OptionSourceInterface;
 
 class PriceType implements OptionSourceInterface
 {

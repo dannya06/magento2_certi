@@ -2,14 +2,14 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/sales.xsd">
     <section name="quote">
         <group name="totals">
-            <item name="amasty_extrafee" instance="Amasty\Extrafee\Model\Quote\Fee" sort_order="425"/>
+            <item name="amasty_extrafee" instance="Amasty\Extrafee\Model\Quote\Fee" sort_order="475"/>
         </group>
     </section>
     <section name="order_invoice">

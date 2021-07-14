@@ -1,5 +1,7 @@
-<form method="post" id="amasty-extrafee-form" visible="visible()"  data-bind="blockLoader: isLoading">
-    <!-- ko foreach: getRegion('amasty-extrafee-fieldsets') -->
-    <!-- ko template: getTemplate() --><!-- /ko -->
-    <!--/ko-->
+<form method="post"
+      class="amexfee-form-container"
+      id="amexfee-form"
+      visible="visible()"
+      data-bind="blockLoader: isLoading">
+    <fieldset class="fieldset amexfee-fieldset" each="getRegion('amasty-extrafee-fieldsets')" render="" ></fieldset>
 </form>

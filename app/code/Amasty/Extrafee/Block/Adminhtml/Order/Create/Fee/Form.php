@@ -1,35 +1,40 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Block\Adminhtml\Order\Create\Fee;
 
+use Amasty\Extrafee\Model\FeesInformationManagement;
+use Magento\Backend\Block\Template\Context;
+use Magento\Backend\Model\Session\Quote;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Amasty\Extrafee\Helper\Data as ExtrafeeHelper;
+use Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate;
+use Magento\Sales\Model\AdminOrder\Create;
 
-class Form extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
+class Form extends AbstractCreate
 {
-    /** @var  array */
-    protected $_rates;
+    /** @var array */
+    protected $rates;
+
     /**
-     * @var ExtrafeeHelper
+     * @var FeesInformationManagement
      */
-    private $extrafeeHelper;
+    private $feesInformationManagement;
 
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Backend\Model\Session\Quote $sessionQuote,
-        \Magento\Sales\Model\AdminOrder\Create $orderCreate,
+        Context $context,
+        Quote $sessionQuote,
+        Create $orderCreate,
         PriceCurrencyInterface $priceCurrency,
-        ExtrafeeHelper $extrafeeHelper,
+        FeesInformationManagement $feesInformationManagement,
         array $data = []
     ) {
         parent::__construct($context, $sessionQuote, $orderCreate, $priceCurrency, $data);
-        $this->extrafeeHelper = $extrafeeHelper;
+        $this->feesInformationManagement = $feesInformationManagement;
     }
 
     protected function _construct()
@@ -38,15 +43,22 @@ class Form extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
         $this->setId('sales_order_create_amasty_extrafee_form');
     }
 
+    /**
+     * @return array
+     */
     public function getExtraFees()
     {
-        if ($this->_rates === null) {
-            $this->_rates = $this->extrafeeHelper->getFeesOptions($this->_orderCreate->getQuote());
+        if ($this->rates === null) {
+            $this->rates = $this->feesInformationManagement->collectQuote($this->_orderCreate->getQuote());
         }
 
-        return $this->_rates;
+        return $this->rates;
     }
 
+    /**
+     * @param string $amount
+     * @return string
+     */
     public function getFormattedPrice($amount)
     {
         $amount = number_format($amount, 2);

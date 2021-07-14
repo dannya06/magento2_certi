@@ -2,17 +2,29 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Amasty\Extrafee\Api\FeeRepositoryInterface" type="Amasty\Extrafee\Model\FeeRepository" />
-    <preference for="Amasty\Extrafee\Api\Data\FeeSearchResultsInterface"
-                type="Magento\Framework\Api\SearchResults" />
-
-    <preference for="Amasty\Extrafee\Api\Data\FeeInterface"
-                type="Amasty\Extrafee\Model\Fee" />
+    <preference for="Amasty\Extrafee\Api\Data\FeeSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    <preference for="Amasty\Extrafee\Api\Data\FeeInterface" type="Amasty\Extrafee\Model\Fee" />
+    <preference for="Amasty\Extrafee\Api\Data\TotalsInformationInterface" type="Amasty\Extrafee\Model\TotalsInformation" />
+    <preference for="Amasty\Extrafee\Api\GuestTotalsInformationManagementInterface" type="Amasty\Extrafee\Model\GuestTotalsInformationManagement" />
+    <preference for="Amasty\Extrafee\Api\TotalsInformationManagementInterface" type="Amasty\Extrafee\Model\TotalsInformationManagement" />
+    <preference for="Amasty\Extrafee\Api\FeesInformationManagementInterface" type="Amasty\Extrafee\Model\FeesInformationManagement" />
+    <preference for="Amasty\Extrafee\Api\GuestFeesInformationManagementInterface" type="Amasty\Extrafee\Model\GuestFeesInformationManagement" />
+    <preference for="Amasty\Extrafee\Api\Data\FeesManagerInterface" type="Amasty\Extrafee\Model\Data\FeesManager" />
+    <preference for="Amasty\Extrafee\Api\Data\ExtrafeeQuoteInterface" type="Amasty\Extrafee\Model\ExtrafeeQuote" />
+    <preference for="Amasty\Extrafee\Api\ExtrafeeQuoteRepositoryInterface" type="Amasty\Extrafee\Model\ExtrafeeQuoteRepository" />
+    <preference for="Amasty\Extrafee\Api\TaxExtrafeeDetailsInterface" type="Amasty\Extrafee\Model\TaxExtrafeeDetails"/>
+    <preference for="Amasty\Extrafee\Api\Data\ExtrafeeOrderInterface" type="Amasty\Extrafee\Model\ExtrafeeOrder" />
+    <preference for="Amasty\Extrafee\Api\ExtrafeeOrderRepositoryInterface" type="Amasty\Extrafee\Model\ExtrafeeOrderRepository" />
+    <preference for="Amasty\Extrafee\Api\Data\ExtrafeeInvoiceInterface" type="Amasty\Extrafee\Model\ExtrafeeInvoice" />
+    <preference for="Amasty\Extrafee\Api\ExtrafeeInvoiceRepositoryInterface" type="Amasty\Extrafee\Model\ExtrafeeInvoiceRepository" />
+    <preference for="Amasty\Extrafee\Api\Data\ExtrafeeCreditmemoInterface" type="Amasty\Extrafee\Model\ExtrafeeCreditmemo" />
+    <preference for="Amasty\Extrafee\Api\ExtrafeeCreditmemoRepositoryInterface" type="Amasty\Extrafee\Model\ExtrafeeCreditmemoRepository" />
 
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
@@ -43,24 +55,6 @@
         <plugin sortOrder="1" name="Amasty_Extrafee::OrderRepository" type="\Amasty\Extrafee\Plugin\Order\OrderRepository"/>
     </type>
 
-    <preference for="Amasty\Extrafee\Api\Data\TotalsInformationInterface"
-                type="Amasty\Extrafee\Model\TotalsInformation" />
-
-    <preference for="Amasty\Extrafee\Api\GuestTotalsInformationManagementInterface"
-                type="Amasty\Extrafee\Model\GuestTotalsInformationManagement" />
-
-    <preference for="Amasty\Extrafee\Api\TotalsInformationManagementInterface"
-                type="Amasty\Extrafee\Model\TotalsInformationManagement" />
-
-    <preference for="Amasty\Extrafee\Api\FeesInformationManagementInterface"
-                type="Amasty\Extrafee\Model\FeesInformationManagement" />
-
-    <preference for="Amasty\Extrafee\Api\GuestFeesInformationManagementInterface"
-                type="Amasty\Extrafee\Model\GuestFeesInformationManagement" />
-
-    <preference for="Amasty\Extrafee\Api\Data\FeesManagerInterface"
-                type="Amasty\Extrafee\Model\Data\FeesManager" />
-
     <type name="Amasty\Extrafee\Model\ResourceModel\Fee\Grid\Collection">
         <arguments>
             <argument name="mainTable" xsi:type="string">amasty_extrafee</argument>
@@ -74,14 +68,31 @@
             <argument name="totalsInformationManagement" xsi:type="object">Amasty\Extrafee\Model\TotalsInformationManagement\Proxy</argument>
         </arguments>
     </type>
-
-    <type name="Magento\SalesRule\Model\Rule\Condition\Product\Subselect">
-        <plugin name="Amasty_Extrafee::Subselect" type="Amasty\Extrafee\Plugin\Subselect"/>
+    <type name="Amasty\Extrafee\Plugin\Klarna\ModuleKp\Model\Api\Request\BuilderPlugin">
+        <arguments>
+            <argument name="checkoutSession" xsi:type="object">Magento\Checkout\Model\Session\Proxy</argument>
+        </arguments>
     </type>
-    <type name="\Magento\SalesRule\Setup\UpgradeData">
+    <type name="Magento\SalesRule\Setup\UpgradeData">
         <plugin name="Amasty_Extrafee::SetupUpgradeData" type="Amasty\Extrafee\Plugin\Setup\UpgradeData" />
     </type>
-    <type name="Magento\Framework\Reflection\TypeCaster">
-        <plugin name="Amasty_Extrafee::Version_Compatability" type="Amasty\Extrafee\Plugin\Reflection\TypeCaster" />
+    <type name="Klarna\Kp\Model\Api\Request\Builder">
+        <plugin name="Amasty_Extrafee::Klarna_Request_Builder" type="Amasty\Extrafee\Plugin\Klarna\ModuleKp\Model\Api\Request\BuilderPlugin"/>
     </type>
+
+    <!--set payment method to quote from extension attributes (magento set payment method while place order)-->
+    <type name="Magento\Checkout\Model\TotalsInformationManagement">
+        <plugin name="Amasty_ExtraFee::Model_TotalsInformationManagement" type="Amasty\Extrafee\Plugin\Checkout\Model\TotalsInformationManagementPlugin" />
+    </type>
+
+    <!-- add tax details to totals segment -->
+    <type name="Magento\Quote\Model\Cart\TotalsConverter">
+        <plugin name="Amasty_ExtraFee::Add_Tax_Details" type="Amasty\Extrafee\Plugin\Quote\Model\Cart\TotalsConverterPlugin"/>
+    </type>
+
+    <!--set payment method to quote from extension attributes (magento set payment method while place order)-->
+    <type name="Magento\Paypal\Model\Express\Checkout">
+        <plugin name="Amasty_ExtraFee::PaypalReturn" type="Amasty\Extrafee\Plugin\Paypal\Model\Express\CheckoutPlugin" />
+    </type>
+
 </config>

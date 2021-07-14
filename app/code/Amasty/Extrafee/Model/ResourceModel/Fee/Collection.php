@@ -1,20 +1,25 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Model\ResourceModel\Fee;
 
-/**
- * Class Collection
- *
- * @author Artem Brunevski
- */
-
+use Amasty\Extrafee\Model\ResourceModel\Fee;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Amasty\Extrafee\Api\Data\FeeInterface;
+use Magento\Store\Model\Store;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class Collection extends AbstractCollection
 {
@@ -24,26 +29,16 @@ class Collection extends AbstractCollection
     /** @var StoreManagerInterface  */
     protected $_storeManager;
 
-    /**
-     * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
-     * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
-     * @param \Magento\Framework\DB\Adapter\AdapterInterface|null $connection
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb|null $resource
-     */
     public function __construct(
-        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\EntityManager\MetadataPool $metadataPool,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
-    ){
+        EntityFactoryInterface $entityFactory,
+        LoggerInterface $logger,
+        FetchStrategyInterface $fetchStrategy,
+        ManagerInterface $eventManager,
+        StoreManagerInterface $storeManager,
+        MetadataPool $metadataPool,
+        AdapterInterface $connection = null,
+        AbstractDb $resource = null
+    ) {
         $this->_storeManager = $storeManager;
         $this->_metadataPool = $metadataPool;
         return parent::__construct(
@@ -58,7 +53,7 @@ class Collection extends AbstractCollection
 
     protected function _construct()
     {
-        $this->_init('Amasty\Extrafee\Model\Fee', 'Amasty\Extrafee\Model\ResourceModel\Fee');
+        $this->_init(\Amasty\Extrafee\Model\Fee::class, Fee::class);
         $this->_setIdFieldName($this->getResource()->getIdFieldName());
     }
 
@@ -70,14 +65,14 @@ class Collection extends AbstractCollection
     {
         $entityMetadata = $this->_metadataPool->getMetadata(FeeInterface::class);
         $this->performAfterLoad(
-            'amasty_extrafee_store',
+            Fee::STORE_TABLE_NAME,
             'amasty_extrafee_entity_store',
             $entityMetadata->getLinkField(),
             'fee_id',
             'store_id'
         );
         $this->performAfterLoad(
-            'amasty_extrafee_customer_group',
+            Fee::GROUP_TABLE_NAME,
             'amasty_extrafee_entity_customer_group',
             $entityMetadata->getLinkField(),
             'fee_id',
@@ -129,18 +124,17 @@ class Collection extends AbstractCollection
     {
         if ($field === 'store_id') {
             return $this->addStoreFilter($condition, false);
-        } else if ($field === 'customer_group_id') {
+        } elseif ($field === 'customer_group_id') {
             return $this->addFilter('customer_group_id', $condition);
         }
 
         return parent::addFieldToFilter($field, $condition);
     }
 
-
     /**
      * Add filter by store
      *
-     * @param int|array|\Magento\Store\Model\Store $store
+     * @param int|array|Store $store
      * @param bool $withAdmin
      * @return $this
      */
@@ -211,7 +205,7 @@ class Collection extends AbstractCollection
      */
     protected function _renderFiltersBefore()
     {
-        $this->joinStoreRelationTable('amasty_extrafee_store', 'fee_id');
-        $this->joinGroupRelationTable('amasty_extrafee_customer_group', 'fee_id');
+        $this->joinStoreRelationTable(Fee::STORE_TABLE_NAME, 'fee_id');
+        $this->joinGroupRelationTable(Fee::GROUP_TABLE_NAME, 'fee_id');
     }
 }

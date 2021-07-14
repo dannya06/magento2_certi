@@ -1,28 +1,26 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Controller\Adminhtml\Index;
 
-/**
- * Class NewAction
- *
- * @author Artem Brunevski
- */
+use Magento\Backend\Model\View\Result\Forward;
+use Magento\Framework\Controller\ResultFactory;
 
 class NewAction extends Index
 {
     /**
-     * @return \Magento\Backend\Model\View\Result\Forward
+     * @return Forward
      */
     public function execute()
     {
-        $resultForward = $this->_resultForwardFactory->create();
+        $resultForward = $this->resultFactory->create(ResultFactory::TYPE_FORWARD);
         $resultForward->forward('edit');
+
         return $resultForward;
     }
-
 }

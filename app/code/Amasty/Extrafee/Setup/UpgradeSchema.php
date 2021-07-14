@@ -1,134 +1,115 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
-/**
- * Class UpgradeSchema
- *
- * @author Artem Brunevski
- */
 
 namespace Amasty\Extrafee\Setup;
 
-use Amasty\Extrafee\Model\Config\Source\Excludeinclude;
-use Magento\Framework\DB\Ddl\Table as DdlTable;
-use Magento\Framework\Setup\UpgradeSchemaInterface;
+use Amasty\Extrafee\Setup\Operation\AddCalculationColumns;
+use Amasty\Extrafee\Setup\Operation\AddIsRequiredAndIsEligibleAndProductConditionsColumns;
+use Amasty\Extrafee\Setup\Operation\AddTaxColumns;
+use Amasty\Extrafee\Setup\Operation\ChangeIdColumnType;
+use Amasty\Extrafee\Setup\Operation\CreateFeeCreditMemoTable;
+use Amasty\Extrafee\Setup\Operation\CreateFeeOrderTable;
+use Amasty\Extrafee\Setup\Operation\CreateFeeInvoiceTable;
+use Amasty\Extrafee\Setup\Operation\RemoveCalculationField;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\Setup\UpgradeSchemaInterface;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
     /**
-     * {@inheritdoc}
+     * @var AddCalculationColumns
+     */
+    private $addCalculationColumns;
+
+    /**
+     * @var ChangeIdColumnType
+     */
+    private $changeIdColumnType;
+
+    /**
+     * @var AddTaxColumns
+     */
+    private $addTaxColumns;
+
+    /**
+     * @var AddIsRequiredAndIsEligibleAndProductConditionsColumns
+     */
+    private $addSubsidiaryColumns;
+
+    /**
+     * @var RemoveCalculationField
+     */
+    private $removeCalculationField;
+
+    /**
+     * @var CreateFeeOrderTable
+     */
+    private $createFeeOrderTable;
+
+    /**
+     * @var CreateFeeInvoiceTable
+     */
+    private $createFeeInvoiceTable;
+
+    /**
+     * @var CreateFeeCreditMemoTable
+     */
+    private $createFeeCreditMemoTable;
+
+    public function __construct(
+        AddCalculationColumns $addCalculationColumns,
+        ChangeIdColumnType $changeIdColumnType,
+        AddTaxColumns $addTaxColumns,
+        AddIsRequiredAndIsEligibleAndProductConditionsColumns $addSubsidiaryColumns,
+        RemoveCalculationField $removeCalculationField,
+        CreateFeeOrderTable $createFeeOrderTable,
+        CreateFeeInvoiceTable $createFeeInvoiceTable,
+        CreateFeeCreditMemoTable $createFeeCreditMemoTable
+    ) {
+        $this->addCalculationColumns = $addCalculationColumns;
+        $this->changeIdColumnType = $changeIdColumnType;
+        $this->addTaxColumns = $addTaxColumns;
+        $this->addSubsidiaryColumns = $addSubsidiaryColumns;
+        $this->removeCalculationField = $removeCalculationField;
+        $this->createFeeOrderTable = $createFeeOrderTable;
+        $this->createFeeInvoiceTable = $createFeeInvoiceTable;
+        $this->createFeeCreditMemoTable = $createFeeCreditMemoTable;
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     * @param ModuleContextInterface $context
      */
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();
 
         if (version_compare($context->getVersion(), '1.1.0', '<')) {
-            $this->addCalculationColumns($setup);
+            $this->addCalculationColumns->execute($setup);
         }
 
         if (version_compare($context->getVersion(), '1.1.3', '<')) {
-            $this->changeIdColumnType($setup);
+            $this->changeIdColumnType->execute($setup);
         }
 
         if (version_compare($context->getVersion(), '1.1.4', '<')) {
-            $this->addTaxColumns($setup);
+            $this->addTaxColumns->execute($setup);
+        }
+
+        if (version_compare($context->getVersion(), '1.6.0', '<')) {
+            $this->addSubsidiaryColumns->execute($setup);
+            $this->removeCalculationField->execute($setup);
+            $this->createFeeOrderTable->execute($setup);
+            $this->createFeeInvoiceTable->execute($setup);
+            $this->createFeeCreditMemoTable->execute($setup);
         }
 
         $setup->endSetup();
-    }
-
-    protected function addCalculationColumns(SchemaSetupInterface $setup)
-    {
-        $table = $setup->getTable('amasty_extrafee');
-        $connection = $setup->getConnection();
-
-        $connection->addColumn(
-            $table,
-            'discount_in_subtotal',
-            [
-                'type' => DdlTable::TYPE_SMALLINT,
-                'nullable' => false,
-                'default' => Excludeinclude::VAR_DEFAULT,
-                'comment' => 'Discount In Subtotal'
-            ]
-        );
-
-        $connection->addColumn(
-            $table,
-            'tax_in_subtotal',
-            [
-                'type' => DdlTable::TYPE_SMALLINT,
-                'nullable' => false,
-                'default' => Excludeinclude::VAR_DEFAULT,
-                'comment' => 'Tax In Subtotal'
-            ]
-        );
-
-        $connection->addColumn(
-            $table,
-            'shipping_in_subtotal',
-            [
-                'type' => DdlTable::TYPE_SMALLINT,
-                'nullable' => false,
-                'default' => Excludeinclude::VAR_DEFAULT,
-                'comment' => 'Shipping In Subtotal'
-            ]
-        );
-    }
-
-    protected function changeIdColumnType(SchemaSetupInterface $setup)
-    {
-        $setup->getConnection()
-            ->changeColumn(
-                $setup->getTable('amasty_extrafee_quote'),
-                'entity_id',
-                'entity_id',
-                [
-                    'type' => Table::TYPE_INTEGER,
-                    'length' => 11,
-                    'identity' => true,
-                    'unsigned' => true,
-                    'nullable' => false,
-                    'primary' => true,
-                    'comment' => 'Entity ID'
-                ]
-            );
-    }
-
-    protected function addTaxColumns(SchemaSetupInterface $setup)
-    {
-        $table = $setup->getTable('amasty_extrafee_quote');
-        $connection = $setup->getConnection();
-
-        $connection->addColumn(
-            $table,
-            'tax_amount',
-            [
-                'type' => DdlTable::TYPE_DECIMAL,
-                'length' => '12,4',
-                'nullable' => false,
-                'default' => '0.0000',
-                'comment' => 'Tax'
-            ]
-        );
-
-        $connection->addColumn(
-            $table,
-            'base_tax_amount',
-            [
-                'type' => DdlTable::TYPE_DECIMAL,
-                'length' => '12,4',
-                'nullable' => false,
-                'default' => '0.0000',
-                'comment' => 'Tax'
-            ]
-        );
     }
 }

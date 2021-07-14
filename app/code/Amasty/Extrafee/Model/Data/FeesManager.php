@@ -1,19 +1,16 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Model\Data;
 
-/**
- * Class FeesManager
- *
- * @author Artem Brunevski
- */
+use Magento\Framework\Model\AbstractExtensibleModel;
 
-class FeesManager extends \Magento\Framework\Model\AbstractExtensibleModel implements \Amasty\Extrafee\Api\Data\FeesManagerInterface
+class FeesManager extends AbstractExtensibleModel implements \Amasty\Extrafee\Api\Data\FeesManagerInterface
 {
     /**
      * @param \Amasty\Extrafee\Api\Data\FeeInterface[] $fees

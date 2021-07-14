@@ -1,23 +1,25 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Model\ResourceModel\Fee\Grid;
 
-/**
- * Class Collection
- *
- * @author Artem Brunevski
- */
-
-use Psr\Log\LoggerInterface as Logger;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
 use Amasty\Extrafee\Model\ResourceModel\Fee\Collection as FeeCollection;
+use Magento\Framework\Api\ExtensibleDataInterface;
 use Magento\Framework\Api\Search\SearchResultInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Magento\Framework\View\Element\UiComponent\DataProvider\Document;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class Collection extends FeeCollection implements SearchResultInterface
 {
@@ -26,37 +28,20 @@ class Collection extends FeeCollection implements SearchResultInterface
      */
     protected $aggregations;
 
-    /**
-     * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
-     * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
-     * @param mixed|null $mainTable
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $eventPrefix
-     * @param mixed $eventObject
-     * @param mixed $resourceModel
-     * @param string $model
-     * @param null $connection
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb|null $resource
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     */
     public function __construct(
-        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\EntityManager\MetadataPool $metadataPool,
+        EntityFactoryInterface $entityFactory,
+        LoggerInterface $logger,
+        FetchStrategyInterface $fetchStrategy,
+        ManagerInterface $eventManager,
+        StoreManagerInterface $storeManager,
+        MetadataPool $metadataPool,
         $mainTable,
         $eventPrefix,
         $eventObject,
         $resourceModel,
-        $model = 'Magento\Framework\View\Element\UiComponent\DataProvider\Document',
+        $model = Document::class,
         $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
+        AbstractDb $resource = null
     ) {
         parent::__construct(
             $entityFactory,
@@ -94,7 +79,7 @@ class Collection extends FeeCollection implements SearchResultInterface
     /**
      * Get search criteria.
      *
-     * @return \Magento\Framework\Api\SearchCriteriaInterface|null
+     * @return SearchCriteriaInterface|null
      */
     public function getSearchCriteria()
     {
@@ -104,11 +89,10 @@ class Collection extends FeeCollection implements SearchResultInterface
     /**
      * Set search criteria.
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @param SearchCriteriaInterface $searchCriteria
      * @return $this
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function setSearchCriteria(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria = null)
+    public function setSearchCriteria(SearchCriteriaInterface $searchCriteria = null)
     {
         return $this;
     }
@@ -128,7 +112,6 @@ class Collection extends FeeCollection implements SearchResultInterface
      *
      * @param int $totalCount
      * @return $this
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function setTotalCount($totalCount)
     {
@@ -138,9 +121,8 @@ class Collection extends FeeCollection implements SearchResultInterface
     /**
      * Set items list.
      *
-     * @param \Magento\Framework\Api\ExtensibleDataInterface[] $items
+     * @param ExtensibleDataInterface[] $items
      * @return $this
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function setItems(array $items = null)
     {

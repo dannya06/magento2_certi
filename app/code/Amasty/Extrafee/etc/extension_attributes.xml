@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 -->
@@ -13,5 +13,8 @@
         <attribute code="amextrafee_base_fee_amount" type="float"/>
         <attribute code="amextrafee_tax_amount" type="float"/>
         <attribute code="amextrafee_base_tax_amount" type="float"/>
+    </extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\TotalSegmentInterface">
+        <attribute code="tax_amasty_extrafee_details" type="Amasty\Extrafee\Api\TaxExtrafeeDetailsInterface" />
     </extension_attributes>
 </config>

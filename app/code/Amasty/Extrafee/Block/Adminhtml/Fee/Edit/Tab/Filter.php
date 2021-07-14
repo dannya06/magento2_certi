@@ -1,23 +1,21 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Block\Adminhtml\Fee\Edit\Tab;
 
-/**
- * Class Filter
- *
- * @author Artem Brunevski
- */
-
+use Amasty\Extrafee\Api\FeeRepositoryInterface;
+use Magento\Backend\Block\Store\Switcher\Form\Renderer\Fieldset\Element;
 use Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Backend\Block\Widget\Tab\TabInterface;
-use Amasty\Extrafee\Controller\RegistryConstants;
 use Magento\Backend\Block\Template\Context;
+use Magento\Framework\Data\Form;
 use Magento\Framework\Data\FormFactory;
+use Magento\Framework\Phrase;
 use Magento\Framework\Registry;
 use Magento\Store\Model\System\Store as SystemStore;
 use Magento\Customer\Ui\Component\Listing\Column\Group\Options as GroupOptions;
@@ -25,36 +23,35 @@ use Magento\Customer\Ui\Component\Listing\Column\Group\Options as GroupOptions;
 class Filter extends Generic implements TabInterface
 {
     /** @var SystemStore  */
-    protected $_systemStore;
+    protected $systemStore;
 
     /** @var GroupOptions  */
-    protected $_groupOptions;
+    protected $groupOptions;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param FormFactory $formFactory
-     * @param SystemStore $systemStore
-     * @param GroupOptions $groupOptions
-     * @param array $data
+     * @var FeeRepositoryInterface
      */
+    private $feeRepository;
+
     public function __construct(
         Context $context,
         Registry $registry,
         FormFactory $formFactory,
         SystemStore $systemStore,
         GroupOptions $groupOptions,
+        FeeRepositoryInterface $feeRepository,
         array $data = []
-    ){
-        $this->_systemStore = $systemStore;
-        $this->_groupOptions = $groupOptions;
+    ) {
+        $this->systemStore = $systemStore;
+        $this->groupOptions = $groupOptions;
+        $this->feeRepository = $feeRepository;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
     /**
      * Prepare label for tab
      *
-     * @return \Magento\Framework\Phrase
+     * @return Phrase
      */
     public function getTabLabel()
     {
@@ -64,7 +61,7 @@ class Filter extends Generic implements TabInterface
     /**
      * Prepare title for tab
      *
-     * @return \Magento\Framework\Phrase
+     * @return Phrase
      */
     public function getTabTitle()
     {
@@ -72,7 +69,7 @@ class Filter extends Generic implements TabInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function canShowTab()
     {
@@ -80,7 +77,7 @@ class Filter extends Generic implements TabInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function isHidden()
     {
@@ -94,13 +91,16 @@ class Filter extends Generic implements TabInterface
      */
     protected function _prepareForm()
     {
-        /** @var \Magento\Framework\Data\Form $form */
+        /** @var Form $form */
         $form = $this->_formFactory->create();
 
         $form->setHtmlIdPrefix('amasty_extrafee_');
 
-        /** @var \Amasty\ShopbyPage\Model\Page $model */
-        $model = $this->_coreRegistry->registry(RegistryConstants::FEE);
+        if ($feeId = $this->getRequest()->getParam('id')) {
+            $model = $this->feeRepository->getById($feeId);
+        } else {
+            $model = $this->feeRepository->create();
+        }
 
         $fieldset = $form->addFieldset(
             'filter_fieldset',
@@ -119,14 +119,12 @@ class Filter extends Generic implements TabInterface
                     'label' => __('Store View'),
                     'title' => __('Store View'),
                     'required' => true,
-                    'values' => $this->_systemStore->getStoreValuesForForm(false, true),
+                    'values' => $this->systemStore->getStoreValuesForForm(false, true),
                 ]
             );
 
-            /** @var \Magento\Backend\Block\Store\Switcher\Form\Renderer\Fieldset\Element $renderer */
-            $renderer = $this->getLayout()->createBlock(
-                'Magento\Backend\Block\Store\Switcher\Form\Renderer\Fieldset\Element'
-            );
+            /** @var Element $renderer */
+            $renderer = $this->getLayout()->createBlock(Element::class);
             $field->setRenderer($renderer);
         } else {
             $fieldset->addField(
@@ -137,13 +135,13 @@ class Filter extends Generic implements TabInterface
             $model->setStoreId($this->_storeManager->getStore(true)->getId());
         }
 
-        $fieldset->addField('customer_group_id', 'multiselect', array(
+        $fieldset->addField('customer_group_id', 'multiselect', [
             'label' => __('Customer Groups'),
             'title' => __('Customer Groups'),
             'name' => 'groups[]',
             'required' => true,
-            'values' => $this->_groupOptions->toOptionArray(),
-        ));
+            'values' => $this->groupOptions->toOptionArray(),
+        ]);
 
         $form->setValues($model->getData());
 

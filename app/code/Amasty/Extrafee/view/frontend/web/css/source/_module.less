@@ -1,0 +1,163 @@
+//
+//  Amasty ExtraFee
+//  _____________________________________________
+
+//
+//  Variables
+//  --------------------------------------------
+
+// Icon arrow
+@amexfee-icon-arrow__width: 12px;
+@amexfee-icon-arrow__height: @amexfee-icon-arrow__width;
+@amexfee-icon-arrow__background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgMjg0LjkyOSAyODQuOTI5Ij48cGF0aCBkPSJNMi44NDcgODkuNjQ0bDEzMy4wNTQgMTMzLjA0NWMxLjkwMSAxLjkwMyA0LjA4OCAyLjg1NiA2LjU2MiAyLjg1NnM0LjY2NS0uOTUzIDYuNTY3LTIuODU2TDI4Mi4wNzMgODkuNjQ0YzEuOTA2LTEuOTA2IDIuODU2LTQuMDkzIDIuODU2LTYuNTY4IDAtMi40NzQtLjk1My00LjY2NC0yLjg1Ni02LjU2NmwtMTQuMjcyLTE0LjI3MWMtMS45MDMtMS45MDMtNC4wOTMtMi44NTQtNi41NjctMi44NTRzLTQuNjY0Ljk1MS02LjU2NyAyLjg1NEwxNDIuNDYzIDE3NC40NDEgMzAuMjU1IDYyLjIzMmMtMS45MDItMS45MDMtNC4wOTMtMi44NDgtNi41NjMtMi44NDgtMi40NzggMC00LjY2OC45NTEtNi41NyAyLjg0OEwyLjg0OCA3Ni41MDlDLjk0NiA3OC40MTEuMDAxIDgwLjYwMi4wMDEgODMuMDc1IDAgODUuNTUxLjk0NSA4Ny43NDEgMi44NDcgODkuNjQ0eiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9ImFjdGl2ZS1wYXRoIiBkYXRhLW9sZF9jb2xvcj0iIzAwMDAwMCIgZmlsbD0iIzg1ODU4NSIvPjwvc3ZnPg==);
+@amexfee-icon-arrow__active__background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgMjg0LjkyOSAyODQuOTI5Ij48cGF0aCBkPSJNMjgyLjA4MiAxOTUuMjg1TDE0OS4wMjggNjIuMjRjLTEuOTAxLTEuOTAzLTQuMDg4LTIuODU2LTYuNTYyLTIuODU2cy00LjY2NS45NTMtNi41NjcgMi44NTZMMi44NTYgMTk1LjI4NUMuOTUgMTk3LjE5MSAwIDE5OS4zNzggMCAyMDEuODUzYzAgMi40NzQuOTUzIDQuNjY0IDIuODU2IDYuNTY2bDE0LjI3MiAxNC4yNzFjMS45MDMgMS45MDMgNC4wOTMgMi44NTQgNi41NjcgMi44NTRzNC42NjQtLjk1MSA2LjU2Ny0yLjg1NGwxMTIuMjA0LTExMi4yMDIgMTEyLjIwOCAxMTIuMjA5YzEuOTAyIDEuOTAzIDQuMDkzIDIuODQ4IDYuNTYzIDIuODQ4IDIuNDc4IDAgNC42NjgtLjk1MSA2LjU3LTIuODQ4bDE0LjI3NC0xNC4yNzdjMS45MDItMS45MDIgMi44NDctNC4wOTMgMi44NDctNi41NjYuMDAxLTIuNDc2LS45NDQtNC42NjYtMi44NDYtNi41Njl6IiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBjbGFzcz0iYWN0aXZlLXBhdGgiIGRhdGEtb2xkX2NvbG9yPSIjMDAwMDAwIiBmaWxsPSIjODU4NTg1Ii8+PC9zdmc+);
+
+// Title
+@amexfee-title__border-color: #ccc;
+@amexfee-title__border: 1px solid @amexfee-title__border-color;
+
+// Element required
+@amexfee-element-requered-star__color: #e02b27;
+@amexfee-element-requered-star__font-size: 1.2rem;
+
+// Totals table
+@amexfee-totals-table__border-color: #ccc;
+@amexfee-totals-table__border: 1px solid @amexfee-totals-table__border-color;
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .amexfee-block-content {
+        > .title.amexfee-title {
+            & {
+                position: relative;
+                padding: 10px 40px 10px 0;
+                text-decoration: none;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+            &:after {
+                position: absolute;
+                top: 50%;
+                right: 0;
+                display: inline-block;
+                margin: 0;
+                width: @amexfee-icon-arrow__width;
+                height: @amexfee-icon-arrow__height;
+                background: @amexfee-icon-arrow__background-image no-repeat ~'center / contain';
+                content: '';
+                cursor: pointer;
+                transform: translateY(-50%);
+            }
+        }
+
+        &.active > .title.amexfee-title:after {
+            background: @amexfee-icon-arrow__active__background-image no-repeat ~'center / contain';
+            content: '';
+        }
+    }
+
+    .amexfee-block-content.-cart {
+        > .title.amexfee-title {
+            & {
+                margin-bottom: 0;
+                border-top: @amexfee-title__border;
+            }
+
+            &:after {
+                content: '';
+            }
+        }
+    }
+
+    .amexfee-block-content.-checkout > .title.amexfee-title {
+        margin-bottom: 10px;
+        border-bottom: @amexfee-title__border;
+        font-weight: 300;
+        font-size: 18px;
+    }
+
+    .amexfee-item-element._required .amexfee-title:after {
+        margin: 0 0 0 5px;
+        color: @amexfee-element-requered-star__color;
+        content: '*';
+        font-size: @amexfee-element-requered-star__font-size;
+    }
+
+    .amexfee-form-container {
+        > .amexfee-fieldset .amexfee-title {
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .amexfee-input {
+            float: left;
+        }
+
+        .amexfee-input + .amexfee-label {
+            display: block;
+            overflow: hidden;
+            margin: 0;
+        }
+    }
+
+    .amexfee-collapsible-block {
+        & {
+            cursor: pointer;
+        }
+
+        // Magento styles override
+        > .amount.amexfee-amount,
+        .opc-block-summary & > .amount.amexfee-amount,
+        .opc-block-summary & > .mark.amexfee-mark,
+        > .mark.amexfee-mark {
+            border-top: @amexfee-totals-table__border;
+            border-bottom: @amexfee-totals-table__border;
+        }
+
+        > .amount.amexfee-amount,
+        .opc-block-summary & > .amount.amexfee-amount {
+            position: relative;
+            padding-right: 20px;
+        }
+
+        > .amount.amexfee-amount:after,
+        .opc-block-summary & > .amount.amexfee-amount:after {
+            position: absolute;
+            top: 50%;
+            right: 3px;
+            display: inline-block;
+            width: @amexfee-icon-arrow__width;
+            height: @amexfee-icon-arrow__height;
+            background: @amexfee-icon-arrow__background-image no-repeat ~'center / contain';
+            content: '';
+            cursor: pointer;
+            transform: translateY(-50%);
+        }
+
+        &.-expanded > .amount.amexfee-amount,
+        &.-expanded > .mark.amexfee-mark {
+            border-bottom: 0;
+        }
+
+        &.-expanded > .amount.amexfee-amount:after,
+        .opc-block-summary &.-expanded > .amount.amexfee-amount:after {
+            transform: translateY(-50%) rotateZ(180deg);
+        }
+        // END Magento styles override
+    }
+
+    .amexfee-totals-details {
+        & {
+            display: none;
+        }
+
+        &.-show {
+            display: table-row;
+            border-bottom: @amexfee-totals-table__border;
+        }
+    }
+}

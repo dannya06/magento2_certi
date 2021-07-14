@@ -1,21 +1,25 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Plugin\Setup;
 
+use Amasty\Base\Setup\SerializedFieldDataConverter;
+use Amasty\Extrafee\Api\Data\FeeInterface;
+use Amasty\Extrafee\Model\ResourceModel\Fee;
+
 class UpgradeData
 {
     /**
-     * @var \Amasty\Base\Setup\SerializedFieldDataConverter
+     * @var SerializedFieldDataConverter
      */
     private $fieldDataConverter;
 
-    public function __construct(\Amasty\Base\Setup\SerializedFieldDataConverter $fieldDataConverter)
+    public function __construct(SerializedFieldDataConverter $fieldDataConverter)
     {
         $this->fieldDataConverter = $fieldDataConverter;
     }
@@ -28,9 +32,9 @@ class UpgradeData
     public function afterConvertSerializedDataToJson(\Magento\SalesRule\Setup\UpgradeData $subject, $result)
     {
         $this->fieldDataConverter->convertSerializedDataToJson(
-            'amasty_extrafee',
-            'entity_id',
-            ['conditions_serialized']
+            Fee::TABLE_NAME,
+            FeeInterface::ENTITY_ID,
+            [FeeInterface::CONDITIONS_SERIALIZED]
         );
 
         return $result;

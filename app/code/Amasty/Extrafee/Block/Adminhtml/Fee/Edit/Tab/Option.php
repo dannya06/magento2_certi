@@ -1,28 +1,44 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Block\Adminhtml\Fee\Edit\Tab;
 
-/**
- * Class Option
- *
- * @author Artem Brunevski
- */
-
+use Amasty\Extrafee\Api\FeeRepositoryInterface;
+use Amasty\Extrafee\Block\Adminhtml\Fee\Edit\Tab\Option\Field;
+use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Backend\Block\Widget\Tab\TabInterface;
-use Amasty\Extrafee\Controller\RegistryConstants;
+use Magento\Framework\Data\FormFactory;
+use Magento\Framework\Phrase;
+use Magento\Framework\Registry;
 
 class Option extends Generic implements TabInterface
 {
     /**
+     * @var FeeRepositoryInterface
+     */
+    private $feeRepository;
+
+    public function __construct(
+        Context $context,
+        Registry $registry,
+        FormFactory $formFactory,
+        FeeRepositoryInterface $feeRepository,
+        array $data = []
+    ) {
+        $this->feeRepository = $feeRepository;
+        parent::__construct($context, $registry, $formFactory, $data);
+    }
+
+    /**
      * Prepare label for tab
      *
-     * @return \Magento\Framework\Phrase
+     * @return Phrase
      */
     public function getTabLabel()
     {
@@ -32,7 +48,7 @@ class Option extends Generic implements TabInterface
     /**
      * Prepare title for tab
      *
-     * @return \Magento\Framework\Phrase
+     * @return Phrase
      */
     public function getTabTitle()
     {
@@ -40,7 +56,7 @@ class Option extends Generic implements TabInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function canShowTab()
     {
@@ -48,7 +64,7 @@ class Option extends Generic implements TabInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function isHidden()
     {
@@ -65,8 +81,11 @@ class Option extends Generic implements TabInterface
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create();
 
-        /** @var \Amasty\Extrafee\Model\Fee $model */
-        $model = $this->_coreRegistry->registry(RegistryConstants::FEE);
+        if ($feeId = $this->getRequest()->getParam('id')) {
+            $model = $this->feeRepository->getById($feeId);
+        } else {
+            $model = $this->feeRepository->create();
+        }
 
         $fieldset = $form->addFieldset(
             'option_fieldset',
@@ -86,8 +105,7 @@ class Option extends Generic implements TabInterface
         $form->getElement(
             'options'
         )->setRenderer(
-            $this->getLayout()
-                ->createBlock('Amasty\Extrafee\Block\Adminhtml\Fee\Edit\Tab\Option\Field')
+            $this->getLayout()->createBlock(Field::class)
         );
 
         $form->setValues($model->getData());

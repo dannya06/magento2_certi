@@ -1,64 +1,46 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Model\ResourceModel;
 
-/**
- * Class Fee
- *
- * @author Artem Brunevski
- */
-
+use Amasty\Extrafee\Api\Data\FeeInterface;
+use Amasty\Base\Model\Serializer;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Model\AbstractModel;
 
 class Fee extends AbstractDb
 {
-    /** @var StoreManagerInterface  */
-    protected $_storeManager;
-
-    /** @var MetadataPool  */
-    protected $_metadataPool;
+    const TABLE_NAME = 'amasty_extrafee';
+    const GROUP_TABLE_NAME = 'amasty_extrafee_customer_group';
+    const STORE_TABLE_NAME = 'amasty_extrafee_store';
 
     /**
-     * @var \Amasty\Base\Model\Serializer
+     * @var Serializer
      */
     protected $serializer;
 
-    /**
-     * @param Context $context
-     * @param StoreManagerInterface $storeManager
-     * @param MetadataPool $metadataPool
-     * @param \Amasty\Base\Model\Serializer $serializer
-     * @param null $connectionName
-     */
     public function __construct(
         Context $context,
-        StoreManagerInterface $storeManager,
-        MetadataPool $metadataPool,
-        \Amasty\Base\Model\Serializer $serializer,
+        Serializer $serializer,
         $connectionName = null
-    ){
-        $this->_storeManager = $storeManager;
-        $this->_metadataPool = $metadataPool;
-        $this->serializer   = $serializer;
+    ) {
+        $this->serializer = $serializer;
         parent::__construct($context, $connectionName);
     }
 
     protected function _construct()
     {
-        $this->_init('amasty_extrafee', 'entity_id');
+        $this->_init(self::TABLE_NAME, FeeInterface::ENTITY_ID);
     }
 
     /**
-     * @param $feeId
+     * @param int $feeId
      * @return array
      */
     public function lookupStoreIds($feeId)
@@ -66,7 +48,7 @@ class Fee extends AbstractDb
         $connection = $this->getConnection();
 
         $select = $connection->select()->from(
-            $this->getTable('amasty_extrafee_store'),
+            $this->getTable(self::STORE_TABLE_NAME),
             'store_id'
         )->where(
             'fee_id = ?',
@@ -77,7 +59,7 @@ class Fee extends AbstractDb
     }
 
     /**
-     * @param $feeId
+     * @param int $feeId
      * @return array
      */
     public function lookupCustomerGroupIds($feeId)
@@ -85,7 +67,7 @@ class Fee extends AbstractDb
         $connection = $this->getConnection();
 
         $select = $connection->select()->from(
-            $this->getTable('amasty_extrafee_customer_group'),
+            $this->getTable(self::GROUP_TABLE_NAME),
             'customer_group_id'
         )->where(
             'fee_id = ?',
@@ -96,7 +78,7 @@ class Fee extends AbstractDb
     }
 
     /**
-     * @param $feeId
+     * @param int $feeId
      * @return array
      */
     public function lookupOptions($feeId)
@@ -104,7 +86,7 @@ class Fee extends AbstractDb
         $connection = $this->getConnection();
 
         $select = $connection->select()->from(
-            $this->getTable('amasty_extrafee_option'),
+            $this->getTable(Option::TABLE_NAME),
             ['entity_id', 'fee_id', 'price', 'order', 'price_type', 'default', 'admin', 'options_serialized']
         )->order(
             'order'
@@ -114,7 +96,7 @@ class Fee extends AbstractDb
         );
 
         $options = $connection->fetchAll($select);
-        foreach($options as &$option){
+        foreach ($options as &$option) {
             $option['price'] = number_format($option['price'], 2);
             $option['options'] = $this->serializer->unserialize($option['options_serialized']);
             unset($option['options_serialized']);
@@ -124,7 +106,7 @@ class Fee extends AbstractDb
     }
 
     /**
-     * @param AbstractModel $object
+     * @param FeeInterface|AbstractModel $object
      * @return $this
      */
     public function saveStores(AbstractModel $object)
@@ -134,7 +116,7 @@ class Fee extends AbstractDb
         if (empty($newStores)) {
             $newStores = (array)$object->getStoreId();
         }
-        $table = $this->getTable('amasty_extrafee_store');
+        $table = $this->getTable(self::STORE_TABLE_NAME);
         $insert = array_diff($newStores, $oldStores);
         $delete = array_diff($oldStores, $newStores);
 
@@ -158,7 +140,7 @@ class Fee extends AbstractDb
     }
 
     /**
-     * @param AbstractModel $object
+     * @param FeeInterface|AbstractModel $object
      * @return $this
      */
     public function saveCustomerGroups(AbstractModel $object)
@@ -168,7 +150,7 @@ class Fee extends AbstractDb
         if (empty($newGroups)) {
             $newGroups = (array)$object->getGroupId();
         }
-        $table = $this->getTable('amasty_extrafee_customer_group');
+        $table = $this->getTable(self::GROUP_TABLE_NAME);
         $insert = array_diff($newGroups, $oldGroups);
         $delete = array_diff($oldGroups, $newGroups);
 
@@ -192,7 +174,7 @@ class Fee extends AbstractDb
     }
 
     /**
-     * @param AbstractModel $object
+     * @param FeeInterface|AbstractModel $object
      * @param array $options
      * @return $this
      */
@@ -203,13 +185,14 @@ class Fee extends AbstractDb
             $options = $object->getOptions();
         }
 
-        if (!is_array($default))
+        if (!is_array($default)) {
             $default = [];
+        }
 
         $deleteIds = [];
         $insertData = [];
         if (is_array($options) && array_key_exists('value', $options)) {
-            foreach($options['value'] as $id => $value) {
+            foreach ($options['value'] as $id => $value) {
                 $entityId = strpos($id, 'option') !== false ? null : $id;
                 if ($options['delete'][$id] !== '1') {
                     $insertData[] = [
@@ -231,7 +214,7 @@ class Fee extends AbstractDb
                 try {
                     $option = $this->serializer->unserialize($option);
                 } catch (\Exception $exception) {
-                    //if option is unserialized
+                    unset($exception);
                 }
                 if (isset($option['options']) && is_array($option['options'])) {
                     $option['options_serialized'] = $this->serializer->serialize($option['options']);
@@ -242,15 +225,13 @@ class Fee extends AbstractDb
             }
         }
 
-        $table = $this->getTable('amasty_extrafee_option');
+        $table = $this->getTable(Option::TABLE_NAME);
 
-        if (count($insertData) > 0)
-        {
+        if (count($insertData) > 0) {
             $this->getConnection()->insertOnDuplicate($table, $insertData);
         }
 
-        if (count($deleteIds) > 0)
-        {
+        if (count($deleteIds) > 0) {
             $where = ['fee_id = ?' => (int)$object->getId(), 'entity_id IN (?)' => $deleteIds];
             $this->getConnection()->delete($table, $where);
         }
@@ -259,7 +240,7 @@ class Fee extends AbstractDb
     }
 
     /**
-     * @param AbstractModel $object
+     * @param FeeInterface|AbstractModel $object
      * @return $this
      */
     protected function _afterLoad(AbstractModel $object)
@@ -278,13 +259,16 @@ class Fee extends AbstractDb
     }
 
     /**
-     * @param AbstractModel $object
+     * @param FeeInterface|AbstractModel $object
      * @return AbstractModel
      */
     public function loadOptions(AbstractModel $object)
     {
-        $options = $this->lookupOptions($object->getId());
-        $object->setData('options', $options);
+        if (!$object->hasData('options')) {
+            $options = $this->lookupOptions($object->getId());
+            $object->setData('options', $options);
+        }
+
         return $object;
     }
 }

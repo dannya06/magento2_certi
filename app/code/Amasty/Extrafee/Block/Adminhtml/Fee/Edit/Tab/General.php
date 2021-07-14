@@ -1,66 +1,56 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Block\Adminhtml\Fee\Edit\Tab;
 
-/**
- * Class General
- *
- * @author Artem Brunevski
- */
-
+use Amasty\Extrafee\Api\Data\FeeInterface;
+use Amasty\Extrafee\Api\FeeRepositoryInterface;
+use Amasty\Extrafee\Model\Fee\Source\FrontendType;
+use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Backend\Block\Widget\Tab\TabInterface;
-use Amasty\Extrafee\Controller\RegistryConstants;
 use Magento\Config\Model\Config\Source\Yesno;
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Registry;
 use Magento\Framework\Data\FormFactory;
-use Amasty\Extrafee\Model\Fee\Source\FrontendType;
+use Magento\Framework\Phrase;
+use Magento\Framework\Registry;
 
 class General extends Generic implements TabInterface
 {
-    /** @var Yesno  */
+    /** @var Yesno */
     protected $yesno;
 
-    /** @var FrontendType  */
+    /** @var FrontendType */
     protected $frontendType;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param FormFactory $formFactory
-     * @param Yesno $yesno
-     * @param FrontendType $frontendType
-     * @param array $data
+     * @var FeeRepositoryInterface
      */
+    private $feeRepository;
+
     public function __construct(
         Context $context,
         Registry $registry,
         FormFactory $formFactory,
         Yesno $yesno,
         FrontendType $frontendType,
+        FeeRepositoryInterface $feeRepository,
         array $data = []
     ) {
         $this->yesno = $yesno;
         $this->frontendType = $frontendType;
-
-        return parent::__construct(
-            $context,
-            $registry,
-            $formFactory,
-            $data
-        );
+        $this->feeRepository = $feeRepository;
+        return parent::__construct($context, $registry, $formFactory, $data);
     }
 
     /**
      * Prepare label for tab
      *
-     * @return \Magento\Framework\Phrase
+     * @return Phrase
      */
     public function getTabLabel()
     {
@@ -70,7 +60,7 @@ class General extends Generic implements TabInterface
     /**
      * Prepare title for tab
      *
-     * @return \Magento\Framework\Phrase
+     * @return Phrase
      */
     public function getTabTitle()
     {
@@ -78,7 +68,7 @@ class General extends Generic implements TabInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function canShowTab()
     {
@@ -86,7 +76,7 @@ class General extends Generic implements TabInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function isHidden()
     {
@@ -103,8 +93,11 @@ class General extends Generic implements TabInterface
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create();
 
-        /** @var \Amasty\Extrafee\Model\Fee $model */
-        $model = $this->_coreRegistry->registry(RegistryConstants::FEE);
+        if ($feeId = $this->getRequest()->getParam('id')) {
+            $model = $this->feeRepository->getById($feeId);
+        } else {
+            $model = $this->feeRepository->create();
+        }
 
         $fieldset = $form->addFieldset(
             'general_fieldset',
@@ -112,14 +105,14 @@ class General extends Generic implements TabInterface
         );
 
         if ($model->getId()) {
-            $fieldset->addField('entity_id', 'hidden', ['name' => 'entity_id']);
+            $fieldset->addField('fee_id', 'hidden', ['name' => 'fee_id']);
         }
 
         $fieldset->addField(
-            'name',
+            FeeInterface::NAME,
             'text',
             [
-                'name' => 'name',
+                'name' => FeeInterface::NAME,
                 'label' => __('Name'),
                 'title' => __('Name'),
                 'required' => true,
@@ -127,10 +120,10 @@ class General extends Generic implements TabInterface
         );
 
         $fieldset->addField(
-            'enabled',
+            FeeInterface::ENABLED,
             'select',
             [
-                'name' => 'enabled',
+                'name' => FeeInterface::ENABLED,
                 'label' => __('Enabled'),
                 'title' => __('Enabled'),
                 'values' => $this->yesno->toOptionArray()
@@ -138,10 +131,32 @@ class General extends Generic implements TabInterface
         );
 
         $fieldset->addField(
-            'frontend_type',
+            FeeInterface::IS_REQUIRED,
             'select',
             [
-                'name' => 'frontend_type',
+                'name' => FeeInterface::IS_REQUIRED,
+                'label' => __('Mandatory to select'),
+                'title' => __('Mandatory to select'),
+                'values' => $this->yesno->toOptionArray()
+            ]
+        );
+
+        $fieldset->addField(
+            FeeInterface::IS_ELIGIBLE_REFUND,
+            'select',
+            [
+                'name' => FeeInterface::IS_ELIGIBLE_REFUND,
+                'label' => __('Eligible for Refund'),
+                'title' => __('Eligible for Refund'),
+                'values' => $this->yesno->toOptionArray()
+            ]
+        );
+
+        $fieldset->addField(
+            FeeInterface::FRONTEND_TYPE,
+            'select',
+            [
+                'name' => FeeInterface::FRONTEND_TYPE,
                 'label' => __('Type'),
                 'title' => __('Type'),
                 'values' => $this->frontendType->toOptionArray()
@@ -149,31 +164,31 @@ class General extends Generic implements TabInterface
         );
 
         $fieldset->addField(
-            'sort_order',
+            FeeInterface::SORT_ORDER,
             'text',
             [
-                'name' => 'sort_order',
-                'label' => __('Sort_ Order'),
+                'name' => FeeInterface::SORT_ORDER,
+                'label' => __('Sort Order'),
                 'title' => __('Sort Order'),
                 'class' => 'validate-number',
             ]
         );
 
         $fieldset->addField(
-            'description',
+            FeeInterface::DESCRIPTION,
             'textarea',
             [
-                'name' => 'description',
+                'name' => FeeInterface::DESCRIPTION,
                 'label' => __('Description'),
                 'title' => __('Description')
             ]
         );
 
         $form->setValues($model->getData());
+        $form->addValues(['fee_id' => $model->getId()]);
 
         $this->setForm($form);
 
         return parent::_prepareForm();
     }
-
 }

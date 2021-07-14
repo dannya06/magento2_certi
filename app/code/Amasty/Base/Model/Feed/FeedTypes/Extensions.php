@@ -92,7 +92,7 @@ class Extensions
     {
         $result = [];
         $content = $this->feedContentProvider->getFeedContent(
-            $this->feedContentProvider->getFeedUrl(FeedContentProvider::URN_EXTENSIONS)
+            $this->feedContentProvider->getFeedUrl(FeedContentProvider::URN_EXTENSIONS, true)
         );
         $feedXml = $this->parser->parseXml($content);
 

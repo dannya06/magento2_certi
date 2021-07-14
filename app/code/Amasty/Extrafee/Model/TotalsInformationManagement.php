@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
@@ -9,107 +9,84 @@
 namespace Amasty\Extrafee\Model;
 
 /**
- * Class TotalsInformationManagement
- *
- * @author Artem Brunevski
+ * For create empty quote fee and apply the selected fee
  */
-
-use Amasty\Extrafee\Api\TotalsInformationManagementInterface;
-use Amasty\Extrafee\Api\Data\TotalsInformationInterface;
-use Magento\Quote\Api\CartTotalRepositoryInterface;
-use Magento\Quote\Api\CartRepositoryInterface;
-use Amasty\Extrafee\Helper\Data as ExtrafeeHelper;
-use Amasty\Extrafee\Api\FeeRepositoryInterface;
-use Amasty\Extrafee\Model\QuoteFactory as FeeQuoteFactory;
-use Amasty\Extrafee\Model\ResourceModel\Quote\CollectionFactory as FeeQuoteCollectionFactory;
-use Amasty\Extrafee\Model\ResourceModel\Fee\CollectionFactory as FeeCollectionFactory;
-use Magento\Framework\Convert\DataObject as ObjectConverter;
-use Magento\Checkout\Model\TotalsInformationManagement as CheckoutTotalsInformationManagement;
-
-class TotalsInformationManagement implements TotalsInformationManagementInterface
+class TotalsInformationManagement implements \Amasty\Extrafee\Api\TotalsInformationManagementInterface
 {
-    /** @var CartTotalRepositoryInterface  */
+    /** @var \Magento\Quote\Api\CartTotalRepositoryInterface */
     protected $cartTotalRepository;
 
-    /** @var CartRepositoryInterface  */
+    /** @var \Magento\Quote\Api\CartRepositoryInterface */
     protected $cartRepository;
 
-    /** @var FeeQuoteFactory  */
+    /** @var \Amasty\Extrafee\Model\ExtrafeeQuoteFactory */
     protected $feeQuoteFactory;
 
-    /** @var FeeRepositoryInterface  */
+    /** @var \Amasty\Extrafee\Api\FeeRepositoryInterface */
     protected $feeRepository;
 
-    /** @var ExtrafeeHelper  */
-    protected $extrafeeHelper;
-
-    /** @var FeeQuoteCollectionFactory  */
+    /** @var \Amasty\Extrafee\Model\ResourceModel\ExtrafeeQuote\CollectionFactory */
     protected $feeQuoteCollectionFactory;
 
-    /** @var ObjectConverter  */
+    /** @var \Magento\Framework\Convert\DataObject */
     protected $objectConverter;
 
-    /** @var FeeCollectionFactory  */
+    /** @var \Amasty\Extrafee\Model\ResourceModel\Fee\CollectionFactory */
     protected $feeCollectionFactory;
 
-    /** @var CheckoutTotalsInformationManagement  */
+    /** @var \Magento\Checkout\Model\TotalsInformationManagement */
     protected $checkoutTotalsInformationManagement;
 
     /**
-     * @param CartRepositoryInterface $cartRepository
-     * @param CartTotalRepositoryInterface $cartTotalRepository
-     * @param FeeRepositoryInterface $feeRepository
-     * @param QuoteFactory $feeQuoteFactory
-     * @param ExtrafeeHelper $extrafeeHelper
-     * @param FeeQuoteCollectionFactory $feeQuoteCollectionFactory
-     * @param ObjectConverter $objectConverter
-     * @param CheckoutTotalsInformationManagement $checkoutTotalsInformationManagement
+     * @var ExtrafeeQuoteRepository
      */
+    private $feeQuoteRepository;
+
+    /**
+     * @var OptionManager
+     */
+    private $optionManager;
+
     public function __construct(
-        CartRepositoryInterface $cartRepository,
-        CartTotalRepositoryInterface $cartTotalRepository,
-        FeeRepositoryInterface $feeRepository,
-        FeeQuoteFactory $feeQuoteFactory,
-        ExtrafeeHelper $extrafeeHelper,
-        FeeQuoteCollectionFactory $feeQuoteCollectionFactory,
-        FeeCollectionFactory $feeCollectionFactory,
-        ObjectConverter $objectConverter,
-        CheckoutTotalsInformationManagement $checkoutTotalsInformationManagement
+        \Magento\Quote\Api\CartRepositoryInterface $cartRepository,
+        \Magento\Quote\Api\CartTotalRepositoryInterface $cartTotalRepository,
+        \Amasty\Extrafee\Api\FeeRepositoryInterface $feeRepository,
+        \Amasty\Extrafee\Model\ExtrafeeQuoteFactory $feeQuoteFactory,
+        \Amasty\Extrafee\Model\ResourceModel\ExtrafeeQuote\CollectionFactory $feeQuoteCollectionFactory,
+        \Amasty\Extrafee\Model\ResourceModel\Fee\CollectionFactory $feeCollectionFactory,
+        \Magento\Framework\Convert\DataObject $objectConverter,
+        \Magento\Checkout\Model\TotalsInformationManagement $checkoutTotalsInformationManagement,
+        ExtrafeeQuoteRepository $feeQuoteRepository,
+        OptionManager $optionManager
     ) {
         $this->cartRepository = $cartRepository;
         $this->cartTotalRepository = $cartTotalRepository;
         $this->feeRepository = $feeRepository;
         $this->feeQuoteFactory = $feeQuoteFactory;
-        $this->extrafeeHelper = $extrafeeHelper;
         $this->feeQuoteCollectionFactory = $feeQuoteCollectionFactory;
         $this->objectConverter = $objectConverter;
         $this->checkoutTotalsInformationManagement = $checkoutTotalsInformationManagement;
         $this->feeCollectionFactory = $feeCollectionFactory;
+        $this->feeQuoteRepository = $feeQuoteRepository;
+        $this->optionManager = $optionManager;
     }
 
     /**
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return \Magento\Framework\DataObject[]
-     */
-    protected function getQuoteFeesItems(\Magento\Quote\Model\Quote $quote)
-    {
-        return $this->feeQuoteCollectionFactory->create()
-            ->addFieldToFilter('quote_id', $quote->getId())->getItems();
-    }
-
-    /**
+     * Create empty quote fee with calculate checkout Totals
+     *
      * @param int $cartId
-     * @param TotalsInformationInterface $information
+     * @param \Amasty\Extrafee\Api\Data\TotalsInformationInterface $information
      * @param \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
      * @return \Magento\Quote\Api\Data\TotalsInterface
      */
     public function calculate(
         $cartId,
-        TotalsInformationInterface $information,
+        \Amasty\Extrafee\Api\Data\TotalsInformationInterface $information,
         \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
     ) {
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->cartRepository->get($cartId);
+        $quote->setAppliedAmastyFeeFlag(true);
 
         $optionsIds = $information->getOptionsIds();
         $feeId = $information->getFeeId();
@@ -120,13 +97,16 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
     }
 
     /**
+     * Create empty quote fee
+     *
      * @param \Magento\Quote\Model\Quote $quote
      * @param string|int $feeId
-     * @param $optionsIds
+     * @param array $optionsIds
      */
     public function proceedQuoteOptions(\Magento\Quote\Model\Quote $quote, $feeId, $optionsIds)
     {
         if (is_array($optionsIds)) {
+            $quoteId = $quote->getId();
             $fee = $this->feeRepository->getById($feeId);
 
             //only checkbox type allow multifee mode
@@ -134,105 +114,115 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
                 $optionsIds = array_slice($optionsIds, 0, 1);
             }
 
-            $feesOptionsHash = $this->objectConverter->toOptionHash(
-                $this->getQuoteFeesItems($quote),
-                'option_id',
-                'entity_id'
-            );
+            $optionsIds = $this->checkExistOptions($fee, $optionsIds);
 
-            /**
-             * fees amount and label will set up on collect totals process
-             */
-            foreach ($optionsIds as $optionId) {
-                //check that fee wasn't applied
-                if ($optionId !== null && !array_key_exists($optionId, $feesOptionsHash)) {
-                    $this->feeQuoteFactory->create()
-                        ->addData([
-                            'quote_id' => $quote->getId(),
-                            'fee_id' => $fee->getId(),
-                            'option_id' => $optionId,
-                        ])->save();
+            $collection = $this->feeQuoteCollectionFactory->create()
+                ->addFilterByFeeAndQuote($fee->getId(), $quoteId);
+            $existingOptionIds = [];
+            foreach ($collection->getItems() as $feeQuote) {
+                $existingOptionId = $feeQuote->getOptionId();
+                if ($existingOptionId == 0) {
+                    continue;
                 }
+
+                if (!in_array($existingOptionId, $optionsIds)) {
+                    $this->feeQuoteRepository->delete($feeQuote);
+                    continue;
+                }
+
+                $existingOptionIds[] = $existingOptionId;
             }
 
-            $this->removeUnselectedOptions(
-                $quote->getId(),
-                $fee->getId(),
-                $optionsIds
-            );
+            $notExistOptions = array_diff($optionsIds, $existingOptionIds);
+            foreach ($notExistOptions as $optionId) {
+                $feeQuote = $this->feeQuoteFactory->create();
+                $feeQuote->addData([
+                    'quote_id' => $quoteId,
+                    'fee_id' => $fee->getId(),
+                    'option_id' => $optionId,
+                ]);
+                $this->feeQuoteRepository->save($feeQuote);
+            }
         }
     }
 
     /**
+     * Apply the selected fee and tax
+     *
      * @param \Magento\Quote\Model\Quote $quote
      */
     public function updateQuoteFees(\Magento\Quote\Model\Quote $quote)
     {
-        /** @var \Amasty\Extrafee\Model\ResourceModel\Quote\Collection $feesQuoteCollection */
+        /** @var \Amasty\Extrafee\Model\ResourceModel\ExtrafeeQuote\Collection $feesQuoteCollection */
         $feesQuoteCollection = $this->feeQuoteCollectionFactory->create()
             ->addFieldToFilter('option_id', ['neq' => '0'])
             ->addFieldToFilter('quote_id', $quote->getId());
 
-        $feesIds= $this->objectConverter->toOptionHash(
-            $this->getQuoteFeesItems($quote),
+        // @TODO overload maybe
+        $feesIds = $this->objectConverter->toOptionHash(
+            $this->getQuoteFeesItems($quote->getId()),
             'option_id',
             'fee_id'
         );
 
-        /** @var \Amasty\Extrafee\Model\Fee[] $feesItems */
+        /** @var Fee[] $feesItems */
         $feesItems = $this->feeCollectionFactory->create()
             ->addFieldToFilter('entity_id', ['in' => array_unique($feesIds)])
             ->getItems();
 
-        /** @var \Amasty\Extrafee\Model\Quote $feesQuoteItem */
+        /** @var ExtrafeeQuote $feesQuoteItem */
         foreach ($feesQuoteCollection->getItems() as $feesQuoteItem) {
             if (array_key_exists($feesQuoteItem->getFeeId(), $feesItems)) {
                 $fee = $feesItems[$feesQuoteItem->getFeeId()];
 
-                $baseOptions = $fee->loadOptions()
-                                   ->fetchBaseOptions($quote);
-
+                // @TODO overload options for fee if there are more than 1 options selected
+                $this->feeRepository->loadOptions($fee);
+                // @TODO also overload
+                $baseOptions = $this->optionManager->fetchBaseOptions($quote, $fee);
                 $option = $this->findOption($baseOptions, $feesQuoteItem->getOptionId());
-                /**
-                 * if data changed update storage
-                 */
+                /** if data changed update storage */
                 if ($option['price'] !== $feesQuoteItem->getFeeAmount() ||
                     $option['base_price'] !== $feesQuoteItem->getBaseFeeAmount() ||
                     $option['tax'] !== $feesQuoteItem->getTaxAmount() ||
                     $option['base_tax'] !== $feesQuoteItem->getBaseTaxAmount() ||
                     $option['label'] !== $feesQuoteItem->getLabel()
                 ) {
-                    $feesQuoteItem
-                        ->setFeeAmount($option['price'])
+                    $feesQuoteItem->setFeeAmount($option['price'])
                         ->setBaseFeeAmount($option['base_price'])
                         ->setTaxAmount($option['tax'])
                         ->setBaseTaxAmount($option['base_tax'])
-                        ->setLabel($option['label'])
-                        ->save();
+                        ->setLabel($option['label']);
+
+                    $this->feeQuoteRepository->save($feesQuoteItem);
                 }
             }
         }
     }
 
     /**
-     * @param $quoteId
-     * @param $feeId
-     * @param array $optionsIds
+     * @param int $quoteId
+     * @return \Magento\Framework\DataObject[]
      */
-    protected function removeUnselectedOptions($quoteId, $feeId, array $optionsIds)
+    private function getQuoteFeesItems($quoteId)
     {
-        $collection = $this->feeQuoteCollectionFactory->create()
-            ->addFieldToFilter('quote_id', $quoteId)
-            ->addFieldToFilter('option_id', ['neq' => '0'])
-            ->addFieldToFilter('fee_id', $feeId);
+        return $this->feeQuoteCollectionFactory->create()
+            ->addFieldToFilter('quote_id', $quoteId)->getItems();
+    }
 
-        if (count($optionsIds) > 0){
-            $collection->addFieldToFilter('option_id', ['nin' => $optionsIds]);
+    /**
+     * @param Fee $fee
+     * @param array $optionsIds
+     * @return array
+     */
+    private function checkExistOptions(Fee $fee, $optionsIds)
+    {
+        foreach ($optionsIds as $key => $optionId) {
+            if (!in_array($optionId, $fee->getOptionsIds())) {
+                unset($optionsIds[$key]);
+            }
         }
 
-        foreach($collection as $feeQuoteOption){
-            $feeQuoteOption->delete();
-        }
+        return $optionsIds;
     }
 
     /**
@@ -240,31 +230,17 @@ class TotalsInformationManagement implements TotalsInformationManagementInterfac
      * @param $optionId
      * @return null
      */
-    protected function findOption(array $options, $optionId)
+    private function findOption(array $options, $optionId)
     {
         $option = null;
 
-        foreach($options as $item){
-            if ((int)$item['index'] === (int)$optionId){
+        foreach ($options as $item) {
+            if ((int)$item['index'] === (int)$optionId) {
                 $option = $item;
                 break;
             }
         }
 
         return $option;
-    }
-
-    /**
-     * @param \Magento\Quote\Model\Quote $quote
-     * @param Fee $fee
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    protected function validateQuote(\Magento\Quote\Model\Quote $quote, Fee $fee)
-    {
-        if ($quote->getItemsCount() === 0 && $this->extrafeeHelper->validateAddress($quote, $fee)) {
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __('Totals calculation is not applicable to empty cart')
-            );
-        }
     }
 }

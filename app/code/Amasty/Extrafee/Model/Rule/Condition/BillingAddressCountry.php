@@ -1,26 +1,28 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Model\Rule\Condition;
 
+use Magento\Directory\Model\Config\Source\Country;
 use Magento\Framework\Model\AbstractModel;
+use Magento\Rule\Model\Condition\AbstractCondition;
+use Magento\Rule\Model\Condition\Context;
 
-class BillingAddressCountry extends \Magento\Rule\Model\Condition\AbstractCondition
+class BillingAddressCountry extends AbstractCondition
 {
-
     /**
-     * @var \Magento\Directory\Model\Config\Source\Country
+     * @var Country
      */
     private $country;
 
     public function __construct(
-        \Magento\Rule\Model\Condition\Context $context,
-        \Magento\Directory\Model\Config\Source\Country $country,
+        Context $context,
+        Country $country,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -48,14 +50,12 @@ class BillingAddressCountry extends \Magento\Rule\Model\Condition\AbstractCondit
      */
     public function asHtml()
     {
-        $value = '';
         try {
             $value = $this->getValueElementHtml();
         } catch (\Exception $e) {
-            /**
-             * if exception catch, than skip element
-             */
+            $value = '';
         }
+
         return $this->getTypeElementHtml()
             . __(sprintf(__('Billing Address Country') . ' %s %s', $this->getOperatorElementHtml(), $value))
             . $this->getRemoveLinkHtml();
@@ -64,9 +64,8 @@ class BillingAddressCountry extends \Magento\Rule\Model\Condition\AbstractCondit
     /**
      * @param AbstractModel $model
      * @return bool
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function validate(\Magento\Framework\Model\AbstractModel $model)
+    public function validate(AbstractModel $model)
     {
         if (!$model->getSameAsBilling()) {
             $model->setData('billing_country', $model->getQuote()->getBillingAddress()->getCountryId());

@@ -85,7 +85,7 @@ class Ads
 
         if (!$this->moduleInfoProvider->isOriginMarketplace()) {
             $content = $this->feedContentProvider->getFeedContent(
-                $this->feedContentProvider->getFeedUrl(FeedContentProvider::URN_ADS)
+                $this->feedContentProvider->getFeedUrl(FeedContentProvider::URN_ADS, true)
             );
             $result = $this->parser->parseCsv($content);
         }

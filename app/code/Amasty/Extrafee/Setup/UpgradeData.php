@@ -1,17 +1,25 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
+declare(strict_types=1);
+
 namespace Amasty\Extrafee\Setup;
 
+use Amasty\Base\Setup\SerializedFieldDataConverter;
+use Amasty\Extrafee\Api\Data\FeeInterface;
+use Amasty\Extrafee\Model\ResourceModel\Fee;
+use Amasty\Extrafee\Setup\Operation\AddToExistFeesEligibleForRefund;
+use Amasty\Extrafee\Setup\Operation\QuoteToOrderDataMigration;
 use Magento\Catalog\Model\Product\Attribute\Repository;
-use Magento\Framework\Setup\UpgradeDataInterface;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Framework\Setup\UpgradeDataInterface;
 
 class UpgradeData implements UpgradeDataInterface
 {
@@ -21,25 +29,43 @@ class UpgradeData implements UpgradeDataInterface
     private $attributeRepository;
 
     /**
-     * @var \Amasty\Base\Setup\SerializedFieldDataConverter
+     * @var SerializedFieldDataConverter
      */
     private $fieldDataConverter;
 
     /**
-     * @var \Magento\Framework\App\ProductMetadataInterface
+     * @var ProductMetadataInterface
      */
     private $productMetaData;
 
+    /**
+     * @var QuoteToOrderDataMigration
+     */
+    private $quoteToOrderMigration;
+
+    /**
+     * @var AddToExistFeesEligibleForRefund
+     */
+    private $addToExistFeesEligibleForRefund;
+
     public function __construct(
         Repository $attributeRepository,
-        \Magento\Framework\App\ProductMetadataInterface $productMetaData,
-        \Amasty\Base\Setup\SerializedFieldDataConverter $fieldDataConverter
+        ProductMetadataInterface $productMetaData,
+        SerializedFieldDataConverter $fieldDataConverter,
+        QuoteToOrderDataMigration $quoteToOrderMigration,
+        AddToExistFeesEligibleForRefund $addToExistFeesEligibleForRefund
     ) {
         $this->attributeRepository = $attributeRepository;
         $this->fieldDataConverter = $fieldDataConverter;
         $this->productMetaData = $productMetaData;
+        $this->quoteToOrderMigration = $quoteToOrderMigration;
+        $this->addToExistFeesEligibleForRefund = $addToExistFeesEligibleForRefund;
     }
 
+    /**
+     * @param ModuleDataSetupInterface $setup
+     * @param ModuleContextInterface $context
+     */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         if (!$context->getVersion()) {
@@ -51,10 +77,15 @@ class UpgradeData implements UpgradeDataInterface
             && $this->productMetaData->getVersion() >= "2.2.0"
         ) {
             $this->fieldDataConverter->convertSerializedDataToJson(
-                'amasty_extrafee',
-                'entity_id',
-                ['conditions_serialized']
+                Fee::TABLE_NAME,
+                FeeInterface::ENTITY_ID,
+                [FeeInterface::CONDITIONS_SERIALIZED]
             );
+        }
+
+        if (version_compare($context->getVersion(), '1.6.0', '<')) {
+            $this->quoteToOrderMigration->execute($setup);
+            $this->addToExistFeesEligibleForRefund->execute($setup);
         }
 
         $setup->endSetup();

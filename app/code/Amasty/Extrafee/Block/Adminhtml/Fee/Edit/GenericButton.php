@@ -1,21 +1,15 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
-namespace Amasty\Extrafee\Block\Adminhtml\Fee\Edit;
 
-/**
- * Class GenericButton
- *
- * @author Artem Brunevski
- */
+namespace Amasty\Extrafee\Block\Adminhtml\Fee\Edit;
 
 use Magento\Backend\Block\Widget\Context;
 use Amasty\Extrafee\Api\FeeRepositoryInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
 
 class GenericButton
 {

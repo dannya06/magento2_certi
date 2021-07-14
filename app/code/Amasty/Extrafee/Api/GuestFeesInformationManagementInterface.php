@@ -1,23 +1,25 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Api;
 
+use Magento\Checkout\Api\Data\TotalsInformationInterface;
+
 interface GuestFeesInformationManagementInterface
 {
     /**
      * @param string $cartId
-     * @param \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
+     * @param TotalsInformationInterface $addressInformation
      *
      * @return \Amasty\Extrafee\Api\Data\FeesManagerInterface
      */
     public function collect(
         $cartId,
-        \Magento\Checkout\Api\Data\TotalsInformationInterface $addressInformation
+        TotalsInformationInterface $addressInformation
     );
 }

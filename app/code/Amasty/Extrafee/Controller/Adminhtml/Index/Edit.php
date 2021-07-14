@@ -1,47 +1,59 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
+
 namespace Amasty\Extrafee\Controller\Adminhtml\Index;
 
-/**
- * Class Edit
- *
- * @author Artem Brunevski
- */
-use Magento\Backend\App\Action;
-use Magento\Backend\Model\View\Result\Page;
-use Amasty\Extrafee\Model\Fee;
-use Amasty\Extrafee\Controller\RegistryConstants;
+use Amasty\Extrafee\Block\Adminhtml\Fee\Edit\Tab\Calculation;
+use Amasty\Extrafee\Model\FeeRepository;
+use Amasty\Extrafee\Model\Rule\RuleRepository;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\View\Result\Page;
 
 class Edit extends Index
 {
     /**
-     * @param Fee $fee
-     * @return \Magento\SalesRule\Model\Rule
+     * @var FeeRepository
      */
-    protected function initCurrentFeeRule(
-        Fee $fee
+    private $feeRepository;
+
+    /**
+     * @var RuleRepository
+     */
+    private $ruleRepository;
+
+    public function __construct(
+        Context $context,
+        FeeRepository $feeRepository,
+        RuleRepository $ruleRepository
     ) {
-        $rule = $this->_feeRepository->getSalesRule($fee);
-        $this->_coreRegistry->register(RegistryConstants::FEE_RULE, $rule);
-        return $rule;
+        parent::__construct($context);
+        $this->feeRepository = $feeRepository;
+        $this->ruleRepository = $ruleRepository;
     }
 
     /**
-     * @return \Magento\Framework\View\Result\Page
+     * @return Page
      */
     public function execute()
     {
-        $fee = $this->initCurrentFee();
-        $rule = $this->initCurrentFeeRule($fee);
+        if ($feeId = $this->getRequest()->getParam('id')) {
+            $fee = $this->feeRepository->getById($feeId);
+        } else {
+            $fee = $this->feeRepository->create();
+        }
+        $rule = $this->ruleRepository->getByFee($fee);
 
         $rule->getConditions()->setJsFormObject('rule_conditions_fieldset');
+        $rule->getActions()->setJsFormObject(Calculation::RULE_ACTIONS_FIELDSET_NAMESPACE);
 
-        $resultPage = $this->_resultPageFactory->create();
+        /** @var Page $resultPage */
+        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage->setActiveMenu('Amasty_Extrafee::fee_manage');
         $this->prepareDefaultTitle($resultPage);
         $resultPage->setActiveMenu('Magento_Customer::fee');
@@ -51,6 +63,7 @@ class Edit extends Index
         } else {
             $resultPage->getConfig()->getTitle()->prepend(__('New Fee'));
         }
+
         return $resultPage;
     }
 }

@@ -1,12 +1,14 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
  * @package Amasty_Extrafee
  */
 
 
 namespace Amasty\Extrafee\Api\Data;
+
+use Amasty\Extrafee\Model\Config\Source\Excludeinclude;
 
 interface FeeInterface
 {
@@ -25,6 +27,10 @@ interface FeeInterface
     const CONDITIONS_SERIALIZED = 'conditions_serialized';
     const CUSTOMER_GROUP_ID = 'customer_group_id';
     const STORE_ID = 'store_id';
+    const IS_REQUIRED = 'is_required';
+    const IS_ELIGIBLE_REFUND = 'is_eligible_refund';
+    const IS_PER_PRODUCT = 'is_per_product';
+    const PRODUCT_CONDITIONS_SERIALIZED = 'product_conditions_serialized';
 
     /**
      * Get ID
@@ -52,7 +58,16 @@ interface FeeInterface
 
     /**
      * Get fees options
-     * @return string[]
+     * @return array Format: array(array(
+     *  'entity_id' => 0,
+     *  'fee_id' => 0,
+     *  'price' => 0,
+     *  'order' => 0,
+     *  'price_type' => 'fixed',
+     *  'default' => 0,
+     *  'admin' => '',
+     *  'options' => array()
+     * ))
      */
     public function getOptions();
 
@@ -82,11 +97,6 @@ interface FeeInterface
     /**
      * @return mixed
      */
-    public function getTaxInSubtotal();
-
-    /**
-     * @return mixed
-     */
     public function getShippingInSubtotal();
 
     /**
@@ -110,92 +120,131 @@ interface FeeInterface
     public function getStoreId();
 
     /**
+     * @return bool
+     */
+    public function isRequired();
+
+    /**
+     * @return bool
+     */
+    public function isPerProduct(): bool;
+
+    /**
+     * @return null|string
+     */
+    public function getProductConditionsSerialized(): ?string;
+
+    /**
      * @param bool $enabled
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setEnabled($enabled);
 
     /**
      * @param string $name
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setName($name);
 
     /**
      * @param string $description
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setDescription($description);
 
     /**
      * @param string[] $options
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setOptions($options);
 
     /**
      * @param mixed $currentValue
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setCurrentValue($currentValue);
 
     /**
      * @param string $frontendType
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setFrontendType($frontendType);
 
     /**
      * @param mixed $discountInSubtotal
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setDiscountInSubtotal($discountInSubtotal);
 
     /**
      * @param mixed $taxInSubtotal
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
-    public function setTaxInSubtotal($taxInSubtotal);
+    public function setTaxInSubtotal($taxInSubtotal = Excludeinclude::VAR_DEFAULT);
 
     /**
      * @param mixed $shippingInSubtotal
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setShippingInSubtotal($shippingInSubtotal);
 
     /**
      * @param @param string|null $conditionsSerialized
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setConditionsSerialized($conditionsSerialized);
 
     /**
      * @param int $sortOrder
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setSortOrder($sortOrder);
 
     /**
      * @param int $entityId
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setId($entityId);
 
     /**
      * @param mixed $groupId
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setGroupId($groupId);
 
     /**
      * @param mixed $storeId
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setStoreId($storeId);
 
     /**
      * @param mixed $baseOptions
-     * @return \Amasty\Extrafee\Api\Data\FeeInterface
+     * @return FeeInterface
      */
     public function setBaseOptions($baseOptions);
+
+    /**
+     * @param bool $flag
+     * @return FeeInterface
+     */
+    public function setIsRequired($flag);
+
+    /**
+     * @param bool $flag
+     * @return FeeInterface
+     */
+    public function setIsEligibleForRefund($flag);
+
+    /**
+     * @param bool $flag
+     * @return FeeInterface
+     */
+    public function setIsPerProduct(bool $flag);
+
+    /**
+     * @param string|null $conditionsSerialized
+     * @return FeeInterface
+     */
+    public function setProductConditionsSerialized(?string $conditionsSerialized);
 }
