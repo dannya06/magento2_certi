@@ -33,7 +33,8 @@
         "icubeus/magento2-graphql": "^4.1",
         "icubeus/magento2-shippingshipper": "^4.1",
         "icubebysirclo/magento2-firebear": "dev-master",
-        "icubeus/magento2-firebase": "^4.1"
+        "icubeus/magento2-firebase": "^4.1",
+        "icubebysirclo/magento2-facebookshop": "^4.0"
     },
     "replace": {
         "klarna/module-core": "*",
@@ -192,6 +193,10 @@
         "icubeus-firebase": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-firebase.git"
+        },
+        "icubebysirclo-facebookshop": {
+            "type": "git",
+            "url": "git@github.com:icubebysirclo/magento2-facebookshop.git"
         }
     },
     "extra": {
