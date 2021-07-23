@@ -1847,11 +1847,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.7",
+            "version": "4.1.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "3ee9a8d46250d9db6bde45f30a5721874120177a"
+                "reference": "24b33b214f48fb286466b0c3acf0c237a8a6f2ca"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -1877,6 +1877,7 @@
                 "icubeus/module-confirm-payment-graph-ql": "self.version",
                 "icubeus/module-contact-us-graph-ql": "self.version",
                 "icubeus/module-customer-downloadable-graph-ql": "self.version",
+                "icubeus/module-customer-graph-ql": "self.version",
                 "icubeus/module-graphql": "self.version",
                 "icubeus/module-instant-delivery-graph-ql": "self.version",
                 "icubeus/module-magezon-graph-ql": "self.version",
@@ -1901,7 +1902,8 @@
                 "icubeus/module-wishlist-graph-ql": "self.version",
                 "icubeus/module-wp-cms-block-scheduler-graph-ql": "self.version",
                 "icubeus/module-wp-product-label-graph-ql": "self.version",
-                "icubeus/module-wp-smart-product-tabs-graph-ql": "self.version"
+                "icubeus/module-wp-smart-product-tabs-graph-ql": "self.version",
+                "icubeus/module-wp-thankyou-page-graph-ql": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1919,6 +1921,7 @@
                     "src/module-city-region-graph-ql/registration.php",
                     "src/module-contact-us-graph-ql/registration.php",
                     "src/module-customer-downloadable-graph-ql/registration.php",
+                    "src/module-customer-graph-ql/registration.php",
                     "src/module-confirm-payment-graph-ql/registration.php",
                     "src/module-review-graph-ql/registration.php",
                     "src/module-am-bannerslite-graph-ql/registration.php",
@@ -1945,6 +1948,7 @@
                     "src/module-wp-product-label-graph-ql/registration.php",
                     "src/module-cms-graph-ql/registration.php",
                     "src/module-wp-cms-block-scheduler-graph-ql/registration.php",
+                    "src/module-wp-thankyou-page-graph-ql/registration.php",
                     "src/module-wp-smart-product-tabs-graph-ql/registration.php"
                 ],
                 "psr-4": {
@@ -1961,6 +1965,7 @@
                     "Icube\\CityRegionGraphQl\\": "src/module-city-region-graph-ql",
                     "Icube\\ContactUsGraphQl\\": "src/module-contact-us-graph-ql",
                     "Icube\\CustomerDownloadableGraphQl\\": "src/module-customer-downloadable-graph-ql",
+                    "Icube\\CustomerGraphQl\\": "src/module-customer-graph-ql",
                     "Icube\\ConfirmPaymentGraphQl\\": "src/module-confirm-payment-graph-ql",
                     "Icube\\ReviewGraphQl\\": "src/module-review-graph-ql",
                     "Icube\\AmastyBannersLiteGraphQl\\": "src/module-am-bannerslite-graph-ql",
@@ -1987,6 +1992,7 @@
                     "Icube\\WeltPixelLabelGraphQl\\": "src/module-wp-product-label-graph-ql",
                     "Icube\\CmsGraphQl\\": "src/module-cms-graph-ql",
                     "Icube\\WeltPixelCmsBlockSchedulerGraphQl\\": "src/module-wp-cms-block-scheduler-graph-ql",
+                    "Icube\\WeltPixelThankYouPageGraphQl\\": "src/module-wp-thankyou-page-graph-ql",
                     "Icube\\WeltPixelSmartProductTabsGraphQl\\": "src/module-wp-smart-product-tabs-graph-ql"
                 }
             },
@@ -2006,7 +2012,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-06-28T11:39:53+00:00"
+            "time": "2021-07-22T10:31:28+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -2130,11 +2136,11 @@
         },
         {
             "name": "icubeus/magento2-payment",
-            "version": "4.1.2",
+            "version": "4.1.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-payment.git",
-                "reference": "d190df23d9bd8f99712e68a4fb1f07afc806d5d5"
+                "reference": "2c00df34773805924eab93017ddeafa6b36d079f"
             },
             "replace": {
                 "icubeus/module-ipay88": "self.version"
@@ -2174,7 +2180,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-03-30T07:31:11+00:00"
+            "time": "2021-07-22T10:26:09+00:00"
         },
         {
             "name": "icubeus/magento2-queues",
@@ -2531,11 +2537,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.5",
+            "version": "4.1.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "ad254206f3c88a00fe538bc9aeb04b20290ce8dd"
+                "reference": "f918b1da8738b30480780c921074fd73f7d18088"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -2584,7 +2590,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-05-28T07:16:21+00:00"
+            "time": "2021-07-22T10:15:32+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
