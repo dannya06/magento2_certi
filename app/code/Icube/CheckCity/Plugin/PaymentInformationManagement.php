@@ -85,14 +85,17 @@ class PaymentInformationManagement
             $kota       = ltrim($city[0]);
             $kecamatan  = ltrim($city[1]);
             $kelurahan  = ltrim($city[1]);
-        } else {            
+        } else {      
             $kota       = ltrim($city[0]);
             $kecamatan  = ltrim($city[1]);
             $kelurahan  = ltrim($city[2]);
         }
         $sql = "SELECT  * FROM city where city = '".$kota."' and kecamatan ='".$kecamatan.", ".$kelurahan."'";
         $result = $connection->fetchAll($sql);
-        if (count($result) == 0) {
+
+        $country = $quote->getShippingAddress()->getCountry();
+        
+        if (count($result) == 0 && $country == "ID") {
             $redirectionUrl = $this->url->getUrl('customer/address/edit/id/'.$quote->getShippingAddress()->getCustomerAddressId());
             throw new CouldNotSaveException(
                 __('City '.$quote->getShippingAddress()->getCity().' could not be found. Please try edit you shipping address.')
