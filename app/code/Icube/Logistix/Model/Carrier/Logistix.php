@@ -104,7 +104,7 @@ class Logistix extends AbstractCarrier implements CarrierInterface
         $destinationCoord = null;
         $quote = $this->_quote->getQuote();
         if ($quote->getDestLatitude() != null && $quote->getDestLongitude() != null) {
-            $destinationCoord = $quote->getDestLatitude().' '.$quote->getDestLongitude();
+            $destinationCoord = $quote->getDestLatitude().','.$quote->getDestLongitude();
         }
 
         if ($packWeight == "" || $packWeight == NULL) {
