@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb01b3581b7f36a564391224d2083a27",
+    "content-hash": "3c593c91ce249c9f6e027d3ff0ae8ad9",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1665,6 +1665,34 @@
                 "magento2"
             ],
             "time": "2021-03-23T09:59:03+00:00"
+        },
+        {
+            "name": "icubebysirclo/magento2-shippinglogistix",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
+                "reference": "2a6d0b178324ecb019bc44eb81ce480c399c02ee"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\Logistix\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Sirclo Logistix Integration for Magento",
+            "keywords": [
+                "magento 2",
+                "shippinglogistix"
+            ],
+            "time": "2021-08-04T03:05:26+00:00"
         },
         {
             "name": "icubebysirclo/magento2-xendit",
