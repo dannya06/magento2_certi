@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ea4311e545d115db5a9780c4f6d70ee9",
+    "content-hash": "3c593c91ce249c9f6e027d3ff0ae8ad9",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1599,11 +1599,11 @@
         },
         {
             "name": "icubebysirclo/magento2-facebookshop",
-            "version": "4.0.0",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-facebookshop.git",
-                "reference": "21393380ccc6025876559013b6862988f490ddd7"
+                "reference": "258602574458aa5d2df631d7a69a38825a91ee90"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1623,7 +1623,7 @@
                 "facebookshop",
                 "magento 2"
             ],
-            "time": "2021-07-21T09:40:04+00:00"
+            "time": "2021-08-05T14:02:24+00:00"
         },
         {
             "name": "icubebysirclo/magento2-firebear",
@@ -1667,6 +1667,78 @@
             "time": "2021-03-23T09:59:03+00:00"
         },
         {
+            "name": "icubebysirclo/magento2-shippinglogistix",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
+                "reference": "2a6d0b178324ecb019bc44eb81ce480c399c02ee"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\Logistix\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Sirclo Logistix Integration for Magento",
+            "keywords": [
+                "magento 2",
+                "shippinglogistix"
+            ],
+            "time": "2021-08-04T03:05:26+00:00"
+        },
+        {
+            "name": "icubebysirclo/magento2-xendit",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubebysirclo/magento2-xendit.git",
+                "reference": "b25082039b4f6a0642a96a621a5b8ec8b3127e4a"
+            },
+            "replace": {
+                "icubebysirclo/module-xendit": "self.version",
+                "icubebysirclo/module-xendit-graph-ql": "self.version",
+                "icubebysirclo/xendit": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-m2invoice/registration.php",
+                    "src/module-xendit/registration.php",
+                    "src/module-xendit-graph-ql/registration.php"
+                ],
+                "psr-4": {
+                    "Xendit\\M2Invoice\\": "src/module-m2invoice",
+                    "Icube\\Xendit\\": "src/module-xendit",
+                    "Icube\\XenditGraphQl\\": "src/module-xendit-graph-ql"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubebysirclo",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Icube Xendit Payment",
+            "homepage": "https://github.com/icubebysirclo/xendit",
+            "keywords": [
+                "magento",
+                "magento2"
+            ],
+            "time": "2021-08-10T07:01:40+00:00"
+        },
+        {
             "name": "icubeus/magento2-advancerate",
             "version": "4.1.3",
             "source": {
@@ -1696,11 +1768,11 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "4.1.6",
+            "version": "4.1.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "1be59d1d03b9faab9c11221f43d889625ffce07e"
+                "reference": "6580b6ed6516d3e9f6cfd2b518115b96073cd8d4"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1741,7 +1813,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-07-21T09:45:45+00:00"
+            "time": "2021-08-10T04:57:36+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -1847,11 +1919,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.8",
+            "version": "4.1.9",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "24b33b214f48fb286466b0c3acf0c237a8a6f2ca"
+                "reference": "8b09fcb22eed753362a23b3ca5b6e448469ba4ac"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2012,7 +2084,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-07-22T10:31:28+00:00"
+            "time": "2021-08-10T04:53:31+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -2395,11 +2467,11 @@
         },
         {
             "name": "icubeus/magento2-smstada",
-            "version": "4.1.3",
+            "version": "4.1.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "4326799838c720388776f2399c89a8da8cf94dc0"
+                "reference": "adf5e26bd6596b558e1ef5d07a5e18a5cf5c26a4"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "^4.1"
@@ -2438,15 +2510,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-07-21T09:03:17+00:00"
+            "time": "2021-08-10T06:30:45+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.4",
+            "version": "4.1.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "319bb35ff120c3126ee39134660125942c79f503"
+                "reference": "c4ca2b7a8cbf45c8d5b3275409276f9d9cabef62"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -2505,15 +2577,15 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2021-06-30T10:43:36+00:00"
+            "time": "2021-08-06T01:56:31+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "306c4b0c56a07eae16730ab6ca07197ca6751da0"
+                "reference": "332b1c0cc1e0c358b40f0b308e8132ebe9bc2ad2"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2533,7 +2605,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2021-06-30T10:38:40+00:00"
+            "time": "2021-08-06T01:47:40+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -22791,7 +22863,6 @@
                     "type": "github"
                 }
             ],
-            "abandoned": true,
             "time": "2020-09-28T06:45:17+00:00"
         },
         {
