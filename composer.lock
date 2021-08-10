@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32813efe2525a4f544a23b410718be23",
+    "content-hash": "bb01b3581b7f36a564391224d2083a27",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1667,12 +1667,12 @@
             "time": "2021-03-23T09:59:03+00:00"
         },
         {
-            "name": "icubebysirclo/xendit",
+            "name": "icubebysirclo/magento2-xendit",
             "version": "4.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:icubebysirclo/xendit.git",
-                "reference": "581d99a5fccc88d39ac1d5bd0177e573ac422cc2"
+                "url": "git@github.com:icubebysirclo/magento2-xendit.git",
+                "reference": "b25082039b4f6a0642a96a621a5b8ec8b3127e4a"
             },
             "replace": {
                 "icubebysirclo/module-xendit": "self.version",
@@ -1708,7 +1708,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-08-10T04:56:37+00:00"
+            "time": "2021-08-10T07:01:40+00:00"
         },
         {
             "name": "icubeus/magento2-advancerate",

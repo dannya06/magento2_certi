@@ -35,7 +35,7 @@
         "icubebysirclo/magento2-firebear": "dev-master",
         "icubeus/magento2-firebase": "^4.1",
         "icubebysirclo/magento2-facebookshop": "^4.0",
-        "icubebysirclo/xendit": "^4.0"
+        "icubebysirclo/magento2-xendit": "^4.0"
     },
     "replace": {
         "klarna/module-core": "*",
@@ -201,7 +201,7 @@
         },
         "icubebysirclo-xendit": {
             "type": "git",
-            "url": "git@github.com:icubebysirclo/xendit.git"
+            "url": "git@github.com:icubebysirclo/magento2-xendit.git"
         }
     },
     "extra": {
