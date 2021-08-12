@@ -43,6 +43,22 @@
                 <field id="enable_admin_notification" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enable WeltPixel Admin Notifications</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable to receive notifications about important Product Updates via the Magento Admin.</comment>
+                </field>
+            </group>
+            <group id="csp" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Content Security Policies</label>
+                <field id="change_system_value" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Change Magento Default Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Only available from 2.3.5 version.</comment>
+                </field>
+                <field id="report_only" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Report Only</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="change_system_value">1</field>
+                    </depends>
                 </field>
             </group>
         </section>

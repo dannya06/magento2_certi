@@ -62,10 +62,14 @@ class Developer extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCurrentServerUserGroup()
     {
-        $groupid   = posix_getegid();
-        $groupinfo = posix_getgrgid($groupid);
+        if (function_exists('posix_getegid')) {
+            $groupid   = posix_getegid();
+            $groupinfo = posix_getgrgid($groupid);
 
-        return $groupinfo['name'];
+            return $groupinfo['name'];
+        }
+
+        return '-';
     }
 
     /**

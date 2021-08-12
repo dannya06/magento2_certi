@@ -21,6 +21,8 @@ Invalid,Invalid
 "You can enter the license key(s)","You can enter the license key(s)"
 here.,here.
 "License key can be found under My Downloadable Products section of your weltpixel.com account.","License key can be found under My Downloadable Products section of your weltpixel.com account."
+"Yes (Recommended)","Yes (Recommended)"
+No,No
 "Sorry, you need a valid license key to view this content.","Sorry, you need a valid license key to view this content."
 "Next steps","Next steps"
 "If you think this is an error, make sure you added the correct license.","If you think this is an error, make sure you added the correct license."
@@ -44,6 +46,10 @@ Logs,Logs
 "Enable broken reference logs","Enable broken reference logs"
 Notifications,Notifications
 "Enable WeltPixel Admin Notifications","Enable WeltPixel Admin Notifications"
+"Content Security Policies","Content Security Policies"
+"Change Magento Default Mode","Change Magento Default Mode"
+"Only available from 2.3.5 version.","Only available from 2.3.5 version."
+"Report Only","Report Only"
 Area,Area
 "Original Class","Original Class"
 "Rewrite Class","Rewrite Class"

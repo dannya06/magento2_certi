@@ -316,9 +316,9 @@ class License extends \Magento\Framework\Model\AbstractModel
     public function checkDomainValidity($domain, $licenseDomain)
     {
         $matches = [];
-        preg_match('/(.local|.dev|.development|.test|.staging|.stage|magentosite.cloud|magento.cloud)$/', $domain, $matches);
+        preg_match('/(.local|.dev|.development|.test|.staging|.stage|magentosite.cloud|magento.cloud|nxcli.net)$/', $domain, $matches);
         if (isset($matches[1])) {
-            if (($matches[1] == 'magentosite.cloud') || ($matches[1] == 'magento.cloud')) {
+            if (($matches[1] == 'magentosite.cloud') || ($matches[1] == 'magento.cloud') || ($matches[1] == 'nxcli.net')) {
                 return true;
             }
             $findWhere = substr($licenseDomain, 0, strpos($licenseDomain, '.'));
@@ -471,8 +471,6 @@ class License extends \Magento\Framework\Model\AbstractModel
      */
     protected function _isLRqd($path, &$mdN, $forced = false)
     {
-		return true;
-		
         $availableModules = $this->getAvlbMds();
         if (!empty($availableModules) && !in_array($mdN, $availableModules)) {
             return false;
@@ -551,13 +549,12 @@ class License extends \Magento\Framework\Model\AbstractModel
      * @return bool
      */
     private function _verifyModuleInBundleList($mdN, $wpBundleList) {
-        // foreach ($wpBundleList as $bundleName => $modules) {
-//             if (in_array($mdN, $modules)) {
-//                 return true;
-//             }
-//         }
-//         return false;
-		return true;
+        foreach ($wpBundleList as $bundleName => $modules) {
+            if (in_array($mdN, $modules)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -632,17 +629,15 @@ class License extends \Magento\Framework\Model\AbstractModel
      */
     public function isLcNd($mdN)
     {
-       /*
         $this->getMdsL();
-       
-               $path = $this->componentRegistrar->getPath(\Magento\Framework\Component\ComponentRegistrar::MODULE, str_replace("\x5f\x46\x72\x65\x65", '', $mdN));
-               $isLRqd = $this->_isLRqd($path, $mdN, true);
-       
-               if ($isLRqd) {
-                   $licNs = $this->getLfM($mdN);
-                   return $this->isLcVd($licNs, $mdN);
-               }*/
-       
+
+        $path = $this->componentRegistrar->getPath(\Magento\Framework\Component\ComponentRegistrar::MODULE, str_replace("\x5f\x46\x72\x65\x65", '', $mdN));
+        $isLRqd = $this->_isLRqd($path, $mdN, true);
+
+        if ($isLRqd) {
+            $licNs = $this->getLfM($mdN);
+            return $this->isLcVd($licNs, $mdN);
+        }
 
         return true;
     }
@@ -653,33 +648,29 @@ class License extends \Magento\Framework\Model\AbstractModel
      */
     protected function getMdInfVl($mdN)
     {
-       /*
         $connection = $this->getResource()->getConnection();
-               $tableName = $this->getResource()->getTable('core_config_data');
-       
-               $row = $connection->fetchRow("SELECT `value` FROM " . $tableName . " WHERE path = '"
-                   . self::LICENSE_INFO_PREFIX . "' AND scope = '"
-                   . \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT
-                   . "' AND scope_id = 0");
-       
-               if (!isset($row['value']) || $row['value'] == 0) {
-                   return true;
-               }
-       
-               $row = $connection->fetchRow("SELECT `value` FROM " . $tableName . " WHERE path = '"
-                   . self::MODULE_INFO_PREFIX . $mdN . "' AND scope = '"
-                   . \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT
-                   . "' AND scope_id = 0");
-       
-       
-               if (!isset($row['value'])) {
-                   return true;
-               }
-       
-               return $row['value'];*/
-       
-		
-		return true;
+        $tableName = $this->getResource()->getTable('core_config_data');
+
+        $row = $connection->fetchRow("SELECT `value` FROM " . $tableName . " WHERE path = '"
+            . self::LICENSE_INFO_PREFIX . "' AND scope = '"
+            . \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+            . "' AND scope_id = 0");
+
+        if (!isset($row['value']) || $row['value'] == 0) {
+            return true;
+        }
+
+        $row = $connection->fetchRow("SELECT `value` FROM " . $tableName . " WHERE path = '"
+            . self::MODULE_INFO_PREFIX . $mdN . "' AND scope = '"
+            . \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+            . "' AND scope_id = 0");
+
+
+        if (!isset($row['value'])) {
+            return true;
+        }
+
+        return $row['value'];
     }
 
     /**
@@ -721,13 +712,10 @@ class License extends \Magento\Framework\Model\AbstractModel
         if ($moduleType == \Magento\Framework\Component\ComponentRegistrar::THEME) {
             $moduleVersionName = 'frontend/Pearl/weltpixel';
         }
-		$vLid = true;
-        /*
         $vLid = false;
-                if ($isLNd) {
-                    $vLid = $this->isLcVd($licNs, $mdN);
-                }*/
-        
+        if ($isLNd) {
+            $vLid = $this->isLcVd($licNs, $mdN);
+        }
 
         return [
             "\x6e\x61\x6d\x65" => $mdN,
