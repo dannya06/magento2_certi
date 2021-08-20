@@ -1,6 +1,6 @@
 <li data-bind="scope: 'customer'">
 <!-- ko ifnot: customer().fullname  -->
-    <a href="<?php echo $this->getUrl('customer/account/create/'); ?>"><?php echo __('Create an Account') ?></a>
+    <a href="<?php echo $this->getUrl('customer/account/create/'); ?>"><?= $escaper->escapeHtml(__('Create an Account')) ?></a>
 <!-- /ko -->
 </li>
 <script type="text/x-magento-init">
