@@ -8,6 +8,10 @@
             <notifications>
                 <enable_admin_notification>1</enable_admin_notification>
             </notifications>
+            <csp>
+                <change_system_value>0</change_system_value>
+                <report_only>1</report_only>
+            </csp>
         </weltpixel_backend_developer>
         <weltpixel>
             <crontab>

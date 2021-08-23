@@ -6,9 +6,9 @@ namespace WeltPixel\Backend\Block\Adminhtml;
  * Class ModulesVersion
  * @package WeltPixel\Backend\Block\Adminhtml
  */
-class ModulesVersion extends  \Magento\Backend\Block\Template
+class ModulesVersion extends \Magento\Backend\Block\Template
 {
-    CONST MODULE_VERSIONS = 'https://www.weltpixel.com/weltpixel_extensions.json';
+    const MODULE_VERSIONS = 'https://www.weltpixel.com/weltpixel_extensions.json';
 
     /**
      * @var \Magento\Framework\App\DeploymentConfig
@@ -42,8 +42,8 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
         \Magento\Framework\Component\ComponentRegistrarInterface $componentRegistrar,
         \Magento\Framework\Filesystem\Directory\ReadFactory $readFactory,
         \Magento\Backend\Block\Template\Context $context,
-        array $data = [])
-    {
+        array $data = []
+    ) {
         $this->deploymentConfig = $deploymentConfig;
         $this->readFactory = $readFactory;
         $this->componentRegistrar = $componentRegistrar;
@@ -54,7 +54,8 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
     /**
      * @return array
      */
-    protected function getModulesLatestVersions() {
+    protected function getModulesLatestVersions()
+    {
         $curl = curl_init(self::MODULE_VERSIONS);
 
         curl_setopt($curl, CURLOPT_HEADER, 0);
@@ -66,11 +67,11 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
         return $latestVersions;
     }
 
-
     /**
      * @return array
      */
-    public function getModuleVersions() {
+    public function getModuleVersions()
+    {
         $this->getModulesLatestVersions();
         $modules = $this->deploymentConfig->get('modules');
 
@@ -80,7 +81,7 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
             if (strpos($moduleName, 'WeltPixel_') !== false  ||  strpos($moduleName, 'WeSupply_') !== false) {
                 $moduleDetails[$moduleName]['enabled'] = $isEnabled;
                 $moduleDetails[$moduleName]['version'] = $this->getComposerVersion($moduleName, \Magento\Framework\Component\ComponentRegistrar::MODULE);
-                if (isset($this->latestVersions['modules'][$moduleName]['version']))  {
+                if (isset($this->latestVersions['modules'][$moduleName]['version'])) {
                     $moduleDetails[$moduleName]['latest_version'] = $this->latestVersions['modules'][$moduleName]['version'];
                     $moduleDetails[$moduleName]['theme_module'] = $this->latestVersions['modules'][$moduleName]['theme_module'];
                 } else {
@@ -88,7 +89,7 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
                     $moduleDetails[$moduleName]['theme_module'] = false;
                 }
                 /** Adding latest version comparison messages */
-                if ($moduleDetails[$moduleName]['version'] == $moduleDetails[$moduleName]['latest_version']) {
+                if (version_compare($moduleDetails[$moduleName]['latest_version'], $moduleDetails[$moduleName]['version']) < 1) {
                     $moduleDetails[$moduleName]['status_message'] = __('Up to Date');
                     $moduleDetails[$moduleName]['status'] = true;
                 } else {
@@ -104,7 +105,8 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
     /**
      * @return array
      */
-    public function getThemeVersions() {
+    public function getThemeVersions()
+    {
         $themeDetails = [];
 
         $themes = [
@@ -115,13 +117,13 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
             $themeVersion =  $this->getComposerVersion($theme, \Magento\Framework\Component\ComponentRegistrar::THEME);
             if ($themeVersion != 'N/A') {
                 $themeDetails[$name]['version'] = $themeVersion;
-                if (isset($this->latestVersions['themes'][$name]))  {
+                if (isset($this->latestVersions['themes'][$name])) {
                     $themeDetails[$name]['latest_version'] = $this->latestVersions['themes'][$name];
                 } else {
                     $themeDetails[$name]['latest_version'] = __('N/A');
                 }
                 /** Adding latest version comparison messages */
-                if ($themeDetails[$name]['version'] == $themeDetails[$name]['latest_version']) {
+                if (version_compare($themeDetails[$name]['latest_version'], $themeDetails[$name]['version']) < 1) {
                     $themeDetails[$name]['status_message'] = __('Up to Date');
                     $themeDetails[$name]['status'] = true;
                 } else {
@@ -138,7 +140,8 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
      * @param $moduleName
      * @return string
      */
-    protected function getComposerVersion($moduleName, $type) {
+    protected function getComposerVersion($moduleName, $type)
+    {
         $path = $this->componentRegistrar->getPath(
             $type,
             $moduleName
@@ -152,6 +155,5 @@ class ModulesVersion extends  \Magento\Backend\Block\Template
         $composerJsonData = $dirReader->readFile('composer.json');
         $data = json_decode($composerJsonData, true);
         return $data['version'];
-
     }
 }
