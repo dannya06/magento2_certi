@@ -32,7 +32,7 @@
         "icubeus/magento2-notification": "^4.1",
         "icubeus/magento2-graphql": "^4.1",
         "icubeus/magento2-shippingshipper": "^4.1",
-        "icubebysirclo/magento2-firebear": "dev-master",
+        "icubebysirclo/magento2-firebear": "^4.0",
         "icubeus/magento2-firebase": "^4.1",
         "icubebysirclo/magento2-facebookshop": "^4.0",
         "icubebysirclo/magento2-xendit": "^4.0",
