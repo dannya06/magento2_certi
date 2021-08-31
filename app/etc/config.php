@@ -349,6 +349,7 @@ return [
         'Icube_PromoShipping' => 1,
         'Icube_Cashback' => 1,
         'Icube_CatalogGraphQl' => 1,
+        'Icube_CatalogWysiwyg' => 1,
         'Icube_CheckCity' => 1,
         'Icube_Checkoutpg' => 1,
         'Icube_Citcall' => 1,
