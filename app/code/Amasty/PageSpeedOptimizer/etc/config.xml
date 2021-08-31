@@ -25,7 +25,7 @@
                 <move_print>1</move_print>
             </css>
             <images>
-                <lazy_load>1</lazy_load>
+                <lazy_load>0</lazy_load>
                 <folders>catalog,wysiwyg</folders>
                 <lazy_load_script>0</lazy_load_script>
                 <preload_images>1</preload_images>
