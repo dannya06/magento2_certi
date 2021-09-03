@@ -1,4 +1,19 @@
 <?php
+/**
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    SocialLogin
+ * @version    1.6.3
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
+ */
 namespace Aheadworks\SocialLogin\Model\Provider\Service;
 
 use Aheadworks\SocialLogin\Model\Provider\Service\Credentials\AdditionalCredentialsInterface;
@@ -9,6 +24,7 @@ use OAuth\Common\Http\Uri\UriInterface;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\OAuth2\Token\StdOAuth2Token;
 use OAuth\Common\Http\Uri\Uri;
+use Magento\Framework\Encryption\Encryptor;
 
 /**
  * Class Odnoklassniki
@@ -21,9 +37,15 @@ class Odnoklassniki extends \OAuth\OAuth2\Service\AbstractService implements Ser
     const SCOPE_VALUABLE_ACCESS = 'VALUABLE_ACCESS';
 
     /**
+     * @var Encryptor
+     */
+    private $encryptor;
+
+    /**
      * @param CredentialsInterface $credentials
      * @param ClientInterface $httpClient
      * @param TokenStorageInterface $storage
+     * @param Encryptor $encryptor
      * @param array $scopes
      * @param UriInterface|null $baseApiUri
      */
@@ -31,6 +53,7 @@ class Odnoklassniki extends \OAuth\OAuth2\Service\AbstractService implements Ser
         CredentialsInterface $credentials,
         ClientInterface $httpClient,
         TokenStorageInterface $storage,
+        Encryptor $encryptor,
         $scopes = [],
         UriInterface $baseApiUri = null
     ) {
@@ -39,6 +62,7 @@ class Odnoklassniki extends \OAuth\OAuth2\Service\AbstractService implements Ser
         if (null === $baseApiUri) {
             $this->baseApiUri = new Uri('https://api.ok.ru/api/');
         }
+        $this->encryptor = $encryptor;
     }
 
     /**
@@ -46,7 +70,7 @@ class Odnoklassniki extends \OAuth\OAuth2\Service\AbstractService implements Ser
      */
     protected function parseAccessTokenResponse($responseBody)
     {
-        $data = json_decode($responseBody, true);
+        $data = \Zend_Json::decode($responseBody, true);
 
         if (null === $data || !is_array($data)) {
             throw new TokenResponseException('Unable to parse response.');
@@ -163,7 +187,10 @@ class Odnoklassniki extends \OAuth\OAuth2\Service\AbstractService implements Ser
             }
             $paramsStr .= ($key . '=' . $value);
         }
-        return md5($paramsStr . md5($accessToken . $secret));
+        return $this->encryptor->hash(
+            $paramsStr . $this->encryptor->hash($accessToken . $secret, Encryptor::HASH_VERSION_MD5),
+            Encryptor::HASH_VERSION_MD5
+        );
     }
 
     /**

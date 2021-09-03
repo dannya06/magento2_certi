@@ -1,4 +1,19 @@
 <?php
+/**
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    SocialLogin
+ * @version    1.6.3
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
+ */
 namespace Aheadworks\SocialLogin\Model\Provider\Service\Credentials;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -71,7 +86,7 @@ class ConfigProvider implements CredentialsInterface
      */
     public function getConsumerId()
     {
-        return $this->scopeConfig->getValue($this->consumerIdPath, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->getValue($this->consumerIdPath, ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -79,6 +94,6 @@ class ConfigProvider implements CredentialsInterface
      */
     public function getConsumerSecret()
     {
-        return $this->scopeConfig->getValue($this->consumerSecretPath, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->getValue($this->consumerSecretPath, ScopeInterface::SCOPE_STORE);
     }
 }

@@ -1,4 +1,19 @@
 <?php
+/**
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    SocialLogin
+ * @version    1.6.3
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
+ */
 namespace Aheadworks\SocialLogin\Controller\Account\Callback;
 
 use Aheadworks\SocialLogin\Model\Provider\Account\ConverterInterface;
@@ -99,7 +114,7 @@ class Register extends Callback
 
             $this->_forward('callback_login');
         } catch (\Aheadworks\SocialLogin\Exception\CustomerConvertException $e) {
-            $this->messageManager->addWarningMessage(__('Please, fill out the fields below'));
+            $this->messageManager->addErrorMessage(__('Incorrect fields below. Please, fill out.'));
             $response = $this->resultRedirectFactory->create()->setPath('social/account/edit');
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), $this->getRequest()->getParams());

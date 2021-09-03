@@ -1,4 +1,19 @@
 <?php
+/**
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    SocialLogin
+ * @version    1.6.3
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
+ */
 namespace Aheadworks\SocialLogin\Model\Provider\Account\Retriever;
 
 use Aheadworks\SocialLogin\Model\Provider\Account\AbstractRetriever;
@@ -10,7 +25,7 @@ class Instagram extends AbstractRetriever
     /**
      * Get account method
      */
-    const API_METHOD_ACCOUNT_GET = 'users/self';
+    const API_METHOD_ACCOUNT_GET = 'https://graph.instagram.com/me?fields=id,username';
 
     /**
      * {@inheritdoc}
@@ -31,9 +46,8 @@ class Instagram extends AbstractRetriever
     {
         return [
             AccountInterface::TYPE => AccountInterface::TYPE_INSTAGRAM,
-            AccountInterface::SOCIAL_ID => $responseData->getData('data/id'),
-            AccountInterface::FIRST_NAME => $responseData->getData('data/full_name'),
-            AccountInterface::IMAGE_URL => $responseData->getData('data/profile_picture')
+            AccountInterface::SOCIAL_ID => $responseData->getData('id'),
+            AccountInterface::FIRST_NAME => $responseData->getData('username')
         ];
     }
 }

@@ -238,7 +238,13 @@
         </arguments>
     </virtualType>
     <!-- config -->
-    <virtualType name="SocialServiceLinkedInConfig" type="Aheadworks\SocialLogin\Model\Provider\Service\Config\Base" />
+    <virtualType name="SocialServiceLinkedInConfig" type="Aheadworks\SocialLogin\Model\Provider\Service\Config\Base">
+        <arguments>
+            <argument name="scopes" xsi:type="array">
+                <item name="0" xsi:type="string">r_liteprofile</item>
+            </argument>
+        </arguments>
+    </virtualType>
     <!-- service builder -->
     <virtualType name="LinkedInServiceBuilder" type="Aheadworks\SocialLogin\Model\Provider\ServiceBuilder\OAuth2">
         <arguments>
@@ -291,7 +297,7 @@
     <virtualType name="SocialServiceInstagramConfig" type="Aheadworks\SocialLogin\Model\Provider\Service\Config\Base">
         <arguments>
             <argument name="scopes" xsi:type="array">
-                <item name="0" xsi:type="string">basic</item>
+                <item name="0" xsi:type="string">user_profile</item>
             </argument>
         </arguments>
     </virtualType>
@@ -517,12 +523,13 @@
         </arguments>
     </virtualType>
     <!-- service builder -->
-    <virtualType name="PaypalServiceBuilder" type="Aheadworks\SocialLogin\Model\Provider\ServiceBuilder\OAuth2">
+    <virtualType name="PaypalServiceBuilder" type="Aheadworks\SocialLogin\Model\Provider\ServiceBuilder\Provider\Paypal">
         <arguments>
             <argument name="storage" xsi:type="object">SocialServicePaypalStorage</argument>
             <argument name="credentials" xsi:type="object">SocialServicePaypalCredentials</argument>
             <argument name="config" xsi:type="object">SocialServicePaypalConfig</argument>
             <argument name="service" xsi:type="string">Aheadworks\SocialLogin\Model\Provider\Service\Paypal</argument>
+            <argument name="sandboxService" xsi:type="string">Aheadworks\SocialLogin\Model\Provider\Service\PaypalSandbox</argument>
         </arguments>
     </virtualType>
     <!-- Callback request processor -->
