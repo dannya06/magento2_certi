@@ -1,4 +1,19 @@
 <?php
+/**
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    SocialLogin
+ * @version    1.6.3
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
+ */
 namespace Aheadworks\SocialLogin\Model\Config;
 
 use Aheadworks\SocialLogin\Model\Serialize\Serializer;
@@ -50,7 +65,7 @@ abstract class AbstractConfig
      */
     protected function getValue(
         $path,
-        $scopeType = ScopeInterface::SCOPE_WEBSITE,
+        $scopeType = ScopeInterface::SCOPE_STORE,
         $scopeCode = null
     ) {
         return $this->scopeConfig->getValue($this->preparePath($path), $scopeType, $scopeCode);
@@ -67,7 +82,7 @@ abstract class AbstractConfig
      */
     protected function getSerializedValue(
         $path,
-        $scopeType = ScopeInterface::SCOPE_WEBSITE,
+        $scopeType = ScopeInterface::SCOPE_STORE,
         $scopeCode = null,
         $default = null
     ) {
@@ -92,7 +107,7 @@ abstract class AbstractConfig
      */
     protected function isSetFlag(
         $path,
-        $scopeType = ScopeInterface::SCOPE_WEBSITE,
+        $scopeType = ScopeInterface::SCOPE_STORE,
         $scopeCode = null
     ) {
         return $this->scopeConfig->isSetFlag($this->preparePath($path), $scopeType, $scopeCode);

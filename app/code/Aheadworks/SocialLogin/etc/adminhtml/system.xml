@@ -9,7 +9,6 @@
         <label>Social Login</label>
         <tab>aheadworks</tab>
         <resource>Aheadworks_SocialLogin::config</resource>
-
             <!-- General settings -->
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
                 <label>General</label>
@@ -178,7 +177,6 @@
                     <label>Sort Order</label>
                 </field>
             </group>
-
         </section>
     </system>
 </config>

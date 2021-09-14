@@ -1,4 +1,19 @@
 <?php
+/**
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    SocialLogin
+ * @version    1.6.3
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
+ */
 namespace Aheadworks\SocialLogin\Block\Adminhtml\Page;
 
 /**
@@ -51,7 +66,7 @@ class Menu extends \Magento\Backend\Block\Template
                 ],
                 'readme' => [
                     'title' => __('Readme'),
-                    'url' => 'http://confluence.aheadworks.com/display/EUDOC/Social+Login+-+Magento+2',
+                    'url' => 'https://aheadworks.atlassian.net/wiki/spaces/EUDOC/pages/1229260873/Social+Login+-+Magento+2',
                     'attr' => [
                         'target' => '_blank'
                     ],

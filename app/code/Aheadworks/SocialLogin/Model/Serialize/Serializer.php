@@ -1,15 +1,43 @@
 <?php
+/**
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://ecommerce.aheadworks.com/end-user-license-agreement/
+ *
+ * @package    SocialLogin
+ * @version    1.6.3
+ * @copyright  Copyright (c) 2020 Aheadworks Inc. (http://www.aheadworks.com)
+ * @license    https://ecommerce.aheadworks.com/end-user-license-agreement/
+ */
 namespace Aheadworks\SocialLogin\Model\Serialize;
 
-use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Serialize\SerializerInterface;
 
 /**
- * Class Serializer.
- *
- * Wrapper for hiding differences between serialization strategies in 2.1.* and 2.2.* versions magento.
+ * Class Serializer
+ * @package Aheadworks\SocialLogin\Model\Serialize
  */
 class Serializer
 {
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
+     * @param SerializerInterface $serializer
+     */
+    public function __construct(
+        SerializerInterface $serializer
+    ) {
+        $this->serializer = $serializer;
+    }
+
     /**
      * Serialize data into string
      *
@@ -19,11 +47,7 @@ class Serializer
      */
     public function serialize($data)
     {
-        if ($serializer = $this->getSerializer()) {
-            return $serializer->serialize($data);
-        }
-
-        return serialize($data);
+        return $this->serializer->serialize($data);
     }
 
     /**
@@ -35,31 +59,6 @@ class Serializer
      */
     public function unserialize($string)
     {
-        if ($serializer = $this->getSerializer()) {
-            return $serializer->unserialize($string);
-        }
-
-        return unserialize($string);
-    }
-
-    /**
-     * Get serializer.
-     *
-     * Get serializer if \Magento\Framework\Serialize\SerializerInterface exist.
-     * If interface not exist return null.
-     *
-     * @return mixed
-     */
-    private function getSerializer()
-    {
-        // phpcs:disable
-        $serializerInterfaceName = '\Magento\Framework\Serialize\SerializerInterface';
-        // phpcs:enable
-
-        if (!interface_exists($serializerInterfaceName)) {
-            return null;
-        }
-
-        return ObjectManager::getInstance()->get($serializerInterfaceName);
+        return $this->serializer->unserialize($string);
     }
 }

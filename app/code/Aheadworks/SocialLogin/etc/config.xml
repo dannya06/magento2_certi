@@ -50,6 +50,7 @@
             <paypal>
                 <enabled>0</enabled>
                 <title>Paypal</title>
+                <is_sandbox_mode_enabled>0</is_sandbox_mode_enabled>
             </paypal>
         </social>
     </default>
