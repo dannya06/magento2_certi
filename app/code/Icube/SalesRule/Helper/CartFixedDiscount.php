@@ -82,18 +82,7 @@ class CartFixedDiscount
         float $baseRuleTotals,
         string $discountType
     ): float {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/whislist.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        $logger->info(json_encode($ruleDiscount));
-        $logger->info(json_encode($qty));
-        $logger->info(json_encode($baseItemPrice));
-        $logger->info(json_encode($baseRuleTotals));
-        $logger->info(json_encode($discountType));
-
-        $ratio = $baseItemPrice * $qty / $baseRuleTotals;
         return $this->deltaPriceRound->round(
-            // $ruleDiscount * $ratio,
             $ruleDiscount,
             $discountType
         );
