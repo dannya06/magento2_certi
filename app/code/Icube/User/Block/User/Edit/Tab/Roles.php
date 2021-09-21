@@ -102,8 +102,13 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareCollection()
     {
+        $userPermissions = $this->_coreRegistry->registry('permissions_user');
         $collection = $this->_userRolesFactory->create();
-        $collection->getSelect()->where('role_name != "Superadmin"');
+
+        if($userPermissions->getUserId() != "1"){
+            $collection->getSelect()->where('role_name != "Administrators"');
+        }
+        
         $collection->setRolesFilter();
         $this->setCollection($collection);
         return parent::_prepareCollection();

@@ -49,15 +49,6 @@ class InstallData implements InstallDataInterface
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         $role=$this->roleFactory->create();
-        $role->setName('Superadmin')
-                ->setPid(0)
-                ->setRoleType(RoleGroup::ROLE_TYPE) 
-                ->setUserType(UserContextInterface::USER_TYPE_ADMIN);
-        $role->save();
-        $resource = [$this->objectManager->get(\Magento\Framework\Acl\RootResource::class)->getId()];
-        $this->rulesFactory->create()->setRoleId($role->getId())->setResources($resource)->saveRel();
-
-        $role=$this->roleFactory->create();
         $role->setName('Admin Client')
                 ->setPid(0)
                 ->setRoleType(RoleGroup::ROLE_TYPE) 

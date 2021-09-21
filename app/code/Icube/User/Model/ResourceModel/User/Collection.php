@@ -40,6 +40,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             ['detail_role' => $this->getTable('authorization_role')],
             'user_role.parent_id = detail_role.role_id',
             ['role_name']
-        )->where('detail_role.role_name != "Superadmin"');
+        )->where('detail_role.role_name != "Administrators"');
     }
 }
