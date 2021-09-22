@@ -14,38 +14,6 @@ namespace Icube\User\Model\ResourceModel\User;
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
     
-
-
-
-    /**
-     * Event manager proxy
-     *
-     * @var \Magento\Backend\Model\Auth\Session
-     */
-    protected $_session = null;
-
-    /**
-     * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
-     * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param \Magento\Framework\DB\Adapter\AdapterInterface $connection
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
-     * @param \Magento\Backend\Model\Auth\Session $session
-     */
-    public function __construct(
-        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
-        \Magento\Backend\Model\Auth\Session $session = null
-    ) {
-        $this->_session = $session;
-        parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
-    }
-    
     /**
      * Define resource model
      *
@@ -66,13 +34,15 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     {
         parent::_initSelect();
         
-        if (empty($this->_session)) {
-            $this->_session = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                'Magento\Backend\Model\Auth\Session'
-            )->getData('user')->getAclRole();
-        }
-        
-        if($this->_session != "1"){
+        $userId = \Magento\Framework\App\ObjectManager::getInstance()->get(
+            'Magento\Authorization\Model\UserContextInterface'
+        )->getUserId();
+
+        $roleId = \Magento\Framework\App\ObjectManager::getInstance()->get(
+            'Magento\User\Model\User'
+        )->load($userId)->getRole()->getData('role_id');
+
+        if($roleId != "1"){
             $this->getSelect()->joinLeft(
                 ['user_role' => $this->getTable('authorization_role')],
                 'main_table.user_id = user_role.user_id AND user_role.parent_id != 0',
