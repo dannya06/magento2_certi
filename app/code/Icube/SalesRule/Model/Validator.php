@@ -186,11 +186,11 @@ class Validator extends \Magento\SalesRule\Model\Validator
                     $ruleTotalItemsPrice += $this->getItemPrice($item) * $qty;
                     $ruleTotalBaseItemsPrice += $this->getItemBasePrice($item) * $qty;
                     $validItemsCount++;
-                    if(count($item->getData("qty_options")) > 1){
+                    if(count($item->getData("qty_options")) > 0){
                         $bundleCount++;
                         $qtyOptions = count($item->getData("qty_options"));
                         $qtyOptionsx += $qtyOptions;
-                        $validItemsCount = $validItemsCount + $qtyOptionsx - $bundleCount;
+                        $validItemsCount = $validItemsCount + $qtyOptionsx;
                     }
                 }
 
