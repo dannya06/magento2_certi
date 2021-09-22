@@ -33,11 +33,23 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     protected $_jsonEncoder;
 
     /**
+     * @var \Magento\Authorization\Model\UserContextInterface
+     */
+    protected $userContextInterface;
+
+    /**
+     * @var \Magento\User\Model\User
+     */
+    protected $user;
+
+    /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Backend\Helper\Data $backendHelper
      * @param \Magento\Framework\Json\EncoderInterface $jsonEncoder
      * @param \Magento\Authorization\Model\ResourceModel\Role\CollectionFactory $userRolesFactory
      * @param \Magento\Framework\Registry $coreRegistry
+     * @param \Magento\Authorization\Model\UserContextInterface $userContextInterface
+     * @param \Magento\User\Model\User $user
      * @param array $data
      */
     public function __construct(
@@ -46,8 +58,12 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Authorization\Model\ResourceModel\Role\CollectionFactory $userRolesFactory,
         \Magento\Framework\Registry $coreRegistry,
+        \Magento\Authorization\Model\UserContextInterface $userContextInterface,
+        \Magento\User\Model\User $user,
         array $data = []
     ) {
+        $this->userContextInterface = $userContextInterface;
+        $this->user = $user;
         $this->_jsonEncoder = $jsonEncoder;
         $this->_userRolesFactory = $userRolesFactory;
         $this->_coreRegistry = $coreRegistry;
@@ -102,10 +118,14 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareCollection()
     {
+        $userId = $this->userContextInterface->getUserId();
+
+        $roleId = $this->user->load($userId)->getRole()->getData('role_id');
+
         $userPermissions = $this->_coreRegistry->registry('permissions_user');
         $collection = $this->_userRolesFactory->create();
 
-        if($userPermissions->getRole()->getData('role_id') != "1"){
+        if($roleId != "1"){
             $collection->getSelect()->where('role_name != "Administrators"');
         }
         
