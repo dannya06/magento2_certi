@@ -69,9 +69,9 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         if (empty($this->_session)) {
             $this->_session = \Magento\Framework\App\ObjectManager::getInstance()->get(
                 'Magento\Backend\Model\Auth\Session'
-            )->getData('user')->getId();
+            )->getData('user')->getAclRole();
         }
-
+        
         if($this->_session != "1"){
             $this->getSelect()->joinLeft(
                 ['user_role' => $this->getTable('authorization_role')],
