@@ -105,7 +105,7 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
         $userPermissions = $this->_coreRegistry->registry('permissions_user');
         $collection = $this->_userRolesFactory->create();
 
-        if($userPermissions->getUserId() != "1"){
+        if($userPermissions->getRole()->getData('role_id') != "1"){
             $collection->getSelect()->where('role_name != "Administrators"');
         }
         
