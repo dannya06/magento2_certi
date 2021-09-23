@@ -16,12 +16,12 @@
     &.col-6 a {
       width: 16.60%;
     }
-    a, img {
+    a, img, video {
       display: block;
       height: auto !important;
       float: left;
     }
-    img {
+    img, video {
       width: 100%;
       border-radius: 0 !important;
       padding: 0 1px 1px 0;
@@ -43,16 +43,26 @@
             right: 0;
             bottom: 0;
             padding: 2% 0;
-            margin: 5px;
+            margin: 0px;
             max-height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
             background-color: hsla(0, 100%, 100%, 0.8);
         }
         &.shuffle-item:hover::after {
-            width: calc(~"(98% - 10px)");
+            width: 100%;
         }
     }
+      &.use-padding {
+          a[data-caption] {
+              &:hover::after {
+                  margin: 5px;
+              }
+              &.shuffle-item:hover::after {
+                  width: calc(~"(98% - 10px)");
+              }
+          }
+      }
 
   }
 

@@ -67,11 +67,15 @@
                        source_model="WeltPixel\InstagramWidget\Model\Config\Source\YesNo">
                 <label translate="true">Enable Lazy Image Load</label>
                 <description translate="true"><![CDATA[You must have the <a target="_blank" href="https://www.weltpixel.com/magento-2-lazy-load-product-extension.html">LAZY LOAD PRODUCTS AND IMAGES</a> module for this functionality.]]></description>
+            </parameter>
+            <parameter name="show_videos" xsi:type="select" visible="true" sort_order="62"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\YesNo">
+                <label translate="true">Show Videos</label>
                 <depends>
-                    <parameter name="instagram_api_type" value="javascript_parser" />
+                    <parameter name="instagram_api_type" value="basic_api" />
                 </depends>
             </parameter>
-            <parameter name="cache_time" xsi:type="text" visible="true" sort_order="62" >
+            <parameter name="cache_time" xsi:type="text" visible="true" sort_order="63" >
                 <label translate="true">Content Cache Time</label>
                 <description translate="true"><![CDATA[The time (in minutes) the content it will be cached in your browser. (Default is 60) ]]></description>
                 <depends>
@@ -80,7 +84,7 @@
             </parameter>
             <parameter name="limit" xsi:type="text" visible="true" sort_order="65" >
                 <label translate="true">Number of images</label>
-                <description translate="true">Number of images to be pulled from Instagram and displayed. Insert number between 1-12. Default: 6</description>
+                <description translate="true">Number of images to be pulled from Instagram and displayed. Default: 6</description>
             </parameter>
             <parameter name="sort_by" xsi:type="select"  visible="true" sort_order="70"
                        source_model="WeltPixel\InstagramWidget\Model\Config\Source\SortBy">
@@ -144,6 +148,30 @@
                 <depends>
                     <parameter name="feed_type_jsparser" value="tagged" />
                     <parameter name="instagram_api_type" value="javascript_parser" />
+                </depends>
+            </parameter>
+            <parameter name="use_predefined_token" xsi:type="select" visible="true" sort_order="115"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\YesNo">
+                <label translate="true">Use Auto Refreshed Token</label>
+                <depends>
+                    <parameter name="instagram_api_type" value="basic_api" />
+                </depends>
+            </parameter>
+            <parameter name="token" xsi:type="text"  visible="true" sort_order="119" required="true">
+                <label translate="true">Token</label>
+                <description translate="true">Insert Instagram token that does not auto refresh. This token expires and needs to be changed manually in the widget after expiration.</description>
+                <depends>
+                    <parameter name="instagram_api_type" value="basic_api" />
+                    <parameter name="use_predefined_token" value="0" />
+                </depends>
+            </parameter>
+            <parameter name="predefined_token" xsi:type="select"  visible="true" sort_order="120"
+                       source_model="WeltPixel\InstagramWidget\Model\Config\Source\Tokens">
+                <label translate="true">Token Name</label>
+                <description translate="true">Add your tokens in WeltPixel -> Instagram Widgets Settings.</description>
+                <depends>
+                    <parameter name="instagram_api_type" value="basic_api" />
+                    <parameter name="use_predefined_token" value="1" />
                 </depends>
             </parameter>
         </parameters>

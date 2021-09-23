@@ -137,6 +137,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int $storeId
      * @return mixed
      */
+    public function displayInOneRowMobile($storeId = 0) {
+        if ($storeId) {
+            return $this->scopeConfig->getValue('weltpixel_multistore/general/one_row_mobile', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->_multistoreOptions['general']['one_row_mobile'];
+        }
+    }
+
+    /**
+     * @param int $storeId
+     * @return mixed
+     */
     public function getBarBgColor($storeId = 0) {
         if(!$this->displayInOneRow()){
             return false;
@@ -192,19 +204,30 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param int $storeId
+     * @return boolean
+     */
+    public function isStoreviewDropdownEnabled($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_multistore/general/store_view_switcher_dropdown', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
      * @return mixed|string
      */
     public function getImageHeight($storeId = 0) {
         $imgHeight = null;
+        $isOneRow = $this->displayInOneRow();
         if ($storeId) {
             $imgHeight = (int) $this->scopeConfig->getValue('weltpixel_multistore/general/img_height', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
         } else {
             $imgHeight = (int) $this->_multistoreOptions['general']['img_height'];
         }
-    
-        $imgHeight = $imgHeight && is_integer($imgHeight) ? $imgHeight . 'px' : '39px';
 
-        return $imgHeight;
+        if ($isOneRow) {
+            return $imgHeight && is_integer($imgHeight) ? $imgHeight . 'px' : '39px';
+        }
+
+        return $imgHeight && is_integer($imgHeight) ? $imgHeight . 'px' : 'auto';
     }
 
     /**
@@ -218,7 +241,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         } else {
             $imgWidth = (int) $this->_multistoreOptions['general']['img_width'];
         }
-    
+
         return $imgWidth && is_integer($imgWidth) ? $imgWidth . 'px' : 'auto';
     }
 
@@ -260,5 +283,43 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStoreViewTemplate() {
+        $isEnabledDropdown = $this->isStoreviewDropdownEnabled();
+        $isEnabledRow = $this->displayInOneRow();
+
+        switch (TRUE) :
+            case $isEnabledDropdown:
+                $template = 'WeltPixel_Multistore::switch/languages_switcher.phtml';
+                break;
+            case $isEnabledRow:
+                $template = 'WeltPixel_Multistore::switch/languages_mobile.phtml';
+                break;
+            default:
+                $template = 'WeltPixel_Multistore::switch/languages.phtml';
+                break;
+        endswitch;
+
+        return $template;
+    }
+
+    /**
+     * @param int $storeId
+     * @return string
+     */
+    public function getStoreViewOptionDesktop($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_multistore/general/store_view_options', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return string
+     */
+    public function getStoreViewOptionMobile($storeId = null) {
+        return $this->scopeConfig->getValue('weltpixel_multistore/general/store_view_options_mobile', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

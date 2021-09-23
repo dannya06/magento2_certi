@@ -19,5 +19,10 @@
                 <value id="weltpixel_instagramwidgest_googleproxy" type="host">*.googleusercontent.com</value>
             </values>
         </policy>
+        <policy id="media-src">
+            <values>
+                <value id="weltpixel_instagramwidgest_videos" type="host">*.cdninstagram.com</value>
+            </values>
+        </policy>
     </policies>
 </csp_whitelist>

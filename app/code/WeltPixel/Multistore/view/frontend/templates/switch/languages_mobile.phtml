@@ -3,13 +3,20 @@
 ?>
 <?php $_helper = $this->helper('WeltPixel\Multistore\Helper\Data'); ?>
 <?php $_utilityHelper = $this->helper('WeltPixel\Backend\Helper\Utility'); ?>
+<?php
+$oneRowClass = '';
+if ($_helper->displayInOneRow()) {
+    $oneRowClass .= " multistore-desktop";
+}
+if (!$_helper->displayInOneRowMobile()) {
+    $oneRowClass .= " multistore-mobile-hide";
+}
+?>
 <?php if (count($block->getStores())>1): ?>
     <?php $bgColorStyle = $_helper->getBarBgColor() ? "style='background-color: ".$_helper->getBarBgColor() ."'" : ''?>
 <div id="multistore-mobile-switcher-language"
-    <?php if ($_helper->displayInOneRow()) : ?>
-        class="multistore-desktop"
-        <?php endif; ?>
-    <?=$bgColorStyle?>
+        class="<?= $oneRowClass ?>"
+        <?=$bgColorStyle?>
         >
     <div class="store-options">
         <ul class="weltpixel_multistore">
