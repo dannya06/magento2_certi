@@ -653,7 +653,7 @@ class InstallData implements InstallDataInterface
                     'Magento_Sales::transactions',
                     'Magento_Sales::transactions_fetch',
                     'Magento_Catalog::catalog',
-                    'Magento_Backend::stores_settings',
+                    'Magento_Backend::stores',
                     'Magento_Catalog::catalog_inventory',
                     'Magento_Catalog::products',
                     'Magento_InventoryApi::inventory',
