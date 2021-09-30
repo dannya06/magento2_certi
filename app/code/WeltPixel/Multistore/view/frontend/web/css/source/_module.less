@@ -35,6 +35,163 @@
             }
         }
     }
+    .switcher-dropdown {
+        .multistore-label {
+            white-space: nowrap;
+        }
+    }
+    .page-wrapper .page-header .switcher .options .switcher-wrapper {
+        min-width: auto;
+    }
+    .page-wrapper .page-header .switcher .options .switcher-wrapper .primary-options-wrapper .multistore-label {
+        padding: 0;
+        margin-left: 8px;
+    }
+    .page-wrapper .page-header .switcher .options .switcher-wrapper .primary-options-wrapper .selected-option {
+        padding: 0;
+    }
+    .page-wrapper .page-header .panel.wrapper .switcher .options .switcher-wrapper .primary-options-wrapper {
+        display: flex;
+        align-items: center;
+        padding: 4px;
+    }
+    .page-header {
+        .panel.wrapper {
+            .switcher {
+                .options {
+                    .dropdown {
+                        .secondary-options-wrapper {
+                            display: flex;
+                            align-items: center;
+                            padding: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .page-wrapper .page-header .switcher-language .switcher-options .multistore-switcher-wrapper, #switcher-language-trigger {
+        display: flex;
+        align-items: center;
+    }
+
+    .selected-label {
+        margin-left: 5px;
+    }
+    div#switcher-language-trigger:after {
+        padding-top: 2px;
+    }
+
+    .secondary-image, .selected-image {
+        min-width: 30px;
+    }
+
+    .switcher-dropdown {
+        .switcher-option-mobile {
+            display: flex;
+            align-items: center;
+        }
+        .nav-switcher-label {
+            margin-left: 5px;
+        }
+    }
+
+    .page-header {
+        .header_right {
+            .switcher-dropdown {
+                .multistore-label {
+                    white-space: nowrap;
+                }
+            }
+
+            .switcher-language .switcher-options .multistore-switcher-wrapper, #switcher-language-trigger {
+                display: flex;
+                align-items: center;
+            }
+
+            .selected-label {
+                margin-left: 5px;
+            }
+            div#switcher-language-trigger:after {
+                padding-top: 2px;
+            }
+
+            .secondary-image, .selected-image {
+                min-width: 30px;
+            }
+
+            .switcher-dropdown {
+                .switcher-option-mobile {
+                    display: flex;
+                    align-items: center;
+                }
+                .nav-switcher-label {
+                    margin-left: 5px;
+                }
+            }
+            .switcher {
+                margin-right: 10px;
+
+                .options {
+                    .lib-dropdown(
+                        @_dropdown-actions-padding: 0,
+                        @_dropdown-list-item-padding: 0,
+                        @_dropdown-toggle-icon-content: @icon-down,
+                        @_dropdown-toggle-active-icon-content: @icon-up,
+                        @_icon-font-text-hide: true,
+                        @_icon-font-size: 10px,
+                        @_icon-font-line-height: 22px,
+                        @_dropdown-list-min-width: 160px
+                    );
+
+                    ul.dropdown {
+                        a {
+                            display: block;
+                            padding: 8px;
+
+                            &:hover {
+                                text-decoration: none;
+                            }
+                        }
+                        .secondary-options-wrapper {
+                            display: flex;
+                            align-items: center;
+                            padding: 0;
+                        }
+                    }
+
+                    .switcher-wrapper {
+                        min-width: auto;
+                    }
+                    .switcher-wrapper .primary-options-wrapper .multistore-label {
+                        padding: 0;
+                        margin-left: 8px;
+                    }
+                    .switcher-wrapper .primary-options-wrapper .selected-option {
+                        padding: 0;
+                    }
+                    .switcher-wrapper .primary-options-wrapper {
+                        display: flex;
+                        align-items: center;
+                        padding: 4px;
+                    }
+                }
+
+                li {
+                    font-size: @font-size__s;
+                    margin: 0;
+                }
+
+                .label {
+                    &:extend(.abs-visually-hidden all);
+                }
+
+                strong {
+                    font-weight: @font-weight__regular;
+                }
+            }
+        }
+    }
 }
 .media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
     .page-header-v4 {
@@ -50,6 +207,9 @@
         min-height: 35px;
         img{
             min-height: 35px !important;
+        }
+        &.multistore-mobile-hide {
+            display: none;
         }
     }
 }

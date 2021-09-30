@@ -6,7 +6,8 @@ use Magento\Framework\Event\ObserverInterface;
 class AddUpdateHandlesObserver implements ObserverInterface
 {
     const XML_PATH_MULTISTORE_ENABLED = 'weltpixel_multistore/general/enable';
-    const XML_PATH_MULTISTORE_ONEROW = 'weltpixel_multistore/general/one_row';
+    const XML_PATH_MULTISTORE_ONEROW_DESKTOP = 'weltpixel_multistore/general/one_row';
+    const XML_PATH_MULTISTORE_ONEROW_MOBILE = 'weltpixel_multistore/general/one_row_mobile';
 
     /**
     * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -20,7 +21,7 @@ class AddUpdateHandlesObserver implements ObserverInterface
     {
         $this->scopeConfig = $scopeConfig;
     }
-    
+
     /**
      * Add Custom QuickCart layout handle
      *
@@ -38,14 +39,20 @@ class AddUpdateHandlesObserver implements ObserverInterface
         }
 
         $isEnabled = $this->scopeConfig->getValue(self::XML_PATH_MULTISTORE_ENABLED,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        $showInOneRow = $this->scopeConfig->getValue(self::XML_PATH_MULTISTORE_ONEROW,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        if ($isEnabled) {
+        $showInOneRowDesktop = $this->scopeConfig->getValue(self::XML_PATH_MULTISTORE_ONEROW_DESKTOP,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $showInOneRowMobile = $this->scopeConfig->getValue(self::XML_PATH_MULTISTORE_ONEROW_MOBILE,  \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        if ($isEnabled && ($showInOneRowDesktop || $showInOneRowMobile)) {
             $layout->getUpdate()->addHandle('weltpixel_multistore');
         }
-        if ($showInOneRow) {
+        if ($isEnabled && $showInOneRowDesktop) {
             $layout->getUpdate()->addHandle('weltpixel_multistore_onerow');
         }
-        
+        if ($isEnabled && $showInOneRowMobile) {
+            $layout->getUpdate()->addHandle('weltpixel_multistore_onerow_mobile');
+        } else if ($isEnabled && !$showInOneRowMobile) {
+            $layout->getUpdate()->addHandle('weltpixel_multistore_dropdown_mobile');
+        }
+
         return $this;
     }
 }

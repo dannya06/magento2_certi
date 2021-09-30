@@ -9,7 +9,7 @@ namespace WeltPixel\Multistore\Block\Adminhtml\System\Config\Form;
 
 /**
  * Class IsPearl
- * @package WeltPixel\SocialLogin\Block\Adminhtml\System\Config\Form
+ * @package WeltPixel\Multistore\Block\Adminhtml\System\Config\Form
  */
 class IsPearl extends \Magento\Config\Block\System\Config\Form\Field
 {

@@ -1,4 +1,8 @@
-"Javascript Fetching","Javascript Fetching"
+"Token Name","Token Name"
+"Token Value","Token Value"
+"Add Token","Add Token"
+"Basic API","Basic API"
+"Javascript Fetching (Deprecated)","Javascript Fetching (Deprecated)"
 "Old Api (Deprecated)","Old Api (Deprecated)"
 User,User
 Tag,Tag
@@ -12,6 +16,9 @@ Tag,Tag
 "Lowest # of comments to highes","Lowest # of comments to highes"
 "Random order","Random order"
 Random,Random
+"Instagram Widget","Instagram Widget"
+"Instagram Widget Settings","Instagram Widget Settings"
+Tokens,Tokens
 "WeltPixel InstagramWidget","WeltPixel InstagramWidget"
 "Instagram Api Type","Instagram Api Type"
 "Instagram Client Id","Instagram Client Id"
@@ -24,13 +31,16 @@ Description,Description
 "Images Should Have Padding","Images Should Have Padding"
 "Add ALT text for image","Add ALT text for image"
 "Custom ALT tag","Custom ALT tag"
+"Display Image Caption","Display Image Caption"
+"Enables displaying captions for each post as overlay on hover.","Enables displaying captions for each post as overlay on hover."
 "Optimize Image Layout","Optimize Image Layout"
 "Enable Lazy Image Load","Enable Lazy Image Load"
-" You must have the <a target=""_blank"" href=""https://www.weltpixel.com/magento-2-lazy-load-product-extension.html"">LAZY LOAD PRODUCTS AND IMAGES</a> module for this functionality."," You must have the <a target=""_blank"" href=""https://www.weltpixel.com/magento-2-lazy-load-product-extension.html"">LAZY LOAD PRODUCTS AND IMAGES</a> module for this functionality."
+"You must have the <a target=""_blank"" href=""https://www.weltpixel.com/magento-2-lazy-load-product-extension.html"">LAZY LOAD PRODUCTS AND IMAGES</a> module for this functionality.","You must have the <a target=""_blank"" href=""https://www.weltpixel.com/magento-2-lazy-load-product-extension.html"">LAZY LOAD PRODUCTS AND IMAGES</a> module for this functionality."
+"Show Videos","Show Videos"
 "Content Cache Time","Content Cache Time"
-" The time (in minutes) the content it will be cached in your browser. (Default is 60) "," The time (in minutes) the content it will be cached in your browser. (Default is 60) "
+"The time (in minutes) the content it will be cached in your browser. (Default is 60) ","The time (in minutes) the content it will be cached in your browser. (Default is 60) "
 "Number of images","Number of images"
-"Number of images to be pulled from Instagram and displayed. Insert number between 1-12. Default: 6","Number of images to be pulled from Instagram and displayed. Insert number between 1-12. Default: 6"
+"Number of images to be pulled from Instagram and displayed. Default: 6","Number of images to be pulled from Instagram and displayed. Default: 6"
 SortBy,SortBy
 "Sort the images in a set order.","Sort the images in a set order."
 Resolution,Resolution
@@ -44,3 +54,7 @@ Resolution,Resolution
 "Username of a user to get","Username of a user to get"
 "Tag Name","Tag Name"
 "Images with a specific tag","Images with a specific tag"
+"Use Auto Refreshed Token","Use Auto Refreshed Token"
+Token,Token
+"Insert Instagram token that does not auto refresh. This token expires and needs to be changed manually in the widget after expiration.","Insert Instagram token that does not auto refresh. This token expires and needs to be changed manually in the widget after expiration."
+"Add your tokens in WeltPixel -> Instagram Widgets Settings.","Add your tokens in WeltPixel -> Instagram Widgets Settings."

@@ -10,7 +10,8 @@ class ApiType implements \Magento\Framework\Option\ArrayInterface
     public function toOptionArray()
     {
         return [
-            ['value' => 'javascript_parser', 'label' => __('Javascript Fetching')],
+            ['value' => 'basic_api', 'label' => __('Basic API')],
+            ['value' => 'javascript_parser', 'label' => __('Javascript Fetching (Deprecated)')],
             ['value' => 'old', 'label' => __('Old Api (Deprecated)')]
         ];
     }
@@ -22,7 +23,8 @@ class ApiType implements \Magento\Framework\Option\ArrayInterface
     public function toArray()
     {
         return [
-            'javascript_parser' => __('Javascript Fetching'),
+            'basic_api' => __('Basic API'),
+            'javascript_parser' => __('Javascript Fetching (Deprecated)'),
             'old' => __('Old Api (Deprecated)')
         ];
     }

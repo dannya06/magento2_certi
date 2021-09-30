@@ -4,7 +4,8 @@ var config = {
             Instafeed: 'WeltPixel_InstagramWidget/js/Instafeed',
             shufflejs: 'WeltPixel_InstagramWidget/js/Shuffle',
             polyfill: 'WeltPixel_InstagramWidget/js/Polyfill',
-            instagramFeed: 'WeltPixel_InstagramWidget/js/instagramFeed'
+            instagramFeed: 'WeltPixel_InstagramWidget/js/instagramFeed',
+            instagramFeedBasic: 'WeltPixel_InstagramWidget/js/instagramFeedBasic'
         }
     },
     shim: {
@@ -15,6 +16,9 @@ var config = {
             deps: ['polyfill']
         },
         instagramFeed: {
+            deps: ['jquery']
+        },
+        instagramFeedBasic: {
             deps: ['jquery']
         }
     }

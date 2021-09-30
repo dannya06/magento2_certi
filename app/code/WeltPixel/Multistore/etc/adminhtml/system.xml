@@ -30,7 +30,7 @@
                     <backend_model>WeltPixel\Multistore\Model\Config\Backend\Svg</backend_model>
                     <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/multistore/logo</upload_dir>
                     <base_url type="media" scope_info="1">weltpixel/multistore/logo</base_url>
-                    <comment><![CDATA[ Select image displayed when store is active. <br/> Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.<br/>
+                    <comment><![CDATA[ Select image displayed when store is active. <br/> Only 'jpg', 'jpeg', 'gif', 'png' is allowed.<br/>
                         Set Active Store Image in order to know which store / language option is active; should
                         be a different image than the inactive image, in order to highlight that this shop is not
                         Selected and Active.
@@ -45,7 +45,7 @@
                     <backend_model>WeltPixel\Multistore\Model\Config\Backend\Svg</backend_model>
                     <upload_dir config="system/filesystem/media" scope_info="1">weltpixel/multistore/logo_inactive</upload_dir>
                     <base_url type="media" scope_info="1">weltpixel/multistore/logo_inactive</base_url>
-                    <comment><![CDATA[Select image displayed when store is inactive. <br/>  Only 'jpg', 'jpeg', 'gif', 'png', 'svg' is allowed.<br/>
+                    <comment><![CDATA[Select image displayed when store is inactive. <br/>  Only 'jpg', 'jpeg', 'gif', 'png' is allowed.<br/>
                         Set Inactive Store Image this image will be displayed as logo when another store /language
                         is selected; should be a different image than the active image, in order to highlight that this
                         shop is not active, you can use inverted colors or transparency to achieve this.
@@ -56,7 +56,7 @@
                     </depends>
                 </field>
                 <field id="one_row" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Display in one row</label>
+                    <label>Display in one row desktop</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>If set to Yes, it displays the store views at the top, in a single row.</comment>
                     <tooltip>The Display in one row setting displays the store view at the top in a single row; If this option
@@ -66,6 +66,7 @@
                         <field id="enable">1</field>
                     </depends>
                 </field>
+
                 <field id="bar_bg_color" translate="label" type="text" sortOrder="33" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Row background color</label>
@@ -87,8 +88,56 @@
                         <field id="is_pearl">0</field>
                     </depends>
                 </field>
-
-                <field id="visibility" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="store_view_switcher_dropdown" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Set the storeview switcher as dropdown desktop</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Select Yes, in order to display the Store switcher as a dropdown.</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="one_row">0</field>
+                    </depends>
+                </field>
+                <field id="store_view_options" translate="label comment" type="select" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display in frontend desktop</label>
+                    <source_model>WeltPixel\Multistore\Model\Config\Source\StoreviewSwitcherOptions</source_model>
+                    <comment>Select what information to displayed. Store Name only, Flag only, Flag and Store name</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="store_view_switcher_dropdown">1</field>
+                        <field id="one_row">0</field>
+                    </depends>
+                </field>
+                <field id="one_row_mobile" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display in one row mobile</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If set to Yes, it displays the store views at the top, in a single row.</comment>
+                    <tooltip>The Display in one row setting displays the store view at the top in a single row; If this option
+                        is Enabled, all the brands or language flags will be displayed in a single row on top of the
+                        header. If this option is Disabled the imges will show in the header instead of the Store-View selector.</tooltip>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="bar_bg_color_mobile" translate="label" type="text" sortOrder="55" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Row background color mobile</label>
+                    <validate>color {required:false, hash:true}</validate>
+                    <comment>Set the background color for the store view row. Example: #000000</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="one_row_mobile">1</field>
+                    </depends>
+                </field>
+                <field id="store_view_options_mobile" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display in frontend mobile</label>
+                    <source_model>WeltPixel\Multistore\Model\Config\Source\StoreviewSwitcherOptions</source_model>
+                    <comment>Select what information to displayed. Store Name only, Flag only, Flag and Store name</comment>
+                    <depends>
+                        <field id="enable">1</field>
+                        <field id="one_row_mobile">0</field>
+                    </depends>
+                </field>
+                <field id="visibility" translate="label comment" type="select" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Visibile on storefront</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Select if current storeview is visible on the other storeviews, on frontend. </comment>
@@ -97,33 +146,32 @@
                         <field id="enable">1</field>
                     </depends>
                 </field>
-                <field id="img_height" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Logo Height</label>
+                <field id="img_width" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Width</label>
                     <validate>required</validate>
-                    <comment>Set Logo Height in the menu or top bar. You can fill only in the Height area in px, and
-                        the width will autoscale. Example: 40px
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Set Image Width in the menu or top bar. You can fill only in the Height area in px, and
+                        the width will autoscale. Example: 30px
                     </comment>
-                    <tooltip>Logo Height and Width allows you to set the dimensions of the logo in the menu or top bar.
+                    <tooltip>Image Height and Width allows you to set the dimensions of the image in the menu or top bar.
+                        You can only fill in the Height area in px, and the width will autoscale.
+                    </tooltip>
+                </field>
+                <field id="img_height" translate="label" type="text" sortOrder="75" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Height</label>
+                    <comment>Set Image Height in the menu or top bar. You can fill only in the Height area in px, and
+                        the width will autoscale. Example: 20px
+                    </comment>
+                    <tooltip>Image Height and Width allows you to set the dimensions of the image in the menu or top bar.
                         You can only fill in the Height area in px, and the width will autoscale.
                     </tooltip>
                     <depends>
                         <field id="enable">1</field>
                     </depends>
-
                 </field>
-                <field id="img_width" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Logo Width</label>
-                    <depends>
-                        <field id="enable">1</field>
-                    </depends>
-                    <comment>Set Logo Width in the menu or top bar. You can fill only in the Height area in px, and
-                        the width will autoscale. Example: 80px
-                    </comment>
-                    <tooltip>Logo Height and Width allows you to set the dimensions of the logo in the menu or top bar.
-                        You can only fill in the Height area in px, and the width will autoscale.
-                    </tooltip>
-                </field>
-                <field id="exclude_stores" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="exclude_stores" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Exclude stores</label>
                     <depends>
                         <field id="enable">1</field>
