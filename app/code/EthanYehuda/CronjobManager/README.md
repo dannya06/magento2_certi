@@ -18,6 +18,13 @@
     <img src="https://poser.pugx.org/ethanyehuda/magento2-cronjobmanager/downloads"
          alt="Total Downloads">
   </a>
+  <a href="https://travis-ci.org/Ethan3600/magento2-CronjobManager">
+    <img src="https://travis-ci.org/Ethan3600/magento2-CronjobManager.svg?branch=1.x"
+         alt="Travis CI build status">
+  </a>
+  <a href='https://coveralls.io/github/Ethan3600/magento2-CronjobManager'>
+    <img src='https://coveralls.io/repos/github/Ethan3600/magento2-CronjobManager/badge.svg' alt='Coverage Status' />
+  </a>
 </p>
 
 ## Installation
@@ -33,7 +40,7 @@ In your Magento2 root directory, you may install this package via composer:
 
 CJM Ver. | Magento 2.0 | Magento 2.1 | Magento 2.2 | Magento 2.3 | Magento 2.4
 --- | :---: | :---: | :---: | :---: | :---:
-1.x | :x: | :x: | :white_check_mark: | :white_check_mark: | :question:
+1.x | :x: | :x: | :white_check_mark: | :white_check_mark: | :white_check_mark:
 
 
 ## Features
@@ -84,6 +91,11 @@ For example: `php bin/magento cronmanager:showjobs`
 
 <img src="https://user-images.githubusercontent.com/6549623/39410837-41f1b060-4bcc-11e8-8b98-7d7253662d5c.png"/>
 
+### Email notifications
+
+You can configure email addresses to be notified if a job has an error:
+
+![email-configuration](https://user-images.githubusercontent.com/367320/60760081-a3970000-a02f-11e9-9615-3eb6c3bd9adb.png)
 
 ### And Much More...
 
