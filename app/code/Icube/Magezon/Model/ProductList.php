@@ -25,55 +25,6 @@ class ProductList extends \Magezon\Core\Model\ProductList
         }
         $collection->setPageSize($numberItems);
 
-        switch ($source) {
-            case 'latest':
-            $collection->getSelect()->order('created_at DESC');
-            break;
-
-            case 'new':
-            $this->_getNewProductCollection($collection);
-            break;
-
-            case 'bestseller':
-            $this->_getBestSellerProductCollection($collection, $this->_storeManager->getStore()->getId());
-            break;
-
-            case 'onsale':
-            $this->_getOnsaleProductCollection($collection, $this->_storeManager->getStore()->getId());
-            break;
-
-            case 'mostviewed':
-            $this->_getMostViewedProductCollection($collection, $this->_storeManager->getStore()->getId());
-            break;
-
-            case 'wishlisttop':
-            $this->_getWishlisttopProductCollection($collection, $this->_storeManager->getStore()->getId());
-            break;
-
-            case 'free':
-            $collection->getSelect()->where('price_index.price = ?', 0);
-            $collection->addAttributeToFilter('type_id', [
-                'in' => [
-                    \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE,
-                    \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL,
-                    \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE
-                ]
-            ]);
-            break;
-
-            case 'featured':
-            $collection->addAttributeToFilter('featured', ['eq' => 1]);
-            break;
-
-            case 'toprated':
-            $this->_getTopRatedProductCollection($collection, $this->_storeManager->getStore()->getId());
-            break;
-
-            case 'random':
-            $collection->getSelect()->order('RAND()');
-            break;
-        }
-
         if ($order!='default') {
             switch ($order) {
                 case 'alphabetically':
@@ -136,6 +87,53 @@ class ProductList extends \Magezon\Core\Model\ProductList
                     // usort($items, function($a, $b) {
                     //     return (isset($a['product_position']) ? (int) $a['product_position'] : 0) > (isset($b['product_position']) ? (int) $b['product_position'] : 0);
                     // });
+                    break;
+
+                case 'latest':
+                    $collection->getSelect()->order('created_at DESC');
+                    break;
+            
+                case 'new':
+                    $this->_getNewProductCollection($collection);
+                    break;
+            
+                case 'bestseller':
+                    $this->_getBestSellerProductCollection($collection, $this->_storeManager->getStore()->getId());
+                    break;
+            
+                case 'onsale':
+                    $this->_getOnsaleProductCollection($collection, $this->_storeManager->getStore()->getId());
+                    break;
+            
+                case 'mostviewed':
+                    $this->_getMostViewedProductCollection($collection, $this->_storeManager->getStore()->getId());
+                    break;
+            
+                case 'wishlisttop':
+                    $this->_getWishlisttopProductCollection($collection, $this->_storeManager->getStore()->getId());
+                    break;
+            
+                case 'free':
+                    $collection->getSelect()->where('price_index.price = ?', 0);
+                    $collection->addAttributeToFilter('type_id', [
+                        'in' => [
+                            \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE,
+                            \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL,
+                            \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE
+                        ]
+                    ]);
+                    break;
+            
+                case 'featured':
+                    $collection->addAttributeToFilter('featured', ['eq' => 1]);
+                    break;
+            
+                case 'toprated':
+                    $this->_getTopRatedProductCollection($collection, $this->_storeManager->getStore()->getId());
+                    break;
+            
+                case 'random':
+                    $collection->getSelect()->order('RAND()');
                     break;
             }
         }
