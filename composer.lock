@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "84061582276b184db50acd4c528b9709",
+    "content-hash": "65c58726f998274d53471b835a5249e2",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1599,11 +1599,11 @@
         },
         {
             "name": "icubebysirclo/magento2-facebookshop",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-facebookshop.git",
-                "reference": "258602574458aa5d2df631d7a69a38825a91ee90"
+                "reference": "b58a89f9af6a9afa6a3990c2d67ef20aefeae474"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1623,7 +1623,7 @@
                 "facebookshop",
                 "magento 2"
             ],
-            "time": "2021-08-05T14:02:24+00:00"
+            "time": "2021-09-29T10:10:30+00:00"
         },
         {
             "name": "icubebysirclo/magento2-firebear",
@@ -1919,11 +1919,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.11",
+            "version": "4.1.12",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "08b5e247e06a2939145b87b6789af4d307c4e233"
+                "reference": "738c89ed8ffd780943e443ea1b8fb9b68835100d"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2084,7 +2084,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-09-14T10:05:41+00:00"
+            "time": "2021-09-30T10:22:43+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -2514,11 +2514,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.7",
+            "version": "4.1.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "641cdd8b83f7a842b0f0f6937d57789510d4dc94"
+                "reference": "ba278f4ded3a2b55d720d7b956e1f42229f17853"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -2577,15 +2577,15 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2021-08-24T07:41:37+00:00"
+            "time": "2021-09-30T10:04:32+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
-            "version": "4.1.3",
+            "version": "4.1.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "35801d1413e8978001458d8ead60bd6592492e0c"
+                "reference": "437caa1ec38f51886f683fa4cab4a1ac1323679a"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2605,7 +2605,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2021-08-23T11:14:35+00:00"
+            "time": "2021-09-30T10:08:06+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
