@@ -89,11 +89,6 @@ class ProductList
 	
     public function aroundGetOrderByOptions()
     {
-		$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/whislist.log');
-		$logger = new \Zend\Log\Logger();
-		$logger->addWriter($writer);
-		$logger->info("123");
-
         return [
             [
                 'label' => __('Default'),
