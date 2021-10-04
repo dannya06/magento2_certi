@@ -1,0 +1,4 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Override Magento CMS Module -->
+    <preference for="Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\OnInsert" type="Icube\Cms\Controller\Adminhtml\Wysiwyg\Images\OnInsert" />
+</config>
