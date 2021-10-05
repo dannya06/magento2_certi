@@ -56,6 +56,7 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
      * @param \Ves\Megamenu\Model\Menu                         $menu               
      * @param \Magento\Customer\Model\Session                  $customerSession    
      * @param \Ves\Megamenu\Helper\MobileDetect                $mobileDetectHelper 
+     * @param \Magento\Framework\App\Http\Context $httpContext
      * @param array                                            $data
      * @param Json|null                                        $json                
      */
@@ -90,9 +91,7 @@ class Menu extends \Magento\Framework\View\Element\Template implements \Magento\
      public function getCustomerGroupId(){
         if(!isset($this->_customer_group_id)) {
             $this->_customer_group_id = (int)$this->_customerSession->getCustomerGroupId();
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $context = $objectManager->get('Magento\Framework\App\Http\Context');
-            $isLoggedIn = $context->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+            $isLoggedIn = $this->httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
             if(!$isLoggedIn) {
                $this->_customer_group_id = 0;
             }

@@ -195,8 +195,9 @@
                     filename: fileRow.attr('id'),
                     node: this.activeNode.id,
                     store: this.options.storeId,
-                    as_is: 'venustheme',
-                    form_key: FORM_KEY
+                    'as_is': 'venustheme',
+                    'force_static_path': targetEl.data('force_static_path') ? 1 : 0,
+                    'form_key': FORM_KEY
                 },
                 context: this,
                 showLoader: true

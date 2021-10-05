@@ -22,9 +22,11 @@ if ($menu = $this->getMenu()) {
 		}
 		$data->setMenuCategories($categories);
 		if(is_array($structure)){
+			$i = 1;
 			foreach ($structure as $k => $v) {
 				$itemData = $data->renderMenuItemData($v, [], $menuItems);
-				$html .= $data->drawItem($itemData);
+				$html .= $data->drawItem($itemData, 0, 1, true, $i);
+				$i++;
 			}
 		}
 	}

@@ -109,7 +109,6 @@ class SaveItem extends \Magento\Backend\App\Action
                 $model->delete();
                 $this->getResponse()->representJson($this->_objectManager->get('Magento\Framework\Json\Helper\Data')->jsonEncode(['status'=>true]));
             }
-
             $mediaUrl = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
             $fields   = $this->editor->getFields();
             foreach ($item as $x => $y) {
@@ -121,8 +120,12 @@ class SaveItem extends \Magento\Backend\App\Action
                             if ($this->heleprData->endsWith($y, "/")) {
                                 $y = substr_replace($y, "", -1);
                             }
+                            $arrY = explode("/", $y);
+                            if(count($arrY) > 1){
+                                $y = $arrY[0];
+                            }
                             $y = $this->heleprData->filter(base64_decode($y));
-                            $item[$x] = base64_decode($y);
+                            //$item[$x] = base64_decode($y);
                         }
                     }
                     $item[$x] = str_replace($mediaUrl, "", $y);

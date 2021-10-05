@@ -90,6 +90,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	protected $menuCategories;
 	protected $_category_list = [];
 	protected $_cached_category_links = [];
+	protected $countParentLevel = [];
 	/**
      * @var \Ves\Megamenu\Helper\MobileDetect
      */
@@ -108,6 +109,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	 * @param \Magento\Catalog\Model\CategoryFactory     $categoryFactory 
 	 * @param \Magento\Customer\Model\Group              $groupManager    
 	 * @param \Magento\Framework\Url                     $url 
+	 * @param \Ves\Megamenu\Model\Config\Source\StoreCategories $storeCategories
 	 * @param \Ves\Megamenu\Helper\MobileDetect                $mobileDetectHelper          
 	 */
 	public function __construct(
@@ -149,9 +151,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
 	public function filter($str, $storeId = '')
 	{
-		$filter = $this->_filterProvider->getPageFilter();
-		$html   = $filter->filter($str);
-		return $html;
+		if($str){
+			$filter = $this->_filterProvider->getPageFilter();
+			if($storeId && $storeId != 'all'){
+				$storeId = (int)$storeId;
+				$filter->setStoreId($storeId);
+			}
+			$html   = $filter->filter($str);
+			return $html;
+		}
+		return $str;
 	}
 
 	public function subString($text, $length, $replacer = '...', $is_striped = true) {
@@ -179,7 +188,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
 	}
 
-	public function decodeWidgets($str) {
+	public function decodeWidgets($str, $storeId = '') {
 		$result = '';
 		$imgs = [];
 		$firstPosition = 0;
@@ -196,7 +205,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 				$f = strpos($img, "{{widget", 0);
 				$n = strpos($img, '"', $f);
 				$widgetCode = substr($img, $f, ($n-$f));
-				$widgetHtml = $this->filter(html_entity_decode($widgetCode));
+				$widgetHtml = $this->filter(html_entity_decode($widgetCode), $storeId);
 				if ($i==0) $result = $str;
 				$result = str_replace($img, $widgetHtml, $result);
 				$str = str_replace($img, '', $str);
@@ -215,7 +224,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 				$f = strpos($img, "{widget", 0);
 				$n = strpos($img, '"', $f);
 				$widgetCode = '{' . substr($img, $f, ($n-$f)) . '}';
-				$widgetHtml = $this->filter(html_entity_decode($widgetCode));
+				$widgetHtml = $this->filter(html_entity_decode($widgetCode), $storeId);
 				if ($i==0) $result = $str;
 				$result = str_replace($img, $widgetHtml, $result);
 				$str = str_replace($img, '', $str);
@@ -296,7 +305,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		return $this->menu;
 	}
 
-	public function drawAnchor($item)
+	public function drawAnchor($item, $level = 1, $return_link = false)
 	{
 		$hasChildren = false;
 		$tChildren = false;
@@ -351,6 +360,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 					}
 				}
 			}
+		}
+
+		if($return_link){ //If return link item, will return item, else return html code
+			$item['href'] = $href;
+			return $item;
 		}
 
 		if ($class!='') $class = 'class="' . $class . '"';
@@ -414,9 +428,132 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		}
 		return $html;
 	}
+	public function getImageLink($image_code) {
+		$image_link = $image_code;
+		$parsed = parse_url($image_code);
+        if (!empty($parsed['scheme'])) {
+            return $image_code;
+        }
+        if(strpos($image_code,"{{") && strpos($image_code,"}}")){
+        	$image_link = $this->filter($image_code);
+			$image_link = trim($image_code);
+        }
+		
+		return $image_link;
+	}
+	public function getConfigMobileMenu(){
+		if(!isset($this->_is_use_mobile_menu)){
+			$this->_is_use_mobile_menu = $this->getConfig("general_settings/enable_mobile_menu");
+		}
+		return $this->_is_use_mobile_menu;
+	}
 
-	public function drawItem($item, $level = 0, $x = 0, $listTag = true)
+	public function drawItemForTree($item, $level = 0, $x = 1, $listTag = true, $parentIndex = 1, $disable_mobile = true){
+		$return_item = $item;
+		$hasChildren = false;
+
+		if (!isset($item['status']) || !$item['status']) {
+			return;
+		}
+
+		if (isset($item['children']) && count($item['children'])>0) $hasChildren = true;
+		// Custom Link, Category Link
+		$href = '';
+		if ($item['link_type'] == 'custom_link') {
+			$href = $item['link'];
+		} else if ($item['link_type'] == 'category_link') {
+			if ($category = $this->getCategory($item['category'])) {
+				$href = $category['url'];
+				if($urls = parse_url($href)){
+					$url_host = isset($urls['host'])?$urls['host']:"";
+					$base_url = $this->_storeManager->getStore()->getBaseUrl();
+					if($url_host && ($base_urls = parse_url($base_url))) {
+						$base_urls['host'] = isset($base_urls['host'])?$base_urls['host']:"";
+						if($url_host != $base_urls['host']){
+							$href = str_replace($url_host, $base_urls['host'], $href);
+						}
+					}
+				}
+			}
+		}
+
+		$link = $this->filter($href);
+		$link = trim($link);
+		if ($this->endsWith($link, '/')) {
+			$link = substr_replace($link, "", -1);	
+		}
+
+		$item['href'] = $link;
+		$item['header_html'] =  $this->decodeWidgets($item['header_html']);
+		$item['left_sidebar_html'] =  $this->decodeWidgets($item['left_sidebar_html']);
+		$item['right_sidebar_html'] =  $this->decodeWidgets($item['right_sidebar_html']);
+		$item['footer_html'] =  $this->decodeWidgets($item['footer_html']);
+
+		$sort_type = isset($item['submenu_sorttype'])?$item['submenu_sorttype']:'normal';
+
+		// Content HTML
+		if ($item['content_type'] == 'content' && $item['content_html']!='') {
+			$item['content_html'] = $this->decodeWidgets($item['content_html']);
+			$item['content_html'] = $this->filter($item['content_html']);
+		}
+
+		// Dynamic Tab
+		if ($item['content_type'] == 'dynamic' && $hasChildren) {
+			$children = $this->sortMenuItems($item['children'], $sort_type);
+			$i = $z = 0;
+			$child_tree = [];
+			foreach ($children as $it) {
+				if ($z==0) {
+					$it['class'] = 'dynamic-active';
+				}
+				$it['dynamic'] = true;
+				$child_tree[] = $this->drawItemForTree($it, $level, $i, false, $parentIndex, $disable_mobile);
+				$i++;
+				$z++;
+			}
+			$item['children'] = $child_tree;
+		}
+
+		// Child item
+		if (($item['content_type'] == 'childmenu' && $hasChildren) || $item['content_type'] == 'parentcat') {
+			if($item['content_type'] == 'parentcat'){
+				$isgroup_level = isset($item['isgroup_level'])?(int)$item['isgroup_level']:0;
+				$cat_level = 1;
+				$list = [];
+				$max_level = 100;
+				$catChildren = $this->getTreeCategories($item['parentcat'],$cat_level,$list,$max_level,$isgroup_level, $sort_type);
+				$children = $this->sortMenuItems($catChildren, $sort_type);
+			} else{
+				$children = $this->sortMenuItems($item['children'], $sort_type);
+			}
+			$i = 0;
+			$child_tree = [];
+			foreach ($children as  $z => $it) {
+				$it['htmlId'] = isset($it['htmlId'])?($it['htmlId'].'2'):(time().rand());
+				$child_tree[] = $this->drawItemForTree($it, $level, $i, false, $parentIndex, false);
+				$i++;
+			}
+			$item['children'] = $child_tree;
+		}
+
+		// Filter html content
+		$item['header_html'] = $this->filter($item['header_html']);
+		$item['left_sidebar_html'] = $this->filter($item['left_sidebar_html']);
+		$item['right_sidebar_html'] = $this->filter($item['right_sidebar_html']);
+		$item['footer_html'] = $this->filter($item['footer_html']);
+		$item['before_html'] = $this->filter($item['before_html']);
+		$item['after_html'] = $this->filter($item['after_html']);
+
+		if($item['dropdown_bgimage']){
+			$item['dropdown_bgimage'] = $this->getImageLink($item['dropdown_bgimage']);
+		}
+
+		$return_item = $item;
+		return $return_item;
+	}
+	public function drawItem($item, $level = 0, $x = 1, $listTag = true, $parentIndex = 1, $disable_mobile = true)
 	{
+		$generate_mobile_menu_code = $this->getConfigMobileMenu();
 		$html = "";
 		try{
 			$mediaUrl = $this->mediaUrl;
@@ -433,7 +570,19 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 			}
 			if (isset($item['children']) && count($item['children'])>0) $hasChildren = true;
 
-			$class .= ' nav-item level' . $level . ' nav-' . $x;
+			$nav_class = "";
+			if($disable_mobile && ($item['link_type'] == 'category_link')){
+				if($level === 0 && $parentIndex == 1){
+					if(!isset($this->countParentLevel[$level])){
+						$this->countParentLevel[$level] = 1;
+					}else {
+						$this->countParentLevel[$level] += 1;
+					}
+					$parentIndex = $this->countParentLevel[$level];
+				}
+				$nav_class = ' nav-' . $parentIndex;
+			}
+			$class .= ' nav-item level' . $level . $nav_class;
 			// Item Align Type
 			if ($item['align'] == '1') {
 				$class .= ' submenu-left';
@@ -471,6 +620,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 				$href = $item['link'];
 			} else if ($item['link_type'] == 'category_link') {
 				if ($category = $this->getCategory($item['category'])) {
+					if($disable_mobile){
+						$class .=' category-item';
+					}
 					$href = $category['url'];
 					if($urls = parse_url($href)){
 						$url_host = isset($urls['host'])?$urls['host']:"";
@@ -530,13 +682,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
 			if ($listTag) {
 				if ($class!='') $class = 'class="' . $class . '"';
-				$html = '<li id=' . $item['htmlId'] . ' ' . $class . ' ' . $style . ' ' . $attr . '>';
+				$html = '<li id="' . $item['htmlId'] . '" ' . $class . ' ' . $style . ' ' . $attr . '>';
 			} else {
 				if (isset($item['dynamic'])) {
 					$class .= ' dynamic-item ' . $item['htmlId'];
 				}
 				if ($class!='') $class = 'class="' . $class . '"';
-				$html = '<div id=' . $item['htmlId'] . ' ' . $class . ' ' . $style . ' ' . $attr . '>';
+				$html = '<div id="' . $item['htmlId'] . '" ' . $class . ' ' . $style . ' ' . $attr . '>';
 			}
 
 			if (isset($item['before_html']) && $item['before_html']) {
@@ -562,7 +714,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 				if (isset($item['dropdown_bgimage']) && $item['dropdown_bgimage']) {
 					if (!$item['dropdown_bgpositionx']) $item['dropdown_bgpositionx'] = 'center';
 					if (!$item['dropdown_bgpositiony']) $item['dropdown_bgpositiony'] = 'center';
-					$subStyle .= 'background: url(\'' . $item['dropdown_bgimage'] . '\') ' . $item['dropdown_bgimagerepeat'] . ' ' . $item['dropdown_bgpositionx'] . ' ' . $item['dropdown_bgpositiony'] . ' ' . $item['dropdown_bgcolor'] . ';' ;
+					$dropdown_bgimage = $this->getImageLink($item['dropdown_bgimage']);
+					$subStyle .= 'background: url(\'' . $dropdown_bgimage. '\') ' . $item['dropdown_bgimagerepeat'] . ' ' . $item['dropdown_bgpositionx'] . ' ' . $item['dropdown_bgpositiony'] . ' ' . $item['dropdown_bgcolor'] . ';' ;
 				}
 				if (isset($item['dropdown_inlinecss']) && $item['dropdown_inlinecss']) $subStyle .= $item['dropdown_inlinecss'];
 
@@ -692,7 +845,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 										$it['class'] = 'dynamic-active';
 									}
 									$it['dynamic'] = true;
-									$html .= $this->filter($this->drawItem($it, $level, $i, false));
+									$html .= $this->filter($this->drawItem($it, $level, $i, false, $parentIndex, $disable_mobile));
 									$i++;
 									$z++;
 								}
@@ -705,7 +858,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 								$column = 1;
 								foreach ($children as $it) {
 									$html .= '<div class="mega-col col-sm-' . (12/$column) . ' mega-col-' . $i . ' mega-col-level-' . $level . '">';
-									$html .= $this->filter($this->drawItem($it, $level, $i, false));
+									$html .= $this->filter($this->drawItem($it, $level, $i, false, $parentIndex, $disable_mobile));
 									$html .= '</div>';
 									$i++;
 								}
@@ -729,10 +882,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 							if($item['content_type'] == 'parentcat'){
 								$isgroup_level = isset($item['isgroup_level'])?(int)$item['isgroup_level']:0;
 								$custom_class = 'content-type-parentcat';
-								$level = 1;
+								$it_level = 1;
 								$list = [];
 								$max_level = 100;
-								$catChildren = $this->getTreeCategories($item['parentcat'],$level,$list,$max_level,$isgroup_level, $sort_type);
+								$catChildren = $this->getTreeCategories($item['parentcat'],$it_level,$list,$max_level,$isgroup_level, $sort_type);
 								$children = $this->sortMenuItems($catChildren, $sort_type);
 							} else{
 								$children = $this->sortMenuItems($item['children'], $sort_type);
@@ -747,11 +900,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 							$levelTmp =1;
 
 							$resultTmpSort = [];
-							
+							$childIndex = 1;
 							foreach ($children as  $z => $it) {
 								if($grid_type == "bootstrap") {
-									$resultTmp[] = $this->drawItem($it, $level, $i, false);
+									$parentChildIndex = $parentIndex."-".$childIndex;
+									$resultTmp[] = $this->drawItem($it, $level, $i, false, $parentChildIndex, $disable_mobile);
 									$i++;
+									$childIndex++;
 								} else {
 									//$resultTmp[$x1][$levelTmp] = $this->drawItem($it, $level, $i, false);
 									$resultTmpSort[$x1][$levelTmp] = 1;
@@ -767,13 +922,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
 							if($resultTmpSort) {
 								$index2 = 0;
+								$childIndex = 1;
 								foreach($resultTmpSort as $_k2 => $_v2) {
 									if($_v2) {
 										$index3 =0;
 										foreach($_v2 as $_k3 => $_v3){
 											if(isset($children[$index2])) {
-												$resultTmp[$_k2][$index3] = $this->drawItem($children[$index2], $level, $_k3, false);
+												$parentChildIndex = $parentIndex."-".$childIndex;
+												$resultTmp[$_k2][$index3] = $this->drawItem($children[$index2], $level, $_k3, false, $parentChildIndex, $disable_mobile);
 												$index3++;
+												$childIndex++;
 											}
 											$index2++;
 										}
@@ -781,8 +939,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 								}
 							}
 
-
-							$html .= '<div class="item-content1 '.self::$_hidden_menu_content_1.'">';
+							if($generate_mobile_menu_code){
+								$html .= '<div class="item-content1 '.self::$_hidden_menu_content_1.'">';
+							}else{
+								$html .= '<div class="item-content1">';
+							}
 							$i2 = $i3 = 0;
 							foreach ($resultTmp as $k1 => $v1) {
 								if($grid_type == "bootstrap") {
@@ -856,11 +1017,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 								}
 							}
 							$html .= '</div>';
-							$html .= '<div class="item-content2 '.self::$_hidden_menu_content_2.'">';
-							foreach ($children as  $z => $it) {
-								$html .= $this->filter($this->drawItem($it, $level, $i, false));
+							if($generate_mobile_menu_code){
+								$html .= '<div class="item-content2 '.self::$_hidden_menu_content_2.'">';
+								foreach ($children as  $z => $it) {
+									$it['htmlId'] = isset($it['htmlId'])?($it['htmlId'].'2'):(time().rand());
+									$html .= $this->filter($this->drawItem($it, $level, $i, false, $parentIndex, false));
+								}
+								$html .= '</div>';
 							}
-							$html .= '</div>';
 							$html .= '</div>';
 						}
 
@@ -1036,6 +1200,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		if (!$this->_cats) {
 			$this->_cats = $this->_categoryFactory->create()->getCollection()
 			->addAttributeToSelect('*')
+			->addAttributeToFilter('include_in_menu',1)
 			->addAttributeToFilter('is_active','1');
 			if($sort_type == 'alphabet') {
 				$this->_cats->setOrder('name','ASC');
@@ -1084,6 +1249,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
  		
 		return $category;
 	}
+	
+	protected function _hasProducts($category_id) {
+	    $products = $this->_categoryFactory->create()->load($category_id)
+	        ->getProductCollection()
+	        ->addAttributeToSelect('entity_id')
+	        ->addAttributeToFilter('status', 1)
+	        ->addAttributeToFilter('visibility', 4);
+	    return ( $products->count() > 0 )  ? true : false;
+	}
+
 	public function getAllTreeCategories($level = 0, $list = [], $sort_type = 'normal', $_getimage = false, $_image_field = "image", $limit = 0) {
 		$cats     = $this->getAllCategory($sort_type, $limit);
 		foreach($cats as $category) {

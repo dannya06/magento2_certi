@@ -217,6 +217,7 @@ class Menu extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                 }
             }
             $object->setData('menuItems', $menuItems);
+            $object->setData('menu_items', $menuItems);
         }
 
         if ($object->getId()) {

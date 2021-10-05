@@ -57,6 +57,7 @@ class CacheStatus implements ButtonProviderInterface
 
         return [
             'label'    => $title,
+            'class'    => 'cache-button',
             'on_click' => sprintf("javascript:void()"),
             'style' => 'padding-right: 0; border-right: 0;'
         ];

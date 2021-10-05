@@ -63,6 +63,7 @@ $keyboard       = $this->getConfig('keyboard');
 $short_max_char = (int)$this->getConfig('short_max_char',100);
 $show_learnmore = $this->getConfig('show_learnmore');
 $_helper        = $this->helper('Magento\Catalog\Helper\Output');
+$show_sku		= $this->getConfig('show_sku');
 ?>
 <?php if ($exit): ?>
 	<?php $total = $collection->count(); ?>
@@ -139,7 +140,9 @@ $_helper        = $this->helper('Magento\Catalog\Helper\Output');
 										</a>
 									</strong>
 									<?php } ?>
-
+									<?php if($show_sku) { ?>
+										<span><?php echo __("Sku: ").$_item->getSku(); ?></span>
+									<?php } ?>
 									<?php // Short Description ?>
 									<?php $shortDescription = $_helper->productAttribute($_item, $_item->getShortDescription(), 'short_description'); ?>
 									<?php if ($description && $shortDescription){ ?>

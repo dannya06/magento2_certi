@@ -30,6 +30,7 @@
                         <resource id="Ves_Megamenu::menu_edit" title="Edit Menu" sortOrder="20" />
                         <resource id="Ves_Megamenu::menu_save" title="Save Menu" sortOrder="30" />
                         <resource id="Ves_Megamenu::menu_delete" title="Delete Menu" sortOrder="40" />
+                        <resource id="Ves_Megamenu::menu_flushcache" title="Flush Cache Menu" sortOrder="50" />
                     </resource>
                 </resource>
                 <resource id="Magento_Backend::stores">

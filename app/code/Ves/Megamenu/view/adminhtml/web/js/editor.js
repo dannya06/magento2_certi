@@ -18,7 +18,7 @@
     ], function (_, ko, $, Component, modal, nestable, vesbrowser, setup) {
      "use strict";
 
-     var nestablOptions = {  
+    var nestablOptions = {
         group: 1,
         maxDepth: 8
     };
@@ -33,7 +33,7 @@
 
     function optimizeJson(item) {
         if (typeof(item['children']) != "undefined" && item['children']) {
-            
+
             for (var x = 0; x < item['children'].length; x++) {
                 if(typeof(item['children'][x]) != "undefined"){
                    delete item['children'][x]['bind'];
@@ -41,12 +41,12 @@
                         if(typeof(item['children'][x]) === 'object') {
 
                         } else {
-                           item['children'][x] = optimizeJson(item['children'][x]); 
+                           item['children'][x] = optimizeJson(item['children'][x]);
                         }
-                        
+
                    }
                 }
-                
+
             }
         }
         delete item['bind'];
@@ -165,7 +165,7 @@
             var id = "";
             for( var i = 0; i < this.length; ++i ) {
                 var index = _getRandomInt( 0, parts.length - 1 );
-                id += parts[index];  
+                id += parts[index];
             }
             return id;
         }
@@ -252,7 +252,6 @@
 
     var itemForEditing      = ko.observable();
     var editorVisible       = ko.observable(false);
-    var itemForEditing      = ko.observable();
     var selectedItem        = ko.observable();
     var loadcategory        = ko.observable();
     var importsubcategries  = ko.observable(false);
@@ -263,6 +262,25 @@
     var items               = window.megamenu.items;
     var previewStore        = ko.observable();
     var devices             = ko.observable('1280px');
+    var editorInstances     = [];
+
+    const setEditorInstance = function(id, editorInstance) {
+        let existInstance = getEditorInstance(id)
+        if(!existInstance){
+            existInstance = {
+                id: id,
+                instance: editorInstance
+            }
+            editorInstances.push(existInstance)
+        }
+        return existInstance
+    }
+
+    const getEditorInstance = function(id) {
+        return editorInstances.find(o => o.id === id)
+    }
+
+    
 
     return Component.extend({
         items: '',
@@ -290,7 +308,7 @@
             this.importedIndex = [];
             this.importingItems = [];
             this._super();
-            _.bindAll(this, 'removeItem', 'selectItem', 'btnSelectItem', 'acceptItem', 'addAppendChild', 'addPrependChild', 'showIconList', 'selectIcon', 'revertItem', 'previewMenu', 'saveItem', 'submitForm', 'switcher', 'setMenuType');
+            _.bindAll(this, 'removeItem', 'selectItem', 'btnSelectItem', 'acceptItem', 'addAppendChild', 'duplicateItem', 'addPrependChild', 'showIconList', 'selectIcon', 'revertItem', 'previewMenu', 'saveItem', 'submitForm', 'switcher', 'setMenuType');
             return this;
         },
 
@@ -399,6 +417,25 @@
             initGetCmsPageLink();
         },
 
+        addSelectedItem: function(item) {
+            let d = new Date();
+            let id = '_' + d.getTime() + '_' + d.getMilliseconds();
+            let item_data = ko.toJS(item)
+            var data = {
+                ...item_data,
+                item_id: id,
+                id: ""
+            };
+            let new_item = new Item(data);
+            this.items.push(new_item);
+            this.selectItem(new_item);
+            $('#nestable').nestable(nestablOptions).trigger('change');
+            updateListData(jQuery('#nestable').data('output', jQuery('#nestable-output')), 'add');
+            this.saveItem(new_item, 'add');
+            this.gotoScroll();
+            initGetCmsPageLink();
+        },
+
         activeFirstItem: function() {
             if(!item){
                 var item = this.items()[0];
@@ -414,15 +451,20 @@
                 innerScroll: true,
                 title: ''
             };
-            if("" == $("#loadStoreCategories").html()){
-                if(typeof(_tree_categories_html) !== 'undefined' && typeof(ajax_load_categories) !== 'undefined'){
-                    if(_tree_categories_html) {
-                        $("#loadStoreCategories").html(_tree_categories_html);
-                    } else {
-                        this.ajaxGetStoreCategories(ajax_load_categories);
-                    }
+            if (typeof(window.megamenu.storeCategories) === 'undefined' || window.megamenu.storeCategories.length == 0 ) {
+                if(typeof(ajax_load_categories) !== 'undefined'){
+                    this.ajaxGetStoreCategories(ajax_load_categories);
                 }
             }
+            // if("" == $("#loadStoreCategories").html()){
+            //     if(typeof(_tree_categories_html) !== 'undefined' && typeof(ajax_load_categories) !== 'undefined'){
+            //         if(_tree_categories_html) {
+            //             $("#loadStoreCategories").html(_tree_categories_html);
+            //         } else {
+            //             this.ajaxGetStoreCategories(ajax_load_categories);
+            //         }
+            //     }
+            // }
             var popup = modal(options, jQuery('#import-form'));
             jQuery('#import-form').modal('openModal');
         },
@@ -445,21 +487,22 @@
                 var store_categories = [];
             }
             if(store_categories.length == 0 ){
+                var $spinner = jQuery(".ves-spinner");
                 jQuery.ajax({
                     url: ajax_url,
                     method: "GET",
-                    cache: true,
+                    // cache: true,
                     dataType: 'json',
                     beforeSend: function(){
-                        jQuery(".ves-spinner").show();
+                        $spinner.show();
                     },
                     success: function(dataResponse){
                         store_categories = window.megamenu.storeCategories = dataResponse.store_categories;
-                        _tree_categories_html = '<select data-bind="value: loadcategory">';
-                        _tree_categories_html += dataResponse.tree_html;
-                        _tree_categories_html += '</select>';
-                        $("#loadStoreCategories").html(_tree_categories_html);
-                        jQuery(".ves-spinner").hide();
+                        // _tree_categories_html = '<select data-bind="value: loadcategory">';
+                        // _tree_categories_html += dataResponse.tree_html;
+                        // _tree_categories_html += '</select>';
+                        // $("#loadStoreCategories").html(_tree_categories_html);
+                        $spinner.hide();
                     }
                 });
             }
@@ -474,7 +517,6 @@
                 storeCategories = window.megamenu.storeCategories = this.ajaxGetStoreCategories(ajax_load_categories);
             }
             this.getSelectedCategory(storeCategories, catId);
-
             if (this.importSelectedCategory) {
                 var importsubcategries = this.importsubcategries();
                 var menulevel = this.menulevel();
@@ -586,7 +628,7 @@
                     }
                 }
             }
-            
+
         },
         removeItem: function(item) {
             this.items.remove(item);
@@ -596,10 +638,11 @@
         },
 
         acceptItem: function(item) {
-            var edited = ko.toJS(this.itemForEditing());
-            var selected = this.selectedItem();
-            selected.update(edited);
-            this.selectItem(item);
+            //var edited = ko.toJS(this.itemForEditing());
+            //var selected = this.selectedItem();
+            //selected.update(edited);
+            this.selectedItem(ko.toJS(item));
+            //this.selectItem(item);
             this.saveItem(this.itemForEditing(), 'save');
             initGetCmsPageLink();
         },
@@ -629,6 +672,17 @@
                 this.loadWysiwygEditor();
                 this.loadColorPicker();
                 initGetCmsPageLink();
+            }
+        },
+
+        duplicateItem: function(item) {
+            if (item) {
+                this.addSelectedItem(item);
+                var itemActive = this.selectedItem();
+                updateListData(jQuery('#nestable').data('output', jQuery('#nestable-output')), 'update');
+                this.gotoScroll();
+            }else {
+                console.log(">>Item is required!");
             }
         },
 
@@ -687,7 +741,7 @@
             var value = icon['value'];
             var targetField = this.targetField;
             value = icon['value'];
-            edited[targetField] = value;
+            edited[targetField] = "fa "+value;
             item.update(edited);
             initGetCmsPageLink();
         },
@@ -842,45 +896,60 @@
             }
         },
 
-        loadWysiwygEditor: function() {
-            var self = this;
-            var item = ko.toJS(this.itemForEditing());
-            jQuery(".megamenu-editor1").find(".ves-editor").each(function(index, element){
-                var id = jQuery(element).attr("id");
-                if(jQuery('#'+id).length) {
-                    var config = window.megamenu.editor;
-                    var editor;
-                    tinymce.EditorManager.execCommand('mceRemoveEditor',true, id);
-                    tinymce.execCommand('mceRemoveControl', true, id);
-                    var key = jQuery(element).data("key");
-                    config = JSON.parse(config);
-                    config['forced_root_block'] = false;
-                    editor = new wysiwygSetup(id, config);
-                    if(typeof(editor)=='undefined'){
-                        jQuery('.action-wysiwyg').hide();
+        toggleEditors: function() {
+            if(editorInstances && editorInstances.length >0){
+                editorInstances.map((index, el) => {
+                    if(el.instance !== undefined){
+                        el.instance.toggle();
                     }
-                    editor.toggle();
+                })
+            }
+        },
 
-                    jQuery('#'+id)
-                        .addClass('wysiwyg-editor')
-                        .data(
-                            'wysiwygEditor',
-                            editor
-                        );
-                                                
+        loadWysiwygEditor: function() {
+            let self = this;
+            let item = ko.toJS(this.itemForEditing());
+
+            jQuery(".megamenu-editor1").find(".ves-editor").each(function(index, element){
+                let id = jQuery(element).attr("id");
+                if(jQuery('#'+id).length) {
+                    let config = window.megamenu.editor;
+                    let editor = getEditorInstance(id);
+                    if (!editor || editor === undefined || editor === null) {
+                        config = JSON.parse(config);
+                        config['forced_root_block'] = false;
+                        if(config['force_static_path'] === undefined){
+                            config['force_static_path'] = 0;
+                        }
+                        editor = new wysiwygSetup(id, config);
+                        if(typeof(editor)=='undefined'){
+                            jQuery('.action-wysiwyg').hide();
+                        }
+                        jQuery('#'+id)
+                            .addClass('wysiwyg-editor');;
+
+                        setEditorInstance(id, editor);
+                        editor.toggle();
+                    }else {
+                        editor = editor.instance;
+                        editor.toggle();
+                    }
+
+                    let key = jQuery(element).data("key");
                     varienGlobalEvents.clearEventHandlers("open_browser_callback");
                     varienGlobalEvents.attachEventHandler("open_browser_callback", editor.openFileBrowser);
-
-                    if (tinyMCE.get(id)) {
+                    
+                    if (tinymce.get(id)) {
                         if (typeof(item[key]) == 'string') {
                             item[key] = self.encodeDirectives(item[key]);
-                            tinyMCE.get(id).setContent(item[key]);
+                            tinymce.get(id).setContent(item[key]);
                         } else {
-                            tinyMCE.get(id).setContent('');
+                            tinymce.get(id).setContent('');
                         }
                     } else if (item[key]) {
                         $(this).val(self.encodeDirectives(item[key]));
                     }
+                    editor.toggle();
                 }
             });
         },
@@ -888,14 +957,14 @@
         /* retrieve directives URL with substituted directive value*/
         makeDirectiveUrl: function(directive) {
 
-            var config = $.parseJSON('[' + window.megamenu.editor + ']');
+            let config = $.parseJSON('[' + window.megamenu.editor + ']');
             return config[0].directives_url.replace('directive', 'directive/___directive/' + directive);
         },
 
         encodeDirectives: function(content) {
             /* collect all HTML tags with attributes that contain directives*/
             return content.gsub(/<([a-z0-9\-\_]+.+?)([a-z0-9\-\_]+=".*?\{\{.+?\}\}.*?".+?)>/i, function(match) {
-                var attributesString = match[2];
+                let attributesString = match[2];
                 /* process tag attributes string */
                 attributesString = attributesString.gsub(/([a-z0-9\-\_]+)="(.*?)(\{\{.+?\}\})(.*?)"/i, function(m) {
                     return m[1] + '="' + m[2] + this.makeDirectiveUrl(Base64.mageEncode(m[3])) + m[4] + '"';
@@ -948,7 +1017,7 @@
                     }
                     var newItem = new Item(defaultValue);
                     itemChidrens[i] = newItem;
-                    if($isSave) 
+                    if($isSave)
                         this.importingItems.push(newItem);
                         /*this.saveItem(newItem, 'import');*/
                 } else {
