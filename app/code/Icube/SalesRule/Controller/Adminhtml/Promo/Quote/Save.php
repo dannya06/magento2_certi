@@ -131,7 +131,7 @@ class Save extends \Magento\SalesRule\Controller\Adminhtml\Promo\Quote implement
                 if($model->getData("is_active") == 0){
                     $connection = $this->resourceConnection->getConnection();
                     $tableName = $this->resourceConnection->getTableName('quote');
-			        $sql = "UPDATE " . $tableName . " SET coupon_code=NULL, trigger_recollect=0 WHERE coupon_code = '" . $model->getData("coupon_code") . "'";$connection->query($sql);
+			        $sql = "UPDATE " . $tableName . " SET coupon_code=NULL, applied_rule_ids=NULL, trigger_recollect=0 WHERE coupon_code = '" . $model->getData("coupon_code") . "'";$connection->query($sql);
                 }
                 
                 $model->save();
