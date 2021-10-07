@@ -125,6 +125,33 @@ namespace Icube\PromoShipping\Model\Quote;
         $salesRule = $om->get("Magento\SalesRule\Model\Rule");
         $cartObj = $om->get('\Magento\Checkout\Model\Cart'); 
         $quote = $om->get('\Magento\Quote\Model\Quote');   
+        $salesRule = $om->get('\Magento\SalesRule\Model\Rule');  
+        $resource = $om->create('Magento\Framework\App\ResourceConnection');
+ 
+        $connection = $resource->getConnection(\Magento\Framework\App\ResourceConnection::DEFAULT_CONNECTION);
+        $tableName = $resource->getTableName('quote');
+        
+        $applied_rule_ids = $quote->getData("applied_rule_ids");
+        
+        $applied_rule_ids = explode(",",$applied_rule_ids);
+        foreach($applied_rule_ids as $applied_rule_id){
+            $sales_rule_id = $salesRule->load($applied_rule_id);
+            if($applied_rule_id == $sales_rule_id->getData("rule_id")){
+                if($sales_rule_id->getData("is_active") == 0){
+                    if(is_array($applied_rule_ids)){
+                        $applied_rule_ids = array_diff($applied_rule_ids, [$applied_rule_id]);
+                        $applied_rule_ids = implode(",", $applied_rule_ids);
+                        if(!empty($applied_rule_ids)){
+                            $sql = "UPDATE " . $tableName . " SET applied_rule_ids='".$applied_rule_ids."' WHERE entity_id = '".$quote->getData("entity_id")."'";$connection->query($sql);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(!empty($quote->getData("entity_id"))){
+            $sql = "UPDATE " . $tableName . " SET trigger_recollect=0 WHERE entity_id = '".$quote->getData("entity_id")."'";$connection->query($sql);
+        }
 
         $quoteId = $cartObj->getQuote()->getId();
         foreach($this->getAllItems() as $item){
