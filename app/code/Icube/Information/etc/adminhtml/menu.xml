@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Icube_Information::Icube" title="Help" module="Icube_Information" sortOrder="300" resource="Icube_Information::Icube"/>
+        <add
+                id="Icube_Information::Icube_Information"
+                title="Swiftomni Helpdocs"
+                module="Icube_Information"
+                action="adminhtml/system_config/edit/section/icube_backend_config/"
+                sortOrder="0"
+                parent="Icube_Information::Icube"
+                resource="Icube_Information::Icube_Information"
+        />
+    </menu>
+</config>
