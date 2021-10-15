@@ -9,6 +9,7 @@ use Magento\Cron\Model\ConfigInterface;
 use EthanYehuda\CronjobManager\Api\JobManagementInterface;
 use Magento\Cron\Model\ScheduleFactory;
 use Magento\Cron\Model\Schedule;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 
 class ScheduleManagement implements ScheduleManagementInterface
@@ -68,7 +69,11 @@ class ScheduleManagement implements ScheduleManagementInterface
 
     public function listJobs(): array
     {
-        return $this->config->getJobs();
+        $jobList = $this->config->getJobs();
+        foreach ($jobList as &$jobs) {
+            \ksort($jobs);
+        }
+        return $jobList;
     }
 
     public function createSchedule(string $jobCode, $time = null): Schedule
@@ -109,7 +114,10 @@ class ScheduleManagement implements ScheduleManagementInterface
             }
         }
 
-        return null;
+        throw new LocalizedException(__(
+            'No such job: %jobCode',
+            ['jobCode' => $jobCode]
+        ));
     }
 
     public function flush(): bool
@@ -119,6 +127,27 @@ class ScheduleManagement implements ScheduleManagementInterface
             $this->processor->cleanupJobs($groupId);
         }
 
+        return true;
+    }
+
+    /**
+     * @param int $jobId
+     * @param int $timestamp
+     * @return bool
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function kill(int $jobId, int $timestamp): bool
+    {
+        $schedule = $this->scheduleRepository->get($jobId);
+        if ($schedule->getStatus() !== Schedule::STATUS_RUNNING) {
+            return false;
+        }
+        $schedule->setData(
+            'kill_request',
+            strftime(ScheduleManagementInterface::TIME_FORMAT, $this->dateTime->gmtTimestamp($timestamp))
+        );
+        $this->scheduleRepository->save($schedule);
         return true;
     }
 }
