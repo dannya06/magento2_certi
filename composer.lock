@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "016c0e0e00a1fbca8e38afa11c1da26c",
+    "content-hash": "65c58726f998274d53471b835a5249e2",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -279,6 +279,74 @@
                 "validation"
             ],
             "time": "2021-04-18T20:11:03+00:00"
+        },
+        {
+            "name": "box/spout",
+            "version": "v2.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/box/spout.git",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/box/spout/zipball/3681a3421a868ab9a65da156c554f756541f452b",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xmlreader": "*",
+                "ext-zip": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.0"
+            },
+            "suggest": {
+                "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",
+                "ext-intl": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Box\\Spout\\": "src/Spout"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Adrien Loison",
+                    "email": "adrien@box.com"
+                }
+            ],
+            "description": "PHP Library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way",
+            "homepage": "https://www.github.com/box/spout",
+            "keywords": [
+                "OOXML",
+                "csv",
+                "excel",
+                "memory",
+                "odf",
+                "ods",
+                "office",
+                "open",
+                "php",
+                "read",
+                "scale",
+                "spreadsheet",
+                "stream",
+                "write",
+                "xlsx"
+            ],
+            "time": "2017-09-25T19:44:35+00:00"
         },
         {
             "name": "christian-riesen/base32",
@@ -1627,11 +1695,14 @@
         },
         {
             "name": "icubebysirclo/magento2-firebear",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-firebear.git",
-                "reference": "f6aa69ebd6d5a69685edcfe3a9b90b615e3842fd"
+                "reference": "8419b90882061bda78d92e72873401f0b3c66e9e"
+            },
+            "require": {
+                "box/spout": "~2.7"
             },
             "replace": {
                 "icubebysirclo/magento2-firebear": "self.version",
@@ -1664,7 +1735,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-08-20T08:37:58+00:00"
+            "time": "2021-10-15T07:23:00+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippinglogistix",
@@ -1768,11 +1839,11 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "4.1.10",
+            "version": "4.1.11",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "0ea1371dd0cd2f4074b2efc39cf3fc619c50274e"
+                "reference": "ac1da9b4f63b18bb4723b6e06279e9e8f0630248"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1813,7 +1884,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-08-31T09:39:37+00:00"
+            "time": "2021-10-15T11:09:45+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -1919,11 +1990,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.12",
+            "version": "4.1.13",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "1f0310e8a691d93dcc6031d1504fb18f4315fa46"
+                "reference": "816dd09d4a2a5e252f7749dfb04611da622d7ad1"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2084,7 +2155,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-10-04T10:12:27+00:00"
+            "time": "2021-10-15T10:46:47+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -2379,11 +2450,11 @@
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.6",
+            "version": "4.1.7",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "d3c1e05758baaa0d1bcb86b92551a383eac6eb08"
+                "reference": "c300c577d52c5387a4b3839965e82b59b3551262"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -2416,7 +2487,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-09-14T08:31:57+00:00"
+            "time": "2021-10-15T07:46:38+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -2514,11 +2585,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.8",
+            "version": "4.1.9",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "ba278f4ded3a2b55d720d7b956e1f42229f17853"
+                "reference": "35cf8168852625e1322b01f9dd025c1509dab64c"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -2577,7 +2648,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2021-09-30T10:04:32+00:00"
+            "time": "2021-10-15T06:28:17+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -2609,11 +2680,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.6",
+            "version": "4.1.7",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "f918b1da8738b30480780c921074fd73f7d18088"
+                "reference": "270568ad45fda953eabb0c925ec5a261ecf5d532"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -2662,7 +2733,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-07-22T10:15:32+00:00"
+            "time": "2021-10-15T10:39:20+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
