@@ -37,9 +37,11 @@ if ($menu = $this->getMenu()) {
 		}
 		$data->setMenuCategories($categories);
 		if (is_array($structure)) {
+			$i = 1;
 			foreach ($structure as $k => $v) {
 				$itemData = $data->renderMenuItemData($v, [], $menuItems);
-				$html .= $data->drawItem($itemData);
+				$html .= $data->drawItem($itemData, 0, 1, true, $i);
+				$i++;
 			}
 		}
 	}
@@ -513,6 +515,7 @@ if ($menu = $this->getMenu()) {
 									$('html').removeClass('nav-before-open nav-open');
 									$('.ves-overlay<?php echo $blockId ?>').show();
 									$("#<?php echo $blockId ?>").append('<div class="ves-overlay ves-overlay<?php echo $blockId ?>"></div>');
+									
 									$('#<?php echo $navId ?>').css("left", "0px");
 									if ($('html').hasClass('ves-navopen')) {
 										$('html').removeClass('ves-navopen');
@@ -528,8 +531,8 @@ if ($menu = $this->getMenu()) {
 								});
 
 								/* OFF-CANVAS */
-								$(document).on("click", ".ves-overlay<?php echo $blockId ?>", function(){
-									$('#<?php echo $navId ?>').css("left","");
+								$(".ves-overlay<?php echo $blockId ?>").click(function(){
+									$('#<?php echo $navId ?>').css("left","0px");
 									$('html').removeClass('ves-navopen');
 									setTimeout(function () {
 										$('html').removeClass('ves-nav-before-open');

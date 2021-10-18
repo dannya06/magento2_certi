@@ -86,6 +86,7 @@ class Save extends \Magento\Backend\App\Action
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($data) {
+            
             if(isset($data['cms_page'])){
                 unset($data['cms_page']);
             }
@@ -93,6 +94,9 @@ class Save extends \Magento\Backend\App\Action
             $id = $this->getRequest()->getParam('menu_id');
             if ($id) {
                 $model->load($id);
+            }
+            if(!$data['structure'] || $data['structure']=='' || $data['structure']=='[]'){
+                $data['structure'] = $model->getStructure();
             }
             if($this->getRequest()->getParam("revert_previous")){
                 $data['revert_previous'] = $this->getRequest()->getParam("revert_previous");

@@ -59,4 +59,13 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     {
         $this->_init('Ves\Megamenu\Model\Item', 'Ves\Megamenu\Model\ResourceModel\Item');
     }
+
+    public function generateMenuItems($storeId = 'all', $isBackend = false){
+        $items = $this->getColumnValues("id");
+        if (count($items)) {
+            foreach ($this as $item) {
+                $item->renderHtmlShortcode($storeId, $isBackend);
+            }
+        }
+    }
 }

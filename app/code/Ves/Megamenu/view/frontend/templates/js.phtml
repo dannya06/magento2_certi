@@ -7,6 +7,8 @@
 ?>
 <?php 
 $data           = $this->helper("Ves\Megamenu\Helper\Data");
+$current_url = $data->getCurrentUrl();
+$current_url = str_replace("'","",$current_url);
 ?>
 <script type="text/javascript">
     require(['jquery',
@@ -17,7 +19,7 @@ $data           = $this->helper("Ves\Megamenu\Helper\Data");
                 $(".ves-megamenu").each(function(){
                     if($(this).find('.nav-anchor').length > 0){
                         $(this).find('.nav-anchor').each(function(index, el) {
-                            if ($(this).attr('href') == '<?php echo $data->getCurrentUrl() ?>') {
+                            if ($(this).attr('href') == '<?php echo $current_url ?>') {
                                 $(this).parent().addClass('active');
                                 $(this).parents(".nav-item.parent").addClass('active');
                                 $(this).parents(".nav-item.dropdown-submenu").addClass('active');

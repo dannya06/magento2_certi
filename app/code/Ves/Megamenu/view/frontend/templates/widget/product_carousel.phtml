@@ -14,6 +14,13 @@ if ($exist = ($collection = $block->getProductCollection() && $block->getProduct
 	$type = '-ves-megamenu-list-' . time().rand();
 	$mode = 'grid';
 	$image = 'new_products_content_widget_grid';
+	$layoutType = $this->getConfig("layout_type");
+	if($layoutType == "list") {
+		$gridtype = 'widget-new-list';
+		$type = '-ves-megamenu-list-' . time().rand();
+		$mode = 'list';
+		$image = 'new_products_content_widget_list';
+	}
 	$title = $this->getConfig("widget_title");
 	$items = $block->getProductCollection()->getItems();
 
@@ -74,6 +81,7 @@ $_helper            = $this->helper('Magento\Catalog\Helper\Output');
 $short_max_char     = (int)$this->getConfig('short_max_char',100);
 $show_learnmore     = $this->getConfig('show_learnmore');
 $block_width        = (int)$this->getConfig('block_width');
+$show_sku			= $this->getConfig('show_sku');
 ?>
 <?php if ($exist): ?>
 	<div class="block widget megamenu-widget products-widget <?php echo $this->getData('addition_class') ?>">
@@ -83,14 +91,16 @@ $block_width        = (int)$this->getConfig('block_width');
 		</div>
 		<?php } ?>
 		<div class="block-content">
+			<?php if($layoutType != "list") { ?>
 			<?php if($this->getConfig("nav") && count($_productCollection)>0){ ?>
 			<div class="owl-nav">
 				<a href="javascript:void(0)" data-owlid="menuowl-<?php echo $blockId ?>" class="owl-left"><i class="fa fa-angle-left"></i></a>
 				<a href="javascript:void(0)" data-owlid="menuowl-<?php echo $blockId ?>" class="owl-right"><i class="fa fa-angle-right"></i></a>
 			</div>
 			<?php } ?>
-			<div class="products-grid grid megamenuowl-play">
-				<ol id="menuowl-<?php echo $blockId ?>" class="product-items owl-carousel <?php echo $gridtype; ?> megamenu-products<?php echo $blockId ?>"
+			<?php } ?>
+			<div class="<?php if($layoutType == "list") { ?>products-list list <?php } else { ?>products-grid grid megamenuowl-play<?php } ?>">
+				<ol id="menuowl-<?php echo $blockId ?>" class="product-items <?php if($layoutType != "list") { ?>owl-carousel<?php } ?> <?php echo $gridtype; ?> megamenu-products<?php echo $blockId ?>"
 					data-items="<?php echo $this->getConfig("column", 3); ?>"
 					data-mousedrag="<?php echo $this->getConfig("mousedrag")?"true":"false"; ?>"
 					data-pulldrag="<?php echo $this->getConfig("pulldrag")?"true":"false"; ?>"
@@ -100,7 +110,7 @@ $block_width        = (int)$this->getConfig('block_width');
 					data-center="<?php echo $this->getConfig("center")?"true":"false"; ?>"
 					data-margin="<?php echo (int)$this->getConfig("margin") ?>"
 					data-autoplay="<?php echo $this->getConfig("autoplay")?"true":"false"; ?>"
-					autoplay-timeout="<?php echo $this->getConfig("autoplay_timeout", 3000); ?>"
+					data-autoplay-timeout="<?php echo $this->getConfig("autoplay_timeout", 3000); ?>"
 					data-dot="<?php echo $this->getConfig("dots")?"true":"false"; ?>"
 					data-loop="<?php echo $this->getConfig("loop")?"true":"false"; ?>"
 					data-nav = "false"
@@ -217,6 +227,9 @@ $block_width        = (int)$this->getConfig('block_width');
 							<?php echo $block->escapeHtml($_item->getName()) ?>
 						</a>
 					</strong>
+					<?php } ?>
+					<?php if($show_sku) { ?>
+						<span><?php echo __("Sku: ").$_item->getSku(); ?></span>
 					<?php } ?>
 
 					<?php // Short Description ?>

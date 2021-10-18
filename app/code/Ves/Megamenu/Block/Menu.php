@@ -66,7 +66,8 @@ class Menu extends \Magento\Framework\View\Element\Template
      * @param \Ves\Megamenu\Helper\Data                        $helper             
      * @param \Ves\Megamenu\Model\Menu                         $menu               
      * @param \Magento\Customer\Model\Session                  $customerSession    
-     * @param \Ves\Megamenu\Helper\MobileDetect                $mobileDetectHelper              
+     * @param \Ves\Megamenu\Helper\MobileDetect                $mobileDetectHelper     
+     * @param \Magento\Framework\App\Http\Context $httpContext         
      * @param array                                            $data     
      * @param Json|null                                        $json                     
      */
@@ -101,9 +102,7 @@ class Menu extends \Magento\Framework\View\Element\Template
     public function getCustomerGroupId(){
         if(!isset($this->_customer_group_id)) {
             $this->_customer_group_id = (int)$this->_customerSession->getCustomerGroupId();
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $context = $objectManager->get('Magento\Framework\App\Http\Context');
-            $isLoggedIn = $context->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+            $isLoggedIn = $this->httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
             if(!$isLoggedIn) {
                $this->_customer_group_id = 0;
             }
@@ -175,7 +174,6 @@ class Menu extends \Magento\Framework\View\Element\Template
         if (!$this->getTemplate()) {
             $this->setTemplate("Ves_Megamenu::widget/menu.phtml");
         }
-        $html = $menu = '';
         $menu = $this->getMenuProfile($this->getData('id'), $this->getData('alias'));
         if ($menu) {
             $customerGroups = $menu->getData('customer_group_ids');
@@ -226,6 +224,7 @@ class Menu extends \Magento\Framework\View\Element\Template
         if ($menu && !$menu->getStatus()) {
             $menu = false;
         }
+        
         return $menu;
     }
     public function getConfig($key, $default = NULL){

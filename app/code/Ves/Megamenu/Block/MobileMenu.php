@@ -38,11 +38,14 @@ class MobileMenu extends \Magento\Framework\View\Element\Template
      */
     protected $_customerSession;
 
+    protected $httpContext;
+
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context         
      * @param \Ves\Megamenu\Helper\Data                        $helper          
      * @param \Magento\Framework\ObjectManagerInterface        $objectManager   
      * @param \Magento\Customer\Model\Session                  $customerSession 
+     * @param \Magento\Framework\App\Http\Context $httpContext
      * @param array                                            $data            
      */
     public function __construct(
@@ -50,19 +53,19 @@ class MobileMenu extends \Magento\Framework\View\Element\Template
         \Ves\Megamenu\Helper\Data $helper,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Customer\Model\Session $customerSession,
+        \Magento\Framework\App\Http\Context $httpContext,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->_helper          = $helper;
         $this->_objectManager   = $objectManager;
         $this->_customerSession = $customerSession;
+        $this->httpContext = $httpContext;
     }
     public function getCustomerGroupId(){
         if(!isset($this->_customer_group_id)) {
             $this->_customer_group_id = (int)$this->_customerSession->getCustomerGroupId();
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $context = $objectManager->get('Magento\Framework\App\Http\Context');
-            $isLoggedIn = $context->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+            $isLoggedIn = $this->httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
             if(!$isLoggedIn) {
                $this->_customer_group_id = 0;
             }

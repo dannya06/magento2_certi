@@ -34,7 +34,7 @@
         <css src="Ves_Megamenu::css/styles-l.css" media="screen and (min-width: 768px)"/>
     
 		<!-- Enable Off canvas menu css
-    	<css src="Ves_Megamenu::css/megamenu-offcanvas.css" />
+    	<css src="Ves_Megamenu::css/offcanvas-menu.css" />
     -->
 	</head>
 	<body>

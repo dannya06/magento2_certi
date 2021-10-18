@@ -1,7 +1,7 @@
 /**
  * Nestable
  */
-.dd {
+ .dd {
     min-height: 200px;
     position: relative;
     display: block;
@@ -82,14 +82,14 @@
     text-indent: 0;
     margin: 15px 5px 5px 5px;
     position: absolute;
-    right: 150px;
+    right: 200px;
 }
 
 .dd-item > button[data-action="expand"] {
     text-indent: 0;
     margin: 13px 5px 5px 5px;
     position: absolute;
-    right: 150px;
+    right: 200px;
 }
 
 .dd-placeholder, .dd-empty {
@@ -1571,3 +1571,175 @@
 .vesmegamenu-menu-edit .modal-popup._show{z-index: 920;}
 .vesmegamenu-menu-edit .modal-slide._show{z-index: 930;}
 .vesmegamenu-menu-edit aside.modal-popup.prompt._show{z-index: 935;}
+
+.vesmodal select,
+.vesmodal input,
+.vesmodal textarea {
+    border: 1px solid #ccc;
+    padding: .6rem 1rem .6rem;
+    margin-top: 2px;
+    margin-bottom: 10px;
+    transition: border-color .1s linear;
+    vertical-align: baseline;
+}
+
+.vesmodal select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    background-repeat: no-repeat;
+    background-image: url(../images/arrows-bg.svg), linear-gradient(#e3e3e3, #e3e3e3), linear-gradient(#adadad, #adadad);
+    background-position: calc(100% - 12px) -34px, 100%, calc(100% - 3.2rem) 0;
+    background-size: auto, 3.2rem 100%, 1px 100%;
+    max-width: 100%;
+    min-width: 8.5rem;
+    padding-bottom: .5rem;
+    padding-right: 4.4rem;
+    padding-top: .5rem;
+    transition: border-color .1s linear;
+    padding-right: 4.4rem !important;
+}
+
+.vesmodal input {
+    width: 100%;
+}
+
+.category-import-search-control {
+    position: relative;
+}
+
+.selected_category_results,
+.category_import_search_results {
+    width: 100%;
+}
+
+.selected_category_results,
+.category_import_search_results {
+    position: absolute;
+    left: 0;
+    top: 35px;
+    background-color: #ffffff;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid #dddddd;
+    width: 100%;
+    height: 100%;
+    min-height: 182px;
+    z-index: 9999999;
+    overflow-y: auto;
+}
+
+.selected_category_results ul,
+.category_import_search_results ul {
+    margin: 0;
+    padding: 0;
+}
+
+.selected_category_results ul > span,
+.category_import_search_results ul > span {
+    display: block;
+    padding: 5px 10px;
+}
+
+.selected_category_results ul li,
+.category_import_search_results ul li {
+    padding: 5px 10px;
+    margin: 0;
+    border-bottom: 1px dotted #eeeeee;
+    line-height: 25px;
+    position: relative;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.selected_category_results ul li:hover,
+.category_import_search_results ul li:hover {
+    cursor: pointer;
+    background-color: #d7e6bb;
+}
+
+.selected_category_results h5,
+.category_import_search_results h5 {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+.selected_category_results p,
+.category_import_search_results p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.selected_category_results .cat-contain span,
+.category_import_search_results .cat-contain span {
+    font-weight: 700;
+}
+
+.selected_category_results .cat-contain span:not(:first-child):before,
+.category_import_search_results .cat-contain span:not(:first-child):before {
+    content: '|';
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.selected_category {
+    font-weight: 600;
+}
+
+.selected-category {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: #ffffff;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid #dddddd;
+    width: 100%;
+    min-height: 35px;
+    z-index: 9999999;
+}
+
+.editor-fieldtype-category_text {
+    position: relative;
+    margin-top: -55px;
+}
+
+.editor-fieldtype-category_text .control-label {
+    visibility: hidden;
+}
+
+.editor-fieldtype-category_text .controls{
+    position: relative;
+}
+
+.editor-fieldtype-category_text input,
+.category_import_selected {
+    background: #fff;
+}
+
+.category_text-remove,
+.category_import_remove {
+    position: absolute;
+    left: 6px;
+    color: red;
+    bottom: -6px;
+    font-size: 13px;
+    font-style: italic;
+    cursor: pointer;
+}
+
+.category_import_selected {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.vesmodal .preview-devices input {
+    width: initial;
+}
