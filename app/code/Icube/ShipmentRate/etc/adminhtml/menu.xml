@@ -1,23 +1,22 @@
 <?xml version="1.0"?>
-
 <!-- /**
  * @since 1.0.3
  * @link ./registration.php
  */ -->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
         <add id="Icube_ShipmentRate::shipment"
-             title="Shipment Rates"
+             title="Shipment Rates for Advanced Rates"
              module="Icube_ShipmentRate"
-             sortOrder="20"
+             sortOrder="90"
+             parent="Magento_Backend::stores"
              resource="Icube_ShipmentRate::shipment"
         />
         
-    	<add id="Icube_ShipmentRate::shipmentrate"
+        <add id="Icube_ShipmentRate::shipmentrate"
              title="Rates"
              module="Icube_ShipmentRate"
-             sortOrder="20"
+             sortOrder="90"
              resource="Icube_ShipmentRate::shipmentrate"
              parent="Icube_ShipmentRate::shipment"
              action="icube_shipmentrate/rate/index"

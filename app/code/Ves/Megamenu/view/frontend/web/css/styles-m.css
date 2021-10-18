@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'luma-icons';
+    src: url('../fonts/Luma-Icons.woff2') format('woff2'), url('../fonts/Luma-Icons.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: auto;
+}
+
 .no-background .navigation {
     background: none !important
 }
@@ -1054,5 +1062,10 @@
         font-size: 1.6rem;
         right: 10px;
         top: 7px
+    }
+
+    /*fix issue section item on safari-mobile*/
+    .nav-sections-items {
+        position: relative!important;
     }
 }

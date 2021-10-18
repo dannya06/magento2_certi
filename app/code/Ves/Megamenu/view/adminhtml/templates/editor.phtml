@@ -21,17 +21,18 @@ $store_categories = [];
 if(!$enable_admin_ajax) {
     $store_categories = $block->getStoreCategories();
 }
+
 $options  = [
-'items'                 => $items,
-'fields'                => $dataHelper->jsQuoteEscape($fields),
-'editor'                => json_encode($editor->getWysiwygConfig()),
-'storeCategories'       => $store_categories,
-'icons'                 => $icons,
-'ajaxSaveItemUrl'       => $block->getAjaxSaveItemUrl(),
-'ajaxSaveMenuUrl'       => $block->getAjaxSaveMenuUrl(),
-'ajaxImportCategoryUrl' => $block->getAjaxImportCategoryUrl(),
-'previewUrl'            => $block->getPreviewUrl(),
-'desktopTemplate'      => $menu->getDesktopTemplate()
+    'items'                 => $items,
+    'fields'                => $dataHelper->jsQuoteEscape($fields),
+    'editor'                => json_encode($editor->getWysiwygConfig()),
+    'storeCategories'       => $store_categories,
+    'icons'                 => $icons,
+    'ajaxSaveItemUrl'       => $block->getAjaxSaveItemUrl(),
+    'ajaxSaveMenuUrl'       => $block->getAjaxSaveMenuUrl(),
+    'ajaxImportCategoryUrl' => $block->getAjaxImportCategoryUrl(),
+    'previewUrl'            => $block->getPreviewUrl(),
+    'desktopTemplate'      => $menu->getDesktopTemplate()
 ];
 
 $design = $menu->getDesign();
@@ -98,7 +99,7 @@ if ($design) {
                         <?php } ?>
 
                         <?php if($v['type'] != 'fieldset'){ ?>
-                        <div class="control-group editor-field-<?php echo $v['name']; ?> <?php echo isset($v['class'])?$v['class']:'' ?>" data-bind="with: itemForEditing">
+                        <div class="control-group editor-fieldtype-<?= $v['type'] ?> editor-field-<?php echo $v['name']; ?> <?php echo isset($v['class'])?$v['class']:'' ?>" data-bind="with: itemForEditing">
                             <?php if($v['label']){ ?>
                             <label class="control-label" for="option-<?php echo $k; ?>"><?php echo $v['label'] ?></label>
                             <?php } ?>
@@ -112,7 +113,7 @@ if ($design) {
                     </div><!-- End Content -->
                 </div><!-- End Fieldset -->
                 <?php } ?>
-                <?php $i++; ?> 
+                <?php $i++; ?>
                 <?php } ?>
             </div>
             <div class="control-group" data-bind="with: itemForEditing">
@@ -172,13 +173,20 @@ if ($design) {
         <fieldset class="fieldset admin__fieldset ">
             <div class="admin__field field " data-ui-id="import-wordress-form-fieldset-element-form-field-import-categories">
                 <label class="label admin__field-label" for="blogimport_import_categories" data-ui-id="import-wordress-form-fieldset-element-select-import-categories-label"><span><?php echo __('Category'); ?></span></label>
-                <div class="admin__field-control control" id="loadStoreCategories">
-                    <?php 
-                    if(!$enable_admin_ajax) { 
-                        echo $editor->getCategoriesHtml();
-                    }
-                    ?>
-                </div>
+                <?php if(!$enable_admin_ajax) : ?>
+                    <div class="admin__field-control control" id="loadStoreCategories">
+                        <?php echo $editor->getCategoriesHtml(); ?>
+                    </div>
+                <?php else: ?>
+                    <div class="admin__field-control control category-import-search-control">
+                        <span class="category_search_loading" id="category_import_search_loading" style="display: none;"><?php __( 'Loading...' ); ?></span>
+                        <input data-bind="value: loadcategory" type="text" class="category_import_search" style="" name="category_import_search" id="category_import_search" value=""
+                               placeholder="<?= __( 'Search a category...' ); ?>">
+                        <div id="category_import_search_results" class="category_import_search_results" style="display: none"></div>
+                        <input type="text" id="category_import_selected" class="category_import_selected" disabled="disabled" style="display: none">
+                        <span id="category_import_remove" class="category_import_remove" style="display: none"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;<?= __('Select...') ?> </span>
+                    </div>
+                <?php endif; ?>
             </div>
         </fieldset>
         <fieldset class="fieldset admin__fieldset ">
@@ -243,7 +251,7 @@ if ($design) {
         </div>
         <div class="spinner-overlay"></div>
     </div>
-    <div class="menu-design">
+    <div class="menu-design" style="display: none">
         <div class="design_margin">
             <label><?php echo __('Margin'); ?></label>
             <input type="text" name="design[margin_top]" class="design_top" data-name="margin-top" data-bind="event:{ change: changeDesign }" placeholder="-" data-attribute="margin" value="<?php echo isset($design['margin_top'])?$design['margin_top']:'' ?>">
@@ -254,7 +262,7 @@ if ($design) {
                 <option value="px" <?php echo (isset($design['margin_units']) && $design['margin_units'] =='px' ) ? 'selected' : '' ?>>px</option>
                 <option value="em" <?php echo (isset($design['margin_units']) && $design['margin_units'] =='em' ) ? 'selected' : '' ?>>em</option>
                 <option value="%" <?php echo (isset($design['margin_units']) && $design['margin_units'] =='%' ) ? 'selected' : '' ?>>%</option>
-            </select>      
+            </select>
             <div class="design_border">
                 <label><?php echo __('Border'); ?></label>
                 <input type="text" name="design[border_top_width]" class="design_top" class="design_top" data-bind="event:{ change: changeDesign }" placeholder="-" data-name="border-top-width" data-attribute="border" value="<?php echo isset($design['border_top_width'])?$design['border_top_width']:'' ?>">
@@ -415,6 +423,7 @@ if ($design) {
                 <div class="editor-btn btn-remove" data-bind="click: $parents[$parents.length-2].removeItem"><i class="fa fa-trash" aria-hidden="true"></i></div>
                 <div class="editor-btn btn1 btn-add" data-title="<?php echo __('Append New Item'); ?>" data-bind="click: $parents[$parents.length-2].addAppendChild, bootstrapTooltip: 'vesTooltip'"><i class="fa fa-sort-numeric-desc"></i></div>
                 <div class="editor-btn btn2 btn-add" data-title="<?php echo __('Prepend New Item'); ?>" data-bind="click: $parents[$parents.length-2].addPrependChild, bootstrapTooltip: 'vesTooltip'"><i class="fa fa-sort-numeric-asc"></i></div>
+                <div class="editor-btn btn3 btn-add" data-title="<?php echo __('Duplicate Item'); ?>" data-bind="click: $parents[$parents.length-2].duplicateItem, bootstrapTooltip: 'vesTooltip'"><i class="fa fa-copy"></i></div>
             </div>
         </div>
         <div class="dd-handle"><span class="item-name" data-bind="html: name"></span></div>
@@ -427,21 +436,26 @@ if ($design) {
     var _list_category_options = '';
     var _tree_categories_html = '';
     var ajax_load_categories = "<?php echo $this->getUrl("vesmegamenu/menu/ajaxGetCategories"); ?>";
+    var ajax_search_categories = "<?php echo $this->getUrl("vesmegamenu/menu/ajaxSearchCategories"); ?>";
+    var ajax_select_category = "<?php echo $this->getUrl("vesmegamenu/menu/ajaxSelectCategory"); ?>";
     <?php } ?>
     window.megamenu = <?php echo \Zend_Json::encode($options); ?>;
 </script>
 <script>
     require(['jquery'], function($) {
         jQuery(document).ready(function($) {
-            $("body").append("<div class='ves-notify'></div>");
+            var $body = $('body');
+            $body.append("<div class='ves-notify'></div>");
             $(document).on('click', '.item-structure', function(e){
                 $( '.slide' ).toggleClass("in");
                 return false;
             });
+
             $(document).on('click', '.btn-close', function(e){
                 $( '.slide' ).toggleClass("in");
                 return false;
             });
+
             $(document).on('click', '.boxshadow-inset', function() {
                 $('#boxshadow_inset').val(1);
                 if ($(this).hasClass('active')) {
@@ -465,28 +479,167 @@ if ($design) {
                 }
             }).change();
             <?php if($enable_admin_ajax) { ?>
-            $.ajax({
-                url: ajax_load_categories,
-                method: "GET",
-                cache: true,
-                dataType: 'json',
-                beforeSend: function(){
-                    $(".ves-spinner").show();
-                    console.log("\n - Before send ajax load categories...");
-                },
-                success: function(dataResponse){
-                    store_categories = window.megamenu.storeCategories = dataResponse.store_categories;
-                    _tree_categories_html = '<select data-bind="value: loadcategory">';
-                    _tree_categories_html += dataResponse.tree_html;
-                    _tree_categories_html += '</select>';
-                    _list_category_options = dataResponse.tree_html;
-                    $("#loadStoreCategories").html(_tree_categories_html);
-                    $("#option-category").html(_list_category_options);
-                    $("#option-parentcat").html(_list_category_options);
-                    $(".ves-spinner").hide();
-                    console.log("\n - Completely ajax load categories...");
+            // $.ajax({
+            //     url: ajax_load_categories,
+            //     method: "GET",
+            //     cache: true,
+            //     dataType: 'json',
+            //     beforeSend: function(){
+            //         $(".ves-spinner").show();
+            //         console.log("\n - Before send ajax load categories...");
+            //     },
+            //     success: function(dataResponse){
+            //         store_categories = window.megamenu.storeCategories = dataResponse.store_categories;
+            //         _tree_categories_html = '<select data-bind="value: loadcategory">';
+            //         _tree_categories_html += dataResponse.tree_html;
+            //         _tree_categories_html += '</select>';
+            //         _list_category_options = dataResponse.tree_html;
+            //         $("#loadStoreCategories").html(_tree_categories_html);
+            //         $("#option-category").html(_list_category_options);
+            //         $("#option-parentcat").html(_list_category_options);
+            //         $(".ves-spinner").hide();
+            //         console.log("\n - Completely ajax load categories...");
+            //     }
+            // });
+
+            // Category Menu Input Search.
+            var category_search_time_out = null;
+            $body.on('keyup','.editor-fieldtype-category_search input', function(){
+                var keyword = $(this).val();
+                var id = $(this).attr('id').replace('option-', '');
+                var $control_category_text = $('.editor-field-'+ id +'_text');
+                var $control_category_text_input = $control_category_text.find('.ves-option-' + id + '_text');
+
+                var $loading = $('#category_search_loading'),
+                    $results = $control_category_text.find('.selected_category_results');
+
+                if (keyword !== '') {
+                    $loading.show();
+
+                    if (category_search_time_out != null) {
+                        clearTimeout(category_search_time_out);
+                    }
+
+                    category_search_time_out = setTimeout(function () {
+                        category_search_time_out = null;
+                        var data = {
+                            keyword: keyword
+                        };
+                        $.ajax({
+                            url: ajax_search_categories,
+                            method: 'POST',
+                            data: data
+                        }).done(function (res) {
+                            $control_category_text.show();
+                            $control_category_text_input.hide();
+                            $results.show();
+                            $results.html(res.tree_html);
+                            $loading.hide();
+                        });
+                    }, 300);
+                    return false;
+                } else {
+                    $results.hide();
                 }
             });
+
+            $body.on('click','.selected_category_results li', function(){
+                var $el = $(this);
+                var id = $el.data('id');
+                var $result_wrap = $el.closest('.selected_category_results');
+                var $control_category_text = $el.closest('.editor-fieldtype-category_text');
+                var $category_text_input = $control_category_text.find('input');
+                var input_id = $category_text_input.attr('id').replace('option-', '').replace('_text', '');
+                var $control_category = $('.editor-field-'+ input_id);
+
+                $.ajax({
+                    url: ajax_select_category,
+                    method: 'POST',
+                    data: {
+                        id: id
+                    }
+                }).done(function (res) {
+                    if (res) {
+                        $control_category.find('input').val(id).change();
+                        $result_wrap.hide();
+                        $result_wrap.find('li').remove();
+                        $category_text_input.val(res.selected_html).change().show();
+                        $control_category_text.find('.category_text-remove').show();
+                    }
+                });
+            });
+
+            $body.on('click','.category_text-remove', function(){
+                var $control_category_text = $(this).closest('.editor-fieldtype-category_text');
+                var $input = $control_category_text.find('input');
+                var input_id = $input.attr('id').replace('option-', '').replace('_text', '');
+                var $control_category = $('.editor-field-'+ input_id);
+                $control_category.find('.ves-option-'+ input_id).val('').change().focus();
+                $(this).closest('.editor-fieldtype-category_text').hide();
+                $(this).hide();
+            })
+
+            // Category Import Search.
+            var category_import_search_timeout = null;
+            $body.on('keyup','.category_import_search', function(){
+                var keyword = $('#category_import_search').val();
+                var $loading = $('#category_search_loading'),
+                    $results = $('#category_import_search_results');
+                if (keyword !== '') {
+                    $loading.show();
+
+                    if (category_import_search_timeout != null) {
+                        clearTimeout(category_import_search_timeout);
+                    }
+
+                    category_import_search_timeout = setTimeout(function () {
+                        category_import_search_timeout = null;
+                        var data = {
+                            keyword: keyword
+                        };
+                        $.ajax({
+                            url: ajax_search_categories,
+                            method: 'POST',
+                            data: data
+                        }).done(function (res) {
+                            $results.show();
+                            $results.html(res.tree_html);
+                            $loading.hide();
+                        });
+                    }, 300);
+                    return false;
+                } else {
+                    $results.hide();
+                }
+            });
+
+            $body.on('click','#category_import_search_results li', function(){
+                var $el = $(this);
+                var id = $el.data('id');
+
+                $.ajax({
+                    url: ajax_select_category,
+                    method: 'POST',
+                    data: {
+                        id: id
+                    }
+                }).done(function (res) {
+                    if (res) {
+                        $('#category_import_search').val(id).change();
+                        $('#category_import_search_results').hide();
+                        $('#category_import_search_results li').remove();
+                        $('#category_import_selected').val(res.selected_html).show();
+                        $('#category_import_remove').show();
+                    }
+                });
+            });
+
+            $body.on('click','#category_import_remove', function(){
+                $('#category_import_search').val('').change().show().focus();
+                $('#category_import_selected').val('').change().hide();
+                $(this).hide();
+            })
+
             <?php } ?>
         });
     });

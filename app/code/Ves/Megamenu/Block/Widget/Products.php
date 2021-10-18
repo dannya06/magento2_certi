@@ -54,7 +54,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
 			$catIds = explode(",", $categories);
 		}
 		$layoutType = $this->getConfig("layout_type");
-		if($layoutType == 'owl_carousel'){
+		if($layoutType == 'owl_carousel' || $layoutType == 'list'){
 			$this->setTemplate('widget/product_carousel.phtml');
 		}elseif($layoutType == 'bootstrap_carousel'){
 			$this->setTemplate('widget/bootstrapcarousel.phtml');

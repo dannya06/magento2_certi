@@ -416,13 +416,13 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 )->addColumn(
                     'menu_data',
                     Table::TYPE_TEXT,
-                    '2M',
+                    '30M',
                     ['unsigned' => true],
                     'Menu Data'
                 )->addColumn(
                     'menu_structure',
                     Table::TYPE_TEXT,
-                    '2M',
+                    '30M',
                     ['unsigned' => true],
                     'Menu Structure'
                 )->addColumn(
@@ -468,7 +468,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 )->addColumn(
                     'html',
                     Table::TYPE_TEXT,
-                    '10M',
+                    '30M',
                     ['unsigned' => true],
                     'Menu Html'
                 )->addColumn(
@@ -511,7 +511,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 $installer->getTable('ves_megamenu_menu_customergroup'),
                 'customer_group_id',
                 [
-                    'type' => 'integer',
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
                     'unsigned' => true,
                     'nullable' => false,
                     'identity' => false
@@ -572,6 +572,54 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'nullable' => true,
                     'length' => 4,
                     'comment'  => 'Is Group Level for sub menu items with type parent category'
+                ]
+            );
+        }
+        //Update for version 1.1.9
+        if (version_compare($context->getVersion(), '1.1.9', '<')) {
+             $installer->getConnection()->modifyColumn(
+                $installer->getTable('ves_megamenu_menu'),
+                'structure',
+                [
+                    'type' => Table::TYPE_TEXT,
+                    'nullable' => false,
+                    'length' => '30M'
+                ]
+            );
+            $installer->getConnection()->modifyColumn(
+                $installer->getTable('ves_megamenu_menu'),
+                'html',
+                [
+                    'type' => Table::TYPE_TEXT,
+                    'nullable' => false,
+                    'length' => '30M'
+                ]
+            );
+            $installer->getConnection()->modifyColumn(
+                $installer->getTable('ves_megamenu_cache'),
+                'html',
+                [
+                    'type' => Table::TYPE_TEXT,
+                    'nullable' => false,
+                    'length' => '30M'
+                ]
+            );
+            $installer->getConnection()->modifyColumn(
+                $installer->getTable('ves_megamenu_menu_log'),
+                'menu_data',
+                [
+                    'type' => Table::TYPE_TEXT,
+                    'nullable' => true,
+                    'length' => '30M'
+                ]
+            );
+            $installer->getConnection()->modifyColumn(
+                $installer->getTable('ves_megamenu_menu_log'),
+                'menu_structure',
+                [
+                    'type' => Table::TYPE_TEXT,
+                    'nullable' => true,
+                    'length' => '30M'
                 ]
             );
         }
