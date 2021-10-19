@@ -1308,6 +1308,63 @@ h3 strong, h4 strong {
 	}
 }
 
+/* issue header V2 search & menu bertabrakan tablet */
+@media only screen and (max-width: 768px)
+{
+	.page-wrapper .page-header-v2 + .nav-sections{
+		margin-top: 68px;
+	}
+
+	:root .theme-pearl {
+		.page-wrapper {
+			.page-header {
+				.desktop-logo {
+					display: block;
+				}
+			}
+		}
+	}
+
+
+
+	/* issue header V2 search & menu bertabrakan tablet(saat sticky) */
+	.theme-pearl .page-wrapper .page-header-v2.sticky-header .header.content{
+		flex-wrap: wrap;
+	}
+
+	.theme-pearl .page-wrapper .page-header-v2.sticky-header .header.content .block-search{
+		margin-left: -56px;
+	}
+
+	.page-wrapper .page-header .header.content .block-search input, .page-wrapper .page-header .header_right .block-search input{
+		width: 185px;
+	}
+	
+	.sections.nav-sections-2.nav-sections.sticky-header-nav.too-wide{
+		width: 500px;
+	}
+}
+
+/* issue mobile success page */
+@media only screen and (max-width: 320px){
+	.checkout-onepage-success .thankyou-wrapper, .multishipping-checkout-success .thankyou-wrapper{
+		margin: -75px auto 67px auto;
+		text-align: center;
+	}
+}
+
+/* issue PDP icon compare and wishlist */
+.theme-pearl.catalog-product-view .product-social-links .product-addto-links{
+	width: 160px;
+	.action.tocompare{
+		margin-top: 12px;
+		margin-left: -18px
+	}
+	.action.towishlist{
+		width: 143px;
+	}
+}
+
 /* styling issue search bar and menu collided on create account page */ 
 .media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m){
     body.store-view-v2 .page-wrapper div.header-placeholder div.sections.nav-sections-2.nav-sections.too-wide{
