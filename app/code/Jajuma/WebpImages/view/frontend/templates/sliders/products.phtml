@@ -68,7 +68,7 @@ if($productsType != 'recently_viewed') {
                                              height="300"
                                              alt="<?php echo $productImageAltText;?>"
                                             <?php if (!$sliderData['lazyLoad'] || !$sliderData['loop']) : ?>
-                                                src="<?= $block->getImagesUrl($productImage) ?>"
+                                                src="<?= $block->getImageUrl($productImage) ?>"
                                             <?php endif; ?>
                                             <?php if ($isHoverImageEnabled && ($productImageHoverUrl != $productImageHoverPlaceholderUrl)) : ?>
                                                 data-hoversrc="<?php /* @escapeNotVerified */ echo $productImageHoverUrl; ?>"
