@@ -89,7 +89,7 @@
                             <span class="banner-image">
                                 <picture>
                                     <source type="image/webp" srcset="<?= $block->getImageUrl($mediaUrl . $image) ?>">
-                                    <source type="image/jpg" srcset="<?= $mediaUrl . $image ?>">
+                                    <source type="<?= $block->getOriginalTag($mediaUrl . $image)  ?>" srcset="<?= $mediaUrl . $image ?>">
                                     <img
                                         <?php if (!$sliderGeneral['lazyLoad']) : ?>
                                             src="<?= $block->getImageUrl($mediaUrl . $image) ?>"

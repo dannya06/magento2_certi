@@ -8,7 +8,7 @@
 
     <picture>
         <source type="image/webp" srcset="<?= $imageUrl ?>">
-        <source type="image/png" srcset="<?= $block->getOrigImageUrl() ?>">
+        <source type="<?= $block->getOriginalTag() ?>" srcset="<?= $block->getOrigImageUrl() ?>">
         <img class="<?= $block->escapeHtmlAttr($block->getClass()) ?>"
             <?= $block->escapeHtmlAttr($block->getCustomAttributes()) ?>
             src="<?= $block->escapeUrl($block->getOrigImageUrl()) ?>"

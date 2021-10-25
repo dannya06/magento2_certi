@@ -43,4 +43,17 @@ class Image extends \Magento\Catalog\Block\Product\Image
     {
         return parent::getImageUrl();
     }
+
+    public function getOriginalTag()
+    {
+        if (preg_match('/\.(jpg|jpeg)$/i', $this->getOrigImageUrl())) {
+            return 'image/jpg';
+        }
+
+        if (preg_match('/\.(png)$/i', $this->getOrigImageUrl())) {
+            return 'image/png';
+        }
+
+        return '';
+    }
 }

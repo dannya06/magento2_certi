@@ -107,6 +107,18 @@ class Custom extends \Magento\Framework\View\Element\Template implements \Magent
             return $imageUrl;
         }
     }
+
+    public function getOriginalTag($imageUrl){
+        if (preg_match('/\.(jpg|jpeg)$/i',$imageUrl)) {
+            return 'image/jpg';
+        }
+
+        if (preg_match('/\.(png)$/i', $imageUrl)) {
+            return 'image/png';
+        }
+
+        return '';
+    }
 }
 
 

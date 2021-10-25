@@ -56,6 +56,7 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
      * @param \Magento\Reports\Block\Product\Widget\Viewed\Proxy $viewedProductsBlock
      * @param \Magento\Catalog\Model\CategoryFactory $categoryFactory
      * @param \WeltPixel\MobileDetect\Helper\Data $mobileHelperData
+     * @param \Jajuma\WebpImages\Helper\Data $jajumaHelper
      * @param array $data
      */
     public function __construct(
@@ -717,5 +718,17 @@ class Products extends \Magento\Catalog\Block\Product\AbstractProduct implements
         } else {
             return $imageUrl;
         }
+    }
+
+    public function getOriginalTag($imageUrl){
+        if (preg_match('/\.(jpg|jpeg)$/i',$imageUrl)) {
+            return 'image/jpg';
+        }
+
+        if (preg_match('/\.(png)$/i', $imageUrl)) {
+            return 'image/png';
+        }
+
+        return '';
     }
 }
