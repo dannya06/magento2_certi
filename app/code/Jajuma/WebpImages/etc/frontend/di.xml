@@ -8,4 +8,6 @@
     </type>
     <preference for="Magento\Swatches\Block\Product\Renderer\Configurable" type="Jajuma\WebpImages\Block\Product\Renderer\Configurable"/>
     <preference for="Magento\Catalog\Block\Product\Image" type="Jajuma\WebpImages\Block\Product\Image"/>
+    <preference for="WeltPixel\OwlCarouselSlider\Block\Slider\Custom" type="Jajuma\WebpImages\Block\Slider\Custom"/>
+    <preference for="WeltPixel\OwlCarouselSlider\Block\Slider\Products" type="Jajuma\WebpImages\Block\Slider\Products"/>
 </config>
