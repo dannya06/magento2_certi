@@ -39,7 +39,7 @@ if ($block->getLazyLoad()) {
 
     <picture>
         <source type="image/webp" src="<?= $imageUrl ?>">
-        <source type="image/png" src="<?= $block->getOrigImageUrl() ?>">
+        <source type="<?= $block->getOriginalTag()  ?>" src="<?= $block->getOrigImageUrl() ?>">
         <img class="<?= /* @escapeNotVerified */ $block->getClass() ?> <?php echo $lazyLoadClass; ?>"
             <?php /* @escapeNotVerified */ echo $block->getCustomAttributes(); ?>
             <?php if (!$block->getLazyLoad()): ?>
