@@ -1385,6 +1385,40 @@ h3 strong, h4 strong {
     }
 }
 
+/* highlighting "here" text to show that this word is clickable on success page v1*/
+body.store-view-v1.checkout-onepage-success .page-wrapper main#maincontent .checkout-success .bank-transfer-info p a{
+	font-weight: bold;
+}
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = (@screen__xxs)) {
+	/* fixing collided button on hamburger menu sidebar*/
+    body{
+		.page-wrapper .page-header.page-header-v3 .header.content .sections.nav-sections-3.nav-sections .nav-sections-items ul.header.links li.customer-welcome ul.header.links{
+			position: static;
+
+			li.link.authorization-link{
+				display: none;
+			}
+		}
+	}
+
+	/* Reducing vertical space between "Customer Login" title on login page v3  */
+	body.store-view-v3.customer-account-login{
+		.page-wrapper main#maincontent{
+			padding-top: 0;
+
+			.page-title-wrapper h1.page-title {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	/* Reducing space above success logo on success page v3 */
+	body.store-view-v3.checkout-onepage-success .page-wrapper main#maincontent .thankyou-wrapper .icon_thank_you_01{
+		margin: 0 auto 21px auto;
+	}
+}
+
 @import 'static_pages.less';
 @import 'wp_custom.less';
 @import "default/_order.less";
