@@ -575,3 +575,25 @@
         }
     }
 }
+
+& when (@media-common = true){
+	/* issue tombol track order tidak muncul (desktop) */
+	.order-details-items .order-title > strong {
+		display: none;
+	}
+
+	.order-details-items .order-title .action.track {
+		float: none;
+	}
+
+	.order-details-items .order-title .action {
+		margin: 0;
+		display: block
+	}
+}
+
+@media only screen and (min-width: 768px){
+	.order-details-items.ordered .order-title {
+		display: block !important;
+	}
+}
