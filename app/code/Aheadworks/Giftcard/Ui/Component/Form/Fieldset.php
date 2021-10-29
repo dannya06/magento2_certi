@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Ui\Component\Form;
 
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
@@ -12,6 +22,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class Fieldset
@@ -31,9 +42,15 @@ class Fieldset extends \Magento\Ui\Component\Form\Fieldset
     private $orderRepository;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param ContextInterface $context
      * @param GiftcardRepositoryInterface $giftcardRepository
      * @param OrderRepositoryInterface $orderRepository
+     * @param Logger $logger
      * @param UiComponentInterface[] $components
      * @param array $data
      */
@@ -41,12 +58,14 @@ class Fieldset extends \Magento\Ui\Component\Form\Fieldset
         ContextInterface $context,
         GiftcardRepositoryInterface $giftcardRepository,
         OrderRepositoryInterface $orderRepository,
+        Logger $logger,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $components, $data);
         $this->giftcardRepository = $giftcardRepository;
         $this->orderRepository = $orderRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -83,7 +102,8 @@ class Fieldset extends \Magento\Ui\Component\Form\Fieldset
         );
         try {
             return $this->giftcardRepository->get($giftcardId);
-        } catch (NoSuchEntityException $e) {
+        } catch (NoSuchEntityException $exception) {
+            $this->logger->critical($exception->getMessage());
         }
         return null;
     }
@@ -99,7 +119,8 @@ class Fieldset extends \Magento\Ui\Component\Form\Fieldset
         if ($giftcard && $giftcard->getOrderId()) {
             try {
                 return $this->orderRepository->get($giftcard->getOrderId())->getEntityId();
-            } catch (NoSuchEntityException $e) {
+            } catch (NoSuchEntityException $exception) {
+                $this->logger->critical($exception->getMessage());
             }
         }
         return null;

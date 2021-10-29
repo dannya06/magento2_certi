@@ -1,16 +1,26 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Setup;
 
 use Aheadworks\Giftcard\Model\Giftcard\History\CommentInterface;
 use Aheadworks\Giftcard\Model\Source\EmailStatus;
 use Aheadworks\Giftcard\Model\Source\Giftcard\Status;
 use Aheadworks\Giftcard\Model\Source\YesNo;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Serialize\Serializer\Serialize as PhpSerializer;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
@@ -72,6 +82,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
     private $appState;
 
     /**
+     * @var PhpSerializer
+     */
+    private $phpSerializer;
+
+    /**
      * @param State $appState
      * @param CommentPool $commentPool
      * @param HistoryEntityInterfaceFactory $historyEntityFactory
@@ -79,6 +94,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
      * @param OrderRepositoryInterface $orderRepository
      * @param CreditmemoRepositoryInterface $creditmemoRepository
      * @param StoreManagerInterface $storeManager
+     * @param PhpSerializer $phpSerializer
      */
     public function __construct(
         State $appState,
@@ -87,7 +103,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
         EntityManager $entityManager,
         OrderRepositoryInterface $orderRepository,
         CreditmemoRepositoryInterface $creditmemoRepository,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        PhpSerializer $phpSerializer
     ) {
         $this->appState = $appState;
         $this->commentPool = $commentPool;
@@ -96,6 +113,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $this->orderRepository = $orderRepository;
         $this->creditmemoRepository = $creditmemoRepository;
         $this->storeManager = $storeManager;
+        $this->phpSerializer = $phpSerializer;
     }
 
     /**
@@ -352,7 +370,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 if (!$history['additional_info']) {
                     continue;
                 }
-                $additionalInfo = unserialize($history['additional_info']);
+                $additionalInfo = $this->phpSerializer->unserialize($history['additional_info']);
                 $historyData = [
                     'comment' => '',
                     'comment_placeholder' => '',

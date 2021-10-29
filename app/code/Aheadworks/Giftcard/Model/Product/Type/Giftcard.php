@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Product\Type;
 
 use Aheadworks\Giftcard\Api\Data\OptionInterface;
@@ -20,6 +30,8 @@ use Aheadworks\Giftcard\Model\Email\Sender;
 use Magento\Framework\DataObject;
 use Magento\Catalog\Model\Product\Type\AbstractType;
 use Aheadworks\Giftcard\Model\Statistics;
+use Magento\Framework\Serialize\Serializer\Serialize as PhpSerializer;
+use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Catalog\Model\Product\Option as CatalogProductOption;
 use Magento\Eav\Model\Config as EavConfig;
@@ -99,6 +111,11 @@ class Giftcard extends AbstractType
     private $request;
 
     /**
+     * @var PhpSerializer
+     */
+    private $phpSerializer;
+
+    /**
      * If product can be configured
      *
      * @var bool
@@ -125,6 +142,7 @@ class Giftcard extends AbstractType
      * @param OptionInterfaceFactory $optionFactory
      * @param TimezoneInterface $localeDate
      * @param RequestInterface $request
+     * @param PhpSerializer $phpSerializer
      */
     public function __construct(
         CatalogProductOption $catalogProductOption,
@@ -145,7 +163,8 @@ class Giftcard extends AbstractType
         DataObjectHelper $dataObjectHelper,
         OptionInterfaceFactory $optionFactory,
         TimezoneInterface $localeDate,
-        RequestInterface $request
+        RequestInterface $request,
+        PhpSerializer $phpSerializer
     ) {
         parent::__construct(
             $catalogProductOption,
@@ -168,6 +187,7 @@ class Giftcard extends AbstractType
         $this->optionFactory = $optionFactory;
         $this->localeDate = $localeDate;
         $this->request = $request;
+        $this->phpSerializer = $phpSerializer;
     }
 
     /**
@@ -301,7 +321,7 @@ class Giftcard extends AbstractType
             if (property_exists($this, 'serializer')) {
                 $options['info_buyRequest'] = $this->serializer->unserialize($info->getValue());
             } else {
-                $options['info_buyRequest'] = unserialize($info->getValue());
+                $options['info_buyRequest'] = $this->phpSerializer->unserialize($info->getValue());
             }
             if (!$resultValidDeliveryDate['success']
                 && isset($options['info_buyRequest'][OptionInterface::DELIVERY_DATE])
@@ -344,6 +364,7 @@ class Giftcard extends AbstractType
      *
      * @param Product $product
      * @return void
+     * phpcs:disable Magento2.CodeAnalysis.EmptyBlock
      */
     public function deleteTypeSpecificData(Product $product)
     {
@@ -553,13 +574,15 @@ class Giftcard extends AbstractType
         if (!$deliveryDate) {
             return $result;
         }
-        $zendValidateArgs = ['format' => OptionInterface::DELIVERY_DATE_FORMAT_ON_STOREFRONT, 'locale' => 'en_US'];
+
+        $zendValidateArgs = ['format' => $this->localeDate->getDateFormat()];
         if (!\Zend_Validate::is($deliveryDate, 'Date', $zendValidateArgs)) {
             $result['success'] = false;
             $result['message'] = 'Delivery date is incorrect';
         } else {
             $currentDate = new \DateTime('now', new \DateTimeZone($deliveryDateTimezone));
             $currentDate->setTime(0, 0, 0);
+            $deliveryDate = $this->localeDate->date($deliveryDate)->format(DateTime::DATETIME_PHP_FORMAT);
             $deliverydate = new \DateTime($deliveryDate, new \DateTimeZone($deliveryDateTimezone));
 
             if ($deliverydate < $currentDate) {
@@ -595,15 +618,16 @@ class Giftcard extends AbstractType
     private function getAmount(DataObject $buyRequest, $product)
     {
         $amountOptions = $this->getAmountOptions($product);
-        $selectedAmountOption = $buyRequest->getData(OptionInterface::AMOUNT);
-        $customAmount = $buyRequest->getData(OptionInterface::CUSTOM_AMOUNT);
+        $selectedAmountOption = $buyRequest->getData(OptionInterface::AMOUNT) ?: null;
+        $customAmount = $buyRequest->getData(OptionInterface::CUSTOM_AMOUNT) ?: null;
 
         $amount = null;
         if ($this->isCustomAmount($buyRequest, $product)) {
             /** @var \Magento\Directory\Model\Currency $currency */
             $currency = $this->priceCurrency->getCurrency($product->getStoreId());
             $baseCurrency = $this->storeManager->getStore($product->getStoreId())->getBaseCurrency();
-            $amount = $currency->convert($customAmount, $baseCurrency);
+            $currencyRate = $baseCurrency->getRate($currency);
+            $amount = $customAmount / $currencyRate;
         }
         if (is_numeric($selectedAmountOption) && in_array($selectedAmountOption, $amountOptions)) {
             $amount = $selectedAmountOption;

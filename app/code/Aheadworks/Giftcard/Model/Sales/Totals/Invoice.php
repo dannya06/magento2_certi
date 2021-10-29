@@ -1,11 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Sales\Totals;
 
+use Aheadworks\Giftcard\Model\Product\Type\Giftcard as GiftcardProductType;
+use Aheadworks\Giftcard\Model\Sales\Totals\Calculator\GiftCardExclude;
 use Magento\Sales\Model\Order\Invoice\Total\AbstractTotal;
 use Magento\Sales\Model\Order\Invoice as ModelInvoice;
 use Magento\Sales\Api\Data\InvoiceExtensionFactory;
@@ -37,21 +49,29 @@ class Invoice extends AbstractTotal
     private $dataObjectHelper;
 
     /**
+     * @var GiftCardExclude
+     */
+    private $excludeCalculator;
+
+    /**
      * @param InvoiceExtensionFactory $invoiceExtensionFactory
      * @param GiftcardInvoiceInterfaceFactory $giftcardInvoiceFactory
      * @param DataObjectHelper $dataObjectHelper
+     * @param GiftCardExclude $excludeCalculator
      * @param array $data
      */
     public function __construct(
         InvoiceExtensionFactory $invoiceExtensionFactory,
         GiftcardInvoiceInterfaceFactory $giftcardInvoiceFactory,
         DataObjectHelper $dataObjectHelper,
+        GiftCardExclude $excludeCalculator,
         $data = []
     ) {
         parent::__construct($data);
         $this->invoiceExtensionFactory = $invoiceExtensionFactory;
         $this->giftcardInvoiceFactory = $giftcardInvoiceFactory;
         $this->dataObjectHelper = $dataObjectHelper;
+        $this->excludeCalculator = $excludeCalculator;
     }
 
     /**
@@ -77,6 +97,14 @@ class Invoice extends AbstractTotal
                 : $this->invoiceExtensionFactory->create();
             $orderGiftcards = $order->getExtensionAttributes()->getAwGiftcardCodes();
             $invoicedGiftcards = $order->getExtensionAttributes()->getAwGiftcardCodesInvoiced() ? : [];
+
+            if ($orderGiftcards) {
+                list($baseGrandTotal, $grandTotal) = $this->excludeCalculator->calculate(
+                    $order->getItems(),
+                    $baseGrandTotal,
+                    $grandTotal
+                );
+            }
 
             $toInvoiceGiftcards = [];
             /** @var GiftcardOrderInterface $orderGiftcard */
@@ -120,11 +148,12 @@ class Invoice extends AbstractTotal
             }
 
             if ($baseTotalGiftcardAmount > 0) {
+                $grandTotal = $invoice->getGrandTotal() - $invoice->getTaxAmount() + $invoice->getBaseTaxAmount();
                 $extensionAttributes->setAwGiftcardCodes($toInvoiceGiftcards);
                 $invoice->setExtensionAttributes($extensionAttributes);
 
                 $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() - $baseTotalGiftcardAmount);
-                $invoice->setGrandTotal($invoice->getGrandTotal() - $totalGiftcardAmount);
+                $invoice->setGrandTotal($grandTotal - $totalGiftcardAmount);
 
                 $invoice->setBaseAwGiftcardAmount($baseTotalGiftcardAmount);
                 $invoice->setAwGiftcardAmount($totalGiftcardAmount);

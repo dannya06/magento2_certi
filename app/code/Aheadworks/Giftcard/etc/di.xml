@@ -1,11 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Aheadworks\Giftcard\Api\GiftcardManagementInterface" type="Aheadworks\Giftcard\Model\Service\GiftcardService" />
     <preference for="Aheadworks\Giftcard\Api\GiftcardCartManagementInterface" type="Aheadworks\Giftcard\Model\Service\GiftcardCartService" />
@@ -315,6 +308,13 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Sales\Model\Order\ProductOption">
+        <arguments>
+            <argument name="processorPool" xsi:type="array">
+                <item name="aw_giftcard" xsi:type="object">Aheadworks\Giftcard\Model\Product\Option\Processor</item>
+            </argument>
+        </arguments>
+    </type>
     <virtualType name="Aheadworks\Giftcard\Pricing\Adjustment\Collection" type="Magento\Framework\Pricing\Adjustment\Collection" />
     <virtualType name="Aheadworks\Giftcard\Pricing\PriceInfo" type="Magento\Framework\Pricing\PriceInfo\Base">
         <arguments>
@@ -326,6 +326,7 @@
             <argument name="prices" xsi:type="array">
                 <item name="final_price" xsi:type="string">Aheadworks\Giftcard\Pricing\Price\FinalPrice</item>
                 <item name="configured_price" xsi:type="string">Aheadworks\Giftcard\Pricing\Price\ConfiguredPrice</item>
+                <item name="configured_regular_price" xsi:type="string">Aheadworks\Giftcard\Pricing\Price\ConfiguredRegularPrice</item>
                 <item name="wishlist_configured_price" xsi:type="string">Aheadworks\Giftcard\Pricing\Price\ConfiguredPrice</item>
                 <item name="regular_price" xsi:type="string">Magento\Catalog\Pricing\Price\RegularPrice</item>
                 <item name="base_price" xsi:type="string">Magento\Catalog\Pricing\Price\BasePrice</item>
@@ -370,6 +371,24 @@
             </argument>
         </arguments>
     </type>
+    <virtualType name="Aheadworks\Giftcard\Model\DataProcessor\GiftcardPostDataProcessor" type="Aheadworks\Giftcard\Model\DataProcessor\PostDataComposite">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="common" xsi:type="object">Aheadworks\Giftcard\Model\DataProcessor\GiftcardPostDataProcessor\Common</item>
+                <item name="date" xsi:type="object">Aheadworks\Giftcard\Model\DataProcessor\GiftcardPostDataProcessor\Date</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Aheadworks\Giftcard\Model\DataProcessor\GiftcardPostDataProcessor\Date">
+        <arguments>
+            <argument name="dateFields" xsi:type="array">
+                <item name="expire_at" xsi:type="string">expire_at</item>
+                <item name="delivery_date" xsi:type="string">delivery_date</item>
+            </argument>
+        </arguments>
+    </type>
+
     <type name="Magento\Quote\Model\QuoteRepository\LoadHandler">
         <plugin name="aw-giftcard-quote-repository-load-plugin" type="Aheadworks\Giftcard\Plugin\Model\Quote\QuoteRepository\LoadHandlerPlugin" />
     </type>
@@ -406,4 +425,45 @@
     <type name="Magento\Sales\Model\Service\OrderService">
         <plugin name="aw-giftcard-order-service-plugin" type="Aheadworks\Giftcard\Plugin\Model\Service\OrderServicePlugin"/>
     </type>
+    <type name="Magento\Quote\Model\Quote\TotalsCollector">
+        <plugin name="aw-giftcard-totals-collector-plugin" type="Aheadworks\Giftcard\Plugin\Model\Quote\TotalsCollectorPlugin"/>
+    </type>
+    <type name="Magento\Sales\Model\ResourceModel\Order\Collection">
+        <plugin name="aw-giftcard-order-collection-plugin" type="Aheadworks\Giftcard\Plugin\Model\ResourceModel\Order\CollectionPlugin"/>
+    </type>
+
+    <virtualType name="Aheadworks\Giftcard\Model\Email\Sample"
+                 type="Magento\Framework\Config\Data">
+        <arguments>
+            <argument name="reader" xsi:type="object">Aheadworks\Giftcard\Model\Email\Sample\Reader\Xml</argument>
+            <argument name="cacheId" xsi:type="string">aheadworks_giftcard_sample_email_templates_cache</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Aheadworks\Giftcard\Model\Email\Sample\Reader\Xml"
+                 type="Magento\Framework\Config\Reader\Filesystem">
+        <arguments>
+            <argument name="converter" xsi:type="object">Aheadworks\Giftcard\Model\Email\Sample\Converter\Xml</argument>
+            <argument name="schemaLocator" xsi:type="object">Aheadworks\Giftcard\Model\Email\Sample\SchemaLocator</argument>
+            <argument name="fileName" xsi:type="string">sample_email_templates.xml</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Aheadworks\Giftcard\Setup\InstallData">
+        <arguments>
+            <argument name="sampleEmailTemplate" xsi:type="object">Aheadworks\Giftcard\Model\Email\Sample</argument>
+        </arguments>
+    </type>
+
+    <type name="Aheadworks\Giftcard\Model\Template\FilterProvider">
+        <arguments>
+            <argument name="filterClassName" xsi:type="string">Magento\Widget\Model\Template\Filter</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="KpAwGiftCardItemOrderLine" type="Aheadworks\Giftcard\Model\Checkout\Klarna\OrderLine\GiftCard">
+        <arguments>
+            <argument name="klarnaConfig" xsi:type="object">KpKlarnaConfig</argument>
+        </arguments>
+    </virtualType>
 </config>

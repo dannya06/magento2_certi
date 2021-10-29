@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Plugin\Model\Service;
 
 use Aheadworks\Giftcard\Model\Product\Type\Giftcard as ProductGiftcard;
@@ -126,6 +136,7 @@ class CreditmemoServicePlugin
                         ->setBalance($giftcardCode->getBalance() + $giftcard->getBaseGiftcardAmount());
                     $this->giftcardRepository->save($giftcardCode);
                 } catch (NoSuchEntityException $e) {
+                    $this->logger->critical($e);
                 } catch (\Exception $e) {
                     $this->logger->critical($e);
                 }
@@ -164,6 +175,7 @@ class CreditmemoServicePlugin
                             $count++;
                         }
                     } catch (NoSuchEntityException $e) {
+                        $this->logger->critical($e);
                     }
                 }
                 $this->statistics->updateStatistics(

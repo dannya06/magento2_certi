@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Ui\DataProvider\Giftcard;
 
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\CollectionFactory;
@@ -19,7 +29,6 @@ use Magento\Framework\Stdlib\DateTime as StdlibDateTime;
 /**
  * Class FormDataProvider
  *
- * @package Aheadworks\Giftcard\Model\Giftcard
  */
 class FormDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
@@ -52,6 +61,11 @@ class FormDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      * @var TimezoneInterface
      */
     private $localeDate;
+
+    /**
+     * @var array
+     */
+    private $dateFields = ['delivery_date', 'expire_at', 'created_at'];
 
     /**
      * @param string $name
@@ -108,12 +122,8 @@ class FormDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
                         $data[$id] = $giftcard->getData();
                     }
                 }
-                if (isset($data[$id]['delivery_date']) && $data[$id]['delivery_date']
-                    && isset($data[$id]['delivery_date_timezone']) && $data[$id]['delivery_date_timezone']
-                ) {
-                    $deliveryDate = new \DateTime($data[$id]['delivery_date'], new \DateTimeZone('UTC'));
-                    $deliveryDate->setTimezone(new \DateTimeZone($data[$id]['delivery_date_timezone']));
-                    $data[$id]['delivery_date'] = $deliveryDate->format(StdlibDateTime::DATETIME_PHP_FORMAT);
+                foreach ($this->dateFields as $dateField) {
+                    $this->convertDate($data, $id, $dateField);
                 }
             } else {
                 $data[$id] = [
@@ -133,5 +143,19 @@ class FormDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         }
 
         return $data;
+    }
+
+    /**
+     * Convert date
+     *
+     * @param array $data
+     * @param string $id
+     * @param string $dateField
+     */
+    private function convertDate(&$data, $id, $dateField) {
+        if (isset($data[$id][$dateField]) && $data[$id][$dateField]) {
+            $deliveryDate = $this->localeDate->date(strtotime($data[$id][$dateField]));
+            $data[$id][$dateField] = $deliveryDate->format(StdlibDateTime::DATETIME_PHP_FORMAT);
+        }
     }
 }

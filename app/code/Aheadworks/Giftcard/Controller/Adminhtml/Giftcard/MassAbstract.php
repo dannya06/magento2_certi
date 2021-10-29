@@ -1,15 +1,26 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Controller\Adminhtml\Giftcard;
 
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\CollectionFactory;
 use Magento\Backend\App\Action\Context;
 use Magento\Ui\Component\MassAction\Filter;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class MassAbstract
@@ -41,21 +52,29 @@ abstract class MassAbstract extends \Magento\Backend\App\Action
     protected $giftcardRepository;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param Context $context
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory
      * @param GiftcardRepositoryInterface $giftcardRepository
+     * @param Logger $logger
      */
     public function __construct(
         Context $context,
         Filter $filter,
         CollectionFactory $collectionFactory,
-        GiftcardRepositoryInterface $giftcardRepository
+        GiftcardRepositoryInterface $giftcardRepository,
+        Logger $logger
     ) {
         parent::__construct($context);
         $this->filter = $filter;
         $this->collectionFactory = $collectionFactory;
         $this->giftcardRepository = $giftcardRepository;
+        $this->logger = $logger;
     }
 
     /**

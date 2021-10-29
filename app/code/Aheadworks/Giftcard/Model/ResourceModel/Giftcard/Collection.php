@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\ResourceModel\Giftcard;
 
 use Magento\Framework\DB\Select;
@@ -147,7 +157,8 @@ class Collection extends AbstractCollection
     {
         $this
             ->addFieldToFilter('expire_at', ['notnull' => true])
-            ->addFieldToFilter(new \Zend_Db_Expr('DATE(expire_at)'), ['lt' => $expiredDate]);
+            ->addFieldToFilter('expire_at', ['lt' => $expiredDate]);
+
         return $this;
     }
 
@@ -180,7 +191,7 @@ class Collection extends AbstractCollection
         $this->attachRelationTable(
             $this->getProductNameQuery(),
             'product_id',
-            $this->getCatalogLinkField(),
+            'entity_id',
             'name',
             'product_name'
         );
@@ -202,7 +213,7 @@ class Collection extends AbstractCollection
         $this->joinLinkageTable(
             'product_name',
             'product_id',
-            $this->getCatalogLinkField(),
+            'entity_id',
             'product_name',
             'name',
             $this->getProductNameQuery()
@@ -308,7 +319,7 @@ class Collection extends AbstractCollection
             ->from(
                 ['tmp_table' => $this->getTable('catalog_product_entity')],
                 [
-                    'tmp_table.' . $catalogLinkField,
+                    'tmp_table.entity_id',
                     'IF(at_name.value_id > 0, at_name.value, at_name_default.value) AS name'
                 ]
             )

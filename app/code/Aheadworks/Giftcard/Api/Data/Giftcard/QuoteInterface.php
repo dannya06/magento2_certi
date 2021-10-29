@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Api\Data\Giftcard;
 
 use Magento\Framework\Api\ExtensibleDataInterface;
@@ -22,9 +32,13 @@ interface QuoteInterface extends ExtensibleDataInterface
     const GIFTCARD_CODE = 'giftcard_code';
     const QUOTE_ID = 'quote_id';
     const GIFTCARD_BALANCE = 'giftcard_balance';
+    const BASE_GIFTCARD_BALANCE_USED = 'base_giftcard_balance_used';
+    const GIFTCARD_PRODUCT_ID = 'giftcard_product_id';
+    const GIFTCARD_BALANCE_USED = 'giftcard_balance_used';
     const BASE_GIFTCARD_AMOUNT = 'base_giftcard_amount';
     const GIFTCARD_AMOUNT = 'giftcard_amount';
     const IS_REMOVE = 'is_remove';
+    const IS_INVALID = 'is_invalid';
     /**#@-*/
 
     /**
@@ -103,6 +117,36 @@ interface QuoteInterface extends ExtensibleDataInterface
     public function setGiftcardBalance($balance);
 
     /**
+     * Get Gift Card balance used
+     *
+     * @return float
+     */
+    public function getGiftcardBalanceUsed();
+
+    /**
+     * Set Gift Card balance used
+     *
+     * @param float $balanceUsed
+     * @return $this
+     */
+    public function setGiftcardBalanceUsed($balanceUsed);
+
+    /**
+     * Get base Gift Card balance used
+     *
+     * @return float
+     */
+    public function getBaseGiftcardBalanceUsed();
+
+    /**
+     * Set base Gift Card balance used
+     *
+     * @param float $baseBalanceUsed
+     * @return $this
+     */
+    public function setBaseGiftcardBalanceUsed($baseBalanceUsed);
+
+    /**
      * Get base Gift Card amount
      *
      * @return float
@@ -146,6 +190,36 @@ interface QuoteInterface extends ExtensibleDataInterface
      * @return $this
      */
     public function setIsRemove($isRemove);
+
+    /**
+     * Check is Gift Card invalid or not
+     *
+     * @return bool
+     */
+    public function isInvalid();
+
+    /**
+     * Set is Gift Card invalid flag
+     *
+     * @param bool $isInvalid
+     * @return $this
+     */
+    public function setIsInvalid($isInvalid);
+
+    /**
+     * Get Gift Card product id
+     *
+     * @return int|null
+     */
+    public function getGiftcardProductId();
+
+    /**
+     * Set is Gift Card product id
+     *
+     * @param int $productId
+     * @return $this
+     */
+    public function setGiftcardProductId($productId);
 
     /**
      * Retrieve existing extension attributes object or create a new one

@@ -1,11 +1,22 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Block\Adminhtml\Product\Composite\Fieldset;
 
+use Aheadworks\Giftcard\Model\DateTime\FormatConverter;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Email\Model\Template\Config as EmailConfig;
@@ -22,6 +33,7 @@ use Magento\Framework\Locale\FormatInterface as LocaleFormatInterface;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Config\Model\Config\Source\Locale\Timezone as TimezoneSource;
+use Aheadworks\Giftcard\Model\Template\FilterProvider;
 
 /**
  * Class Giftcard
@@ -52,6 +64,8 @@ class Giftcard extends \Aheadworks\Giftcard\Block\Product\View
      * @param EmailConfig $emailConfig
      * @param MediaConfig $mediaConfig
      * @param TimezoneSource $timezoneSource
+     * @param FormatConverter $dateFormatConverter
+     * @param FilterProvider $filterProvider
      * @param array $data
      */
     public function __construct(
@@ -71,6 +85,8 @@ class Giftcard extends \Aheadworks\Giftcard\Block\Product\View
         EmailConfig $emailConfig,
         MediaConfig $mediaConfig,
         TimezoneSource $timezoneSource,
+        FormatConverter $dateFormatConverter,
+        FilterProvider $filterProvider,
         array $data = []
     ) {
         parent::__construct(
@@ -89,6 +105,8 @@ class Giftcard extends \Aheadworks\Giftcard\Block\Product\View
             $emailConfig,
             $mediaConfig,
             $timezoneSource,
+            $dateFormatConverter,
+            $filterProvider,
             $data
         );
         $this->authSession = $authSession;

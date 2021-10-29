@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Giftcard;
 
 use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface;
@@ -99,6 +109,38 @@ class Quote extends AbstractExtensibleModel implements QuoteInterface
     /**
      * {@inheritdoc}
      */
+    public function getGiftcardBalanceUsed()
+    {
+        return $this->getData(self::GIFTCARD_BALANCE_USED);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setGiftcardBalanceUsed($balanceUsed)
+    {
+        return $this->setData(self::GIFTCARD_BALANCE_USED, $balanceUsed);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseGiftcardBalanceUsed()
+    {
+        return $this->getData(self::BASE_GIFTCARD_BALANCE_USED);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setBaseGiftcardBalanceUsed($baseBalanceUsed)
+    {
+        return $this->setData(self::BASE_GIFTCARD_BALANCE_USED, $baseBalanceUsed);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getBaseGiftcardAmount()
     {
         return $this->getData(self::BASE_GIFTCARD_AMOUNT);
@@ -142,6 +184,38 @@ class Quote extends AbstractExtensibleModel implements QuoteInterface
     public function setIsRemove($isRemove)
     {
         return $this->setData(self::IS_REMOVE, $isRemove);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isInvalid()
+    {
+        return $this->getData(self::IS_INVALID);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIsInvalid($isInvalid)
+    {
+        return $this->setData(self::IS_INVALID, $isInvalid);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGiftcardProductId()
+    {
+        return $this->getData(self::GIFTCARD_PRODUCT_ID);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setGiftcardProductId($productId)
+    {
+        return $this->setData(self::GIFTCARD_PRODUCT_ID, $productId);
     }
 
     /**

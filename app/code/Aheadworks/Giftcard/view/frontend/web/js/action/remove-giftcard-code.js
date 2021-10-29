@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'jquery',
     'Magento_Checkout/js/model/quote',

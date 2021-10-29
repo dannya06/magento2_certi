@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Api\Data;
 
 use Magento\Framework\Api\ExtensibleDataInterface;
@@ -17,7 +27,6 @@ interface OptionInterface extends ExtensibleDataInterface
     /**#@+
      * Constants defined for keys of the data array. Identical to the name of the getter in snake case
      */
-    const DELIVERY_DATE_FORMAT_ON_STOREFRONT = 'MM/dd/yyyy';
     const AMOUNT = 'aw_gc_amount';
     const CUSTOM_AMOUNT = 'aw_gc_custom_amount';
     const TEMPLATE = 'aw_gc_template';

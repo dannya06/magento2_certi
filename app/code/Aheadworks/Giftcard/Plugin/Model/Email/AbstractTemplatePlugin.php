@@ -1,13 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Plugin\Model\Email;
 
 use Magento\Framework\App\RequestInterface;
-use Magento\Email\Model\Template;
+use Magento\Email\Model\AbstractTemplate;
 use Magento\Framework\View\Asset\Repository as AssetRepository;
 
 /**
@@ -42,13 +52,13 @@ class AbstractTemplatePlugin
     /**
      * Replace quote_id in Gift Card quote table after merge quote
      *
-     * @param Template $subject
+     * @param AbstractTemplate $subject
      * @param \Closure $proceed
      * @param [] $variables
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function aroundGetProcessedTemplate(Template $subject, \Closure $proceed, $variables = [])
+    public function aroundGetProcessedTemplate(AbstractTemplate $subject, \Closure $proceed, $variables = [])
     {
         if ($this->request->getControllerName() == 'email_template' && $this->request->getActionName() == 'preview') {
             $variables['card_image_base_url'] = $this->assetRepo

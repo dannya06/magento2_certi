@@ -1,13 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Product;
 
 use Magento\Catalog\Helper\Product\Configuration\ConfigurationInterface;
 use Magento\Catalog\Model\Product\Configuration\Item\ItemInterface;
+use Magento\Quote\Model\Quote\Item\Option as ItemOption;
+use Magento\Quote\Model\Quote\Address\Item as AddressItem;
 use Aheadworks\Giftcard\Model\Product\Option\Render as OptionRender;
 
 /**
@@ -37,7 +49,12 @@ class Configuration implements ConfigurationInterface
     public function getOptions(ItemInterface $item)
     {
         $options = [];
-        /** @var \Magento\Quote\Model\Quote\Item\Option $option */
+
+        if ($item instanceof AddressItem) {
+            $item = $item->getQuoteItem();
+        }
+
+        /** @var ItemOption $option */
         foreach ($item->getOptionsByCode() as $option) {
             $options[$option->getCode()] = $option->getValue();
         }

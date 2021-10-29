@@ -1,11 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Sales\Totals;
 
+use Aheadworks\Giftcard\Model\Product\Type\Giftcard as GiftcardProductType;
+use Aheadworks\Giftcard\Model\Sales\Totals\Calculator\GiftCardExclude;
 use Magento\Sales\Model\Order\Creditmemo\Total\AbstractTotal;
 use Magento\Sales\Model\Order\Creditmemo as ModelCreditmemo;
 use Magento\Sales\Api\Data\CreditmemoExtensionFactory;
@@ -38,21 +50,29 @@ class Creditmemo extends AbstractTotal
     private $dataObjectHelper;
 
     /**
+     * @var GiftCardExclude
+     */
+    private $excludeCalculator;
+
+    /**
      * @param CreditmemoExtensionFactory $creditmemoExtensionFactory
      * @param GiftcardCreditmemoInterfaceFactory $giftcardCreditmemoFactory
      * @param DataObjectHelper $dataObjectHelper
+     * @param GiftCardExclude $excludeCalculator
      * @param array $data
      */
     public function __construct(
         CreditmemoExtensionFactory $creditmemoExtensionFactory,
         GiftcardCreditmemoInterfaceFactory $giftcardCreditmemoFactory,
         DataObjectHelper $dataObjectHelper,
+        GiftCardExclude $excludeCalculator,
         $data = []
     ) {
         parent::__construct($data);
         $this->creditmemoExtensionFactory = $creditmemoExtensionFactory;
         $this->giftcardCreditmemoFactory = $giftcardCreditmemoFactory;
         $this->dataObjectHelper = $dataObjectHelper;
+        $this->excludeCalculator = $excludeCalculator;
     }
 
     /**
@@ -80,6 +100,14 @@ class Creditmemo extends AbstractTotal
             $orderGiftcards = $order->getExtensionAttributes()->getAwGiftcardCodes();
             $invoicedGiftcards = $order->getExtensionAttributes()->getAwGiftcardCodesInvoiced();
             $refundedGiftcards = $order->getExtensionAttributes()->getAwGiftcardCodesRefunded() ? : [];
+
+            if ($orderGiftcards) {
+                list($baseGrandTotal, $grandTotal) = $this->excludeCalculator->calculate(
+                    $order->getItems(),
+                    $baseGrandTotal,
+                    $grandTotal
+                );
+            }
 
             $toRefundGiftcards = [];
             /** @var GiftcardOrderInterface $orderGiftcard */

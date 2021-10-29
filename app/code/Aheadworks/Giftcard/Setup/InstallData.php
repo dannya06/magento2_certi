@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Setup;
 
 use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardCustomMessage;
@@ -17,13 +27,14 @@ use Aheadworks\Giftcard\Model\Product\Type\Giftcard as ProductGiftcard;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute as CatalogEavAttribute;
 use Magento\Framework\App\TemplateTypesInterface;
 use Magento\Email\Model\TemplateFactory as EmailTemplateFactory;
-use Aheadworks\Giftcard\Model\Email\Sample as SampleEmailTemplate;
+use Magento\Framework\Config\Data as ConfigData;
 use Aheadworks\Giftcard\Api\Data\ProductAttributeInterface;
 use Magento\Quote\Setup\QuoteSetupFactory;
 use Magento\Quote\Setup\QuoteSetup;
 use Magento\Sales\Setup\SalesSetupFactory;
 use Magento\Sales\Setup\SalesSetup;
 use Magento\Framework\DB\Ddl\Table;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class InstallData
@@ -73,29 +84,37 @@ class InstallData implements InstallDataInterface
     private $emailTemplateFactory;
 
     /**
-     * @var SampleEmailTemplate
+     * @var ConfigData
      */
     private $sampleEmailTemplate;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
 
     /**
      * @param EavSetup $eavSetup
      * @param QuoteSetupFactory $setupFactory
      * @param SalesSetupFactory $salesSetupFactory
      * @param EmailTemplateFactory $emailTemplateFactory
-     * @param SampleEmailTemplate $sampleEmailTemplate
+     * @param ConfigData $sampleEmailTemplate
+     * @param Logger $logger
      */
     public function __construct(
         EavSetup $eavSetup,
         QuoteSetupFactory $setupFactory,
         SalesSetupFactory $salesSetupFactory,
         EmailTemplateFactory $emailTemplateFactory,
-        SampleEmailTemplate $sampleEmailTemplate
+        ConfigData $sampleEmailTemplate,
+        Logger $logger
     ) {
         $this->eavSetup = $eavSetup;
         $this->quoteSetupFactory = $setupFactory;
         $this->salesSetupFactory = $salesSetupFactory;
         $this->sampleEmailTemplate = $sampleEmailTemplate;
         $this->emailTemplateFactory = $emailTemplateFactory;
+        $this->logger = $logger;
     }
 
     /**
@@ -397,11 +416,9 @@ class InstallData implements InstallDataInterface
             'tax_class_id'
         ];
         foreach ($fieldListToUpdate as $field) {
-            $applyTo = explode(
-                ',',
-                $this->eavSetup->getAttribute($this->entityTypeId, $field, 'apply_to')
-            );
-            if (!in_array($this->giftCardTypeCode, $applyTo)) {
+            $attribute = $this->eavSetup->getAttribute($this->entityTypeId, $field, 'apply_to');
+            $applyTo = explode(',', $attribute);
+            if ($attribute && !in_array($this->giftCardTypeCode, $applyTo)) {
                 $applyTo[] = $this->giftCardTypeCode;
                 $this->eavSetup->updateAttribute(
                     $this->entityTypeId,
@@ -423,7 +440,8 @@ class InstallData implements InstallDataInterface
                         ->setTemplateType(TemplateTypesInterface::TYPE_HTML)
                         ->save();
                 }
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
+                $this->logger->critical($exception->getMessage());
             }
         }
     }

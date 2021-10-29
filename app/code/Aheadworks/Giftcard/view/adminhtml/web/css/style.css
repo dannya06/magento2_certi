@@ -16,10 +16,10 @@
 }
 
 /* Gift Card code form */
-.aw-giftcard-admin-giftcard-edit .aw-giftcard-admin-bold-label-control .admin__field-control .aw-giftcard-admin-control-label {
+.aw_giftcard_admin-giftcard-edit .aw-giftcard-admin-bold-label-control .admin__field-control .aw-giftcard-admin-control-label {
     font-weight: 600;
 }
-.aw-giftcard-admin-giftcard-edit .admin__field-control .aw-giftcard-admin-control-label {
+.aw_giftcard_admin-giftcard-edit .admin__field-control .aw-giftcard-admin-control-label {
     line-height: 3.2rem;
 }
 .aw-giftcard-admin-file-uploader .file-uploader-preview {

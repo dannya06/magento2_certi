@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Email;
 
 use Aheadworks\Giftcard\Api\Data\OptionInterface;
@@ -132,7 +142,7 @@ class Previewer
             : $optionObject->getAwGcAmount();
         $templateVars['giftcards'] = ['XXXXXXXXXXXX'];
         $templateVars['is_multiple_codes'] = false;
-        $templateVars['balance'] = $this->priceCurrency->convertAndFormat(
+        $templateVars['balance'] = $this->priceCurrency->format(
             $balance,
             false,
             PriceCurrencyInterface::DEFAULT_PRECISION,

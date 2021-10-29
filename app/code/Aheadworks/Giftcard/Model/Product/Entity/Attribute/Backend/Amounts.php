@@ -1,14 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Product\Entity\Attribute\Backend;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend;
 use Aheadworks\Giftcard\Api\Data\ProductAttributeInterface;
+use Magento\Framework\Locale\FormatInterface;
 
 /**
  * Class Amounts
@@ -17,6 +28,20 @@ use Aheadworks\Giftcard\Api\Data\ProductAttributeInterface;
  */
 class Amounts extends AbstractBackend
 {
+    /**
+     * @var FormatInterface
+     */
+    private $format;
+
+    /**
+     * @param FormatInterface $format
+     */
+    public function __construct(
+        FormatInterface $format
+    ) {
+        $this->format = $format;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -84,9 +109,13 @@ class Amounts extends AbstractBackend
      */
     private function validateOpenAmount($object)
     {
-        if ((int)$object->getData(ProductAttributeInterface::CODE_AW_GC_ALLOW_OPEN_AMOUNT)) {
-            $minAmount = (int)$object->getData(ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MIN);
-            $maxAmount = (int)$object->getData(ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MAX);
+        if ((bool)$object->getData(ProductAttributeInterface::CODE_AW_GC_ALLOW_OPEN_AMOUNT)) {
+            $minAmount = $this->format->getNumber(
+                $object->getData(ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MIN)
+            );
+            $maxAmount = $this->format->getNumber(
+                $object->getData(ProductAttributeInterface::CODE_AW_GC_OPEN_AMOUNT_MAX)
+            );
 
             if ($minAmount > $maxAmount) {
                 throw new LocalizedException(

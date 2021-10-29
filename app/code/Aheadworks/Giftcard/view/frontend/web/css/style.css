@@ -90,7 +90,10 @@
     color: #8f8f8f;
 }
 .aw-gc-product-form-options__email {
-    margin-top: 15px;
+    margin-top: 30px;
+}
+#aw_gc_recipient_name-error, #aw_gc_sender_name-error {
+    position: absolute;
 }
 .aw-gc-product-form-options__fromto, .aw-gc-product-form-options__delivery-date {
     margin-bottom: 20px !important;
@@ -160,6 +163,7 @@
     font-size: 1.4rem;
     font-style: normal;
     vertical-align: top;
+    cursor: pointer;
 }
 .aw-giftcard-totals .action-delete .delete-icon::before {
     content: '\e604';
@@ -167,4 +171,12 @@
 }
 .opc-wrapper .form-aw-giftcard {
     max-width: 500px;
+}
+.aw-giftcart__multishipping-container {
+    margin-top: 10px;
+}
+.aw-giftcart__multishipping-container .title strong {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: #1979c3;
 }

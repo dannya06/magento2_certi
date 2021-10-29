@@ -1,11 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/pdf_file.xsd">
     <totals>
         <total name="aw_giftcard">
@@ -17,4 +10,15 @@
             <sort_order>600</sort_order>
         </total>
     </totals>
+    <renderers>
+        <page type="invoice">
+            <renderer product_type="aw_giftcard">Aheadworks\Giftcard\Model\Sales\Order\Pdf\Items\Invoice</renderer>
+        </page>
+        <page type="shipment">
+            <renderer product_type="aw_giftcard">Aheadworks\Giftcard\Model\Sales\Order\Pdf\Items\Shipment</renderer>
+        </page>
+        <page type="creditmemo">
+            <renderer product_type="aw_giftcard">Aheadworks\Giftcard\Model\Sales\Order\Pdf\Items\Creditmemo</renderer>
+        </page>
+    </renderers>
 </config>

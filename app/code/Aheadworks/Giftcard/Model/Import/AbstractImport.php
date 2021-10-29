@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Import;
 
 use Aheadworks\Giftcard\Model\Import\Exception\ImportValidatorException;
@@ -257,7 +267,8 @@ abstract class AbstractImport
     protected function filterRawData($rawData, $validFields)
     {
         $filteredData = [];
-        for ($index = 0; $index < count($rawData); $index++) {
+        $rawDataCount = count($rawData);
+        for ($index = 0; $index < $rawDataCount; $index++) {
             // Skip first row (header in array)
             if ($index == 0) {
                 continue;
@@ -269,7 +280,9 @@ abstract class AbstractImport
                 }
             }
 
-            $this->validateRow($filteredData[$index], $index);
+            if (isset($filteredData[$index])) {
+                $this->validateRow($filteredData[$index], $index);
+            }
         }
         return $filteredData;
     }

@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model;
 
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
@@ -469,6 +479,7 @@ class Giftcard extends AbstractModel implements GiftcardInterface
                 $this->setCode(array_shift($codes));
             }
         }
+        $requestedState = $this->getState();
         $this->attachGiftcardState();
 
         if ($this->getBalance() < 0) {
@@ -479,7 +490,9 @@ class Giftcard extends AbstractModel implements GiftcardInterface
         }
 
         // Check if change state (Activate / Deactivate)
-        if ($this->getState() == Status::ACTIVE && $this->getBalance() <= 0) {
+        if (($this->getState() == Status::ACTIVE && $this->getBalance() <= 0)
+            || ($this->getOrigData('state') == Status::USED && $requestedState == Status::ACTIVE)
+        ) {
             throw new LocalizedException(__('Unable to activate Gift Card code'));
         }
         if (($this->getOrigData('state') == Status::USED || $this->getOrigData('state') == Status::EXPIRED)
@@ -522,15 +535,6 @@ class Giftcard extends AbstractModel implements GiftcardInterface
         }
         if (empty($this->getExpireAt())) {
             $this->setExpireAt(null);
-        } else {
-            if ($this->getExpireAt() instanceof \DateTime) {
-                $expireAt = $this->getExpireAt();
-            } else {
-                $expireAt = new \DateTime($this->getExpireAt(), new \DateTimeZone('UTC'));
-            }
-            $this->setExpireAt(
-                $expireAt->setTime(0, 0, 0)->format(StdlibDateTime::DATETIME_PHP_FORMAT)
-            );
         }
 
         if ($this->getId() && $this->getOrderId() && ($this->getOrigData('headline') != $this->getHeadline()

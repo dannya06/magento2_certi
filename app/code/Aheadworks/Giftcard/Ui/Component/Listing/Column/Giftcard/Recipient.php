@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Ui\Component\Listing\Column\Giftcard;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -11,6 +21,7 @@ use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class Recipient
@@ -25,9 +36,15 @@ class Recipient extends \Magento\Ui\Component\Listing\Columns\Column
     private $customerRepository;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param CustomerRepositoryInterface $customerRepository
+     * @param Logger $logger
      * @param array $components
      * @param array $data
      */
@@ -35,6 +52,7 @@ class Recipient extends \Magento\Ui\Component\Listing\Columns\Column
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         CustomerRepositoryInterface $customerRepository,
+        Logger $logger,
         array $components = [],
         array $data = []
     ) {
@@ -45,6 +63,7 @@ class Recipient extends \Magento\Ui\Component\Listing\Columns\Column
             $data
         );
         $this->customerRepository = $customerRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -61,7 +80,8 @@ class Recipient extends \Magento\Ui\Component\Listing\Columns\Column
                     'customer/index/edit',
                     ['id' => $customer->getId()]
                 );
-            } catch (NoSuchEntityException $e) {
+            } catch (NoSuchEntityException $exception) {
+                $this->logger->critical($exception->getMessage());
             }
             $item[$fieldName . '_label'] = $item[$fieldName];
         }

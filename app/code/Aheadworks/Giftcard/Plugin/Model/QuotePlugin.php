@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Plugin\Model;
 
 use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface as GiftcardQuoteInterface;
@@ -11,6 +21,7 @@ use Magento\Quote\Model\Quote;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Quote\CollectionFactory as GiftcardQuoteCollectionFactory;
 use Magento\Framework\EntityManager\EntityManager;
 use Aheadworks\Giftcard\Plugin\Model\Quote\QuoteRepository\SaveHandlerPlugin;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class QuotePlugin
@@ -72,10 +83,27 @@ class QuotePlugin
             return $quoteAfterMerge;
         }
 
+        $profileGiftcardQuoteItems = $this->giftcardQuoteCollectionFactory->create()
+            ->addFieldToFilter('quote_id', $quoteAfterMerge->getId())
+            ->load()
+            ->getItems();
+
         /** @var GiftcardQuoteInterface $giftcardQuoteItem */
         foreach ($giftcardQuoteItems as $giftcardQuoteItem) {
-            $giftcardQuoteItem->setQuoteId($quoteAfterMerge->getId());
-            $this->entityManager->save($giftcardQuoteItem);
+            $found = false;
+            foreach ($profileGiftcardQuoteItems as $profileGiftcardQuoteItem) {
+                if ($giftcardQuoteItem->getGiftcardId() == $profileGiftcardQuoteItem->getGiftcardId()) {
+                    $found = true;
+                    continue;
+                }
+            }
+
+            if (!$found) {
+                $giftcardQuoteItem->setQuoteId($quoteAfterMerge->getId());
+                $this->entityManager->save($giftcardQuoteItem);
+            } else {
+                $this->entityManager->delete($giftcardQuoteItem);
+            }
         }
 
         return $quoteAfterMerge;
@@ -87,9 +115,10 @@ class QuotePlugin
      * @param Quote $subject
      * @param Quote $quote
      * @return Quote
+     * @throws LocalizedException
      */
     public function afterSave($subject, $quote)
     {
-        return $this->saveHandlerPlugin->saveGiftcardToQuote($quote);
+        return $this->saveHandlerPlugin->processQuoteGiftcards($quote);
     }
 }
