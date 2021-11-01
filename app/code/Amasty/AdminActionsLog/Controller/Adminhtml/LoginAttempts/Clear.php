@@ -1,29 +1,32 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_AdminActionsLog
- */
-
+declare(strict_types=1);
 
 namespace Amasty\AdminActionsLog\Controller\Adminhtml\LoginAttempts;
 
-class Clear extends \Magento\Backend\App\Action
+use Amasty\AdminActionsLog\Api\LoginAttemptManagerInterface;
+use Amasty\AdminActionsLog\Controller\Adminhtml\AbstractLoginAttempts;
+use Magento\Backend\App\Action\Context;
+
+class Clear extends AbstractLoginAttempts
 {
+    const ADMIN_RESOURCE = 'Amasty_AdminActionsLog::clear_logging';
+
+    /**
+     * @var LoginAttemptManagerInterface
+     */
+    private $loginAttemptManager;
+
+    public function __construct(
+        Context $context,
+        LoginAttemptManagerInterface $loginAttemptManager
+    ) {
+        parent::__construct($context);
+        $this->loginAttemptManager = $loginAttemptManager;
+    }
     public function execute()
     {
-        /**
-         * @var \Amasty\AdminActionsLog\Model\LoginAttempts $log
-         */
-        $log = $this->_objectManager->get('Amasty\AdminActionsLog\Model\LoginAttempts');
-
-        $log->clearLog(false);
-
-        $this->_redirect('amaudit/loginattempts/');
-    }
-
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Amasty_AdminActionsLog::login_attempts');
+        $this->loginAttemptManager->clear();
+        $this->messageManager->addSuccessMessage(__('Login Attempts Log has been successfully cleared.'));
+        $this->_redirect($this->_redirect->getRefererUrl());
     }
 }

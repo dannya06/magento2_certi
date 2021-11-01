@@ -1,27 +1,20 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_AdminActionsLog
- */
 
+declare(strict_types=1);
 
 namespace Amasty\AdminActionsLog\Ui\DataProvider\Product\Form\Modifier;
 
 use Magento\Catalog\Model\Locator\LocatorInterface;
 use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AbstractModifier;
-use Magento\Ui\Component\Form;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\Module\Manager as ModuleManager;
-use Magento\Framework\App\ObjectManager;
+use Magento\Ui\Component\Form;
 
 class History extends AbstractModifier
 {
-    const GROUP_REVIEW = 'history';
+    const GROUP_HISTORY = 'history';
     const GROUP_CONTENT = 'content';
-    const DATA_SCOPE_REVIEW = 'grouped';
     const SORT_ORDER = 100;
-    const LINK_TYPE = 'associated';
+    const LISTING_NS = 'amaudit_product_history_listing';
 
     /**
      * @var LocatorInterface
@@ -34,56 +27,54 @@ class History extends AbstractModifier
     protected $urlBuilder;
 
     /**
-     * @var ModuleManager
-     */
-    private $moduleManager;
-
-    /**
-     * History constructor.
      * @param LocatorInterface $locator
      * @param UrlInterface $urlBuilder
      */
     public function __construct(
         LocatorInterface $locator,
-        UrlInterface $urlBuilder,
-        ModuleManager $moduleManager
+        UrlInterface $urlBuilder
     ) {
         $this->locator = $locator;
         $this->urlBuilder = $urlBuilder;
-        $this->moduleManager = $moduleManager;
     }
 
-    /**
-     * @param array $meta
-     * @return array
-     */
+    public function modifyData(array $data)
+    {
+        $productId = $this->locator->getProduct()->getId();
+        $data[$productId][self::DATA_SOURCE_DEFAULT]['current_product_id'] = $productId;
+
+        return $data;
+    }
+
     public function modifyMeta(array $meta)
     {
         if (!$this->locator->getProduct()->getId()) {
             return $meta;
         }
 
-        $meta[static::GROUP_REVIEW] = [
+        $meta[static::GROUP_HISTORY] = [
             'children' => [
-                'history_listing' => [
+                self::LISTING_NS => [
                     'arguments' => [
                         'data' => [
                             'config' => [
                                 'autoRender' => true,
                                 'componentType' => 'insertListing',
-                                'dataScope' => 'history_listing',
-                                'externalProvider' => 'history_listing.history_listing_data_source',
-                                'selectionsProvider' => 'history_listing.history_listing.product_columns.ids',
-                                'ns' => 'history_listing',
+                                'dataScope' => 'amaudit_product_history_listing',
+                                'externalProvider' => self::LISTING_NS . '.amaudit_actionslog_listing_data_source',
+                                'selectionsProvider' => self::LISTING_NS . '.' . self::LISTING_NS
+                                    . '.product_columns.ids',
+                                'ns' => 'amaudit_product_history_listing',
                                 'render_url' => $this->urlBuilder->getUrl('mui/index/render'),
                                 'realTimeLink' => false,
-                                'behaviourType' => 'simple',
                                 'externalFilterMode' => true,
                                 'imports' => [
-                                    'productId' => '${ $.provider }:data.product.current_product_id'
+                                    'productId' => '${ $.provider }:data.product.current_product_id',
+                                    '__disableTmpl' => ['productId' => false]
                                 ],
                                 'exports' => [
-                                    'productId' => '${ $.externalProvider }:params.current_product_id'
+                                    'productId' => '${ $.externalProvider }:params.current_product_id',
+                                    '__disableTmpl' => ['productId' => false]
                                 ],
                             ],
                         ],
@@ -109,18 +100,5 @@ class History extends AbstractModifier
         ];
 
         return $meta;
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     */
-    public function modifyData(array $data)
-    {
-        $productId = $this->locator->getProduct()->getId();
-
-        $data[$productId][self::DATA_SOURCE_DEFAULT]['current_product_id'] = $productId;
-
-        return $data;
     }
 }

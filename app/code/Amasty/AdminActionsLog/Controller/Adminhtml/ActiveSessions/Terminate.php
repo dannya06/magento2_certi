@@ -1,41 +1,35 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_AdminActionsLog
- */
-
+declare(strict_types=1);
 
 namespace Amasty\AdminActionsLog\Controller\Adminhtml\ActiveSessions;
 
-class Terminate extends \Magento\Backend\App\Action
+use Amasty\AdminActionsLog\Api\ActiveSessionManagerInterface;
+use Amasty\AdminActionsLog\Controller\Adminhtml\AbstractActiveSessions;
+use Amasty\AdminActionsLog\Model\ActiveSession\ActiveSession;
+use Magento\Backend\App\Action\Context;
+
+class Terminate extends AbstractActiveSessions
 {
-    protected $resultPageFactory;
-    protected $_helper;
+    /**
+     * @var ActiveSessionManagerInterface
+     */
+    private $activeSessionManager;
 
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
-    )
-    {
+        Context $context,
+        ActiveSessionManagerInterface $activeSessionManager
+    ) {
         parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
+        $this->activeSessionManager = $activeSessionManager;
     }
 
     public function execute()
     {
-        $sessionId = $this->getRequest()->getParam('session_id');
-        /**
-         * @var \Amasty\AdminActionsLog\Model\ActiveSessions $activeModel
-         */
-        $activeModel= $this->_objectManager->get('Amasty\AdminActionsLog\Model\ActiveSessions');
-        $activeModel->removeOnlineAdmin($sessionId);
-        $activeModel->destroySession($sessionId);
-        $this->_redirect('*/*/index');
-    }
+        if ($sessionId = $this->getRequest()->getParam(ActiveSession::SESSION_ID)) {
+            $this->activeSessionManager->terminate($sessionId);
+            $this->messageManager->addSuccessMessage('Session has been successfully terminated.');
+        }
 
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Amasty_AdminActionsLog::active_sessions');
+        return $this->_redirect($this->_redirect->getRefererUrl());
     }
 }
