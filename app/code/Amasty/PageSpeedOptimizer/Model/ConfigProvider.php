@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Model;
 
@@ -18,49 +12,24 @@ class ConfigProvider extends \Amasty\Base\Model\ConfigProviderAbstract
     const XPATH_ENABLED = 'general/enabled';
     const IS_CLOUD = 'javascript/is_cloud';
     const BUNDLING_FILES = 'javascript/bundling_files';
-    const MOVE_JS = 'settings/javascript/movejs';
+    const MOVE_JS = 'javascript/movejs';
     const MOVE_JS_EXCLUDE_URL = 'javascript/movejs_exclude_url';
     const MOVE_JS_EXCLUDE_PART = 'javascript/movejs_exclude_part';
     const ADMINHTML_JS_MERGE_BUNDLE = 'javascript/merge_and_bundle_adminhtml';
+    const MINIFY_JS_IN_PHTML = 'javascript/minify_js_phtml';
+    const MINIFY_JS_IN_PHTML_BLACKLIST = 'javascript/minify_js_phtml_blacklist';
     const EXCLUDE_URLS_FROM_MERGE_BUNDLE = 'javascript/not_merge_and_bundle_urls';
     const MERGE_CSS_ADMINHTML = 'css/merge_css_adminhtml';
     const EXCLUDE_URLS_FROM_MERGE_CSS = 'css/not_merge_css_urls';
     const MOVE_PRINT_CSS = 'css/move_print';
-    const MOVE_FONT = 'settings/css/move_font';
-    const FONT_IGNORE_LIST = 'settings/css/font_ignore_list';
-    const LAZY_LOAD = 'images/lazy_load';
-    const LAZY_LOAD_SCRIPT = 'images/lazy_load_script';
-    const PRELOAD_IMAGES = 'images/preload_images';
-    const SKIP_IMAGES_COUNT = 'images/skip_images_count';
-    const OPTIMIZE_IMAGES = 'images/optimize_images';
-    const MULTIPROCESS_ENABLED = 'images/multiprocess_enabled';
-    const MAX_JOBS_COUNT = 'images/process_count';
-    const OPTIMIZE_AUTOMATICALLY = 'images/optimize_automatically';
-    const IMAGES_PER_REQUEST = 'images/process_images_per_request';
-    const REPLACE_WITH_WEBP = 'images/webp_resolutions';
-    const REPLACE_IGNORE_IMAGES = 'images/webp_resolutions_ignore';
-    const JPEG_COMMAND = 'images/jpeg_tool';
-    const PNG_COMMAND = 'images/png_tool';
-    const GIF_COMMAND = 'images/gif_tool';
-    const DUMP_ORIGINAL = 'images/dump_original';
-    const IGNORE_IMAGES = 'images/ignore_list';
-    const RESOLUTIONS = 'images/resolutions';
-    const RESIZE_ALGORITHM = 'images/resize_algorithm';
-    const WEBP = 'images/webp';
-    const SKIP_STRATEGY = 'images/preload_images_strategy';
-    const IMAGE_OPTIMIZATION_TYPE = 'images/image_optimization_type';
-    const REPLACE_IMAGES_USING_USER_AGENT = 'images/replace_images_using_user_agent';
-    const REPLACE_IMAGES_USING_USER_AGENT_IGNORE_LIST = 'images/replace_images_using_user_agent_ignore_list';
+    const SERVER_PUSH_ENABLED = 'server_push/enabled';
+    const SERVER_PUSH_TYPES = 'server_push/server_push_types';
+    const SERVER_PUSH_EXCLUDE = 'server_push/server_push_exclude';
+    const MOVE_FONT = 'css/move_font';
+    const FONT_IGNORE_LIST = 'css/font_ignore_list';
+    const MOVE_FONT_FOR_DEVICE = 'css/move_font_for_device';
     /**#@-*/
 
-    const PART_IS_LAZY = '/lazy_load';
-    const PART_SCRIPT = '/lazy_load_script';
-    const PART_STRATEGY = '/preload_images_strategy';
-    const PART_PRELOAD = '/preload_images';
-    const PART_SKIP = '/skip_images_count';
-    const PART_IGNORE = '/ignore_list';
-    const PART_REPLACE_WITH_WEBP = '/webp_resolutions';
-    const PART_REPLACE_IGNORE = '/webp_resolutions_ignore';
     const BUNDLING_TYPE = 'javascript/bundling_type';
     const BUNDLE_STEP = 'javascript/bundle_step';
     const BUNDLE_HASH = 'javascript/bundle_hash';
@@ -127,23 +96,6 @@ class ConfigProvider extends \Amasty\Base\Model\ConfigProviderAbstract
         return $this->isSetFlag(self::MERGE_CSS_ADMINHTML);
     }
 
-    public function isMultiprocessEnabled()
-    {
-        return $this->isSetFlag(self::MULTIPROCESS_ENABLED);
-    }
-
-    public function getMaxJobsCount()
-    {
-        if (!function_exists('pcntl_fork')) {
-            return 1;
-        }
-        $maxJobs = (int)$this->getValue(self::MAX_JOBS_COUNT) > 1
-            ? (int)$this->getValue(self::MAX_JOBS_COUNT)
-            : 1;
-
-        return $this->isMultiprocessEnabled() ? $maxJobs : 1;
-    }
-
     /**
      * @return array
      */
@@ -176,68 +128,21 @@ class ConfigProvider extends \Amasty\Base\Model\ConfigProviderAbstract
         return $this->isSetFlag(self::MOVE_PRINT_CSS);
     }
 
-    /**
-     * @return bool
-     */
-    public function isLazyLoad()
+    public function isServerPushEnabled(): bool
     {
-        return $this->isSetFlag(self::LAZY_LOAD);
+        return $this->isSetFlag(self::SERVER_PUSH_ENABLED);
     }
 
-    /**
-     * @return int
-     */
-    public function lazyLoadScript()
+    public function getServerPushAssetTypes(): array
     {
-        return (int)$this->getValue(self::LAZY_LOAD_SCRIPT);
+        $assetTypes = (string)$this->getValue(self::SERVER_PUSH_TYPES);
+
+        return array_filter(explode(',', $assetTypes));
     }
 
-    /**
-     * @return bool
-     */
-    public function isOptimizeImages()
+    public function getServerPushIgnoreList()
     {
-        return (bool)$this->getValue(self::OPTIMIZE_IMAGES);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAutomaticallyOptimizeImages()
-    {
-        return (bool)$this->getValue(self::OPTIMIZE_AUTOMATICALLY);
-    }
-
-    /**
-     * @return int
-     */
-    public function getJpegCommand()
-    {
-        return (int)$this->getValue(self::JPEG_COMMAND);
-    }
-
-    /**
-     * @return int
-     */
-    public function getPngCommand()
-    {
-        return (int)$this->getValue(self::PNG_COMMAND);
-    }
-
-    /**
-     * @return int
-     */
-    public function getGifCommand()
-    {
-        return (int)$this->getValue(self::GIF_COMMAND);
-    }
-
-    /**
-     * @return int
-     */
-    public function getImagesPerRequest()
-    {
-        return (int)$this->getValue(self::IMAGES_PER_REQUEST);
+        return $this->convertStringToArray($this->getValue(self::SERVER_PUSH_EXCLUDE));
     }
 
     /**
@@ -256,103 +161,11 @@ class ConfigProvider extends \Amasty\Base\Model\ConfigProviderAbstract
         return $this->convertStringToArray($this->getValue(self::FONT_IGNORE_LIST));
     }
 
-    /**
-     * @return bool
-     */
-    public function isCreateWebp()
+    public function getMoveFontForDevice(): array
     {
-        return $this->isSetFlag(self::WEBP);
-    }
+        $deviceTypes = (string)$this->getValue(self::MOVE_FONT_FOR_DEVICE);
 
-    /**
-     * @return bool
-     */
-    public function isDumpOriginal()
-    {
-        return $this->isSetFlag(self::DUMP_ORIGINAL);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPreloadImages()
-    {
-        return $this->isSetFlag(self::PRELOAD_IMAGES);
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return int
-     */
-    public function skipImagesCount($type = '')
-    {
-        return (int)$this->getValue(self::SKIP_IMAGES_COUNT . $type);
-    }
-
-    /**
-     * @return array
-     */
-    public function getIgnoreImages()
-    {
-        return $this->convertStringToArray($this->getValue(self::IGNORE_IMAGES));
-    }
-
-    /**
-     * @return array|bool
-     */
-    public function getResolutions()
-    {
-        if ($this->getValue(self::RESOLUTIONS) !== '') {
-            return explode(',', $this->getValue(self::RESOLUTIONS));
-        }
-
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isReplaceImagesUsingUserAgent()
-    {
-        return (bool)$this->isSetFlag(self::REPLACE_IMAGES_USING_USER_AGENT);
-    }
-
-    /**
-     * @return array
-     */
-    public function getReplaceImagesUsingUserAgentIgnoreList()
-    {
-        return $this->convertStringToArray($this->getValue(self::REPLACE_IMAGES_USING_USER_AGENT_IGNORE_LIST));
-    }
-
-    /**
-     * @return bool
-     */
-    public function isReplaceWithWebP()
-    {
-        return (bool)!$this->isSetFlag(self::REPLACE_WITH_WEBP);
-    }
-
-    /**
-     * @return array
-     */
-    public function getReplaceIgnoreList()
-    {
-        return $this->convertStringToArray($this->getValue(self::REPLACE_IGNORE_IMAGES));
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSimpleOptimization()
-    {
-        return (int)$this->getValue(self::IMAGE_OPTIMIZATION_TYPE) === OptionSource\OptimizationSettings::SIMPLE;
-    }
-
-    public function getSkipStrategy()
-    {
-        return (int)$this->getValue(self::SKIP_STRATEGY);
+        return array_filter(explode(',', $deviceTypes));
     }
 
     public function getConfig($path)
@@ -360,9 +173,9 @@ class ConfigProvider extends \Amasty\Base\Model\ConfigProviderAbstract
         return $this->getValue($path);
     }
 
-    public function getResizeAlgorithm()
+    public function getCustomValue($path)
     {
-        return (int)$this->getValue(self::RESIZE_ALGORITHM);
+        return $this->scopeConfig->getValue($path);
     }
 
     public function getBundlingType()
@@ -386,6 +199,22 @@ class ConfigProvider extends \Amasty\Base\Model\ConfigProviderAbstract
     public function isMifiniedJs()
     {
         return (bool)$this->scopeConfig->getValue('dev/js/minify_files');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMinifiedJsInPhtml()
+    {
+        return (bool)$this->getValue(self::MINIFY_JS_IN_PHTML);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMinifyJsPhtmlBlacklist()
+    {
+        return $this->convertStringToArray($this->getValue(self::MINIFY_JS_IN_PHTML_BLACKLIST));
     }
 
     /**

@@ -1,17 +1,10 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Model\OptionSource;
 
-use Magento\Config\Model\Config\Backend\Admin\Custom;
-use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
-class FlatTableRecommendation implements ArrayInterface
+class FlatTableRecommendation implements OptionSourceInterface
 {
     const NO = 0;
     const YES = 1;
@@ -27,11 +20,9 @@ class FlatTableRecommendation implements ArrayInterface
     private $config;
 
     public function __construct(
-        \Amasty\Base\Model\MagentoVersion $magentoVersion,
-        \Magento\Framework\App\Config\ScopeConfigInterface $config
+        \Amasty\Base\Model\MagentoVersion $magentoVersion
     ) {
         $this->magentoVersion = $magentoVersion;
-        $this->config = $config;
     }
 
     /**
@@ -40,8 +31,8 @@ class FlatTableRecommendation implements ArrayInterface
     public function toOptionArray()
     {
         $optionArray = [];
-        foreach ($this->toArray() as $widgetType => $label) {
-            $optionArray[] = ['value' => $widgetType, 'label' => $label];
+        foreach ($this->toArray() as $value => $label) {
+            $optionArray[] = ['value' => $value, 'label' => $label];
         }
         return $optionArray;
     }
@@ -53,12 +44,7 @@ class FlatTableRecommendation implements ArrayInterface
      */
     public function toArray()
     {
-        if (version_compare($this->magentoVersion->get(), '2.3.0', '>=')
-            && in_array(
-                $this->config->getValue(Custom::XML_PATH_CATALOG_SEARCH_ENGINE),
-                ['elasticsearch5', 'elasticsearch6', 'elasticsearch']
-            )
-        ) {
+        if (version_compare($this->magentoVersion->get(), '2.3.0', '>=')) {
             return [
                 self::YES => __('Yes'),
                 self::NO => __('No (Recommended)'),

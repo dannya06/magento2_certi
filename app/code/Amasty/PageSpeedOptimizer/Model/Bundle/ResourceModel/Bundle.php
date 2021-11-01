@@ -1,10 +1,5 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
+declare(strict_types=1);
 
 namespace Amasty\PageSpeedOptimizer\Model\Bundle\ResourceModel;
 
@@ -16,13 +11,13 @@ class Bundle extends AbstractDb
 
     protected function _construct()
     {
-        $this->_init(self::TABLE_NAME, 'filename_id');
+        $this->_init(self::TABLE_NAME, \Amasty\PageSpeedOptimizer\Model\Bundle\Bundle::BUNDLE_FILE_ID);
     }
 
     /**
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function clear()
+    public function clear(): void
     {
         $this->getConnection()->truncateTable($this->getMainTable());
     }

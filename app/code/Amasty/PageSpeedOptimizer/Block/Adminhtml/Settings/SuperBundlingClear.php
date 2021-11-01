@@ -1,9 +1,5 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
+declare(strict_types=1);
 
 namespace Amasty\PageSpeedOptimizer\Block\Adminhtml\Settings;
 
@@ -36,14 +32,10 @@ class SuperBundlingClear extends Field
         $this->configProvider = $configProvider;
     }
 
-    /**
-     * @param AbstractElement $element
-     * @return string
-     */
-    protected function _getElementHtml(AbstractElement $element)
+    protected function _getElementHtml(AbstractElement $element): string
     {
-        $element->setData('value', __("Clear Bundle"));
-        $element->setData('class', "action-default");
+        $element->setData('value', __("Clear"));
+        $element->setData('class', "amoptimizer-button -clear");
         $element->setData('onclick', "location.href = '" . $this->getActionUrl() . "'");
 
         if ($this->configProvider->getBundleStep() || !$this->collection->getSize()) {
@@ -52,14 +44,14 @@ class SuperBundlingClear extends Field
             return parent::_getElementHtml($element);
         }
 
-        return '<div style="margin-bottom:10px">'
+        return parent::_getElementHtml($element)
+            . '<div style="margin-top:10px">'
             . __('The JS optimization is finished. Please check your website.')
             . '<br>' . __('Use Clear Bundle button to roll back the JavaScript optimization.')
-            . '</div>'
-            . parent::_getElementHtml($element);
+            . '</div>';
     }
 
-    public function getActionUrl()
+    public function getActionUrl(): string
     {
         return $this->_urlBuilder->getUrl('amoptimizer/bundle/clear');
     }

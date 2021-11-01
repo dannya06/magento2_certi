@@ -1,12 +1,8 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Model\Output;
+
+use Amasty\PageSpeedTools\Model\Output\OutputProcessorInterface;
 
 class MoveCssProcessor implements OutputProcessorInterface
 {
@@ -15,15 +11,20 @@ class MoveCssProcessor implements OutputProcessorInterface
      */
     private $configProvider;
 
-    public function __construct(\Amasty\PageSpeedOptimizer\Model\ConfigProvider $configProvider)
-    {
+    /**
+     * @var \Amasty\PageSpeedTools\Model\DeviceDetect
+     */
+    private $deviceDetector;
+
+    public function __construct(
+        \Amasty\PageSpeedOptimizer\Model\ConfigProvider $configProvider,
+        \Amasty\PageSpeedTools\Model\DeviceDetect $deviceDetector
+    ) {
         $this->configProvider = $configProvider;
+        $this->deviceDetector = $deviceDetector;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function process(&$output)
+    public function process(string &$output): bool
     {
         $moveStyles = '';
         if ($this->configProvider->isMovePrintCss()) {
@@ -40,12 +41,16 @@ class MoveCssProcessor implements OutputProcessorInterface
         if ($this->configProvider->isMoveFont()
             && preg_match('/<link[^>]*href\s*=\s*["\']+([^"\']*merged[^"\']*)["\']+[^>]*\>/is', $output, $m)
         ) {
-            $fontLink = str_replace(
-                $this->basename($m[1]),
-                'fonts_' . $this->basename($m[1]),
-                $m[1]
-            );
-            $moveStyles .= '<link rel="stylesheet"  type="text/css"  media="all" href="' . $fontLink . '" />';
+            if ($this->isMoveForCurrentDevice()) {
+                $fontLink = str_replace(
+                    $this->basename($m[1]),
+                    'fonts_' . $this->basename($m[1]),
+                    $m[1]
+                );
+                $moveStyles .= '<link rel="stylesheet"  type="text/css"  media="all" href="' . $fontLink . '" />';
+            } else {
+                $output = str_ireplace($this->basename($m[1]), 'orig_' . $this->basename($m[1]), $output);
+            }
         }
 
         if (!empty($moveStyles)) {
@@ -74,5 +79,13 @@ class MoveCssProcessor implements OutputProcessorInterface
     {
         //phpcs:ignore
         return basename($file);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMoveForCurrentDevice()
+    {
+        return in_array($this->deviceDetector->getDeviceType(), $this->configProvider->getMoveFontForDevice());
     }
 }

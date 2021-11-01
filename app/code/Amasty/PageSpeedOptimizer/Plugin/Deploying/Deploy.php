@@ -1,14 +1,8 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Plugin\Deploying;
 
-use Amasty\PageSpeedOptimizer\Api\Data\BundleFileInterface;
+use Amasty\PageSpeedOptimizer\Model\Bundle\Bundle;
 use Amasty\PageSpeedOptimizer\Model\Bundle\ResourceModel\CollectionFactory;
 use Amasty\PageSpeedOptimizer\Model\ConfigProvider;
 use Amasty\PageSpeedOptimizer\Model\OptionSource\BundlingType;
@@ -65,14 +59,14 @@ class Deploy
         } else {
             /** @var \Amasty\PageSpeedOptimizer\Model\Bundle\ResourceModel\Collection $collection */
             $collection = $this->collectionFactory->create();
-            $collection->addFieldToFilter('main_table.' . BundleFileInterface::AREA, $area);
-            $collection->addFieldToFilter('main_table.' . BundleFileInterface::THEME, $theme);
-            $collection->addFieldToFilter('main_table.' . BundleFileInterface::LOCALE, $locale);
-            $collection->addFieldToSelect(BundleFileInterface::FILENAME);
+            $collection->addFieldToFilter('main_table.' . Bundle::AREA, $area);
+            $collection->addFieldToFilter('main_table.' . Bundle::THEME, $theme);
+            $collection->addFieldToFilter('main_table.' . Bundle::LOCALE, $locale);
+            $collection->addFieldToSelect(Bundle::FILENAME);
             $result = $collection->getData();
             if (!empty($result)) {
                 foreach ($result as &$item) {
-                    $item = $item[BundleFileInterface::FILENAME];
+                    $item = $item[Bundle::FILENAME];
                 }
             }
         }

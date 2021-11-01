@@ -1,16 +1,10 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Model\OptionSource;
 
-use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
-class BundlingType implements ArrayInterface
+class BundlingType implements OptionSourceInterface
 {
     const SIMPLE = 0;
     const SUPER_BUNDLING = 1;

@@ -1,9 +1,5 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
+declare(strict_types=1);
 
 namespace Amasty\PageSpeedOptimizer\Block\Adminhtml\Settings;
 
@@ -44,16 +40,10 @@ class SuperBundling extends Field
         $this->collectionFactory = $collectionFactory;
     }
 
-    /**
-     * @param AbstractElement $element
-     *
-     * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    protected function _getElementHtml(AbstractElement $element)
+    protected function _getElementHtml(AbstractElement $element): string
     {
-        $element->setData('value', __("Start"));
-        $element->setData('class', "action-default");
+        $element->setData('value', __("Run"));
+        $element->setData('class', "amoptimizer-button");
 
         $block = $this->getLayout()
             ->createBlock(\Magento\Backend\Block\Template::class)
@@ -64,12 +54,12 @@ class SuperBundling extends Field
         return parent::_getElementHtml($element) . $block->toHtml();
     }
 
-    public function getStartUrl()
+    public function getStartUrl(): string
     {
         return $this->_urlBuilder->getUrl('amoptimizer/bundle/start');
     }
 
-    public function getFinishUrl()
+    public function getFinishUrl(): string
     {
         return $this->_urlBuilder->getUrl('amoptimizer/bundle/finish');
     }
