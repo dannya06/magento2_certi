@@ -18,9 +18,8 @@ class Category extends \WeltPixel\GA4\Block\Core
             return [];
         }
 
-        $categoryProductListBlock->toHtml();
         // Fetch the current collection from the block and set pagination
-        $collection = $categoryProductListBlock->getLoadedProductCollection();
+        $collection = clone $categoryProductListBlock->getLoadedProductCollection();
         $collection->setCurPage($this->getCurrentPage())->setPageSize($this->getLimit());
 
         return $collection;

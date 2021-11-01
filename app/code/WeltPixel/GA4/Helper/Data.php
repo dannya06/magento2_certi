@@ -237,6 +237,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function isProductClickTrackingEnabled()
     {
+        if (!isset($this->_gtmOptions['general']['product_click_tracking'])) {
+            return false;
+        }
         return !$this->cookieHelper->isUserNotAllowSaveCookie() && $this->_gtmOptions['general']['product_click_tracking'];
     }
 
