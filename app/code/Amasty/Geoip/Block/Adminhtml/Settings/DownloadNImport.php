@@ -1,27 +1,30 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_Geoip
- */
 
 namespace Amasty\Geoip\Block\Adminhtml\Settings;
 
-class DownloadNImport extends \Magento\Config\Block\System\Config\Form\Field
+use Magento\Backend\Block\Template\Context;
+use Magento\Config\Block\System\Config\Form\Field;
+use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Framework\Exception\LocalizedException;
+use Amasty\Geoip\Model\Import as ModelImport;
+
+class DownloadNImport extends Field
 {
-    /** @var \Amasty\Geoip\Model\Import $import */
+    /**
+     * @var ModelImport $import
+     */
     protected $import;
 
     /**
      * DownloadNImport constructor.
      *
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Amasty\Geoip\Model\Import              $import
-     * @param array                                   $data
+     * @param Context $context
+     * @param ModelImport $import
+     * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Amasty\Geoip\Model\Import $import,
+        Context $context,
+        ModelImport $import,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -31,17 +34,18 @@ class DownloadNImport extends \Magento\Config\Block\System\Config\Form\Field
     /**
      * Return element html
      *
-     * @param  \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      *
      * @return string
      *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @throws LocalizedException
      */
-    public function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    public function _getElementHtml(AbstractElement $element)
     {
         $importTypes = [
             'location',
-            'block'
+            'block',
+            'block_v6'
         ];
 
         $urls = [];
@@ -49,7 +53,7 @@ class DownloadNImport extends \Magento\Config\Block\System\Config\Form\Field
             $startDownloadingUrl = $this->getUrl(
                 'amasty_geoip/geoip/startDownloading',
                 [
-                    'type'   => $type,
+                    'type' => $type,
                     'action' => 'download_and_import'
                 ]
             );
@@ -57,7 +61,7 @@ class DownloadNImport extends \Magento\Config\Block\System\Config\Form\Field
             $startUrl = $this->getUrl(
                 'amasty_geoip/geoip/start',
                 [
-                    'type'   => $type,
+                    'type' => $type,
                     'action' => 'download_and_import'
                 ]
             );
@@ -65,7 +69,7 @@ class DownloadNImport extends \Magento\Config\Block\System\Config\Form\Field
             $processUrl = $this->getUrl(
                 'amasty_geoip/geoip/process',
                 [
-                    'type'   => $type,
+                    'type' => $type,
                     'action' => 'download_and_import'
                 ]
             );
@@ -73,21 +77,21 @@ class DownloadNImport extends \Magento\Config\Block\System\Config\Form\Field
             $commitUrl = $this->getUrl(
                 'amasty_geoip/geoip/commit',
                 [
-                    'type'   => $type,
+                    'type' => $type,
                     'action' => 'download_and_import'
                 ]
             );
 
             $urls[] = [
-                'start'    => $startUrl,
-                'process'  => $processUrl,
-                'commit'   => $commitUrl,
+                'start' => $startUrl,
+                'process' => $processUrl,
+                'commit' => $commitUrl,
                 'download' => $startDownloadingUrl
             ];
         }
 
         $block = $this->getLayout()
-            ->createBlock('Amasty\Geoip\Block\Adminhtml\Template')
+            ->createBlock(\Amasty\Geoip\Block\Adminhtml\Template::class)
             ->setTemplate('Amasty_Geoip::download_n_import.phtml')
             ->setConfig(json_encode($urls));
         $this->setDNIData($block);
@@ -98,18 +102,18 @@ class DownloadNImport extends \Magento\Config\Block\System\Config\Form\Field
     public function setDNIData($block)
     {
         if ($block->geoipHelper->isDone() && $this->import->importTableHasData()) {
-            $width          = 100;
-            $completedClass = "end_downloading_completed";
-            $importedClass  = "end_imported";
-            $importDate     = $block->_scopeConfig->getValue('amgeoip/import/date_download');
+            $width = 100;
+            $completedClass = "-completed";
+            $importedClass = "-completed";
+            $importDate = $block->_scopeConfig->getValue('amgeoip/import/date_download');
             if (!empty($importDate)) {
                 $importDate = __('Last Imported: ') . $importDate;
             }
         } else {
-            $width          = 0;
-            $completedClass = "end_downloading_not_completed";
-            $importedClass  = "end_not_imported";
-            $importDate     = '';
+            $width = 0;
+            $completedClass = "-failed";
+            $importedClass = "-failed";
+            $importDate = '';
         }
         $block->setWidth($width)
             ->setCompletedClass($completedClass)

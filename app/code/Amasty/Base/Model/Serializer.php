@@ -1,17 +1,15 @@
 <?php
 /**
- * @author Amasty Team
- * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
- * @package Amasty_Base
- */
+* @author Amasty Team
+* @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+* @package Amasty_Base
+*/
 
 namespace Amasty\Base\Model;
 
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Unserialize\Unserialize;
-use Zend\Serializer\Adapter\PhpSerialize;
-use Zend\Serializer\Serializer as SerializerFactory;
 
 /**
  * Wrapper for Serialize
@@ -29,31 +27,25 @@ class Serializer
      */
     private $unserialize;
 
-    /**
-     * @var PhpSerialize
-     */
-    private $phpSerialize;
-
     public function __construct(
         ObjectManagerInterface $objectManager,
         Unserialize $unserialize
     ) {
         if (interface_exists(SerializerInterface::class)) {
-            // for magento later then 2.2
+            // For Magento >= 2.2
             $this->serializer = $objectManager->get(SerializerInterface::class);
         }
         $this->unserialize = $unserialize;
-        $this->phpSerialize = SerializerFactory::getDefaultAdapter(); //deus ex machina
     }
 
     public function serialize($value)
     {
         try {
-            if ($this->serializer === null) {
-                return $this->phpSerialize->serialize($value);
+            if ($this->serializer !== null) {
+                return $this->serializer->serialize($value);
             }
 
-            return $this->serializer->serialize($value);
+            return '{}';
         } catch (\Exception $e) {
             return '{}';
         }
@@ -72,7 +64,7 @@ class Serializer
         try {
             return $this->serializer->unserialize($value);
         } catch (\InvalidArgumentException $exception) {
-            return $this->phpSerialize->unserialize($value);
+            return false;
         }
     }
 }

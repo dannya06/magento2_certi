@@ -1,13 +1,12 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_Geoip
- */
-
 namespace Amasty\Geoip\Controller\Adminhtml\Geoip;
 
-class Commit extends \Amasty\Geoip\Controller\Adminhtml\Geoip
+use Amasty\Geoip\Controller\Adminhtml\GeoipAbstract;
+
+/**
+ * Class Commit
+ */
+class Commit extends GeoipAbstract
 {
     public function execute()
     {
@@ -29,5 +28,4 @@ class Commit extends \Amasty\Geoip\Controller\Adminhtml\Geoip
 
         $this->getResponse()->setBody($this->jsonHelper->jsonEncode($result));
     }
-
 }
