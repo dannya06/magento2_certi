@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b04e8ef95d8fc119c81e64c61211fae3",
+    "content-hash": "77c2abcfae6dbdd638e3d1aa240510f8",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1990,11 +1990,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.14",
+            "version": "4.1.15",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "4a447fac58ae60441e2c3cabcb831288976cf32f"
+                "reference": "e1c9dacbe4c0ffdd1b3a1dd42e237fb1950185bb"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2155,7 +2155,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-10-28T09:42:21+00:00"
+            "time": "2021-11-02T02:39:30+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
