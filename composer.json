@@ -36,7 +36,8 @@
         "icubeus/magento2-firebase": "^4.1",
         "icubebysirclo/magento2-facebookshop": "^4.0",
         "icubebysirclo/magento2-xendit": "^4.0",
-        "icubebysirclo/magento2-shippinglogistix": "^4.0"
+        "icubebysirclo/magento2-shippinglogistix": "^4.0",
+        "cogpowered/finediff": "^0.3.1"
     },
     "replace": {
         "klarna/module-core": "*",
