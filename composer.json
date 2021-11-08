@@ -1,8 +1,8 @@
 {
-    "name": "magento/project-community-edition",
+    "name": "icubeus/swift",
     "description": "Swift",
     "type": "project",
-    "version": "4.0.6",
+    "version": "4.0.7",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
