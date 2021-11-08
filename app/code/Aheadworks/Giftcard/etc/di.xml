@@ -461,9 +461,9 @@
         </arguments>
     </type>
 
-    <virtualType name="KpAwGiftCardItemOrderLine" type="Aheadworks\Giftcard\Model\Checkout\Klarna\OrderLine\GiftCard">
+    <!-- <virtualType name="KpAwGiftCardItemOrderLine" type="Aheadworks\Giftcard\Model\Checkout\Klarna\OrderLine\GiftCard">
         <arguments>
             <argument name="klarnaConfig" xsi:type="object">KpKlarnaConfig</argument>
         </arguments>
-    </virtualType>
+    </virtualType> -->
 </config>
