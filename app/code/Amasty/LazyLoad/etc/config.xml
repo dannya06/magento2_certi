@@ -9,7 +9,7 @@
         </amlazyload>
         <amoptimizer>
             <lazy_load_general>
-                <lazy_load>1</lazy_load>
+                <lazy_load>0</lazy_load>
                 <lazy_load_script>jquery</lazy_load_script>
                 <preload_images>1</preload_images>
                 <skip_images_count>7</skip_images_count>
