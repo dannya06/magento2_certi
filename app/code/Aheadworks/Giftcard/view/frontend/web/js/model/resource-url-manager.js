@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'Magento_Customer/js/model/customer',
     'Magento_Checkout/js/model/url-builder',

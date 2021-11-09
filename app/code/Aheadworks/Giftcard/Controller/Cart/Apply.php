@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Controller\Cart;
 
 use Magento\Framework\App\Action\Action;
@@ -37,6 +47,13 @@ class Apply extends Action
     private $escaper;
 
     /**
+     * @var array
+     */
+    private $redirectToPath = [
+        'multishipping' => 'multishipping/checkout/billing'
+    ];
+
+    /**
      * @param Context $context
      * @param GiftcardCartManagementInterface $giftcardCartManagement
      * @param CheckoutSession $checkoutSession
@@ -57,7 +74,7 @@ class Apply extends Action
     /**
      * Apply Gift Card code on cart page
      *
-     * @return \Magento\Framework\Controller\Result\Redirect
+     * @return \Magento\Framework\App\ResponseInterface
      */
     public function execute()
     {
@@ -76,6 +93,11 @@ class Apply extends Action
             $this->messageManager->addErrorMessage(__('Cannot apply Gift Card code'));
         }
 
-        $this->_redirect('checkout/cart');
+        $redirectToRequest = $this->getRequest()->getParam('redirect_to');
+        $redirectTo = $redirectToRequest && isset($this->redirectToPath[$redirectToRequest])
+            ? $this->redirectToPath[$redirectToRequest]
+            : 'checkout/cart';
+
+        return $this->_redirect($redirectTo);
     }
 }

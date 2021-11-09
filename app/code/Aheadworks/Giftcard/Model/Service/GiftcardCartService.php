@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\Service;
 
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
@@ -19,6 +29,7 @@ use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface as GiftcardQuoteInterfa
 use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterfaceFactory as GiftcardQuoteInterfaceFactory;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Quote\CollectionFactory as GiftcardQuoteCollectionFactory;
 use Aheadworks\Giftcard\Model\Giftcard\Validator as GiftcardValidator;
+use Aheadworks\Giftcard\Model\Product\Type\Giftcard as GiftcardProductType;
 
 /**
  * Class GiftcardCartService
@@ -102,6 +113,8 @@ class GiftcardCartService implements GiftcardCartManagementInterface
 
     /**
      * {@inheritdoc}
+     * phpcs:disable Magento2.Exceptions.DirectThrow
+     * phpcs:disable Magento2.Exceptions.ThrowCatch
      */
     public function set($cartId, $giftcardCode, $activeQuote = true)
     {
@@ -112,6 +125,19 @@ class GiftcardCartService implements GiftcardCartManagementInterface
             : $this->quoteRepository->get($cartId);
         if (!$quote->getItemsCount()) {
             throw new NoSuchEntityException(__('Cart %1 doesn\'t contain products', $cartId));
+        }
+
+        $quoteItems = $quote->getAllItems();
+        $isGcProductOnly = true;
+        foreach ($quoteItems as $quoteItem) {
+            if ($quoteItem->getProductType() != GiftcardProductType::TYPE_CODE) {
+                $isGcProductOnly = false;
+                break;
+            }
+        }
+
+        if ($isGcProductOnly) {
+            throw new LocalizedException(__('Gift card code cannot be applied to gift card product'));
         }
 
         try {
@@ -200,7 +226,8 @@ class GiftcardCartService implements GiftcardCartManagementInterface
             ->setGiftcardCode($giftcard->getCode())
             ->setGiftcardBalance($giftcard->getBalance())
             ->setQuoteId($quote->getId())
-            ->setBaseGiftcardAmount($giftcard->getBalance());
+            ->setBaseGiftcardAmount($giftcard->getBalance())
+            ->setGiftcardProductId($giftcard->getProductId());
 
         $giftcards = [$giftcardQuoteObject];
         if ($extensionAttributes->getAwGiftcardCodes()) {

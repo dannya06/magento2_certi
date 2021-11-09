@@ -1,10 +1,5 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
+declare(strict_types=1);
 
 namespace Amasty\PageSpeedOptimizer\Model\HeaderProvider;
 
@@ -23,17 +18,17 @@ class ContentSecurityPolicy extends AbstractHeaderProvider
         $this->isSetXFrameOptions = $isSetXFrameOptions;
     }
 
-    public function canApply()
+    public function canApply(): bool
     {
-        return $this->isSetXFrameOptions->isSetHeader();
+        return (bool)$this->isSetXFrameOptions->isSetHeader();
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'Content-Security-Policy';
     }
 
-    public function getValue()
+    public function getValue(): string
     {
         return 'frame-ancestors ' . $this->isSetXFrameOptions->getBaseUrl();
     }

@@ -1,27 +1,34 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Controller\Adminhtml\Giftcard;
 
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Framework\Controller\Result\Redirect as ResultRedirect;
+use Magento\Backend\App\Action\Context;
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Api\Data\GiftcardInterfaceFactory;
 use Aheadworks\Giftcard\Api\GiftcardManagementInterface;
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
-use Aheadworks\Giftcard\Model\Config;
 use Aheadworks\Giftcard\Model\Source\EmailStatus;
 use Aheadworks\Giftcard\Model\Source\Giftcard\EmailTemplate;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Framework\Stdlib\DateTime as StdlibDateTime;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\App\Request\DataPersistorInterface;
-use Aheadworks\Giftcard\Api\PoolManagementInterface;
 use Aheadworks\Giftcard\Model\ResourceModel\Giftcard as ResourceGiftcard;
+use Aheadworks\Giftcard\Model\DataProcessor\PostDataProcessorInterface;
 
 /**
  * Class Save
@@ -48,21 +55,6 @@ class Save extends \Magento\Backend\App\Action
     private $giftcardManagement;
 
     /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var DateTime
-     */
-    private $dateTime;
-
-    /**
-     * @var TimezoneInterface
-     */
-    private $localeDate;
-
-    /**
      * @var DataObjectHelper
      */
     private $dataObjectHelper;
@@ -78,58 +70,49 @@ class Save extends \Magento\Backend\App\Action
     private $giftcardDataFactory;
 
     /**
-     * @var PoolManagementInterface
-     */
-    private $poolManagement;
-
-    /**
      * @var ResourceGiftcard
      */
     private $resourceGiftcard;
 
     /**
+     * @var PostDataProcessorInterface
+     */
+    private $postDataProcessor;
+
+    /**
      * @param Context $context
      * @param GiftcardRepositoryInterface $giftcardRepository
      * @param GiftcardManagementInterface $giftcardManagement
-     * @param Config $config
-     * @param DateTime $dateTime
-     * @param TimezoneInterface $localeDate
      * @param DataObjectHelper $dataObjectHelper
      * @param DataPersistorInterface $dataPersistor
      * @param GiftcardInterfaceFactory $giftcardDataFactory
-     * @param PoolManagementInterface $poolManagement
      * @param ResourceGiftcard $resourceGiftcard
+     * @param PostDataProcessorInterface $postDataProcessor
      */
     public function __construct(
         Context $context,
         GiftcardRepositoryInterface $giftcardRepository,
         GiftcardManagementInterface $giftcardManagement,
-        Config $config,
-        DateTime $dateTime,
-        TimezoneInterface $localeDate,
         DataObjectHelper $dataObjectHelper,
         DataPersistorInterface $dataPersistor,
         GiftcardInterfaceFactory $giftcardDataFactory,
-        PoolManagementInterface $poolManagement,
-        ResourceGiftcard $resourceGiftcard
+        ResourceGiftcard $resourceGiftcard,
+        PostDataProcessorInterface $postDataProcessor
     ) {
         parent::__construct($context);
         $this->giftcardRepository = $giftcardRepository;
         $this->giftcardManagement = $giftcardManagement;
-        $this->config = $config;
-        $this->dateTime = $dateTime;
-        $this->localeDate = $localeDate;
         $this->dataObjectHelper = $dataObjectHelper;
         $this->dataPersistor = $dataPersistor;
         $this->giftcardDataFactory = $giftcardDataFactory;
-        $this->poolManagement = $poolManagement;
         $this->resourceGiftcard = $resourceGiftcard;
+        $this->postDataProcessor = $postDataProcessor;
     }
 
     /**
      * Save action
      *
-     * @return \Magento\Framework\Controller\Result\Redirect
+     * @return ResultRedirect
      */
     public function execute()
     {
@@ -137,7 +120,7 @@ class Save extends \Magento\Backend\App\Action
         if ($data = $this->getRequest()->getPostValue()) {
             try {
                 $this->resourceGiftcard->beginTransaction();
-                $data = $this->prepareData($data);
+                $data = $this->postDataProcessor->prepareEntityData($data);
                 $giftcard = $this->performSave($data);
 
                 $this->dataPersistor->clear('aw_giftcard_giftcard');
@@ -170,62 +153,11 @@ class Save extends \Magento\Backend\App\Action
     }
 
     /**
-     * Prepare data before save
-     *
-     * @param [] $data
-     * @return []
-     */
-    private function prepareData($data)
-    {
-        if ($data['id'] && isset($data['expire_at']) && $data['expire_at']) {
-            $data['expire_at'] = $this->dateTime->gmtDate(
-                StdlibDateTime::DATETIME_PHP_FORMAT,
-                $data['expire_at']
-            );
-        }
-        if (!$data['id']) {
-            $expireAfter = null;
-            $codeFromPool = true;
-            if (isset($data['use_default'])) {
-                if (isset($data['use_default']['expire_after']) && (bool)$data['use_default']['expire_after']) {
-                    $expireAfter = $this->config->getGiftcardExpireDays();
-                }
-                if (isset($data['use_default']['code_pool']) && (bool)$data['use_default']['code_pool']) {
-                    $codeFromPool = false;
-                }
-            }
-            if (null === $expireAfter && isset($data['expire_after'])) {
-                $expireAfter = $data['expire_after'];
-            }
-            if ($expireAfter) {
-                $data['expire_at'] = $this->localeDate
-                    ->date('+' . $expireAfter . 'days', null, false)
-                    ->format(StdlibDateTime::DATETIME_PHP_FORMAT);
-            }
-            if ($codeFromPool) {
-                $data['code'] = $this->poolManagement->pullCodeFromPool($data['code_pool']);
-            }
-        }
-
-        if (isset($data['delivery_date']) && $data['delivery_date']) {
-            $deliveryDate = new \DateTime($data['delivery_date'], new \DateTimeZone($data['delivery_date_timezone']));
-            $deliveryDate->setTimezone(new \DateTimeZone('UTC'));
-            $data['delivery_date'] = $deliveryDate->format(StdlibDateTime::DATETIME_PHP_FORMAT);
-        } else {
-            $data['delivery_date_timezone'] = null;
-        }
-
-        if (isset($data['created_at'])) {
-            unset($data['created_at']);
-        }
-        return $data;
-    }
-
-    /**
      * Perform save
      *
-     * @param [] $data
+     * @param array $data
      * @return GiftcardInterface
+     * @throws LocalizedException
      */
     private function performSave($data)
     {
@@ -252,6 +184,7 @@ class Save extends \Magento\Backend\App\Action
                 $this->messageManager->addErrorMessage(__('Could not send email'));
             }
         }
+
         return $giftcard;
     }
 }

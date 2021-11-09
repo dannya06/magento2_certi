@@ -1,10 +1,5 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
+declare(strict_types=1);
 
 namespace Amasty\PageSpeedOptimizer\Controller\Adminhtml\Bundle;
 
@@ -21,6 +16,7 @@ use Magento\Framework\Math\Random;
 use Magento\Framework\View\DesignInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Theme\Model\ResourceModel\Theme\CollectionFactory as ThemeCollectionFactory;
+use Magento\UrlRewrite\Model\ResourceModel\UrlRewriteCollection;
 use Magento\UrlRewrite\Model\ResourceModel\UrlRewriteCollectionFactory;
 
 class Start extends Action
@@ -161,19 +157,19 @@ class Start extends Action
                 'title' => $store->getName(),
                 'store_id' => $store->getId(),
                 'urls' => [
-                    $this->getBundleUrl($store->getId(), '')
+                    $this->getBundleUrl((int)$store->getId(), '')
                 ],
             ];
 
-            if ($url = $this->getSimpleProductUrl($store->getId())) {
+            if ($url = $this->getSimpleProductUrl((int)$store->getId())) {
                 $storeData['urls'][] = $url;
             }
 
-            if ($url = $this->getConfigurableProductUrl($store->getId())) {
+            if ($url = $this->getConfigurableProductUrl((int)$store->getId())) {
                 $storeData['urls'][] = $url;
             }
 
-            if ($urls = $this->getCategoryUrls($store->getId())) {
+            if ($urls = $this->getCategoryUrls((int)$store->getId())) {
                 array_push($storeData['urls'], ...$urls);
             }
 
@@ -197,50 +193,41 @@ class Start extends Action
         ]);
     }
 
-    /**
-     * @param int $storeId
-     * @param string $entityType
-     *
-     * @return \Magento\UrlRewrite\Model\ResourceModel\UrlRewriteCollection
-     */
-    public function getRewriteCollection($storeId, $entityType)
+    public function getRewriteCollection(int $storeId, string $entityType): UrlRewriteCollection
     {
         return $this->urlRewriteCollectionFactory->create()
             ->addStoreFilter([$storeId], false)
             ->addFieldToFilter('entity_type', $entityType);
     }
 
-    public function getSimpleProductUrl($storeId)
+    public function getProductUrlByType(int $storeId, string $productType): string
     {
-        $collection = $this->getRewriteCollection($storeId, 'product')
-            ->join(
-                'catalog_product_entity',
-                'main_table.entity_id = catalog_product_entity.entity_id'
-            )->addFieldToFilter('catalog_product_entity.type_id', 'simple');
+        $collection = $this->getRewriteCollection($storeId, 'product');
+        $collection->join(
+            'catalog_product_entity',
+            'main_table.entity_id = catalog_product_entity.entity_id'
+        )->addFieldToFilter('catalog_product_entity.type_id', $productType);
+        $collection->getSelect()->limit(1);
+        $item = $collection->getFirstItem();
 
-        if ($item = $collection->getFirstItem()) {
-            return $this->getBundleUrl($storeId, $item->getRequestPath());
-        };
+        if ($requestPath = $item->getRequestPath()) {
+            return $this->getBundleUrl($storeId, $requestPath);
+        }
 
-        return false;
+        return '';
     }
 
-    public function getConfigurableProductUrl($storeId)
+    public function getSimpleProductUrl(int $storeId): string
     {
-        $collection = $this->getRewriteCollection($storeId, 'product')
-            ->join(
-                'catalog_product_entity',
-                'main_table.entity_id = catalog_product_entity.entity_id'
-            )->addFieldToFilter('catalog_product_entity.type_id', 'configurable');
-
-        if ($item = $collection->getFirstItem()) {
-            return $this->getBundleUrl($storeId, $item->getRequestPath());
-        };
-
-        return false;
+        return $this->getProductUrlByType($storeId, 'simple');
     }
 
-    public function getCategoryUrls($storeId)
+    public function getConfigurableProductUrl(int $storeId): string
+    {
+        return $this->getProductUrlByType($storeId, 'configurable');
+    }
+
+    public function getCategoryUrls(int $storeId): array
     {
         $result = [];
         $collection = $this->getRewriteCollection($storeId, 'category')->setPageSize(2);
@@ -253,17 +240,17 @@ class Start extends Action
             return $result;
         }
 
-        return false;
+        return [];
     }
 
-    public function getBundleUrl($storeId, $url)
+    public function getBundleUrl(int $storeId, string $url): string
     {
         return $this->storeManager->getStore($storeId)->getBaseUrl()
             . $url . $this->getAddUrlParams()
             . '&___store=' . $this->storeManager->getStore($storeId)->getCode();
     }
 
-    public function getAddUrlParams()
+    public function getAddUrlParams(): string
     {
         return '?' . http_build_query([
                 'amoptimizer_bundle_check' => $this->bundleHash,

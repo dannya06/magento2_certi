@@ -1,16 +1,10 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Model\OptionSource;
 
-use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
-class NoRecommended implements ArrayInterface
+class NoRecommended implements OptionSourceInterface
 {
     const NO = 0;
     const YES = 1;

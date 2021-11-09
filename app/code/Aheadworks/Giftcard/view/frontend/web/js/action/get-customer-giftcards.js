@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'Aheadworks_Giftcard/js/model/resource-url-manager',
     'Magento_Checkout/js/model/error-processor',

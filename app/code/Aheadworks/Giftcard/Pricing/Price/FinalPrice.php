@@ -1,14 +1,27 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Pricing\Price;
 
+use Aheadworks\Giftcard\Pricing\Adjustment\Calculator;
 use Magento\Framework\Pricing\Amount\AmountInterface;
 use Magento\Catalog\Pricing\Price\FinalPrice as CatalogFinalPrice;
 use Aheadworks\Giftcard\Model\Product\Type\Giftcard\Price as GiftcardProductPrice;
+use Magento\Framework\Pricing\SaleableInterface;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
 
 /**
  * Class FinalPrice
@@ -26,6 +39,21 @@ class FinalPrice extends CatalogFinalPrice
      * @var AmountInterface
      */
     protected $minimalPrice;
+
+    /**
+     * @param SaleableInterface $saleableItem
+     * @param float $quantity
+     * @param Calculator $calculator
+     * @param PriceCurrencyInterface $priceCurrency
+     */
+    public function __construct(
+        SaleableInterface $saleableItem,
+        $quantity,
+        Calculator $calculator,
+        PriceCurrencyInterface $priceCurrency
+    ) {
+        parent::__construct($saleableItem, $quantity, $calculator, $priceCurrency);
+    }
 
     /**
      * {@inheritdoc}

@@ -1,10 +1,5 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
+declare(strict_types=1);
 
 namespace Amasty\PageSpeedOptimizer\Controller\Adminhtml\Bundle;
 
@@ -66,14 +61,14 @@ class Finish extends Action
             $result = [];
             /** @var \Amasty\PageSpeedOptimizer\Model\Bundle\ResourceModel\Collection $collection */
             $collection = $this->collectionFactory->create();
-            /** @var \Amasty\PageSpeedOptimizer\Api\Data\BundleFileInterface $item */
+            /** @var \Amasty\PageSpeedOptimizer\Model\Bundle\Bundle $item */
             foreach ($collection->getItems() as $item) {
                 $result[$item->getArea()][$item->getTheme()][$item->getLocale()][] = $item->getFilename();
             }
 
-            foreach ($result as $area => &$themeFiles) {
-                foreach ($themeFiles as $theme => &$localeFiles) {
-                    foreach ($localeFiles as $locale => &$files) {
+            foreach ($result as &$themeFiles) {
+                foreach ($themeFiles as &$localeFiles) {
+                    foreach ($localeFiles as &$files) {
                         $files = array_unique($files);
                     }
                 }

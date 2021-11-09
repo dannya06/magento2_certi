@@ -1,11 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <css src="Aheadworks_Giftcard::css/page-menu.css"/>
@@ -18,7 +11,7 @@
                     <arguments>
                         <argument name="path" xsi:type="string">*/pool/index</argument>
                         <argument name="label" xsi:type="string">Code Pools</argument>
-                        <argument name="resource" xsi:type="string">Aheadworks_Giftcard::code_pools</argument>
+                        <argument name="resource" xsi:type="string">Aheadworks_Giftcard::giftcard_pools</argument>
                         <argument name="controller" xsi:type="string">pool</argument>
                     </arguments>
                 </block>
@@ -49,7 +42,7 @@
                     <arguments>
                         <argument name="label" xsi:type="string">Readme</argument>
                         <argument name="link_attributes" xsi:type="array">
-                            <item name="href" xsi:type="string">http://confluence.aheadworks.com/display/EUDOC/Gift+Card+-+Magento+2</item>
+                            <item name="href" xsi:type="string">https://aheadworks.com/resources/gift-card/user-manual-gift-cart</item>
                             <item name="target" xsi:type="string">_blank</item>
                             <item name="class" xsi:type="string">separator</item>
                         </argument>
@@ -59,7 +52,7 @@
                     <arguments>
                         <argument name="label" xsi:type="string">Get Support</argument>
                         <argument name="link_attributes" xsi:type="array">
-                            <item name="href" xsi:type="string">http://ecommerce.aheadworks.com/contacts/</item>
+                            <item name="href" xsi:type="string">https://aheadworks.com/contact</item>
                             <item name="target" xsi:type="string">_blank</item>
                         </argument>
                     </arguments>

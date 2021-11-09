@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
- */
-
 // @codingStandardsIgnoreFile
 
 /** @var $block Aheadworks\Giftcard\Block\Product\View */
@@ -131,7 +126,9 @@
                                            data-mage-init='{"awGiftCardCalendar": {
                                                 "addDays": "<?php /* @noEscape */ echo $block->getDaysOrderBetweenDelivery() ?>",
                                                 "timezoneSelector": "#aw_gc_delivery_date_timezone",
-                                                "timezoneSelectorValue": "<?php /* @noEscape */ echo $block->getDeliveryDateTimezoneValue() ?>"
+                                                "timezoneSelectorValue": "<?php /* @noEscape */ echo $block->getDeliveryDateTimezoneValue() ?>",
+                                                "calendarDateFormat": "<?= /* @noEscape */ $block->getJsCalendarDateFormat() ?>",
+                                                "momentDateFormat": "<?= /* @noEscape */ $block->getMomentJsDateFormat() ?>"
                                            }}'
                                            value="<?php /* @noEscape */ echo $block->getDeliveryDateValue() ?>" />
                                 </div>

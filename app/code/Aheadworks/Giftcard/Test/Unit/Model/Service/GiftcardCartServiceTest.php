@@ -1,14 +1,25 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Test\Unit\Model\Service;
 
 use Aheadworks\Giftcard\Api\Data\Giftcard\QuoteInterface as GiftcardQuoteInterface;
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Model\Service\GiftcardCartService;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
@@ -20,6 +31,7 @@ use Aheadworks\Giftcard\Model\ResourceModel\Giftcard\Quote\Collection as Giftcar
 use Aheadworks\Giftcard\Model\Giftcard\Validator as GiftcardValidator;
 use Magento\Quote\Api\Data\CartExtensionInterface;
 use Magento\Quote\Model\Quote as QuoteModel;
+use Magento\Quote\Model\Quote\Item as QuoteItemModel;
 use Magento\Store\Api\Data\StoreInterface;
 
 /**
@@ -70,7 +82,7 @@ class GiftcardCartServiceTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
         $this->giftcardRepositoryMock = $this->getMockForAbstractClass(GiftcardRepositoryInterface::class);
@@ -166,7 +178,7 @@ class GiftcardCartServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getActive')
             ->with($cartId)
             ->willReturn($quoteModelMock);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->object->get($cartId);
     }
 
@@ -194,7 +206,8 @@ class GiftcardCartServiceTest extends \PHPUnit\Framework\TestCase
                     'getExtensionAttributes',
                     'getShippingAddress',
                     'collectTotals',
-                    'setExtensionAttributes'
+                    'setExtensionAttributes',
+                    'getAllItems'
                 ]
             )
             ->disableOriginalConstructor()
@@ -212,7 +225,13 @@ class GiftcardCartServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getActive')
             ->with($cartId)
             ->willReturn($quoteMock);
-
+        $quoteItem = $this->createMock(QuoteItemModel::class);
+        $quoteMock->expects($this->once())
+            ->method('getAllItems')
+            ->willReturn([$quoteItem]);
+        $quoteItem->expects($this->once())
+            ->method('getProductType')
+            ->willReturn('simple');
         $giftcardMock = $this->getMockForAbstractClass(GiftcardInterface::class);
         $giftcardMock->expects($this->exactly(2))
             ->method('getId')
@@ -303,6 +322,9 @@ class GiftcardCartServiceTest extends \PHPUnit\Framework\TestCase
             ->method('setBaseGiftcardAmount')
             ->willReturnSelf();
         $giftcardQuoteMock->expects($this->once())
+            ->method('setGiftcardProductId')
+            ->willReturnSelf();
+        $giftcardQuoteMock->expects($this->once())
             ->method('getGiftcardCode')
             ->willReturn($giftcardCode);
         $giftcardQuoteMock->expects($this->once())
@@ -342,6 +364,9 @@ class GiftcardCartServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getExtensionAttributes')
             ->willReturn($quoteExtensionAttributesMock);
         $quoteMock->expects($this->at(10))
+            ->method('getExtensionAttributes')
+            ->willReturn($quoteExtensionAttributesMock);
+        $quoteMock->expects($this->at(11))
             ->method('getExtensionAttributes')
             ->willReturn($quoteExtensionAttributesMock);
 

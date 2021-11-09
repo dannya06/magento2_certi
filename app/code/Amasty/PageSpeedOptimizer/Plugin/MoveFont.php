@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Plugin;
 
@@ -26,6 +20,13 @@ class MoveFont
      * @var \Magento\Framework\Filesystem
      */
     private $filesystem;
+
+    /**
+     * Storage fpr already processed files to avoid overwriting
+     *
+     * @var array
+     */
+    private $processedFiles = [];
 
     public function __construct(
         \Amasty\PageSpeedOptimizer\Model\ConfigProvider $configProvider,
@@ -58,8 +59,16 @@ class MoveFont
      */
     public function afterMerge($subject)
     {
-        if ($this->configProvider->isEnabled() && $this->configProvider->isMoveFont() && $this->filePath) {
+        if ($this->configProvider->isEnabled()
+            && $this->configProvider->isMoveFont()
+            && $this->filePath
+            && !in_array($this->filePath, $this->processedFiles)
+        ) {
             $staticDir = $this->filesystem->getDirectoryWrite(DirectoryList::STATIC_VIEW);
+            $basename = $this->basename($this->filePath);
+            $origFileName = 'orig_' . $basename;
+            $newPath = str_replace($basename, $origFileName, $this->filePath);
+            $staticDir->copyFile($this->filePath, $newPath);
             $mergedContent = $staticDir->readFile($this->filePath);
             $fonts = [];
             $fontIgnoreList = $this->configProvider->getFontIgnoreList();
@@ -85,6 +94,7 @@ class MoveFont
                 $staticDir->writeFile($fontsPath, implode('', $fonts));
                 $staticDir->writeFile($this->filePath, $mergedContent);
             }
+            $this->processedFiles[] = $this->filePath;
         }
     }
 

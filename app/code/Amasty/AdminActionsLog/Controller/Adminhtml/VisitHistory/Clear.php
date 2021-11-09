@@ -1,27 +1,33 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_AdminActionsLog
- */
-
+declare(strict_types=1);
 
 namespace Amasty\AdminActionsLog\Controller\Adminhtml\VisitHistory;
 
-class Clear extends \Magento\Backend\App\Action
+use Amasty\AdminActionsLog\Api\VisitHistoryManagerInterface;
+use Amasty\AdminActionsLog\Controller\Adminhtml\AbstractVisitHistory;
+use Magento\Backend\App\Action\Context;
+
+class Clear extends AbstractVisitHistory
 {
-    public function execute()
-    {
-        /**
-         * @var \Amasty\AdminActionsLog\Model\VisitHistory $log
-         */
-        $log = $this->_objectManager->get('Amasty\AdminActionsLog\Model\VisitHistory');
-        $log->clearLog(false);
-        $this->_redirect('amaudit/visithistory/');
+    const ADMIN_RESOURCE = 'Amasty_AdminActionsLog::clear_logging';
+
+    /**
+     * @var VisitHistoryManagerInterface
+     */
+    private $visitHistoryManager;
+
+    public function __construct(
+        Context $context,
+        VisitHistoryManagerInterface $visitHistoryManager
+    ) {
+        parent::__construct($context);
+        $this->visitHistoryManager = $visitHistoryManager;
     }
 
-    protected function _isAllowed()
+    public function execute()
     {
-        return $this->_authorization->isAllowed('Amasty_AdminActionsLog::page_visit_history');
+        $this->visitHistoryManager->clear();
+        $this->messageManager->addSuccessMessage(__('Page History Log has been successfully cleared.'));
+        $this->_redirect($this->_redirect->getRefererUrl());
     }
 }

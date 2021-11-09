@@ -1,8 +1,3 @@
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
-
 define([
     'jquery',
     'Magento_Checkout/js/view/summary/abstract-total',
@@ -62,15 +57,18 @@ define([
         /**
          * Remove Gift Card by code
          *
-         * @param {String} form
+         * @param {String} code
          */
-        removeByCode: function (form) {
+        removeByCode: function (code) {
+            var form = 'form[data-role=aw-gc-remove-code-' + code + ']';
+
             if (this.isAjaxRemoveLink) {
                 var giftcardCode = this._getGiftCardCodeFromForm(form);
 
                 removeAction(giftcardCode)
             } else {
                 $(form).attr('action', giftcardRemoveUrl);
+                $(form).submit();
                 return true;
             }
         },

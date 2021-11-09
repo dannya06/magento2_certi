@@ -1,11 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
-* Copyright 2019 aheadWorks. All rights reserved.
-* See LICENSE.txt for license details.
-*/
--->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper">
         <plugin name="aw-giftcard-product-initialize" type="Aheadworks\Giftcard\Plugin\Controller\Catalog\Adminhtml\Product\InitializationHelperPlugin" />
@@ -37,4 +30,17 @@
             </argument>
         </arguments>
     </virtualType>
+    <type name="Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit\Tab\Advanced">
+        <arguments>
+            <argument name="disableScopeChangeList" xsi:type="array">
+                <item name="aw_gc_email_templates" xsi:type="string">aw_gc_email_templates</item>
+                <item name="aw_gc_amounts" xsi:type="string">aw_gc_amounts</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Aheadworks\Giftcard\Controller\Adminhtml\Giftcard\Save">
+        <arguments>
+            <argument name="postDataProcessor" xsi:type="object">Aheadworks\Giftcard\Model\DataProcessor\GiftcardPostDataProcessor</argument>
+        </arguments>
+    </type>
 </config>

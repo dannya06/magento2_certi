@@ -1,12 +1,5 @@
 <?php
 /**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-?>
-<?php
-/**
  * @var \Amasty\PageSpeedOptimizer\Block\Adminhtml\Settings\SuperBundling $block
  */
 ?>
@@ -18,7 +11,7 @@
 
 <script>
     require(['jquery', 'uiRegistry'], function (jquery, registry) {
-        jquery('#amoptimizer_settings_javascript_super_bundling').click(function() {
+        jquery('#amoptimizer_javascript_super_bundling').click(function() {
             registry.get('amoptimization-modal').openModal();
             registry.get('amoptimization-modal.optimization-process').start();
         })

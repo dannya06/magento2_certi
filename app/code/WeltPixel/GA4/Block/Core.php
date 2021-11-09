@@ -237,8 +237,8 @@ class Core extends \Magento\Framework\View\Element\Template
     /**
      * @return string
      */
-    public function getWpCookiesForJs() {
-        $cookies = $this->cookieManager->getWpCookies();
+    public function getWpGA4CookiesForJs() {
+        $cookies = $this->cookieManager->getWpGA4Cookie();
         return implode(',', array_map(function ($a) { return "'" . $a . "'"; } ,$cookies));
     }
 }

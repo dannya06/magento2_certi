@@ -1,48 +1,22 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_AdminActionsLog
- */
 
+declare(strict_types=1);
 
 namespace Amasty\AdminActionsLog\Controller\Adminhtml\ActionsLog;
 
-class Index extends \Magento\Backend\App\Action
+use Amasty\AdminActionsLog\Controller\Adminhtml\AbstractActionsLog;
+use Magento\Framework\Controller\ResultFactory;
+
+class Index extends AbstractActionsLog
 {
-    protected $resultPageFactory;
-
-    protected $_helper;
-
-    public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
-    )
-    {
-        parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
-    }
-
-    /**
-     * Index action
-     *
-     * @return \Magento\Backend\Model\View\Result\Page
-     */
     public function execute()
     {
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
-        $pageResult = $this->resultPageFactory->create();
-        $pageResult->getLayout();
-        $pageResult->setActiveMenu('Amasty_AdminActionsLog::amaudit');
-        $pageResult->addBreadcrumb(__('Admin Actions Log'), __('Actions Log'));
-        $pageResult->addContent($pageResult->getLayout()->createBlock('Amasty\AdminActionsLog\Block\Adminhtml\ActionsLog'));
-        $pageResult->getConfig()->getTitle()->prepend(__('Actions Log '));
+        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        $resultPage->setActiveMenu('Amasty_AdminActionsLog::amaudit');
+        $resultPage->addBreadcrumb(__('Admin Actions Log'), __('Actions Log'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Actions Log'));
 
-        return $pageResult;
-    }
-
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Amasty_AdminActionsLog::actions_log');
+        return $resultPage;
     }
 }

@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Plugin\Model\Order;
 
 use Aheadworks\Giftcard\Api\Data\Giftcard\HistoryActionInterface;
@@ -14,6 +24,7 @@ use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
 use Aheadworks\Giftcard\Api\Data\OptionInterface;
 use Aheadworks\Giftcard\Api\Data\ProductAttributeInterface;
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
+use Aheadworks\Giftcard\Model\Config;
 use Aheadworks\Giftcard\Model\Product\Option;
 use Aheadworks\Giftcard\Model\Product\Type\Giftcard as ProductGiftcard;
 use Aheadworks\Giftcard\Api\Data\GiftcardInterfaceFactory;
@@ -22,6 +33,7 @@ use Magento\Framework\Api\DataObjectHelper;
 use Aheadworks\Giftcard\Api\Data\OptionInterfaceFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime as StdlibDateTime;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\EntityManager\EntityManager;
 use Aheadworks\Giftcard\Api\Data\Giftcard\InvoiceInterface as GiftcardInvoiceInterface;
@@ -101,6 +113,16 @@ class InvoicePlugin
     private $historyEntityFactory;
 
     /**
+     * @var TimezoneInterface
+     */
+    private $localeDate;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    /**
      * @param GiftcardRepositoryInterface $giftcardRepository
      * @param GiftcardInterfaceFactory $giftcardDataFactory
      * @param OptionInterfaceFactory $optionFactory
@@ -113,6 +135,8 @@ class InvoicePlugin
      * @param ResourceGiftcard $resourceGiftcard
      * @param HistoryActionInterfaceFactory $historyActionFactory
      * @param HistoryEntityInterfaceFactory $historyEntityFactory
+     * @param TimezoneInterface $localeDate
+     * @param Config $config
      */
     public function __construct(
         GiftcardRepositoryInterface $giftcardRepository,
@@ -126,7 +150,9 @@ class InvoicePlugin
         PoolManagementInterface $poolManagement,
         ResourceGiftcard $resourceGiftcard,
         HistoryActionInterfaceFactory $historyActionFactory,
-        HistoryEntityInterfaceFactory $historyEntityFactory
+        HistoryEntityInterfaceFactory $historyEntityFactory,
+        TimezoneInterface $localeDate,
+        Config $config
     ) {
         $this->giftcardRepository = $giftcardRepository;
         $this->giftcardDataFactory = $giftcardDataFactory;
@@ -140,6 +166,8 @@ class InvoicePlugin
         $this->resourceGiftcard = $resourceGiftcard;
         $this->historyActionFactory = $historyActionFactory;
         $this->historyEntityFactory = $historyEntityFactory;
+        $this->localeDate = $localeDate;
+        $this->config = $config;
     }
 
     /**
@@ -194,6 +222,7 @@ class InvoicePlugin
      * @param Invoice $invoice
      * @return void
      * @throws LocalizedException
+     * phpcs:disable Magento2.Performance.ForeachArrayMerge
      */
     private function saveGiftcardProduct($invoice)
     {
@@ -231,8 +260,11 @@ class InvoicePlugin
                         ->setCode($this->getGiftcardCode($item->getOrderItem()->getProduct()))
                         ->setType(
                             $item->getOrderItem()->getProduct()->getData(ProductAttributeInterface::CODE_AW_GC_TYPE)
-                        )->setInitialBalance($item->getBasePrice())
-                        ->setWebsiteId($invoice->getStore()->getWebsiteId())
+                        )->setInitialBalance(
+                            $this->config->needToIncludeTaxToGiftcardBalance()
+                                ? $item->getPriceInclTax()
+                                : $item->getBasePrice()
+                        )->setWebsiteId($invoice->getStore()->getWebsiteId())
                         ->setSenderName($options->getAwGcSenderName())
                         ->setSenderEmail($options->getAwGcSenderEmail())
                         ->setRecipientName($options->getAwGcRecipientName())
@@ -245,11 +277,10 @@ class InvoicePlugin
                     $expireAt = new \DateTime();
                     $expireAt->setTime(0, 0, 0);
                     if ($options->getAwGcDeliveryDate()) {
-                        $deliverydate = new \DateTime(
-                            $options->getAwGcDeliveryDate(),
-                            new \DateTimeZone($options->getAwGcDeliveryDateTimezone())
-                        );
-                        $deliverydate->setTimezone(new \DateTimeZone('UTC'));
+                        $deliverydate = $this->getDeliveryDate($options->getAwGcDeliveryDate(), $invoice);
+                        $deliverydate
+                            ->setTimezone(new \DateTimeZone($options->getAwGcDeliveryDateTimezone()))
+                            ->setTimezone(new \DateTimeZone('UTC'));
                         $giftcardObject
                             ->setDeliveryDate($deliverydate->format(StdlibDateTime::DATETIME_PHP_FORMAT))
                             ->setDeliveryDateTimezone($options->getAwGcDeliveryDateTimezone());
@@ -365,5 +396,22 @@ class InvoicePlugin
             ->setActionType($status)
             ->setEntities([$orderHistoryEntityObject]);
         return $historyObject;
+    }
+
+    /**
+     * Retrieve delivery date
+     *
+     * @param string $deliveryDate
+     * @param Invoice $invoice
+     * @return \DateTime
+     * @throws \Exception
+     */
+    private function getDeliveryDate($deliveryDate, $invoice)
+    {
+        $locale = $invoice->getStore()->getConfig(Config::XML_PATH_GENERAL_LOCALE_CODE);
+        $timezone = $invoice->getStore()->getConfig(Config::XML_PATH_GENERAL_LOCALE_TIMEZONE);
+        $deliveryDate = $this->localeDate->date($deliveryDate, $locale)->format(StdlibDateTime::DATETIME_PHP_FORMAT);
+
+        return new \DateTime($deliveryDate, new \DateTimeZone($timezone));
     }
 }

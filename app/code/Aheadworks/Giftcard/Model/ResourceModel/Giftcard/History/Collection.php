@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\ResourceModel\Giftcard\History;
 
 use Aheadworks\Giftcard\Model\Giftcard\History;
@@ -66,6 +76,7 @@ class Collection extends AbstractCollection
     protected function _initSelect()
     {
         parent::_initSelect();
+        $this->addFilterToMap('id', 'main_table.id');
         $this->getSelect()->joinLeft(
             ['awgc_table' => $this->getTable('aw_giftcard')],
             'main_table.giftcard_id = awgc_table.id',

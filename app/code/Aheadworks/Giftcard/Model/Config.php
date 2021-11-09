@@ -1,14 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class Config
@@ -27,6 +36,9 @@ class Config
     const XML_PATH_GIFTCARD_CODE_PREFIX = 'aw_giftcard/code_pattern/code_prefix';
     const XML_PATH_GIFTCARD_CODE_SUFFIX = 'aw_giftcard/code_pattern/code_suffix';
     const XML_PATH_GIFTCARD_CODE_DASH_EVERY_X_CHARACTERS = 'aw_giftcard/code_pattern/dash_every_x_characters';
+    const XML_PATH_GIFTCARD_ADVANCED_TAX = 'aw_giftcard/advanced/tax';
+    const XML_PATH_GENERAL_LOCALE_CODE = 'general/locale/code';
+    const XML_PATH_GENERAL_LOCALE_TIMEZONE = 'general/locale/timezone';
     /**#@-*/
 
     /**
@@ -159,6 +171,21 @@ class Config
     {
         return (int)$this->scopeConfig->getValue(
             self::XML_PATH_GIFTCARD_CODE_DASH_EVERY_X_CHARACTERS,
+            ScopeInterface::SCOPE_WEBSITE,
+            $websiteId
+        );
+    }
+
+    /**
+     * Need to include tax to giftcard balance
+     *
+     * @param int|null $websiteId
+     * @return bool
+     */
+    public function needToIncludeTaxToGiftcardBalance($websiteId = null)
+    {
+        return (bool)$this->scopeConfig->getValue(
+            self::XML_PATH_GIFTCARD_ADVANCED_TAX,
             ScopeInterface::SCOPE_WEBSITE,
             $websiteId
         );

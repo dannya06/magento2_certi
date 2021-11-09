@@ -1,14 +1,9 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Model\Output;
 
 use Amasty\PageSpeedOptimizer\Model\HeaderProvider\IsSetXFrameOptions;
+use Amasty\PageSpeedTools\Model\Output\OutputProcessorInterface;
 
 class CheckBundlingProcessor implements OutputProcessorInterface
 {
@@ -48,10 +43,7 @@ class CheckBundlingProcessor implements OutputProcessorInterface
         $this->isSetXFrameOptions = $isSetXFrameOptions;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function process(&$output)
+    public function process(string &$output): bool
     {
         if ($hash = $this->request->getParam('amoptimizer_bundle_check')) {
             if ($hash === $this->configProvider->getBundleHash()) {

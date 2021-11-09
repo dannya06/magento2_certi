@@ -1,16 +1,10 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
 
 namespace Amasty\PageSpeedOptimizer\Model\OptionSource;
 
-use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
-class Status implements ArrayInterface
+class Status implements OptionSourceInterface
 {
     const DISABLED = 0;
     const ENABLED = 1;

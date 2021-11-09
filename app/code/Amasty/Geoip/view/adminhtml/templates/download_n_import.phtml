@@ -1,46 +1,68 @@
 <?php
 /**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_Geoip
+ * @var \Amasty\Geoip\Block\Adminhtml\Settings\DownloadNImport $block
  */
 ?>
-<br/>
-<button id="am-download-import" class="action-default scalable" data-ui-id="widget-button-0" type="button" title="<?php echo __('Download and Import') ?>">
-    <span><?php echo __('Download and Import') ?></span>
-</button>
-<br/>
-
-<div class="progressbar">
-    <div class="am_download_container"><span class="begin"></span>
-
-        <div class="am_line">
-            <div class="am_download" style="width: <?php echo $this->getWidth() ?>%"><span>&nbsp</span></div>
+<div class="amgeoip-import-container" data-bind="scope: 'import'">
+    <div class="amgeoip-progressbar-container">
+        <span class="amgeoip-state -done"
+              data-bind="css: {'-done': downloadStarted() || initialStatus}">
+            <?= $block->escapeHtml(__("Download")) ?>
+        </span>
+        <span class="amgeoip-state -import"
+              data-bind="css: {'-done': isDownloadCompleted()}">
+            <?= $block->escapeHtml(__("Import")) ?>
+        </span>
+        <span class="amgeoip-state -endimport"
+              data-bind="css: {'-done': importDone()}">
+            <?= $block->escapeHtml(__("Completed")) ?>
+        </span>
+        <div class="amgeoip-download-container">
+            <span class="amgeoip-counter -hidden"
+                  data-bind="attr: {'data-count': downloadCounter}, style: {left: downloadStatusWidth() + '%'}, css: {'-hidden': !isShowDownloadCounter()}"></span>
+            <span class="amgeoip-begin -done" data-bind="css: {'-done': downloadStarted() || initialStatus}"></span>
+            <div class="amgeoip-line-container">
+                <div class="amgeoip-line" data-bind="style: {width: downloadStatusWidth() + '%'}"></div>
+            </div>
+        </div>
+        <div class="amgeoip-download-state -download">
+            <span class="amgeoip-label -import <?= $block->escapeHtml($block->getCompletedClass()) ?>"
+                  data-bind="css: {'-completed': isDownloadCompleted()}"></span>
+            <div class="amgeoip-line-container">
+                <span class="amgeoip-counter -hidden"
+                      data-bind="
+                      attr: {'data-count': importCounter},
+                      style: {left: importStatusWidth() + '%'},
+                      css: {'-hidden': !isShowImportCounter()}">
+                </span>
+                <div class="amgeoip-line" data-bind="style: {width: importStatusWidth() + '%'}" style="width: <?= (int)$block->getWidth() ?>%"></div>
+            </div>
+            <span class="<?= $block->escapeHtml($block->getImportedClass()) ?> amgeoip-label -endimport" data-bind="css: {'-completed': importDone()}"></span>
         </div>
     </div>
-    <div class="am_processer_container"><span class="<?php echo $this->getCompletedClass() ?>"></span>
 
-        <div class="am_line">
-            <div class="am_processer" style="width: <?php echo $this->getWidth() ?>%"><span>&nbsp</span></div>
-        </div>
-        <span class="<?php echo $this->getImportedClass() ?>"></span></div>
-    <span class="download"><div class="bubble"><?php echo __("Download")?></div></span><span class="import"><div class="bubble"><?php echo __("Import")?></div></span>
-    <span class="completed_import"><div class="bubble"><?php echo __("Completed")?></div></span>
+    <span class="amgeoip-import-date"><?= $block->escapeHtml($block->getImportDate()) ?></span>
+    <p class="amgeoip-message" data-bind="text: message"></p>
+    <button class="action-default amgeoip-button"
+            type="button"
+            data-bind="
+                click: initImportAndDownload.bind($data),
+                attr: {title: $t('Download and Import')},
+                i18n: 'Download and Import'">
+    </button>
 </div>
-<br/>
-<?php echo $this->getImportDate() ?>
-<script type="text/javascript">
-    require([
-        'jquery',
-        'Amasty_Geoip/js/import'
-    ], function ($) {
-        var download = $('#am-download-import');
-
-        download.amGeoip({
-            importItems: <?php echo $this->getConfig(); ?>,
-            type: 'download_n_import'
-        });
-
-    });
-
+<script type="text/x-magento-init">
+        {
+            "*": {
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "import": {
+                            "component": "Amasty_Geoip/js/image-optimization",
+                            "importItems": <?= /* @noEscape */ $block->getConfig(); ?>,
+                            "initialDownloadPercent" : <?= (int)$block->getWidth() ?>
+                        }
+                    }
+                }
+            }
+        }
 </script>

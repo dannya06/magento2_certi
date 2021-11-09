@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Model\ResourceModel\Product;
 
 use Aheadworks\Giftcard\Model\Product\Type\Giftcard as ProductGiftcard;
@@ -13,7 +23,6 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 /**
  * Class Collection
  *
- * @package Aheadworks\Giftcard\Model\ResourceModel\Product
  */
 class Collection extends ProductCollection
 {
@@ -79,7 +88,7 @@ class Collection extends ProductCollection
             $this->getSelect()->order($attribute . ' ' . $dir);
             return $this;
         }
-        return parent::addAttributeToSort($attribute, $dir = self::SORT_ORDER_ASC);
+        return parent::addAttributeToSort($attribute, $dir);
     }
 
     /**
@@ -113,7 +122,11 @@ class Collection extends ProductCollection
             'entity_id',
             'entity_id',
             'value',
-            'aw_gc_email_templates'
+            'aw_gc_email_templates',
+            "*",
+            null,
+            true
+
         );
         if ($this->websiteId) {
             foreach ($this as $product) {
@@ -147,7 +160,9 @@ class Collection extends ProductCollection
                 'entity_id',
                 'entity_id',
                 'aw_gc_email_template',
-                'value'
+                'value',
+                null,
+                true
             );
         }
         parent::_renderFiltersBefore();
@@ -195,17 +210,17 @@ class Collection extends ProductCollection
                 $result = '';
                 $id = $item->getData($columnName);
                 $templates = [];
-                foreach ($connection->fetchAll($select) as $data) {
-                    if ($data[$linkageColumnName] == $id) {
-                        switch ($fieldName) {
-                            case 'aw_gc_email_templates':
-                                array_push($templates, $data[$columnNameRelationTable]);
-                                $result = $templates;
-                                break;
-                            default:
-                                $result = $data[$columnNameRelationTable];
-                        }
-                    }
+                $fetchedData = $connection->fetchAll($select);
+                foreach ($fetchedData as $dataRow) {
+                    $result = $this->processDataRow(
+                        $fieldName,
+                        $dataRow,
+                        $linkageColumnName,
+                        $id,
+                        $columnNameRelationTable,
+                        $result,
+                        $templates
+                    );
                 }
                 $item->setData($fieldName, $result);
             }
@@ -221,6 +236,7 @@ class Collection extends ProductCollection
      * @param string $columnFilter
      * @param string $fieldName
      * @param \Magento\Framework\Db\Select|null $subQuery
+     * @param bool $addStore
      * @return void
      */
     private function joinLinkageTable(
@@ -229,7 +245,8 @@ class Collection extends ProductCollection
         $linkageColumnName,
         $columnFilter,
         $fieldName,
-        $subQuery = null
+        $subQuery = null,
+        $addStore = false
     ) {
         $linkageTableName = $tableName . '_table';
         if (!in_array($linkageTableName, $this->linkageTableNames)) {
@@ -243,6 +260,10 @@ class Collection extends ProductCollection
                 'e.' . $columnName . ' = ' . $linkageTableName . '.' . $linkageColumnName,
                 []
             );
+
+            if ($addStore && $this->storeIds) {
+                $this->getSelect()->where('store_id IN (?)', $this->storeIds);
+            }
         }
         $this->addFilterToMap($columnFilter, $linkageTableName . '.' . $fieldName);
     }
@@ -277,5 +298,39 @@ class Collection extends ProductCollection
             $select->where('store_id IN (?)', $this->storeIds);
         }
         return $select;
+    }
+
+    /**
+     * Process data row to attach
+     *
+     * @param string $fieldName
+     * @param array $dataRow
+     * @param string $linkageColumnName
+     * @param int $id
+     * @param string $columnNameRelationTable
+     * @param string $result
+     * @param array $templates
+     * @return array|string
+     */
+    private function processDataRow(
+        $fieldName,
+        $dataRow,
+        $linkageColumnName,
+        $id,
+        $columnNameRelationTable,
+        $result,
+        &$templates
+    ) {
+        if ($dataRow[$linkageColumnName] == $id) {
+            switch ($fieldName) {
+                case 'aw_gc_email_templates':
+                    $templates[] = $dataRow[$columnNameRelationTable];
+                    $result = $templates;
+                    break;
+                default:
+                    $result = $dataRow[$columnNameRelationTable];
+            }
+        }
+        return $result;
     }
 }

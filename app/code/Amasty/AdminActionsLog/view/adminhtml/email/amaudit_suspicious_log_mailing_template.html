@@ -1,5 +1,11 @@
 <!--@subject Admin Panel Login Alert {{var store.getFrontendName()}} @-->
-
+<!--@vars {
+"var date":"Date",
+"var username":"Username",
+"var full_name":"Full Name",
+"var ip":"IP Address",
+"var country_id":"Country"
+} @-->
 
 <body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
 <div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
@@ -14,15 +20,15 @@
                             </p>
 
                             <p>
-                                We noticed a login to your admin panel on {{var data.date_time}} which is under suspicion.<br/>
+                                We noticed a login to your admin panel on {{var date}} which is under suspicion.<br/>
                                 Here are the details:<br/>
                             </p>
 
                             <p>
-                                Username: {{var data.username}}<br/>
-                                Full Name: {{var data.fullname}}<br/>
-                                IP: {{var data.ip}}<br/>
-                                Country: {{var data.country_id}}<br/>
+                                Username: {{var username}}<br/>
+                                Full Name: {{var full_name}}<br/>
+                                IP: {{var ip}}<br/>
+                                Country: {{var country_id}}<br/>
                             </p>
 
 

@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
- */
-
 // @codingStandardsIgnoreFile
 
 /** @var $block \Aheadworks\Giftcard\Block\Product\View */
@@ -11,6 +6,6 @@ $description = $block->getDescription()
 ?>
 <?php if (!empty($description)): ?>
     <div class="aw-gc-product-form-description">
-        <?php /* @noEscape */ echo $block->getDescription() ?>
+        <?php /* @noEscape */ echo $block->getFilterContent($description) ?>
     </div>
 <?php endif; ?>

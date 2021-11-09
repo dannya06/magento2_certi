@@ -1,27 +1,57 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_AdminActionsLog
- */
 
+declare(strict_types=1);
 
 namespace Amasty\AdminActionsLog\Controller\Adminhtml\ActionsLog;
 
-class Clear extends \Magento\Backend\App\Action
+use Amasty\AdminActionsLog\Api\LogEntryRepositoryInterface;
+use Amasty\AdminActionsLog\Controller\Adminhtml\AbstractActionsLog;
+use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\Auth\Session;
+
+class Clear extends AbstractActionsLog
 {
+    /**
+     * @var LogEntryRepositoryInterface
+     */
+    private $logEntryRepository;
+
+    /**
+     * @var Session
+     */
+    private $backendSession;
+
+    public function __construct(
+        Context $context,
+        LogEntryRepositoryInterface $logEntryRepository,
+        Session $backendSession
+    ) {
+        parent::__construct($context);
+        $this->logEntryRepository = $logEntryRepository;
+        $this->backendSession = $backendSession;
+    }
     public function execute()
     {
-        /**
-         * @var \Amasty\AdminActionsLog\Model\Log $log
-         */
-        $log = $this->_objectManager->get('Amasty\AdminActionsLog\Model\Log');
-        $log->clearLog(false);
-        $this->_redirect('amaudit/actionslog/');
+        if ($storeIds = $this->getAvailableStoreIds()) {
+            $this->logEntryRepository->cleanByStoreIds($storeIds);
+        } else {
+            $this->logEntryRepository->clean();
+        }
+        $this->messageManager->addSuccessMessage(__('Actions Log has been successfully cleared.'));
+        $this->_redirect($this->_redirect->getRefererUrl());
     }
 
-    protected function _isAllowed()
+    private function getAvailableStoreIds(): array
     {
-        return $this->_authorization->isAllowed('Amasty_AdminActionsLog::actions_log');
+        $userRole = $this->backendSession->getUser()->getRole();
+        if ($userRole->getData('gws_is_all')) {
+            return [];
+        }
+
+        if ($userRole->getData('gws_stores')) {
+            return $userRole->getData('gws_stores');
+        }
+
+        return [];
     }
 }

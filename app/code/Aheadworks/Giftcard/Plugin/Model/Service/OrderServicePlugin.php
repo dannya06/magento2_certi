@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Plugin\Model\Service;
 
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
@@ -13,6 +23,7 @@ use Aheadworks\Giftcard\Model\Statistics;
 use Magento\Sales\Model\Service\OrderService;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Aheadworks\Giftcard\Api\Data\Giftcard\HistoryActionInterface;
 use Aheadworks\Giftcard\Api\Data\Giftcard\HistoryActionInterfaceFactory;
 use Aheadworks\Giftcard\Api\Data\Giftcard\History\EntityInterface as HistoryEntityInterface;
@@ -100,46 +111,7 @@ class OrderServicePlugin
      */
     public function afterPlace(OrderService $subject, OrderInterface $order)
     {
-        if ($order->getExtensionAttributes() && $order->getExtensionAttributes()->getAwGiftcardCodes()) {
-            $orderGiftcards = $order->getExtensionAttributes()->getAwGiftcardCodes();
-            /** @var GiftcardOrderInterface $orderGiftcard */
-            foreach ($orderGiftcards as $orderGiftcard) {
-                try {
-                    $giftcardCode = $this->giftcardRepository->get($orderGiftcard->getGiftcardId());
-                    $giftcardCode->setBalance($giftcardCode->getBalance() - $orderGiftcard->getBaseGiftcardAmount());
-
-                    /** @var HistoryEntityInterface $orderHistoryEntityObject */
-                    $orderHistoryEntityObject = $this->historyEntityFactory->create();
-                    $orderHistoryEntityObject
-                        ->setEntityType(SourceHistoryEntityType::ORDER_ID)
-                        ->setEntityId($order->getEntityId())
-                        ->setEntityLabel($order->getIncrementId());
-
-                    /** @var HistoryActionInterface $historyObject */
-                    $historyObject = $this->historyActionFactory->create();
-                    $historyObject
-                        ->setActionType(SourceHistoryCommentAction::APPLIED_TO_ORDER)
-                        ->setEntities([$orderHistoryEntityObject]);
-
-                    $giftcardCode->setCurrentHistoryAction($historyObject);
-                    $this->giftcardRepository->save($giftcardCode);
-
-                    // Save Gift Card data to gift card order table
-                    $orderGiftcard->setOrderId($order->getEntityId());
-                    $this->entityManager->save($orderGiftcard);
-                    // Update Gift Card Statistics
-                    if ($giftcardCode->getProductId()) {
-                        $this->statistics->updateStatistics(
-                            $giftcardCode->getProductId(),
-                            $order->getStoreId(),
-                            ['used_amount' => $orderGiftcard->getBaseGiftcardAmount()]
-                        );
-                    }
-                } catch (\Exception $e) {
-                    $this->logger->critical($e);
-                }
-            }
-        }
+        $this->saveOrderGiftcards($order);
         return $order;
     }
 
@@ -196,5 +168,55 @@ class OrderServicePlugin
         }
 
         return $result;
+    }
+
+    /**
+     * Save order Gift Card data
+     *
+     * @param Order $order
+     * @return void
+     */
+    public function saveOrderGiftcards($order)
+    {
+        if ($order->getExtensionAttributes() && $order->getExtensionAttributes()->getAwGiftcardCodes()) {
+            $orderGiftcards = $order->getExtensionAttributes()->getAwGiftcardCodes();
+            /** @var GiftcardOrderInterface $orderGiftcard */
+            foreach ($orderGiftcards as $orderGiftcard) {
+                try {
+                    $giftcardCode = $this->giftcardRepository->get($orderGiftcard->getGiftcardId());
+                    $giftcardCode->setBalance($giftcardCode->getBalance() - $orderGiftcard->getBaseGiftcardAmount());
+
+                    /** @var HistoryEntityInterface $orderHistoryEntityObject */
+                    $orderHistoryEntityObject = $this->historyEntityFactory->create();
+                    $orderHistoryEntityObject
+                        ->setEntityType(SourceHistoryEntityType::ORDER_ID)
+                        ->setEntityId($order->getEntityId())
+                        ->setEntityLabel($order->getIncrementId());
+
+                    /** @var HistoryActionInterface $historyObject */
+                    $historyObject = $this->historyActionFactory->create();
+                    $historyObject
+                        ->setActionType(SourceHistoryCommentAction::APPLIED_TO_ORDER)
+                        ->setEntities([$orderHistoryEntityObject]);
+
+                    $giftcardCode->setCurrentHistoryAction($historyObject);
+                    $this->giftcardRepository->save($giftcardCode);
+
+                    // Save Gift Card data to gift card order table
+                    $orderGiftcard->setOrderId($order->getEntityId());
+                    $this->entityManager->save($orderGiftcard);
+                    // Update Gift Card Statistics
+                    if ($giftcardCode->getProductId()) {
+                        $this->statistics->updateStatistics(
+                            $giftcardCode->getProductId(),
+                            $order->getStoreId(),
+                            ['used_amount' => $orderGiftcard->getBaseGiftcardAmount()]
+                        );
+                    }
+                } catch (\Exception $e) {
+                    $this->logger->critical($e);
+                }
+            }
+        }
     }
 }

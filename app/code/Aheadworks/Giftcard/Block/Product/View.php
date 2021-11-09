@@ -1,12 +1,23 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Block\Product;
 
 use Aheadworks\Giftcard\Api\Data\OptionInterface;
+use Aheadworks\Giftcard\Model\DateTime\FormatConverter;
 use Aheadworks\Giftcard\Model\Source\Entity\Attribute\GiftcardType;
 use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Email\Model\Template\Config as EmailConfig;
@@ -25,6 +36,7 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Aheadworks\Giftcard\Api\Data\ProductAttributeInterface;
 use Magento\Config\Model\Config\Source\Locale\Timezone as TimezoneSource;
+use Aheadworks\Giftcard\Model\Template\FilterProvider;
 
 /**
  * Class View
@@ -59,6 +71,18 @@ class View extends \Magento\Catalog\Block\Product\View
     private $timezoneSource;
 
     /**
+     * @var FormatConverter
+     */
+    private $dateFormatConverter;
+
+    /**
+     * @var FilterProvider
+     */
+    private $filterProvider;
+
+    /**
+     * View constructor.
+     *
      * @param ProductContext $context
      * @param UrlEncoderInterface $urlEncoder
      * @param JsonEncoderInterface $jsonEncoder
@@ -74,6 +98,8 @@ class View extends \Magento\Catalog\Block\Product\View
      * @param EmailConfig $emailConfig
      * @param MediaConfig $mediaConfig
      * @param TimezoneSource $timezoneSource
+     * @param FormatConverter $dateFormatConverter
+     * @param FilterProvider $filterProvider
      * @param array $data
      */
     public function __construct(
@@ -92,6 +118,8 @@ class View extends \Magento\Catalog\Block\Product\View
         EmailConfig $emailConfig,
         MediaConfig $mediaConfig,
         TimezoneSource $timezoneSource,
+        FormatConverter $dateFormatConverter,
+        FilterProvider $filterProvider,
         array $data = []
     ) {
         parent::__construct(
@@ -112,6 +140,8 @@ class View extends \Magento\Catalog\Block\Product\View
         $this->emailConfig = $emailConfig;
         $this->mediaConfig = $mediaConfig;
         $this->timezoneSource = $timezoneSource;
+        $this->dateFormatConverter = $dateFormatConverter;
+        $this->filterProvider = $filterProvider;
     }
 
     /**
@@ -529,6 +559,26 @@ class View extends \Magento\Catalog\Block\Product\View
     }
 
     /**
+     * Retrieve short date format
+     *
+     * @return string
+     */
+    public function getJsCalendarDateFormat()
+    {
+        return $this->dateFormatConverter->convertToJsCalendarFormat();
+    }
+
+    /**
+     * Retrieve short date format
+     *
+     * @return string
+     */
+    public function getMomentJsDateFormat()
+    {
+        return $this->dateFormatConverter->convertToMomentJsFormat();
+    }
+
+    /**
      * Retrieve template name
      *
      * @param int|string $templateId
@@ -557,5 +607,24 @@ class View extends \Magento\Catalog\Block\Product\View
         $product = $this->getProduct();
         $value = $product->getPreconfiguredValues()->getData($code);
         return $value ? $value : $default;
+    }
+
+    /**
+     * Prepare HTML content
+     *
+     * @param string $value
+     * @return string
+     */
+    public function getFilterContent($value='')
+    {
+        $html = '';
+        try {
+            $html = $this->filterProvider->getFilter()
+                ->setStoreId($this->getProduct()->getStoreId())
+                ->filter($value);
+        } catch (\Exception $exception) {
+            $html = $value;
+        }
+        return $html;
     }
 }

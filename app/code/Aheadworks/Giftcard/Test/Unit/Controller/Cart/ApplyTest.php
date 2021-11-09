@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Test\Unit\Controller\Cart;
 
 use Aheadworks\Giftcard\Api\GiftcardCartManagementInterface;
@@ -52,7 +62,7 @@ class ApplyTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
         $this->giftcardCartManagementMock = $this->getMockForAbstractClass(GiftcardCartManagementInterface::class);
@@ -90,12 +100,19 @@ class ApplyTest extends \PHPUnit\Framework\TestCase
     public function testExecute()
     {
         $giftcardCode = 'gccode';
+        $redirectTo = 'multishipping';
         $quoteId = 1;
 
-        $this->requestMock->expects($this->once())
+        $this->requestMock->expects($this->exactly(2))
             ->method('getParam')
-            ->with('code')
-            ->willReturn($giftcardCode);
+            ->withConsecutive(
+                ['code'],
+                ['redirect_to']
+            )
+            ->willReturnOnConsecutiveCalls(
+                $giftcardCode,
+                $redirectTo
+            );
         $this->checkoutSessionMock->expects($this->once())
             ->method('getQuoteId')
             ->willReturn($quoteId);

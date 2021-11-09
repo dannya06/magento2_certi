@@ -1,4 +1,10 @@
-<!--@subject New log information about {{var data.username}} update @-->
+<!--@subject New log information about {{var username}} update @-->
+<!--@vars {
+"var date":"Date",
+"var username":"Username",
+"var full_name":"Full Name",
+"var ip":"IP Address"
+} @-->
 
 <body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
 <div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
@@ -18,10 +24,10 @@
             <tr>
                 <td valign="top">
                     <p style="font-size:12px; line-height:16px; margin:0 0 10px 0;">
-                        We noticed a new successful login into the backend on <strong>{{var data.date_time}}</strong>. Details:<br>
-                        Username: <strong>{{var data.username}}</strong><br/>
-                        Fullname: <strong>{{var data.fullname}}</strong><br/>
-                        Ip: <strong>{{var data.ip}}</strong><br/>
+                        We noticed a new successful login into the backend on <strong>{{var date}}</strong>. Details:<br>
+                        Username: <strong>{{var username}}</strong><br/>
+                        Fullname: <strong>{{var full_name}}</strong><br/>
+                        Ip: <strong>{{var ip}}</strong><br/>
                     </p>
                 </td>
             </tr>

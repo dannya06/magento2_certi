@@ -1,4 +1,7 @@
 <!--@subject {{var store.getFrontendName()}} Admin Panel Possible Break-In @-->
+<!--@vars {
+"var unsuccessful_login_count":"Number of unsuccessful login attempts"
+} @-->
 
 <body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
 <div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
@@ -13,7 +16,7 @@
                             </p>
 
                             <p>
-                                We noticed that during the last hour there were {{var data.unsuccessful_login_count}} unsuccessful login attempts<br/>
+                                We noticed that during the last hour there were {{var unsuccessful_login_count}} unsuccessful login attempts<br/>
                                 into your admin panel.<br/>
                             </p>
 
@@ -24,7 +27,7 @@
 
                             <p>
                                 You may want to check login attempts log under<br/>
-                                System >> Configuration >> Admin Actions Log >> Login Attempts<br/>
+                                System >> Admin Actions Log >> Login Attempts<br/>
                                 for additional details.<br/>
                             </p>
                         </td>

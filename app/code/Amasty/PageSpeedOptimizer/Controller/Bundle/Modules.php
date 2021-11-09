@@ -1,10 +1,5 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
- * @package Amasty_PageSpeedOptimizer
- */
-
+declare(strict_types=1);
 
 namespace Amasty\PageSpeedOptimizer\Controller\Bundle;
 
@@ -59,10 +54,7 @@ class Modules extends \Magento\Framework\App\Action\Action
         $this->file = $file;
     }
 
-    /**
-     * @return \Magento\Framework\Controller\ResultInterface
-     */
-    public function execute()
+    public function execute(): \Magento\Framework\Controller\Result\Raw
     {
         /** @var \Magento\Framework\Controller\Result\Raw $result */
         $result = $this->resultFactory->create(ResultFactory::TYPE_RAW);
@@ -91,12 +83,7 @@ class Modules extends \Magento\Framework\App\Action\Action
         return $result->setContents('OK');
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function addMinifiedSign($filename)
+    public function addMinifiedSign(string $filename): string
     {
         $pathInfo = $this->file->getPathInfo($filename);
 

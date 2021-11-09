@@ -1,9 +1,9 @@
 <?php
 /**
- * @author Amasty Team
- * @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
- * @package Amasty_Base
- */
+* @author Amasty Team
+* @copyright Copyright (c) 2021 Amasty (https://www.amasty.com)
+* @package Amasty_Base
+*/
 
 
 namespace Amasty\Base\Model\Feed;
@@ -20,12 +20,12 @@ class FeedContentProvider
     /**
      * Path to NEWS
      */
-    const URN_NEWS = 'amasty.com/feed-news-segments.xml';//do not use https:// or http
+    const URN_NEWS = 'cdn.amasty.com/feed-news-segments.xml';//do not use https:// or http
 
     /**
      * Path to ADS
      */
-    const URN_ADS = 'amasty.com/media/marketing/upsells.csv';
+    const URN_ADS = 'cdn.amasty.com/media/marketing/upsells.csv';
 
     /**
      * Path to EXTENSIONS
@@ -60,7 +60,7 @@ class FeedContentProvider
      *
      * @return false|string
      */
-    public function getFeedContent($url)
+    public function getFeedContent(string $url)
     {
         /** @var Curl $curlObject */
         $curlObject = $this->curlFactory->create();
@@ -70,7 +70,7 @@ class FeedContentProvider
                 'useragent' => 'Amasty Base Feed'
             ]
         );
-        $curlObject->write(\Zend_Http_Client::GET, $url, '1.0');
+        $curlObject->write(\Zend_Http_Client::GET, $url);
         $result = $curlObject->read();
 
         if ($result === false || $result === '') {
@@ -88,35 +88,9 @@ class FeedContentProvider
         return $result;
     }
 
-    /**
-     * @param string $urn
-     * @param bool $needFollowLocation
-     *
-     * @return string
-     */
-    public function getFeedUrl($urn, $needFollowLocation = false)
+    public function getFeedUrl(string $urn): string
     {
-        if ($needFollowLocation) {
-            return 'https://' . $urn;
-        }
-
-        $scheme = $this->getCurrentScheme();
-        $protocol = $scheme ?: 'http://';
-
-        return $protocol . $urn;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrentScheme()
-    {
-        $scheme = $this->getBaseUrlObject()->getScheme();
-        if ($scheme) {
-            return $scheme . '://';
-        }
-
-        return '';
+        return 'https://' . $urn;
     }
 
     /**

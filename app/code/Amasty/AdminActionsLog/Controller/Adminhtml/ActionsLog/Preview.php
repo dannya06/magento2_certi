@@ -1,50 +1,53 @@
 <?php
-/**
- * @author Amasty Team
- * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
- * @package Amasty_AdminActionsLog
- */
 
+declare(strict_types=1);
 
 namespace Amasty\AdminActionsLog\Controller\Adminhtml\ActionsLog;
 
-class Preview extends \Magento\Backend\App\Action
+use Amasty\AdminActionsLog\Controller\Adminhtml\AbstractActionsLog;
+use Amasty\AdminActionsLog\Model\LogEntry\Frontend\LogDetailsFormatter;
+use Amasty\Base\Model\Serializer;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\ResultFactory;
+
+class Preview extends AbstractActionsLog
 {
-    protected $resultRawFactory;
-    protected $layoutFactory;
-    protected $_registryManager;
+    /**
+     * @var LogDetailsFormatter
+     */
+    private $detailsFormatter;
 
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\RawFactory $resultRawFactory,
-        \Magento\Framework\View\LayoutFactory $layoutFactory
+        Context $context,
+        LogDetailsFormatter $detailsFormatter,
+        Serializer $jsonSerializer
     ) {
-        $this->layoutFactory = $layoutFactory;
-        $this->resultRawFactory = $resultRawFactory;
         parent::__construct($context);
+        $this->detailsFormatter = $detailsFormatter;
+        $this->jsonSerializer = $jsonSerializer;
     }
 
     public function execute()
     {
-        $elementId = (int)$this->getRequest()->getParam('element_id', md5(microtime()));
+        $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
 
-        $content = $this->layoutFactory->create()->createBlock(
-            'Amasty\AdminActionsLog\Block\Adminhtml\ActionsLog\Edit\Details',
-            '',
-            [
-                'data' => [
-                    'editor_element_id' => $elementId,
-                ]
-            ]
-        );
+        if ($logEntryId = (int)$this->getRequest()->getParam('element_id')) {
+            try {
+                $data = $this->detailsFormatter->format($logEntryId);
+                $result = [
+                    'isError' => false,
+                    'data' => $data
+                ];
+            } catch (\RuntimeException $e) {
+                $result = [
+                    'isError' => true,
+                    'message' => $e->getMessage()
+                ];
+            } finally {
+                $resultJson->setData($result);
+            }
+        }
 
-        /** @var \Magento\Framework\Controller\Result\Raw $resultRaw */
-        $resultRaw = $this->resultRawFactory->create();
-        return $resultRaw->setContents($content->toHtml());
-    }
-
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Amasty_AdminActionsLog::actions_log');
+        return $resultJson;
     }
 }

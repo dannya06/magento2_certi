@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Test\Unit\Model;
 
 use Aheadworks\Giftcard\Api\Data\GiftcardInterface;
@@ -13,6 +23,7 @@ use Aheadworks\Giftcard\Model\GiftcardRepository;
 use Magento\Framework\EntityManager\EntityManager;
 use Aheadworks\Giftcard\Model\GiftcardFactory;
 use Aheadworks\Giftcard\Api\Data\GiftcardInterfaceFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Reflection\DataObjectProcessor;
@@ -92,7 +103,7 @@ class GiftcardRepositoryTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
         $this->entityManagerMock = $this->getMockBuilder(EntityManager::class)
@@ -236,7 +247,7 @@ class GiftcardRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->giftcardDataFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($giftcardMock);
-
+        $this->expectException(NoSuchEntityException::class);
         $this->assertSame($giftcardMock, $this->object->get($this->giftcardData['id']));
     }
 

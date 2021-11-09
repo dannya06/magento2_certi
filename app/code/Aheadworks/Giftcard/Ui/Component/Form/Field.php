@@ -1,9 +1,19 @@
 <?php
 /**
- * Copyright 2019 aheadWorks. All rights reserved.
- * See LICENSE.txt for license details.
+ * Aheadworks Inc.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://aheadworks.com/end-user-license-agreement/
+ *
+ * @package    Giftcard
+ * @version    1.4.6
+ * @copyright  Copyright (c) 2021 Aheadworks Inc. (https://aheadworks.com/)
+ * @license    https://aheadworks.com/end-user-license-agreement/
  */
-
 namespace Aheadworks\Giftcard\Ui\Component\Form;
 
 use Aheadworks\Giftcard\Api\GiftcardRepositoryInterface;
@@ -11,6 +21,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Class Field
@@ -25,9 +36,15 @@ class Field extends \Magento\Ui\Component\Form\Field
     private $giftcardRepository;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param GiftcardRepositoryInterface $giftcardRepository
+     * @param Logger $logger
      * @param UiComponentInterface[] $components
      * @param array $data
      */
@@ -35,11 +52,13 @@ class Field extends \Magento\Ui\Component\Form\Field
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         GiftcardRepositoryInterface $giftcardRepository,
+        Logger $logger,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
         $this->giftcardRepository = $giftcardRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -76,7 +95,8 @@ class Field extends \Magento\Ui\Component\Form\Field
         );
         try {
             return $this->giftcardRepository->get($giftcardId)->getId();
-        } catch (NoSuchEntityException $e) {
+        } catch (NoSuchEntityException $exception) {
+            $this->logger->critical($exception->getMessage());
         }
         return null;
     }
