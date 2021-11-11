@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4389991a2d0812854125325922540887",
-
+    "content-hash": "43e2dc3e08af5496838fb61aac44c66a",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1795,11 +1794,11 @@
         },
         {
             "name": "icubebysirclo/magento2-shippinglogistix",
-            "version": "4.0.2",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
-                "reference": "c24a77910f959a9fa2c7cffd5e3bf560b8f32367"
+                "reference": "043bd5bc3c3dd5a90d1c689ba806ca5672cb6bec"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1819,15 +1818,15 @@
                 "magento 2",
                 "shippinglogistix"
             ],
-            "time": "2021-10-28T08:36:14+00:00"
+            "time": "2021-11-08T07:34:44+00:00"
         },
         {
             "name": "icubebysirclo/magento2-xendit",
-            "version": "4.0.3",
+            "version": "4.0.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-xendit.git",
-                "reference": "6474300ea14373ad4cdfb3ca68b81288f46292c0"
+                "reference": "87af36b20f6ea6401d55da4640eef25c95f7414e"
             },
             "replace": {
                 "icubebysirclo/module-xendit": "self.version",
@@ -1863,15 +1862,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-10-28T09:44:04+00:00"
+            "time": "2021-11-08T08:26:29+00:00"
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "4.1.4",
+            "version": "4.1.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "1f27a1d0a692bd2eb22ed78692789bd0a9689bfa"
+                "reference": "14732ac70bd864e1c5025640b4b0698e43866265"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1891,15 +1890,15 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2021-10-28T09:14:19+00:00"
+            "time": "2021-11-08T07:33:27+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "4.1.12",
+            "version": "4.1.13",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "94981a29429bb77a76e3f3e76ff136d35c53662f"
+                "reference": "efda75b4e8fae94dce3a77197005e9b5c1c24fb7"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1940,7 +1939,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-10-27T10:34:20+00:00"
+            "time": "2021-11-10T10:48:14+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -2046,11 +2045,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.15",
+            "version": "4.1.16",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "e1c9dacbe4c0ffdd1b3a1dd42e237fb1950185bb"
+                "reference": "0d14d8f13b3112c95881fc4260b608f49f51801c"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2211,7 +2210,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-11-02T02:39:30+00:00"
+            "time": "2021-11-08T08:28:28+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -2241,11 +2240,11 @@
         },
         {
             "name": "icubeus/magento2-instantdelivery",
-            "version": "4.1.4",
+            "version": "4.1.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "15fce736cc4752b5b14e7b8965af2d2feefa5474"
+                "reference": "aac112831d5a35a72cf6dea95bae258efc4eb4e9"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -2284,7 +2283,7 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2021-08-23T11:53:03+00:00"
+            "time": "2021-11-08T07:34:34+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
@@ -2641,11 +2640,11 @@
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.10",
+            "version": "4.1.11",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "783de7ba46bad1fafcb88156a439b811a94b8358"
+                "reference": "8a187a9da3183ba2f0b634a1171428c91b552c40"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -2704,7 +2703,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2021-10-28T06:28:11+00:00"
+            "time": "2021-11-08T07:39:48+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -2736,11 +2735,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.8",
+            "version": "4.1.9",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "0fd1e09e4c17dd0e8b9c30a6eeb33664965fb555"
+                "reference": "2d74ea63fba8ee28cb72aa6d12c71512e5362a3d"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -2789,7 +2788,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-10-27T11:20:45+00:00"
+            "time": "2021-11-09T06:06:31+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -23523,5 +23522,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "1.1.0"
 }
