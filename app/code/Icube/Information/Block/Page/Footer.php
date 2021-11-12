@@ -81,4 +81,5 @@ class Footer extends \Magento\Backend\Block\Template
         $version = $composerData['version'];
         return $version;
     }
+    
 }
