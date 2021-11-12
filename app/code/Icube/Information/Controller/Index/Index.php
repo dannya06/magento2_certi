@@ -64,6 +64,6 @@ class Index extends Action implements HttpGetActionInterface
         $composerData = json_decode(file_get_contents($composerJson), true);
         $version = $composerData['version'];
 
-        return $rawResponse->setContents("swift / .$version. (Community)");
+        return $rawResponse->setContents("swift / $version");
     }
 }
