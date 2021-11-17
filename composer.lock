@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "43e2dc3e08af5496838fb61aac44c66a",
+    "content-hash": "5cf5437aaca1287784d5ba2df51fb5c5",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1898,7 +1898,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "efda75b4e8fae94dce3a77197005e9b5c1c24fb7"
+                "reference": "da011a46a91ba982bc3499fe5344fd3582474856"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -1939,7 +1939,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-11-10T10:48:14+00:00"
+            "time": "2021-11-16T10:16:57+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
