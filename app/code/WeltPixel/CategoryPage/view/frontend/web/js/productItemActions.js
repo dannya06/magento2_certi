@@ -94,7 +94,7 @@ define(['jquery','underscore'], function (jQuery,_) {
                 } else {
 
                     el.find(buttonQuickView_1).css('top', img - quickViewH_2 - 45);
-                    el.find(buttonQuickView_2).css('top', img - quickViewH_2 - 10);
+                    el.find(buttonQuickView_2).css('top', img - quickViewH_2 + 20);
                 }
 
             });

@@ -1419,6 +1419,50 @@ body.store-view-v1.checkout-onepage-success .page-wrapper main#maincontent .chec
 	}
 }
 
+
+
+/*Styling Magento checkout saat alamat lebih dari 4 & memilih alamat pertama tidak rapih*/
+.opc-wrapper .shipping-address-item {
+	min-height: 188px;
+}
+
+
+/*Styling Magento checkout ship & change pin poin setelah add address baru tidak rapih*/
+body.checkout-index-index #checkout .opc-wrapper .shipping-address-item .edit-address-link{
+    margin-top: 17px;
+}
+
+/*Styling Magento checkout button cancel coupon promo & gift card tidak rapih*/
+
+.checkout-index-index #checkout .opc-payment-additional .payment-option-content form .actions-toolbar .primary .action-cancel{
+	width: auto;
+}
+
+.theme-pearl.store-view-default .block .block-content div.products-grid button.action.action-cancel,
+.theme-pearl.store-view-default form.form-discount div.actions-toolbar button.action.action-cancel{
+	margin: 0 0 0 4px !important;
+}
+
+/*Info BCA VA di recent order my account tidak rapih*/
+.checkout-payment-method .payment-method._active .payment-method-content {
+    padding-left: 60px;
+}
+
+/*Add to wishlist PDP ternyata masih kurang rapih di web view & mobile (kalo logo kepotong pake width: auto !important)*/
+.theme-pearl.catalog-product-view .product-social-links .product-addto-links .action.tocompare /*mobile*/{
+    margin-top: 12px; 
+}
+
+/*Button sign out double di mobile view v1, v2 dst*/
+.page-wrapper .nav-sections .nav-sections-items ul.header.links li.customer-welcome ul.header.links  li.link.authorization-link{
+    display: none;
+}
+
+/*Payment kurang rapih*/
+.checkout-payment-method .payment-method._active .payment-method-content {
+    padding-left: 60px;
+}
+
 @import 'static_pages.less';
 @import 'wp_custom.less';
 @import "default/_order.less";
