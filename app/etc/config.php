@@ -399,6 +399,7 @@ return [
         'Icube_MagezonGraphql' => 1,
         'Icube_NewsletterGraphQl' => 1,
         'Icube_NotificationGraphQl' => 1,
+        'Icube_OrderComment' => 1,
         'Icube_OrderCommentGraphQl' => 1,
         'Icube_Oscoverridecheckout' => 1,
         'Icube_OwlCarouselSliderGraphQl' => 1,
