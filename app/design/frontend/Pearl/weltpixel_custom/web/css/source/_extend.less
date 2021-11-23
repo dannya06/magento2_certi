@@ -1426,6 +1426,10 @@ body.store-view-v1.checkout-onepage-success .page-wrapper main#maincontent .chec
 	min-height: 188px;
 }
 
+.checkout-index-index #checkout .opc-wrapper .shipping-address-item.not-selected-item{
+	border: 1px solid #c8c8c8;
+}
+
 
 /*Styling Magento checkout ship & change pin poin setelah add address baru tidak rapih*/
 body.checkout-index-index #checkout .opc-wrapper .shipping-address-item .edit-address-link{
@@ -1438,29 +1442,64 @@ body.checkout-index-index #checkout .opc-wrapper .shipping-address-item .edit-ad
 	width: auto;
 }
 
-.theme-pearl.store-view-default .block .block-content div.products-grid button.action.action-cancel,
-.theme-pearl.store-view-default form.form-discount div.actions-toolbar button.action.action-cancel{
-	margin: 0 0 0 4px !important;
+.checkout-index-index #checkout .opc-payment-additional .payment-option-content form .actions-toolbar .primary:hover span{
+	color:#7ba540;
+}
+
+.checkout-payment-method .payment-option-content .form-discount .actions-toolbar .primary .action{
+	margin: 0 0 0 4px;
 }
 
 /*Info BCA VA di recent order my account tidak rapih*/
-.checkout-payment-method .payment-method._active .payment-method-content {
-    padding-left: 60px;
+.sales-order-view .column.main .block.block-order-details-view .block-content .box .box-content *{
+	font-size: 14px;
+}
+
+.column.main .block-content .box.box-order-billing-method{
+	margin-top: -50px;
 }
 
 /*Add to wishlist PDP ternyata masih kurang rapih di web view & mobile (kalo logo kepotong pake width: auto !important)*/
 .theme-pearl.catalog-product-view .product-social-links .product-addto-links .action.tocompare /*mobile*/{
     margin-top: 12px; 
+	margin-left: -16px;
 }
 
-/*Button sign out double di mobile view v1, v2 dst*/
+.theme-pearl.catalog-product-view .product-social-links .product-addto-links .action.towishlist{
+	width: 146px;
+}
+
+/* header kurang rapih di mobile view v1, v2 dst*/
 .page-wrapper .nav-sections .nav-sections-items ul.header.links li.customer-welcome ul.header.links  li.link.authorization-link{
     display: none;
+}
+
+.header .links .customer-welcome .customer-menu li {
+	margin-top: -12px;
+}
+
+.header .links .customer-welcome .customer-menu{
+	margin-bottom: 67px;
+}
+
+.nav-sections .nav-sections-items .section-item-content .header.links > li.nav.item{
+	margin-bottom: -12px;
+}
+
+.nav-sections .nav-sections-items .section-item-content .header.links > .nav.item{
+	margin-top: -3px;
+	margin-left: 2px;
+}
+
+.nav-sections .nav-sections-items .section-item-content .header.links li.link.authorization-link{
+	margin-top: 12px;
+	margin-left: 3px;
 }
 
 /*Payment kurang rapih*/
 .checkout-payment-method .payment-method._active .payment-method-content {
     padding-left: 60px;
+	margin-bottom: 10px;
 }
 
 @import 'static_pages.less';
