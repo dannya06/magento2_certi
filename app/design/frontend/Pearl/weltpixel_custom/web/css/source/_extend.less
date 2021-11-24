@@ -1426,8 +1426,12 @@ body.store-view-v1.checkout-onepage-success .page-wrapper main#maincontent .chec
 	min-height: 188px;
 }
 
-.checkout-index-index #checkout .opc-wrapper .shipping-address-item.not-selected-item{
-	border: 1px solid #c8c8c8;
+.checkout-index-index #checkout .opc-wrapper .shipping-address-item{
+	max-height: 194px;
+}
+
+.checkout-index-index #checkout .opc-wrapper .shipping-address-item.selected-item{
+	border: 1px solid #4d4d4d;
 }
 
 
@@ -1470,31 +1474,27 @@ body.checkout-index-index #checkout .opc-wrapper .shipping-address-item .edit-ad
 }
 
 /* header kurang rapih di mobile view v1, v2 dst*/
-.page-wrapper .nav-sections .nav-sections-items ul.header.links li.customer-welcome ul.header.links  li.link.authorization-link{
+.theme-pearl .page-wrapper .nav-sections .nav-sections-items ul.header.links > li.nav.item + .link.authorization-link{
     display: none;
 }
 
-.header .links .customer-welcome .customer-menu li {
-	margin-top: -12px;
+.header.links .customer-welcome .customer-menu li {
+	margin-top: -10px;
 }
 
-.header .links .customer-welcome .customer-menu{
-	margin-bottom: 67px;
+.header.links .customer-welcome .customer-menu{
+	margin-bottom: -18px;
 }
 
-.nav-sections .nav-sections-items .section-item-content .header.links > li.nav.item{
+.nav-sections .nav-sections-items .section-item-content.nav-sections-item-content .header.links > li.nav.item{
 	margin-bottom: -12px;
 }
 
-.nav-sections .nav-sections-items .section-item-content .header.links > .nav.item{
+.nav-sections .nav-sections-items .section-item-content.nav-sections-item-content .header.links > .nav.item{
 	margin-top: -3px;
 	margin-left: 2px;
 }
 
-.nav-sections .nav-sections-items .section-item-content .header.links li.link.authorization-link{
-	margin-top: 12px;
-	margin-left: 3px;
-}
 
 /*Payment kurang rapih*/
 .checkout-payment-method .payment-method._active .payment-method-content {
