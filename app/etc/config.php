@@ -383,6 +383,7 @@ return [
         'WeltPixel_EnhancedEmail' => 1,
         'Icube_EventNotification' => 1,
         'Icube_FacebookShop' => 1,
+        'Icube_Giftcard' => 1,
         'Icube_PinLocation' => 1,
         'Icube_GrabExpress' => 1,
         'Icube_Graphql' => 1,
