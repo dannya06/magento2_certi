@@ -10,34 +10,10 @@
     "require": {
         "magento/product-community-edition": "2.4.2",
         "composer/composer": "@alpha",
-        "icubeus/magento2-advancerate": "^4.1",
-        "icubeus/magento2-trackorder": "^4.1",
         "smile/elasticsuite": "~2.10.0",
         "magepal/magento2-reindex": "^1.0",
-        "ebizmarts/mailchimp-lib": "^3.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-		"icubeus/magento2-rapidflow": "^7.2",
-        "icubeus/magento2-swiftomschannel": "^4.1",
-        "icubeus/magento2-shippingbase": "^4.1",
-        "icubeus/magento2-smsgateaway": "^4.1",
-		"icubeus/magento2-citykecamatan": "^4.1",
-		"icubeus/magento2-confirmpayment": "^4.1",
-		"icubeus/magento2-indonesianlanguage": "^4.1",
-		"icubeus/magento2-checkout": "^4.1",
-		"icubeus/magento2-payment": "^4.1",
-        "icubeus/magento2-instantdelivery": "^4.1",
-        "icubeus/magento2-queues": "^4.1",
-        "icubeus/magento2-veritranspayment": "^4.1",
-        "icubeus/magento2-smstada": "^4.1",
-        "icubeus/magento2-notification": "^4.1",
-        "icubeus/magento2-graphql": "^4.1",
-        "icubeus/magento2-shippingshipper": "^4.1",
-        "icubebysirclo/magento2-firebear": "^4.0",
-        "icubeus/magento2-firebase": "^4.1",
-        "icubebysirclo/magento2-facebookshop": "^4.0",
-        "icubebysirclo/magento2-xendit": "^4.0",
-        "icubebysirclo/magento2-shippinglogistix": "^4.0",
-        "cogpowered/finediff": "^0.3.1"
+        "icubeus/magento2-swift-core": "^4.0"
     },
     "replace": {
         "klarna/module-core": "*",
@@ -208,6 +184,30 @@
         "icubebysirclo-shippinglogistix": {
             "type": "git",
             "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git"
+        },
+        "icubeus-swift-core": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-swift-core.git"
+        },
+        "icubebysirclo-weltpixel": {
+            "type": "git",
+            "url": "git@github.com:icubebysirclo/magento2-weltpixel.git"
+        },
+        "icubebysirclo-promo": {
+            "type": "git",
+            "url": "git@github.com:icubebysirclo/magento2-promo.git"
+        },
+        "icubebysirclo-magezon": {
+            "type": "git",
+            "url": "git@github.com:icubebysirclo/magento2-magezon.git"
+        },
+        "icubebysirclo-amasty": {
+            "type": "git",
+            "url": "git@github.com:icubebysirclo/magento2-amasty.git"
+        },
+        "icubebysirclo-aheadworks": {
+            "type": "git",
+            "url": "git@github.com:icubebysirclo/magento2-aheadworks.git"
         }
     },
     "extra": {

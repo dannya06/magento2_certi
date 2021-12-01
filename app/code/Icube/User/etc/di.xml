@@ -1,5 +1,0 @@
-<?xml version="1.0" ?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-	<preference for="Magento\User\Block\User\Edit\Tab\Roles" type="Icube\User\Block\User\Edit\Tab\Roles" />
-    <preference for="Magento\User\Model\ResourceModel\User\Collection" type="Icube\User\Model\ResourceModel\User\Collection" />
-</config>

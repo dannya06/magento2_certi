@@ -1,3 +1,0 @@
-type AvailableShippingMethod {
-    shipping_promo_name: String!
-}
