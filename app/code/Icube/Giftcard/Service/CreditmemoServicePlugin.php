@@ -199,8 +199,12 @@ class CreditmemoServicePlugin
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $order = $objectManager->create('\Magento\Sales\Model\Order')->load($orderId);
             $orderState = \Magento\Sales\Model\Order::STATE_CLOSED;
-            $order->setState($orderState)->setStatus(\Magento\Sales\Model\Order::STATE_CLOSED);
+            $order->setState($orderState)->setStatus($orderState);
             $order->save();
+            
+            $history = $objectManager->create('\Magento\Sales\Model\Order\Status\History')->load($orderId, 'parent_id');
+            $history->setStatus($orderState);
+            $history->save();
         }
         return $creditmemo;
     }
