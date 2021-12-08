@@ -1,0 +1,17 @@
+steps:
+  
+  - block: "Request build docker image"
+
+  - label: ":docker: build kaycollect-poc"
+    command:
+      - "sh .buildkite/build.sh kaycollect-poc"
+    agents:
+      - "linode-staging=true"
+    
+  - block: "Release to staging"
+
+  - label: ":rocket: Deploy kaycollect-poc"
+    command:
+      - "sh .buildkite/deploy.sh lke kaycollect-poc"
+    agents:
+      - "linode-staging=true"
