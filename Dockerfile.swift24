@@ -1,0 +1,16 @@
+FROM asia.gcr.io/sirclo-iii-nonprod/mgt-swift74:c52175d308111be67924b5b425ae0a9a5c275a69-1635222100
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG php_version="7.4"
+ARG dir_composer="/home/app/site/vendor"
+ARG dst_mnt="/home/app/site/pub/errors/default"
+
+# Entrypoint
+COPY start.sh /start.sh
+RUN chmod +x /start.sh;
+
+# Change to home apps
+WORKDIR /home/app/
+COPY --chown=app:app . site
+COPY --chown=app:app .servcomp/env.php /home/app/site/app/etc/env.php
+COPY --chown=app:app .servcomp/.my.cnf /home/app/.my.cnf

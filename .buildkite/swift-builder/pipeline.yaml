@@ -1,0 +1,9 @@
+steps:
+  
+  - block: "Request build docker image"
+
+  - label: ":docker: build swift image"
+    command:
+      - "sh .buildkite/build.sh swift24"
+    agents:
+      - "linode-staging=true"
