@@ -6,4 +6,4 @@ steps:
     command:
       - "sh .buildkite/build.sh swift24"
     agents:
-      - "linode-staging=true"
+      - "icube-staging=true"
