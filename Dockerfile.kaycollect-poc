@@ -16,6 +16,7 @@ COPY --chown=app:app .servcomp/env.php /home/app/site/app/etc/env.php
 COPY --chown=app:app .servcomp/.my.cnf /home/app/.my.cnf
 
 WORKDIR /home/app/site
+USER app
 RUN composer config repositories.icubeus-customkaycollection git git@github.com:icube-mage/magento2-customkaycollection.git
 RUN composer require icubeus/magento2-customkaycollection:dev-master  -vvv
 #RUN rm -rf generated/; \
@@ -27,5 +28,6 @@ RUN composer require icubeus/magento2-customkaycollection:dev-master  -vvv
 #    php bin/magento weltpixel:css:generate --store=default; \
 #    php bin/magento cache:flush;\ 
 
+USER root
 EXPOSE 80 8080 9000 6082
 ENTRYPOINT /start.sh
