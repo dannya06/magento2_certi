@@ -4,7 +4,7 @@ steps:
 
   - label: ":docker: build kaycollect-poc"
     command:
-      - "sh .buildkite/build.sh kaycollect-poc"
+      - "sh .buildkite/build.sh kaycollection-poc"
     agents:
       - "linode-staging=true"
     
@@ -12,6 +12,6 @@ steps:
 
   - label: ":rocket: Deploy kaycollect-poc"
     command:
-      - "sh .buildkite/deploy.sh lke kaycollect-poc"
+      - "sh .buildkite/deploy.sh lke kaycollection"
     agents:
       - "linode-staging=true"
