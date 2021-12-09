@@ -20,4 +20,4 @@ git config --global user.name "buildkite-agent"
 git add .
 git commit -m "bump up image @bypass-review"
 git push -u origin master
-helmfile --helm-binary=helm3 --file=helmfile.d/$environ.yaml --selector name=$2 apply
+helmfile --helm-binary=helm --file=helmfile.d/$environ.yaml --selector name=$2 apply
