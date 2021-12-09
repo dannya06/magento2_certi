@@ -18,14 +18,14 @@ COPY --chown=app:app .servcomp/.my.cnf /home/app/.my.cnf
 WORKDIR /home/app/site
 RUN composer config repositories.icubeus-customkaycollection git git@github.com:icube-mage/magento2-customkaycollection.git
 RUN composer require icubeus/magento2-customkaycollection:dev-master  -vvv
-RUN rm -rf generated/; \
-    rm -rf var/cache var/composer_home var/di  var/page_cache var/session var/tmp var/view_preprocessed var/cache/ pub/static/frontend/* pub/static/_cache/generated/; \
-    php bin/magento setup:upgrade; \
-    php bin/magento setup:di:compile; \
-    php bin/magento weltpixel:less:generate; \
-    php -dmemory_limt=-1 bin/magento setup:static-content:deploy id_ID en_US -f; \
-    php bin/magento weltpixel:css:generate --store=default; \
-    php bin/magento cache:flush;\ 
+#RUN rm -rf generated/; \
+#    rm -rf var/cache var/composer_home var/di  var/page_cache var/session var/tmp var/view_preprocessed var/cache/ pub/static/frontend/* pub/static/_cache/generated/; \
+#    php bin/magento setup:upgrade; \
+#    php bin/magento setup:di:compile; \
+#    php bin/magento weltpixel:less:generate; \
+#    php -dmemory_limt=-1 bin/magento setup:static-content:deploy id_ID en_US -f; \
+#    php bin/magento weltpixel:css:generate --store=default; \
+#    php bin/magento cache:flush;\ 
 
 EXPOSE 80 8080 9000 6082
 ENTRYPOINT /start.sh
