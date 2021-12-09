@@ -11,5 +11,5 @@ set -ex
 echo "Building Backend Docker image with tag " $$githead-$$ts
 echo $githead-$ts | buildkite-agent meta-data set "image-tag" 
 docker login -u _json_key -p "$(cat /etc/service_key/service-account-key.json | tr '\n' ' ')" https://asia.gcr.io
-docker build -t asia.gcr.io/sirclo-1152/$1-poc:$githead-$ts -f Dockerfile.kaycollect-poc .
-docker push asia.gcr.io/sirclo-1152/$1-poc:$githead-$ts
+docker build -t asia.gcr.io/sirclo-iii-nonprod/$1-poc:$githead-$ts -f Dockerfile.kaycollect-poc .
+docker push asia.gcr.io/sirclo-iii-nonprod/$1-poc:$githead-$ts
