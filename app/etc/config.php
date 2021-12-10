@@ -426,7 +426,7 @@ return [
         'Icube_ShipmentRate' => 1,
         'Icube_Shipmentpg' => 1,
         'Icube_ShipperId' => 1,
-        'Icube_ShippingBase' => 0,
+        'Icube_ShippingBase' => 1,
         'Icube_SircloChat' => 1,
         'Icube_SmsOtp' => 0,
         'Icube_SmsOtpGraphQl' => 1,
