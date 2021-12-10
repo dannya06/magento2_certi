@@ -12,5 +12,3 @@ RUN chmod +x /start.sh;
 # Change to home apps
 WORKDIR /home/app/
 COPY --chown=app:app . site
-COPY --chown=app:app .servcomp/env.php /home/app/site/app/etc/env.php
-COPY --chown=app:app .servcomp/.my.cnf /home/app/.my.cnf
