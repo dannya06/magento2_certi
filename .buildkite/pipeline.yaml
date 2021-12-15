@@ -4,6 +4,6 @@ steps:
 
   - label: ":docker: build docker image for SWIFT 2.4.x"
     command:
-      - "sh .buildkite/build.sh swift24"
+      - "sh .buildkite/build.sh swift"
     agents:
       - "icube-staging=true"
