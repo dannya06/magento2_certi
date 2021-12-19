@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "850821de5e12e48ca2df48036d1db8e0",
+    "content-hash": "705699b8d9186950dfadfe0f1514b6a3",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1786,7 +1786,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-aheadworks.git",
-                "reference": "43a3bf0beb0f44b7019298c1991014baa056d042"
+                "reference": "95a3c02ec93d6c5865efcfa0041ff761420225ab"
             },
             "replace": {
                 "icubebysirclo/module-aheadworks-advanced-reports": "self.version",
@@ -1797,7 +1797,8 @@
                 "icubebysirclo/module-aheadworks-rma": "self.version",
                 "icubebysirclo/module-aheadworks-social-login": "self.version",
                 "icubebysirclo/module-aheadworks-store-credit": "self.version",
-                "icubebysirclo/module-icube-advanced-reports": "self.version"
+                "icubebysirclo/module-icube-advanced-reports": "self.version",
+                "icubebysirclo/module-icube-giftcard": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
@@ -1810,7 +1811,8 @@
                     "src/module-aheadworks-rma/registration.php",
                     "src/module-aheadworks-social-login/registration.php",
                     "src/module-aheadworks-store-credit/registration.php",
-                    "src/module-icube-advanced-reports/registration.php"
+                    "src/module-icube-advanced-reports/registration.php",
+                    "src/module-icube-giftcard/registration.php"
                 ],
                 "psr-4": {
                     "Aheadworks\\AdvancedReports\\": "src/module-aheadworks-advanced-reports",
@@ -1821,7 +1823,8 @@
                     "Aheadworks\\Rma\\": "src/module-aheadworks-rma",
                     "Aheadworks\\SocialLogin\\": "src/module-aheadworks-social-login",
                     "Aheadworks\\StoreCredit\\": "src/module-aheadworks-store-credit",
-                    "Icube\\AdvancedReports\\": "src/module-icube-advanced-reports"
+                    "Icube\\AdvancedReports\\": "src/module-icube-advanced-reports",
+                    "Icube\\Giftcard\\": "src/module-icube-giftcard"
                 }
             },
             "license": [
@@ -1840,7 +1843,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-11-16T23:56:21+00:00"
+            "time": "2021-12-15T14:49:31+00:00"
         },
         {
             "name": "icubebysirclo/magento2-amasty",
@@ -2172,7 +2175,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-weltpixel.git",
-                "reference": "188f92c14997887ca8ec32f6ba4a6e58b841809a"
+                "reference": "d8a3e9e9f08e2011fcc227935615779ecaea3364"
             },
             "replace": {
                 "icubebysirclo/module-icube-custom-style": "self.version",
@@ -2325,7 +2328,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-11-17T18:18:08+00:00"
+            "time": "2021-12-01T15:51:58+00:00"
         },
         {
             "name": "icubebysirclo/magento2-xendit",
