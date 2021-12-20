@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
-       <template id="icube_paymentreminder_general_template_cancel" label="Email Order Cancel Expired" file="order_cancel_expired.html" type="html" module="Icube_PaymentReminder" area="frontend"/>
-       <template id="icube_paymentreminder_general_template_reminder" label="Email Payment Reminder" file="payment_reminder.html" type="html" module="Icube_PaymentReminder" area="frontend"/>
-</config>

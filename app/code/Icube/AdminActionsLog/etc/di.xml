@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="Amasty\AdminActionsLog\Block\Adminhtml\ActionsLog" type="Icube\AdminActionsLog\Block\Adminhtml\ActionsLog" />
-    <preference for="Amasty\AdminActionsLog\Block\Adminhtml\LoginAttempts" type="Icube\AdminActionsLog\Block\Adminhtml\LoginAttempts" />
-    <preference for="Amasty\AdminActionsLog\Block\Adminhtml\VisitHistory" type="Icube\AdminActionsLog\Block\Adminhtml\VisitHistory" />
-</config>

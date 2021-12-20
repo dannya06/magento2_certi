@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
-       <template id="sales_email_order_cancel_template" label="Email Order Cancel" file="order_cancel.html" type="html" module="Icube_CancelOrderEmail" area="frontend"/>
-       <template id="sales_email_order_cancel_guest_template" label="Email Order Cancel Guest" file="order_cancel_guest.html" type="html" module="Icube_CancelOrderEmail" area="frontend"/>
-</config>
