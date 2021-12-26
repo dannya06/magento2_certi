@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "116a790511c34fbac89115e3619a2a31",
+    "content-hash": "705699b8d9186950dfadfe0f1514b6a3",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -218,56 +218,6 @@
             "time": "2020-10-30T02:02:47+00:00"
         },
         {
-            "name": "bcncommerce/json-stream",
-            "version": "0.4.2",
-            "target-dir": "Bcn/Component/Json",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/skolodyazhnyy/json-stream.git",
-                "reference": "f7f83c6cbd28a0e23663c4fa158d8973395505c3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/skolodyazhnyy/json-stream/zipball/f7f83c6cbd28a0e23663c4fa158d8973395505c3",
-                "reference": "f7f83c6cbd28a0e23663c4fa158d8973395505c3",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "php": ">=7.3"
-            },
-            "require-dev": {
-                "bcncommerce/stream-wrapper": "dev-master",
-                "phpunit/phpunit": "^9.5",
-                "symfony/yaml": "^5.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Bcn\\Component\\Json\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sergey Kolodyazhnyy",
-                    "email": "sergey.kolodyazhnyy@gmail.com"
-                }
-            ],
-            "description": "A bundle of tools to work with JSON in PHP",
-            "keywords": [
-                "json",
-                "parser",
-                "reader",
-                "streaming",
-                "writer"
-            ],
-            "time": "2021-01-12T11:38:25+00:00"
-        },
-        {
             "name": "beberlei/assert",
             "version": "v3.3.1",
             "source": {
@@ -332,27 +282,25 @@
         },
         {
             "name": "box/spout",
-            "version": "v3.3.0",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/box/spout.git",
-                "reference": "9bdb027d312b732515b884a341c0ad70372c6295"
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/box/spout/zipball/9bdb027d312b732515b884a341c0ad70372c6295",
-                "reference": "9bdb027d312b732515b884a341c0ad70372c6295",
+                "url": "https://api.github.com/repos/box/spout/zipball/3681a3421a868ab9a65da156c554f756541f452b",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b",
                 "shasum": ""
             },
             "require": {
-                "ext-dom": "*",
                 "ext-xmlreader": "*",
                 "ext-zip": "*",
-                "php": ">=7.2.0"
+                "php": ">=5.4.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2",
-                "phpunit/phpunit": "^8"
+                "phpunit/phpunit": "^4.8.0"
             },
             "suggest": {
                 "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",
@@ -361,7 +309,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.1.x-dev"
+                    "dev-master": "2.8.x-dev"
                 }
             },
             "autoload": {
@@ -398,7 +346,7 @@
                 "write",
                 "xlsx"
             ],
-            "time": "2021-05-14T21:18:09+00:00"
+            "time": "2017-09-25T19:44:35+00:00"
         },
         {
             "name": "christian-riesen/base32",
@@ -504,10 +452,6 @@
                 "string",
                 "text"
             ],
-            "support": {
-                "issues": "https://github.com/cogpowered/FineDiff/issues",
-                "source": "https://github.com/cogpowered/FineDiff/tree/master"
-            },
             "time": "2014-05-19T10:25:02+00:00"
         },
         {
@@ -1485,215 +1429,56 @@
             "time": "2016-09-09T11:38:26+00:00"
         },
         {
-            "name": "firebase/php-jwt",
-            "version": "v5.5.1",
+            "name": "fig/http-message-util",
+            "version": "1.1.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "83b609028194aa042ea33b5af2d41a7427de80e6"
+                "url": "https://github.com/php-fig/http-message-util.git",
+                "reference": "9d94dc0154230ac39e5bf89398b324a86f63f765"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/83b609028194aa042ea33b5af2d41a7427de80e6",
-                "reference": "83b609028194aa042ea33b5af2d41a7427de80e6",
+                "url": "https://api.github.com/repos/php-fig/http-message-util/zipball/9d94dc0154230ac39e5bf89398b324a86f63f765",
+                "reference": "9d94dc0154230ac39e5bf89398b324a86f63f765",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": ">=4.8 <=9"
+                "php": "^5.3 || ^7.0 || ^8.0"
             },
             "suggest": {
-                "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Firebase\\JWT\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Neuman Vong",
-                    "email": "neuman+pear@twilio.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Anant Narayanan",
-                    "email": "anant@php.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
-            "homepage": "https://github.com/firebase/php-jwt",
-            "keywords": [
-                "jwt",
-                "php"
-            ],
-            "time": "2021-11-08T20:18:51+00:00"
-        },
-        {
-            "name": "google/apiclient",
-            "version": "v2.12.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "1530583a711f4414407112c4068464bcbace1c71"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/1530583a711f4414407112c4068464bcbace1c71",
-                "reference": "1530583a711f4414407112c4068464bcbace1c71",
-                "shasum": ""
-            },
-            "require": {
-                "firebase/php-jwt": "~2.0||~3.0||~4.0||~5.0",
-                "google/apiclient-services": "~0.200",
-                "google/auth": "^1.10",
-                "guzzlehttp/guzzle": "~5.3.3||~6.0||~7.0",
-                "guzzlehttp/psr7": "^1.7||^2.0.0",
-                "monolog/monolog": "^1.17||^2.0",
-                "php": "^5.6|^7.0|^8.0",
-                "phpseclib/phpseclib": "~2.0||^3.0.2"
-            },
-            "require-dev": {
-                "cache/filesystem-adapter": "^0.3.2|^1.1",
-                "composer/composer": "^1.10.22",
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-                "phpcompatibility/php-compatibility": "^9.2",
-                "phpspec/prophecy-phpunit": "^1.1||^2.0",
-                "phpunit/phpunit": "^5.7.21 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
-                "squizlabs/php_codesniffer": "~2.3",
-                "symfony/css-selector": "~2.1",
-                "symfony/dom-crawler": "~2.1",
-                "yoast/phpunit-polyfills": "^1.0"
-            },
-            "suggest": {
-                "cache/filesystem-adapter": "For caching certs and tokens (using Google\\Client::setCache)"
+                "psr/http-message": "The package containing the PSR-7 interfaces"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "2.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Google\\": "src/"
-                },
-                "files": [
-                    "src/aliases.php"
-                ],
-                "classmap": [
-                    "src/aliases.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Client library for Google APIs",
-            "homepage": "http://developers.google.com/api-client-library/php",
-            "keywords": [
-                "google"
-            ],
-            "time": "2021-12-02T03:34:25+00:00"
-        },
-        {
-            "name": "google/apiclient-services",
-            "version": "v0.226.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "c67839c96bc821b202c6737c9ae1ba6fd4626653"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/c67839c96bc821b202c6737c9ae1ba6fd4626653",
-                "reference": "c67839c96bc821b202c6737c9ae1ba6fd4626653",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7||^8.5.13"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Google\\Service\\": "src"
-                },
-                "files": [
-                    "autoload.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Client library for Google APIs",
-            "homepage": "http://developers.google.com/api-client-library/php",
-            "keywords": [
-                "google"
-            ],
-            "time": "2021-12-18T12:26:19+00:00"
-        },
-        {
-            "name": "google/auth",
-            "version": "v1.18.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "21dd478e77b0634ed9e3a68613f74ed250ca9347"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/21dd478e77b0634ed9e3a68613f74ed250ca9347",
-                "reference": "21dd478e77b0634ed9e3a68613f74ed250ca9347",
-                "shasum": ""
-            },
-            "require": {
-                "firebase/php-jwt": "~2.0|~3.0|~4.0|~5.0",
-                "guzzlehttp/guzzle": "^5.3.1|^6.2.1|^7.0",
-                "guzzlehttp/psr7": "^1.7|^2.0",
-                "php": ">=5.4",
-                "psr/cache": "^1.0|^2.0",
-                "psr/http-message": "^1.0"
-            },
-            "require-dev": {
-                "guzzlehttp/promises": "0.1.1|^1.3",
-                "kelvinmo/simplejwt": "^0.2.5|^0.5.1",
-                "phpseclib/phpseclib": "^2.0.31",
-                "phpunit/phpunit": "^4.8.36|^5.7",
-                "sebastian/comparator": ">=1.2.3"
-            },
-            "suggest": {
-                "phpseclib/phpseclib": "May be used in place of OpenSSL for signing strings or for token management. Please require version ^2."
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Google\\Auth\\": "src"
+                    "Fig\\Http\\Message\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "Apache-2.0"
+                "MIT"
             ],
-            "description": "Google Auth Library for PHP",
-            "homepage": "http://github.com/google/google-auth-library-php",
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Utility classes and constants for use with PSR-7 (psr/http-message)",
             "keywords": [
-                "Authentication",
-                "google",
-                "oauth2"
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
             ],
-            "time": "2021-08-24T18:03:18+00:00"
+            "time": "2020-11-24T22:02:12+00:00"
         },
         {
             "name": "google/recaptcha",
@@ -2204,39 +1989,28 @@
         },
         {
             "name": "icubebysirclo/magento2-firebear",
-            "version": "4.0.4",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-firebear.git",
-                "reference": "6786dc1efd04f6397d38987d9b19b0d9c52d7fcc"
+                "reference": "8419b90882061bda78d92e72873401f0b3c66e9e"
             },
             "require": {
-                "bcncommerce/json-stream": "^0.4.1",
-                "box/spout": "^3.1",
-                "google/apiclient": "^2.0",
-                "guzzlehttp/psr7": "^1.7",
-                "league/oauth2-client": "^2.4",
-                "microsoft/microsoft-graph": "^1.25",
-                "salsify/json-streaming-parser": "~8.0",
-                "tcdent/php-restclient": "^0.1.7",
-                "tmwk/client-prestashop-api": "^1.0"
+                "box/spout": "~2.7"
             },
             "replace": {
                 "icubebysirclo/magento2-firebear": "self.version",
-                "icubebysirclo/magento2-firebearmsi": "self.version",
-                "icubebysirclo/magento2-icube-firebear": "self.version"
+                "icubebysirclo/magento2-firebearmsi": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
                 "files": [
                     "src/module-firebear/registration.php",
-                    "src/module-firebearmsi/registration.php",
-                    "src/module-icube-firebear/registration.php"
+                    "src/module-firebearmsi/registration.php"
                 ],
                 "psr-4": {
                     "Firebear\\ImportExport\\": "src/module-firebear",
-                    "Firebear\\ImportExportMsi\\": "src/module-firebearmsi",
-                    "Icube\\Firebear\\": "src/module-icube-firebear"
+                    "Firebear\\ImportExportMsi\\": "src/module-firebearmsi"
                 }
             },
             "license": [
@@ -2255,7 +2029,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-24T00:19:15+00:00"
+            "time": "2021-10-15T07:23:00+00:00"
         },
         {
             "name": "icubebysirclo/magento2-magezon",
@@ -2318,11 +2092,11 @@
         },
         {
             "name": "icubebysirclo/magento2-promo",
-            "version": "4.0.1",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-promo.git",
-                "reference": "79c6de71192047014031dbeeb7c5ec48a7cc6b50"
+                "reference": "0c8733439869d1689a38eb866f1c16e6bcfe87df"
             },
             "require": {
                 "icubebysirclo/magento2-aheadworks": "^4.0",
@@ -2365,15 +2139,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:05:35+00:00"
+            "time": "2021-11-17T00:06:42+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippinglogistix",
-            "version": "4.0.5",
+            "version": "4.0.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
-                "reference": "2f305e865c5f5ada5cb643b5d5974c12393bf0b1"
+                "reference": "e8ea494a4c746cfe17992d1b5aee4b5939018445"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2393,15 +2167,15 @@
                 "magento 2",
                 "shippinglogistix"
             ],
-            "time": "2021-12-23T08:07:37+00:00"
+            "time": "2021-12-09T10:01:22+00:00"
         },
         {
             "name": "icubebysirclo/magento2-weltpixel",
-            "version": "4.0.1",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-weltpixel.git",
-                "reference": "256c0e8428614e520e55f664a3932776a03fa8cd"
+                "reference": "d8a3e9e9f08e2011fcc227935615779ecaea3364"
             },
             "replace": {
                 "icubebysirclo/module-icube-custom-style": "self.version",
@@ -2554,7 +2328,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T05:25:43+00:00"
+            "time": "2021-12-01T15:51:58+00:00"
         },
         {
             "name": "icubebysirclo/magento2-xendit",
@@ -2602,11 +2376,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "4.1.6",
+            "version": "4.1.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "bb24b93421d2f02498cfeb46e147c9ed4c5e65dd"
+                "reference": "14732ac70bd864e1c5025640b4b0698e43866265"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2626,15 +2400,15 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2021-12-23T08:09:08+00:00"
+            "time": "2021-11-08T07:33:27+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "4.1.17",
+            "version": "4.1.16",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "8f17989536bc96c6d7909c26c54e2b32c89e3d8b"
+                "reference": "c4fc3e703f2c45511c21b8d87ec56e6498d2133e"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -2675,7 +2449,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:12:23+00:00"
+            "time": "2021-12-07T10:40:30+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -2737,22 +2511,28 @@
         },
         {
             "name": "icubeus/magento2-firebase",
-            "version": "4.1.3",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-firebase.git",
-                "reference": "0d233c276fdc8cdccb577f4e0aa5ed081cc1e745"
+                "reference": "e7367d87b56b38b3bc6b6e5522bfbc5b493296c9"
+            },
+            "require": {
+                "kreait/firebase-tokens": "^1.14"
             },
             "replace": {
-                "icubeus/module-push-notification-firebase": "self.version"
+                "icubeus/module-push-notification-firebase": "self.version",
+                "icubeus/module-social-login": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
                 "files": [
-                    "src/module-push-notification-firebase/registration.php"
+                    "src/module-push-notification-firebase/registration.php",
+                    "src/module-social-login/registration.php"
                 ],
                 "psr-4": {
-                    "Icube\\PushNotificationFirebase\\": "src/module-push-notification-firebase"
+                    "Icube\\PushNotificationFirebase\\": "src/module-push-notification-firebase",
+                    "Icube\\SocialLogin\\": "src/module-social-login"
                 }
             },
             "license": [
@@ -2771,15 +2551,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:19:16+00:00"
+            "time": "2021-06-04T10:31:54+00:00"
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.20",
+            "version": "4.1.19",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "8db950c6a5a9f5c9ca6549fc3012bb698f9251ae"
+                "reference": "67039294ff74d74f056577727f12faed00d8d8bf"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2940,7 +2720,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:20:51+00:00"
+            "time": "2021-12-10T07:28:12+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -2970,11 +2750,11 @@
         },
         {
             "name": "icubeus/magento2-instantdelivery",
-            "version": "4.1.8",
+            "version": "4.1.7",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "06f91217e5424a3ec2ec2e3604fa1c5a210b4440"
+                "reference": "bbf7172b06fa1016e14e72a61c654bae468cbfa9"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -3013,15 +2793,15 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2021-12-23T08:22:18+00:00"
+            "time": "2021-12-10T04:00:17+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
-            "version": "4.1.7",
+            "version": "4.1.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "f8c1574df7dea124969c5fb812fd95895c5f460f"
+                "reference": "7cb0f132121a71a632d179ef7d0e7fbe1668d85b"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "^4.1"
@@ -3060,15 +2840,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:23:20+00:00"
+            "time": "2021-11-24T09:08:03+00:00"
         },
         {
             "name": "icubeus/magento2-payment",
-            "version": "4.1.4",
+            "version": "4.1.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-payment.git",
-                "reference": "92bb5cd9a9ff0c7d68af140f979614b03c43cbf2"
+                "reference": "2c00df34773805924eab93017ddeafa6b36d079f"
             },
             "replace": {
                 "icubeus/module-ipay88": "self.version"
@@ -3108,15 +2888,15 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-12-23T08:24:22+00:00"
+            "time": "2021-07-22T10:26:09+00:00"
         },
         {
             "name": "icubeus/magento2-queues",
-            "version": "4.1.1",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-queues.git",
-                "reference": "950670954777076b68991a754cd61bcae24d8205"
+                "reference": "cac09e8e99b32dd685457b7d181178f6403cf2f2"
             },
             "replace": {
                 "icubeus/module-queues": "self.version",
@@ -3149,7 +2929,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:25:23+00:00"
+            "time": "2020-12-14T04:04:25+00:00"
         },
         {
             "name": "icubeus/magento2-rapidflow",
@@ -3235,11 +3015,11 @@
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.11",
+            "version": "4.1.10",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "188de3cc62fe0f7ead1169fe4330286df5062dae"
+                "reference": "f32205a6dbb8015d1eff8e82e8215aec5df24321"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -3272,7 +3052,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:10:05+00:00"
+            "time": "2021-12-07T10:52:46+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -3323,11 +3103,11 @@
         },
         {
             "name": "icubeus/magento2-smstada",
-            "version": "4.1.6",
+            "version": "4.1.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "aff21246074d42e12f514eaba6ec2184492eafc5"
+                "reference": "adf5e26bd6596b558e1ef5d07a5e18a5cf5c26a4"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "^4.1"
@@ -3366,46 +3146,46 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:26:09+00:00"
+            "time": "2021-08-10T06:30:45+00:00"
         },
         {
             "name": "icubeus/magento2-swift-core",
-            "version": "4.0.11",
+            "version": "4.0.10",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swift-core.git",
-                "reference": "b506361866c072283a0e7d9dc37e265a20252e78"
+                "reference": "63ea1ee8b6c926ac81d078f9ed3bacd6503a1516"
             },
             "require": {
                 "ebizmarts/mailchimp-lib": "^3.0",
                 "icubebysirclo/magento2-aheadworks": "4.0.0",
                 "icubebysirclo/magento2-amasty": "4.0.0",
                 "icubebysirclo/magento2-facebookshop": "4.0.4",
-                "icubebysirclo/magento2-firebear": "4.0.4",
+                "icubebysirclo/magento2-firebear": "4.0.2",
                 "icubebysirclo/magento2-magezon": "4.0.0",
-                "icubebysirclo/magento2-promo": "4.0.1",
-                "icubebysirclo/magento2-shippinglogistix": "4.0.5",
-                "icubebysirclo/magento2-weltpixel": "4.0.1",
+                "icubebysirclo/magento2-promo": "4.0.0",
+                "icubebysirclo/magento2-shippinglogistix": "4.0.4",
+                "icubebysirclo/magento2-weltpixel": "4.0.0",
                 "icubebysirclo/magento2-xendit": "4.0.4",
-                "icubeus/magento2-advancerate": "4.1.6",
-                "icubeus/magento2-checkout": "4.1.17",
+                "icubeus/magento2-advancerate": "4.1.5",
+                "icubeus/magento2-checkout": "4.1.16",
                 "icubeus/magento2-citykecamatan": "4.1.5",
                 "icubeus/magento2-confirmpayment": "4.1.1",
-                "icubeus/magento2-firebase": "4.1.3",
-                "icubeus/magento2-graphql": "4.1.20",
+                "icubeus/magento2-firebase": "4.1.2",
+                "icubeus/magento2-graphql": "4.1.19",
                 "icubeus/magento2-indonesianlanguage": "4.1.0",
-                "icubeus/magento2-instantdelivery": "4.1.8",
-                "icubeus/magento2-notification": "4.1.7",
-                "icubeus/magento2-payment": "4.1.4",
-                "icubeus/magento2-queues": "4.1.1",
+                "icubeus/magento2-instantdelivery": "4.1.7",
+                "icubeus/magento2-notification": "4.1.6",
+                "icubeus/magento2-payment": "4.1.3",
+                "icubeus/magento2-queues": "4.1.0",
                 "icubeus/magento2-rapidflow": "7.2.2",
                 "icubeus/magento2-shippingbase": "4.1.1",
-                "icubeus/magento2-shippingshipper": "4.1.11",
+                "icubeus/magento2-shippingshipper": "4.1.10",
                 "icubeus/magento2-smsgateaway": "4.1.1",
-                "icubeus/magento2-smstada": "4.1.6",
-                "icubeus/magento2-swiftomschannel": "4.1.12",
-                "icubeus/magento2-trackorder": "4.1.7",
-                "icubeus/magento2-veritranspayment": "4.1.11"
+                "icubeus/magento2-smstada": "4.1.4",
+                "icubeus/magento2-swiftomschannel": "4.1.11",
+                "icubeus/magento2-trackorder": "4.1.6",
+                "icubeus/magento2-veritranspayment": "4.1.10"
             },
             "replace": {
                 "icubeus/module-bold-order-comment": "self.version",
@@ -3428,7 +3208,6 @@
                 "icubeus/module-icube-how-to-pay": "self.version",
                 "icubeus/module-icube-information": "self.version",
                 "icubeus/module-icube-lazy-loading-webp": "self.version",
-                "icubeus/module-icube-log": "self.version",
                 "icubeus/module-icube-order-comment": "self.version",
                 "icubeus/module-icube-payment-reminder": "self.version",
                 "icubeus/module-icube-paypal": "self.version",
@@ -3496,8 +3275,7 @@
                     "src/module-xtento-order-export/registration.php",
                     "src/module-xtento-product-export/registration.php",
                     "src/module-xtento-tracking-import/registration.php",
-                    "src/module-xtento-xt-core/registration.php",
-                    "src/module-icube-log/registration.php"
+                    "src/module-xtento-xt-core/registration.php"
                 ],
                 "psr-4": {
                     "Bold\\OrderComment\\": "src/module-bold-order-comment",
@@ -3541,8 +3319,7 @@
                     "Xtento\\OrderExport\\": "src/module-xtento-order-export",
                     "Xtento\\ProductExport\\": "src/module-xtento-product-export",
                     "Xtento\\TrackingImport\\": "src/module-xtento-tracking-import",
-                    "Xtento\\XtCore\\": "src/module-xtento-xt-core",
-                    "Icube\\Log\\": "src/module-icube-log"
+                    "Xtento\\XtCore\\": "src/module-xtento-xt-core"
                 }
             },
             "license": [
@@ -3561,15 +3338,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T13:39:43+00:00"
+            "time": "2021-12-15T14:58:20+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.12",
+            "version": "4.1.11",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "e3c03e1bf23528b646b2892308f48e916d833061"
+                "reference": "8a187a9da3183ba2f0b634a1171428c91b552c40"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -3628,15 +3405,15 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2021-12-23T09:08:36+00:00"
+            "time": "2021-11-08T07:39:48+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
-            "version": "4.1.7",
+            "version": "4.1.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "53e58535c08131e56f0d0f3953298b4f55cb4e6c"
+                "reference": "63fdbffc02fe4b4c781799a047da7beb7bd02fe2"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3656,15 +3433,15 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2021-12-23T08:28:19+00:00"
+            "time": "2021-12-07T05:11:06+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.11",
+            "version": "4.1.10",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "f7f36dee2164cbcfe01ce788ca5d45f470f4f03e"
+                "reference": "99491d39a926be7203e3f3cd28a68472539b076a"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -3713,7 +3490,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2021-12-23T08:29:49+00:00"
+            "time": "2021-11-23T10:04:12+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -3831,6 +3608,125 @@
                 "zxing"
             ],
             "time": "2021-04-21T08:02:08+00:00"
+        },
+        {
+            "name": "kreait/clock",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kreait/clock-php.git",
+                "reference": "8f1fbc252e4e81298ae7c520597c25e9a6a0f454"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kreait/clock-php/zipball/8f1fbc252e4e81298ae7c520597c25e9a6a0f454",
+                "reference": "8f1fbc252e4e81298ae7c520597c25e9a6a0f454",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.5.14"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kreait\\Clock\\": "src/Clock"
+                },
+                "files": [
+                    "src/Clock.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jérôme Gamez",
+                    "email": "jerome@gamez.name"
+                }
+            ],
+            "description": "A PHP 7.0 compatible clock abstraction",
+            "time": "2020-10-03T23:30:50+00:00"
+        },
+        {
+            "name": "kreait/firebase-tokens",
+            "version": "1.16.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kreait/firebase-tokens-php.git",
+                "reference": "595ad06cb5f75c188d8fbfdefc9078c3ec8aa5e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kreait/firebase-tokens-php/zipball/595ad06cb5f75c188d8fbfdefc9078c3ec8aa5e8",
+                "reference": "595ad06cb5f75c188d8fbfdefc9078c3ec8aa5e8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "fig/http-message-util": "^1.1.5",
+                "guzzlehttp/guzzle": "^6.3.1|^7.0",
+                "kreait/clock": "^1.1.0",
+                "lcobucci/jwt": "^3.4.6|^4.0.4|^4.1.5",
+                "php": "^7.4|^8.0",
+                "psr/cache": "^1.0|^2.0|^3.0",
+                "psr/simple-cache": "^1.0.1"
+            },
+            "require-dev": {
+                "firebase/php-jwt": "^5.3",
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "^0.12.88",
+                "phpstan/phpstan-phpunit": "^0.12.19",
+                "phpunit/phpunit": "^9.5",
+                "rector/rector": "^0.11.16",
+                "symfony/cache": "^5.3",
+                "symfony/var-dumper": "^5.3"
+            },
+            "suggest": {
+                "firebase/php-jwt": "^5.0 can be used to create and parse tokens",
+                "guzzlehttp/guzzle": "^6.2.1|^7.0 can be used as an HTTP handler",
+                "lcobucci/jwt": "^3.2 can be used to create and parse tokens",
+                "psr/cache-implementation": "to cache fetched remote public keys",
+                "psr/simple-cache-implementation": "to cache fetched remote public keys"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kreait\\Firebase\\JWT\\": "src/JWT",
+                    "Firebase\\Auth\\Token\\": "src/Firebase/Auth/Token"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jérôme Gamez",
+                    "homepage": "https://github.com/jeromegamez"
+                }
+            ],
+            "description": "A library to work with Firebase tokens",
+            "homepage": "https://github.com/kreait/firebase-token-php",
+            "keywords": [
+                "Authentication",
+                "auth",
+                "firebase",
+                "google",
+                "token"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/jeromegamez",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-10-03T00:41:06+00:00"
         },
         {
             "name": "laminas/laminas-captcha",
@@ -6239,6 +6135,133 @@
             "time": "2021-02-25T21:54:58+00:00"
         },
         {
+            "name": "lcobucci/clock",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lcobucci/clock.git",
+                "reference": "353d83fe2e6ae95745b16b3d911813df6a05bfb3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lcobucci/clock/zipball/353d83fe2e6ae95745b16b3d911813df6a05bfb3",
+                "reference": "353d83fe2e6ae95745b16b3d911813df6a05bfb3",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "infection/infection": "^0.17",
+                "lcobucci/coding-standard": "^6.0",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan-deprecation-rules": "^0.12",
+                "phpstan/phpstan-phpunit": "^0.12",
+                "phpstan/phpstan-strict-rules": "^0.12",
+                "phpunit/php-code-coverage": "9.1.4",
+                "phpunit/phpunit": "9.3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lcobucci\\Clock\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luís Cobucci",
+                    "email": "lcobucci@gmail.com"
+                }
+            ],
+            "description": "Yet another clock abstraction",
+            "funding": [
+                {
+                    "url": "https://github.com/lcobucci",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/lcobucci",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2020-08-27T18:56:02+00:00"
+        },
+        {
+            "name": "lcobucci/jwt",
+            "version": "4.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lcobucci/jwt.git",
+                "reference": "fe2d89f2eaa7087af4aa166c6f480ef04e000582"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/fe2d89f2eaa7087af4aa166c6f480ef04e000582",
+                "reference": "fe2d89f2eaa7087af4aa166c6f480ef04e000582",
+                "shasum": ""
+            },
+            "require": {
+                "ext-hash": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-openssl": "*",
+                "ext-sodium": "*",
+                "lcobucci/clock": "^2.0",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "infection/infection": "^0.21",
+                "lcobucci/coding-standard": "^6.0",
+                "mikey179/vfsstream": "^1.6.7",
+                "phpbench/phpbench": "^1.0",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan-deprecation-rules": "^0.12",
+                "phpstan/phpstan-phpunit": "^0.12",
+                "phpstan/phpstan-strict-rules": "^0.12",
+                "phpunit/php-invoker": "^3.1",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lcobucci\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Luís Cobucci",
+                    "email": "lcobucci@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to work with JSON Web Token and JSON Web Signature",
+            "keywords": [
+                "JWS",
+                "jwt"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/lcobucci",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/lcobucci",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-09-28T19:34:56+00:00"
+        },
+        {
             "name": "league/flysystem",
             "version": "1.1.3",
             "source": {
@@ -6474,72 +6497,6 @@
                 }
             ],
             "time": "2021-01-18T20:58:21+00:00"
-        },
-        {
-            "name": "league/oauth2-client",
-            "version": "2.6.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "2334c249907190c132364f5dae0287ab8666aa19"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/2334c249907190c132364f5dae0287ab8666aa19",
-                "reference": "2334c249907190c132364f5dae0287ab8666aa19",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0 || ^7.0",
-                "paragonie/random_compat": "^1 || ^2 || ^9.99",
-                "php": "^5.6 || ^7.0 || ^8.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.3.5",
-                "php-parallel-lint/php-parallel-lint": "^1.3.1",
-                "phpunit/phpunit": "^5.7 || ^6.0 || ^9.5",
-                "squizlabs/php_codesniffer": "^2.3 || ^3.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-2.x": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "League\\OAuth2\\Client\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Alex Bilbie",
-                    "email": "hello@alexbilbie.com",
-                    "homepage": "http://www.alexbilbie.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Woody Gilk",
-                    "homepage": "https://github.com/shadowhand",
-                    "role": "Contributor"
-                }
-            ],
-            "description": "OAuth 2.0 Client Library",
-            "keywords": [
-                "Authentication",
-                "SSO",
-                "authorization",
-                "identity",
-                "idp",
-                "oauth",
-                "oauth2",
-                "single sign on"
-            ],
-            "time": "2021-12-22T16:42:49+00:00"
         },
         {
             "name": "magento/adobe-ims",
@@ -18142,53 +18099,6 @@
             "time": "2021-01-06T01:08:37+00:00"
         },
         {
-            "name": "microsoft/microsoft-graph",
-            "version": "1.47.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/microsoftgraph/msgraph-sdk-php.git",
-                "reference": "bee71b4b449eb97b69f6df7eda208ffe9875a436"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/bee71b4b449eb97b69f6df7eda208ffe9875a436",
-                "reference": "bee71b4b449eb97b69f6df7eda208ffe9875a436",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "guzzlehttp/guzzle": "^6.0 || ^7.0",
-                "php": "^8.0 || ^7.3",
-                "psr/http-message": "^1.0"
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "^1.2",
-                "phpstan/phpstan": "^0.12.90 || ^1.0.0",
-                "phpunit/phpunit": "^8.0 || ^9.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Beta\\Microsoft\\Graph\\": "src/Beta/Microsoft/Graph/",
-                    "Microsoft\\Graph\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Microsoft Graph Client Tooling",
-                    "email": "graphtooling@service.microsoft.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "The Microsoft Graph SDK for PHP",
-            "homepage": "https://developer.microsoft.com/en-us/graph",
-            "time": "2021-12-16T09:56:29+00:00"
-        },
-        {
             "name": "mobiledetect/mobiledetectlib",
             "version": "2.8.37",
             "source": {
@@ -19137,6 +19047,54 @@
             "time": "2021-05-03T11:20:27+00:00"
         },
         {
+            "name": "psr/simple-cache",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/simple-cache.git",
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\SimpleCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for simple caching",
+            "keywords": [
+                "cache",
+                "caching",
+                "psr",
+                "psr-16",
+                "simple-cache"
+            ],
+            "time": "2017-10-23T01:57:42+00:00"
+        },
+        {
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "source": {
@@ -19303,73 +19261,6 @@
                 "promises"
             ],
             "time": "2020-05-12T15:16:56+00:00"
-        },
-        {
-            "name": "salsify/json-streaming-parser",
-            "version": "v8.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/salsify/jsonstreamingparser.git",
-                "reference": "4ae5394136a037e09402ba8b48dbf4e20475e69d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/salsify/jsonstreamingparser/zipball/4ae5394136a037e09402ba8b48dbf4e20475e69d",
-                "reference": "4ae5394136a037e09402ba8b48dbf4e20475e69d",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ctype": "*",
-                "ext-mbstring": "*",
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "ext-json": "*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "8.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "JsonStreamingParser\\": "src",
-                    "JsonStreamingParser\\Test\\": "tests"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Rob Gonzalez",
-                    "email": "rob@salsify.com",
-                    "homepage": "http://salsify.com/"
-                },
-                {
-                    "name": "Maxim Gnatenko",
-                    "email": "mgnatenko@gmail.com"
-                },
-                {
-                    "name": "Max Grigorian",
-                    "email": "maxakawizard@gmail.com",
-                    "homepage": "http://wizardcat.com/"
-                },
-                {
-                    "name": "ThePanz",
-                    "email": "thepanz@gmail.com"
-                }
-            ],
-            "description": "A streaming parser for JSON in PHP.",
-            "homepage": "https://github.com/salsify/jsonstreamingparser",
-            "keywords": [
-                "json",
-                "parser",
-                "streaming"
-            ],
-            "time": "2020-05-22T20:10:04+00:00"
         },
         {
             "name": "seld/jsonlint",
@@ -21219,58 +21110,6 @@
             "time": "2021-03-17T17:12:15+00:00"
         },
         {
-            "name": "tcdent/php-restclient",
-            "version": "0.1.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tcdent/php-restclient.git",
-                "reference": "4522e8518eaef770d715977fcb45f187f8ad7499"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tcdent/php-restclient/zipball/4522e8518eaef770d715977fcb45f187f8ad7499",
-                "reference": "4522e8518eaef770d715977fcb45f187f8ad7499",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "php": ">=5.5.7",
-                "phpunit/phpunit": ">=4.5"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "restclient.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Travis Dent",
-                    "email": "tcdent@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A generic REST API client for PHP",
-            "homepage": "http://github.com/tcdent/php-restclient",
-            "keywords": [
-                "api",
-                "client",
-                "curl",
-                "json",
-                "rest",
-                "xml"
-            ],
-            "time": "2017-09-07T20:44:36+00:00"
-        },
-        {
             "name": "tedivm/jshrink",
             "version": "v1.3.3",
             "source": {
@@ -21450,43 +21289,6 @@
             ],
             "description": "PHP core functions that throw exceptions instead of returning FALSE on error",
             "time": "2020-10-28T17:51:34+00:00"
-        },
-        {
-            "name": "tmwk/client-prestashop-api",
-            "version": "v1.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://bitbucket.org/tmwk/client-prestashop-api.git",
-                "reference": "b69d17f13966b850ad6f4c630d8c0cd9c8a76471"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://bitbucket.org/tmwk/client-prestashop-api/get/b69d17f13966b850ad6f4c630d8c0cd9c8a76471.zip",
-                "reference": "b69d17f13966b850ad6f4c630d8c0cd9c8a76471",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.9"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "TMWK\\ClientPrestashopApi\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Mario Figueroa",
-                    "email": "mfigueroa@tmwk.cl"
-                }
-            ],
-            "description": "Client Prestashop Api",
-            "homepage": "https://bitbucket.org/tmwk/client-prestashop-api",
-            "time": "2018-01-18T13:36:38+00:00"
         },
         {
             "name": "true/punycode",
