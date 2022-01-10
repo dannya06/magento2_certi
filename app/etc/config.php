@@ -353,6 +353,7 @@ return [
         'Icube_BankList' => 1,
         'Icube_Brands' => 1,
         'Icube_BrandsGraphQl' => 1,
+        'Icube_BundleProduct' => 1,
         'Icube_CancelOrderEmail' => 1,
         'Icube_CartRuleBanner' => 1,
         'Icube_PromoShipping' => 1,
