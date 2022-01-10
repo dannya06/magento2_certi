@@ -9,7 +9,7 @@ Instalation:
 
     git checkout master_id_2.4.x
 	
-	rm -rf composer.* app/code/*
+	rm -rf composer.*
 	
 	cp -R composer_base/composer.* .
 	
@@ -23,7 +23,7 @@ Instalation:
     --admin-user=mage2user --admin-password=password123 --backend-frontname=backoffice \
     --language=en_US --currency=USD --timezone=Asia/Jakarta --use-rewrites=1 --use-secure-admin=1
 
-    git checkout app/code composer.*
+    git checkout composer.*
 
     composer install
 		
