@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e46066a52a50f3ee5384a51d713e2044",
+    "content-hash": "c52b958109fc0af8108e5c054f7a0960",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -504,10 +504,6 @@
                 "string",
                 "text"
             ],
-            "support": {
-                "issues": "https://github.com/cogpowered/FineDiff/issues",
-                "source": "https://github.com/cogpowered/FineDiff/tree/master"
-            },
             "time": "2014-05-19T10:25:02+00:00"
         },
         {
@@ -1658,7 +1654,7 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.228.0",
+            "version": "v0.229.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
@@ -2421,11 +2417,11 @@
         },
         {
             "name": "icubebysirclo/magento2-shippinglogistix",
-            "version": "4.0.6",
+            "version": "4.0.7",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
-                "reference": "6a3b5555ffe82d6f0d79bbd3c6f7f29e7ad9e74f"
+                "reference": "96cdac36eafe179aae427b7861c492a468033473"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2445,7 +2441,7 @@
                 "magento 2",
                 "shippinglogistix"
             ],
-            "time": "2022-01-07T14:07:53+00:00"
+            "time": "2022-01-12T10:55:50+00:00"
         },
         {
             "name": "icubebysirclo/magento2-weltpixel",
@@ -2789,11 +2785,11 @@
         },
         {
             "name": "icubeus/magento2-firebase",
-            "version": "4.1.3",
+            "version": "4.1.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-firebase.git",
-                "reference": "ddf5def4daf178885c78c3c3ae6ecdad2d515159"
+                "reference": "eef4edc3eecf402b714135f2eecb2a76b9ec043f"
             },
             "require": {
                 "kreait/firebase-tokens": "^1.14"
@@ -2829,7 +2825,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-27T05:28:46+00:00"
+            "time": "2022-01-12T10:55:16+00:00"
         },
         {
             "name": "icubeus/magento2-graphql",
@@ -2837,7 +2833,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "a912ca05cd3085cb304d59406c2c41371c3ac635"
+                "reference": "77e39dbd896bfa986681bf8ee15db83e31756459"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2998,7 +2994,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-01-06T09:58:42+00:00"
+            "time": "2022-01-11T00:53:13+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -3293,11 +3289,11 @@
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.12",
+            "version": "4.1.13",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "09fc5df1f91a1e34a7d52b8a3acf32e0f35d6847"
+                "reference": "ea882c26882e6067826c2fb99c9805adf0046e83"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -3330,7 +3326,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-01-06T06:56:56+00:00"
+            "time": "2022-01-12T10:55:32+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -3432,7 +3428,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swift-core.git",
-                "reference": "5d5d94b3a04bdd6f3938b569a867b4fc78288b64"
+                "reference": "e9e16152bca1824f32b507c8196ace59b01f2b6a"
             },
             "require": {
                 "ebizmarts/mailchimp-lib": "^3.0",
@@ -3442,14 +3438,14 @@
                 "icubebysirclo/magento2-firebear": "4.0.4",
                 "icubebysirclo/magento2-magezon": "4.0.0",
                 "icubebysirclo/magento2-promo": "4.0.1",
-                "icubebysirclo/magento2-shippinglogistix": "4.0.6",
+                "icubebysirclo/magento2-shippinglogistix": "4.0.7",
                 "icubebysirclo/magento2-weltpixel": "4.0.1",
                 "icubebysirclo/magento2-xendit": "4.0.4",
                 "icubeus/magento2-advancerate": "4.1.6",
                 "icubeus/magento2-checkout": "4.1.17",
                 "icubeus/magento2-citykecamatan": "4.1.5",
                 "icubeus/magento2-confirmpayment": "4.1.1",
-                "icubeus/magento2-firebase": "4.1.3",
+                "icubeus/magento2-firebase": "4.1.4",
                 "icubeus/magento2-graphql": "4.1.21",
                 "icubeus/magento2-indonesianlanguage": "4.1.0",
                 "icubeus/magento2-instantdelivery": "4.1.8",
@@ -3458,7 +3454,7 @@
                 "icubeus/magento2-queues": "4.1.1",
                 "icubeus/magento2-rapidflow": "7.2.2",
                 "icubeus/magento2-shippingbase": "4.1.2",
-                "icubeus/magento2-shippingshipper": "4.1.12",
+                "icubeus/magento2-shippingshipper": "4.1.13",
                 "icubeus/magento2-smsgateaway": "4.1.1",
                 "icubeus/magento2-smstada": "4.1.6",
                 "icubeus/magento2-swiftomschannel": "4.1.12",
@@ -3622,7 +3618,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-01-07T14:16:31+00:00"
+            "time": "2022-01-12T16:00:26+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -3630,7 +3626,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "8c741f3d26b44fb241d15c2852211decec4e3e85"
+                "reference": "5169ba895a94fb39fe7d5f90fb9598a4df543ed6"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -3689,7 +3685,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2021-12-27T05:32:41+00:00"
+            "time": "2022-01-06T07:06:46+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
