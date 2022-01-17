@@ -1,6 +1,6 @@
 # if there's no args at all, set default to staging
 if [ -z "$1" ] ; then
-        environ=sirclo-1152
+        environ=iii-nonprod
 else
         environ=$1
 fi
