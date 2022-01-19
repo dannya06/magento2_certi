@@ -315,7 +315,7 @@ return [
         'Amasty_BannersLite' => 1,
         'Amasty_Base' => 1,
         'Amasty_Conditions' => 1,
-        'Amasty_CronScheduleList' => 1,
+        'Amasty_CronScheduleList' => 0,
         'Amasty_Extrafee' => 1,
         'Amasty_Fpc' => 1,
         'Amasty_Geoip' => 1,
