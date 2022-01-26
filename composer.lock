@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "771b337188ca554fa268f4c7d07bba7b",
+    "content-hash": "f3bc5d7c80de48dc427686422d185689",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1654,7 +1654,7 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.230.0",
+            "version": "v0.231.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
@@ -3384,7 +3384,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "6cb45f1505b0687689e1254d2e655fb0cec1959e"
+                "reference": "db120f381edbd2bb8ad08b0576fe4283c34f2da4"
             },
             "require": {
                 "icubeus/magento2-smsgateaway": "^4.1"
@@ -3423,7 +3423,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-01-20T09:50:16+00:00"
+            "time": "2022-01-26T06:51:48+00:00"
         },
         {
             "name": "icubeus/magento2-swift-core",
