@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "96cac21ca3e7834b22188be287cfe469",
+    "content-hash": "70d524b2360a2d70800e026fb43f1e8c",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1632,12 +1632,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Google\\": "src/"
-                },
                 "files": [
                     "src/aliases.php"
                 ],
+                "psr-4": {
+                    "Google\\": "src/"
+                },
                 "classmap": [
                     "src/aliases.php"
                 ]
@@ -2371,7 +2371,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-promo.git",
-                "reference": "79c6de71192047014031dbeeb7c5ec48a7cc6b50"
+                "reference": "c4f5f271b834e63fda42e6e99cceac55ec2f966c"
             },
             "require": {
                 "icubebysirclo/magento2-aheadworks": "^4.0",
@@ -2414,15 +2414,18 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-12-23T08:05:35+00:00"
+            "time": "2022-02-02T07:55:42+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippinglogistix",
-            "version": "4.0.7",
+            "version": "4.0.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
-                "reference": "96cdac36eafe179aae427b7861c492a468033473"
+                "reference": "6e6b8042c753781a89da1903328fc98138889d8f"
+            },
+            "require": {
+                "icubeus/magento2-shippingbase": "^4.1"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2442,7 +2445,35 @@
                 "magento 2",
                 "shippinglogistix"
             ],
-            "time": "2022-01-12T10:55:50+00:00"
+            "time": "2022-02-09T14:09:24+00:00"
+        },
+        {
+            "name": "icubebysirclo/magento2-shippingpopaket",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubebysirclo/magento2-shippingpopaket.git",
+                "reference": "1068febaf72af54113322e3a980a8a968cda2323"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\Popaket\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Popaket Integration for Magento",
+            "keywords": [
+                "magento 2",
+                "shippingpopaket"
+            ],
+            "time": "2022-02-09T13:57:29+00:00"
         },
         {
             "name": "icubebysirclo/magento2-weltpixel",
@@ -2686,7 +2717,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "ae02ceb98a14070d689dc6295f8be42d9386467a"
+                "reference": "56cb61d2d7b762d489ecca17febdc933d16a28d8"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -2727,7 +2758,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-02-04T15:56:42+00:00"
+            "time": "2022-02-10T05:46:19+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -2833,11 +2864,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.22",
+            "version": "4.1.23",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "379de584228862a90fb5ed45cbdfe07c504994ec"
+                "reference": "164bde94735f222200368f522892d8d95625fb5b"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -2872,6 +2903,7 @@
                 "icubeus/module-order-comment-graph-ql": "self.version",
                 "icubeus/module-owl-carousel-slider-graph-ql": "self.version",
                 "icubeus/module-payment-information-graph-ql": "self.version",
+                "icubeus/module-paypal-graph-ql": "self.version",
                 "icubeus/module-pickup-graph-ql": "self.version",
                 "icubeus/module-promo-graph-ql": "self.version",
                 "icubeus/module-quote-graph-ql": "self.version",
@@ -2933,6 +2965,7 @@
                     "src/module-magezon-graph-ql/registration.php",
                     "src/module-wp-product-label-graph-ql/registration.php",
                     "src/module-cms-graph-ql/registration.php",
+                    "src/module-paypal-graph-ql/registration.php",
                     "src/module-wp-cms-block-scheduler-graph-ql/registration.php",
                     "src/module-wp-thankyou-page-graph-ql/registration.php",
                     "src/module-wp-smart-product-tabs-graph-ql/registration.php"
@@ -2977,6 +3010,7 @@
                     "Icube\\MagezonGraphql\\": "src/module-magezon-graph-ql",
                     "Icube\\WeltPixelLabelGraphQl\\": "src/module-wp-product-label-graph-ql",
                     "Icube\\CmsGraphQl\\": "src/module-cms-graph-ql",
+                    "Icube\\PaypalGraphQl\\": "src/module-paypal-graph-ql",
                     "Icube\\WeltPixelCmsBlockSchedulerGraphQl\\": "src/module-wp-cms-block-scheduler-graph-ql",
                     "Icube\\WeltPixelThankYouPageGraphQl\\": "src/module-wp-thankyou-page-graph-ql",
                     "Icube\\WeltPixelSmartProductTabsGraphQl\\": "src/module-wp-smart-product-tabs-graph-ql"
@@ -2998,7 +3032,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-01-23T11:54:31+00:00"
+            "time": "2022-02-09T14:31:56+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -3255,11 +3289,11 @@
         },
         {
             "name": "icubeus/magento2-shippingbase",
-            "version": "4.1.2",
+            "version": "4.1.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingbase.git",
-                "reference": "4e481852c15fa6826e547d0586a03d024072126c"
+                "reference": "05083caf4bee292063e7946ae3995caef8e7d915"
             },
             "replace": {
                 "icubeus/module-shippingbase": "self.version"
@@ -3289,7 +3323,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-01-06T06:57:08+00:00"
+            "time": "2022-02-09T14:04:13+00:00"
         },
         {
             "name": "icubeus/magento2-shippingshipper",
@@ -3432,7 +3466,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swift-core.git",
-                "reference": "50dddbea0b2396d882797beff4b58dca827d85b0"
+                "reference": "22efbdebc0ba1f743af290437bf55317b3810ea7"
             },
             "require": {
                 "ebizmarts/mailchimp-lib": "^3.0",
@@ -3442,7 +3476,8 @@
                 "icubebysirclo/magento2-firebear": "4.0.4",
                 "icubebysirclo/magento2-magezon": "4.0.0",
                 "icubebysirclo/magento2-promo": "4.0.1",
-                "icubebysirclo/magento2-shippinglogistix": "4.0.7",
+                "icubebysirclo/magento2-shippinglogistix": "4.0.8",
+                "icubebysirclo/magento2-shippingpopaket": "4.0.0",
                 "icubebysirclo/magento2-weltpixel": "4.0.3",
                 "icubebysirclo/magento2-xendit": "4.0.5",
                 "icubeus/magento2-advancerate": "4.1.7",
@@ -3450,19 +3485,19 @@
                 "icubeus/magento2-citykecamatan": "4.1.7",
                 "icubeus/magento2-confirmpayment": "4.1.1",
                 "icubeus/magento2-firebase": "4.1.4",
-                "icubeus/magento2-graphql": "4.1.22",
+                "icubeus/magento2-graphql": "4.1.23",
                 "icubeus/magento2-indonesianlanguage": "4.1.0",
                 "icubeus/magento2-instantdelivery": "4.1.9",
                 "icubeus/magento2-notification": "4.1.9",
                 "icubeus/magento2-payment": "4.1.4",
                 "icubeus/magento2-queues": "4.1.1",
                 "icubeus/magento2-rapidflow": "7.2.2",
-                "icubeus/magento2-shippingbase": "4.1.2",
+                "icubeus/magento2-shippingbase": "4.1.3",
                 "icubeus/magento2-shippingshipper": "4.1.15",
                 "icubeus/magento2-smsgateaway": "4.1.1",
                 "icubeus/magento2-smstada": "4.1.7",
-                "icubeus/magento2-swiftomschannel": "4.1.13",
-                "icubeus/magento2-trackorder": "4.1.7",
+                "icubeus/magento2-swiftomschannel": "4.1.14",
+                "icubeus/magento2-trackorder": "4.1.8",
                 "icubeus/magento2-veritranspayment": "4.1.12"
             },
             "replace": {
@@ -3622,15 +3657,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-02-04T16:01:45+00:00"
+            "time": "2022-02-10T04:29:25+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.13",
+            "version": "4.1.14",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "065a54da823e9feb9d3c0642c4b9cc02a035d76c"
+                "reference": "3bee6bf97cf2fa5af5e7485f96406136d80986c1"
             },
             "replace": {
                 "icubeus/module-autoinvoice": "self.version",
@@ -3689,15 +3724,15 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2022-01-20T10:06:45+00:00"
+            "time": "2022-02-09T14:22:25+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
-            "version": "4.1.7",
+            "version": "4.1.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "53e58535c08131e56f0d0f3953298b4f55cb4e6c"
+                "reference": "6bf439f2e4ab30fe33edee01f80b8465bb6ae9c2"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3717,7 +3752,7 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2021-12-23T08:28:19+00:00"
+            "time": "2022-02-10T04:14:11+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
@@ -3915,12 +3950,12 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Kreait\\Clock\\": "src/Clock"
-                },
                 "files": [
                     "src/Clock.php"
-                ]
+                ],
+                "psr-4": {
+                    "Kreait\\Clock\\": "src/Clock"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -18517,12 +18552,12 @@
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "Mobile_Detect.php"
-                ],
                 "psr-0": {
                     "Detection": "namespaced/"
-                }
+                },
+                "classmap": [
+                    "Mobile_Detect.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [

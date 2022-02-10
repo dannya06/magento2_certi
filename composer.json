@@ -208,6 +208,10 @@
         "icubebysirclo-aheadworks": {
             "type": "git",
             "url": "git@github.com:icubebysirclo/magento2-aheadworks.git"
+        },
+        "icubebysirclo-shippingpopaket": {
+            "type": "git",
+            "url": "git@github.com:icubebysirclo/magento2-shippingpopaket.git"
         }
     },
     "extra": {
