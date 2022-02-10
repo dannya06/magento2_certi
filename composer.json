@@ -2,7 +2,7 @@
     "name": "icubeus/swift",
     "description": "Swift",
     "type": "project",
-    "version": "4.1.3",
+    "version": "4.1.4",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
@@ -13,7 +13,7 @@
         "smile/elasticsuite": "~2.10.0",
         "magepal/magento2-reindex": "^1.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "icubeus/magento2-swift-core": "4.0.13"
+        "icubeus/magento2-swift-core": "4.0.14"
     },
     "replace": {
         "klarna/module-core": "*",
@@ -208,6 +208,10 @@
         "icubebysirclo-aheadworks": {
             "type": "git",
             "url": "git@github.com:icubebysirclo/magento2-aheadworks.git"
+        },
+        "icubebysirclo-shippingpopaket": {
+            "type": "git",
+            "url": "git@github.com:icubebysirclo/magento2-shippingpopaket.git"
         }
     },
     "extra": {
