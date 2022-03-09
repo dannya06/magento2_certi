@@ -361,6 +361,7 @@ return [
         'Smile_ElasticsuiteCore' => 1,
         'Icube_CatalogWysiwyg' => 1,
         'Icube_CheckCity' => 1,
+        'Icube_CheckFraud' => 1,
         'Icube_Checkoutpg' => 1,
         'Icube_Citcall' => 1,
         'Icube_City' => 1,

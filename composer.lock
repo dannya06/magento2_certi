@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d6c99cec3c27d34e3796a07c20bde09b",
+    "content-hash": "38d33b55af61f409c8f4e260916c3bff",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1655,16 +1655,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.236.0",
+            "version": "v0.238.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "3aefd2914d9025a881ee93145de16f9e0f82443e"
+                "reference": "a9866fd963f53e9a7d26d36f20c471f73a90a719"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/3aefd2914d9025a881ee93145de16f9e0f82443e",
-                "reference": "3aefd2914d9025a881ee93145de16f9e0f82443e",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/a9866fd963f53e9a7d26d36f20c471f73a90a719",
+                "reference": "a9866fd963f53e9a7d26d36f20c471f73a90a719",
                 "shasum": ""
             },
             "require": {
@@ -1691,7 +1691,7 @@
             "keywords": [
                 "google"
             ],
-            "time": "2022-02-07T14:04:26+00:00"
+            "time": "2022-03-07T18:23:49+00:00"
         },
         {
             "name": "google/auth",
@@ -2367,11 +2367,11 @@
         },
         {
             "name": "icubebysirclo/magento2-promo",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-promo.git",
-                "reference": "c4f5f271b834e63fda42e6e99cceac55ec2f966c"
+                "reference": "4c227b05b909cd7c8eeaedb173320893c89fc29a"
             },
             "require": {
                 "icubebysirclo/magento2-aheadworks": "^4.0",
@@ -2414,15 +2414,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-02-02T07:55:42+00:00"
+            "time": "2022-03-09T12:15:52+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippinglogistix",
-            "version": "4.0.9",
+            "version": "4.0.10",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
-                "reference": "520696aa6b507fe2380e53c374dbdc5def4a848d"
+                "reference": "62a63c2cc7df2e552195b9a11a98d2f6ed677de7"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -2445,7 +2445,7 @@
                 "magento 2",
                 "shippinglogistix"
             ],
-            "time": "2022-02-21T09:34:14+00:00"
+            "time": "2022-03-09T12:36:46+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippingpopaket",
@@ -2685,11 +2685,11 @@
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "4.1.7",
+            "version": "4.1.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "57c7468e60ad53970ed1e7f0cf09f08061507d08"
+                "reference": "ea722032afb434ddf884389a9c6da417ffd87293"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2709,7 +2709,7 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2022-01-20T09:45:50+00:00"
+            "time": "2022-03-09T12:25:15+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
@@ -2762,11 +2762,11 @@
         },
         {
             "name": "icubeus/magento2-citykecamatan",
-            "version": "4.1.7",
+            "version": "4.1.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-citykecamatan.git",
-                "reference": "b359d5b34e4f52382d1e7213999c7940522c3ac6"
+                "reference": "a305dc9ca49106a8cd650c4d5d888863a7f115b5"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2787,7 +2787,7 @@
                 "kecamatan",
                 "magento 2"
             ],
-            "time": "2022-02-03T15:25:37+00:00"
+            "time": "2022-03-09T12:29:53+00:00"
         },
         {
             "name": "icubeus/magento2-confirmpayment",
@@ -2864,11 +2864,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.24",
+            "version": "4.1.25",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "fcac0e60ecc38aecedd300533dd8ae89fb027603"
+                "reference": "64256001c4b403c3319bdf366a6543390973fef5"
             },
             "require": {
                 "icubeus/magento2-citykecamatan": "^4.1",
@@ -3032,7 +3032,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-02-21T09:38:18+00:00"
+            "time": "2022-03-09T12:20:21+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -3327,11 +3327,11 @@
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.15",
+            "version": "4.1.16",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "8c71b150fca005b560fa776dc11d2a2c736a5966"
+                "reference": "3599793792336f9015a4e11730a337d297a5bd51"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -3364,7 +3364,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-02-04T15:48:14+00:00"
+            "time": "2022-03-09T12:28:02+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -3462,11 +3462,11 @@
         },
         {
             "name": "icubeus/magento2-swift-core",
-            "version": "4.0.15",
+            "version": "4.0.16",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swift-core.git",
-                "reference": "a0c5dacdbcbf9919109953cffe57a6a00fa58500"
+                "reference": "e4fb58726e949a0bd15c4d99e270efe2463f90a9"
             },
             "require": {
                 "ebizmarts/mailchimp-lib": "^3.0",
@@ -3475,17 +3475,17 @@
                 "icubebysirclo/magento2-facebookshop": "4.0.4",
                 "icubebysirclo/magento2-firebear": "4.0.4",
                 "icubebysirclo/magento2-magezon": "4.0.0",
-                "icubebysirclo/magento2-promo": "4.0.1",
-                "icubebysirclo/magento2-shippinglogistix": "4.0.9",
+                "icubebysirclo/magento2-promo": "4.0.2",
+                "icubebysirclo/magento2-shippinglogistix": "4.0.10",
                 "icubebysirclo/magento2-shippingpopaket": "4.0.1",
                 "icubebysirclo/magento2-weltpixel": "4.0.3",
                 "icubebysirclo/magento2-xendit": "4.0.5",
-                "icubeus/magento2-advancerate": "4.1.7",
+                "icubeus/magento2-advancerate": "4.1.8",
                 "icubeus/magento2-checkout": "4.1.20",
-                "icubeus/magento2-citykecamatan": "4.1.7",
+                "icubeus/magento2-citykecamatan": "4.1.8",
                 "icubeus/magento2-confirmpayment": "4.1.1",
                 "icubeus/magento2-firebase": "4.1.4",
-                "icubeus/magento2-graphql": "4.1.24",
+                "icubeus/magento2-graphql": "4.1.25",
                 "icubeus/magento2-indonesianlanguage": "4.1.0",
                 "icubeus/magento2-instantdelivery": "4.1.9",
                 "icubeus/magento2-notification": "4.1.9",
@@ -3493,7 +3493,7 @@
                 "icubeus/magento2-queues": "4.1.1",
                 "icubeus/magento2-rapidflow": "7.2.2",
                 "icubeus/magento2-shippingbase": "4.1.4",
-                "icubeus/magento2-shippingshipper": "4.1.15",
+                "icubeus/magento2-shippingshipper": "4.1.16",
                 "icubeus/magento2-smsgateaway": "4.1.1",
                 "icubeus/magento2-smstada": "4.1.7",
                 "icubeus/magento2-swiftomschannel": "4.1.15",
@@ -3511,6 +3511,7 @@
                 "icubeus/module-icube-cancel-order-email": "self.version",
                 "icubeus/module-icube-catalog-wysiwyg": "self.version",
                 "icubeus/module-icube-check-city": "self.version",
+                "icubeus/module-icube-check-fraud": "self.version",
                 "icubeus/module-icube-csp": "self.version",
                 "icubeus/module-icube-custom-catalog-image-resize": "self.version",
                 "icubeus/module-icube-custom-salable": "self.version",
@@ -3592,7 +3593,8 @@
                     "src/module-xtento-product-export/registration.php",
                     "src/module-xtento-tracking-import/registration.php",
                     "src/module-xtento-xt-core/registration.php",
-                    "src/module-icube-log/registration.php"
+                    "src/module-icube-log/registration.php",
+                    "src/module-icube-check-fraud/registration.php"
                 ],
                 "psr-4": {
                     "Bold\\OrderComment\\": "src/module-bold-order-comment",
@@ -3638,7 +3640,8 @@
                     "Xtento\\ProductExport\\": "src/module-xtento-product-export",
                     "Xtento\\TrackingImport\\": "src/module-xtento-tracking-import",
                     "Xtento\\XtCore\\": "src/module-xtento-xt-core",
-                    "Icube\\Log\\": "src/module-icube-log"
+                    "Icube\\Log\\": "src/module-icube-log",
+                    "Icube\\CheckFraud\\": "src/module-icube-check-fraud"
                 }
             },
             "license": [
@@ -3657,7 +3660,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-02-21T09:42:28+00:00"
+            "time": "2022-03-09T12:43:04+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -18485,16 +18488,16 @@
         },
         {
             "name": "microsoft/microsoft-graph",
-            "version": "1.53.0",
+            "version": "1.55.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoftgraph/msgraph-sdk-php.git",
-                "reference": "e5a9fd6285338dfce9d4d044cba7e37ef798d0bf"
+                "reference": "ae212d62a3f29b2325b0340a0ba0e0ceecfbbdfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/e5a9fd6285338dfce9d4d044cba7e37ef798d0bf",
-                "reference": "e5a9fd6285338dfce9d4d044cba7e37ef798d0bf",
+                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/ae212d62a3f29b2325b0340a0ba0e0ceecfbbdfd",
+                "reference": "ae212d62a3f29b2325b0340a0ba0e0ceecfbbdfd",
                 "shasum": ""
             },
             "require": {
@@ -18528,7 +18531,7 @@
             ],
             "description": "The Microsoft Graph SDK for PHP",
             "homepage": "https://developer.microsoft.com/en-us/graph",
-            "time": "2022-02-11T10:43:07+00:00"
+            "time": "2022-02-25T11:01:19+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -20754,7 +20757,7 @@
         },
         {
             "name": "symfony/polyfill-intl-idn",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-idn.git",
@@ -20785,12 +20788,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -20838,7 +20841,7 @@
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
@@ -20867,12 +20870,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -20996,7 +20999,7 @@
         },
         {
             "name": "symfony/polyfill-php72",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php72.git",
@@ -21022,12 +21025,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php72\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php72\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -24756,6 +24759,7 @@
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convenience and to simplify the usage of DOM.",
             "homepage": "https://github.com/theseer/fDOMDocument",
+            "abandoned": true,
             "time": "2017-06-30T11:53:12+00:00"
         },
         {
