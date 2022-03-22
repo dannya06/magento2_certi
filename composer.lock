@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b8068d610f8986b400160ce0d351c496",
+    "content-hash": "c9088a5eb732295b224b7442a90dd7c7",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -3763,7 +3763,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "665e4d81a14bba446039ad52643df423f068f4f4"
+                "reference": "02b274c728d9d46d8a5ee1efdd6881526eb3567e"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -3812,7 +3812,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2022-03-21T06:05:36+00:00"
+            "time": "2022-03-22T09:24:09+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -4019,8 +4019,8 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Kreait\\Firebase\\JWT\\": "src/JWT",
-                    "Firebase\\Auth\\Token\\": "src/Firebase/Auth/Token"
+                    "Firebase\\Auth\\Token\\": "src/Firebase/Auth/Token",
+                    "Kreait\\Firebase\\JWT\\": "src/JWT"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -18488,16 +18488,16 @@
         },
         {
             "name": "microsoft/microsoft-graph",
-            "version": "1.57.0",
+            "version": "1.57.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoftgraph/msgraph-sdk-php.git",
-                "reference": "0c777e29c30fe1c98f9b2cf0690bde626795272f"
+                "reference": "8ce994846af3b97b6145ba00ad1be4270c6d343a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/0c777e29c30fe1c98f9b2cf0690bde626795272f",
-                "reference": "0c777e29c30fe1c98f9b2cf0690bde626795272f",
+                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/8ce994846af3b97b6145ba00ad1be4270c6d343a",
+                "reference": "8ce994846af3b97b6145ba00ad1be4270c6d343a",
                 "shasum": ""
             },
             "require": {
@@ -18531,7 +18531,7 @@
             ],
             "description": "The Microsoft Graph SDK for PHP",
             "homepage": "https://developer.microsoft.com/en-us/graph",
-            "time": "2022-03-16T18:52:49+00:00"
+            "time": "2022-03-21T20:12:34+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
