@@ -24,4 +24,4 @@ RUN composer global require hirak/prestissimo && \
 
 # Start line patch
 RUN sh patch.sh
-
+USER root
