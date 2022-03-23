@@ -12,3 +12,9 @@ RUN chmod +x /start.sh;
 # Change to home apps
 WORKDIR /home/app/
 COPY --chown=app:app . site
+COPY --chown=app:app patch.sh /home/app/site/patch.sh
+
+# Start line patch
+WORKDIR /home/app/site
+USER app
+RUN sh patch.sh
