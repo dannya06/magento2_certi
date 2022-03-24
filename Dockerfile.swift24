@@ -12,3 +12,16 @@ RUN chmod +x /start.sh;
 # Change to home apps
 WORKDIR /home/app/
 COPY --chown=app:app . site
+COPY --chown=app:app patch.sh /home/app/site/patch.sh
+
+#change to root directory
+WORKDIR /home/app/site
+USER app
+
+# Composer process
+RUN composer global require hirak/prestissimo && \
+    composer install --prefer-dist
+
+# Start line patch
+RUN sh patch.sh
+USER root
