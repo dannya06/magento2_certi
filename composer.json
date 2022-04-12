@@ -2,7 +2,7 @@
     "name": "icubeus/swift",
     "description": "Swift",
     "type": "project",
-    "version": "4.1.8",
+    "version": "4.1.9",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
@@ -13,7 +13,7 @@
         "smile/elasticsuite": "~2.10.0",
         "magepal/magento2-reindex": "^1.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "icubeus/magento2-swift-core": "4.0.18"
+        "icubeus/magento2-swift-core": "4.0.19"
     },
     "replace": {
         "klarna/module-core": "*",
