@@ -13,7 +13,7 @@
         "smile/elasticsuite": "~2.10.0",
         "magepal/magento2-reindex": "^1.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "icubeus/magento2-swift-core": "4.0.20",
+        "icubeus/magento2-swift-core": "4.0.21",
         "allure-framework/allure-phpunit": "~1.2.0"
     },
     "replace": {
