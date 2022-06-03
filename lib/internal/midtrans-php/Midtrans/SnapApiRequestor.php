@@ -73,10 +73,10 @@ class SnapApiRequestor {
 
       if ($data_hash) {
         $body = json_encode($data_hash);
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log');
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/swift.log');
         $logger = new \Zend\Log\Logger();
         $logger->addWriter($writer);
-        $logger->info('Request body :'.$body);
+        $logger->info('[Lib_SnapApiRequestor] - Request body :'.json_encode($body));
         $curl_options[CURLOPT_POSTFIELDS] = $body;
       } else {
         $curl_options[CURLOPT_POSTFIELDS] = '';
