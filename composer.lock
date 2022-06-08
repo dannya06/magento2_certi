@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aaf2b713c092cdcc48bd536258359ac0",
+    "content-hash": "6ee66a974af34f6316dbea55be93b89c",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1903,16 +1903,16 @@
         },
         {
             "name": "google/apiclient",
-            "version": "v2.12.5",
+            "version": "v2.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "eb10f733eb0ebec058776cda206009d01af9f9e3"
+                "reference": "f92aa126903a9e2da5bd41a280d9633cb249e79e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/eb10f733eb0ebec058776cda206009d01af9f9e3",
-                "reference": "eb10f733eb0ebec058776cda206009d01af9f9e3",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/f92aa126903a9e2da5bd41a280d9633cb249e79e",
+                "reference": "f92aa126903a9e2da5bd41a280d9633cb249e79e",
                 "shasum": ""
             },
             "require": {
@@ -1965,7 +1965,7 @@
             "keywords": [
                 "google"
             ],
-            "time": "2022-05-31T14:44:17+00:00"
+            "time": "2022-06-06T20:00:19+00:00"
         },
         {
             "name": "google/apiclient-services",
@@ -3659,7 +3659,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingbase.git",
-                "reference": "600b7247f3961690c5fdf6f80649c7bb94face72"
+                "reference": "5ed3ea96196aa0455a5f89884f58e9933f19582d"
             },
             "replace": {
                 "icubeus/module-shippingbase": "self.version"
@@ -3689,7 +3689,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-06-06T07:17:50+00:00"
+            "time": "2022-06-08T06:07:18+00:00"
         },
         {
             "name": "icubeus/magento2-shippingshipper",
