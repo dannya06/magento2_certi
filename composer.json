@@ -14,7 +14,8 @@
         "fabrizioballiano/deferjavascripts": "^1.0",
         "icubeus/magento2-swift-core": "4.0.21",
         "allure-framework/allure-phpunit": "~1.2.0",
-        "magento/product-community-edition": "2.4.4"
+        "magento/product-community-edition": "2.4.4",
+        "laminas/laminas-log": "^2.15"
     },
     "replace": {
         "klarna/module-core": "*",
