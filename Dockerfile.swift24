@@ -1,4 +1,4 @@
-FROM asia.gcr.io/sirclo-iii-nonprod/mgt-swift74:c52175d308111be67924b5b425ae0a9a5c275a69-1635222100
+FROM asia.gcr.io/sirclo-iii-nonprod/mgt-swift74:91f85256742729071555efb9ca445b026808e9e3-1656037500
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG php_version="7.4"
