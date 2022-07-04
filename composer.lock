@@ -3794,7 +3794,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingbase.git",
-                "reference": "e7635073b34101b12aa51cc0f2e7e986eb36bc79"
+                "reference": "f7625de6494d2168a8847c1d95d229d7cf4079d5"
             },
             "replace": {
                 "icubeus/module-shippingbase": "self.version"
@@ -3824,7 +3824,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-06-29T13:46:18+00:00"
+            "time": "2022-07-04T00:17:42+00:00"
         },
         {
             "name": "icubeus/magento2-shippingshipper",
