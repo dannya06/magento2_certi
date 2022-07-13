@@ -33,8 +33,7 @@ index 94000b18c..1d1ba1f3e 100644
      /**
       * @param array $headers
       */
--    public function normalizeHeaders(&$headers)
-+    public function normalizeHeaders($headers): array
+     public function normalizeHeaders(&$headers)
      {
 -        // Normalize headers
 -        array_walk(
@@ -44,13 +43,13 @@ index 94000b18c..1d1ba1f3e 100644
 -                $val = ucfirst(strtolower($key)) . ': ' . $val;
 -            }
 -        );
-+        $normalizeHeaders = [];
-+        foreach ($headers as $key => $val) {
-+            $val = ucfirst(strtolower($key)) . ': ' . $val;
-+            $normalizeHeaders[$key] = $val;
-+        }
++        foreach($headers as $key => $element){
++        array_walk($headers, function (&$val, $key) {
++            $val = $key . ': ' . $val;
++            }
++        );
 +
-+        return $normalizeHeaders;
++      }
      }
 -}
 +}
