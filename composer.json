@@ -14,7 +14,7 @@
         "magepal/magento2-reindex": "^1.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
         "allure-framework/allure-phpunit": "~1.2.0",
-        "icubeus/magento2-swift-core": "4.0.24"
+        "icubeus/magento2-swift-core": "4.0.25"
     },
     "replace": {
         "klarna/module-core": "*",
