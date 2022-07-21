@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f2a2c91a970145e21688b19d489ea90",
+    "content-hash": "f6a17d870c85e20f34a19443f50a307f",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -591,6 +591,7 @@
                 "issues": "https://github.com/box/spout/issues",
                 "source": "https://github.com/box/spout/tree/v3.3.0"
             },
+            "abandoned": true,
             "time": "2021-05-14T21:18:09+00:00"
         },
         {
@@ -2290,16 +2291,16 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v6.2.0",
+            "version": "v6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "d28e6df83830252650da4623c78aaaf98fb385f3"
+                "reference": "018dfc4e1da92ad8a1b90adc4893f476a3b41cb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/d28e6df83830252650da4623c78aaaf98fb385f3",
-                "reference": "d28e6df83830252650da4623c78aaaf98fb385f3",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/018dfc4e1da92ad8a1b90adc4893f476a3b41cb8",
+                "reference": "018dfc4e1da92ad8a1b90adc4893f476a3b41cb8",
                 "shasum": ""
             },
             "require": {
@@ -2346,22 +2347,149 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v6.2.0"
+                "source": "https://github.com/firebase/php-jwt/tree/v6.3.0"
             },
-            "time": "2022-05-13T20:54:50+00:00"
+            "time": "2022-07-15T16:48:45+00:00"
         },
         {
-            "name": "google/apiclient",
-            "version": "v2.12.5",
+            "name": "giggsey/libphonenumber-for-php",
+            "version": "8.12.52",
             "source": {
                 "type": "git",
-                "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "eb10f733eb0ebec058776cda206009d01af9f9e3"
+                "url": "https://github.com/giggsey/libphonenumber-for-php.git",
+                "reference": "9a5269012e21d5a357f93d413fcc7a854a36b69d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/eb10f733eb0ebec058776cda206009d01af9f9e3",
-                "reference": "eb10f733eb0ebec058776cda206009d01af9f9e3",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/9a5269012e21d5a357f93d413fcc7a854a36b69d",
+                "reference": "9a5269012e21d5a357f93d413fcc7a854a36b69d",
+                "shasum": ""
+            },
+            "require": {
+                "giggsey/locale": "^1.7|^2.0",
+                "php": ">=5.3.2",
+                "symfony/polyfill-mbstring": "^1.17"
+            },
+            "require-dev": {
+                "pear/pear-core-minimal": "^1.9",
+                "pear/pear_exception": "^1.0",
+                "pear/versioncontrol_git": "^0.5",
+                "phing/phing": "^2.7",
+                "php-coveralls/php-coveralls": "^1.0|^2.0",
+                "symfony/console": "^2.8|^3.0|^v4.4|^v5.2",
+                "symfony/phpunit-bridge": "^4.2 || ^5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "libphonenumber\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "/src/data/",
+                    "/src/carrier/data/",
+                    "/src/geocoding/data/",
+                    "/src/timezone/data/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Joshua Gigg",
+                    "email": "giggsey@gmail.com",
+                    "homepage": "https://giggsey.com/"
+                }
+            ],
+            "description": "PHP Port of Google's libphonenumber",
+            "homepage": "https://github.com/giggsey/libphonenumber-for-php",
+            "keywords": [
+                "geocoding",
+                "geolocation",
+                "libphonenumber",
+                "mobile",
+                "phonenumber",
+                "validation"
+            ],
+            "support": {
+                "irc": "irc://irc.appliedirc.com/lobby",
+                "issues": "https://github.com/giggsey/libphonenumber-for-php/issues",
+                "source": "https://github.com/giggsey/libphonenumber-for-php"
+            },
+            "time": "2022-07-20T12:38:47+00:00"
+        },
+        {
+            "name": "giggsey/locale",
+            "version": "2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/giggsey/Locale.git",
+                "reference": "9c1dca769253f6a3e81f9a5c167f53b6a54ab635"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/giggsey/Locale/zipball/9c1dca769253f6a3e81f9a5c167f53b6a54ab635",
+                "reference": "9c1dca769253f6a3e81f9a5c167f53b6a54ab635",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "ext-json": "*",
+                "pear/pear-core-minimal": "^1.9",
+                "pear/pear_exception": "^1.0",
+                "pear/versioncontrol_git": "^0.5",
+                "phing/phing": "^2.7",
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/phpunit": "^8.5|^9.5",
+                "symfony/console": "^5.0",
+                "symfony/filesystem": "^5.0",
+                "symfony/finder": "^5.0",
+                "symfony/process": "^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Giggsey\\Locale\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Joshua Gigg",
+                    "email": "giggsey@gmail.com",
+                    "homepage": "https://giggsey.com/"
+                }
+            ],
+            "description": "Locale functions required by libphonenumber-for-php",
+            "support": {
+                "issues": "https://github.com/giggsey/Locale/issues",
+                "source": "https://github.com/giggsey/Locale/tree/2.2"
+            },
+            "time": "2022-04-06T07:33:59+00:00"
+        },
+        {
+            "name": "google/apiclient",
+            "version": "v2.12.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
+                "reference": "f92aa126903a9e2da5bd41a280d9633cb249e79e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/f92aa126903a9e2da5bd41a280d9633cb249e79e",
+                "reference": "f92aa126903a9e2da5bd41a280d9633cb249e79e",
                 "shasum": ""
             },
             "require": {
@@ -2416,22 +2544,22 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
-                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.12.5"
+                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.12.6"
             },
-            "time": "2022-05-31T14:44:17+00:00"
+            "time": "2022-06-06T20:00:19+00:00"
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.251.0",
+            "version": "v0.258.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "73b7a41113bd6b5ae2d42795dbe0d76e0c482782"
+                "reference": "71eb32534aba05e373fe317c1373a9645065881c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/73b7a41113bd6b5ae2d42795dbe0d76e0c482782",
-                "reference": "73b7a41113bd6b5ae2d42795dbe0d76e0c482782",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/71eb32534aba05e373fe317c1373a9645065881c",
+                "reference": "71eb32534aba05e373fe317c1373a9645065881c",
                 "shasum": ""
             },
             "require": {
@@ -2460,22 +2588,22 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.251.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.258.0"
             },
-            "time": "2022-05-30T00:56:11+00:00"
+            "time": "2022-07-18T01:10:11+00:00"
         },
         {
             "name": "google/auth",
-            "version": "v1.21.0",
+            "version": "v1.21.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "73392bad2eb6852eea9084b6bbdec752515cb849"
+                "reference": "aa3b9ca29258ac6347ce3c8937a2418c5d78f840"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/73392bad2eb6852eea9084b6bbdec752515cb849",
-                "reference": "73392bad2eb6852eea9084b6bbdec752515cb849",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/aa3b9ca29258ac6347ce3c8937a2418c5d78f840",
+                "reference": "aa3b9ca29258ac6347ce3c8937a2418c5d78f840",
                 "shasum": ""
             },
             "require": {
@@ -2518,9 +2646,9 @@
             "support": {
                 "docs": "https://googleapis.github.io/google-auth-library-php/main/",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
-                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.21.0"
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.21.1"
             },
-            "time": "2022-04-13T20:35:52+00:00"
+            "time": "2022-05-16T19:34:15+00:00"
         },
         {
             "name": "google/recaptcha",
@@ -2576,22 +2704,22 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.4.3",
+            "version": "7.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "74a8602c6faec9ef74b7a9391ac82c5e65b1cdab"
+                "reference": "1dd98b0564cb3f6bd16ce683cb755f94c10fbd82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/74a8602c6faec9ef74b7a9391ac82c5e65b1cdab",
-                "reference": "74a8602c6faec9ef74b7a9391ac82c5e65b1cdab",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/1dd98b0564cb3f6bd16ce683cb755f94c10fbd82",
+                "reference": "1dd98b0564cb3f6bd16ce683cb755f94c10fbd82",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/promises": "^1.5",
-                "guzzlehttp/psr7": "^1.8.3 || ^2.1",
+                "guzzlehttp/psr7": "^1.9 || ^2.4",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
                 "symfony/deprecation-contracts": "^2.2 || ^3.0"
@@ -2680,7 +2808,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.4.3"
+                "source": "https://github.com/guzzle/guzzle/tree/7.4.5"
             },
             "funding": [
                 {
@@ -2696,7 +2824,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-25T13:24:33+00:00"
+            "time": "2022-06-20T22:16:13+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -2784,16 +2912,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.8.5",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "337e3ad8e5716c15f9657bd214d16cc5e69df268"
+                "reference": "e98e3e6d4f86621a9b75f623996e6bbdeb4b9318"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/337e3ad8e5716c15f9657bd214d16cc5e69df268",
-                "reference": "337e3ad8e5716c15f9657bd214d16cc5e69df268",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e98e3e6d4f86621a9b75f623996e6bbdeb4b9318",
+                "reference": "e98e3e6d4f86621a9b75f623996e6bbdeb4b9318",
                 "shasum": ""
             },
             "require": {
@@ -2814,7 +2942,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.7-dev"
+                    "dev-master": "1.9-dev"
                 }
             },
             "autoload": {
@@ -2874,7 +3002,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.8.5"
+                "source": "https://github.com/guzzle/psr7/tree/1.9.0"
             },
             "funding": [
                 {
@@ -2890,15 +3018,15 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-20T21:51:18+00:00"
+            "time": "2022-06-20T21:43:03+00:00"
         },
         {
             "name": "icubebysirclo/magento2-aheadworks",
-            "version": "4.0.1",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-aheadworks.git",
-                "reference": "e7ae1a4f54e3d359d8a54280cabb9e99969c1dd9"
+                "reference": "0bcc6ad0909385a6c419b413c84990ba7b91b152"
             },
             "replace": {
                 "icubebysirclo/module-aheadworks-advanced-reports": "self.version",
@@ -2910,7 +3038,9 @@
                 "icubebysirclo/module-aheadworks-social-login": "self.version",
                 "icubebysirclo/module-aheadworks-store-credit": "self.version",
                 "icubebysirclo/module-icube-advanced-reports": "self.version",
-                "icubebysirclo/module-icube-giftcard": "self.version"
+                "icubebysirclo/module-icube-giftcard": "self.version",
+                "icubebysirclo/module-icube-reward-points": "self.version",
+                "icubebysirclo/module-icube-store-credit": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
@@ -2924,7 +3054,9 @@
                     "src/module-aheadworks-social-login/registration.php",
                     "src/module-aheadworks-store-credit/registration.php",
                     "src/module-icube-advanced-reports/registration.php",
-                    "src/module-icube-giftcard/registration.php"
+                    "src/module-icube-giftcard/registration.php",
+                    "src/module-icube-reward-points/registration.php",
+                    "src/module-icube-store-credit/registration.php"
                 ],
                 "psr-4": {
                     "Aheadworks\\AdvancedReports\\": "src/module-aheadworks-advanced-reports",
@@ -2936,7 +3068,9 @@
                     "Aheadworks\\SocialLogin\\": "src/module-aheadworks-social-login",
                     "Aheadworks\\StoreCredit\\": "src/module-aheadworks-store-credit",
                     "Icube\\AdvancedReports\\": "src/module-icube-advanced-reports",
-                    "Icube\\Giftcard\\": "src/module-icube-giftcard"
+                    "Icube\\Giftcard\\": "src/module-icube-giftcard",
+                    "Icube\\RewardPoints\\": "src/module-icube-reward-points",
+                    "Icube\\StoreCredit\\": "src/module-icube-store-credit"
                 }
             },
             "license": [
@@ -2955,7 +3089,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-04-04T15:42:44+00:00"
+            "time": "2022-06-29T14:01:11+00:00"
         },
         {
             "name": "icubebysirclo/magento2-amasty",
@@ -3218,11 +3352,11 @@
         },
         {
             "name": "icubebysirclo/magento2-promo",
-            "version": "4.0.3",
+            "version": "4.0.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-promo.git",
-                "reference": "1568b26221d004c39108e4dc2a5bb61b5144e816"
+                "reference": "45c44c8ec415c3694fa56931cdf92711852a0186"
             },
             "require": {
                 "icubebysirclo/magento2-aheadworks": "^4.0",
@@ -3265,15 +3399,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-05-17T07:52:20+00:00"
+            "time": "2022-06-13T14:25:41+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippinglogistix",
-            "version": "4.0.11",
+            "version": "4.0.12",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
-                "reference": "1c767855539cd5fc9faa300976e125cac418cfd9"
+                "reference": "31ef3bd97aca28cf925c1cb8915cef5dd0ab900e"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -3296,15 +3430,15 @@
                 "magento 2",
                 "shippinglogistix"
             ],
-            "time": "2022-04-12T12:35:33+00:00"
+            "time": "2022-07-18T02:50:43+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippingpopaket",
-            "version": "4.0.2",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippingpopaket.git",
-                "reference": "372bfacfb4ffed2b58b4ee8307254462b196d3c3"
+                "reference": "e78a6fd27a9fac3a03366d11b808a6e7305ec5de"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3324,20 +3458,25 @@
                 "magento 2",
                 "shippingpopaket"
             ],
-            "time": "2022-05-17T07:54:16+00:00"
+            "time": "2022-06-06T07:11:21+00:00"
         },
         {
             "name": "icubebysirclo/magento2-weltpixel",
-            "version": "4.0.5",
+            "version": "4.0.7",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-weltpixel.git",
-                "reference": "539138d240b4800d72cc1ca5e47ad02f70a20473"
+                "reference": "fe1fcfe47acd2e7935513ca2f1fd91aec4f4b890"
+            },
+            "require": {
+                "giggsey/libphonenumber-for-php": "^8.12"
             },
             "replace": {
                 "icubebysirclo/module-icube-custom-style": "self.version",
                 "icubebysirclo/module-icube-custom-weltpixel": "self.version",
                 "icubebysirclo/module-icube-enhanced-email": "self.version",
+                "icubebysirclo/module-icube-ga4": "self.version",
+                "icubebysirclo/module-icube-google-tag-manager": "self.version",
                 "icubebysirclo/module-icube-lazy-loading": "self.version",
                 "icubebysirclo/module-weltpixel-advance-category-sorting": "self.version",
                 "icubebysirclo/module-weltpixel-advanced-wishlist": "self.version",
@@ -3422,7 +3561,9 @@
                     "src/module-icube-custom-style/registration.php",
                     "src/module-icube-custom-weltpixel/registration.php",
                     "src/module-icube-enhanced-email/registration.php",
-                    "src/module-icube-lazy-loading/registration.php"
+                    "src/module-icube-lazy-loading/registration.php",
+                    "src/module-icube-ga4/registration.php",
+                    "src/module-icube-google-tag-manager/registration.php"
                 ],
                 "psr-4": {
                     "WeltPixel\\AdvanceCategorySorting\\": "src/module-weltpixel-advance-category-sorting",
@@ -3466,7 +3607,9 @@
                     "Icube\\CustomStyle\\": "src/module-icube-custom-style",
                     "Icube\\CustomWeltPixel\\": "src/module-icube-custom-weltpixel",
                     "Icube\\EnhancedEmail\\": "src/module-icube-enhanced-email",
-                    "Icube\\LazyLoading\\": "src/module-icube-lazy-loading"
+                    "Icube\\LazyLoading\\": "src/module-icube-lazy-loading",
+                    "Icube\\GA4\\": "src/module-icube-ga4",
+                    "Icube\\GoogleTagManager\\": "src/module-icube-google-tag-manager"
                 }
             },
             "license": [
@@ -3485,7 +3628,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-04-04T15:44:45+00:00"
+            "time": "2022-07-18T02:45:44+00:00"
         },
         {
             "name": "icubebysirclo/magento2-xendit",
@@ -3564,11 +3707,11 @@
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "4.1.23",
+            "version": "4.1.25",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "d793a0602bc0104be30bc1d0605fbdf2cbd70951"
+                "reference": "34d2afc51eff84253bb5e9014bf40da39371ee9e"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
@@ -3609,7 +3752,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-04-12T12:09:43+00:00"
+            "time": "2022-07-18T02:49:49+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -3715,13 +3858,14 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.29",
+            "version": "4.1.33",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "e096d95b2e33baaa31ba73d03ecfbb9b23fa6d50"
+                "reference": "a82c6010090bb63b3ee79fbc02af3e2f49515e09"
             },
             "require": {
+                "giggsey/libphonenumber-for-php": "^8.12",
                 "icubeus/magento2-citykecamatan": "^4.1",
                 "icubeus/magento2-instantdelivery": "^4.1",
                 "icubeus/magento2-notification": "^4.1",
@@ -3886,7 +4030,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-05-17T09:09:38+00:00"
+            "time": "2022-07-18T02:47:51+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -3916,11 +4060,11 @@
         },
         {
             "name": "icubeus/magento2-instantdelivery",
-            "version": "4.1.10",
+            "version": "4.1.11",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "73cca256781ef89df0ddc66e7290108c1be31c30"
+                "reference": "633250a5c4d477e73878ba728a1a5a7d6ed58e67"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -3959,7 +4103,7 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2022-04-25T11:56:55+00:00"
+            "time": "2022-06-29T13:54:23+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
@@ -4098,12 +4242,56 @@
             "time": "2021-12-23T08:25:23+00:00"
         },
         {
+            "name": "icubeus/magento2-rapidflow",
+            "version": "7.2.2",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icubeus/magento2-rapidflow.git",
+                "reference": "49d62f837cb4eeab43970182d2948b0fb3d0b49c"
+            },
+            "require": {
+                "php": ">=7.0.2"
+            },
+            "replace": {
+                "icubeus/module-rapidflow": "self.version",
+                "icubeus/module-rapidflowpro": "self.version"
+            },
+            "type": "magento2-component",
+            "autoload": {
+                "files": [
+                    "src/module-rapidflow/registration.php",
+                    "src/module-rapidflowpro/registration.php"
+                ],
+                "psr-4": {
+                    "Unirgy\\RapidFlow\\": "src/module-rapidflow",
+                    "Unirgy\\RapidFlowPro\\": "src/module-rapidflowpro"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icubeus",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "repidflow for import product",
+            "homepage": "https://github.com/icubeus/magento2-rapidflow",
+            "keywords": [
+                "magento",
+                "magento2",
+                "rapidflow"
+            ],
+            "time": "2021-03-03T09:37:21+00:00"
+        },
+        {
             "name": "icubeus/magento2-shippingbase",
-            "version": "4.1.4",
+            "version": "4.1.7",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingbase.git",
-                "reference": "74495a8ff83c59098240d5ab0540c44c60fffe2c"
+                "reference": "39c9b21a277e6b1d784059d19ab29b6a258cbe43"
             },
             "replace": {
                 "icubeus/module-shippingbase": "self.version"
@@ -4133,15 +4321,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-02-21T09:35:32+00:00"
+            "time": "2022-07-18T02:53:06+00:00"
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.19",
+            "version": "4.1.21",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "881797fafe7a718475eea16abb78c6b6e932ae2b"
+                "reference": "1700ab17c16aa7005c407c5e0c59fbbed84198fc"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -4174,7 +4362,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-05-17T09:01:18+00:00"
+            "time": "2022-07-18T02:54:23+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -4272,37 +4460,38 @@
         },
         {
             "name": "icubeus/magento2-swift-core",
-            "version": "4.0.21",
+            "version": "4.0.25",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swift-core.git",
-                "reference": "5f88384e69e8c52712a31528d067b4c314aceced"
+                "reference": "8b59a46568cc238c48597c025d4998d7757f287b"
             },
             "require": {
                 "ebizmarts/mailchimp-lib": "^3.0",
-                "icubebysirclo/magento2-aheadworks": "4.0.1",
+                "icubebysirclo/magento2-aheadworks": "4.0.3",
                 "icubebysirclo/magento2-amasty": "4.0.1",
                 "icubebysirclo/magento2-facebookshop": "4.0.4",
                 "icubebysirclo/magento2-firebear": "4.0.5",
                 "icubebysirclo/magento2-magezon": "4.0.1",
-                "icubebysirclo/magento2-promo": "4.0.3",
-                "icubebysirclo/magento2-shippinglogistix": "4.0.11",
-                "icubebysirclo/magento2-shippingpopaket": "4.0.2",
-                "icubebysirclo/magento2-weltpixel": "4.0.5",
+                "icubebysirclo/magento2-promo": "4.0.4",
+                "icubebysirclo/magento2-shippinglogistix": "4.0.12",
+                "icubebysirclo/magento2-shippingpopaket": "4.0.3",
+                "icubebysirclo/magento2-weltpixel": "4.0.7",
                 "icubebysirclo/magento2-xendit": "4.0.5",
                 "icubeus/magento2-advancerate": "4.1.8",
-                "icubeus/magento2-checkout": "4.1.23",
+                "icubeus/magento2-checkout": "4.1.25",
                 "icubeus/magento2-citykecamatan": "4.1.11",
                 "icubeus/magento2-confirmpayment": "4.1.1",
                 "icubeus/magento2-firebase": "4.1.4",
-                "icubeus/magento2-graphql": "4.1.29",
+                "icubeus/magento2-graphql": "4.1.33",
                 "icubeus/magento2-indonesianlanguage": "4.1.0",
-                "icubeus/magento2-instantdelivery": "4.1.10",
+                "icubeus/magento2-instantdelivery": "4.1.11",
                 "icubeus/magento2-notification": "4.1.9",
                 "icubeus/magento2-payment": "4.1.5",
                 "icubeus/magento2-queues": "4.1.1",
-                "icubeus/magento2-shippingbase": "4.1.4",
-                "icubeus/magento2-shippingshipper": "4.1.19",
+                "icubeus/magento2-rapidflow": "7.2.2",
+                "icubeus/magento2-shippingbase": "4.1.7",
+                "icubeus/magento2-shippingshipper": "4.1.21",
                 "icubeus/magento2-smsgateaway": "4.1.1",
                 "icubeus/magento2-smstada": "4.1.8",
                 "icubeus/magento2-swiftomschannel": "4.1.16",
@@ -4472,7 +4661,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-05-17T09:20:51+00:00"
+            "time": "2022-07-18T02:58:17+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -19740,16 +19929,16 @@
         },
         {
             "name": "microsoft/microsoft-graph",
-            "version": "1.67.0",
+            "version": "1.73.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoftgraph/msgraph-sdk-php.git",
-                "reference": "c35e0328cfe14eae2a96150557dfb08b2de91c21"
+                "reference": "a867c548899436d5279d191d5163a831ac9ea672"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/c35e0328cfe14eae2a96150557dfb08b2de91c21",
-                "reference": "c35e0328cfe14eae2a96150557dfb08b2de91c21",
+                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/a867c548899436d5279d191d5163a831ac9ea672",
+                "reference": "a867c548899436d5279d191d5163a831ac9ea672",
                 "shasum": ""
             },
             "require": {
@@ -19785,9 +19974,9 @@
             "homepage": "https://developer.microsoft.com/en-us/graph",
             "support": {
                 "issues": "https://github.com/microsoftgraph/msgraph-sdk-php/issues",
-                "source": "https://github.com/microsoftgraph/msgraph-sdk-php/tree/1.67.0"
+                "source": "https://github.com/microsoftgraph/msgraph-sdk-php/tree/1.73.0"
             },
-            "time": "2022-06-02T07:04:22+00:00"
+            "time": "2022-07-20T14:56:50+00:00"
         },
         {
             "name": "mikey179/vfsstream",
@@ -19898,16 +20087,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "2.6.0",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "247918972acd74356b0a91dfaa5adcaec069b6c0"
+                "reference": "5579edf28aee1190a798bfa5be8bc16c563bd524"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/247918972acd74356b0a91dfaa5adcaec069b6c0",
-                "reference": "247918972acd74356b0a91dfaa5adcaec069b6c0",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/5579edf28aee1190a798bfa5be8bc16c563bd524",
+                "reference": "5579edf28aee1190a798bfa5be8bc16c563bd524",
                 "shasum": ""
             },
             "require": {
@@ -19986,7 +20175,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/2.6.0"
+                "source": "https://github.com/Seldaek/monolog/tree/2.7.0"
             },
             "funding": [
                 {
@@ -19998,7 +20187,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-10T09:36:00+00:00"
+            "time": "2022-06-09T08:59:12+00:00"
         },
         {
             "name": "moontoast/math",
@@ -20233,16 +20422,16 @@
         },
         {
             "name": "paragonie/constant_time_encoding",
-            "version": "v2.5.0",
+            "version": "v2.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/constant_time_encoding.git",
-                "reference": "9229e15f2e6ba772f0c55dd6986c563b937170a8"
+                "reference": "58c3f47f650c94ec05a151692652a868995d2938"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/9229e15f2e6ba772f0c55dd6986c563b937170a8",
-                "reference": "9229e15f2e6ba772f0c55dd6986c563b937170a8",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/58c3f47f650c94ec05a151692652a868995d2938",
+                "reference": "58c3f47f650c94ec05a151692652a868995d2938",
                 "shasum": ""
             },
             "require": {
@@ -20296,7 +20485,7 @@
                 "issues": "https://github.com/paragonie/constant_time_encoding/issues",
                 "source": "https://github.com/paragonie/constant_time_encoding"
             },
-            "time": "2022-01-17T05:32:27+00:00"
+            "time": "2022-06-14T06:56:20+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -24394,7 +24583,7 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.1.0",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
@@ -24441,7 +24630,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.1.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.1.1"
             },
             "funding": [
                 {
@@ -25961,16 +26150,16 @@
         },
         {
             "name": "tcdent/php-restclient",
-            "version": "0.1.8",
+            "version": "0.1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tcdent/php-restclient.git",
-                "reference": "7c944e34cd083cd4e74cd95ed9366580c4b1875c"
+                "reference": "3cd56917108a75ce058a6516f630f43179d7bb68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tcdent/php-restclient/zipball/7c944e34cd083cd4e74cd95ed9366580c4b1875c",
-                "reference": "7c944e34cd083cd4e74cd95ed9366580c4b1875c",
+                "url": "https://api.github.com/repos/tcdent/php-restclient/zipball/3cd56917108a75ce058a6516f630f43179d7bb68",
+                "reference": "3cd56917108a75ce058a6516f630f43179d7bb68",
                 "shasum": ""
             },
             "require": {
@@ -26011,9 +26200,9 @@
             ],
             "support": {
                 "issues": "http://github.com/tcdent/php-restclient/issues",
-                "source": "https://github.com/tcdent/php-restclient/tree/0.1.8"
+                "source": "https://github.com/tcdent/php-restclient/tree/0.1.8.1"
             },
-            "time": "2022-04-09T04:23:24+00:00"
+            "time": "2022-06-15T01:04:35+00:00"
         },
         {
             "name": "tedivm/jshrink",
@@ -27430,5 +27619,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }

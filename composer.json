@@ -12,7 +12,7 @@
         "smile/elasticsuite": "~2.10.0",
         "magepal/magento2-reindex": "^1.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "icubeus/magento2-swift-core": "4.0.21",
+        "icubeus/magento2-swift-core": "4.0.25",
         "allure-framework/allure-phpunit": "~1.2.0",
         "magento/product-community-edition": "2.4.4",
         "laminas/laminas-log": "^2.15"
@@ -87,6 +87,10 @@
     "minimum-stability": "alpha",
     "prefer-stable": true,
     "repositories": {
+        "icubeus-rapidflow": {
+            "type": "git",
+            "url": "git@github.com:icubeus/magento2-rapidflow.git"
+        },
         "0": {
             "type": "composer",
             "url": "https://repo.magento.com/"
