@@ -16,7 +16,7 @@ pipeline {
             steps {
                 container('deployer') {
                     sh "${ENTRYPOINT}"
-                    sh "/bin/bash .jenkins/build.sh swift"
+                    sh "/bin/bash .jenkins/build.sh swift ${SWIFT_TAG}"
                 }
             }
         }
