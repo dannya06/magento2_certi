@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c35fb6d39bf90994ba021bc9d36b976b",
+    "content-hash": "d8873cc5db50bb3aa83e39e57802bd37",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1904,16 +1904,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.12.52",
+            "version": "8.12.53",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "9a5269012e21d5a357f93d413fcc7a854a36b69d"
+                "reference": "2e39201ca4b88c1ec0594cd78128d21e94929d04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/9a5269012e21d5a357f93d413fcc7a854a36b69d",
-                "reference": "9a5269012e21d5a357f93d413fcc7a854a36b69d",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/2e39201ca4b88c1ec0594cd78128d21e94929d04",
+                "reference": "2e39201ca4b88c1ec0594cd78128d21e94929d04",
                 "shasum": ""
             },
             "require": {
@@ -1968,7 +1968,7 @@
                 "phonenumber",
                 "validation"
             ],
-            "time": "2022-07-20T12:38:47+00:00"
+            "time": "2022-08-08T06:53:30+00:00"
         },
         {
             "name": "giggsey/locale",
@@ -2088,16 +2088,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.260.0",
+            "version": "v0.262.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "8c519ddfd2458fda02dc10d10b142973e578516a"
+                "reference": "c2e1408ba2b9e31df2d1c0b136f3247e8818874d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/8c519ddfd2458fda02dc10d10b142973e578516a",
-                "reference": "8c519ddfd2458fda02dc10d10b142973e578516a",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/c2e1408ba2b9e31df2d1c0b136f3247e8818874d",
+                "reference": "c2e1408ba2b9e31df2d1c0b136f3247e8818874d",
                 "shasum": ""
             },
             "require": {
@@ -2124,7 +2124,7 @@
             "keywords": [
                 "google"
             ],
-            "time": "2022-07-31T00:58:12+00:00"
+            "time": "2022-08-14T01:06:11+00:00"
         },
         {
             "name": "google/auth",
@@ -3361,11 +3361,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.34",
+            "version": "4.1.35",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "38a9cc01d739405d1089d3c4227919e8ec3f2e11"
+                "reference": "18c72d1b9b896992db3796c867fe79198cd02f5a"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^8.12",
@@ -3533,7 +3533,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-04T04:02:51+00:00"
+            "time": "2022-08-16T08:28:57+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -3828,11 +3828,11 @@
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.21",
+            "version": "4.1.22",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "1700ab17c16aa7005c407c5e0c59fbbed84198fc"
+                "reference": "e598963ac3134af3b195eb6cf468368ad4e97028"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -3865,7 +3865,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-07-18T02:54:23+00:00"
+            "time": "2022-08-16T08:22:29+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -3963,11 +3963,11 @@
         },
         {
             "name": "icubeus/magento2-swift-core",
-            "version": "4.0.26",
+            "version": "4.0.27",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swift-core.git",
-                "reference": "8e1cf6cbfc8cd7e46667b3b913a25bf7baa17728"
+                "reference": "391e2ed1ddff7ecaa6112d71e9abfef664812434"
             },
             "require": {
                 "ebizmarts/mailchimp-lib": "^3.0",
@@ -3986,7 +3986,7 @@
                 "icubeus/magento2-citykecamatan": "4.1.11",
                 "icubeus/magento2-confirmpayment": "4.1.1",
                 "icubeus/magento2-firebase": "4.1.4",
-                "icubeus/magento2-graphql": "4.1.34",
+                "icubeus/magento2-graphql": "4.1.35",
                 "icubeus/magento2-indonesianlanguage": "4.1.0",
                 "icubeus/magento2-instantdelivery": "4.1.11",
                 "icubeus/magento2-notification": "4.1.10",
@@ -3994,12 +3994,12 @@
                 "icubeus/magento2-queues": "4.1.1",
                 "icubeus/magento2-rapidflow": "7.2.2",
                 "icubeus/magento2-shippingbase": "4.1.7",
-                "icubeus/magento2-shippingshipper": "4.1.21",
+                "icubeus/magento2-shippingshipper": "4.1.22",
                 "icubeus/magento2-smsgateaway": "4.1.1",
                 "icubeus/magento2-smstada": "4.1.8",
                 "icubeus/magento2-swiftomschannel": "4.1.17",
                 "icubeus/magento2-trackorder": "4.1.9",
-                "icubeus/magento2-veritranspayment": "4.1.16"
+                "icubeus/magento2-veritranspayment": "4.1.17"
             },
             "replace": {
                 "icubeus/module-bold-order-comment": "self.version",
@@ -4164,7 +4164,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-01T17:50:20+00:00"
+            "time": "2022-08-16T08:32:06+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
@@ -4263,11 +4263,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.16",
+            "version": "4.1.17",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "3ccf16c8ca83f6cd31ffca92423d0512ef4fadf8"
+                "reference": "e344939816e341eab0bcfc529001541530bf2842"
             },
             "replace": {
                 "icubeus/module-snap": "self.version",
@@ -4316,7 +4316,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2022-04-25T11:45:26+00:00"
+            "time": "2022-08-16T08:24:32+00:00"
         },
         {
             "name": "jms/metadata",
@@ -22445,16 +22445,16 @@
         },
         {
             "name": "stella-maris/clock",
-            "version": "0.1.4",
+            "version": "0.1.5",
             "source": {
                 "type": "git",
-                "url": "https://gitlab.com/stella-maris/clock.git",
-                "reference": "8a0a967896df4c63417385dc69328a0aec84d9cf"
+                "url": "git@gitlab.com:stella-maris/clock.git",
+                "reference": "447879c53ca0b2a762cdbfba5e76ccf4deca9158"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/stella-maris%2Fclock/repository/archive.zip?sha=8a0a967896df4c63417385dc69328a0aec84d9cf",
-                "reference": "8a0a967896df4c63417385dc69328a0aec84d9cf",
+                "url": "https://gitlab.com/api/v4/projects/stella-maris%2Fclock/repository/archive.zip?sha=447879c53ca0b2a762cdbfba5e76ccf4deca9158",
+                "reference": "447879c53ca0b2a762cdbfba5e76ccf4deca9158",
                 "shasum": ""
             },
             "require": {
@@ -22484,7 +22484,7 @@
                 "point in time",
                 "psr20"
             ],
-            "time": "2022-04-17T14:12:26+00:00"
+            "time": "2022-08-05T07:21:25+00:00"
         },
         {
             "name": "symfony/console",
@@ -24474,6 +24474,7 @@
                 "idna",
                 "punycode"
             ],
+            "abandoned": true,
             "time": "2016-11-16T10:37:54+00:00"
         },
         {
