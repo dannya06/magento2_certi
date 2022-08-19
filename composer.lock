@@ -3365,7 +3365,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "9c2fa9693380688f9cce0dbf1b3f61691bcc6718"
+                "reference": "47969b0d29279e17f3658cfe52ddf7eb57cb1f92"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^8.12",
@@ -3533,7 +3533,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-19T03:59:40+00:00"
+            "time": "2022-08-19T09:04:29+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
