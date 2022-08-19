@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d8873cc5db50bb3aa83e39e57802bd37",
+    "content-hash": "7817bc8a6839baa9aa1e76790003b7ce",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -3365,7 +3365,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "18c72d1b9b896992db3796c867fe79198cd02f5a"
+                "reference": "9c2fa9693380688f9cce0dbf1b3f61691bcc6718"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^8.12",
@@ -3533,7 +3533,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-16T08:28:57+00:00"
+            "time": "2022-08-19T03:59:40+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
