@@ -2,7 +2,7 @@
     "name": "icubeus/swift",
     "description": "Swift",
     "type": "project",
-    "version": "4.1.15",
+    "version": "4.2.0",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
@@ -12,7 +12,7 @@
         "smile/elasticsuite": "~2.10.0",
         "magepal/magento2-reindex": "^1.0",
         "fabrizioballiano/deferjavascripts": "^1.0",
-        "icubeus/magento2-swift-core": "4.0.25",
+        "icubeus/magento2-swift-core": "4.1.0",
         "allure-framework/allure-phpunit": "~1.2.0",
         "magento/product-community-edition": "2.4.4",
         "laminas/laminas-log": "^2.15"
@@ -87,9 +87,9 @@
     "minimum-stability": "alpha",
     "prefer-stable": true,
     "repositories": {
-        "icubeus-rapidflow": {
+        "icube-voltwig": {
             "type": "git",
-            "url": "git@github.com:icubeus/magento2-rapidflow.git"
+            "url": "git@github.com:icube-mage/magento2-voltwig.git"
         },
         "0": {
             "type": "composer",
@@ -142,10 +142,6 @@
         "icubeus-notification": {
             "type": "git",
             "url": "git@github.com:icubeus/magento2-notification.git"
-        },
-        "icubeus-smstada": {
-            "type": "git",
-            "url": "git@github.com:icubeus/magento2-smstada.git"
         },
         "icubeus-payment": {
             "type": "git",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f6a17d870c85e20f34a19443f50a307f",
+    "content-hash": "0dd289f286d3c79f633eb0d23a5bc377",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2353,16 +2353,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.12.52",
+            "version": "8.12.54",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "9a5269012e21d5a357f93d413fcc7a854a36b69d"
+                "reference": "d0bad134ca7206d36784c2c5ec531ba4513efde7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/9a5269012e21d5a357f93d413fcc7a854a36b69d",
-                "reference": "9a5269012e21d5a357f93d413fcc7a854a36b69d",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/d0bad134ca7206d36784c2c5ec531ba4513efde7",
+                "reference": "d0bad134ca7206d36784c2c5ec531ba4513efde7",
                 "shasum": ""
             },
             "require": {
@@ -2422,7 +2422,7 @@
                 "issues": "https://github.com/giggsey/libphonenumber-for-php/issues",
                 "source": "https://github.com/giggsey/libphonenumber-for-php"
             },
-            "time": "2022-07-20T12:38:47+00:00"
+            "time": "2022-08-22T06:43:42+00:00"
         },
         {
             "name": "giggsey/locale",
@@ -2550,16 +2550,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.258.0",
+            "version": "v0.264.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "71eb32534aba05e373fe317c1373a9645065881c"
+                "reference": "28c4208ee0b7f4d5f4704c043414b5644351280c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/71eb32534aba05e373fe317c1373a9645065881c",
-                "reference": "71eb32534aba05e373fe317c1373a9645065881c",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/28c4208ee0b7f4d5f4704c043414b5644351280c",
+                "reference": "28c4208ee0b7f4d5f4704c043414b5644351280c",
                 "shasum": ""
             },
             "require": {
@@ -2588,9 +2588,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.258.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.264.0"
             },
-            "time": "2022-07-18T01:10:11+00:00"
+            "time": "2022-08-29T01:10:13+00:00"
         },
         {
             "name": "google/auth",
@@ -2704,16 +2704,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.4.5",
+            "version": "7.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "1dd98b0564cb3f6bd16ce683cb755f94c10fbd82"
+                "reference": "b50a2a1251152e43f6a37f0fa053e730a67d25ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/1dd98b0564cb3f6bd16ce683cb755f94c10fbd82",
-                "reference": "1dd98b0564cb3f6bd16ce683cb755f94c10fbd82",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b50a2a1251152e43f6a37f0fa053e730a67d25ba",
+                "reference": "b50a2a1251152e43f6a37f0fa053e730a67d25ba",
                 "shasum": ""
             },
             "require": {
@@ -2728,10 +2728,10 @@
                 "psr/http-client-implementation": "1.0"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.4.1",
+                "bamarni/composer-bin-plugin": "^1.8.1",
                 "ext-curl": "*",
                 "php-http/client-integration-tests": "^3.0",
-                "phpunit/phpunit": "^8.5.5 || ^9.3.5",
+                "phpunit/phpunit": "^8.5.29 || ^9.5.23",
                 "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "suggest": {
@@ -2741,8 +2741,12 @@
             },
             "type": "library",
             "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": false
+                },
                 "branch-alias": {
-                    "dev-master": "7.4-dev"
+                    "dev-master": "7.5-dev"
                 }
             },
             "autoload": {
@@ -2808,7 +2812,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.4.5"
+                "source": "https://github.com/guzzle/guzzle/tree/7.5.0"
             },
             "funding": [
                 {
@@ -2824,20 +2828,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-20T22:16:13+00:00"
+            "time": "2022-08-28T15:39:27+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.5.1",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "fe752aedc9fd8fcca3fe7ad05d419d32998a06da"
+                "reference": "b94b2807d85443f9719887892882d0329d1e2598"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/fe752aedc9fd8fcca3fe7ad05d419d32998a06da",
-                "reference": "fe752aedc9fd8fcca3fe7ad05d419d32998a06da",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/b94b2807d85443f9719887892882d0329d1e2598",
+                "reference": "b94b2807d85443f9719887892882d0329d1e2598",
                 "shasum": ""
             },
             "require": {
@@ -2892,7 +2896,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/1.5.1"
+                "source": "https://github.com/guzzle/promises/tree/1.5.2"
             },
             "funding": [
                 {
@@ -2908,7 +2912,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-10-22T20:56:57+00:00"
+            "time": "2022-08-28T14:55:35+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -3021,12 +3025,59 @@
             "time": "2022-06-20T21:43:03+00:00"
         },
         {
+            "name": "icube-mage/magento2-voltwig",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:icube-mage/magento2-voltwig.git",
+                "reference": "cce25ed1f0731ce75bce854dbef2de0fca2ffbb4"
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "replace": {
+                "icube-mage/module-voltwig": "self.version",
+                "icube-mage/module-voltwigcore": "self.version"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/module-voltwigcore/registration.php",
+                    "src/module-voltwig/registration.php"
+                ],
+                "psr-4": {
+                    "Icube\\VoltwigCore\\": "src/module-voltwigcore",
+                    "Icube\\Voltwig\\": "src/module-voltwig"
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "icube-mage",
+                    "email": "sales@icube.us"
+                }
+            ],
+            "description": "Icube Voltwig for import export product",
+            "homepage": "https://github.com/icube-mage/magento2-voltwig",
+            "keywords": [
+                "export",
+                "import",
+                "magento",
+                "magento2",
+                "swift"
+            ],
+            "time": "2022-06-28T02:30:14+00:00"
+        },
+        {
             "name": "icubebysirclo/magento2-aheadworks",
-            "version": "4.0.3",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-aheadworks.git",
-                "reference": "0bcc6ad0909385a6c419b413c84990ba7b91b152"
+                "reference": "38a388b3301ae89abdba8db59940f32790b8339b"
             },
             "replace": {
                 "icubebysirclo/module-aheadworks-advanced-reports": "self.version",
@@ -3089,15 +3140,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-06-29T14:01:11+00:00"
+            "time": "2022-08-29T18:00:59+00:00"
         },
         {
             "name": "icubebysirclo/magento2-amasty",
-            "version": "4.0.1",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-amasty.git",
-                "reference": "b0bd4e5c5989f52a4c049cca2297c7ee89a56270"
+                "reference": "a532f96d2d7c0195e02284aa563814221376aff8"
             },
             "require": {
                 "cogpowered/finediff": "*",
@@ -3109,7 +3160,6 @@
                 "icubebysirclo/module-amasty-banners-lite": "self.version",
                 "icubebysirclo/module-amasty-base": "self.version",
                 "icubebysirclo/module-amasty-conditions": "self.version",
-                "icubebysirclo/module-amasty-cron-schedule-list": "self.version",
                 "icubebysirclo/module-amasty-extrafee": "self.version",
                 "icubebysirclo/module-amasty-fpc": "self.version",
                 "icubebysirclo/module-amasty-geoip": "self.version",
@@ -3139,7 +3189,6 @@
                     "src/module-amasty-banners-lite/registration.php",
                     "src/module-amasty-base/registration.php",
                     "src/module-amasty-conditions/registration.php",
-                    "src/module-amasty-cron-schedule-list/registration.php",
                     "src/module-amasty-extrafee/registration.php",
                     "src/module-amasty-fpc/registration.php",
                     "src/module-amasty-geoip/registration.php",
@@ -3167,7 +3216,6 @@
                     "Amasty\\BannersLite\\": "src/module-amasty-banners-lite",
                     "Amasty\\Base\\": "src/module-amasty-base",
                     "Amasty\\Conditions\\": "src/module-amasty-conditions",
-                    "Amasty\\CronScheduleList\\": "src/module-amasty-cron-schedule-list",
                     "Amasty\\Extrafee\\": "src/module-amasty-extrafee",
                     "Amasty\\Fpc\\": "src/module-amasty-fpc",
                     "Amasty\\Geoip\\": "src/module-amasty-geoip",
@@ -3206,7 +3254,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-04-12T12:26:50+00:00"
+            "time": "2022-08-29T18:03:37+00:00"
         },
         {
             "name": "icubebysirclo/magento2-facebookshop",
@@ -3238,11 +3286,11 @@
         },
         {
             "name": "icubebysirclo/magento2-firebear",
-            "version": "4.0.5",
+            "version": "4.0.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-firebear.git",
-                "reference": "4527a925de0a1e686fb3284c563feee8801a41a3"
+                "reference": "49411973ff5937439b5dc5565323abffdfc3e3ed"
             },
             "require": {
                 "bcncommerce/json-stream": "^0.4.1",
@@ -3289,15 +3337,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-03-21T05:49:07+00:00"
+            "time": "2022-08-29T17:56:57+00:00"
         },
         {
             "name": "icubebysirclo/magento2-magezon",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-magezon.git",
-                "reference": "52f0393db3a94950868153f5aabee328a0377f0e"
+                "reference": "d56814e751e2a7b7c23e58ba43ef9cd6eb31dd29"
             },
             "replace": {
                 "icubebysirclo/module-icube-magezon": "self.version",
@@ -3348,15 +3396,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-04-12T12:05:04+00:00"
+            "time": "2022-08-29T18:06:16+00:00"
         },
         {
             "name": "icubebysirclo/magento2-promo",
-            "version": "4.0.4",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-promo.git",
-                "reference": "45c44c8ec415c3694fa56931cdf92711852a0186"
+                "reference": "f16927a4055516781085e4341c12b4d6aef15538"
             },
             "require": {
                 "icubebysirclo/magento2-aheadworks": "^4.0",
@@ -3365,7 +3413,6 @@
             "replace": {
                 "icubebysirclo/module-icube-cart-rule-banner": "self.version",
                 "icubebysirclo/module-icube-cashback": "self.version",
-                "icubebysirclo/module-icube-promo-payment": "self.version",
                 "icubebysirclo/module-icube-promo-shipping": "self.version"
             },
             "type": "magento2-module",
@@ -3373,13 +3420,11 @@
                 "files": [
                     "src/module-icube-cart-rule-banner/registration.php",
                     "src/module-icube-cashback/registration.php",
-                    "src/module-icube-promo-payment/registration.php",
                     "src/module-icube-promo-shipping/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\CartRuleBanner\\": "src/module-icube-cart-rule-banner",
                     "Icube\\Cashback\\": "src/module-icube-cashback",
-                    "Icube\\PromoPayment\\": "src/module-icube-promo-payment",
                     "Icube\\PromoShipping\\": "src/module-icube-promo-shipping"
                 }
             },
@@ -3399,15 +3444,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-06-13T14:25:41+00:00"
+            "time": "2022-08-29T18:08:03+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippinglogistix",
-            "version": "4.0.12",
+            "version": "4.0.13",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippinglogistix.git",
-                "reference": "31ef3bd97aca28cf925c1cb8915cef5dd0ab900e"
+                "reference": "dc4352908d005bf6c58baa7f267d66dc22f4ddac"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -3430,15 +3475,15 @@
                 "magento 2",
                 "shippinglogistix"
             ],
-            "time": "2022-07-18T02:50:43+00:00"
+            "time": "2022-08-29T17:59:27+00:00"
         },
         {
             "name": "icubebysirclo/magento2-shippingpopaket",
-            "version": "4.0.3",
+            "version": "4.0.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-shippingpopaket.git",
-                "reference": "e78a6fd27a9fac3a03366d11b808a6e7305ec5de"
+                "reference": "7d1be6412f515d56dd5262ad3eeb8daea0bfbd60"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3458,15 +3503,15 @@
                 "magento 2",
                 "shippingpopaket"
             ],
-            "time": "2022-06-06T07:11:21+00:00"
+            "time": "2022-08-29T18:11:46+00:00"
         },
         {
             "name": "icubebysirclo/magento2-weltpixel",
-            "version": "4.0.7",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-weltpixel.git",
-                "reference": "fe1fcfe47acd2e7935513ca2f1fd91aec4f4b890"
+                "reference": "a23494f19f252cbfdd1437d4b45a90830acbc789"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^8.12"
@@ -3479,7 +3524,6 @@
                 "icubebysirclo/module-icube-google-tag-manager": "self.version",
                 "icubebysirclo/module-icube-lazy-loading": "self.version",
                 "icubebysirclo/module-weltpixel-advance-category-sorting": "self.version",
-                "icubebysirclo/module-weltpixel-advanced-wishlist": "self.version",
                 "icubebysirclo/module-weltpixel-ajax-infinite-scroll": "self.version",
                 "icubebysirclo/module-weltpixel-backend": "self.version",
                 "icubebysirclo/module-weltpixel-category-page": "self.version",
@@ -3490,7 +3534,6 @@
                 "icubebysirclo/module-weltpixel-design-elements": "self.version",
                 "icubebysirclo/module-weltpixel-enhanced-email": "self.version",
                 "icubebysirclo/module-weltpixel-frontend-options": "self.version",
-                "icubebysirclo/module-weltpixel-full-page-scroll": "self.version",
                 "icubebysirclo/module-weltpixel-ga4": "self.version",
                 "icubebysirclo/module-weltpixel-google-cards": "self.version",
                 "icubebysirclo/module-weltpixel-google-tag-manager": "self.version",
@@ -3498,7 +3541,6 @@
                 "icubebysirclo/module-weltpixel-lazy-loading": "self.version",
                 "icubebysirclo/module-weltpixel-mobile-detect": "self.version",
                 "icubebysirclo/module-weltpixel-multistore": "self.version",
-                "icubebysirclo/module-weltpixel-navigation-links": "self.version",
                 "icubebysirclo/module-weltpixel-newsletter": "self.version",
                 "icubebysirclo/module-weltpixel-owl-carousel-slider": "self.version",
                 "icubebysirclo/module-weltpixel-product-labels": "self.version",
@@ -3510,7 +3552,6 @@
                 "icubebysirclo/module-weltpixel-sample-data": "self.version",
                 "icubebysirclo/module-weltpixel-sitemap": "self.version",
                 "icubebysirclo/module-weltpixel-smart-product-tabs": "self.version",
-                "icubebysirclo/module-weltpixel-speed-optimization": "self.version",
                 "icubebysirclo/module-weltpixel-thank-you-page": "self.version",
                 "icubebysirclo/module-weltpixel-title-rewrite": "self.version",
                 "icubebysirclo/module-weltpixel-user-profile": "self.version",
@@ -3521,7 +3562,6 @@
             "autoload": {
                 "files": [
                     "src/module-weltpixel-advance-category-sorting/registration.php",
-                    "src/module-weltpixel-advanced-wishlist/registration.php",
                     "src/module-weltpixel-ajax-infinite-scroll/registration.php",
                     "src/module-weltpixel-backend/registration.php",
                     "src/module-weltpixel-category-page/registration.php",
@@ -3532,7 +3572,6 @@
                     "src/module-weltpixel-design-elements/registration.php",
                     "src/module-weltpixel-enhanced-email/registration.php",
                     "src/module-weltpixel-frontend-options/registration.php",
-                    "src/module-weltpixel-full-page-scroll/registration.php",
                     "src/module-weltpixel-ga4/registration.php",
                     "src/module-weltpixel-google-cards/registration.php",
                     "src/module-weltpixel-google-tag-manager/registration.php",
@@ -3540,7 +3579,6 @@
                     "src/module-weltpixel-lazy-loading/registration.php",
                     "src/module-weltpixel-mobile-detect/registration.php",
                     "src/module-weltpixel-multistore/registration.php",
-                    "src/module-weltpixel-navigation-links/registration.php",
                     "src/module-weltpixel-newsletter/registration.php",
                     "src/module-weltpixel-owl-carousel-slider/registration.php",
                     "src/module-weltpixel-product-labels/registration.php",
@@ -3552,7 +3590,6 @@
                     "src/module-weltpixel-sample-data/registration.php",
                     "src/module-weltpixel-sitemap/registration.php",
                     "src/module-weltpixel-smart-product-tabs/registration.php",
-                    "src/module-weltpixel-speed-optimization/registration.php",
                     "src/module-weltpixel-thank-you-page/registration.php",
                     "src/module-weltpixel-title-rewrite/registration.php",
                     "src/module-weltpixel-user-profile/registration.php",
@@ -3567,7 +3604,6 @@
                 ],
                 "psr-4": {
                     "WeltPixel\\AdvanceCategorySorting\\": "src/module-weltpixel-advance-category-sorting",
-                    "WeltPixel\\AdvancedWishlist\\": "src/module-weltpixel-advanced-wishlist",
                     "WeltPixel\\AjaxInfiniteScroll\\": "src/module-weltpixel-ajax-infinite-scroll",
                     "WeltPixel\\Backend\\": "src/module-weltpixel-backend",
                     "WeltPixel\\CategoryPage\\": "src/module-weltpixel-category-page",
@@ -3578,7 +3614,6 @@
                     "WeltPixel\\DesignElements\\": "src/module-weltpixel-design-elements",
                     "WeltPixel\\EnhancedEmail\\": "src/module-weltpixel-enhanced-email",
                     "WeltPixel\\FrontendOptions\\": "src/module-weltpixel-frontend-options",
-                    "WeltPixel\\FullPageScroll\\": "src/module-weltpixel-full-page-scroll",
                     "WeltPixel\\GA4\\": "src/module-weltpixel-ga4",
                     "WeltPixel\\GoogleCards\\": "src/module-weltpixel-google-cards",
                     "WeltPixel\\GoogleTagManager\\": "src/module-weltpixel-google-tag-manager",
@@ -3586,7 +3621,6 @@
                     "WeltPixel\\LazyLoading\\": "src/module-weltpixel-lazy-loading",
                     "WeltPixel\\MobileDetect\\": "src/module-weltpixel-mobile-detect",
                     "WeltPixel\\Multistore\\": "src/module-weltpixel-multistore",
-                    "WeltPixel\\NavigationLinks\\": "src/module-weltpixel-navigation-links",
                     "WeltPixel\\Newsletter\\": "src/module-weltpixel-newsletter",
                     "WeltPixel\\OwlCarouselSlider\\": "src/module-weltpixel-owl-carousel-slider",
                     "WeltPixel\\ProductLabels\\": "src/module-weltpixel-product-labels",
@@ -3598,7 +3632,6 @@
                     "WeltPixel\\SampleData\\": "src/module-weltpixel-sample-data",
                     "WeltPixel\\Sitemap\\": "src/module-weltpixel-sitemap",
                     "WeltPixel\\SmartProductTabs\\": "src/module-weltpixel-smart-product-tabs",
-                    "WeltPixel\\SpeedOptimization\\": "src/module-weltpixel-speed-optimization",
                     "WeltPixel\\ThankYouPage\\": "src/module-weltpixel-thank-you-page",
                     "WeltPixel\\TitleRewrite\\": "src/module-weltpixel-title-rewrite",
                     "WeltPixel\\UserProfile\\": "src/module-weltpixel-user-profile",
@@ -3628,15 +3661,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-07-18T02:45:44+00:00"
+            "time": "2022-08-29T18:10:04+00:00"
         },
         {
             "name": "icubebysirclo/magento2-xendit",
-            "version": "4.0.5",
+            "version": "4.0.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-xendit.git",
-                "reference": "cb1363974afb9780e20ba04d3fe85d74b414f9ee"
+                "reference": "db245666ff1714ef1914ccc456511d664315d855"
             },
             "replace": {
                 "icubebysirclo/module-traveloka": "self.version",
@@ -3675,15 +3708,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-01-23T11:54:07+00:00"
+            "time": "2022-08-29T17:58:20+00:00"
         },
         {
             "name": "icubeus/magento2-advancerate",
-            "version": "4.1.8",
+            "version": "4.1.9",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-advancerate.git",
-                "reference": "ea722032afb434ddf884389a9c6da417ffd87293"
+                "reference": "c07fe5ebfe7ee4eef8ebeb1b3dac5a648a42d63e"
             },
             "type": "magento2-module",
             "autoload": {
@@ -3703,19 +3736,18 @@
                 "advancerate",
                 "magento 2"
             ],
-            "time": "2022-03-09T12:25:15+00:00"
+            "time": "2022-08-29T17:33:41+00:00"
         },
         {
             "name": "icubeus/magento2-checkout",
-            "version": "4.1.25",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-checkout.git",
-                "reference": "34d2afc51eff84253bb5e9014bf40da39371ee9e"
+                "reference": "c718d5f413eef6499e0746491fb21a5d9b94f287"
             },
             "replace": {
                 "icubeus/module-checkoutpg": "self.version",
-                "icubeus/module-oscoverridecheckout": "self.version",
                 "icubeus/module-paymentinformation": "self.version",
                 "icubeus/module-pwa-checkout": "self.version",
                 "icubeus/module-shipmentpg": "self.version"
@@ -3724,13 +3756,11 @@
             "autoload": {
                 "files": [
                     "src/module-checkoutpg/registration.php",
-                    "src/module-oscoverridecheckout/registration.php",
                     "src/module-pwa-checkout/registration.php",
                     "src/module-shipmentpg/registration.php",
                     "src/module-paymentinformation/registration.php"
                 ],
                 "psr-4": {
-                    "Icube\\Oscoverridecheckout\\": "src/module-oscoverridecheckout",
                     "Icube\\Checkoutpg\\": "src/module-checkoutpg",
                     "Icube\\PwaCheckout\\": "src/module-pwa-checkout",
                     "Icube\\Shipmentpg\\": "src/module-shipmentpg",
@@ -3752,7 +3782,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-07-18T02:49:49+00:00"
+            "time": "2022-08-29T18:16:39+00:00"
         },
         {
             "name": "icubeus/magento2-citykecamatan",
@@ -3858,20 +3888,19 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.33",
+            "version": "4.1.36",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "a82c6010090bb63b3ee79fbc02af3e2f49515e09"
+                "reference": "711e12595966345593f2dd3fa465690e7d39b918"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^8.12",
                 "icubeus/magento2-citykecamatan": "^4.1",
-                "icubeus/magento2-instantdelivery": "^4.1",
-                "icubeus/magento2-notification": "^4.1",
-                "icubeus/magento2-smstada": "^4.1",
+                "icubeus/magento2-instantdelivery": "^4.2",
+                "icubeus/magento2-notification": "^4.2",
                 "icubeus/magento2-swiftomschannel": "^4.1",
-                "icubeus/magento2-veritranspayment": "^4.1"
+                "icubeus/magento2-veritranspayment": "^4.2"
             },
             "replace": {
                 "icubeus/module-am-bannerslite-graph-ql": "self.version",
@@ -4030,7 +4059,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-07-18T02:47:51+00:00"
+            "time": "2022-08-29T19:01:20+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -4060,11 +4089,11 @@
         },
         {
             "name": "icubeus/magento2-instantdelivery",
-            "version": "4.1.11",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-instantdelivery.git",
-                "reference": "633250a5c4d477e73878ba728a1a5a7d6ed58e67"
+                "reference": "6e0785ed279dc207e76c1e8cb551566b6b0b43e2"
             },
             "replace": {
                 "icubeus/magento2-gosend": "self.version",
@@ -4074,13 +4103,11 @@
             "autoload": {
                 "files": [
                     "src/module-pinlocation/registration.php",
-                    "src/module-gosend/registration.php",
-                    "src/module-grabexpress/registration.php"
+                    "src/module-gosend/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\PinLocation\\": "src/module-pinlocation",
-                    "Icube\\Gosend\\": "src/module-gosend",
-                    "Icube\\GrabExpress\\": "src/module-grabexpress"
+                    "Icube\\Gosend\\": "src/module-gosend"
                 }
             },
             "license": [
@@ -4103,35 +4130,38 @@
                 "pinlocation",
                 "shipping"
             ],
-            "time": "2022-06-29T13:54:23+00:00"
+            "time": "2022-08-29T18:19:07+00:00"
         },
         {
             "name": "icubeus/magento2-notification",
-            "version": "4.1.9",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "777d3f058c4135311ee72161e1b1361bd6b62e28"
-            },
-            "require": {
-                "icubeus/magento2-smsgateaway": "^4.1"
+                "reference": "5c7bc3e2ea97a1b76fdab20b888b2ac1ac3e6a63"
             },
             "replace": {
                 "icubeus/module-event": "self.version",
                 "icubeus/module-notification": "self.version",
-                "icubeus/module-queue": "self.version"
+                "icubeus/module-queue": "self.version",
+                "icubeus/module-smsotp": "self.version",
+                "icubeus/module-telephone": "self.version"
             },
             "type": "magento2-module",
             "autoload": {
                 "files": [
                     "src/module-event/registration.php",
                     "src/module-notification/registration.php",
-                    "src/module-queue/registration.php"
+                    "src/module-queue/registration.php",
+                    "src/module-smsotp/registration.php",
+                    "src/module-telephone/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\EventNotification\\": "src/module-event",
                     "Icube\\InboxNotification\\": "src/module-notification",
-                    "Icube\\QueueNotification\\": "src/module-queue"
+                    "Icube\\QueueNotification\\": "src/module-queue",
+                    "Icube\\SmsOtp\\": "src/module-smsotp",
+                    "Icube\\Telephone\\": "src/module-telephone"
                 }
             },
             "license": [
@@ -4150,15 +4180,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-01-20T09:48:54+00:00"
+            "time": "2022-08-29T17:50:37+00:00"
         },
         {
             "name": "icubeus/magento2-payment",
-            "version": "4.1.5",
+            "version": "4.1.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-payment.git",
-                "reference": "32c338b035b06e7cd2a11cf5dbf016b71fddef73"
+                "reference": "057e1c8738c40000c2fa3c0e75fb6adc8e008d32"
             },
             "replace": {
                 "icubeus/module-ipay88": "self.version"
@@ -4198,7 +4228,7 @@
                 "veritrans",
                 "vt-direct"
             ],
-            "time": "2022-05-17T08:23:29+00:00"
+            "time": "2022-08-29T17:41:39+00:00"
         },
         {
             "name": "icubeus/magento2-queues",
@@ -4242,50 +4272,6 @@
             "time": "2021-12-23T08:25:23+00:00"
         },
         {
-            "name": "icubeus/magento2-rapidflow",
-            "version": "7.2.2",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:icubeus/magento2-rapidflow.git",
-                "reference": "49d62f837cb4eeab43970182d2948b0fb3d0b49c"
-            },
-            "require": {
-                "php": ">=7.0.2"
-            },
-            "replace": {
-                "icubeus/module-rapidflow": "self.version",
-                "icubeus/module-rapidflowpro": "self.version"
-            },
-            "type": "magento2-component",
-            "autoload": {
-                "files": [
-                    "src/module-rapidflow/registration.php",
-                    "src/module-rapidflowpro/registration.php"
-                ],
-                "psr-4": {
-                    "Unirgy\\RapidFlow\\": "src/module-rapidflow",
-                    "Unirgy\\RapidFlowPro\\": "src/module-rapidflowpro"
-                }
-            },
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "icubeus",
-                    "email": "sales@icube.us"
-                }
-            ],
-            "description": "repidflow for import product",
-            "homepage": "https://github.com/icubeus/magento2-rapidflow",
-            "keywords": [
-                "magento",
-                "magento2",
-                "rapidflow"
-            ],
-            "time": "2021-03-03T09:37:21+00:00"
-        },
-        {
             "name": "icubeus/magento2-shippingbase",
             "version": "4.1.7",
             "source": {
@@ -4325,11 +4311,11 @@
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.21",
+            "version": "4.1.23",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "1700ab17c16aa7005c407c5e0c59fbbed84198fc"
+                "reference": "c83c9c520b981fdc35d9cd7e740f38570bbfab4d"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -4362,19 +4348,18 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-07-18T02:54:23+00:00"
+            "time": "2022-08-29T17:55:30+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
-            "version": "4.1.1",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-smsgateaway.git",
-                "reference": "067fabaf4a935cfe7b8790537576fdbb94c78936"
+                "reference": "062215db77360eccfc572aa23ffef31eb3485d3c"
             },
             "replace": {
                 "icubeus/module-citcal": "self.version",
-                "icubeus/module-lenna": "self.version",
                 "icubeus/module-sirclochat": "self.version",
                 "icubeus/module-twilio": "self.version"
             },
@@ -4382,13 +4367,11 @@
             "autoload": {
                 "files": [
                     "src/module-twilio/registration.php",
-                    "src/module-lenna/registration.php",
                     "src/module-citcal/registration.php",
                     "src/module-sirclochat/registration.php"
                 ],
                 "psr-4": {
                     "Icube\\Twilio\\": "src/module-twilio",
-                    "Icube\\Lenna\\": "src/module-lenna",
                     "Icube\\Citcall\\": "src/module-citcal",
                     "Icube\\SircloChat\\": "src/module-sirclochat"
                 }
@@ -4409,94 +4392,46 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2021-11-24T09:05:01+00:00"
-        },
-        {
-            "name": "icubeus/magento2-smstada",
-            "version": "4.1.8",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:icubeus/magento2-smstada.git",
-                "reference": "a087474e376018905cb09024ff04dcf67d3dc3cb"
-            },
-            "require": {
-                "icubeus/magento2-smsgateaway": "^4.1"
-            },
-            "replace": {
-                "icubeus/module-smsotp": "self.version",
-                "icubeus/module-tada": "self.version",
-                "icubeus/module-telephone": "self.version"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "src/module-smsotp/registration.php",
-                    "src/module-tada/registration.php",
-                    "src/module-telephone/registration.php"
-                ],
-                "psr-4": {
-                    "Icube\\SmsOtp\\": "src/module-smsotp",
-                    "Icube\\Tada\\": "src/module-tada",
-                    "Icube\\Telephone\\": "src/module-telephone"
-                }
-            },
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "icubeus",
-                    "email": "sales@icube.us"
-                }
-            ],
-            "description": "SMS OTP and Tada memberships",
-            "homepage": "https://github.com/icubeus/magento2-smstada",
-            "keywords": [
-                "magento",
-                "magento2"
-            ],
-            "time": "2022-04-25T12:02:48+00:00"
+            "time": "2022-08-29T18:14:24+00:00"
         },
         {
             "name": "icubeus/magento2-swift-core",
-            "version": "4.0.25",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swift-core.git",
-                "reference": "8b59a46568cc238c48597c025d4998d7757f287b"
+                "reference": "d56875800f9378a95016ee639d896eb698a90aad"
             },
             "require": {
                 "ebizmarts/mailchimp-lib": "^3.0",
-                "icubebysirclo/magento2-aheadworks": "4.0.3",
-                "icubebysirclo/magento2-amasty": "4.0.1",
+                "icube-mage/magento2-voltwig": "1.0.2",
+                "icubebysirclo/magento2-aheadworks": "4.1.0",
+                "icubebysirclo/magento2-amasty": "4.1.0",
                 "icubebysirclo/magento2-facebookshop": "4.0.4",
-                "icubebysirclo/magento2-firebear": "4.0.5",
-                "icubebysirclo/magento2-magezon": "4.0.1",
-                "icubebysirclo/magento2-promo": "4.0.4",
-                "icubebysirclo/magento2-shippinglogistix": "4.0.12",
-                "icubebysirclo/magento2-shippingpopaket": "4.0.3",
-                "icubebysirclo/magento2-weltpixel": "4.0.7",
-                "icubebysirclo/magento2-xendit": "4.0.5",
-                "icubeus/magento2-advancerate": "4.1.8",
-                "icubeus/magento2-checkout": "4.1.25",
+                "icubebysirclo/magento2-firebear": "4.0.6",
+                "icubebysirclo/magento2-magezon": "4.0.2",
+                "icubebysirclo/magento2-promo": "4.1.0",
+                "icubebysirclo/magento2-shippinglogistix": "4.0.13",
+                "icubebysirclo/magento2-shippingpopaket": "4.0.4",
+                "icubebysirclo/magento2-weltpixel": "4.1.0",
+                "icubebysirclo/magento2-xendit": "4.0.6",
+                "icubeus/magento2-advancerate": "4.1.9",
+                "icubeus/magento2-checkout": "4.2.0",
                 "icubeus/magento2-citykecamatan": "4.1.11",
                 "icubeus/magento2-confirmpayment": "4.1.1",
                 "icubeus/magento2-firebase": "4.1.4",
-                "icubeus/magento2-graphql": "4.1.33",
+                "icubeus/magento2-graphql": "4.1.36",
                 "icubeus/magento2-indonesianlanguage": "4.1.0",
-                "icubeus/magento2-instantdelivery": "4.1.11",
-                "icubeus/magento2-notification": "4.1.9",
-                "icubeus/magento2-payment": "4.1.5",
+                "icubeus/magento2-instantdelivery": "4.2.0",
+                "icubeus/magento2-notification": "4.2.0",
+                "icubeus/magento2-payment": "4.1.6",
                 "icubeus/magento2-queues": "4.1.1",
-                "icubeus/magento2-rapidflow": "7.2.2",
                 "icubeus/magento2-shippingbase": "4.1.7",
-                "icubeus/magento2-shippingshipper": "4.1.21",
-                "icubeus/magento2-smsgateaway": "4.1.1",
-                "icubeus/magento2-smstada": "4.1.8",
-                "icubeus/magento2-swiftomschannel": "4.1.16",
-                "icubeus/magento2-trackorder": "4.1.8",
-                "icubeus/magento2-veritranspayment": "4.1.16"
+                "icubeus/magento2-shippingshipper": "4.1.23",
+                "icubeus/magento2-smsgateaway": "4.2.0",
+                "icubeus/magento2-swiftomschannel": "4.1.18",
+                "icubeus/magento2-trackorder": "4.1.10",
+                "icubeus/magento2-veritranspayment": "4.2.0"
             },
             "replace": {
                 "icubeus/module-bold-order-comment": "self.version",
@@ -4505,13 +4440,11 @@
                 "icubeus/module-ethan-yehuda-cronjob-manager": "self.version",
                 "icubeus/module-icube-bank-list": "self.version",
                 "icubeus/module-icube-brands": "self.version",
-                "icubeus/module-icube-bundle-product": "self.version",
                 "icubeus/module-icube-cancel-order-email": "self.version",
                 "icubeus/module-icube-catalog-search": "self.version",
                 "icubeus/module-icube-catalog-wysiwyg": "self.version",
                 "icubeus/module-icube-check-city": "self.version",
                 "icubeus/module-icube-check-fraud": "self.version",
-                "icubeus/module-icube-csp": "self.version",
                 "icubeus/module-icube-custom-catalog-image-resize": "self.version",
                 "icubeus/module-icube-custom-salable": "self.version",
                 "icubeus/module-icube-customer": "self.version",
@@ -4519,13 +4452,10 @@
                 "icubeus/module-icube-elasticsuite-catalog": "self.version",
                 "icubeus/module-icube-email": "self.version",
                 "icubeus/module-icube-guest-checkout": "self.version",
-                "icubeus/module-icube-how-to-pay": "self.version",
                 "icubeus/module-icube-information": "self.version",
                 "icubeus/module-icube-lazy-loading-webp": "self.version",
                 "icubeus/module-icube-log": "self.version",
-                "icubeus/module-icube-order-comment": "self.version",
                 "icubeus/module-icube-payment-reminder": "self.version",
-                "icubeus/module-icube-paypal": "self.version",
                 "icubeus/module-icube-pdf": "self.version",
                 "icubeus/module-icube-quote": "self.version",
                 "icubeus/module-icube-sales-rule": "self.version",
@@ -4555,12 +4485,10 @@
                     "src/module-ethan-yehuda-cronjob-manager/registration.php",
                     "src/module-icube-bank-list/registration.php",
                     "src/module-icube-brands/registration.php",
-                    "src/module-icube-bundle-product/registration.php",
                     "src/module-icube-cancel-order-email/registration.php",
                     "src/module-icube-catalog-search/registration.php",
                     "src/module-icube-catalog-wysiwyg/registration.php",
                     "src/module-icube-check-city/registration.php",
-                    "src/module-icube-csp/registration.php",
                     "src/module-icube-custom-catalog-image-resize/registration.php",
                     "src/module-icube-custom-salable/registration.php",
                     "src/module-icube-customer/registration.php",
@@ -4568,12 +4496,9 @@
                     "src/module-icube-elasticsuite-catalog/registration.php",
                     "src/module-icube-email/registration.php",
                     "src/module-icube-guest-checkout/registration.php",
-                    "src/module-icube-how-to-pay/registration.php",
                     "src/module-icube-information/registration.php",
                     "src/module-icube-lazy-loading-webp/registration.php",
-                    "src/module-icube-order-comment/registration.php",
                     "src/module-icube-payment-reminder/registration.php",
-                    "src/module-icube-paypal/registration.php",
                     "src/module-icube-pdf/registration.php",
                     "src/module-icube-quote/registration.php",
                     "src/module-icube-sales-rule/registration.php",
@@ -4603,12 +4528,10 @@
                     "EthanYehuda\\CronjobManager\\": "src/module-ethan-yehuda-cronjob-manager",
                     "Icube\\BankList\\": "src/module-icube-bank-list",
                     "Icube\\Brands\\": "src/module-icube-brands",
-                    "Icube\\BundleProduct\\": "src/module-icube-bundle-product",
                     "Icube\\CancelOrderEmail\\": "src/module-icube-cancel-order-email",
                     "Icube\\CatalogSearch\\": "src/module-icube-catalog-search",
                     "Icube\\CatalogWysiwyg\\": "src/module-icube-catalog-wysiwyg",
                     "Icube\\CheckCity\\": "src/module-icube-check-city",
-                    "Icube\\Csp\\": "src/module-icube-csp",
                     "Icube\\CustomCatalogImageResize\\": "src/module-icube-custom-catalog-image-resize",
                     "Icube\\CustomSalable\\": "src/module-icube-custom-salable",
                     "Icube\\Customer\\": "src/module-icube-customer",
@@ -4616,12 +4539,9 @@
                     "Icube\\ElasticsuiteCatalog\\": "src/module-icube-elasticsuite-catalog",
                     "Icube\\Email\\": "src/module-icube-email",
                     "Icube\\GuestCheckout\\": "src/module-icube-guest-checkout",
-                    "Icube\\HowToPay\\": "src/module-icube-how-to-pay",
                     "Icube\\Information\\": "src/module-icube-information",
                     "Icube\\LazyLoadingWebp\\": "src/module-icube-lazy-loading-webp",
-                    "Icube\\OrderComment\\": "src/module-icube-order-comment",
                     "Icube\\PaymentReminder\\": "src/module-icube-payment-reminder",
-                    "Icube\\Paypal\\": "src/module-icube-paypal",
                     "Icube\\Pdf\\": "src/module-icube-pdf",
                     "Icube\\Quote\\": "src/module-icube-quote",
                     "Icube\\SalesRule\\": "src/module-icube-sales-rule",
@@ -4661,17 +4581,18 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-07-18T02:58:17+00:00"
+            "time": "2022-08-29T18:27:54+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.16",
+            "version": "4.1.18",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "0d175e7f777499598ade4d89da8aa08885abb3a2"
+                "reference": "1dff7b0aab3dfc65df3e7f694073f007aec48565"
             },
             "replace": {
+                "icubeus/module-autocreditmemo": "self.version",
                 "icubeus/module-autoinvoice": "self.version",
                 "icubeus/module-autoshipment": "self.version",
                 "icubeus/module-giftcard": "self.version",
@@ -4695,7 +4616,8 @@
                     "src/module-orderstatus/registration.php",
                     "src/module-giftcard/registration.php",
                     "src/module-autoshipment/registration.php",
-                    "src/module-autoinvoice/registration.php"
+                    "src/module-autoinvoice/registration.php",
+                    "src/module-autocreditmemo/registration.php"
                 ],
                 "psr-4": {
                     "Swiftoms\\OmsConnect\\": "src/module-omsconnect",
@@ -4707,7 +4629,8 @@
                     "Swiftoms\\OrderStatus\\": "src/module-orderstatus",
                     "Swiftoms\\Giftcard\\": "src/module-giftcard",
                     "Swiftoms\\Shipment\\": "src/module-autoshipment",
-                    "Swift\\Invoice\\": "src/module-autoinvoice"
+                    "Swift\\Invoice\\": "src/module-autoinvoice",
+                    "Swift\\CreditMemo\\": "src/module-autocreditmemo"
                 }
             },
             "license": [
@@ -4728,15 +4651,15 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2022-05-17T07:58:46+00:00"
+            "time": "2022-08-29T17:35:52+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
-            "version": "4.1.8",
+            "version": "4.1.10",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-trackorder.git",
-                "reference": "6bf439f2e4ab30fe33edee01f80b8465bb6ae9c2"
+                "reference": "a3377d3453d30af527dc52c8216b6a026efa2b96"
             },
             "type": "magento2-module",
             "autoload": {
@@ -4756,21 +4679,18 @@
                 "magento 2",
                 "trackorder"
             ],
-            "time": "2022-02-10T04:14:11+00:00"
+            "time": "2022-08-29T17:34:37+00:00"
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.1.16",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "3ccf16c8ca83f6cd31ffca92423d0512ef4fadf8"
+                "reference": "6668eefc72e5caff211103874420e2d5f00c2d9c"
             },
             "replace": {
-                "icubeus/module-snap": "self.version",
-                "icubeus/module-vtdirect": "self.version",
-                "icubeus/module-vtdirectins": "self.version",
-                "icubeus/module-vtdirectva": "self.version"
+                "icubeus/module-snap": "self.version"
             },
             "type": "magento2-component",
             "extra": {
@@ -4783,15 +4703,9 @@
             },
             "autoload": {
                 "files": [
-                    "src/module-vtdirect/registration.php",
-                    "src/module-vtdirectins/registration.php",
-                    "src/module-vtdirectva/registration.php",
                     "src/module-snap/registration.php"
                 ],
                 "psr-4": {
-                    "Icubeus\\VTDirect\\": "src/module-vtdirect",
-                    "Icubeus\\VTDirectins\\": "src/module-vtdirectins",
-                    "Icubeus\\VTDirectva\\": "src/module-vtdirectva",
                     "Icube\\Snap\\": "src/module-snap"
                 }
             },
@@ -4810,10 +4724,9 @@
                 "magento",
                 "magento2",
                 "payment",
-                "veritrans",
-                "vt-direct"
+                "veritrans"
             ],
-            "time": "2022-04-25T11:45:26+00:00"
+            "time": "2022-08-29T17:45:59+00:00"
         },
         {
             "name": "jms/metadata",
@@ -5092,16 +5005,16 @@
         },
         {
             "name": "kreait/firebase-tokens",
-            "version": "1.16.1",
+            "version": "1.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kreait/firebase-tokens-php.git",
-                "reference": "595ad06cb5f75c188d8fbfdefc9078c3ec8aa5e8"
+                "reference": "cad73174508a20961bae72a4c4a621208be83ee4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kreait/firebase-tokens-php/zipball/595ad06cb5f75c188d8fbfdefc9078c3ec8aa5e8",
-                "reference": "595ad06cb5f75c188d8fbfdefc9078c3ec8aa5e8",
+                "url": "https://api.github.com/repos/kreait/firebase-tokens-php/zipball/cad73174508a20961bae72a4c4a621208be83ee4",
+                "reference": "cad73174508a20961bae72a4c4a621208be83ee4",
                 "shasum": ""
             },
             "require": {
@@ -5110,21 +5023,21 @@
                 "fig/http-message-util": "^1.1.5",
                 "guzzlehttp/guzzle": "^6.3.1|^7.0",
                 "kreait/clock": "^1.1.0",
-                "lcobucci/jwt": "^3.4.6|^4.0.4|^4.1.5",
+                "lcobucci/jwt": "^4.0.4|^4.1.5",
                 "php": "^7.4|^8.0",
                 "psr/cache": "^1.0|^2.0|^3.0",
                 "psr/simple-cache": "^1.0.1"
             },
             "require-dev": {
-                "firebase/php-jwt": "^5.3",
-                "friendsofphp/php-cs-fixer": "^3.0",
+                "firebase/php-jwt": "^5.5.1",
+                "friendsofphp/php-cs-fixer": "^3.10",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^0.12.88",
-                "phpstan/phpstan-phpunit": "^0.12.19",
-                "phpunit/phpunit": "^9.5",
-                "rector/rector": "^0.11.16",
-                "symfony/cache": "^5.3",
-                "symfony/var-dumper": "^5.3"
+                "phpstan/phpstan": "^0.12.99",
+                "phpstan/phpstan-phpunit": "^0.12.22",
+                "phpunit/phpunit": "^9.5.23",
+                "rector/rector": "^0.11.60",
+                "symfony/cache": "^5.4.11",
+                "symfony/var-dumper": "^5.4.11"
             },
             "suggest": {
                 "firebase/php-jwt": "^5.0 can be used to create and parse tokens",
@@ -5161,7 +5074,7 @@
             ],
             "support": {
                 "issues": "https://github.com/kreait/firebase-tokens-php/issues",
-                "source": "https://github.com/kreait/firebase-tokens-php/tree/1.16.1"
+                "source": "https://github.com/kreait/firebase-tokens-php/tree/1.17.0"
             },
             "funding": [
                 {
@@ -5169,7 +5082,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-10-03T00:41:06+00:00"
+            "time": "2022-08-22T21:31:22+00:00"
         },
         {
             "name": "laminas/laminas-captcha",
@@ -7337,16 +7250,16 @@
         },
         {
             "name": "lcobucci/jwt",
-            "version": "4.1.5",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/jwt.git",
-                "reference": "fe2d89f2eaa7087af4aa166c6f480ef04e000582"
+                "reference": "72ac6d807ee51a70ad376ee03a2387e8646e10f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/fe2d89f2eaa7087af4aa166c6f480ef04e000582",
-                "reference": "fe2d89f2eaa7087af4aa166c6f480ef04e000582",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/72ac6d807ee51a70ad376ee03a2387e8646e10f3",
+                "reference": "72ac6d807ee51a70ad376ee03a2387e8646e10f3",
                 "shasum": ""
             },
             "require": {
@@ -7362,12 +7275,12 @@
                 "infection/infection": "^0.21",
                 "lcobucci/coding-standard": "^6.0",
                 "mikey179/vfsstream": "^1.6.7",
-                "phpbench/phpbench": "^1.0",
+                "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-deprecation-rules": "^0.12",
-                "phpstan/phpstan-phpunit": "^0.12",
-                "phpstan/phpstan-strict-rules": "^0.12",
+                "phpstan/phpstan": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpstan/phpstan-strict-rules": "^1.0",
                 "phpunit/php-invoker": "^3.1",
                 "phpunit/phpunit": "^9.5"
             },
@@ -7395,7 +7308,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lcobucci/jwt/issues",
-                "source": "https://github.com/lcobucci/jwt/tree/4.1.5"
+                "source": "https://github.com/lcobucci/jwt/tree/4.2.1"
             },
             "funding": [
                 {
@@ -7407,7 +7320,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2021-09-28T19:34:56+00:00"
+            "time": "2022-08-19T23:14:07+00:00"
         },
         {
             "name": "league/flysystem",
@@ -20087,16 +20000,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "2.7.0",
+            "version": "2.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "5579edf28aee1190a798bfa5be8bc16c563bd524"
+                "reference": "720488632c590286b88b80e62aa3d3d551ad4a50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/5579edf28aee1190a798bfa5be8bc16c563bd524",
-                "reference": "5579edf28aee1190a798bfa5be8bc16c563bd524",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/720488632c590286b88b80e62aa3d3d551ad4a50",
+                "reference": "720488632c590286b88b80e62aa3d3d551ad4a50",
                 "shasum": ""
             },
             "require": {
@@ -20116,11 +20029,10 @@
                 "guzzlehttp/psr7": "^2.2",
                 "mongodb/mongodb": "^1.8",
                 "php-amqplib/php-amqplib": "~2.4 || ^3",
-                "php-console/php-console": "^3.1.3",
                 "phpspec/prophecy": "^1.15",
                 "phpstan/phpstan": "^0.12.91",
                 "phpunit/phpunit": "^8.5.14",
-                "predis/predis": "^1.1",
+                "predis/predis": "^1.1 || ^2.0",
                 "rollbar/rollbar": "^1.3 || ^2 || ^3",
                 "ruflin/elastica": "^7",
                 "swiftmailer/swiftmailer": "^5.3|^6.0",
@@ -20140,7 +20052,6 @@
                 "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
                 "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
                 "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
-                "php-console/php-console": "Allow sending log messages to Google Chrome",
                 "rollbar/rollbar": "Allow sending log messages to Rollbar",
                 "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
             },
@@ -20175,7 +20086,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/2.7.0"
+                "source": "https://github.com/Seldaek/monolog/tree/2.8.0"
             },
             "funding": [
                 {
@@ -20187,7 +20098,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-09T08:59:12+00:00"
+            "time": "2022-07-24T11:55:47+00:00"
         },
         {
             "name": "moontoast/math",
@@ -24145,16 +24056,16 @@
         },
         {
             "name": "stella-maris/clock",
-            "version": "0.1.4",
+            "version": "0.1.5",
             "source": {
                 "type": "git",
-                "url": "https://gitlab.com/stella-maris/clock.git",
-                "reference": "8a0a967896df4c63417385dc69328a0aec84d9cf"
+                "url": "git@gitlab.com:stella-maris/clock.git",
+                "reference": "447879c53ca0b2a762cdbfba5e76ccf4deca9158"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/stella-maris%2Fclock/repository/archive.zip?sha=8a0a967896df4c63417385dc69328a0aec84d9cf",
-                "reference": "8a0a967896df4c63417385dc69328a0aec84d9cf",
+                "url": "https://gitlab.com/api/v4/projects/stella-maris%2Fclock/repository/archive.zip?sha=447879c53ca0b2a762cdbfba5e76ccf4deca9158",
+                "reference": "447879c53ca0b2a762cdbfba5e76ccf4deca9158",
                 "shasum": ""
             },
             "require": {
@@ -24184,11 +24095,7 @@
                 "point in time",
                 "psr20"
             ],
-            "support": {
-                "issues": "https://gitlab.com/stella-maris/clock/-/issues",
-                "source": "https://gitlab.com/stella-maris/clock/-/tree/0.1.4"
-            },
-            "time": "2022-04-17T14:12:26+00:00"
+            "time": "2022-08-05T07:21:25+00:00"
         },
         {
             "name": "symfony/config",
