@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0dd289f286d3c79f633eb0d23a5bc377",
+    "content-hash": "563af2a8c305e52a1c9810b9d030073d",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2117,46 +2117,6 @@
                 "source": "https://github.com/ezimuel/ringphp/tree/1.2.0"
             },
             "time": "2021-11-16T11:51:30+00:00"
-        },
-        {
-            "name": "fabrizioballiano/deferjavascripts",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fballiano/magento2-defer-javascripts.git",
-                "reference": "a90ee640881a8d5fc68be946e2c23f18ac675046"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fballiano/magento2-defer-javascripts/zipball/a90ee640881a8d5fc68be946e2c23f18ac675046",
-                "reference": "a90ee640881a8d5fc68be946e2c23f18ac675046",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "FabrizioBalliano\\DeferJavascripts\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "OSL 3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Fabrizio Balliano",
-                    "email": "fabrizio@fabrizioballiano.com"
-                }
-            ],
-            "description": "Moves all your javascripts to the very end of your HTML (only on frontend) making search engines and speed metering tools happy.",
-            "support": {
-                "issues": "https://github.com/fballiano/magento2-defer-javascripts/issues",
-                "source": "https://github.com/fballiano/magento2-defer-javascripts/tree/master"
-            },
-            "time": "2016-09-09T11:38:26+00:00"
         },
         {
             "name": "fgrosse/phpasn1",
@@ -27526,5 +27486,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }
