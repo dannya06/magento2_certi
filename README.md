@@ -26,6 +26,8 @@ Instalation:
     git checkout composer.*
 
     composer install
+
+    sh global_patch.sh
 		
     php bin/magento setup:upgrade
 
