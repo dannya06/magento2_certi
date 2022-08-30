@@ -1,7 +1,7 @@
-FROM asia.gcr.io/sirclo-iii-nonprod/mgt-swift74:91f85256742729071555efb9ca445b026808e9e3-1656037500
+FROM asia.gcr.io/sirclo-iii-nonprod/mgt-swift81:2965ff94ed7b70a8bc6a555a071c7123f167b913-1658402581
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG php_version="7.4"
+ARG php_version="8.1"
 ARG dir_composer="/home/app/site/vendor"
 ARG dst_mnt="/home/app/site/pub/errors/default"
 
