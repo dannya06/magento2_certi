@@ -1,0 +1,13 @@
+diff --git a/vendor/magento/module-wishlist/etc/db_schema.xml b/vendor/magento/module-wishlist/etc/db_schema.xml
+--- a/vendor/magento/module-wishlist/etc/db_schema.xml	2022-07-29 09:01:38.000000000 +0700
++++ b/vendor/magento/module-wishlist/etc/db_schema.xml	2022-07-29 14:33:26.000000000 +0700
+@@ -22,9 +22,6 @@
+         <constraint xsi:type="foreign" referenceId="WISHLIST_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID" table="wishlist"
+                     column="customer_id" referenceTable="customer_entity" referenceColumn="entity_id"
+                     onDelete="CASCADE"/>
+-        <constraint xsi:type="unique" referenceId="WISHLIST_CUSTOMER_ID">
+-            <column name="customer_id"/>
+-        </constraint>
+         <index referenceId="WISHLIST_SHARED" indexType="btree">
+             <column name="shared"/>
+         </index>
