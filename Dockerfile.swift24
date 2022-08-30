@@ -19,8 +19,7 @@ WORKDIR /home/app/site
 USER app
 
 # Composer process
-RUN composer global require hirak/prestissimo && \
-    composer install --prefer-dist
+RUN composer install --prefer-dist
 
 # Start line patch
 RUN sh global_patch.sh
