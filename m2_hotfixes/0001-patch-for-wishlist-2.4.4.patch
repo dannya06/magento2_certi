@@ -1,7 +1,20 @@
+From 8cae0d232c7a71949c5c1c23f5c509b2467a7ceb Mon Sep 17 00:00:00 2001
+From: icube-yuwan <yuma.anugrah@mail.sirclo.com>
+Date: Wed, 31 Aug 2022 10:45:48 +0000
+Subject: [PATCH] change patch
+
+---
+ vendor/magento/module-wishlist/etc/db_schema.xml | 6 ------
+ 1 file changed, 6 deletions(-)
+
 diff --git a/vendor/magento/module-wishlist/etc/db_schema.xml b/vendor/magento/module-wishlist/etc/db_schema.xml
---- a/vendor/magento/module-wishlist/etc/db_schema.xml	2022-07-29 09:01:38.000000000 +0700
-+++ b/vendor/magento/module-wishlist/etc/db_schema.xml	2022-07-29 14:33:26.000000000 +0700
-@@ -22,9 +22,6 @@
+index 8038f0452..5e603825b 100644
+--- a/vendor/magento/module-wishlist/etc/db_schema.xml
++++ b/vendor/magento/module-wishlist/etc/db_schema.xml
+@@ -19,12 +19,6 @@
+         <constraint xsi:type="primary" referenceId="PRIMARY">
+             <column name="wishlist_id"/>
+         </constraint>
 -        <constraint xsi:type="foreign" referenceId="WISHLIST_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID" table="wishlist"
 -                    column="customer_id" referenceTable="customer_entity" referenceColumn="entity_id"
 -                    onDelete="CASCADE"/>
@@ -11,3 +24,6 @@ diff --git a/vendor/magento/module-wishlist/etc/db_schema.xml b/vendor/magento/m
          <index referenceId="WISHLIST_SHARED" indexType="btree">
              <column name="shared"/>
          </index>
+-- 
+2.30.2
+
