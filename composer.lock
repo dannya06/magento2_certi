@@ -3037,7 +3037,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-aheadworks.git",
-                "reference": "38a388b3301ae89abdba8db59940f32790b8339b"
+                "reference": "58755fc3054b22e4a12a31e4f6f3dc2c39dbfab8"
             },
             "replace": {
                 "icubebysirclo/module-aheadworks-advanced-reports": "self.version",
@@ -3100,7 +3100,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-29T18:00:59+00:00"
+            "time": "2022-08-31T12:59:04+00:00"
         },
         {
             "name": "icubebysirclo/magento2-amasty",
@@ -3852,7 +3852,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "711e12595966345593f2dd3fa465690e7d39b918"
+                "reference": "cc8b3a05241c1262d62176d1c22575098cf74454"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^8.12",
@@ -4019,7 +4019,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-29T19:01:20+00:00"
+            "time": "2022-08-31T11:07:08+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -19802,16 +19802,16 @@
         },
         {
             "name": "microsoft/microsoft-graph",
-            "version": "1.73.0",
+            "version": "1.74.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoftgraph/msgraph-sdk-php.git",
-                "reference": "a867c548899436d5279d191d5163a831ac9ea672"
+                "reference": "a43deb66661917d92bf62de1f29f6799b30ea91c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/a867c548899436d5279d191d5163a831ac9ea672",
-                "reference": "a867c548899436d5279d191d5163a831ac9ea672",
+                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/a43deb66661917d92bf62de1f29f6799b30ea91c",
+                "reference": "a43deb66661917d92bf62de1f29f6799b30ea91c",
                 "shasum": ""
             },
             "require": {
@@ -19847,9 +19847,9 @@
             "homepage": "https://developer.microsoft.com/en-us/graph",
             "support": {
                 "issues": "https://github.com/microsoftgraph/msgraph-sdk-php/issues",
-                "source": "https://github.com/microsoftgraph/msgraph-sdk-php/tree/1.73.0"
+                "source": "https://github.com/microsoftgraph/msgraph-sdk-php/tree/1.74.0"
             },
-            "time": "2022-07-20T14:56:50+00:00"
+            "time": "2022-08-31T12:12:48+00:00"
         },
         {
             "name": "mikey179/vfsstream",
@@ -27486,5 +27486,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }
