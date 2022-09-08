@@ -1,0 +1,26 @@
+From adf8943dd8dfb951e1d877ee2ec63d55c1ee65a9 Mon Sep 17 00:00:00 2001
+From: icube-yuwan <yuma.anugrah@mail.sirclo.com>
+Date: Tue, 6 Sep 2022 02:51:08 +0000
+Subject: [PATCH] change patch ezimuel
+
+---
+ vendor/ezimuel/ringphp/src/Client/CurlMultiHandler.php | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/vendor/ezimuel/ringphp/src/Client/CurlMultiHandler.php b/vendor/ezimuel/ringphp/src/Client/CurlMultiHandler.php
+index f84cf1993..c495f7e5f 100644
+--- a/vendor/ezimuel/ringphp/src/Client/CurlMultiHandler.php
++++ b/vendor/ezimuel/ringphp/src/Client/CurlMultiHandler.php
+@@ -130,6 +130,9 @@ class CurlMultiHandler
+             }
+ 
+             do {
++                if ($this->active === null) {
++                    $this->active = 0;
++                }
+                 $mrc = curl_multi_exec($this->_mh, $this->active);
+             } while ($mrc === CURLM_CALL_MULTI_PERFORM);
+ 
+-- 
+2.30.2
+
