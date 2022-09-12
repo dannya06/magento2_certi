@@ -1,0 +1,25 @@
+From a25f20a3b05c519ae20b59d4c1d4ef95ab7066b1 Mon Sep 17 00:00:00 2001
+From: icube-yuwan <yuma.anugrah@mail.sirclo.com>
+Date: Mon, 12 Sep 2022 05:50:28 +0000
+Subject: [PATCH] change patch
+
+---
+ vendor/magento/module-graph-ql/Controller/GraphQl.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/vendor/magento/module-graph-ql/Controller/GraphQl.php b/vendor/magento/module-graph-ql/Controller/GraphQl.php
+index 2eb5aa81c..f03079c89 100644
+--- a/vendor/magento/module-graph-ql/Controller/GraphQl.php
++++ b/vendor/magento/module-graph-ql/Controller/GraphQl.php
+@@ -205,7 +205,7 @@ class GraphQl implements FrontControllerInterface
+         $jsonResult->renderResult($this->httpResponse);
+ 
+         // log information about the query, unless it is an introspection query
+-        if (strpos($data['query'], 'IntrospectionQuery') === false) {
++        if (!isset($data['query']) || strpos($data['query'], 'IntrospectionQuery') === false) {
+             $queryInformation = $this->logDataHelper->getLogData($request, $data, $schema, $this->httpResponse);
+             $this->loggerPool->execute($queryInformation);
+         }
+-- 
+2.30.2
+
