@@ -14,5 +14,6 @@ patch -p1 --forward < m2_hotfixes/0001-patch-for-social-login-2.4.4.patch || tru
 patch -p1 --forward < m2_hotfixes/0001-patch-for-wishlist-2.4.4.patch || true
 patch -p1 --forward < m2_hotfixes/MDVA_44887_2_4_4.patch || true
 patch -p1 --forward < m2_hotfixes/0001-patch-for-ezimuel.patch || true
+patch -p1 --forward < m2_hotfixes/0001-patch-for-controller-graphql.patch || true
 
 ######################### END of line patch ##############################
