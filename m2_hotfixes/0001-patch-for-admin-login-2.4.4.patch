@@ -1,0 +1,516 @@
+From 51b28214bf43caf8a95027138dbc592de7beba68 Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Wed, 3 Nov 2021 14:24:23 +0530
+Subject: [PATCH 01/13] main.CRITICAL: TypeError: strtotime() expects parameter
+ 1 to be string, null
+
+main.CRITICAL: TypeError: strtotime() expects parameter 1 to be string, null given in ...security/Model/AdminSessionInfo.php:136
+---
+ vendor/magento/module-security/Model/AdminSessionInfo.php | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionInfo.php b/vendor/magento/module-security/Model/AdminSessionInfo.php
+index c14d399e98ca..9c422989367f 100644
+--- a/vendor/magento/module-security/Model/AdminSessionInfo.php
++++ b/vendor/magento/module-security/Model/AdminSessionInfo.php
+@@ -133,7 +133,11 @@ public function isSessionExpired()
+         $currentTime = $this->dateTime->gmtTimestamp();
+         $lastUpdatedTime = $this->getUpdatedAt();
+         if (!is_numeric($lastUpdatedTime)) {
+-            $lastUpdatedTime = strtotime($lastUpdatedTime);
++            if($lastUpdatedTime === null) {
++                $lastUpdatedTime = 0;
++            }else {
++                $lastUpdatedTime = strtotime($lastUpdatedTime);
++            }
+         }
+ 
+         return $lastUpdatedTime <= ($currentTime - $lifetime) ? true : false;
+
+From 7af375ee10a8fa541a0562d955741bc1555e5dff Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Wed, 3 Nov 2021 14:26:25 +0530
+Subject: [PATCH 02/13] strtotime() expects parameter 1 to be string, int
+ ...security/Model/AdminSessionsManager.php(338)
+
+TypeError: strtotime() expects parameter 1 to be string, int given
+#28 /var/www/share/meevo.io/releases/66/vendor/magento/module-security/Model/AdminSessionsManager.php(338):
+---
+ vendor/magento/module-security/Model/AdminSessionsManager.php | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionsManager.php b/vendor/magento/module-security/Model/AdminSessionsManager.php
+index 154760eb835d..605f99caddb1 100644
+--- a/vendor/magento/module-security/Model/AdminSessionsManager.php
++++ b/vendor/magento/module-security/Model/AdminSessionsManager.php
+@@ -335,7 +335,11 @@ protected function createAdminSessionInfoCollection()
+      */
+     private function lastProlongIsOldEnough()
+     {
+-        $lastProlongTimestamp = strtotime($this->getCurrentSession()->getUpdatedAt());
++        $lastUpdatedTime = $this->getCurrentSession()->getUpdatedAt();
++        if($lastUpdatedTime === null || is_numeric($lastUpdatedTime)) {
++            $lastUpdatedTime = "now";
++        }
++        $lastProlongTimestamp = strtotime($lastUpdatedTime);
+         $nowTimestamp = $this->authSession->getUpdatedAt();
+ 
+         $diff = $nowTimestamp - $lastProlongTimestamp;
+
+From 5e885af6b09b8c5209f7883779baf380499546e0 Mon Sep 17 00:00:00 2001
+From: Denis Kopylov <dkopylov@magenius.team>
+Date: Wed, 3 Nov 2021 13:54:14 +0300
+Subject: [PATCH 03/13] Update
+ vendor/magento/module-security/Model/AdminSessionInfo.php
+
+---
+ vendor/magento/module-security/Model/AdminSessionInfo.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionInfo.php b/vendor/magento/module-security/Model/AdminSessionInfo.php
+index 9c422989367f..3c0560d67c32 100644
+--- a/vendor/magento/module-security/Model/AdminSessionInfo.php
++++ b/vendor/magento/module-security/Model/AdminSessionInfo.php
+@@ -135,7 +135,7 @@ public function isSessionExpired()
+         if (!is_numeric($lastUpdatedTime)) {
+             if($lastUpdatedTime === null) {
+                 $lastUpdatedTime = 0;
+-            }else {
++            } else {
+                 $lastUpdatedTime = strtotime($lastUpdatedTime);
+             }
+         }
+
+From 47f6999893793ab34f7a9b06cfc41044f99f5f4d Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Thu, 4 Nov 2021 00:05:51 +0530
+Subject: [PATCH 04/13] update spaces
+
+---
+ vendor/magento/module-security/Model/AdminSessionInfo.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionInfo.php b/vendor/magento/module-security/Model/AdminSessionInfo.php
+index 3c0560d67c32..49986bd44879 100644
+--- a/vendor/magento/module-security/Model/AdminSessionInfo.php
++++ b/vendor/magento/module-security/Model/AdminSessionInfo.php
+@@ -133,7 +133,7 @@ public function isSessionExpired()
+         $currentTime = $this->dateTime->gmtTimestamp();
+         $lastUpdatedTime = $this->getUpdatedAt();
+         if (!is_numeric($lastUpdatedTime)) {
+-            if($lastUpdatedTime === null) {
++            if ($lastUpdatedTime === null) {
+                 $lastUpdatedTime = 0;
+             } else {
+                 $lastUpdatedTime = strtotime($lastUpdatedTime);
+
+From 86de3f6218a0bd3c14b08f4ab19987a64d2daeae Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Thu, 4 Nov 2021 00:09:13 +0530
+Subject: [PATCH 05/13] updated space
+
+---
+ vendor/magento/module-security/Model/AdminSessionsManager.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionsManager.php b/vendor/magento/module-security/Model/AdminSessionsManager.php
+index 605f99caddb1..21281aca3c5c 100644
+--- a/vendor/magento/module-security/Model/AdminSessionsManager.php
++++ b/vendor/magento/module-security/Model/AdminSessionsManager.php
+@@ -336,7 +336,7 @@ protected function createAdminSessionInfoCollection()
+     private function lastProlongIsOldEnough()
+     {
+         $lastUpdatedTime = $this->getCurrentSession()->getUpdatedAt();
+-        if($lastUpdatedTime === null || is_numeric($lastUpdatedTime)) {
++        if ($lastUpdatedTime === null || is_numeric($lastUpdatedTime)) {
+             $lastUpdatedTime = "now";
+         }
+         $lastProlongTimestamp = strtotime($lastUpdatedTime);
+
+From d9511196f0c33dfed28ba979e0f97bc5cd0bb3d9 Mon Sep 17 00:00:00 2001
+From: Denis Kopylov <dkopylov@magenius.team>
+Date: Thu, 4 Nov 2021 15:57:45 +0300
+Subject: [PATCH 06/13] Fix static tests
+
+Signed-off-by: Denis Kopylov <dkopylov@magenius.team>
+---
+ .../Security/Model/AdminSessionInfo.php       |  1 +
+ .../Security/Model/AdminSessionsManager.php   | 30 +++++++++++--------
+ 2 files changed, 19 insertions(+), 12 deletions(-)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionInfo.php b/vendor/magento/module-security/Model/AdminSessionInfo.php
+index 49986bd44879..28594eb8e865 100644
+--- a/vendor/magento/module-security/Model/AdminSessionInfo.php
++++ b/vendor/magento/module-security/Model/AdminSessionInfo.php
+@@ -47,6 +47,7 @@ class AdminSessionInfo extends \Magento\Framework\Model\AbstractModel
+     /**
+      * All other open sessions were terminated
+      * @since 100.1.0
++     * @var bool
+      */
+     protected $isOtherSessionsTerminated = false;
+ 
+diff --git a/vendor/magento/module-security/Model/AdminSessionsManager.php b/vendor/magento/module-security/Model/AdminSessionsManager.php
+index 21281aca3c5c..e44d6b491601 100644
+--- a/vendor/magento/module-security/Model/AdminSessionsManager.php
++++ b/vendor/magento/module-security/Model/AdminSessionsManager.php
+@@ -7,7 +7,10 @@
+ 
+ namespace Magento\Security\Model;
+ 
++use Magento\Backend\Model\Auth\Session;
+ use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
++use Magento\Framework\Stdlib\DateTime;
++use Magento\Security\Model\ResourceModel\AdminSessionInfo\Collection;
+ use Magento\Security\Model\ResourceModel\AdminSessionInfo\CollectionFactory;
+ 
+ /**
+@@ -35,7 +38,7 @@ class AdminSessionsManager
+     protected $securityConfig;
+ 
+     /**
+-     * @var \Magento\Backend\Model\Auth\Session
++     * @var Session
+      * @since 100.1.0
+      */
+     protected $authSession;
+@@ -73,12 +76,14 @@ class AdminSessionsManager
+      *
+      * Means that after session was prolonged
+      * all other prolongs will be ignored within this period
++     *
++     * @var int
+      */
+     private $maxIntervalBetweenConsecutiveProlongs = 60;
+ 
+     /**
+      * @param ConfigInterface $securityConfig
+-     * @param \Magento\Backend\Model\Auth\Session $authSession
++     * @param Session $authSession
+      * @param AdminSessionInfoFactory $adminSessionInfoFactory
+      * @param CollectionFactory $adminSessionInfoCollectionFactory
+      * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
+@@ -86,7 +91,7 @@ class AdminSessionsManager
+      */
+     public function __construct(
+         ConfigInterface $securityConfig,
+-        \Magento\Backend\Model\Auth\Session $authSession,
++        Session $authSession,
+         \Magento\Security\Model\AdminSessionInfoFactory $adminSessionInfoFactory,
+         \Magento\Security\Model\ResourceModel\AdminSessionInfo\CollectionFactory $adminSessionInfoCollectionFactory,
+         \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
+@@ -138,7 +143,7 @@ public function processProlong()
+             $this->getCurrentSession()->setData(
+                 'updated_at',
+                 date(
+-                    \Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT,
++                    DateTime::DATETIME_PHP_FORMAT,
+                     $this->authSession->getUpdatedAt()
+                 )
+             );
+@@ -204,7 +209,7 @@ public function getLogoutReasonMessageByStatus($statusCode)
+             case AdminSessionInfo::LOGGED_OUT_BY_LOGIN:
+                 $reasonMessage = __(
+                     'Someone logged into this account from another device or browser.'
+-                    .' Your current session is terminated.'
++                    . ' Your current session is terminated.'
+                 );
+                 break;
+             case AdminSessionInfo::LOGGED_OUT_MANUALLY:
+@@ -241,7 +246,7 @@ public function getLogoutReasonMessage()
+     /**
+      * Get sessions for current user
+      *
+-     * @return \Magento\Security\Model\ResourceModel\AdminSessionInfo\Collection
++     * @return Collection
+      * @since 100.1.0
+      */
+     public function getSessionsForCurrentUser()
+@@ -314,7 +319,9 @@ protected function createNewSession()
+     }
+ 
+     /**
+-     * @return \Magento\Security\Model\ResourceModel\AdminSessionInfo\Collection
++     * Retrieve new instance of admin session info collection
++     *
++     * @return Collection
+      * @since 100.1.0
+      */
+     protected function createAdminSessionInfoCollection()
+@@ -323,15 +330,14 @@ protected function createAdminSessionInfoCollection()
+     }
+ 
+     /**
+-     * Calculates diff between now and last session updated_at
+-     * and decides whether new prolong must be triggered or not
++     * Calculates diff between now and last session updated_at and decides whether new prolong must be triggered or not
+      *
+      * This is done to limit amount of session prolongs and updates to database
+      * within some period of time - X
+      * X - is calculated in getIntervalBetweenConsecutiveProlongs()
+      *
+-     * @see getIntervalBetweenConsecutiveProlongs()
+      * @return bool
++     * @see getIntervalBetweenConsecutiveProlongs()
+      */
+     private function lastProlongIsOldEnough()
+     {
+@@ -344,7 +350,7 @@ private function lastProlongIsOldEnough()
+ 
+         $diff = $nowTimestamp - $lastProlongTimestamp;
+ 
+-        return (float) $diff > $this->getIntervalBetweenConsecutiveProlongs();
++        return (float)$diff > $this->getIntervalBetweenConsecutiveProlongs();
+     }
+ 
+     /**
+@@ -358,7 +364,7 @@ private function lastProlongIsOldEnough()
+      */
+     private function getIntervalBetweenConsecutiveProlongs()
+     {
+-        return (float) max(
++        return (float)max(
+             1,
+             min(
+                 4 * log((float)$this->securityConfig->getAdminSessionLifetime()),
+
+From 15b1b8b6b1f44022c325b87618f873297c1f1774 Mon Sep 17 00:00:00 2001
+From: Denis Kopylov <dkopylov@magenius.team>
+Date: Thu, 4 Nov 2021 16:02:07 +0300
+Subject: [PATCH 07/13] Fix static tests
+
+Signed-off-by: Denis Kopylov <dkopylov@magenius.team>
+---
+ vendor/magento/module-security/Model/AdminSessionsManager.php | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionsManager.php b/vendor/magento/module-security/Model/AdminSessionsManager.php
+index e44d6b491601..e6b7a076e1c4 100644
+--- a/vendor/magento/module-security/Model/AdminSessionsManager.php
++++ b/vendor/magento/module-security/Model/AdminSessionsManager.php
+@@ -18,6 +18,7 @@
+  *
+  * @api
+  * @since 100.1.0
++ * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
+  */
+ class AdminSessionsManager
+ {
+
+From e7b400bdb8a494ede2a489d009ed6ece4e55e3b6 Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Fri, 5 Nov 2021 13:06:01 +0530
+Subject: [PATCH 08/13] Update
+ vendor/magento/module-security/Model/AdminSessionInfo.php
+
+Co-authored-by: Ihor Sviziev <ihor-sviziev@users.noreply.github.com>
+---
+ vendor/magento/module-security/Model/AdminSessionInfo.php | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionInfo.php b/vendor/magento/module-security/Model/AdminSessionInfo.php
+index 28594eb8e865..83bce4fc23c0 100644
+--- a/vendor/magento/module-security/Model/AdminSessionInfo.php
++++ b/vendor/magento/module-security/Model/AdminSessionInfo.php
+@@ -134,11 +134,7 @@ public function isSessionExpired()
+         $currentTime = $this->dateTime->gmtTimestamp();
+         $lastUpdatedTime = $this->getUpdatedAt();
+         if (!is_numeric($lastUpdatedTime)) {
+-            if ($lastUpdatedTime === null) {
+-                $lastUpdatedTime = 0;
+-            } else {
+-                $lastUpdatedTime = strtotime($lastUpdatedTime);
+-            }
++            $lastUpdatedTime = $lastUpdatedTime === null ? 0 : strtotime($lastUpdatedTime);
+         }
+ 
+         return $lastUpdatedTime <= ($currentTime - $lifetime) ? true : false;
+
+From 29cd307ce776b88090f5742eada5548db430019d Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Fri, 5 Nov 2021 13:11:57 +0530
+Subject: [PATCH 09/13] Update
+ vendor/magento/module-security/Model/AdminSessionInfo.php
+
+Co-authored-by: Ihor Sviziev <ihor-sviziev@users.noreply.github.com>
+---
+ vendor/magento/module-security/Model/AdminSessionInfo.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/vendor/magento/module-security/Model/AdminSessionInfo.php b/vendor/magento/module-security/Model/AdminSessionInfo.php
+index 83bce4fc23c0..b0347fdbc3ad 100644
+--- a/vendor/magento/module-security/Model/AdminSessionInfo.php
++++ b/vendor/magento/module-security/Model/AdminSessionInfo.php
+@@ -137,7 +137,7 @@ public function isSessionExpired()
+             $lastUpdatedTime = $lastUpdatedTime === null ? 0 : strtotime($lastUpdatedTime);
+         }
+ 
+-        return $lastUpdatedTime <= ($currentTime - $lifetime) ? true : false;
++        return $lastUpdatedTime <= ($currentTime - $lifetime);
+     }
+ 
+     /**
+
+From fd6382b22d6c44d0f30fb14ed3b51d87beaadfa4 Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Tue, 9 Nov 2021 10:30:37 +0530
+Subject: [PATCH 10/13] Update AdminSessionInfoTest.php
+
+unit test case added - https://github.com/kanhaiya5590/magento2/commit/32a742eb5b00249f757df079ea373c975ed8d1de
+---
+ .../Test/Unit/Model/AdminSessionInfoTest.php  | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/vendor/magento/module-security/Test/Unit/Model/AdminSessionInfoTest.php b/vendor/magento/module-security/Test/Unit/Model/AdminSessionInfoTest.php
+index db65204811a5..95e84afebc78 100644
+--- a/vendor/magento/module-security/Test/Unit/Model/AdminSessionInfoTest.php
++++ b/vendor/magento/module-security/Test/Unit/Model/AdminSessionInfoTest.php
+@@ -127,6 +127,26 @@ public function dataProviderSessionLifetime()
+         ];
+     }
+ 
++    /**
++     * @return void
++     */
++    public function testSessionExpiredWhenUpdatedAtIsNull()
++    {
++        $timestamp = time();
++        $sessionLifetime = '1';
++
++        $this->securityConfigMock->expects($this->once())
++            ->method('getAdminSessionLifetime')
++            ->willReturn($sessionLifetime);
++
++        $this->dateTimeMock->expects($this->once())
++            ->method('gmtTimestamp')
++            ->willReturn($timestamp);
++
++        $this->model->setUpdatedAt(null);
++        $this->assertTrue($this->model->isSessionExpired());
++    }
++    
+     /**
+      * @return void
+      */
+
+From fa82a64915dca0a099b30b7b878fcc915c0396ec Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Tue, 9 Nov 2021 11:18:35 +0530
+Subject: [PATCH 11/13] Update AdminSessionsManagerTest.php
+
+test case https://github.com/Tjitse-E/magento2/commit/32a742eb5b00249f757df079ea373c975ed8d1de# thanks to @Tjitse-E - https://github.com/Tjitse-E/
+---
+ .../Unit/Model/AdminSessionsManagerTest.php   | 42 +++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php b/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
+index e352583ea575..450063a29762 100644
+--- a/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
++++ b/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
+@@ -255,6 +255,48 @@ public function testProcessProlong()
+         $this->model->processProlong();
+     }
+ 
++    /**
++     * @return void
++     */
++    public function testUpdatedAtIsNull()
++    {
++        $newUpdatedAt = '2016-01-01 00:00:30';
++        $adminSessionInfoId = 50;
++        $this->authSessionMock->expects($this->any())
++            ->method('getAdminSessionInfoId')
++            ->willReturn($adminSessionInfoId);
++
++        $this->adminSessionInfoFactoryMock->expects($this->any())
++            ->method('create')
++            ->willReturn($this->currentSessionMock);
++
++        $this->currentSessionMock->expects($this->once())
++            ->method('load')
++            ->willReturnSelf();
++
++        $this->currentSessionMock->expects($this->once())
++            ->method('getUpdatedAt')
++            ->willReturn(null);
++
++        $this->authSessionMock->expects($this->once())
++            ->method('getUpdatedAt')
++            ->willReturn(strtotime($newUpdatedAt));
++
++        $this->securityConfigMock->expects($this->once())
++            ->method('getAdminSessionLifetime')
++            ->willReturn(100);
++
++        $this->currentSessionMock->expects($this->never())
++            ->method('setData')
++            ->willReturnSelf();
++
++        $this->currentSessionMock->expects($this->never())
++            ->method('save')
++            ->willReturnSelf();
++
++        $this->model->processProlong();
++    }
++
+     /**
+      * @return void
+      */
+
+From 854df7ed308e6a8b05725a70ff7d03ddbbb5df02 Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Tue, 9 Nov 2021 15:55:35 +0530
+Subject: [PATCH 12/13] Update AdminSessionsManagerTest.php
+
+ 64 | WARNING | Missing PHP DocBlock for class property.
+---
+ .../Security/Test/Unit/Model/AdminSessionsManagerTest.php     | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php b/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
+index 450063a29762..6360590de8b2 100644
+--- a/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
++++ b/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
+@@ -58,9 +58,7 @@ class AdminSessionsManagerTest extends TestCase
+     /** @var  ObjectManager */
+     protected $objectManager;
+ 
+-    /*
+-     * @var RemoteAddress
+-     */
++    /** @var RemoteAddress */
+     protected $remoteAddressMock;
+ 
+     /**
+
+From bd4996f00f7b722d3adf1fb12573765040fe9573 Mon Sep 17 00:00:00 2001
+From: kanhaiya5590 <kanhaiya5590@users.noreply.github.com>
+Date: Tue, 9 Nov 2021 16:06:22 +0530
+Subject: [PATCH 13/13] Update AdminSessionsManagerTest.php
+
+ Line exceeds 120 characters; contains 137 characters
+---
+ .../Test/Unit/Model/AdminSessionsManagerTest.php       | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php b/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
+index 6360590de8b2..21a8f6eaef26 100644
+--- a/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
++++ b/vendor/magento/module-security/Test/Unit/Model/AdminSessionsManagerTest.php
+@@ -70,7 +70,15 @@ protected function setUp(): void
+         $this->objectManager = new ObjectManager($this);
+ 
+         $this->authSessionMock = $this->getMockBuilder(Session::class)
+-            ->addMethods(['isActive', 'getStatus', 'getUser', 'getId', 'getUpdatedAt', 'getAdminSessionInfoId', 'setAdminSessionInfoId'])
++            ->addMethods([
++                'isActive',
++                'getStatus',
++                'getUser',
++                'getId',
++                'getUpdatedAt',
++                'getAdminSessionInfoId',
++                'setAdminSessionInfoId'
++            ])
+             ->disableOriginalConstructor()
+             ->getMock();
+ 
