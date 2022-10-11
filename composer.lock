@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f8676d6bc439435da8bb9a1bfcd8626",
+    "content-hash": "9480ccb406e7dbf340a1df4f38bfbd40",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2510,16 +2510,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.268.0",
+            "version": "v0.270.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "af3e1549ae62ed93ba94a57c5c3d65750b0b0ccf"
+                "reference": "902b415a7ab92ccb50e2b7dda334a3497c8bc3da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/af3e1549ae62ed93ba94a57c5c3d65750b0b0ccf",
-                "reference": "af3e1549ae62ed93ba94a57c5c3d65750b0b0ccf",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/902b415a7ab92ccb50e2b7dda334a3497c8bc3da",
+                "reference": "902b415a7ab92ccb50e2b7dda334a3497c8bc3da",
                 "shasum": ""
             },
             "require": {
@@ -2548,9 +2548,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.268.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.270.0"
             },
-            "time": "2022-09-24T01:34:14+00:00"
+            "time": "2022-10-08T01:14:15+00:00"
         },
         {
             "name": "google/auth",
@@ -3467,11 +3467,11 @@
         },
         {
             "name": "icubebysirclo/magento2-weltpixel",
-            "version": "4.1.0",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubebysirclo/magento2-weltpixel.git",
-                "reference": "a23494f19f252cbfdd1437d4b45a90830acbc789"
+                "reference": "bec351f9c97f6584d62770ee26cde79895f6677d"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^8.12"
@@ -3621,7 +3621,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-29T18:10:04+00:00"
+            "time": "2022-10-11T01:55:21+00:00"
         },
         {
             "name": "icubebysirclo/magento2-xendit",
@@ -3848,11 +3848,11 @@
         },
         {
             "name": "icubeus/magento2-graphql",
-            "version": "4.1.38",
+            "version": "4.1.39",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-graphql.git",
-                "reference": "b526f3dbdf5e663d8bf54b94645ba01cdd5909df"
+                "reference": "7ea1144cdb64f45d8530f85e54b0655074b2128c"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^8.12",
@@ -4019,7 +4019,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-09-27T15:17:13+00:00"
+            "time": "2022-10-11T02:09:13+00:00"
         },
         {
             "name": "icubeus/magento2-indonesianlanguage",
@@ -4094,11 +4094,11 @@
         },
         {
             "name": "icubeus/magento2-notification",
-            "version": "4.2.0",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-notification.git",
-                "reference": "5c7bc3e2ea97a1b76fdab20b888b2ac1ac3e6a63"
+                "reference": "e8e9f045b16a344e3a291216f4456e9a6f7ce2be"
             },
             "replace": {
                 "icubeus/module-event": "self.version",
@@ -4140,7 +4140,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-29T17:50:37+00:00"
+            "time": "2022-10-11T02:03:40+00:00"
         },
         {
             "name": "icubeus/magento2-payment",
@@ -4233,11 +4233,11 @@
         },
         {
             "name": "icubeus/magento2-shippingbase",
-            "version": "4.1.7",
+            "version": "4.1.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingbase.git",
-                "reference": "39c9b21a277e6b1d784059d19ab29b6a258cbe43"
+                "reference": "c01d4bb6a4ea121ba964b493bb2907bca95f543a"
             },
             "replace": {
                 "icubeus/module-shippingbase": "self.version"
@@ -4267,15 +4267,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-07-18T02:53:06+00:00"
+            "time": "2022-10-11T02:05:00+00:00"
         },
         {
             "name": "icubeus/magento2-shippingshipper",
-            "version": "4.1.23",
+            "version": "4.1.24",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-shippingshipper.git",
-                "reference": "c83c9c520b981fdc35d9cd7e740f38570bbfab4d"
+                "reference": "c4ea80d5cab10587c3f2dc9297f052cc3836a1c8"
             },
             "require": {
                 "icubeus/magento2-shippingbase": "^4.1"
@@ -4308,7 +4308,7 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-08-29T17:55:30+00:00"
+            "time": "2022-10-11T02:02:33+00:00"
         },
         {
             "name": "icubeus/magento2-smsgateaway",
@@ -4356,11 +4356,11 @@
         },
         {
             "name": "icubeus/magento2-swift-core",
-            "version": "4.1.2",
+            "version": "4.1.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swift-core.git",
-                "reference": "2cf30f62b87f301dfc249b8df339865427fce2e1"
+                "reference": "c673418a4f0c6f5adf98676d903465dde459fcd1"
             },
             "require": {
                 "ebizmarts/mailchimp-lib": "^3.0",
@@ -4373,25 +4373,25 @@
                 "icubebysirclo/magento2-promo": "4.1.0",
                 "icubebysirclo/magento2-shippinglogistix": "4.0.15",
                 "icubebysirclo/magento2-shippingpopaket": "4.0.4",
-                "icubebysirclo/magento2-weltpixel": "4.1.0",
+                "icubebysirclo/magento2-weltpixel": "4.1.1",
                 "icubebysirclo/magento2-xendit": "4.0.6",
                 "icubeus/magento2-advancerate": "4.1.9",
                 "icubeus/magento2-checkout": "4.2.1",
                 "icubeus/magento2-citykecamatan": "4.1.11",
                 "icubeus/magento2-confirmpayment": "4.1.1",
                 "icubeus/magento2-firebase": "4.1.4",
-                "icubeus/magento2-graphql": "4.1.38",
+                "icubeus/magento2-graphql": "4.1.39",
                 "icubeus/magento2-indonesianlanguage": "4.1.0",
                 "icubeus/magento2-instantdelivery": "4.2.0",
-                "icubeus/magento2-notification": "4.2.0",
+                "icubeus/magento2-notification": "4.2.1",
                 "icubeus/magento2-payment": "4.1.6",
                 "icubeus/magento2-queues": "4.1.1",
-                "icubeus/magento2-shippingbase": "4.1.7",
-                "icubeus/magento2-shippingshipper": "4.1.23",
+                "icubeus/magento2-shippingbase": "4.1.8",
+                "icubeus/magento2-shippingshipper": "4.1.24",
                 "icubeus/magento2-smsgateaway": "4.2.0",
-                "icubeus/magento2-swiftomschannel": "4.1.20",
+                "icubeus/magento2-swiftomschannel": "4.1.21",
                 "icubeus/magento2-trackorder": "4.1.11",
-                "icubeus/magento2-veritranspayment": "4.2.1"
+                "icubeus/magento2-veritranspayment": "4.2.2"
             },
             "replace": {
                 "icubeus/module-bold-order-comment": "self.version",
@@ -4541,15 +4541,15 @@
                 "magento",
                 "magento2"
             ],
-            "time": "2022-09-29T23:59:54+00:00"
+            "time": "2022-10-11T02:18:02+00:00"
         },
         {
             "name": "icubeus/magento2-swiftomschannel",
-            "version": "4.1.20",
+            "version": "4.1.21",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-swiftomschannel.git",
-                "reference": "1dd85a87e9baebe06525f8257a1b6e19e2ebc7dd"
+                "reference": "00684b2b8c90e49ebcc299a0686615fde36f11ca"
             },
             "replace": {
                 "icubeus/module-autocreditmemo": "self.version",
@@ -4611,7 +4611,7 @@
                 "magento2",
                 "swift"
             ],
-            "time": "2022-09-29T23:56:32+00:00"
+            "time": "2022-10-11T02:15:25+00:00"
         },
         {
             "name": "icubeus/magento2-trackorder",
@@ -4643,11 +4643,11 @@
         },
         {
             "name": "icubeus/magento2-veritranspayment",
-            "version": "4.2.1",
+            "version": "4.2.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:icubeus/magento2-veritranspayment.git",
-                "reference": "f2ee57ace4150db41e2eab4c24da7d29ea9b7c4e"
+                "reference": "ea83efea87ddd7eb4fca812bcf54e2b40f2d98e7"
             },
             "replace": {
                 "icubeus/module-snap": "self.version"
@@ -4686,7 +4686,7 @@
                 "payment",
                 "veritrans"
             ],
-            "time": "2022-09-29T23:17:52+00:00"
+            "time": "2022-10-11T02:07:46+00:00"
         },
         {
             "name": "jms/metadata",
@@ -19802,16 +19802,16 @@
         },
         {
             "name": "microsoft/microsoft-graph",
-            "version": "1.77.0",
+            "version": "1.78.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoftgraph/msgraph-sdk-php.git",
-                "reference": "4e505f208c5d95d08560aaa8d4f6b8c81cd96222"
+                "reference": "fda619df926aa08bc338cb9516184f2fd3cc9941"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/4e505f208c5d95d08560aaa8d4f6b8c81cd96222",
-                "reference": "4e505f208c5d95d08560aaa8d4f6b8c81cd96222",
+                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/fda619df926aa08bc338cb9516184f2fd3cc9941",
+                "reference": "fda619df926aa08bc338cb9516184f2fd3cc9941",
                 "shasum": ""
             },
             "require": {
@@ -19847,9 +19847,9 @@
             "homepage": "https://developer.microsoft.com/en-us/graph",
             "support": {
                 "issues": "https://github.com/microsoftgraph/msgraph-sdk-php/issues",
-                "source": "https://github.com/microsoftgraph/msgraph-sdk-php/tree/1.77.0"
+                "source": "https://github.com/microsoftgraph/msgraph-sdk-php/tree/1.78.0"
             },
-            "time": "2022-09-28T09:07:44+00:00"
+            "time": "2022-10-06T07:07:35+00:00"
         },
         {
             "name": "mikey179/vfsstream",
