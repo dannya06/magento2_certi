@@ -17,5 +17,6 @@ patch -p1 --forward < m2_hotfixes/0001-patch-for-ezimuel.patch || true
 patch -p1 --forward < m2_hotfixes/0001-patch-for-controller-graphql.patch || true
 patch -p1 --forward < m2_hotfixes/0001-patch-for-admin-login-2.4.4.patch || true
 patch -p1 --forward < m2_hotfixes/0001-patch-for-paypal-config.patch || true
+patch -p1 --forward < m2_hotfixes/ACSD-47578_2.4.4_2.4.5_COMPOSER_patch.patch || true
 
 ######################### END of line patch ##############################
