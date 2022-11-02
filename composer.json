@@ -86,6 +86,10 @@
     "minimum-stability": "alpha",
     "prefer-stable": true,
     "repositories": {
+        "icube-mage-certi": {
+            "type": "git",
+            "url": "git@github.com:icube-mage/magento2-certi.git"
+        },
         "icube-voltwig": {
             "type": "git",
             "url": "git@github.com:icube-mage/magento2-voltwig.git"
